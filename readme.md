@@ -7,7 +7,7 @@
 - remove config.yaml;
 - create make file, build command based on cosmos-sdk;
 
-```json
+```
 #!/usr/bin/make -f
 
 BINDIR ?= $(GOPATH)/bin
@@ -95,7 +95,7 @@ Now that everything is set up, you can finally start your node:
 - ****Using the REST Endpoints****
     - check `app.toml` if the api server is enabled, swagger documentation as well;
     
-    ```json
+    ```
     curl -X GET -H "Content-Type: application/json" http://localhost:1317/cosmos/bank/v1beta1/balances/$MY_VALIDATOR_ADDRESS
     ```
     
@@ -135,7 +135,7 @@ You should see two delegations, the first one made from the `gentx`, and the se
 
 `./build/mantrachaind query gov params`
 
-```json
+```
 max_deposit_period: "172800000000000"
   min_deposit:
   - amount: "10000000"
