@@ -180,7 +180,7 @@ voting_params:
 
 *Note: if you want to clear the state of the chain and demonstrate the entire flow again, run these commands:*
 
-```json
+```
 rm -rf build                  # from the project directory
 rm -rf ~/.mantrachain                # default directory for config files and keyring
 ```
