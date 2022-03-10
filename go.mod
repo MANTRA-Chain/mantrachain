@@ -3,14 +3,17 @@ module github.com/LimeChain/mantrachain
 go 1.16
 
 require (
-	github.com/cosmos/cosmos-sdk v0.44.5
+	github.com/CosmWasm/wasmd v0.22.0
+	github.com/cosmos/cosmos-sdk v0.45.0
 	github.com/cosmos/ibc-go/v2 v2.0.2
 	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/prometheus/client_golang v1.12.0
 	github.com/spf13/cast v1.4.1
+	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/starport v0.19.2
-	github.com/tendermint/tendermint v0.34.14
-	github.com/tendermint/tm-db v0.6.4
+	github.com/tendermint/tendermint v0.34.15
+	github.com/tendermint/tm-db v0.6.6
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a // indirect
 )
