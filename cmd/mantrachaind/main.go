@@ -9,7 +9,6 @@ import (
 	"github.com/LimeChain/mantrachain/app"
 )
 
-//TODO double check and update the whole cmd functionality
 func main() {
 	rootCmd, _ := NewRootCmd(
 	//app.Name,
