@@ -96,7 +96,7 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	//"github.com/tendermint/starport/starport/pkg/cosmoscmd"
-	//"github.com/tendermint/starport/starport/pkg/openapiconsole"
+	"github.com/tendermint/starport/starport/pkg/openapiconsole"
 
 	"github.com/LimeChain/mantrachain/docs"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
@@ -701,7 +701,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	// register app's OpenAPI routes.
 	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
-	//apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
