@@ -1,24 +1,36 @@
 package types
 
 import (
-// this line is used by starport scaffolding # genesis/types/import
+	"fmt"
 )
 
-// DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 1
+const DefaultDidNamespace = "testnet"
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-	    // this line is used by starport scaffolding # genesis/types/default
-	    Params:	DefaultParams(),
+		DidList:      []*StateValue{},
+		DidNamespace: DefaultDidNamespace,
 	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-    // this line is used by starport scaffolding # genesis/types/validate
+	didIdMap := make(map[string]bool)
 
-	return gs.Params.Validate()
+	for _, elem := range gs.DidList {
+		did, err := elem.UnpackDataAsDid()
+		if err != nil {
+			return err
+		}
+
+		if _, ok := didIdMap[did.Id]; ok {
+			return fmt.Errorf("duplicated id for did")
+		}
+
+		didIdMap[did.Id] = true
+	}
+
+	return nil
 }

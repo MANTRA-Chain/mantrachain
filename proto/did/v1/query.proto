@@ -1,0 +1,25 @@
+syntax = "proto3";
+package LimeChain.mantrachain.did.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/did/types";
+
+import "google/api/annotations.proto";
+import "did/v1/did.proto";
+import "did/v1/stateValue.proto";
+
+
+// Query defines the gRPC querier service.
+service Query {
+	rpc Did(QueryGetDidRequest) returns (QueryGetDidResponse) {
+		option (google.api.http).get = "/did/v1/did/{id}";
+	}
+}
+
+message QueryGetDidRequest {
+	string id = 1;
+}
+
+message QueryGetDidResponse {
+	Did did = 1;
+	Metadata metadata = 2;
+}

@@ -56,6 +56,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
+
 	//govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -94,6 +95,10 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
+
+	"github.com/LimeChain/mantrachain/x/did"
+	didkeeper "github.com/LimeChain/mantrachain/x/did/keeper"
+	didtypes "github.com/LimeChain/mantrachain/x/did/types"
 
 	//"github.com/tendermint/starport/starport/pkg/cosmoscmd"
 	"github.com/tendermint/starport/starport/pkg/openapiconsole"
@@ -174,6 +179,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		wasm.AppModuleBasic{},
+		did.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -244,6 +250,8 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
+	didKeeper didkeeper.Keeper
+
 	// mm is the module manager
 	mm *module.Manager
 
@@ -280,6 +288,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		wasm.StoreKey,
+		didtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -340,6 +349,10 @@ func New(
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper = *stakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
+	)
+
+	app.didKeeper = *didkeeper.NewKeeper(
+		appCodec, keys[didtypes.StoreKey],
 	)
 
 	// ... other modules keepers
@@ -447,6 +460,7 @@ func New(
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
+		did.NewAppModule(appCodec, app.didKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
@@ -465,6 +479,7 @@ func New(
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibchost.ModuleName,
+		didtypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -486,6 +501,7 @@ func New(
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
 		ibchost.ModuleName,
+		didtypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -514,6 +530,7 @@ func New(
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
+		didtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -738,6 +755,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(didtypes.ModuleName)
 
 	return paramsKeeper
 }

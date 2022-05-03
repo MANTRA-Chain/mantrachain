@@ -1,0 +1,13 @@
+syntax = "proto3";
+package LimeChain.mantrachain.did.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/did/types";
+
+import "did/v1/stateValue.proto";
+
+// GenesisState defines the did module's genesis state.
+message GenesisState {
+  string did_namespace = 1;
+  repeated StateValue didList = 2;
+}
+

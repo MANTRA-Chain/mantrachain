@@ -2,10 +2,11 @@ package main
 
 import (
 	"errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"io"
 	"os"
 	"path/filepath"
+
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -101,8 +102,8 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		AddGenesisWasmMsgCmd(app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		// testnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
-		debug.Cmd(),
 		config.Cmd(),
+		extendDebug(debug.Cmd()),
 	)
 
 	ac := appCreator{

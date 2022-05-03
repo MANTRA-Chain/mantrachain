@@ -1,24 +1,46 @@
 package did
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"fmt"
+
 	"github.com/LimeChain/mantrachain/x/did/keeper"
 	"github.com/LimeChain/mantrachain/x/did/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// InitGenesis initializes the capability module's state from a provided genesis
+// InitGenesis initializes the did module's state from a provided genesis
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-    // this line is used by starport scaffolding # genesis/module/init
-	k.SetParams(ctx, genState.Params)
+	for _, elem := range genState.DidList {
+		did, err := elem.UnpackDataAsDid()
+		if err != nil {
+			panic(fmt.Sprintf("Cannot import geneses case: %s", err.Error()))
+		}
+
+		if err = k.SetDid(&ctx, did, elem.Metadata); err != nil {
+			panic(fmt.Sprintf("Cannot set did case: %s", err.Error()))
+		}
+	}
+
+	// Set nym count
+	k.SetDidCount(&ctx, uint64(len(genState.DidList)))
+
+	k.SetDidNamespace(ctx, genState.DidNamespace)
 }
 
-// ExportGenesis returns the capability module's exported genesis.
+// ExportGenesis returns the did module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
-	genesis.Params = k.GetParams(ctx)
 
-    // this line is used by starport scaffolding # genesis/module/export
+	// this line is used by starport scaffolding # genesis/module/export
+	// Get all did
+	didList := k.GetAllDid(&ctx)
+	for _, elem := range didList {
+		elem := elem
+		genesis.DidList = append(genesis.DidList, &elem)
+	}
 
-    return genesis
+	genesis.DidNamespace = k.GetDidNamespace(ctx)
+
+	return genesis
 }

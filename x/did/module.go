@@ -1,9 +1,13 @@
 package did
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-    // this line is used by starport scaffolding # 1
+	"log"
+
+	"github.com/LimeChain/mantrachain/x/did/client/cli"
+	"github.com/LimeChain/mantrachain/x/did/types"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -11,21 +15,18 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	//"github.com/LimeChain/mantrachain/x/did/client/rest"
+	"github.com/LimeChain/mantrachain/x/did/keeper"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/LimeChain/mantrachain/x/did/keeper"
-	"github.com/LimeChain/mantrachain/x/did/types"
-	"github.com/LimeChain/mantrachain/x/did/client/cli"
-	
 )
 
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
-	
 )
 
 // ----------------------------------------------------------------------------
@@ -34,10 +35,10 @@ var (
 
 // AppModuleBasic implements the AppModuleBasic interface for the capability module.
 type AppModuleBasic struct {
-	cdc codec.BinaryCodec
+	cdc codec.Codec
 }
 
-func NewAppModuleBasic(cdc codec.BinaryCodec) AppModuleBasic {
+func NewAppModuleBasic(cdc codec.Codec) AppModuleBasic {
 	return AppModuleBasic{cdc: cdc}
 }
 
@@ -75,21 +76,25 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 // RegisterRESTRoutes registers the capability module's REST service handlers.
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
+	//rest.RegisterRoutes(clientCtx, rtr)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-    // this line is used by starport scaffolding # 2
+	err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // GetTxCmd returns the capability module's root tx command.
 func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-    return cli.GetTxCmd()
+	return cli.GetTxCmd()
 }
 
 // GetQueryCmd returns the capability module's root query command.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-    return cli.GetQueryCmd(types.StoreKey)
+	return cli.GetQueryCmd()
 }
 
 // ----------------------------------------------------------------------------
@@ -100,23 +105,22 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
+	keeper keeper.Keeper
 }
 
-func NewAppModule(
-	cdc codec.Codec,
-	keeper keeper.Keeper,
-	accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper,
-) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
-		accountKeeper:  accountKeeper,
-		bankKeeper:     bankKeeper,
 	}
+}
+
+// ConsensusVersion is a sequence number for state-breaking change of the
+// module. It should be incremented on each consensus-breaking change
+// introduced by the module. To avoid wrong/empty versions, the initial version
+// should be set to 1.
+func (am AppModule) ConsensusVersion() uint64 {
+	return 3
 }
 
 // Name returns the capability module's name.
@@ -134,13 +138,13 @@ func (AppModule) QuerierRoute() string { return types.QuerierRoute }
 
 // LegacyQuerierHandler returns the capability module's Querier.
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
+	return keeper.NewQuerier(am.keeper, legacyQuerierCdc)
 }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-    types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
 // RegisterInvariants registers the capability module's invariants.
@@ -163,9 +167,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	genState := ExportGenesis(ctx, am.keeper)
 	return cdc.MustMarshalJSON(genState)
 }
-
-// ConsensusVersion implements ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // BeginBlock executes all ABCI BeginBlock logic respective to the capability module.
 func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}

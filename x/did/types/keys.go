@@ -10,17 +10,18 @@ const (
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
 
-    // QuerierRoute defines the module's query routing key
-    QuerierRoute = ModuleName
+	// QuerierRoute defines the module's query routing key
+	QuerierRoute = ModuleName
 
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_did"
-
-    
+	DidMethod = "mns"
 )
 
-
-
 func KeyPrefix(p string) []byte {
-    return []byte(p)
+	return []byte(p)
 }
+
+const (
+	DidKey          = "did:"
+	DidCountKey     = "did-count:"
+	DidNamespaceKey = "did-namespace:"
+)
