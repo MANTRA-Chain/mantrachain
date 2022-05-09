@@ -250,7 +250,7 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
-	didKeeper didkeeper.Keeper
+	DidKeeper didkeeper.Keeper
 
 	// mm is the module manager
 	mm *module.Manager
@@ -351,7 +351,7 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
-	app.didKeeper = *didkeeper.NewKeeper(
+	app.DidKeeper = *didkeeper.NewKeeper(
 		appCodec, keys[didtypes.StoreKey],
 	)
 
@@ -460,7 +460,7 @@ func New(
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
-		did.NewAppModule(appCodec, app.didKeeper),
+		did.NewAppModule(appCodec, app.DidKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
