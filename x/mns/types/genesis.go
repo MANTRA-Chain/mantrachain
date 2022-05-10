@@ -11,6 +11,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 	    DomainList: []Domain{},
+DomainNameList: []DomainName{},
 // this line is used by starport scaffolding # genesis/types/default
 	    Params:	DefaultParams(),
 	}
@@ -28,6 +29,16 @@ for _, elem := range gs.DomainList {
 		return fmt.Errorf("duplicated index for domain")
 	}
 	domainIndexMap[index] = struct{}{}
+}
+// Check for duplicated index in domainName
+domainNameIndexMap := make(map[string]struct{})
+
+for _, elem := range gs.DomainNameList {
+	index := string(DomainNameKey(elem.Index))
+	if _, ok := domainNameIndexMap[index]; ok {
+		return fmt.Errorf("duplicated index for domainName")
+	}
+	domainNameIndexMap[index] = struct{}{}
 }
 // this line is used by starport scaffolding # genesis/types/validate
 

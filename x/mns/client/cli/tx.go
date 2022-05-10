@@ -31,8 +31,8 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdCreateDomain())
-cmd.AddCommand(CmdCreateDomainName())
-// this line is used by starport scaffolding # 1
+	cmd.AddCommand(CmdCreateDomainName())
+	// this line is used by starport scaffolding # 1
 
-	return cmd 
+	return cmd
 }

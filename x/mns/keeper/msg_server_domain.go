@@ -17,7 +17,7 @@ func (k msgServer) CreateDomain(goCtx context.Context, msg *types.MsgCreateDomai
 	// If a domain is found in store
 	if isFound {
 		// Throw an error
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Domain already exists")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Domain already set")
 	}
 	// Create a domain record
 	newDomain := types.Domain{

@@ -5,15 +5,24 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCreateDomainName = "create_domain_name"
+const (
+	TypeMsgCreateDomainName = "create_domain_name"
+	TypeMsgUpdateDomainName = "update_domain_name"
+	TypeMsgDeleteDomainName = "delete_domain_name"
+)
 
 var _ sdk.Msg = &MsgCreateDomainName{}
 
-func NewMsgCreateDomainName(creator string, domain string, name string) *MsgCreateDomainName {
+func NewMsgCreateDomainName(
+	creator string,
+	domain string,
+	domainName string,
+
+) *MsgCreateDomainName {
 	return &MsgCreateDomainName{
 		Creator:    creator,
 		Domain:     domain,
-		DomainName: name,
+		DomainName: domainName,
 	}
 }
 

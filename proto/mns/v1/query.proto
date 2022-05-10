@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "mns/v1/params.proto";
 import "mns/v1/domain.proto";
+import "mns/v1/domain_name.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
@@ -25,6 +26,11 @@ service Query {
 	// Queries a list of Domain items.
 	rpc DomainAll(QueryAllDomainRequest) returns (QueryAllDomainResponse) {
 		option (google.api.http).get = "/mns/v1/domain";
+	}
+
+// Queries a DomainName by index.
+	rpc DomainName(QueryGetDomainNameRequest) returns (QueryGetDomainNameResponse) {
+		option (google.api.http).get = "/mns/v1/domain/{domain}/domain_name/{domainName}";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -54,6 +60,15 @@ message QueryAllDomainRequest {
 message QueryAllDomainResponse {
 	repeated Domain domain = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDomainNameRequest {
+	string domain = 1;
+	string domainName = 2;
+}
+
+message QueryGetDomainNameResponse {
+	DomainName domainName = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3
