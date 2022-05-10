@@ -14,7 +14,15 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params:	types.DefaultParams(),
 		
-		// this line is used by starport scaffolding # genesis/test/state
+		DomainList: []types.Domain{
+		{
+			Index: "0",
+},
+		{
+			Index: "1",
+},
+	},
+	// this line is used by starport scaffolding # genesis/test/state
 	}
 
 	k, ctx := keepertest.MnsKeeper(t)
@@ -27,5 +35,6 @@ func TestGenesis(t *testing.T) {
 
 	
 
-	// this line is used by starport scaffolding # genesis/test/assert
+	require.ElementsMatch(t, genesisState.DomainList, got.DomainList)
+// this line is used by starport scaffolding # genesis/test/assert
 }
