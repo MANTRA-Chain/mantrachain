@@ -1,0 +1,32 @@
+syntax = "proto3";
+package LimeChain.mantrachain.mns;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc CreateDomain(MsgCreateDomain) returns (MsgCreateDomainResponse);
+  rpc CreateDomainName(MsgCreateDomainName) returns (MsgCreateDomainNameResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateDomain {
+  string creator = 1;
+  string domain = 2;
+}
+
+message MsgCreateDomainResponse {
+}
+
+message MsgCreateDomainName {
+  string creator = 1;
+  string domain = 2;
+  string name = 3;
+}
+
+message MsgCreateDomainNameResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

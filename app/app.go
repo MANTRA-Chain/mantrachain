@@ -100,6 +100,10 @@ import (
 	didkeeper "github.com/LimeChain/mantrachain/x/did/keeper"
 	didtypes "github.com/LimeChain/mantrachain/x/did/types"
 
+	"github.com/LimeChain/mantrachain/x/mns"
+	mnskeeper "github.com/LimeChain/mantrachain/x/mns/keeper"
+	mnstypes "github.com/LimeChain/mantrachain/x/mns/types"
+
 	//"github.com/tendermint/starport/starport/pkg/cosmoscmd"
 	"github.com/tendermint/starport/starport/pkg/openapiconsole"
 
@@ -180,6 +184,7 @@ var (
 		vesting.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		did.AppModuleBasic{},
+		mns.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -251,6 +256,7 @@ type App struct {
 	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	DidKeeper didkeeper.Keeper
+	MnsKeeper mnskeeper.Keeper
 
 	// mm is the module manager
 	mm *module.Manager
@@ -289,6 +295,7 @@ func New(
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		wasm.StoreKey,
 		didtypes.StoreKey,
+		mnstypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -353,6 +360,10 @@ func New(
 
 	app.DidKeeper = *didkeeper.NewKeeper(
 		appCodec, keys[didtypes.StoreKey],
+	)
+
+	app.MnsKeeper = *mnskeeper.NewKeeper(
+		appCodec, keys[mnstypes.StoreKey], memKeys[mnstypes.MemStoreKey], app.GetSubspace(mnstypes.ModuleName), app.AccountKeeper, app.BankKeeper, app.DidKeeper,
 	)
 
 	// ... other modules keepers
@@ -461,6 +472,7 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		did.NewAppModule(appCodec, app.DidKeeper),
+		mns.NewAppModule(appCodec, app.MnsKeeper, app.AccountKeeper, app.BankKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
@@ -480,6 +492,7 @@ func New(
 		stakingtypes.ModuleName,
 		ibchost.ModuleName,
 		didtypes.ModuleName,
+		mnstypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -502,6 +515,7 @@ func New(
 		stakingtypes.ModuleName,
 		ibchost.ModuleName,
 		didtypes.ModuleName,
+		mnstypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -531,6 +545,7 @@ func New(
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		didtypes.ModuleName,
+		mnstypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -756,6 +771,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
+	paramsKeeper.Subspace(mnstypes.ModuleName)
 
 	return paramsKeeper
 }
