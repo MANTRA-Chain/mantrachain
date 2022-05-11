@@ -1,37 +1,35 @@
 package types
 
-import (
+import ( // this line is used by starport scaffolding # 1
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
+//nolint
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	// Sdk messages
-	cdc.RegisterConcrete(&MsgCreateDid{}, "mantrachaind/CreateDid", nil)
-	cdc.RegisterConcrete(&MsgUpdateDid{}, "mantrachaind/UpdateDid", nil)
-
-	// State value data
-	cdc.RegisterInterface((*StateValueData)(nil), nil)
-	cdc.RegisterConcrete(&Did{}, "mantrachaind/Did", nil)
+	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	// Sdk messages
+	// this line is used by starport scaffolding # 3
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateDid{},
-		&MsgUpdateDid{},
+		&MsgCreateDidDocument{},
+		&MsgUpdateDidDocument{},
+		&MsgAddVerification{},
+		&MsgSetVerificationRelationships{},
+		&MsgRevokeVerification{},
+		&MsgAddService{},
+		&MsgDeleteService{},
+		&MsgAddController{},
+		&MsgDeleteController{},
 	)
-
-	// State value data
-	registry.RegisterInterface("StateValueData", (*StateValueData)(nil))
-	registry.RegisterImplementations((*StateValueData)(nil), &Did{})
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
 var (
-	amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewAminoCodec(amino)
+	// ModuleCdc codec used by the module (protobuf)
+	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )

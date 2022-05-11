@@ -1,9 +1,0 @@
-syntax = "proto3";
-package LimeChain.mantrachain.did.v1;
-
-option go_package = "github.com/LimeChain/mantrachain/x/did/types";
-
-message KeyValuePair {
-  string key = 1;
-  string value = 2;
-}

@@ -1,5 +1,5 @@
 package types
 
-type DidKeeper interface {
+type DidDocumentKeeper interface {
 	// Methods imported from did should be defined here
 }

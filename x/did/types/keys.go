@@ -1,5 +1,12 @@
 package types
 
+var (
+	// DidDocumentKey prefix for each key to a DidDocument
+	DidDocumentKey = []byte{0x61}
+	// DidMetadataKey prefix for each key of a DidMetadata
+	DidMetadataKey = []byte{0x62}
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "did"
@@ -13,15 +20,12 @@ const (
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 
-	DidMethod = "mantrachain"
-)
+	// DidChainPrefix defines the did prefix for this chain
+	DidChainPrefix = "did:cosmos:net:"
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
-}
+	// DidKeyPrefix defines the did key prefix
+	DidKeyPrefix = "did:cosmos:key:"
 
-const (
-	DidKey          = "did:"
-	DidCountKey     = "did-count:"
-	DidNamespaceKey = "did-namespace:"
+	// MemStoreKey defines the in-memory store key
+	MemStoreKey = "mem_capability_did"
 )
