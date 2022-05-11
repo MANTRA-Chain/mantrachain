@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/LimeChain/mantrachain/x/mns/types"
+	utils "github.com/LimeChain/mantrachain/x/mns/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -29,11 +31,29 @@ func (k msgServer) CreateDomainName(goCtx context.Context, msg *types.MsgCreateD
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Domain name already set")
 	}
 
+	id := utils.GetDomainNameIndex(msg.Domain, msg.DomainName)
+	didCtrl := NewDidController(ctx, id).
+		GenDidId().
+		GenDidVerMethod(msg.PubKeyHex, owner.String(), msg.VmType).
+		GenDidAuth()
+
+	err := didCtrl.SetDid()
+	if err != nil {
+		return nil, err
+	}
+	didDoc, err := didCtrl.GetDidDoc()
+	if err != nil {
+		return nil, err
+	}
+	strDoc := string(didDoc)
+	fmt.Println(strDoc)
+
 	var domainName = types.DomainName{
 		Creator:    msg.Creator,
-		Index:      msg.DomainName + "@" + msg.Domain,
+		Index:      id,
 		Domain:     domain.Index,
 		DomainName: msg.DomainName,
+		Did:        "",
 		Owner:      owner.String(),
 	}
 

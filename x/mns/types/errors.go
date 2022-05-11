@@ -8,6 +8,5 @@ import (
 
 // x/mns module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
-	
+	ErrKeyFormatNotSupported = sdkerrors.Register(ModuleName, 1111, "key format not supported")
 )

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/LimeChain/mantrachain/x/mns/types"
+	utils "github.com/LimeChain/mantrachain/x/mns/utils"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -24,41 +25,13 @@ func (k Keeper) GetDomainName(
 ) (val types.DomainName, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
 
-	b := store.Get(types.DomainNameKey(
-		domainName + "@" + domain,
-	))
+	domainNameIndex := utils.GetDomainNameIndex(domain, domainName)
+
+	b := store.Get(types.DomainNameKey(domainNameIndex))
 	if b == nil {
 		return val, false
 	}
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
-}
-
-// RemoveDomainName removes a domainName from the store
-func (k Keeper) RemoveDomainName(
-	ctx sdk.Context,
-	index string,
-
-) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
-	store.Delete(types.DomainNameKey(
-		index,
-	))
-}
-
-// GetAllDomainName returns all domainName
-func (k Keeper) GetAllDomainName(ctx sdk.Context) (list []types.DomainName) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.DomainName
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
 }

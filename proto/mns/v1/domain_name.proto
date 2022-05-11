@@ -1,5 +1,5 @@
 syntax = "proto3";
-package LimeChain.mantrachain.mns;
+package LimeChain.mantrachain.mns.v1;
 
 option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
 

@@ -363,7 +363,7 @@ func New(
 	)
 
 	app.MnsKeeper = *mnskeeper.NewKeeper(
-		appCodec, keys[mnstypes.StoreKey], memKeys[mnstypes.MemStoreKey], app.GetSubspace(mnstypes.ModuleName), app.AccountKeeper, app.BankKeeper, app.DidKeeper,
+		appCodec, keys[mnstypes.StoreKey], app.GetSubspace(mnstypes.ModuleName), app.DidKeeper,
 	)
 
 	// ... other modules keepers
@@ -472,7 +472,7 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		did.NewAppModule(appCodec, app.DidKeeper),
-		mns.NewAppModule(appCodec, app.MnsKeeper, app.AccountKeeper, app.BankKeeper),
+		mns.NewAppModule(appCodec, app.MnsKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),

@@ -13,7 +13,7 @@ const (
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 
-	DidMethod = "mns"
+	DidMethod = "mantrachain"
 )
 
 func KeyPrefix(p string) []byte {
