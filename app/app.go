@@ -365,7 +365,7 @@ func New(
 	)
 
 	app.MnsKeeper = *mnskeeper.NewKeeper(
-		appCodec, keys[mnstypes.StoreKey], app.GetSubspace(mnstypes.ModuleName), app.DidDocumentKeeper,
+		appCodec, keys[mnstypes.StoreKey], keys[mnstypes.MemStoreKey], app.GetSubspace(mnstypes.ModuleName), app.DidDocumentKeeper,
 	)
 
 	// ... other modules keepers

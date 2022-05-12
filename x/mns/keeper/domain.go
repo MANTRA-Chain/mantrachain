@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/LimeChain/mantrachain/x/mns/types"
+	"github.com/LimeChain/mantrachain/x/mns/utils"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -11,7 +12,7 @@ func (k Keeper) SetDomain(ctx sdk.Context, domain types.Domain) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainKeyPrefix))
 	b := k.cdc.MustMarshal(&domain)
 	store.Set(types.DomainKey(
-		domain.Index,
+		utils.GetDomainIndex(domain.Domain),
 	), b)
 }
 
@@ -27,8 +28,10 @@ func (k Keeper) GetDomain(
 		return types.Domain{}, false
 	}
 
+	index := utils.GetDomainIndex(domain)
+
 	b := store.Get(types.DomainKey(
-		domain,
+		index,
 	))
 	if b == nil {
 		return val, false
@@ -42,19 +45,7 @@ func (k Keeper) GetDomain(
 func (k Keeper) HasDomain(ctx sdk.Context, domain string) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainKeyPrefix))
 	return store.Has(types.DomainKey(
-		domain,
-	))
-}
-
-// RemoveDomain removes a domain from the store
-func (k Keeper) RemoveDomain(
-	ctx sdk.Context,
-	index string,
-
-) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainKeyPrefix))
-	store.Delete(types.DomainKey(
-		index,
+		utils.GetDomainIndex(domain),
 	))
 }
 

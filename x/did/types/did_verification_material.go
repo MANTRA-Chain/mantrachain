@@ -74,7 +74,7 @@ type PublicKeyMultibase struct {
 // EncodeToString returns the string representation of the key in hex format. F is the hex format prefix
 // https://datatracker.ietf.org/doc/html/draft-multiformats-multibase-03#appendix-B.1
 func (pkh PublicKeyMultibase) EncodeToString() string {
-	return string(fmt.Sprint("F", hex.EncodeToString(pkh.data)))
+	return strings.ToUpper(string(fmt.Sprint("F", hex.EncodeToString(pkh.data))))
 }
 
 // Type the verification material type

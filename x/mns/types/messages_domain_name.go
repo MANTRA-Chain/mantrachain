@@ -16,7 +16,7 @@ func NewMsgCreateDomainName(
 	domain string,
 	domainName string,
 	pubKeyHex string,
-	vmType string,
+	pubKeyType string,
 
 ) *MsgCreateDomainName {
 	return &MsgCreateDomainName{
@@ -24,7 +24,7 @@ func NewMsgCreateDomainName(
 		Domain:     domain,
 		DomainName: domainName,
 		PubKeyHex:  pubKeyHex,
-		VmType:     vmType,
+		PubKeyType: pubKeyType,
 	}
 }
 

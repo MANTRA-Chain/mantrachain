@@ -37,13 +37,11 @@ func MnsKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		"MnsParams",
 	)
 	k := keeper.NewKeeper(
-	    cdc,
-	    storeKey,
-	    memStoreKey,
-	    paramsSubspace, 
-        nil,
-        nil,
-        nil,
+		cdc,
+		storeKey,
+		memStoreKey,
+		paramsSubspace,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

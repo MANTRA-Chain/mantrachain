@@ -3,7 +3,6 @@ package LimeChain.mantrachain.did.v1;
 
 import "gogoproto/gogo.proto";
 import "did/v1/did.proto";
-import "google/api/annotations.proto";
 
 option go_package = "github.com/LimeChain/mantrachain/x/did/types";
 

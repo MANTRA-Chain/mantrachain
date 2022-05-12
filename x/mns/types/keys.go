@@ -15,12 +15,17 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_mns"
-
-	DidMethod = "mantrachain"
-
-	DidNamespace = "testnet"
 )
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	AttributeKeyDomain     = "domain"
+	AttributeKeyDomainName = "domain_name"
+	AttributeKeyDid        = "did"
+	AttributeKeyDomainType = "domain_type"
+	AttributeKeyOwner      = "owner"
+	AttributeKeyCreator    = "creator"
+)

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"github.com/LimeChain/mantrachain/x/mns/types"
-	utils "github.com/LimeChain/mantrachain/x/mns/utils"
+	"github.com/LimeChain/mantrachain/x/mns/utils"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -12,8 +12,16 @@ func (k Keeper) SetDomainName(ctx sdk.Context, domainName types.DomainName) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
 	b := k.cdc.MustMarshal(&domainName)
 	store.Set(types.DomainNameKey(
-		domainName.Index,
+		utils.GetDomainNameIndex(domainName.Domain, domainName.DomainName),
 	), b)
+}
+
+// HasDomainName checks if the domain name exists in the store
+func (k Keeper) HasDomainName(ctx sdk.Context, domain string, domainName string) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
+	return store.Has(types.DomainNameKey(
+		utils.GetDomainNameIndex(domain, domainName),
+	))
 }
 
 // GetDomainName returns a domainName from its index
@@ -25,9 +33,13 @@ func (k Keeper) GetDomainName(
 ) (val types.DomainName, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainNameKeyPrefix))
 
-	domainNameIndex := utils.GetDomainNameIndex(domain, domainName)
+	if !k.HasDomainName(ctx, domain, domainName) {
+		return types.DomainName{}, false
+	}
 
-	b := store.Get(types.DomainNameKey(domainNameIndex))
+	index := utils.GetDomainNameIndex(domain, domainName)
+
+	b := store.Get(types.DomainNameKey(index))
 	if b == nil {
 		return val, false
 	}

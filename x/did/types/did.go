@@ -603,7 +603,7 @@ func (didDoc DidDocument) HasPublicKey(pubkey cryptotypes.PubKey) bool {
 				return true
 			}
 		case *VerificationMethod_PublicKeyMultibase:
-			if key.PublicKeyMultibase == fmt.Sprint("F", hex.EncodeToString(pubkey.Bytes())) {
+			if key.PublicKeyMultibase == strings.ToUpper(fmt.Sprint("F", hex.EncodeToString(pubkey.Bytes()))) {
 				return true
 			}
 

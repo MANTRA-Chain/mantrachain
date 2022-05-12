@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/LimeChain/mantrachain/x/mns/types"
+	"github.com/LimeChain/mantrachain/x/mns/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -26,10 +27,27 @@ func CmdCreateDomain() *cobra.Command {
 				return err
 			}
 
+			// verification
+			signer := clientCtx.GetFromAddress()
+			// pubkey
+			info, err := clientCtx.Keyring.KeyByAddress(signer)
+			if err != nil {
+				return err
+			}
+
+			pubKey := info.GetPubKey()
+			pubKeyHex := utils.GetPubKeyHex(pubKey)
+			pubKeyType, err := utils.DerivePubKeyType(pubKey)
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgCreateDomain(
 				clientCtx.GetFromAddress().String(),
 				argDomain,
 				argDomainType,
+				pubKeyHex,
+				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -1,7 +1,6 @@
 syntax = "proto3";
 package LimeChain.mantrachain.mns.v1;
 
-import "mns/v1/domain_name.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
@@ -16,7 +15,9 @@ service Msg {
 message MsgCreateDomain {
   string creator = 1;
   string domain = 2;
-  string domainType = 3;
+  string domain_type = 3;
+  string pub_key_hex = 4;
+  string pub_key_type = 5;
 }
 
 message MsgCreateDomainResponse {
@@ -25,9 +26,9 @@ message MsgCreateDomainResponse {
 message MsgCreateDomainName {
   string creator = 1;
   string domain = 2;
-  string domainName = 3;
-  string pubKeyHex = 4;
-  string vmType = 5;
+  string domain_name = 3;
+  string pub_key_hex = 4;
+  string pub_key_type = 5;
 }
 message MsgCreateDomainNameResponse {}
 

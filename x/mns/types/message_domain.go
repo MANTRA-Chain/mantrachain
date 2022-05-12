@@ -9,11 +9,19 @@ const TypeMsgCreateDomain = "create_domain"
 
 var _ sdk.Msg = &MsgCreateDomain{}
 
-func NewMsgCreateDomain(creator string, domain string, domainType string) *MsgCreateDomain {
+func NewMsgCreateDomain(
+	creator string,
+	domain string,
+	domainType string,
+	pubKeyHex string,
+	pubKeyType string) *MsgCreateDomain {
+
 	return &MsgCreateDomain{
 		Creator:    creator,
 		Domain:     domain,
 		DomainType: domainType,
+		PubKeyHex:  pubKeyHex,
+		PubKeyType: pubKeyType,
 	}
 }
 
@@ -39,6 +47,9 @@ func (msg *MsgCreateDomain) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateDomain) ValidateBasic() error {
+	if err := ValidateDomainType(DomainType(msg.DomainType)); err != nil {
+		return err
+	}
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
