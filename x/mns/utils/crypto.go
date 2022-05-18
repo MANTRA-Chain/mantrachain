@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"strings"
 
 	types "github.com/LimeChain/mantrachain/x/mns/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -12,18 +11,33 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 )
 
+func GetDomainId(domain string) string {
+	return fmt.Sprintf("%s/domain/%s",
+		types.ModuleName,
+		domain,
+	)
+}
+
 func GetDomainIndex(domain string) string {
-	index := sha256.Sum256([]byte(fmt.Sprintf("%s/domain/%s", types.ModuleName, domain)))
-	return strings.ToUpper(fmt.Sprint("F", hex.EncodeToString(index[:])))
+	index := sha256.Sum256([]byte(GetDomainId(domain)))
+	return hex.EncodeToString(index[:])
+}
+
+func GetDomainNameId(domain string, domainName string) string {
+	return fmt.Sprintf("%s/domain/%s/domain-name/%s",
+		types.ModuleName,
+		domain,
+		domainName,
+	)
 }
 
 func GetDomainNameIndex(domain string, domainName string) string {
-	index := sha256.Sum256([]byte(fmt.Sprintf("%s/domain/%s/domain-name/%s", types.ModuleName, domain, domainName)))
-	return strings.ToUpper(fmt.Sprint("F", hex.EncodeToString(index[:])))
+	index := sha256.Sum256([]byte(GetDomainNameId(domain, domainName)))
+	return hex.EncodeToString(index[:])
 }
 
 func GetPubKeyHex(pubKey cryptotypes.PubKey) string {
-	return strings.ToUpper(fmt.Sprint("F", hex.EncodeToString(pubKey.Bytes())))
+	return fmt.Sprint("F", hex.EncodeToString(pubKey.Bytes()))
 }
 
 // derivePubKeyType derive the public key type from a public key

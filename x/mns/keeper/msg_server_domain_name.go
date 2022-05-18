@@ -37,8 +37,8 @@ func (k msgServer) CreateDomainName(goCtx context.Context, msg *types.MsgCreateD
 		return nil, err
 	}
 
-	id := utils.GetDomainNameIndex(msg.Domain, msg.DomainName)
-	didExecutor := NewDidExecutor(id, owner, msg.PubKeyHex, msg.PubKeyType)
+	id := utils.GetDomainNameId(msg.Domain, msg.DomainName)
+	didExecutor := NewDidExecutor(ctx, id, owner, msg.PubKeyHex, msg.PubKeyType)
 
 	_, err = didExecutor.SetDid(ctx, k.didKeeper)
 	if err != nil {
@@ -46,7 +46,6 @@ func (k msgServer) CreateDomainName(goCtx context.Context, msg *types.MsgCreateD
 	}
 
 	newDomainName := types.DomainName{
-		Index:      id,
 		Creator:    owner,
 		Domain:     msg.Domain,
 		DomainName: msg.DomainName,

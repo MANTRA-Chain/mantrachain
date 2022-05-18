@@ -25,8 +25,8 @@ func (k msgServer) CreateDomain(goCtx context.Context, msg *types.MsgCreateDomai
 	// Convert owner address string to sdk.AccAddress
 	owner, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	id := utils.GetDomainIndex(msg.Domain)
-	didExecutor := NewDidExecutor(id, owner, msg.PubKeyHex, msg.PubKeyType)
+	id := utils.GetDomainId(msg.Domain)
+	didExecutor := NewDidExecutor(ctx, id, owner, msg.PubKeyHex, msg.PubKeyType)
 
 	_, err = didExecutor.SetDid(ctx, k.didKeeper)
 	if err != nil {
@@ -35,7 +35,6 @@ func (k msgServer) CreateDomain(goCtx context.Context, msg *types.MsgCreateDomai
 
 	// Create a domain record
 	newDomain := types.Domain{
-		Index:      id,
 		Creator:    owner,
 		Domain:     msg.Domain,
 		DomainType: types.DomainType(msg.DomainType),

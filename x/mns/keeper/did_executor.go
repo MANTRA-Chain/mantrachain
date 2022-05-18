@@ -1,6 +1,10 @@
 package keeper
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+
 	"github.com/LimeChain/mantrachain/x/mns/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -11,14 +15,19 @@ type DidExecutor struct {
 	pubKeyHex  string
 	pubKeyType string
 	didId      string
+	ctx        sdk.Context
 }
 
-func NewDidExecutor(id string, signer sdk.Address, pubKeyHex string, pubKeyType string) *DidExecutor {
+func NewDidExecutor(ctx sdk.Context, id string, signer sdk.Address, pubKeyHex string, pubKeyType string) *DidExecutor {
+	encoded := sha256.Sum256([]byte(fmt.Sprintf("%s&ts=%d", id, ctx.BlockTime().Unix())))
+	didId := hex.EncodeToString(encoded[:])
+
 	return &DidExecutor{
-		id:         id,
+		id:         didId,
 		signer:     signer,
 		pubKeyHex:  pubKeyHex,
 		pubKeyType: pubKeyType,
+		ctx:        ctx,
 	}
 }
 
