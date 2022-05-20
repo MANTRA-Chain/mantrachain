@@ -2,7 +2,7 @@ syntax = "proto3";
 package LimeChain.mantrachain.mdb;
 
 import "gogoproto/gogo.proto";
-import "mdb/params.proto";
+import "mdb/v1/params.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";

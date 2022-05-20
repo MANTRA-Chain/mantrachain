@@ -4,7 +4,7 @@ package LimeChain.mantrachain.mdb;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "mdb/params.proto";
+import "mdb/v1/params.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
@@ -13,7 +13,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/mdb/params";
+    option (google.api.http).get = "/mdb/v1/mdb/params";
   }
   // this line is used by starport scaffolding # 2
 }

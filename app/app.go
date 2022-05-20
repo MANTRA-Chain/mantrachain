@@ -104,6 +104,10 @@ import (
 	mnskeeper "github.com/LimeChain/mantrachain/x/mns/keeper"
 	mnstypes "github.com/LimeChain/mantrachain/x/mns/types"
 
+	"github.com/LimeChain/mantrachain/x/nft"
+	nftkeeper "github.com/LimeChain/mantrachain/x/nft/keeper"
+	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
+
 	//"github.com/tendermint/starport/starport/pkg/cosmoscmd"
 	"github.com/tendermint/starport/starport/pkg/openapiconsole"
 
@@ -185,6 +189,7 @@ var (
 		wasm.AppModuleBasic{},
 		did.AppModuleBasic{},
 		mns.AppModuleBasic{},
+		nft.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -257,6 +262,7 @@ type App struct {
 
 	DidKeeper didkeeper.Keeper
 	MnsKeeper mnskeeper.Keeper
+	NFTKeeper nftkeeper.Keeper
 
 	// mm is the module manager
 	mm *module.Manager
@@ -296,6 +302,7 @@ func New(
 		wasm.StoreKey,
 		didtypes.StoreKey,
 		mnstypes.StoreKey,
+		nftkeeper.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -367,6 +374,8 @@ func New(
 	app.MnsKeeper = *mnskeeper.NewKeeper(
 		appCodec, keys[mnstypes.StoreKey], keys[mnstypes.MemStoreKey], app.GetSubspace(mnstypes.ModuleName), app.DidKeeper,
 	)
+
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
 	// ... other modules keepers
 
@@ -478,6 +487,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
+		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -505,6 +515,7 @@ func New(
 		crisistypes.ModuleName,
 		vestingtypes.ModuleName,
 		transfertypes.ModuleName,
+		nfttypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -528,6 +539,7 @@ func New(
 		crisistypes.ModuleName,
 		vestingtypes.ModuleName,
 		transfertypes.ModuleName,
+		nfttypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -556,6 +568,7 @@ func New(
 		paramstypes.ModuleName,
 		feegrant.ModuleName,
 		vestingtypes.ModuleName,
+		nfttypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -774,6 +787,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(mnstypes.ModuleName)
+	paramsKeeper.Subspace(nfttypes.ModuleName)
 
 	return paramsKeeper
 }
