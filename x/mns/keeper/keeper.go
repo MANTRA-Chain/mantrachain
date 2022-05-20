@@ -18,7 +18,7 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
-		didKeeper types.DidDocumentKeeper
+		didKeeper types.DidKeeper
 	}
 )
 
@@ -28,7 +28,7 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
-	didKeeper types.DidDocumentKeeper,
+	didKeeper types.DidKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {

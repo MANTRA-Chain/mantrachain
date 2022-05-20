@@ -31,7 +31,7 @@ func NewDidExecutor(ctx sdk.Context, id string, signer sdk.Address, pubKeyHex st
 	}
 }
 
-func (c *DidExecutor) SetDid(ctx sdk.Context, didKeeper types.DidDocumentKeeper) (bool, error) {
+func (c *DidExecutor) SetDid(ctx sdk.Context, didKeeper types.DidKeeper) (bool, error) {
 	didId, err := didKeeper.SetNewDidDocument(ctx, c.id, c.signer, c.pubKeyHex, c.pubKeyType)
 	if err != nil {
 		return false, err
