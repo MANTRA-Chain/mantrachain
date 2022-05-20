@@ -1,0 +1,32 @@
+package types
+
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
+)
+
+
+
+type MnsKeeper interface {
+	// Methods imported from mns should be defined here
+}
+
+
+
+type DidKeeper interface {
+	// Methods imported from did should be defined here
+}
+
+
+
+// AccountKeeper defines the expected account keeper used for simulations (noalias)
+type AccountKeeper interface {
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	// Methods imported from account should be defined here
+}
+
+// BankKeeper defines the expected interface needed to retrieve account balances.
+type BankKeeper interface {
+	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	// Methods imported from bank should be defined here
+}

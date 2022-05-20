@@ -1,0 +1,14 @@
+syntax = "proto3";
+package LimeChain.mantrachain.mdb;
+
+import "gogoproto/gogo.proto";
+import "mdb/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
+
+// GenesisState defines the mdb module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
