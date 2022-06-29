@@ -1,13 +1,73 @@
 syntax = "proto3";
-package LimeChain.mantrachain.mdb;
+package LimeChain.mantrachain.mdb.v1;
 
+import "google/protobuf/any.proto";
+import "mdb/v1/nft_collection.proto";
+import "mdb/v1/nft.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreateNftCollection(MsgCreateNftCollection) returns (MsgCreateNftCollectionResponse);
+      rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateNftCollection {
+  string creator = 1;
+  MsgCreateNftCollectionMetadata metadata = 2;
+  string pub_key_hex = 3;
+  string pub_key_type = 4;
+}
+
+message MsgCreateNftCollectionMetadata {
+  string id = 1;
+  string name = 2;
+  repeated NftCollectionImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated NftCollectionLink links = 6;
+  string category = 7;
+  string creator_earnings = 8;
+  string display_theme = 9;
+  string symbol = 10;
+  bool opened = 11;
+  google.protobuf.Any data = 12;
+}
+
+message MsgCreateNftCollectionResponse {
+  string id = 1;
+}
+
+message MsgMintNft {
+  string creator = 1;
+  MsgMintNfts nfts = 2;
+  string pub_key_hex = 3;
+  string pub_key_type = 4;
+}
+
+message MsgMintNfts {
+  string collection_creator = 1;
+  string collection_id = 2;
+  repeated MsgMintNftMetadata metadata = 3;
+}
+
+message MsgMintNftMetadata {
+  string id = 1;
+  string title = 2;
+  repeated NftImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated NftLink links = 6;
+  repeated NftAttribute attributes = 7;
+  google.protobuf.Any data = 8;
+  bool resellable = 9;
+}
+
+message MsgMintNftResponse {
+  repeated string ids = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

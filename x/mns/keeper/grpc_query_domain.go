@@ -20,7 +20,7 @@ func (k Keeper) DomainAll(c context.Context, req *types.QueryAllDomainRequest) (
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
-	domainStore := prefix.NewStore(store, types.KeyPrefix(types.DomainKeyPrefix))
+	domainStore := prefix.NewStore(store, types.DomainStoreKey())
 
 	pageRes, err := query.Paginate(domainStore, req.Pagination, func(key []byte, value []byte) error {
 		var domain types.Domain

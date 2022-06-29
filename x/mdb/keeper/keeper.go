@@ -5,33 +5,32 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
+	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/LimeChain/mantrachain/x/mdb/types"
-	
 )
 
 type (
 	Keeper struct {
-		
-		cdc      	codec.BinaryCodec
-		storeKey 	sdk.StoreKey
-		memKey   	sdk.StoreKey
-		paramstore	paramtypes.Subspace
-		
-        mnsKeeper types.MnsKeeper
-        didKeeper types.DidKeeper
+		cdc        codec.BinaryCodec
+		storeKey   sdk.StoreKey
+		memKey     sdk.StoreKey
+		paramstore paramtypes.Subspace
+
+		mnsKeeper types.MnsKeeper
+		didKeeper types.DidKeeper
+		nftKeeper types.NFTKeeper
 	}
 )
 
 func NewKeeper(
-    cdc codec.BinaryCodec,
-    storeKey,
-    memKey sdk.StoreKey,
+	cdc codec.BinaryCodec,
+	storeKey,
+	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
-    
-    mnsKeeper types.MnsKeeper,didKeeper types.DidKeeper,
+
+	mnsKeeper types.MnsKeeper, didKeeper types.DidKeeper, nftKeeper types.NFTKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -39,12 +38,12 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		
-		cdc:      	cdc,
-		storeKey: 	storeKey,
-		memKey:   	memKey,
-		paramstore:	ps,
-		mnsKeeper: mnsKeeper,didKeeper: didKeeper,
+
+		cdc:        cdc,
+		storeKey:   storeKey,
+		memKey:     memKey,
+		paramstore: ps,
+		mnsKeeper:  mnsKeeper, didKeeper: didKeeper, nftKeeper: nftKeeper,
 	}
 }
 

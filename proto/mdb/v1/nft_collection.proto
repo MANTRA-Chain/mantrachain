@@ -1,0 +1,44 @@
+syntax = "proto3";
+package LimeChain.mantrachain.mdb.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
+option (gogoproto.equal_all) = true;
+
+message NftCollection {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  string did = 2 [(gogoproto.moretags) = "yaml:\"did\""];
+  repeated NftCollectionImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
+  string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
+  repeated NftCollectionLink links = 5 [(gogoproto.moretags) = "yaml:\"links\""];
+  string category = 6 [(gogoproto.moretags) = "yaml:\"category\""];
+  string creator_earnings = 7 [(gogoproto.moretags) = "yaml:\"creator_earnings\""];
+  string display_theme = 8 [(gogoproto.moretags) = "yaml:\"display_theme\""];
+  bool opened = 9 [(gogoproto.moretags) = "yaml:\"opened\""];
+  bytes owner = 10 [
+      (gogoproto.moretags) = "yaml:\"owner\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  bytes creator = 11 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}
+
+message NftCollectionImage {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters)  = false;
+  
+  string type = 1;
+  string url = 2;
+}
+
+message NftCollectionLink {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters)  = false;
+
+  string type = 1;
+  string url = 2;
+}
+

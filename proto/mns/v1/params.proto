@@ -8,6 +8,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  string valid_domain = 2;
-  string valid_domain_name = 3;
+  string valid_domain = 1;
+  string valid_domain_name = 2;
 }

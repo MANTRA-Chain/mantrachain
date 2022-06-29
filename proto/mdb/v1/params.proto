@@ -1,5 +1,5 @@
 syntax = "proto3";
-package LimeChain.mantrachain.mdb;
+package LimeChain.mantrachain.mdb.v1;
 
 import "gogoproto/gogo.proto";
 
@@ -8,5 +8,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+  string valid_nft_collection_id = 1;
+  string valid_nft_id = 2;
 }

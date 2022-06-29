@@ -1,10 +1,12 @@
 syntax = "proto3";
-package LimeChain.mantrachain.mdb;
+package LimeChain.mantrachain.mdb.v1;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "mdb/v1/params.proto";
+import "mdb/v1/nft_collection.proto";
+import "mdb/v1/nft.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
@@ -13,8 +15,18 @@ option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/mdb/v1/mdb/params";
+    option (google.api.http).get = "/mdb/v1/params";
   }
+	
+  // Queries a NftCollection by name.
+	rpc NftCollection(QueryGetNftCollectionRequest) returns (QueryGetNftCollectionResponse) {
+		option (google.api.http).get = "/mdb/v1/nftCollection/{creator}/{id}";
+	}
+	
+  // Queries a NftCollection by name.
+	rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
+		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{id}";
+	}
   // this line is used by starport scaffolding # 2
 }
 
@@ -25,6 +37,51 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetNftCollectionRequest {
+  string creator = 1;
+  string id = 2;
+}
+
+message QueryGetNftCollectionResponse {
+  string id = 1;
+  string name = 2;
+  string symbol = 3;
+  string description = 4;
+  string did = 5;
+  repeated NftCollectionImage images = 6;
+  string url = 7;
+  repeated NftCollectionLink links = 8;
+  string category = 9;
+  string creator_earnings = 10;
+  string display_theme = 11;
+  string owner = 12;
+  string creator = 13;
+  bool opened = 14;
+  google.protobuf.Any data = 15;
+}
+
+message QueryGetNftRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+}
+
+message QueryGetNftResponse {
+  string id = 1;
+  string title = 2;
+  string did = 3;
+  string description = 4;
+  repeated NftImage images = 5;
+  string url = 6;
+  repeated NftLink links = 7;
+  repeated NftAttribute attributes = 8;
+  string owner = 9;
+  string creator = 10;
+  google.protobuf.Any data = 11;
+  string collection_id = 12;
+  bool resellable = 13;
 }
 
 // this line is used by starport scaffolding # 3
