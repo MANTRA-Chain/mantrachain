@@ -134,6 +134,13 @@ func (c *NftCollectionController) MustNotBeDefault() *NftCollectionController {
 	return c
 }
 
+func (c *NftCollectionController) CanMintNfts(minter sdk.AccAddress) *NftCollectionController {
+	c.validators = append(c.validators, func(controller *NftCollectionController) error {
+		return controller.canMintNfts(minter)
+	})
+	return c
+}
+
 func (c *NftCollectionController) ValidNftCollectionMetadata() *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
 		return controller.validNftCollectionMetadataId()
@@ -189,6 +196,23 @@ func (c *NftCollectionController) mustNotBeDefault() error {
 		return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, c.metadata.Id)
 	}
 	return nil
+}
+
+func (c *NftCollectionController) canMintNfts(minter sdk.AccAddress) error {
+	// assert nftCollection exists
+	if err := c.requireNftCollection(); err != nil {
+		panic("validation check is not allowed on a non existing nftCollection")
+	}
+
+	if c.nftCollection.Opened {
+		return nil
+	}
+
+	if minter.Equals(c.nftCollection.Owner) {
+		return nil
+	}
+	// if it has expired return error
+	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
 }
 
 func (c *NftCollectionController) requireNftCollection() error {

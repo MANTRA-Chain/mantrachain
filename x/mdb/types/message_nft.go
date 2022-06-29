@@ -5,7 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgMintNft = "create_nft_collection"
+const TypeMsgMintNft = "mint_nft"
 
 var _ sdk.Msg = &MsgMintNft{}
 

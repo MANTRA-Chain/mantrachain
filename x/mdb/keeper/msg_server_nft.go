@@ -39,7 +39,21 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		CreateDefaultIfNotExists().
 		Execute()
 
+	if err != nil {
+		return nil, err
+	}
+
+	err = collCtrl.
+		MustExist().
+		CanMintNfts(owner).
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
 	collIndex := collCtrl.getIndex()
+	collId := collCtrl.getId()
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
@@ -90,6 +104,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 			Attributes:      nftMetadata.Attributes,
 			Resellable:      nftMetadata.Resellable,
 			CollectionIndex: collIndex,
+			CollectionId:    collId,
 			Owner:           owner,
 			Creator:         owner,
 		}

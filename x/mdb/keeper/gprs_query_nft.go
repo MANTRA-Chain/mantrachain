@@ -67,6 +67,6 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		Owner:        meta.Owner.String(),
 		Resellable:   meta.Resellable,
 		Data:         nft.Data,
-		CollectionId: nft.ClassId,
+		CollectionId: meta.CollectionId,
 	}, nil
 }

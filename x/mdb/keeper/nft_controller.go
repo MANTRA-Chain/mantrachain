@@ -95,6 +95,9 @@ func (c *NftController) filterNotExist() error {
 }
 
 func (c *NftController) validNftMetadataLength() error {
+	if len(c.metadata) == 0 {
+		return sdkerrors.Wrapf(types.ErrInvalidNftsLength, "nfts length %d invalid, min 1", len(c.metadata))
+	}
 	if len(c.metadata) > 100 {
 		return sdkerrors.Wrapf(types.ErrInvalidNftsLength, "nfts length %d invalid, max 100", len(c.metadata))
 	}
