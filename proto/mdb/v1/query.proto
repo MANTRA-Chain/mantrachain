@@ -18,12 +18,12 @@ service Query {
     option (google.api.http).get = "/mdb/v1/params";
   }
 	
-  // Queries a NftCollection by name.
+  // Queries a NftCollection.
 	rpc NftCollection(QueryGetNftCollectionRequest) returns (QueryGetNftCollectionResponse) {
 		option (google.api.http).get = "/mdb/v1/nftCollection/{creator}/{id}";
 	}
 	
-  // Queries a NftCollection by name.
+  // Queries a Nft.
 	rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
 		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{id}";
 	}
@@ -53,13 +53,12 @@ message QueryGetNftCollectionResponse {
   repeated NftCollectionImage images = 6;
   string url = 7;
   repeated NftCollectionLink links = 8;
-  string category = 9;
-  string creator_earnings = 10;
-  string display_theme = 11;
-  string owner = 12;
-  string creator = 13;
-  bool opened = 14;
-  google.protobuf.Any data = 15;
+  repeated NftCollectionOption options = 9;
+  string category = 10;
+  string owner = 11;
+  string creator = 12;
+  bool opened = 13;
+  google.protobuf.Any data = 14;
 }
 
 message QueryGetNftRequest {

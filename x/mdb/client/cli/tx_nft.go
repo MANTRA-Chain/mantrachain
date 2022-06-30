@@ -13,15 +13,17 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdMintNft() *cobra.Command {
+func CmdMintNfts() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-nft [payload-json]",
+		Use:   "mint-nfts [collection_creator] [collection_id] [payload-json]",
 		Short: "Broadcast message mint_nft_collection",
 		Long: "Mints a new NFT. " +
 			"[payload-json] is JSON encoded MsgMintNft.",
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			arg := args[0]
+			argCollectionCreator := args[0]
+			argCollectionId := args[1]
+			argMetadata := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -44,14 +46,16 @@ func CmdMintNft() *cobra.Command {
 			}
 
 			// Unmarshal payload
-			var nfts types.MsgMintNfts
-			err = clientCtx.Codec.UnmarshalJSON([]byte(arg), &nfts)
+			var nfts types.MsgMintNftsMetadata
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &nfts)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgMintNft(
+			msg := types.NewMsgMintNfts(
 				clientCtx.GetFromAddress().String(),
+				argCollectionCreator,
+				argCollectionId,
 				&nfts,
 				pubKeyHex,
 				pubKeyType,

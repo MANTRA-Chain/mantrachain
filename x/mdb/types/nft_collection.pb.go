@@ -26,17 +26,16 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type NftCollection struct {
-	Index           []byte                                        `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty" yaml:"index"`
-	Did             string                                        `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty" yaml:"did"`
-	Images          []*NftCollectionImage                         `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty" yaml:"images"`
-	Url             string                                        `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty" yaml:"url"`
-	Links           []*NftCollectionLink                          `protobuf:"bytes,5,rep,name=links,proto3" json:"links,omitempty" yaml:"links"`
-	Category        string                                        `protobuf:"bytes,6,opt,name=category,proto3" json:"category,omitempty" yaml:"category"`
-	CreatorEarnings string                                        `protobuf:"bytes,7,opt,name=creator_earnings,json=creatorEarnings,proto3" json:"creator_earnings,omitempty" yaml:"creator_earnings"`
-	DisplayTheme    string                                        `protobuf:"bytes,8,opt,name=display_theme,json=displayTheme,proto3" json:"display_theme,omitempty" yaml:"display_theme"`
-	Opened          bool                                          `protobuf:"varint,9,opt,name=opened,proto3" json:"opened,omitempty" yaml:"opened"`
-	Owner           github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,10,opt,name=owner,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"owner,omitempty" yaml:"owner"`
-	Creator         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,11,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
+	Index    []byte                                        `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty" yaml:"index"`
+	Did      string                                        `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty" yaml:"did"`
+	Images   []*NftCollectionImage                         `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty" yaml:"images"`
+	Url      string                                        `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty" yaml:"url"`
+	Links    []*NftCollectionLink                          `protobuf:"bytes,5,rep,name=links,proto3" json:"links,omitempty" yaml:"links"`
+	Options  []*NftCollectionOption                        `protobuf:"bytes,6,rep,name=options,proto3" json:"options,omitempty" yaml:"options"`
+	Category string                                        `protobuf:"bytes,7,opt,name=category,proto3" json:"category,omitempty" yaml:"category"`
+	Opened   bool                                          `protobuf:"varint,8,opt,name=opened,proto3" json:"opened,omitempty" yaml:"opened"`
+	Owner    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,9,opt,name=owner,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"owner,omitempty" yaml:"owner"`
+	Creator  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,10,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
 }
 
 func (m *NftCollection) Reset()         { *m = NftCollection{} }
@@ -107,23 +106,16 @@ func (m *NftCollection) GetLinks() []*NftCollectionLink {
 	return nil
 }
 
+func (m *NftCollection) GetOptions() []*NftCollectionOption {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
 func (m *NftCollection) GetCategory() string {
 	if m != nil {
 		return m.Category
-	}
-	return ""
-}
-
-func (m *NftCollection) GetCreatorEarnings() string {
-	if m != nil {
-		return m.CreatorEarnings
-	}
-	return ""
-}
-
-func (m *NftCollection) GetDisplayTheme() string {
-	if m != nil {
-		return m.DisplayTheme
 	}
 	return ""
 }
@@ -149,6 +141,45 @@ func (m *NftCollection) GetCreator() github_com_cosmos_cosmos_sdk_types.AccAddre
 	return nil
 }
 
+type NftCollectionOption struct {
+	Type     string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Value    string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	SubValue string `protobuf:"bytes,3,opt,name=sub_value,json=subValue,proto3" json:"sub_value,omitempty"`
+}
+
+func (m *NftCollectionOption) Reset()         { *m = NftCollectionOption{} }
+func (m *NftCollectionOption) String() string { return proto.CompactTextString(m) }
+func (*NftCollectionOption) ProtoMessage()    {}
+func (*NftCollectionOption) Descriptor() ([]byte, []int) {
+	return fileDescriptor_12d1d20632625cb9, []int{1}
+}
+func (m *NftCollectionOption) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NftCollectionOption) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NftCollectionOption.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NftCollectionOption) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NftCollectionOption.Merge(m, src)
+}
+func (m *NftCollectionOption) XXX_Size() int {
+	return m.Size()
+}
+func (m *NftCollectionOption) XXX_DiscardUnknown() {
+	xxx_messageInfo_NftCollectionOption.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NftCollectionOption proto.InternalMessageInfo
+
 type NftCollectionImage struct {
 	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Url  string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
@@ -158,7 +189,7 @@ func (m *NftCollectionImage) Reset()         { *m = NftCollectionImage{} }
 func (m *NftCollectionImage) String() string { return proto.CompactTextString(m) }
 func (*NftCollectionImage) ProtoMessage()    {}
 func (*NftCollectionImage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_12d1d20632625cb9, []int{1}
+	return fileDescriptor_12d1d20632625cb9, []int{2}
 }
 func (m *NftCollectionImage) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -196,7 +227,7 @@ func (m *NftCollectionLink) Reset()         { *m = NftCollectionLink{} }
 func (m *NftCollectionLink) String() string { return proto.CompactTextString(m) }
 func (*NftCollectionLink) ProtoMessage()    {}
 func (*NftCollectionLink) Descriptor() ([]byte, []int) {
-	return fileDescriptor_12d1d20632625cb9, []int{2}
+	return fileDescriptor_12d1d20632625cb9, []int{3}
 }
 func (m *NftCollectionLink) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -227,6 +258,7 @@ var xxx_messageInfo_NftCollectionLink proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*NftCollection)(nil), "LimeChain.mantrachain.mdb.v1.NftCollection")
+	proto.RegisterType((*NftCollectionOption)(nil), "LimeChain.mantrachain.mdb.v1.NftCollectionOption")
 	proto.RegisterType((*NftCollectionImage)(nil), "LimeChain.mantrachain.mdb.v1.NftCollectionImage")
 	proto.RegisterType((*NftCollectionLink)(nil), "LimeChain.mantrachain.mdb.v1.NftCollectionLink")
 }
@@ -235,41 +267,41 @@ func init() { proto.RegisterFile("mdb/v1/nft_collection.proto", fileDescriptor_1
 
 var fileDescriptor_12d1d20632625cb9 = []byte{
 	// 550 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0x41, 0x6f, 0xd3, 0x30,
-	0x14, 0x6e, 0xe8, 0xda, 0xb5, 0x5e, 0xbb, 0x75, 0x66, 0x12, 0x16, 0x43, 0x49, 0xe5, 0x03, 0x2a,
-	0x12, 0x4b, 0x18, 0xdc, 0x26, 0x71, 0x68, 0x0b, 0x48, 0xa0, 0x89, 0x83, 0x85, 0x84, 0x04, 0x42,
-	0x55, 0x1a, 0x7b, 0xa9, 0xd5, 0xc4, 0xae, 0x12, 0x77, 0xac, 0xff, 0x80, 0x23, 0x3f, 0x61, 0x47,
-	0x7e, 0x0a, 0x07, 0x0e, 0x3b, 0x72, 0x8a, 0x50, 0x7b, 0xe1, 0x9c, 0x23, 0x27, 0x14, 0x27, 0x2d,
-	0xdd, 0x26, 0x21, 0x6d, 0x27, 0x3f, 0xbf, 0xf7, 0xbd, 0xef, 0xf3, 0x7b, 0xfa, 0x0c, 0xf6, 0x43,
-	0x3a, 0x74, 0x4e, 0x0f, 0x1d, 0x71, 0xa2, 0x06, 0x9e, 0x0c, 0x02, 0xe6, 0x29, 0x2e, 0x85, 0x3d,
-	0x89, 0xa4, 0x92, 0xf0, 0xc1, 0x31, 0x0f, 0x59, 0x7f, 0xe4, 0x72, 0x61, 0x87, 0xae, 0x50, 0x91,
-	0xeb, 0xe5, 0x31, 0x1d, 0xda, 0xa7, 0x87, 0xf7, 0xf7, 0x7c, 0xe9, 0x4b, 0x0d, 0x74, 0xb2, 0x28,
-	0xef, 0xc1, 0x3f, 0x2a, 0xa0, 0xf9, 0xf6, 0x44, 0xf5, 0x57, 0x5c, 0xf0, 0x21, 0xa8, 0x70, 0x41,
-	0xd9, 0x19, 0x32, 0xda, 0x46, 0xa7, 0xd1, 0x6b, 0xa5, 0x89, 0xd5, 0x98, 0xb9, 0x61, 0x70, 0x84,
-	0x75, 0x1a, 0x93, 0xbc, 0x0c, 0xdb, 0xa0, 0x4c, 0x39, 0x45, 0x77, 0xda, 0x46, 0xa7, 0xde, 0xdb,
-	0x4e, 0x13, 0x0b, 0xe4, 0x28, 0xca, 0x29, 0x26, 0x59, 0x09, 0x7e, 0x04, 0x55, 0x1e, 0xba, 0x3e,
-	0x8b, 0x51, 0xb9, 0x5d, 0xee, 0x6c, 0x3d, 0x7d, 0x62, 0xff, 0xef, 0x81, 0xf6, 0xa5, 0x67, 0xbc,
-	0xce, 0x1a, 0x7b, 0xbb, 0x69, 0x62, 0x35, 0x0b, 0x71, 0xcd, 0x84, 0x49, 0x41, 0x99, 0xc9, 0x4f,
-	0xa3, 0x00, 0x6d, 0x5c, 0x95, 0x9f, 0x46, 0x01, 0x26, 0x59, 0x09, 0xbe, 0x07, 0x95, 0x80, 0x8b,
-	0x71, 0x8c, 0x2a, 0x5a, 0xdd, 0xb9, 0x81, 0xfa, 0x31, 0x17, 0xe3, 0xf5, 0xc9, 0x35, 0x0f, 0x26,
-	0x39, 0x1f, 0x74, 0x40, 0xcd, 0x73, 0x15, 0xf3, 0x65, 0x34, 0x43, 0x55, 0xad, 0x7f, 0x37, 0x4d,
-	0xac, 0x9d, 0x1c, 0xba, 0xac, 0x60, 0xb2, 0x02, 0xc1, 0x57, 0xa0, 0xe5, 0x45, 0xcc, 0x55, 0x32,
-	0x1a, 0x30, 0x37, 0x12, 0x5c, 0xf8, 0x31, 0xda, 0xd4, 0x8d, 0xfb, 0x69, 0x62, 0xdd, 0x2b, 0x1a,
-	0xaf, 0x20, 0x30, 0xd9, 0x29, 0x52, 0x2f, 0x8b, 0x0c, 0x7c, 0x0e, 0x9a, 0x94, 0xc7, 0x93, 0xc0,
-	0x9d, 0x0d, 0xd4, 0x88, 0x85, 0x0c, 0xd5, 0x34, 0x09, 0x4a, 0x13, 0x6b, 0x6f, 0xb9, 0xfc, 0xb5,
-	0x32, 0x26, 0x8d, 0xe2, 0xfe, 0x2e, 0xbb, 0xc2, 0x47, 0xa0, 0x2a, 0x27, 0x4c, 0x30, 0x8a, 0xea,
-	0x6d, 0xa3, 0x53, 0x5b, 0xdf, 0x6e, 0x9e, 0xc7, 0xa4, 0x00, 0x64, 0xbb, 0x93, 0x9f, 0x05, 0x8b,
-	0x10, 0xd0, 0x26, 0xe8, 0xfe, 0x5b, 0x85, 0x4e, 0xe3, 0x3f, 0x89, 0x75, 0xe0, 0x73, 0x35, 0x9a,
-	0x0e, 0x6d, 0x4f, 0x86, 0x8e, 0x27, 0xe3, 0x50, 0xc6, 0xc5, 0x71, 0x10, 0xd3, 0xb1, 0xa3, 0x66,
-	0x13, 0x16, 0xdb, 0x5d, 0xcf, 0xeb, 0x52, 0x1a, 0xb1, 0x38, 0x26, 0x39, 0x1f, 0xfc, 0x04, 0x36,
-	0x8b, 0xa9, 0xd0, 0x96, 0xa6, 0xee, 0xa7, 0x89, 0xb5, 0x7d, 0x69, 0x03, 0xb7, 0x20, 0x5f, 0x72,
-	0xe2, 0x17, 0x00, 0x5e, 0xb7, 0x11, 0x84, 0x60, 0x23, 0x6b, 0xd1, 0x8e, 0xae, 0x13, 0x1d, 0xc3,
-	0x56, 0xee, 0x1f, 0x6d, 0x5f, 0xed, 0x97, 0xa3, 0xda, 0x97, 0x73, 0xab, 0xf4, 0xfb, 0xdc, 0x32,
-	0x70, 0x1f, 0xec, 0x5e, 0xb3, 0xc3, 0x4d, 0x49, 0x7a, 0x6f, 0xbe, 0xcd, 0x4d, 0xe3, 0xfb, 0xdc,
-	0x34, 0x2e, 0xe6, 0xa6, 0xf1, 0x6b, 0x6e, 0x1a, 0x5f, 0x17, 0x66, 0xe9, 0x62, 0x61, 0x96, 0x7e,
-	0x2e, 0xcc, 0xd2, 0x87, 0xc7, 0x6b, 0x03, 0xae, 0x7c, 0xe9, 0xac, 0xf9, 0xd2, 0x39, 0x73, 0xb2,
-	0xbf, 0xae, 0x47, 0x1d, 0x56, 0xf5, 0x67, 0x7d, 0xf6, 0x37, 0x00, 0x00, 0xff, 0xff, 0x02, 0xe0,
-	0xe9, 0xeb, 0xff, 0x03, 0x00, 0x00,
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x31, 0x6f, 0xd3, 0x40,
+	0x14, 0xc7, 0x63, 0xd2, 0xa4, 0xc9, 0xd1, 0x96, 0xf6, 0xda, 0xc1, 0xa2, 0xc8, 0x8e, 0x6e, 0x40,
+	0x41, 0xa2, 0x36, 0x81, 0xad, 0x5b, 0x12, 0x16, 0x50, 0x05, 0xd2, 0x0d, 0x20, 0x81, 0x50, 0x64,
+	0xfb, 0x2e, 0xe9, 0x29, 0xb6, 0x2f, 0xf2, 0xd9, 0xa1, 0xf9, 0x06, 0x8c, 0x7c, 0x84, 0x4e, 0x88,
+	0x8f, 0xc2, 0xd8, 0x91, 0xc9, 0x42, 0xc9, 0xc2, 0x9c, 0x91, 0x09, 0xdd, 0x9d, 0x93, 0x1a, 0x5a,
+	0x21, 0x85, 0x29, 0xef, 0xee, 0xbd, 0xf7, 0xfb, 0xdf, 0x7b, 0xf9, 0x27, 0xe0, 0x38, 0x22, 0xbe,
+	0x3b, 0xed, 0xb8, 0xf1, 0x30, 0x1d, 0x04, 0x3c, 0x0c, 0x69, 0x90, 0x32, 0x1e, 0x3b, 0x93, 0x84,
+	0xa7, 0x1c, 0x3e, 0x38, 0x63, 0x11, 0xed, 0x9f, 0x7b, 0x2c, 0x76, 0x22, 0x2f, 0x4e, 0x13, 0x2f,
+	0xd0, 0x31, 0xf1, 0x9d, 0x69, 0xe7, 0xfe, 0xd1, 0x88, 0x8f, 0xb8, 0x2a, 0x74, 0x65, 0xa4, 0x7b,
+	0xd0, 0x97, 0x1a, 0xd8, 0x7d, 0x35, 0x4c, 0xfb, 0x6b, 0x16, 0x7c, 0x08, 0x6a, 0x2c, 0x26, 0xf4,
+	0xc2, 0x34, 0x5a, 0x46, 0x7b, 0xa7, 0xb7, 0xbf, 0xcc, 0xed, 0x9d, 0x99, 0x17, 0x85, 0xa7, 0x48,
+	0x5d, 0x23, 0xac, 0xd3, 0xb0, 0x05, 0xaa, 0x84, 0x11, 0xf3, 0x4e, 0xcb, 0x68, 0x37, 0x7b, 0x7b,
+	0xcb, 0xdc, 0x06, 0xba, 0x8a, 0x30, 0x82, 0xb0, 0x4c, 0xc1, 0xf7, 0xa0, 0xce, 0x22, 0x6f, 0x44,
+	0x85, 0x59, 0x6d, 0x55, 0xdb, 0x77, 0x9f, 0x3e, 0x71, 0xfe, 0xf5, 0x40, 0xe7, 0x8f, 0x67, 0xbc,
+	0x90, 0x8d, 0xbd, 0x83, 0x65, 0x6e, 0xef, 0x16, 0xe2, 0x8a, 0x84, 0x70, 0x81, 0x94, 0xf2, 0x59,
+	0x12, 0x9a, 0x5b, 0x7f, 0xcb, 0x67, 0x49, 0x88, 0xb0, 0x4c, 0xc1, 0xb7, 0xa0, 0x16, 0xb2, 0x78,
+	0x2c, 0xcc, 0x9a, 0x52, 0x77, 0x37, 0x50, 0x3f, 0x63, 0xf1, 0xb8, 0x3c, 0xb9, 0xe2, 0x20, 0xac,
+	0x79, 0x70, 0x00, 0xb6, 0xf9, 0x44, 0x96, 0x09, 0xb3, 0xae, 0xd0, 0x9d, 0x0d, 0xd0, 0xaf, 0x55,
+	0x67, 0x0f, 0x2e, 0x73, 0x7b, 0x4f, 0xc3, 0x0b, 0x16, 0xc2, 0x2b, 0x2a, 0x74, 0x41, 0x23, 0xf0,
+	0x52, 0x3a, 0xe2, 0xc9, 0xcc, 0xdc, 0x56, 0x03, 0x1e, 0x2e, 0x73, 0xfb, 0x9e, 0x2e, 0x5f, 0x65,
+	0x10, 0x5e, 0x17, 0xc1, 0x47, 0xa0, 0xce, 0x27, 0x34, 0xa6, 0xc4, 0x6c, 0xb4, 0x8c, 0x76, 0xa3,
+	0xbc, 0x37, 0x7d, 0x8f, 0x70, 0x51, 0x20, 0xb7, 0xc2, 0x3f, 0xc6, 0x34, 0x31, 0x9b, 0xea, 0xeb,
+	0xed, 0x5e, 0x0f, 0xa9, 0xae, 0xd1, 0xaf, 0xdc, 0x3e, 0x19, 0xb1, 0xf4, 0x3c, 0xf3, 0x9d, 0x80,
+	0x47, 0x6e, 0xc0, 0x45, 0xc4, 0x45, 0xf1, 0x71, 0x22, 0xc8, 0xd8, 0x4d, 0x67, 0x13, 0x2a, 0x9c,
+	0x6e, 0x10, 0x74, 0x09, 0x49, 0xa8, 0x10, 0x58, 0xf3, 0xe0, 0x07, 0xb0, 0x1d, 0x24, 0xd4, 0x4b,
+	0x79, 0x62, 0x02, 0x85, 0xee, 0x5f, 0x8f, 0x58, 0x24, 0xfe, 0x03, 0xbe, 0x62, 0xa2, 0x21, 0x38,
+	0xbc, 0x65, 0x8f, 0x10, 0x82, 0x2d, 0xd9, 0xa3, 0xcc, 0xda, 0xc4, 0x2a, 0x86, 0x47, 0xa0, 0x36,
+	0xf5, 0xc2, 0x8c, 0x6a, 0x6f, 0x62, 0x7d, 0x80, 0xc7, 0xa0, 0x29, 0x32, 0x7f, 0xa0, 0x33, 0x55,
+	0x95, 0x69, 0x88, 0xcc, 0x7f, 0x23, 0xcf, 0xa7, 0x8d, 0x4f, 0x97, 0x76, 0xe5, 0xe7, 0xa5, 0x6d,
+	0xa0, 0xe7, 0x00, 0xde, 0x34, 0xe2, 0xad, 0x32, 0xfb, 0xda, 0x81, 0x5a, 0x44, 0x86, 0x25, 0x4a,
+	0x1f, 0x1c, 0xdc, 0x30, 0xd4, 0xa6, 0x90, 0xde, 0xcb, 0xaf, 0x73, 0xcb, 0xf8, 0x36, 0xb7, 0x8c,
+	0xab, 0xb9, 0x65, 0xfc, 0x98, 0x5b, 0xc6, 0xe7, 0x85, 0x55, 0xb9, 0x5a, 0x58, 0x95, 0xef, 0x0b,
+	0xab, 0xf2, 0xee, 0x71, 0x69, 0x91, 0x6b, 0xfb, 0xb9, 0x25, 0xfb, 0xb9, 0x17, 0xae, 0xfc, 0xb7,
+	0x50, 0x2b, 0xf5, 0xeb, 0xea, 0xe7, 0xfe, 0xec, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0x89, 0x1e,
+	0x06, 0xb5, 0x41, 0x04, 0x00, 0x00,
 }
 
 func (this *NftCollection) Equal(that interface{}) bool {
@@ -316,13 +348,15 @@ func (this *NftCollection) Equal(that interface{}) bool {
 			return false
 		}
 	}
+	if len(this.Options) != len(that1.Options) {
+		return false
+	}
+	for i := range this.Options {
+		if !this.Options[i].Equal(that1.Options[i]) {
+			return false
+		}
+	}
 	if this.Category != that1.Category {
-		return false
-	}
-	if this.CreatorEarnings != that1.CreatorEarnings {
-		return false
-	}
-	if this.DisplayTheme != that1.DisplayTheme {
 		return false
 	}
 	if this.Opened != that1.Opened {
@@ -332,6 +366,36 @@ func (this *NftCollection) Equal(that interface{}) bool {
 		return false
 	}
 	if !bytes.Equal(this.Creator, that1.Creator) {
+		return false
+	}
+	return true
+}
+func (this *NftCollectionOption) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*NftCollectionOption)
+	if !ok {
+		that2, ok := that.(NftCollectionOption)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Type != that1.Type {
+		return false
+	}
+	if this.Value != that1.Value {
+		return false
+	}
+	if this.SubValue != that1.SubValue {
 		return false
 	}
 	return true
@@ -415,14 +479,14 @@ func (m *NftCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Creator)
 		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Creator)))
 		i--
-		dAtA[i] = 0x5a
+		dAtA[i] = 0x52
 	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x52
+		dAtA[i] = 0x4a
 	}
 	if m.Opened {
 		i--
@@ -432,28 +496,28 @@ func (m *NftCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.DisplayTheme) > 0 {
-		i -= len(m.DisplayTheme)
-		copy(dAtA[i:], m.DisplayTheme)
-		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.DisplayTheme)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.CreatorEarnings) > 0 {
-		i -= len(m.CreatorEarnings)
-		copy(dAtA[i:], m.CreatorEarnings)
-		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.CreatorEarnings)))
-		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x40
 	}
 	if len(m.Category) > 0 {
 		i -= len(m.Category)
 		copy(dAtA[i:], m.Category)
 		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Category)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x3a
+	}
+	if len(m.Options) > 0 {
+		for iNdEx := len(m.Options) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Options[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintNftCollection(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
 	}
 	if len(m.Links) > 0 {
 		for iNdEx := len(m.Links) - 1; iNdEx >= 0; iNdEx-- {
@@ -501,6 +565,50 @@ func (m *NftCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Index)
 		copy(dAtA[i:], m.Index)
 		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NftCollectionOption) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NftCollectionOption) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NftCollectionOption) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SubValue) > 0 {
+		i -= len(m.SubValue)
+		copy(dAtA[i:], m.SubValue)
+		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.SubValue)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Value) > 0 {
+		i -= len(m.Value)
+		copy(dAtA[i:], m.Value)
+		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Value)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Type) > 0 {
+		i -= len(m.Type)
+		copy(dAtA[i:], m.Type)
+		i = encodeVarintNftCollection(dAtA, i, uint64(len(m.Type)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -622,15 +730,13 @@ func (m *NftCollection) Size() (n int) {
 			n += 1 + l + sovNftCollection(uint64(l))
 		}
 	}
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
+			n += 1 + l + sovNftCollection(uint64(l))
+		}
+	}
 	l = len(m.Category)
-	if l > 0 {
-		n += 1 + l + sovNftCollection(uint64(l))
-	}
-	l = len(m.CreatorEarnings)
-	if l > 0 {
-		n += 1 + l + sovNftCollection(uint64(l))
-	}
-	l = len(m.DisplayTheme)
 	if l > 0 {
 		n += 1 + l + sovNftCollection(uint64(l))
 	}
@@ -642,6 +748,27 @@ func (m *NftCollection) Size() (n int) {
 		n += 1 + l + sovNftCollection(uint64(l))
 	}
 	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovNftCollection(uint64(l))
+	}
+	return n
+}
+
+func (m *NftCollectionOption) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Type)
+	if l > 0 {
+		n += 1 + l + sovNftCollection(uint64(l))
+	}
+	l = len(m.Value)
+	if l > 0 {
+		n += 1 + l + sovNftCollection(uint64(l))
+	}
+	l = len(m.SubValue)
 	if l > 0 {
 		n += 1 + l + sovNftCollection(uint64(l))
 	}
@@ -885,6 +1012,40 @@ func (m *NftCollection) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftCollection
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Options = append(m.Options, &NftCollectionOption{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Category", wireType)
 			}
 			var stringLen uint64
@@ -915,71 +1076,7 @@ func (m *NftCollection) Unmarshal(dAtA []byte) error {
 			}
 			m.Category = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatorEarnings", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftCollection
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftCollection
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftCollection
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CreatorEarnings = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DisplayTheme", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftCollection
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftCollection
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftCollection
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DisplayTheme = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Opened", wireType)
 			}
@@ -999,7 +1096,7 @@ func (m *NftCollection) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Opened = bool(v != 0)
-		case 10:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -1033,7 +1130,7 @@ func (m *NftCollection) Unmarshal(dAtA []byte) error {
 				m.Owner = []byte{}
 			}
 			iNdEx = postIndex
-		case 11:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
 			}
@@ -1066,6 +1163,152 @@ func (m *NftCollection) Unmarshal(dAtA []byte) error {
 			if m.Creator == nil {
 				m.Creator = []byte{}
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipNftCollection(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NftCollectionOption) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowNftCollection
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NftCollectionOption: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NftCollectionOption: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftCollection
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Type = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftCollection
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Value = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SubValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftCollection
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftCollection
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SubValue = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -11,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types.MsgMintNftResponse, error) {
+func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*types.MsgMintNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Convert owner address string to sdk.AccAddress
@@ -21,18 +22,22 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		return nil, err
 	}
 
-	if len(msg.Nfts.Metadata) == 0 {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsLength, "nfts length %d invalid, min 1", len(msg.Nfts.Metadata))
+	if len(msg.Nfts.Nfts) == 0 {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsLength, "nfts length %d invalid, min 1", len(msg.Nfts.Nfts))
 	}
 
-	collectionCreator, err := sdk.AccAddressFromBech32(msg.Nfts.CollectionCreator)
+	if msg.CollectionCreator == "" {
+		msg.CollectionCreator = msg.Creator
+	}
+
+	collectionCreator, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
 	}
 
 	collCtrl := NewNftCollectionController(ctx, &types.MsgCreateNftCollectionMetadata{
-		Id: msg.Nfts.CollectionId,
+		Id: msg.CollectionId,
 	}, collectionCreator).WithStore(k).WithConfiguration(k.GetParams(ctx))
 
 	err = collCtrl.
@@ -59,7 +64,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
 	}
 
-	ctrl := NewNftController(ctx, collIndex, msg.Nfts.Metadata).WithStore(k).WithConfiguration(k.GetParams(ctx))
+	ctrl := NewNftController(ctx, collIndex, msg.Nfts.Nfts).WithStore(k).WithConfiguration(k.GetParams(ctx))
 
 	err = ctrl.
 		FilterNotExist().
@@ -92,10 +97,20 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		return nil, err
 	}
 
+	didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
+
 	for _, nftMetadata := range filtered {
 		index := types.GetNftIndex(collIndex, nftMetadata.Id)
+		indexHex := utils.GetIndexHex(index)
+
+		_, err = didExecutor.SetDid(indexHex)
+		if err != nil {
+			return nil, err
+		}
+
 		newNft := types.Nft{
 			Index:           index,
+			Did:             didExecutor.GetDidId(),
 			Images:          nftMetadata.Images,
 			Url:             nftMetadata.Url,
 			Links:           nftMetadata.Links,
@@ -114,7 +129,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		ids = append(ids, string(nftMetadata.Id))
 	}
 
-	return &types.MsgMintNftResponse{
+	return &types.MsgMintNftsResponse{
 		Ids: ids,
 	}, nil
 }

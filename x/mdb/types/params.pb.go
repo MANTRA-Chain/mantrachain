@@ -25,8 +25,33 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	ValidNftCollectionId string `protobuf:"bytes,1,opt,name=valid_nft_collection_id,json=validNftCollectionId,proto3" json:"valid_nft_collection_id,omitempty"`
-	ValidNftId           string `protobuf:"bytes,2,opt,name=valid_nft_id,json=validNftId,proto3" json:"valid_nft_id,omitempty"`
+	ValidNftCollectionId                               string `protobuf:"bytes,1,opt,name=valid_nft_collection_id,json=validNftCollectionId,proto3" json:"valid_nft_collection_id,omitempty"`
+	NftCollectionDefaultId                             string `protobuf:"bytes,2,opt,name=nft_collection_default_id,json=nftCollectionDefaultId,proto3" json:"nft_collection_default_id,omitempty"`
+	NftCollectionDefaultName                           string `protobuf:"bytes,3,opt,name=nft_collection_default_name,json=nftCollectionDefaultName,proto3" json:"nft_collection_default_name,omitempty"`
+	ValidNftCollectionMetadataSymbolMinLength          int32  `protobuf:"varint,4,opt,name=valid_nft_collection_metadata_symbol_min_length,json=validNftCollectionMetadataSymbolMinLength,proto3" json:"valid_nft_collection_metadata_symbol_min_length,omitempty"`
+	ValidNftCollectionMetadataSymbolMaxLength          int32  `protobuf:"varint,5,opt,name=valid_nft_collection_metadata_symbol_max_length,json=validNftCollectionMetadataSymbolMaxLength,proto3" json:"valid_nft_collection_metadata_symbol_max_length,omitempty"`
+	ValidNftCollectionMetadataDescriptionMaxLength     int32  `protobuf:"varint,6,opt,name=valid_nft_collection_metadata_description_max_length,json=validNftCollectionMetadataDescriptionMaxLength,proto3" json:"valid_nft_collection_metadata_description_max_length,omitempty"`
+	ValidNftCollectionMetadataNameMaxLength            int32  `protobuf:"varint,7,opt,name=valid_nft_collection_metadata_name_max_length,json=validNftCollectionMetadataNameMaxLength,proto3" json:"valid_nft_collection_metadata_name_max_length,omitempty"`
+	ValidNftCollectionMetadataImagesMaxCount           int32  `protobuf:"varint,8,opt,name=valid_nft_collection_metadata_images_max_count,json=validNftCollectionMetadataImagesMaxCount,proto3" json:"valid_nft_collection_metadata_images_max_count,omitempty"`
+	ValidNftCollectionMetadataImagesTypeMaxLength      int32  `protobuf:"varint,9,opt,name=valid_nft_collection_metadata_images_type_max_length,json=validNftCollectionMetadataImagesTypeMaxLength,proto3" json:"valid_nft_collection_metadata_images_type_max_length,omitempty"`
+	ValidNftCollectionMetadataLinksMaxCount            int32  `protobuf:"varint,10,opt,name=valid_nft_collection_metadata_links_max_count,json=validNftCollectionMetadataLinksMaxCount,proto3" json:"valid_nft_collection_metadata_links_max_count,omitempty"`
+	ValidNftCollectionMetadataLinksTypeMaxLength       int32  `protobuf:"varint,11,opt,name=valid_nft_collection_metadata_links_type_max_length,json=validNftCollectionMetadataLinksTypeMaxLength,proto3" json:"valid_nft_collection_metadata_links_type_max_length,omitempty"`
+	ValidNftCollectionMetadataOptionsMaxCount          int32  `protobuf:"varint,12,opt,name=valid_nft_collection_metadata_options_max_count,json=validNftCollectionMetadataOptionsMaxCount,proto3" json:"valid_nft_collection_metadata_options_max_count,omitempty"`
+	ValidNftCollectionMetadataOptionsTypeMaxLength     int32  `protobuf:"varint,13,opt,name=valid_nft_collection_metadata_options_type_max_length,json=validNftCollectionMetadataOptionsTypeMaxLength,proto3" json:"valid_nft_collection_metadata_options_type_max_length,omitempty"`
+	ValidNftCollectionMetadataOptionsValueMaxLength    int32  `protobuf:"varint,14,opt,name=valid_nft_collection_metadata_options_value_max_length,json=validNftCollectionMetadataOptionsValueMaxLength,proto3" json:"valid_nft_collection_metadata_options_value_max_length,omitempty"`
+	ValidNftCollectionMetadataOptionsSubValueMaxLength int32  `protobuf:"varint,15,opt,name=valid_nft_collection_metadata_options_sub_value_max_length,json=validNftCollectionMetadataOptionsSubValueMaxLength,proto3" json:"valid_nft_collection_metadata_options_sub_value_max_length,omitempty"`
+	ValidNftId                                         string `protobuf:"bytes,16,opt,name=valid_nft_id,json=validNftId,proto3" json:"valid_nft_id,omitempty"`
+	ValidNftMetadataMaxCount                           int32  `protobuf:"varint,17,opt,name=valid_nft_metadata_max_count,json=validNftMetadataMaxCount,proto3" json:"valid_nft_metadata_max_count,omitempty"`
+	ValidNftMetadataTitleMaxLength                     int32  `protobuf:"varint,18,opt,name=valid_nft_metadata_title_max_length,json=validNftMetadataTitleMaxLength,proto3" json:"valid_nft_metadata_title_max_length,omitempty"`
+	ValidNftMetadataDescriptionMaxLength               int32  `protobuf:"varint,19,opt,name=valid_nft_metadata_description_max_length,json=validNftMetadataDescriptionMaxLength,proto3" json:"valid_nft_metadata_description_max_length,omitempty"`
+	ValidNftMetadataImagesMaxCount                     int32  `protobuf:"varint,20,opt,name=valid_nft_metadata_images_max_count,json=validNftMetadataImagesMaxCount,proto3" json:"valid_nft_metadata_images_max_count,omitempty"`
+	ValidNftMetadataImagesTypeMaxLength                int32  `protobuf:"varint,21,opt,name=valid_nft_metadata_images_type_max_length,json=validNftMetadataImagesTypeMaxLength,proto3" json:"valid_nft_metadata_images_type_max_length,omitempty"`
+	ValidNftMetadataLinksMaxCount                      int32  `protobuf:"varint,22,opt,name=valid_nft_metadata_links_max_count,json=validNftMetadataLinksMaxCount,proto3" json:"valid_nft_metadata_links_max_count,omitempty"`
+	ValidNftMetadataLinksTypeMaxLength                 int32  `protobuf:"varint,23,opt,name=valid_nft_metadata_links_type_max_length,json=validNftMetadataLinksTypeMaxLength,proto3" json:"valid_nft_metadata_links_type_max_length,omitempty"`
+	ValidNftMetadataAttributesMaxCount                 int32  `protobuf:"varint,24,opt,name=valid_nft_metadata_attributes_max_count,json=validNftMetadataAttributesMaxCount,proto3" json:"valid_nft_metadata_attributes_max_count,omitempty"`
+	ValidNftMetadataAttributesTypeMaxLength            int32  `protobuf:"varint,25,opt,name=valid_nft_metadata_attributes_type_max_length,json=validNftMetadataAttributesTypeMaxLength,proto3" json:"valid_nft_metadata_attributes_type_max_length,omitempty"`
+	ValidNftMetadataAttributesValueMaxLength           int32  `protobuf:"varint,26,opt,name=valid_nft_metadata_attributes_value_max_length,json=validNftMetadataAttributesValueMaxLength,proto3" json:"valid_nft_metadata_attributes_value_max_length,omitempty"`
+	ValidNftMetadataAttributesSubValueMaxLength        int32  `protobuf:"varint,27,opt,name=valid_nft_metadata_attributes_sub_value_max_length,json=validNftMetadataAttributesSubValueMaxLength,proto3" json:"valid_nft_metadata_attributes_sub_value_max_length,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -68,11 +93,186 @@ func (m *Params) GetValidNftCollectionId() string {
 	return ""
 }
 
+func (m *Params) GetNftCollectionDefaultId() string {
+	if m != nil {
+		return m.NftCollectionDefaultId
+	}
+	return ""
+}
+
+func (m *Params) GetNftCollectionDefaultName() string {
+	if m != nil {
+		return m.NftCollectionDefaultName
+	}
+	return ""
+}
+
+func (m *Params) GetValidNftCollectionMetadataSymbolMinLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataSymbolMinLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataSymbolMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataSymbolMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataDescriptionMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataDescriptionMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataNameMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataNameMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataImagesMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataImagesMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataImagesTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataImagesTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataLinksMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataLinksMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataLinksTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataLinksTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataOptionsMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataOptionsMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataOptionsTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataOptionsTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataOptionsValueMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataOptionsValueMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftCollectionMetadataOptionsSubValueMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftCollectionMetadataOptionsSubValueMaxLength
+	}
+	return 0
+}
+
 func (m *Params) GetValidNftId() string {
 	if m != nil {
 		return m.ValidNftId
 	}
 	return ""
+}
+
+func (m *Params) GetValidNftMetadataMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftMetadataMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataTitleMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataTitleMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataDescriptionMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataDescriptionMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataImagesMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftMetadataImagesMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataImagesTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataImagesTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataLinksMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftMetadataLinksMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataLinksTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataLinksTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataAttributesMaxCount() int32 {
+	if m != nil {
+		return m.ValidNftMetadataAttributesMaxCount
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataAttributesTypeMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataAttributesTypeMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataAttributesValueMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataAttributesValueMaxLength
+	}
+	return 0
+}
+
+func (m *Params) GetValidNftMetadataAttributesSubValueMaxLength() int32 {
+	if m != nil {
+		return m.ValidNftMetadataAttributesSubValueMaxLength
+	}
+	return 0
 }
 
 func init() {
@@ -82,21 +282,52 @@ func init() {
 func init() { proto.RegisterFile("mdb/v1/params.proto", fileDescriptor_b87472348a1d18b9) }
 
 var fileDescriptor_b87472348a1d18b9 = []byte{
-	// 220 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xce, 0x4d, 0x49, 0xd2,
-	0x2f, 0x33, 0xd4, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17,
-	0x92, 0xf1, 0xc9, 0xcc, 0x4d, 0x75, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0xcb, 0x4d, 0xcc, 0x2b, 0x29,
-	0x4a, 0x4c, 0x86, 0xb0, 0x53, 0x92, 0xf4, 0xca, 0x0c, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1,
-	0x0a, 0xf5, 0x41, 0x2c, 0x88, 0x1e, 0xa5, 0x74, 0x2e, 0xb6, 0x00, 0xb0, 0x19, 0x42, 0xa6, 0x5c,
-	0xe2, 0x65, 0x89, 0x39, 0x99, 0x29, 0xf1, 0x79, 0x69, 0x25, 0xf1, 0xc9, 0xf9, 0x39, 0x39, 0xa9,
-	0xc9, 0x25, 0x99, 0xf9, 0x79, 0xf1, 0x99, 0x29, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x22,
-	0x60, 0x69, 0xbf, 0xb4, 0x12, 0x67, 0xb8, 0xa4, 0x67, 0x8a, 0x90, 0x02, 0x17, 0x0f, 0x42, 0x5b,
-	0x66, 0x8a, 0x04, 0x13, 0x58, 0x2d, 0x17, 0x4c, 0xad, 0x67, 0x8a, 0x15, 0xcb, 0x8c, 0x05, 0xf2,
-	0x0c, 0x4e, 0x6e, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3,
-	0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x93, 0x9e,
-	0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0xf7, 0x81, 0x3e, 0x92, 0x0f, 0xf4,
-	0x2b, 0xf4, 0x41, 0xde, 0x2d, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0xbb, 0xdb, 0x18, 0x10,
-	0x00, 0x00, 0xff, 0xff, 0xe3, 0x9d, 0x62, 0x29, 0x02, 0x01, 0x00, 0x00,
+	// 715 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x96, 0x5d, 0x4f, 0xd4, 0x4e,
+	0x14, 0xc6, 0x77, 0xff, 0x7f, 0x40, 0x19, 0xf1, 0xad, 0x20, 0x94, 0x17, 0x2b, 0x01, 0x13, 0x96,
+	0x08, 0xdb, 0x00, 0x62, 0x22, 0x89, 0x26, 0x0a, 0x31, 0xd9, 0x08, 0x68, 0x80, 0x60, 0xe2, 0x85,
+	0x75, 0xfa, 0x42, 0x99, 0xd0, 0x69, 0x37, 0xdb, 0xe9, 0x66, 0xf9, 0x16, 0x5e, 0x7a, 0xe9, 0xc7,
+	0xf1, 0x92, 0x4b, 0x2f, 0x0d, 0x7c, 0x0a, 0xef, 0x4c, 0xcf, 0xee, 0xb6, 0x3b, 0xd3, 0xe9, 0xb6,
+	0xde, 0x6d, 0xb6, 0xf3, 0x3c, 0xbf, 0xf3, 0x9c, 0xce, 0x9c, 0x0e, 0x9a, 0xa4, 0xb6, 0xa9, 0xb7,
+	0x37, 0xf4, 0x26, 0x6e, 0x61, 0x1a, 0xd6, 0x9b, 0xad, 0x80, 0x05, 0xca, 0xc2, 0x3e, 0xa1, 0xce,
+	0xee, 0x39, 0x26, 0x7e, 0x9d, 0x62, 0x9f, 0xb5, 0xb0, 0xd5, 0xfd, 0x6d, 0x9b, 0xf5, 0xf6, 0xc6,
+	0xdc, 0x94, 0x1b, 0xb8, 0x01, 0x2c, 0xd4, 0xe3, 0x5f, 0x5d, 0xcd, 0xd2, 0x1f, 0x05, 0x8d, 0x7d,
+	0x04, 0x13, 0x65, 0x1b, 0xcd, 0xb4, 0xb1, 0x47, 0x6c, 0xc3, 0x3f, 0x63, 0x86, 0x15, 0x78, 0x9e,
+	0x63, 0x31, 0x12, 0xf8, 0x06, 0xb1, 0xd5, 0xea, 0x62, 0xb5, 0x36, 0x7e, 0x34, 0x05, 0x8f, 0x0f,
+	0xcf, 0xd8, 0x6e, 0xf2, 0xb0, 0x61, 0x2b, 0x2f, 0xd1, 0xac, 0x20, 0xb0, 0x9d, 0x33, 0x1c, 0x79,
+	0x2c, 0x16, 0xfe, 0x07, 0xc2, 0x69, 0x7f, 0x50, 0xb3, 0xd7, 0x7d, 0xdc, 0xb0, 0x95, 0x57, 0x68,
+	0x3e, 0x47, 0xea, 0x63, 0xea, 0xa8, 0xff, 0x83, 0x58, 0x95, 0x89, 0x0f, 0x31, 0x75, 0x14, 0x13,
+	0xe9, 0xd2, 0x82, 0xa9, 0xc3, 0xb0, 0x8d, 0x19, 0x36, 0xc2, 0x4b, 0x6a, 0x06, 0x9e, 0x41, 0x89,
+	0x6f, 0x78, 0x8e, 0xef, 0xb2, 0x73, 0x75, 0x64, 0xb1, 0x5a, 0x1b, 0x3d, 0x5a, 0xcd, 0x06, 0x39,
+	0xe8, 0x69, 0x8e, 0x41, 0x72, 0x40, 0xfc, 0x7d, 0x10, 0x94, 0x67, 0xe0, 0x4e, 0x9f, 0x31, 0x5a,
+	0x92, 0x81, 0x3b, 0x3d, 0x86, 0x87, 0x9e, 0x0f, 0x67, 0xd8, 0x4e, 0x68, 0xb5, 0x48, 0xb3, 0xfb,
+	0x67, 0x0a, 0x1a, 0x03, 0x50, 0x3d, 0x1f, 0xb4, 0x97, 0xea, 0x52, 0xda, 0x17, 0xb4, 0x3e, 0x9c,
+	0x16, 0xf7, 0x7e, 0x10, 0x73, 0x0b, 0x30, 0x2b, 0xf9, 0x98, 0xf8, 0x65, 0xa4, 0xfe, 0x5f, 0x51,
+	0x7d, 0xb8, 0x3f, 0xa1, 0xd8, 0x75, 0x42, 0x20, 0x58, 0x41, 0xe4, 0x33, 0xf5, 0x36, 0x00, 0x6a,
+	0xf9, 0x80, 0x06, 0x28, 0x0e, 0x70, 0x67, 0x37, 0x5e, 0xaf, 0x5c, 0x14, 0xf5, 0xab, 0x47, 0x60,
+	0x97, 0x4d, 0x2e, 0xc8, 0x38, 0x70, 0xd6, 0x8b, 0x38, 0x27, 0x97, 0x4d, 0xe7, 0x1f, 0xda, 0xe5,
+	0x11, 0xff, 0x62, 0x30, 0x0d, 0x2a, 0x6a, 0xd7, 0x7e, 0x2c, 0x48, 0xc2, 0x10, 0xb4, 0x55, 0xc6,
+	0x5f, 0xcc, 0x72, 0x07, 0x28, 0x6b, 0x05, 0x14, 0x3e, 0x4a, 0xe1, 0x5e, 0x0e, 0x60, 0xab, 0x0c,
+	0x86, 0x99, 0x28, 0xda, 0xcb, 0x1f, 0xba, 0x92, 0x24, 0x0e, 0x45, 0xdb, 0xe5, 0x18, 0x62, 0xa0,
+	0xbb, 0x45, 0x9b, 0xb9, 0x47, 0xe2, 0x23, 0x05, 0xe8, 0x45, 0x39, 0x5c, 0x1b, 0x7b, 0x11, 0xc7,
+	0xbb, 0x07, 0x3c, 0xbd, 0x90, 0x77, 0x1a, 0x0b, 0x53, 0x60, 0x1b, 0xed, 0x94, 0x03, 0x86, 0x91,
+	0x99, 0x85, 0xde, 0x07, 0xe8, 0x66, 0x21, 0xf4, 0x38, 0x32, 0x05, 0xee, 0x22, 0x9a, 0x48, 0xb9,
+	0xc4, 0x56, 0x1f, 0xc0, 0x6c, 0x44, 0x7d, 0xa7, 0x86, 0xad, 0xbc, 0x46, 0x0b, 0xe9, 0x8a, 0xa4,
+	0x9c, 0xf4, 0x55, 0x3e, 0x04, 0xb6, 0xda, 0x57, 0xf4, 0x89, 0xc9, 0x9b, 0x7b, 0x8f, 0x96, 0x25,
+	0x7a, 0x46, 0x98, 0xc7, 0x45, 0x50, 0xc0, 0x46, 0x13, 0x6d, 0x4e, 0xe2, 0x75, 0x69, 0xb9, 0x9f,
+	0xd0, 0xaa, 0xc4, 0x2c, 0x67, 0x8e, 0x4d, 0x82, 0xe5, 0x53, 0xd1, 0x52, 0x3a, 0xbd, 0xe4, 0x55,
+	0x66, 0x46, 0xca, 0x94, 0xbc, 0x4a, 0x61, 0x90, 0x9c, 0x4a, 0xab, 0xcc, 0x99, 0x1e, 0x8f, 0xc0,
+	0x72, 0x59, 0x6e, 0xc9, 0xef, 0xca, 0x06, 0x5a, 0x92, 0xf8, 0x8a, 0x83, 0x62, 0x1a, 0x0c, 0x1f,
+	0x8b, 0x86, 0xfc, 0x78, 0x38, 0x41, 0xb5, 0x5c, 0x2b, 0xb1, 0xc2, 0x19, 0x30, 0x5c, 0x92, 0x1a,
+	0xf2, 0x05, 0x1e, 0xa3, 0x15, 0x89, 0x2b, 0x66, 0xac, 0x45, 0xcc, 0x88, 0x71, 0x9d, 0x54, 0xe5,
+	0xa6, 0x6f, 0x92, 0xb5, 0x49, 0xa9, 0xdc, 0xa4, 0x94, 0x99, 0x8a, 0xf5, 0xce, 0xf2, 0x93, 0x32,
+	0x6b, 0xcd, 0x17, 0xcd, 0x7d, 0x58, 0x64, 0xfe, 0x99, 0xe3, 0x36, 0xc7, 0x7f, 0x58, 0xb2, 0x00,
+	0xe1, 0x90, 0xb9, 0x68, 0x73, 0x38, 0x41, 0x7a, 0xa8, 0xe7, 0x81, 0xf2, 0x2c, 0x9f, 0x92, 0x39,
+	0xcd, 0x3b, 0x23, 0xdf, 0x7f, 0x3c, 0xa9, 0xbc, 0x7d, 0xf7, 0xf3, 0x5a, 0xab, 0x5e, 0x5d, 0x6b,
+	0xd5, 0xdf, 0xd7, 0x5a, 0xf5, 0xdb, 0x8d, 0x56, 0xb9, 0xba, 0xd1, 0x2a, 0xbf, 0x6e, 0xb4, 0xca,
+	0xe7, 0x35, 0x97, 0xb0, 0xf3, 0xc8, 0xac, 0x5b, 0x01, 0xd5, 0x93, 0x4b, 0x9d, 0x3e, 0x70, 0xa9,
+	0xd3, 0x3b, 0x7a, 0x7c, 0x03, 0x8c, 0x3b, 0x1a, 0x9a, 0x63, 0x70, 0x95, 0xdb, 0xfa, 0x1b, 0x00,
+	0x00, 0xff, 0xff, 0x05, 0x8c, 0x66, 0xa5, 0x15, 0x0a, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -119,10 +350,163 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.ValidNftMetadataAttributesSubValueMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataAttributesSubValueMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xd8
+	}
+	if m.ValidNftMetadataAttributesValueMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataAttributesValueMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xd0
+	}
+	if m.ValidNftMetadataAttributesTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataAttributesTypeMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xc8
+	}
+	if m.ValidNftMetadataAttributesMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataAttributesMaxCount))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xc0
+	}
+	if m.ValidNftMetadataLinksTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataLinksTypeMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xb8
+	}
+	if m.ValidNftMetadataLinksMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataLinksMaxCount))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xb0
+	}
+	if m.ValidNftMetadataImagesTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataImagesTypeMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xa8
+	}
+	if m.ValidNftMetadataImagesMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataImagesMaxCount))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0xa0
+	}
+	if m.ValidNftMetadataDescriptionMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataDescriptionMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x98
+	}
+	if m.ValidNftMetadataTitleMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataTitleMaxLength))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x90
+	}
+	if m.ValidNftMetadataMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftMetadataMaxCount))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x88
+	}
 	if len(m.ValidNftId) > 0 {
 		i -= len(m.ValidNftId)
 		copy(dAtA[i:], m.ValidNftId)
 		i = encodeVarintParams(dAtA, i, uint64(len(m.ValidNftId)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
+	if m.ValidNftCollectionMetadataOptionsSubValueMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataOptionsSubValueMaxLength))
+		i--
+		dAtA[i] = 0x78
+	}
+	if m.ValidNftCollectionMetadataOptionsValueMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataOptionsValueMaxLength))
+		i--
+		dAtA[i] = 0x70
+	}
+	if m.ValidNftCollectionMetadataOptionsTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataOptionsTypeMaxLength))
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.ValidNftCollectionMetadataOptionsMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataOptionsMaxCount))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.ValidNftCollectionMetadataLinksTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataLinksTypeMaxLength))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.ValidNftCollectionMetadataLinksMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataLinksMaxCount))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.ValidNftCollectionMetadataImagesTypeMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataImagesTypeMaxLength))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.ValidNftCollectionMetadataImagesMaxCount != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataImagesMaxCount))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.ValidNftCollectionMetadataNameMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataNameMaxLength))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.ValidNftCollectionMetadataDescriptionMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataDescriptionMaxLength))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.ValidNftCollectionMetadataSymbolMaxLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataSymbolMaxLength))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.ValidNftCollectionMetadataSymbolMinLength != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ValidNftCollectionMetadataSymbolMinLength))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.NftCollectionDefaultName) > 0 {
+		i -= len(m.NftCollectionDefaultName)
+		copy(dAtA[i:], m.NftCollectionDefaultName)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.NftCollectionDefaultName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.NftCollectionDefaultId) > 0 {
+		i -= len(m.NftCollectionDefaultId)
+		copy(dAtA[i:], m.NftCollectionDefaultId)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.NftCollectionDefaultId)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -157,9 +541,86 @@ func (m *Params) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
-	l = len(m.ValidNftId)
+	l = len(m.NftCollectionDefaultId)
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.NftCollectionDefaultName)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	if m.ValidNftCollectionMetadataSymbolMinLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataSymbolMinLength))
+	}
+	if m.ValidNftCollectionMetadataSymbolMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataSymbolMaxLength))
+	}
+	if m.ValidNftCollectionMetadataDescriptionMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataDescriptionMaxLength))
+	}
+	if m.ValidNftCollectionMetadataNameMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataNameMaxLength))
+	}
+	if m.ValidNftCollectionMetadataImagesMaxCount != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataImagesMaxCount))
+	}
+	if m.ValidNftCollectionMetadataImagesTypeMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataImagesTypeMaxLength))
+	}
+	if m.ValidNftCollectionMetadataLinksMaxCount != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataLinksMaxCount))
+	}
+	if m.ValidNftCollectionMetadataLinksTypeMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataLinksTypeMaxLength))
+	}
+	if m.ValidNftCollectionMetadataOptionsMaxCount != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataOptionsMaxCount))
+	}
+	if m.ValidNftCollectionMetadataOptionsTypeMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataOptionsTypeMaxLength))
+	}
+	if m.ValidNftCollectionMetadataOptionsValueMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataOptionsValueMaxLength))
+	}
+	if m.ValidNftCollectionMetadataOptionsSubValueMaxLength != 0 {
+		n += 1 + sovParams(uint64(m.ValidNftCollectionMetadataOptionsSubValueMaxLength))
+	}
+	l = len(m.ValidNftId)
+	if l > 0 {
+		n += 2 + l + sovParams(uint64(l))
+	}
+	if m.ValidNftMetadataMaxCount != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataMaxCount))
+	}
+	if m.ValidNftMetadataTitleMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataTitleMaxLength))
+	}
+	if m.ValidNftMetadataDescriptionMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataDescriptionMaxLength))
+	}
+	if m.ValidNftMetadataImagesMaxCount != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataImagesMaxCount))
+	}
+	if m.ValidNftMetadataImagesTypeMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataImagesTypeMaxLength))
+	}
+	if m.ValidNftMetadataLinksMaxCount != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataLinksMaxCount))
+	}
+	if m.ValidNftMetadataLinksTypeMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataLinksTypeMaxLength))
+	}
+	if m.ValidNftMetadataAttributesMaxCount != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataAttributesMaxCount))
+	}
+	if m.ValidNftMetadataAttributesTypeMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataAttributesTypeMaxLength))
+	}
+	if m.ValidNftMetadataAttributesValueMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataAttributesValueMaxLength))
+	}
+	if m.ValidNftMetadataAttributesSubValueMaxLength != 0 {
+		n += 2 + sovParams(uint64(m.ValidNftMetadataAttributesSubValueMaxLength))
 	}
 	return n
 }
@@ -233,6 +694,298 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftCollectionDefaultId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftCollectionDefaultId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftCollectionDefaultName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftCollectionDefaultName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataSymbolMinLength", wireType)
+			}
+			m.ValidNftCollectionMetadataSymbolMinLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataSymbolMinLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataSymbolMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataSymbolMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataSymbolMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataDescriptionMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataDescriptionMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataDescriptionMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataNameMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataNameMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataNameMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataImagesMaxCount", wireType)
+			}
+			m.ValidNftCollectionMetadataImagesMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataImagesMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataImagesTypeMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataImagesTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataImagesTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataLinksMaxCount", wireType)
+			}
+			m.ValidNftCollectionMetadataLinksMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataLinksMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataLinksTypeMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataLinksTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataLinksTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataOptionsMaxCount", wireType)
+			}
+			m.ValidNftCollectionMetadataOptionsMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataOptionsMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataOptionsTypeMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataOptionsTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataOptionsTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 14:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataOptionsValueMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataOptionsValueMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataOptionsValueMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 15:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftCollectionMetadataOptionsSubValueMaxLength", wireType)
+			}
+			m.ValidNftCollectionMetadataOptionsSubValueMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftCollectionMetadataOptionsSubValueMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 16:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftId", wireType)
 			}
 			var stringLen uint64
@@ -263,6 +1016,215 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.ValidNftId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 17:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataMaxCount", wireType)
+			}
+			m.ValidNftMetadataMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 18:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataTitleMaxLength", wireType)
+			}
+			m.ValidNftMetadataTitleMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataTitleMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 19:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataDescriptionMaxLength", wireType)
+			}
+			m.ValidNftMetadataDescriptionMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataDescriptionMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 20:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataImagesMaxCount", wireType)
+			}
+			m.ValidNftMetadataImagesMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataImagesMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 21:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataImagesTypeMaxLength", wireType)
+			}
+			m.ValidNftMetadataImagesTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataImagesTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 22:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataLinksMaxCount", wireType)
+			}
+			m.ValidNftMetadataLinksMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataLinksMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 23:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataLinksTypeMaxLength", wireType)
+			}
+			m.ValidNftMetadataLinksTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataLinksTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 24:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataAttributesMaxCount", wireType)
+			}
+			m.ValidNftMetadataAttributesMaxCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataAttributesMaxCount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 25:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataAttributesTypeMaxLength", wireType)
+			}
+			m.ValidNftMetadataAttributesTypeMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataAttributesTypeMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 26:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataAttributesValueMaxLength", wireType)
+			}
+			m.ValidNftMetadataAttributesValueMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataAttributesValueMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 27:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidNftMetadataAttributesSubValueMaxLength", wireType)
+			}
+			m.ValidNftMetadataAttributesSubValueMaxLength = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidNftMetadataAttributesSubValueMaxLength |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])

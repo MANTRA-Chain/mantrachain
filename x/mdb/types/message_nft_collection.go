@@ -9,12 +9,12 @@ const TypeMsgCreateNftCollection = "create_nft_collection"
 
 var _ sdk.Msg = &MsgCreateNftCollection{}
 
-func NewMsgCreateNftCollection(creator string, metadata *MsgCreateNftCollectionMetadata,
+func NewMsgCreateNftCollection(creator string, collection *MsgCreateNftCollectionMetadata,
 	pubKeyHex string,
 	pubKeyType string) *MsgCreateNftCollection {
 	return &MsgCreateNftCollection{
 		Creator:    creator,
-		Metadata:   metadata,
+		Collection: collection,
 		PubKeyHex:  pubKeyHex,
 		PubKeyType: pubKeyType,
 	}

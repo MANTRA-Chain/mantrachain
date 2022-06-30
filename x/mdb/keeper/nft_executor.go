@@ -29,10 +29,9 @@ func (c *NftExecutor) SetClass(nftClass nfttypes.Class) (bool, error) {
 func (c *NftExecutor) SetDefaultClass(collIndex []byte) (bool, error) {
 	err := c.nftKeeper.SaveClass(c.ctx, nfttypes.Class{
 		Id:      string(collIndex),
-		Name:    "default",
+		Name:    types.DefaultParams().NftCollectionDefaultName,
 		Uri:     types.ModuleName,
-		UriHash: string(collIndex),
-		Data:    nil,
+		UriHash: types.DefaultParams().NftCollectionDefaultId,
 	})
 	if err != nil {
 		return false, err

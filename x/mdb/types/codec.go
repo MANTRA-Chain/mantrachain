@@ -9,14 +9,14 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateNftCollection{}, "mdb/CreateNftCollection", nil)
-	cdc.RegisterConcrete(&MsgMintNft{}, "mdb/MintNft", nil)
+	cdc.RegisterConcrete(&MsgMintNfts{}, "mdb/MintNfts", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateNftCollection{},
-		&MsgMintNft{},
+		&MsgMintNfts{},
 	)
 	// this line is used by starport scaffolding # 3
 

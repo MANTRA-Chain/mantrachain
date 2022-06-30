@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"regexp"
-	"strconv"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/LimeChain/mantrachain/x/mdb/utils"
@@ -61,36 +60,32 @@ func (c *NftCollectionController) CreateDefaultIfNotExists() *NftCollectionContr
 }
 
 func (c *NftCollectionController) CreateDefault() error {
-	c.metadata.Id = "default"
+	c.metadata.Id = c.conf.NftCollectionDefaultId
 	c.metadata.Opened = true
+	c.metadata.Category = string(types.GeneralNftCollectionCat)
 	collIndex := c.getIndex()
 
-	err := c.requireNftCollection()
-
-	if err != nil {
-		return err
-	}
+	c.requireNftCollection()
 
 	if c.nftCollection == nil {
-		return nil
+		nftExecutor := NewNftExecutor(c.ctx, c.store.nftKeeper)
+		_, err := nftExecutor.SetDefaultClass(collIndex)
+		if err != nil {
+			return err
+		}
+
+		newNftCollection := types.NftCollection{
+			Index:    collIndex,
+			Opened:   c.metadata.Opened,
+			Category: c.metadata.Category,
+			Creator:  c.creator,
+			Owner:    c.creator,
+		}
+
+		c.store.SetNftCollection(c.ctx, newNftCollection)
+
+		c.nftCollection = &newNftCollection
 	}
-
-	nftExecutor := NewNftExecutor(c.ctx, c.store.nftKeeper)
-	_, err = nftExecutor.SetDefaultClass(collIndex)
-	if err != nil {
-		return err
-	}
-
-	newNftCollection := types.NftCollection{
-		Index:   collIndex,
-		Opened:  c.metadata.Opened,
-		Creator: c.creator,
-		Owner:   c.creator,
-	}
-
-	c.store.SetNftCollection(c.ctx, newNftCollection)
-
-	c.nftCollection = &newNftCollection
 
 	return nil
 }
@@ -153,11 +148,9 @@ func (c *NftCollectionController) ValidNftCollectionMetadata() *NftCollectionCon
 	}, func(controller *NftCollectionController) error {
 		return controller.validNftCollectionMetadataDescription()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataDisplayTheme()
-	}, func(controller *NftCollectionController) error {
 		return controller.validNftCollectionMetadataSymbol()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataCreatorEarnings()
+		return controller.validNftCollectionMetadataOptions()
 	}, func(controller *NftCollectionController) error {
 		return controller.validNftCollectionMetadataImages()
 	}, func(controller *NftCollectionController) error {
@@ -192,7 +185,7 @@ func (c *NftCollectionController) mustExist() error {
 }
 
 func (c *NftCollectionController) mustNotBeDefault() error {
-	if c.metadata.Id == "default" {
+	if c.metadata.Id == c.conf.NftCollectionDefaultId {
 		return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, c.metadata.Id)
 	}
 	return nil
@@ -211,7 +204,6 @@ func (c *NftCollectionController) canMintNfts(minter sdk.AccAddress) error {
 	if minter.Equals(c.nftCollection.Owner) {
 		return nil
 	}
-	// if it has expired return error
 	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
 }
 
@@ -246,39 +238,17 @@ func (c *NftCollectionController) validNftCollectionMetadataCategory() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataDisplayTheme() error {
-	if c.metadata.DisplayTheme == "" {
-		return nil
-	}
-	if types.ValidateNftCollectionDisplayTheme(types.NftCollectionDisplayTheme(c.metadata.DisplayTheme)) != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionDisplayTheme, c.metadata.DisplayTheme)
-	}
-	return nil
-}
-
-func (c *NftCollectionController) validNftCollectionMetadataCreatorEarnings() error {
-	if c.metadata.CreatorEarnings == "" {
-		return nil
-	}
-
-	if _, err := strconv.ParseFloat(c.metadata.CreatorEarnings, 64); err != nil {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionCreatorEarnings, "%s creator_ernings not a number", c.metadata.CreatorEarnings)
-	}
-
-	return nil
-}
-
 func (c *NftCollectionController) validNftCollectionMetadataSymbol() error {
 	if c.metadata.Symbol == "" {
 		return nil
 	}
 
-	if len(c.metadata.Symbol) < 2 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionSymbol, "%s symbol too short, min 2 letters", c.metadata.Symbol)
+	if int32(len(c.metadata.Symbol)) < c.conf.ValidNftCollectionMetadataSymbolMinLength {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionSymbol, "%s symbol too short, min %d letters", c.metadata.Symbol, c.conf.ValidNftCollectionMetadataSymbolMinLength)
 	}
 
-	if len(c.metadata.Symbol) > 5 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionSymbol, "%s symbol too long, max 5 letters", c.metadata.Symbol)
+	if int32(len(c.metadata.Symbol)) > c.conf.ValidNftCollectionMetadataSymbolMaxLength {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionSymbol, "%s symbol too long, max %d letters", c.metadata.Symbol, c.conf.ValidNftCollectionMetadataSymbolMaxLength)
 	}
 
 	return nil
@@ -301,8 +271,8 @@ func (c *NftCollectionController) validNftCollectionMetadataDescription() error 
 		return nil
 	}
 
-	if len(c.metadata.Description) > 1000 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionDescription, "%s description too long, max 1000 symbols", c.metadata.Description)
+	if int32(len(c.metadata.Description)) > c.conf.ValidNftCollectionMetadataDescriptionMaxLength {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionDescription, "description too long, max %d symbols", c.conf.ValidNftCollectionMetadataDescriptionMaxLength)
 	}
 
 	return nil
@@ -323,8 +293,8 @@ func (c *NftCollectionController) validNftCollectionMetadataName() error {
 		return nil
 	}
 
-	if len(c.metadata.Name) > 100 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionName, "name length %d invalid, max 100", len(c.metadata.Name))
+	if int32(len(c.metadata.Name)) > c.conf.ValidNftCollectionMetadataNameMaxLength {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionName, "name length %d invalid, max %d", len(c.metadata.Name), c.conf.ValidNftCollectionMetadataNameMaxLength)
 	}
 
 	return nil
@@ -334,12 +304,12 @@ func (c *NftCollectionController) validNftCollectionMetadataImages() error {
 	if len(c.metadata.Images) == 0 {
 		return nil
 	}
-	if len(c.metadata.Images) > 10 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "images length %d invalid, max 10", len(c.metadata.Images))
+	if int32(len(c.metadata.Images)) > c.conf.ValidNftCollectionMetadataImagesMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "images count %d invalid, max %d", len(c.metadata.Images), c.conf.ValidNftCollectionMetadataImagesMaxCount)
 	}
 	for i, image := range c.metadata.Images {
-		if image.Type == "" || len(image.Type) > 100 {
-			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "image index %d invalid type", i)
+		if image.Type == "" || int32(len(image.Type)) > c.conf.ValidNftCollectionMetadataImagesTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "image type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataImagesTypeMaxLength)
 		}
 		if !utils.IsUrl(image.Url) {
 			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "image index %d invalid url", i)
@@ -352,12 +322,12 @@ func (c *NftCollectionController) validNftCollectionMetadataLinks() error {
 	if len(c.metadata.Links) == 0 {
 		return nil
 	}
-	if len(c.metadata.Links) > 10 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "links length %d invalid, max 10", len(c.metadata.Links))
+	if int32(len(c.metadata.Links)) > c.conf.ValidNftCollectionMetadataLinksMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "links count %d invalid, max %d", len(c.metadata.Links), c.conf.ValidNftCollectionMetadataLinksMaxCount)
 	}
 	for i, link := range c.metadata.Links {
-		if link.Type == "" || len(link.Type) > 100 {
-			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "link index %d invalid type", i)
+		if link.Type == "" || int32(len(link.Type)) > c.conf.ValidNftCollectionMetadataLinksTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "link type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataLinksTypeMaxLength)
 		}
 		if !utils.IsUrl(link.Url) {
 			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "link index %d invalid url", i)
@@ -366,8 +336,26 @@ func (c *NftCollectionController) validNftCollectionMetadataLinks() error {
 	return nil
 }
 
+func (c *NftCollectionController) validNftCollectionMetadataOptions() error {
+	if len(c.metadata.Options) == 0 {
+		return nil
+	}
+	if int32(len(c.metadata.Options)) > c.conf.ValidNftCollectionMetadataOptionsMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionOption, "options count %d invalid, max %d", len(c.metadata.Options), c.conf.ValidNftCollectionMetadataOptionsMaxCount)
+	}
+	for i, option := range c.metadata.Options {
+		if option.Type == "" || int32(len(option.Type)) > c.conf.ValidNftCollectionMetadataOptionsTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionOption, "option type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataOptionsTypeMaxLength)
+		}
+		if int32(len(option.Value)) > c.conf.ValidNftCollectionMetadataOptionsValueMaxLength || int32(len(option.SubValue)) > c.conf.ValidNftCollectionMetadataOptionsSubValueMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionOption, "option index %d value/subvalue too long, max %d/%d symbols", i, c.conf.ValidNftCollectionMetadataOptionsValueMaxLength, c.conf.ValidNftCollectionMetadataOptionsSubValueMaxLength)
+		}
+	}
+	return nil
+}
+
 func (c *NftCollectionController) validNftCollectionMetadataOpened() error {
-	if c.metadata.Id != "default" {
+	if c.metadata.Id != c.conf.NftCollectionDefaultId {
 		return nil
 	}
 	if !c.metadata.Opened {

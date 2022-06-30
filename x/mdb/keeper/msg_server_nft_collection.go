@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,7 +19,9 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	ctrl := NewNftCollectionController(ctx, msg.Metadata, owner).WithStore(k).WithConfiguration(k.GetParams(ctx))
+	ctrl := NewNftCollectionController(ctx, msg.Collection, owner).
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	err = ctrl.
 		MustNotExist().
@@ -32,32 +35,39 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 
 	index := ctrl.getIndex()
 	id := ctrl.getId()
+	indexHex := utils.GetIndexHex(index)
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 	_, err = nftExecutor.SetClass(nfttypes.Class{
 		Id:          string(index),
-		Name:        msg.Metadata.Name,
-		Symbol:      msg.Metadata.Symbol,
-		Description: msg.Metadata.Description,
-		Uri:         "mdb",
+		Name:        msg.Collection.Name,
+		Symbol:      msg.Collection.Symbol,
+		Description: msg.Collection.Description,
+		Uri:         types.ModuleName,
 		UriHash:     id,
-		Data:        msg.Metadata.Data,
+		Data:        msg.Collection.Data,
 	})
 	if err != nil {
 		return nil, err
 	}
 
+	didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
+	_, err = didExecutor.SetDid(indexHex)
+	if err != nil {
+		return nil, err
+	}
+
 	newNftCollection := types.NftCollection{
-		Index:           index,
-		Images:          msg.Metadata.Images,
-		Url:             msg.Metadata.Url,
-		Links:           msg.Metadata.Links,
-		Category:        msg.Metadata.Category,
-		CreatorEarnings: msg.Metadata.CreatorEarnings,
-		DisplayTheme:    msg.Metadata.DisplayTheme,
-		Opened:          msg.Metadata.Opened,
-		Creator:         owner,
-		Owner:           owner,
+		Index:    index,
+		Did:      didExecutor.GetDidId(),
+		Images:   msg.Collection.Images,
+		Url:      msg.Collection.Url,
+		Links:    msg.Collection.Links,
+		Category: msg.Collection.Category,
+		Options:  msg.Collection.Options,
+		Opened:   msg.Collection.Opened,
+		Creator:  owner,
+		Owner:    owner,
 	}
 
 	k.SetNftCollection(ctx, newNftCollection)

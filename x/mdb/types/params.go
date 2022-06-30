@@ -15,8 +15,34 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		ValidNftCollectionId: "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
-		ValidNftId:           "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
+		ValidNftCollectionId:                               "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
+		NftCollectionDefaultId:                             "default",
+		NftCollectionDefaultName:                           "default",
+		ValidNftCollectionMetadataSymbolMinLength:          2,
+		ValidNftCollectionMetadataSymbolMaxLength:          5,
+		ValidNftCollectionMetadataDescriptionMaxLength:     1000,
+		ValidNftCollectionMetadataNameMaxLength:            100,
+		ValidNftCollectionMetadataImagesMaxCount:           10,
+		ValidNftCollectionMetadataImagesTypeMaxLength:      25,
+		ValidNftCollectionMetadataLinksMaxCount:            10,
+		ValidNftCollectionMetadataLinksTypeMaxLength:       25,
+		ValidNftCollectionMetadataOptionsMaxCount:          10,
+		ValidNftCollectionMetadataOptionsTypeMaxLength:     25,
+		ValidNftCollectionMetadataOptionsValueMaxLength:    25,
+		ValidNftCollectionMetadataOptionsSubValueMaxLength: 50,
+
+		ValidNftId:                                  "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
+		ValidNftMetadataMaxCount:                    50,
+		ValidNftMetadataTitleMaxLength:              100,
+		ValidNftMetadataDescriptionMaxLength:        1000,
+		ValidNftMetadataImagesMaxCount:              10,
+		ValidNftMetadataImagesTypeMaxLength:         25,
+		ValidNftMetadataLinksMaxCount:               10,
+		ValidNftMetadataLinksTypeMaxLength:          25,
+		ValidNftMetadataAttributesMaxCount:          50,
+		ValidNftMetadataAttributesTypeMaxLength:     25,
+		ValidNftMetadataAttributesValueMaxLength:    25,
+		ValidNftMetadataAttributesSubValueMaxLength: 50,
 	}
 }
 

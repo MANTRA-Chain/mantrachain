@@ -20,8 +20,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgCreateNftCollection:
 			res, err := msgServer.CreateNftCollection(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgMintNft:
-			res, err := msgServer.MintNft(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgMintNfts:
+			res, err := msgServer.MintNfts(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

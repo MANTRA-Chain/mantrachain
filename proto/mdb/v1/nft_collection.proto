@@ -12,18 +12,26 @@ message NftCollection {
   repeated NftCollectionImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
   string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
   repeated NftCollectionLink links = 5 [(gogoproto.moretags) = "yaml:\"links\""];
-  string category = 6 [(gogoproto.moretags) = "yaml:\"category\""];
-  string creator_earnings = 7 [(gogoproto.moretags) = "yaml:\"creator_earnings\""];
-  string display_theme = 8 [(gogoproto.moretags) = "yaml:\"display_theme\""];
-  bool opened = 9 [(gogoproto.moretags) = "yaml:\"opened\""];
-  bytes owner = 10 [
+  repeated NftCollectionOption options = 6 [(gogoproto.moretags) = "yaml:\"options\""];
+  string category = 7 [(gogoproto.moretags) = "yaml:\"category\""];
+  bool opened = 8 [(gogoproto.moretags) = "yaml:\"opened\""];
+  bytes owner = 9 [
       (gogoproto.moretags) = "yaml:\"owner\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  bytes creator = 11 [
+  bytes creator = 10 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+}
+
+message NftCollectionOption {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters)  = false;
+  
+  string type = 1;
+  string value = 2;
+  string sub_value = 3;
 }
 
 message NftCollectionImage {

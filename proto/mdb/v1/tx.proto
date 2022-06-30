@@ -11,13 +11,13 @@ option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreateNftCollection(MsgCreateNftCollection) returns (MsgCreateNftCollectionResponse);
-      rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
+      rpc MintNfts(MsgMintNfts) returns (MsgMintNftsResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
 message MsgCreateNftCollection {
   string creator = 1;
-  MsgCreateNftCollectionMetadata metadata = 2;
+  MsgCreateNftCollectionMetadata collection = 2;
   string pub_key_hex = 3;
   string pub_key_type = 4;
 }
@@ -29,29 +29,28 @@ message MsgCreateNftCollectionMetadata {
   string url = 4;
   string description = 5;
   repeated NftCollectionLink links = 6;
-  string category = 7;
-  string creator_earnings = 8;
-  string display_theme = 9;
-  string symbol = 10;
-  bool opened = 11;
-  google.protobuf.Any data = 12;
+  repeated NftCollectionOption options = 7;
+  string category = 8;
+  string symbol = 9;
+  bool opened = 10;
+  google.protobuf.Any data = 11;
 }
 
 message MsgCreateNftCollectionResponse {
   string id = 1;
 }
 
-message MsgMintNft {
+message MsgMintNfts {
   string creator = 1;
-  MsgMintNfts nfts = 2;
-  string pub_key_hex = 3;
-  string pub_key_type = 4;
+  string collection_creator = 2;
+  string collection_id = 3;
+  MsgMintNftsMetadata nfts = 4;
+  string pub_key_hex = 5;
+  string pub_key_type = 6;
 }
 
-message MsgMintNfts {
-  string collection_creator = 1;
-  string collection_id = 2;
-  repeated MsgMintNftMetadata metadata = 3;
+message MsgMintNftsMetadata {
+  repeated MsgMintNftMetadata nfts = 1;
 }
 
 message MsgMintNftMetadata {
@@ -66,7 +65,7 @@ message MsgMintNftMetadata {
   bool resellable = 9;
 }
 
-message MsgMintNftResponse {
+message MsgMintNftsResponse {
   repeated string ids = 1;
 }
 

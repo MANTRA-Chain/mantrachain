@@ -5,30 +5,33 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgMintNft = "mint_nft"
+const TypeMsgMintNft = "mint_nfts"
 
-var _ sdk.Msg = &MsgMintNft{}
+var _ sdk.Msg = &MsgMintNfts{}
 
-func NewMsgMintNft(creator string, nfts *MsgMintNfts,
+func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
+	nfts *MsgMintNftsMetadata,
 	pubKeyHex string,
-	pubKeyType string) *MsgMintNft {
-	return &MsgMintNft{
-		Creator:    creator,
-		Nfts:       nfts,
-		PubKeyHex:  pubKeyHex,
-		PubKeyType: pubKeyType,
+	pubKeyType string) *MsgMintNfts {
+	return &MsgMintNfts{
+		Creator:           creator,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		Nfts:              nfts,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
 	}
 }
 
-func (msg *MsgMintNft) Route() string {
+func (msg *MsgMintNfts) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgMintNft) Type() string {
+func (msg *MsgMintNfts) Type() string {
 	return TypeMsgMintNft
 }
 
-func (msg *MsgMintNft) GetSigners() []sdk.AccAddress {
+func (msg *MsgMintNfts) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -36,12 +39,12 @@ func (msg *MsgMintNft) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgMintNft) GetSignBytes() []byte {
+func (msg *MsgMintNfts) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgMintNft) ValidateBasic() error {
+func (msg *MsgMintNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
