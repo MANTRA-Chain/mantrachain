@@ -39,8 +39,18 @@ func (c *NftExecutor) SetDefaultClass(collIndex []byte) (bool, error) {
 	return true, nil
 }
 
-func (c *NftExecutor) GetClass(ctx sdk.Context, classId string) (nfttypes.Class, bool) {
+func (c *NftExecutor) GetClass(classId string) (nfttypes.Class, bool) {
 	return c.nftKeeper.GetClass(c.ctx, classId)
+}
+
+func (c *NftExecutor) GetClasses(classesIds []string) []nfttypes.Class {
+	var classes []nfttypes.Class
+	for _, classId := range classesIds {
+		class, _ := c.nftKeeper.GetClass(c.ctx, classId)
+
+		classes = append(classes, class)
+	}
+	return classes
 }
 
 func (c *NftExecutor) MintNftBatch(nfts []nfttypes.NFT, receiver sdk.AccAddress) (bool, error) {
@@ -54,6 +64,31 @@ func (c *NftExecutor) MintNftBatch(nfts []nfttypes.NFT, receiver sdk.AccAddress)
 	return true, nil
 }
 
-func (c *NftExecutor) GetNft(ctx sdk.Context, classId string, nftId string) (nfttypes.NFT, bool) {
+func (c *NftExecutor) BurnNftBatch(classId string, nftsIds []string) (bool, error) {
+	for _, id := range nftsIds {
+		err := c.nftKeeper.Burn(c.ctx, classId, id)
+
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+func (c *NftExecutor) GetNft(classId string, nftId string) (nfttypes.NFT, bool) {
 	return c.nftKeeper.GetNFT(c.ctx, classId, nftId)
+}
+
+func (c *NftExecutor) GetNfts(classId string, nftsIds []string) []nfttypes.NFT {
+	var nfts []nfttypes.NFT
+	for _, nftId := range nftsIds {
+		nft, _ := c.nftKeeper.GetNFT(c.ctx, classId, nftId)
+
+		nfts = append(nfts, nft)
+	}
+	return nfts
+}
+
+func (c *NftExecutor) GetNftOwner(classId string, nftId string) sdk.AccAddress {
+	return c.nftKeeper.GetOwner(c.ctx, classId, nftId)
 }

@@ -43,6 +43,7 @@ func NewParams() Params {
 		ValidNftMetadataAttributesTypeMaxLength:     25,
 		ValidNftMetadataAttributesValueMaxLength:    25,
 		ValidNftMetadataAttributesSubValueMaxLength: 50,
+		ValidBurnNftMaxCount:                        50,
 	}
 }
 

@@ -11,6 +11,8 @@ type NFTKeeper interface {
 	GetClass(ctx sdk.Context, classID string) (nfttypes.Class, bool)
 	Mint(ctx sdk.Context, token nfttypes.NFT, receiver sdk.AccAddress) error
 	GetNFT(ctx sdk.Context, classID, nftID string) (nfttypes.NFT, bool)
+	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
+	Burn(ctx sdk.Context, classID string, nftID string) error
 }
 
 type MnsKeeper interface {

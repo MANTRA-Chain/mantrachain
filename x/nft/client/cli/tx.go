@@ -24,9 +24,9 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	nftTxCmd.AddCommand(
-		NewCmdSend(),
-	)
+	// nftTxCmd.AddCommand(
+	// 	NewCmdSend(),
+	// )
 
 	return nftTxCmd
 }

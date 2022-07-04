@@ -44,6 +44,12 @@ func (k Keeper) HasNft(
 	return store.Has(index)
 }
 
+// DeleteNft removes a specific nft in the store from its index
+func (k Keeper) DeleteNft(ctx sdk.Context, collectionIndex []byte, nftIndex []byte) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	store.Delete(nftIndex)
+}
+
 // GetAllNft returns all nft
 func (k Keeper) GetAllNft(ctx sdk.Context, collIndex []byte) (list []types.Nft) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collIndex))

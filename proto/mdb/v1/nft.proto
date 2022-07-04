@@ -16,16 +16,12 @@ message Nft {
   repeated NftLink links = 7 [(gogoproto.moretags) = "yaml:\"links\""];
   repeated NftAttribute attributes = 8 [(gogoproto.moretags) = "yaml:\"attributes\""];
   bool resellable = 9 [(gogoproto.moretags) = "yaml:\"resellable\""];
-  bytes owner = 10 [
+  bytes creator = 10 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  bytes creator = 11 [
-      (gogoproto.moretags) = "yaml:\"creator\"",
-      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string collection_id = 12 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
-  bytes collection_index = 13 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
+  string collection_id = 11 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
+  bytes collection_index = 12 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
 }
 
 message NftAttribute {

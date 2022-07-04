@@ -27,7 +27,17 @@ service Query {
 	rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
 		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{id}";
 	}
-  // this line is used by starport scaffolding # 2
+  // Queries a list of NftCollections items.
+	rpc NftCollections(QueryGetNftCollectionsRequest) returns (QueryGetNftCollectionsResponse) {
+		option (google.api.http).get = "/mdb/v1/nftCollection/{creator}";
+	}
+
+// Queries a list of CollectionNfts items.
+	rpc CollectionNfts(QueryGetCollectionNftsRequest) returns (QueryGetCollectionNftsResponse) {
+		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -81,6 +91,25 @@ message QueryGetNftResponse {
   google.protobuf.Any data = 11;
   string collection_id = 12;
   bool resellable = 13;
+}
+
+message QueryGetNftCollectionsRequest {
+  string creator = 1;
+}
+
+message QueryGetNftCollectionsResponse {
+  repeated QueryGetNftCollectionResponse nftCollections = 1;
+}
+
+message QueryGetCollectionNftsRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+
+  // TODO: Pagination
+}
+
+message QueryGetCollectionNftsResponse {
+  repeated QueryGetNftResponse nfts = 1;
 }
 
 // this line is used by starport scaffolding # 3

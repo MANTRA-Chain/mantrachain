@@ -49,7 +49,7 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nft, found := nftExecutor.GetNft(ctx, string(collIndex), string(index))
+	nft, found := nftExecutor.GetNft(string(collIndex), string(index))
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
@@ -64,7 +64,7 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		Links:        meta.Links,
 		Attributes:   meta.Attributes,
 		Creator:      meta.Creator.String(),
-		Owner:        meta.Owner.String(),
+		Owner:        nftExecutor.GetNftOwner(string(collIndex), string(index)).String(),
 		Resellable:   meta.Resellable,
 		Data:         nft.Data,
 		CollectionId: meta.CollectionId,

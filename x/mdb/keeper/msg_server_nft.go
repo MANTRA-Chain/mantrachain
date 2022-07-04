@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
-	"github.com/LimeChain/mantrachain/x/mdb/utils"
+	// "github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -23,17 +23,20 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	}
 
 	if len(msg.Nfts.Nfts) == 0 {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsLength, "nfts length %d invalid, min 1", len(msg.Nfts.Nfts))
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsCount, "nfts length %d invalid, min 1", len(msg.Nfts.Nfts))
 	}
+
+	var collectionCreator sdk.AccAddress
 
 	if msg.CollectionCreator == "" {
 		msg.CollectionCreator = msg.Creator
-	}
+		collectionCreator = owner
+	} else {
+		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
 
-	collectionCreator, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
-
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+		}
 	}
 
 	collCtrl := NewNftCollectionController(ctx, &types.MsgCreateNftCollectionMetadata{
@@ -68,14 +71,19 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	err = ctrl.
 		FilterNotExist().
+		Execute()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = ctrl.
 		ValidNftMetadata().
 		Validate()
 
 	if err != nil {
 		return nil, err
 	}
-
-	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 
 	var nfts []nfttypes.NFT
 	var ids []string
@@ -92,25 +100,27 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		})
 	}
 
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 	_, err = nftExecutor.MintNftBatch(nfts, owner)
 	if err != nil {
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
+	// Uncomment after added delete did update did owner methods
+	// didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
 
 	for _, nftMetadata := range filtered {
 		index := types.GetNftIndex(collIndex, nftMetadata.Id)
-		indexHex := utils.GetIndexHex(index)
+		// indexHex := utils.GetIndexHex(index)
 
-		_, err = didExecutor.SetDid(indexHex)
-		if err != nil {
-			return nil, err
-		}
+		// _, err = didExecutor.SetDid(indexHex)
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		newNft := types.Nft{
-			Index:           index,
-			Did:             didExecutor.GetDidId(),
+			Index: index,
+			// Did:             didExecutor.GetDidId(),
 			Images:          nftMetadata.Images,
 			Url:             nftMetadata.Url,
 			Links:           nftMetadata.Links,
@@ -120,7 +130,6 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			Resellable:      nftMetadata.Resellable,
 			CollectionIndex: collIndex,
 			CollectionId:    collId,
-			Owner:           owner,
 			Creator:         owner,
 		}
 
@@ -130,6 +139,101 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	}
 
 	return &types.MsgMintNftsResponse{
+		Ids: ids,
+	}, nil
+}
+
+func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*types.MsgBurnNftsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Convert owner address string to sdk.AccAddress
+	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(msg.Nfts.NftsIds) == 0 {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsBurnCount, "nfts length %d invalid, min 1", len(msg.Nfts.NftsIds))
+	}
+
+	var collectionCreator sdk.AccAddress
+
+	if msg.CollectionCreator == "" {
+		msg.CollectionCreator = msg.Creator
+		collectionCreator = owner
+	} else {
+		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
+
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+		}
+	}
+
+	collCtrl := NewNftCollectionController(ctx, &types.MsgCreateNftCollectionMetadata{
+		Id: msg.CollectionId,
+	}, collectionCreator).WithStore(k).WithConfiguration(k.GetParams(ctx))
+
+	err = collCtrl.
+		MustExist().
+		CanBurnNfts(owner).
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
+	collIndex := collCtrl.getIndex()
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+	}
+
+	var nfts []*types.MsgNftMetadata
+
+	for _, id := range msg.Nfts.NftsIds {
+		nfts = append(nfts, &types.MsgNftMetadata{
+			Id: id,
+		})
+	}
+
+	ctrl := NewNftController(ctx, collIndex, nfts).WithStore(k).WithConfiguration(k.GetParams(ctx))
+
+	err = ctrl.
+		FilterNotExist().
+		FilterNotOwn(owner).
+		Execute()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var nftsIds []string
+	var ids []string
+	filtered := ctrl.getFiltered()
+
+	for _, nftMetadata := range filtered {
+		index := types.GetNftIndex(collIndex, nftMetadata.Id)
+		nftsIds = append(nftsIds, string(index))
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+	_, err = nftExecutor.BurnNftBatch(string(collIndex), nftsIds)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, id := range nftsIds {
+		index := types.GetNftIndex(collIndex, id)
+
+		// TODO: Add delete did method
+
+		k.DeleteNft(ctx, collIndex, index)
+
+		ids = append(ids, id)
+	}
+
+	return &types.MsgBurnNftsResponse{
 		Ids: ids,
 	}, nil
 }

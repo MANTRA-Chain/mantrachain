@@ -12,6 +12,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
 service Msg {
       rpc CreateNftCollection(MsgCreateNftCollection) returns (MsgCreateNftCollectionResponse);
       rpc MintNfts(MsgMintNfts) returns (MsgMintNftsResponse);
+      rpc BurnNfts(MsgBurnNfts) returns (MsgBurnNftsResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -44,16 +45,16 @@ message MsgMintNfts {
   string creator = 1;
   string collection_creator = 2;
   string collection_id = 3;
-  MsgMintNftsMetadata nfts = 4;
+  MsgNftsMetadata nfts = 4;
   string pub_key_hex = 5;
   string pub_key_type = 6;
 }
 
-message MsgMintNftsMetadata {
-  repeated MsgMintNftMetadata nfts = 1;
+message MsgNftsMetadata {
+  repeated MsgNftMetadata nfts = 1;
 }
 
-message MsgMintNftMetadata {
+message MsgNftMetadata {
   string id = 1;
   string title = 2;
   repeated NftImage images = 3;
@@ -66,6 +67,23 @@ message MsgMintNftMetadata {
 }
 
 message MsgMintNftsResponse {
+  repeated string ids = 1;
+}
+
+message MsgBurnNfts {
+  string creator = 1;
+  string collection_creator = 2;
+  string collection_id = 3;
+  MsgNftsIds nfts = 4;
+  string pub_key_hex = 5;
+  string pub_key_type = 6;
+}
+
+message MsgNftsIds {
+  repeated string nfts_ids = 1;
+}
+
+message MsgBurnNftsResponse {
   repeated string ids = 1;
 }
 

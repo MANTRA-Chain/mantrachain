@@ -37,7 +37,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nftColl, found := nftExecutor.GetClass(ctx, string(index))
+	nftColl, found := nftExecutor.GetClass(string(index))
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}

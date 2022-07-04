@@ -36,4 +36,5 @@ message Params {
   int32 valid_nft_metadata_attributes_type_max_length = 25;
   int32 valid_nft_metadata_attributes_value_max_length = 26;
   int32 valid_nft_metadata_attributes_sub_value_max_length = 27;
+  int32 valid_burn_nft_max_count = 28;
 }
