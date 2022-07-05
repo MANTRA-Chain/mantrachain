@@ -43,7 +43,7 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nfts := nftExecutor.GetNfts(req.CollectionId, nftsIndexes)
+	nfts := nftExecutor.GetNfts(string(collIndex), nftsIndexes)
 
 	var nftsRes []*types.QueryGetNftResponse
 

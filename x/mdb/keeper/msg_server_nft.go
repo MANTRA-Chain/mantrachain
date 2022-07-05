@@ -110,6 +110,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	// didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
 
 	// TODO: use async iterator
+	// TODO: use the upper range filtered
 	for _, nftMetadata := range filtered {
 		index := types.GetNftIndex(collIndex, nftMetadata.Id)
 		// indexHex := utils.GetIndexHex(index)

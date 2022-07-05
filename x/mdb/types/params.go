@@ -15,7 +15,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		ValidNftCollectionId:                               "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
+		ValidNftCollectionId:                               "[a-zA-Z0-9_/:-]{0,100}",
 		NftCollectionDefaultId:                             "default",
 		NftCollectionDefaultName:                           "default",
 		ValidNftCollectionMetadataSymbolMinLength:          2,
@@ -31,7 +31,7 @@ func NewParams() Params {
 		ValidNftCollectionMetadataOptionsValueMaxLength:    25,
 		ValidNftCollectionMetadataOptionsSubValueMaxLength: 50,
 
-		ValidNftId:                                  "[a-zA-Z][a-zA-Z0-9/:-]{2,100}",
+		ValidNftId:                                  "[a-zA-Z0-9_/:-]{0,100}",
 		ValidNftMetadataMaxCount:                    50,
 		ValidNftMetadataTitleMaxLength:              100,
 		ValidNftMetadataDescriptionMaxLength:        1000,
