@@ -72,6 +72,8 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 
 	k.SetNftCollection(ctx, newNftCollection)
 
+	// TODO: emit event
+
 	return &types.MsgCreateNftCollectionResponse{
 		Id: id,
 	}, nil

@@ -109,6 +109,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	// Uncomment after added delete did update did owner methods
 	// didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
 
+	// TODO: use async iterator
 	for _, nftMetadata := range filtered {
 		index := types.GetNftIndex(collIndex, nftMetadata.Id)
 		// indexHex := utils.GetIndexHex(index)
@@ -137,6 +138,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 		ids = append(ids, string(nftMetadata.Id))
 	}
+
+	// TODO: emit event
 
 	return &types.MsgMintNftsResponse{
 		Ids: ids,
@@ -223,6 +226,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
+	// TODO: use async iterator
 	for _, id := range nftsIds {
 		index := types.GetNftIndex(collIndex, id)
 
@@ -232,6 +236,8 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 		ids = append(ids, id)
 	}
+
+	// TODO: emit event
 
 	return &types.MsgBurnNftsResponse{
 		Ids: ids,

@@ -94,6 +94,7 @@ func (c *NftController) ValidNftMetadata() *NftController {
 }
 
 func (c *NftController) filterNotExist() error {
+	// TODO: use async iterator
 	filtered := []*types.MsgNftMetadata{}
 
 	for _, nft := range c.metadata {
@@ -102,7 +103,7 @@ func (c *NftController) filterNotExist() error {
 		}
 
 		index := types.GetNftIndex(c.collIndex, nft.Id)
-		if c.store.HasNft(c.ctx, c.collIndex, index) {
+		if !c.store.HasNft(c.ctx, c.collIndex, index) {
 			filtered = append(filtered, nft)
 		}
 	}
@@ -112,6 +113,7 @@ func (c *NftController) filterNotExist() error {
 }
 
 func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
+	// TODO: use async iterator
 	filtered := []*types.MsgNftMetadata{}
 
 	for _, nft := range c.metadata {
