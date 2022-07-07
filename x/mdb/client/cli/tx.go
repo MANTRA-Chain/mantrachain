@@ -6,18 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/cosmos/cosmos-sdk/client"
 )
 
 var (
 	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
-)
-
-const (
-	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
-	listSeparator              = ","
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -30,9 +24,18 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdCreateNftCollection())
-	cmd.AddCommand(CmdMintNfts())
-	cmd.AddCommand(CmdBurnNfts())
+	cmd.AddCommand(
+		CmdCreateNftCollection(),
+		CmdMintNfts(),
+		CmdBurnNfts(),
+		CmdTransferNfts(),
+		CmdApproveNfts(),
+		CmdApproveAllNfts(),
+		CmdMintNft(),
+		CmdBurnNft(),
+		CmdTransferNft(),
+		CmdApproveNft(),
+	)
 	// this line is used by starport scaffolding # 1
 
 	return cmd

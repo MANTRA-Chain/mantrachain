@@ -22,12 +22,16 @@ type NftCollectionController struct {
 	creator       sdk.AccAddress
 }
 
-func NewNftCollectionController(ctx sdk.Context, metadata *types.MsgCreateNftCollectionMetadata, creator sdk.AccAddress) *NftCollectionController {
+func NewNftCollectionController(ctx sdk.Context, creator sdk.AccAddress) *NftCollectionController {
 	return &NftCollectionController{
-		metadata: metadata,
-		ctx:      ctx,
-		creator:  creator,
+		ctx:     ctx,
+		creator: creator,
 	}
+}
+
+func (c *NftCollectionController) WithMetadata(metadata *types.MsgCreateNftCollectionMetadata) *NftCollectionController {
+	c.metadata = metadata
+	return c
 }
 
 func (c *NftCollectionController) WithStore(store msgServer) *NftCollectionController {

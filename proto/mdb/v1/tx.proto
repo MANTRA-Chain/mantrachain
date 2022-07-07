@@ -15,31 +15,12 @@ service Msg {
       rpc BurnNfts(MsgBurnNfts) returns (MsgBurnNftsResponse);
       rpc TransferNfts(MsgTransferNfts) returns (MsgTransferNftsResponse);
       rpc ApproveNfts(MsgApproveNfts) returns (MsgApproveNftsResponse);
-      rpc RevokeNfts(MsgRevokeNfts) returns (MsgRevokeNftsResponse);
       rpc ApproveAllNfts(MsgApproveAllNfts) returns (MsgApproveAllNftsResponse);
-      rpc RevokeAllNfts(MsgRevokeAllNfts) returns (MsgRevokeAllNftsResponse);
       rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
       rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
       rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
       rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
-      rpc RevokeNft(MsgRevokeNft) returns (MsgRevokeNftResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
-}
-
-message MsgRevokeNft {
-  string creator = 1;
-  string receiver = 2;
-  string collection_creator = 3;
-  string collection_id = 4;
-  string nft_id = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
-}
-
-message MsgRevokeNftResponse {
-  string id = 1;
-  string address = 2;
 }
 
 message MsgApproveNft {
@@ -48,25 +29,28 @@ message MsgApproveNft {
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
+  bool approved = 6;
+  string pub_key_hex = 7;
+  string pub_key_type = 8;
+  bool strict_collection = 9;
 }
 
 message MsgApproveNftResponse {
   string id = 1;
   string address = 2;
+  bool approved = 3;
 }
 
 message MsgTransferNft {
   string creator = 1;
-  string receiver = 2;
-  string collection_creator = 3;
-  string collection_id = 4;
-  string nft_id = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
+  string owner = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  string nft_id = 6;
+  string pub_key_hex = 7;
+  string pub_key_type = 8;
+  bool strict_collection = 9;
 }
 
 message MsgTransferNftResponse {
@@ -81,7 +65,7 @@ message MsgBurnNft {
   string nft_id = 4;
   string pub_key_hex = 5;
   string pub_key_type = 6;
-  bool strict = 7;
+  bool strict_collection = 7;
 }
 
 message MsgBurnNftResponse {
@@ -96,7 +80,7 @@ message MsgMintNft {
   MsgNftMetadata nft = 5;
   string pub_key_hex = 6;
   string pub_key_type = 7;
-  bool strict = 8;
+  bool strict_collection = 8;
 }
 
 message MsgMintNftResponse {
@@ -104,43 +88,18 @@ message MsgMintNftResponse {
   string address = 2;
 }
 
-message MsgRevokeAllNfts {
-  string creator = 1;
-  string receiver = 2;
-  string pub_key_hex = 3;
-  string pub_key_type = 4;
-  bool strict = 5;
-}
-
-message MsgRevokeAllNftsResponse {
-  string address = 1;
-}
-
 message MsgApproveAllNfts {
   string creator = 1;
   string receiver = 2;
-  string pub_key_hex = 3;
-  string pub_key_type = 4;
-  bool strict = 5;
+  bool approved = 3;
+  string pub_key_hex = 4;
+  string pub_key_type = 5;
+  bool strict_collection = 6;
 }
 
 message MsgApproveAllNftsResponse {
   string address = 1;
-}
-
-message MsgRevokeNfts {
-  string creator = 1;
-  string receiver = 2;
-  string collection_creator = 3;
-  string collection_id = 4;
-  MsgNftsIds nfts = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
-}
-
-message MsgRevokeNftsResponse {
-  repeated string ids = 1;
+  bool approved = 2;
 }
 
 message MsgApproveNfts {
@@ -149,24 +108,28 @@ message MsgApproveNfts {
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftsIds nfts = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
+  bool approved = 6;
+  string pub_key_hex = 7;
+  string pub_key_type = 8;
+  bool strict_collection = 9;
 }
 
 message MsgApproveNftsResponse {
   repeated string ids = 1;
+  string address = 2;
+  bool approved = 3;
 }
 
 message MsgTransferNfts {
   string creator = 1;
-  string receiver = 2;
-  string collection_creator = 3;
-  string collection_id = 4;
-  MsgNftsIds nfts = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict = 8;
+  string owner = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  MsgNftsIds nfts = 6;
+  string pub_key_hex = 7;
+  string pub_key_type = 8;
+  bool strict_collection = 9;
 }
 
 message MsgTransferNftsResponse {
@@ -179,7 +142,7 @@ message MsgCreateNftCollection {
   MsgCreateNftCollectionMetadata collection = 2;
   string pub_key_hex = 3;
   string pub_key_type = 4;
-  bool strict = 5;
+  bool strict_collection = 5;
 }
 
 message MsgCreateNftCollectionMetadata {
@@ -208,12 +171,11 @@ message MsgMintNfts {
   MsgNftsMetadata nfts = 5;
   string pub_key_hex = 6;
   string pub_key_type = 7;
-  bool strict = 8;
+  bool strict_collection = 8;
 }
 
 message MsgNftsMetadata {
   repeated MsgNftMetadata nfts = 1;
-  string address = 2;
 }
 
 message MsgNftMetadata {
@@ -230,6 +192,7 @@ message MsgNftMetadata {
 
 message MsgMintNftsResponse {
   repeated string ids = 1;
+  string address = 2;
 }
 
 message MsgBurnNfts {
@@ -239,7 +202,7 @@ message MsgBurnNfts {
   MsgNftsIds nfts = 4;
   string pub_key_hex = 5;
   string pub_key_type = 6;
-  bool strict = 7;
+  bool strict_collection = 7;
 }
 
 message MsgNftsIds {

@@ -10,7 +10,9 @@ const (
 	AttributeKeyNftCollection = "nft_collection"
 	AttributeKeyNfts          = "nfts"
 	AttributeKeyCreator       = "creator"
+	AttributeKeyOwner         = "owner"
 	AttributeKeyReceiver      = "receiver"
+	AttributeKeyApproved      = "approved"
 )
 
 var (

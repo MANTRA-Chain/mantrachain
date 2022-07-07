@@ -10,14 +10,11 @@ const (
 	TypeMsgBurnNfts       = "burn_nfts"
 	TypeMsgTransferNfts   = "transfer_nfts"
 	TypeMsgApproveNfts    = "approve_nfts"
-	TypeMsgRevokeNfts     = "revoke_nfts"
 	TypeMsgApproveAllNfts = "approve_all_nfts"
-	TypeMsgRevokeAllNfts  = "revoke_all_nfts"
 	TypeMsgMintNft        = "mint_nft"
 	TypeMsgBurnNft        = "burn_nft"
 	TypeMsgTransferNft    = "transfer_nft"
 	TypeMsgApproveNft     = "approve_nft"
-	TypeMsgRevokeNft      = "revoke_nft"
 )
 
 var (
@@ -25,14 +22,11 @@ var (
 	_ sdk.Msg = &MsgBurnNfts{}
 	_ sdk.Msg = &MsgTransferNfts{}
 	_ sdk.Msg = &MsgApproveNfts{}
-	_ sdk.Msg = &MsgRevokeNfts{}
 	_ sdk.Msg = &MsgApproveAllNfts{}
-	_ sdk.Msg = &MsgRevokeAllNfts{}
 	_ sdk.Msg = &MsgMintNft{}
 	_ sdk.Msg = &MsgBurnNft{}
 	_ sdk.Msg = &MsgTransferNft{}
 	_ sdk.Msg = &MsgApproveNft{}
-	_ sdk.Msg = &MsgRevokeNft{}
 )
 
 func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
@@ -40,7 +34,7 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 	receiver string,
 	pubKeyHex string,
 	pubKeyType string,
-	strict bool,
+	strictCollection bool,
 ) *MsgMintNfts {
 	return &MsgMintNfts{
 		Creator:           creator,
@@ -50,7 +44,7 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 		Receiver:          receiver,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
-		Strict:            strict,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -86,6 +80,14 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
+	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
@@ -99,7 +101,7 @@ func NewMsgBurnNfts(creator string, collectionCreator string, collectionId strin
 	nftsIds *MsgNftsIds,
 	pubKeyHex string,
 	pubKeyType string,
-	strict bool,
+	strictCollection bool,
 ) *MsgBurnNfts {
 	return &MsgBurnNfts{
 		Creator:           creator,
@@ -108,7 +110,7 @@ func NewMsgBurnNfts(creator string, collectionCreator string, collectionId strin
 		Nfts:              nftsIds,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
-		Strict:            strict,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -138,6 +140,14 @@ func (msg *MsgBurnNfts) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
+	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
@@ -147,18 +157,24 @@ func (msg *MsgBurnNfts) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgTransferNfts(creator string, receiver string, collectionCreator string, collectionId string,
+func NewMsgTransferNfts(creator string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
+	owner string,
+	receiver string,
 	pubKeyHex string,
-	pubKeyType string) *MsgTransferNfts {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgTransferNfts {
 	return &MsgTransferNfts{
 		Creator:           creator,
+		Owner:             owner,
 		Receiver:          receiver,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -188,9 +204,21 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	_, err = sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver owner (%s)", err)
+	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
 	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -203,16 +231,21 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 
 func NewMsgApproveNfts(creator string, receiver string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
+	approved bool,
 	pubKeyHex string,
-	pubKeyType string) *MsgApproveNfts {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgApproveNfts {
 	return &MsgApproveNfts{
 		Creator:           creator,
 		Receiver:          receiver,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
+		Approved:          approved,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -246,59 +279,13 @@ func (msg *MsgApproveNfts) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.CollectionCreator != "" {
-		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
-	}
-	return nil
-}
-
-func NewMsgRevokeNfts(creator string, receiver string, collectionCreator string, collectionId string,
-	nftsIds *MsgNftsIds,
-	pubKeyHex string,
-	pubKeyType string) *MsgRevokeNfts {
-	return &MsgRevokeNfts{
-		Creator:           creator,
-		Receiver:          receiver,
-		CollectionCreator: collectionCreator,
-		CollectionId:      collectionId,
-		Nfts:              nftsIds,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
-	}
-}
-
-func (msg *MsgRevokeNfts) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRevokeNfts) Type() string {
-	return TypeMsgRevokeNfts
-}
-
-func (msg *MsgRevokeNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgRevokeNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgRevokeNfts) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Receiver)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
 	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -309,54 +296,13 @@ func (msg *MsgRevokeNfts) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgRevokeAllNfts(creator string, receiver string, pubKeyHex string,
-	pubKeyType string) *MsgRevokeAllNfts {
-	return &MsgRevokeAllNfts{
-		Creator:    creator,
-		Receiver:   receiver,
-		PubKeyHex:  pubKeyHex,
-		PubKeyType: pubKeyType,
-	}
-}
-
-func (msg *MsgRevokeAllNfts) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRevokeAllNfts) Type() string {
-	return TypeMsgRevokeAllNfts
-}
-
-func (msg *MsgRevokeAllNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgRevokeAllNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgRevokeAllNfts) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Receiver)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
-	}
-	return nil
-}
-
-func NewMsgApproveAllNfts(creator string, receiver string, pubKeyHex string,
+func NewMsgApproveAllNfts(creator string, receiver string,
+	approved bool, pubKeyHex string,
 	pubKeyType string) *MsgApproveAllNfts {
 	return &MsgApproveAllNfts{
 		Creator:    creator,
 		Receiver:   receiver,
+		Approved:   approved,
 		PubKeyHex:  pubKeyHex,
 		PubKeyType: pubKeyType,
 	}
@@ -399,7 +345,9 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 	nft *MsgNftMetadata,
 	receiver string,
 	pubKeyHex string,
-	pubKeyType string) *MsgMintNft {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgMintNft {
 	return &MsgMintNft{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
@@ -408,6 +356,7 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 		Receiver:          receiver,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -443,6 +392,14 @@ func (msg *MsgMintNft) ValidateBasic() error {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
+	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
@@ -455,7 +412,9 @@ func (msg *MsgMintNft) ValidateBasic() error {
 func NewMsgBurnNft(creator string, collectionCreator string, collectionId string,
 	nftId string,
 	pubKeyHex string,
-	pubKeyType string) *MsgBurnNft {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgBurnNft {
 	return &MsgBurnNft{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
@@ -463,6 +422,7 @@ func NewMsgBurnNft(creator string, collectionCreator string, collectionId string
 		NftId:             nftId,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -492,6 +452,14 @@ func (msg *MsgBurnNft) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
+	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
@@ -502,17 +470,22 @@ func (msg *MsgBurnNft) ValidateBasic() error {
 }
 
 func NewMsgTransferNft(creator string, receiver string, collectionCreator string, collectionId string,
+	owner string,
 	nftId string,
 	pubKeyHex string,
-	pubKeyType string) *MsgTransferNft {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgTransferNft {
 	return &MsgTransferNft{
 		Creator:           creator,
+		Owner:             owner,
 		Receiver:          receiver,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -546,6 +519,14 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+		}
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
+	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
@@ -557,16 +538,21 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 
 func NewMsgApproveNft(creator string, receiver string, collectionCreator string, collectionId string,
 	nftId string,
+	approved bool,
 	pubKeyHex string,
-	pubKeyType string) *MsgApproveNft {
+	pubKeyType string,
+	strictCollection bool,
+) *MsgApproveNft {
 	return &MsgApproveNft{
 		Creator:           creator,
 		Receiver:          receiver,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
+		Approved:          approved,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		StrictCollection:  strictCollection,
 	}
 }
 
@@ -600,59 +586,13 @@ func (msg *MsgApproveNft) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.CollectionCreator != "" {
-		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+	if msg.StrictCollection {
+		if msg.CollectionCreator == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
-	}
-	return nil
-}
-
-func NewMsgRevokeNft(creator string, receiver string, collectionCreator string, collectionId string,
-	nftId string,
-	pubKeyHex string,
-	pubKeyType string) *MsgRevokeNft {
-	return &MsgRevokeNft{
-		Creator:           creator,
-		Receiver:          receiver,
-		CollectionCreator: collectionCreator,
-		CollectionId:      collectionId,
-		NftId:             nftId,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
-	}
-}
-
-func (msg *MsgRevokeNft) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgRevokeNft) Type() string {
-	return TypeMsgRevokeNft
-}
-
-func (msg *MsgRevokeNft) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgRevokeNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgRevokeNft) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	_, err = sdk.AccAddressFromBech32(msg.Receiver)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		if msg.CollectionId == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+		}
 	}
 	if msg.CollectionCreator != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)

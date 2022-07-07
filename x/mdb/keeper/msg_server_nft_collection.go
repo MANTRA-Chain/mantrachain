@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
-	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -23,7 +22,8 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
 	}
 
-	collectionController := NewNftCollectionController(ctx, msg.Collection, owner).
+	collectionController := NewNftCollectionController(ctx, owner).
+		WithMetadata(msg.Collection).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
@@ -39,7 +39,6 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
-	collectionIndexHex := utils.GetIndexHex(collectionIndex)
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 	err = nftExecutor.SetClass(nfttypes.Class{
@@ -56,16 +55,8 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
-	_, err = didExecutor.SetDid(collectionIndexHex)
-
-	if err != nil {
-		return nil, err
-	}
-
 	newNftCollection := types.NftCollection{
 		Index:    collectionIndex,
-		Did:      didExecutor.GetDidId(),
 		Images:   msg.Collection.Images,
 		Url:      msg.Collection.Url,
 		Links:    msg.Collection.Links,

@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
-	// "github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -49,7 +49,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -74,7 +74,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, msg.Nfts.Nfts).
+	nftController := NewNftController(ctx, collectionIndex).
+		WithMetadata(msg.Nfts.Nfts).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
@@ -104,9 +105,6 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
-	// Uncomment after added delete did update did owner methods
-	// didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
-
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
@@ -118,16 +116,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			Data:    nftMetadata.Data,
 		})
 
-		// nftIndexHex := utils.GetIndexHex(nftIndex)
-
-		// _, err = didExecutor.SetDid(nftIndexHex)
-		// if err != nil {
-		// 	return nil, err
-		// }
-
 		newNftsMetadata = append(newNftsMetadata, types.Nft{
-			Index: nftIndex,
-			// Did:             didExecutor.GetDidId(),
+			Index:           nftIndex,
 			Images:          nftMetadata.Images,
 			Url:             nftMetadata.Url,
 			Links:           nftMetadata.Links,
@@ -164,7 +154,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	)
 
 	return &types.MsgMintNftsResponse{
-		Ids: nftsIds,
+		Ids:     nftsIds,
+		Address: receiver.String(),
 	}, nil
 }
 
@@ -194,7 +185,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -210,7 +201,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -237,8 +228,6 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO: Add delete did method
 
 	k.DeleteNfts(ctx, collectionIndex, nftsIndexes)
 
@@ -290,7 +279,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -306,7 +295,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -328,7 +317,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	nftsIndexes := nftController.getIndexes()
 
-	k.SetApprovedNfts(ctx, collectionIndex, nftsIndexes, creator, receiver, true)
+	k.SetApprovedNfts(ctx, collectionIndex, nftsIndexes, creator, receiver, msg.Approved)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -337,102 +326,16 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveNfts),
 			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNfts, strings.Join(nftsIds[:], ",")),
+			sdk.NewAttribute(types.AttributeKeyApproved, strconv.FormatBool(msg.Approved)),
 			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
 	)
 
 	return &types.MsgApproveNftsResponse{
-		Ids: nftsIds,
-	}, nil
-}
-
-func (k msgServer) RevokeNfts(goCtx context.Context, msg *types.MsgRevokeNfts) (*types.MsgRevokeNftsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if len(msg.Nfts.NftsIds) == 0 {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftsCount, "nfts length %d invalid, min 1", len(msg.Nfts.NftsIds))
-	}
-
-	var collectionCreator sdk.AccAddress
-
-	if msg.CollectionCreator == "" {
-		msg.CollectionCreator = msg.Creator
-		collectionCreator = creator
-	} else {
-		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
-
-		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
-		}
-	}
-
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
-		WithId(msg.CollectionId).
-		WithStore(k).
-		WithConfiguration(k.GetParams(ctx))
-
-	err = collectionController.
-		MustExist().
-		Validate()
-
-	if err != nil {
-		return nil, err
-	}
-
-	collectionIndex := collectionController.getIndex()
-	collectionId := collectionController.getId()
-
-	nftController := NewNftController(ctx, collectionIndex, nil).
-		WithIds(msg.Nfts.NftsIds).
-		WithStore(k).
-		WithConfiguration(k.GetParams(ctx))
-
-	err = nftController.
-		FilterNotExist().
-		FilterNotOwn(creator).
-		Execute()
-
-	if err != nil {
-		return nil, err
-	}
-
-	nftsIds := nftController.getNftsIds()
-
-	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
-	}
-
-	nftsIndexes := nftController.getIndexes()
-
-	k.SetApprovedNfts(ctx, collectionIndex, nftsIndexes, creator, receiver, false)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgRevokeNfts),
-			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
-			sdk.NewAttribute(types.AttributeKeyNfts, strings.Join(nftsIds[:], ",")),
-			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
-			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
-		),
-	)
-
-	return &types.MsgRevokeNftsResponse{
-		Ids: nftsIds,
+		Ids:      nftsIds,
+		Address:  receiver.String(),
+		Approved: msg.Approved,
 	}, nil
 }
 
@@ -451,52 +354,22 @@ func (k msgServer) ApproveAllNfts(goCtx context.Context, msg *types.MsgApproveAl
 		return nil, err
 	}
 
-	k.SetApprovedAllNfts(ctx, creator, receiver, true)
+	k.SetApprovedAllNfts(ctx, creator, receiver, msg.Approved)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveAllNfts),
+			sdk.NewAttribute(types.AttributeKeyApproved, strconv.FormatBool(msg.Approved)),
 			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
 	)
 
 	return &types.MsgApproveAllNftsResponse{
-		Address: receiver.String(),
-	}, nil
-}
-
-func (k msgServer) RevokeAllNfts(goCtx context.Context, msg *types.MsgRevokeAllNfts) (*types.MsgRevokeAllNftsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
-
-	if err != nil {
-		return nil, err
-	}
-
-	k.SetApprovedAllNfts(ctx, creator, receiver, false)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveAllNfts),
-			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
-			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
-		),
-	)
-
-	return &types.MsgRevokeAllNftsResponse{
-		Address: receiver.String(),
+		Address:  receiver.String(),
+		Approved: msg.Approved,
 	}, nil
 }
 
@@ -515,6 +388,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
 
+	if err != nil {
+		return nil, err
+	}
+
 	if msg.Nft == nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft cannot be empty")
 	}
@@ -532,7 +409,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -560,7 +437,8 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	nftsMetadata := make([]*types.MsgNftMetadata, 1)
 	nftsMetadata = append(nftsMetadata, msg.Nft)
 
-	nftController := NewNftController(ctx, collectionIndex, nftsMetadata).
+	nftController := NewNftController(ctx, collectionIndex).
+		WithMetadata(nftsMetadata).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
@@ -634,7 +512,8 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	)
 
 	return &types.MsgMintNftResponse{
-		Id: nftId,
+		Id:      nftId,
+		Address: receiver.String(),
 	}, nil
 }
 
@@ -664,7 +543,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -680,7 +559,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -758,7 +637,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -774,7 +653,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -796,7 +675,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 
 	nftsIndexes := nftController.getIndexes()
 
-	k.SetApprovedNft(ctx, collectionIndex, nftsIndexes[0], creator, receiver, true)
+	k.SetApprovedNft(ctx, collectionIndex, nftsIndexes[0], creator, receiver, msg.Approved)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -805,104 +684,16 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveNft),
 			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNfts, nftsIds[0]),
+			sdk.NewAttribute(types.AttributeKeyApproved, strconv.FormatBool(msg.Approved)),
 			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
 	)
 
 	return &types.MsgApproveNftResponse{
-		Id:      nftsIds[0],
-		Address: receiver.String(),
-	}, nil
-}
-
-func (k msgServer) RevokeNft(goCtx context.Context, msg *types.MsgRevokeNft) (*types.MsgRevokeNftResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if msg.NftId == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft id cannot be empty")
-	}
-
-	var collectionCreator sdk.AccAddress
-
-	if msg.CollectionCreator == "" {
-		msg.CollectionCreator = msg.Creator
-		collectionCreator = creator
-	} else {
-		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
-
-		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
-		}
-	}
-
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
-		WithId(msg.CollectionId).
-		WithStore(k).
-		WithConfiguration(k.GetParams(ctx))
-
-	err = collectionController.
-		MustExist().
-		Validate()
-
-	if err != nil {
-		return nil, err
-	}
-
-	collectionIndex := collectionController.getIndex()
-	collectionId := collectionController.getId()
-
-	nftController := NewNftController(ctx, collectionIndex, nil).
-		WithId(msg.NftId).
-		WithStore(k).
-		WithConfiguration(k.GetParams(ctx))
-
-	err = nftController.
-		FilterNotExist().
-		FilterNotOwn(creator).
-		Execute()
-
-	if err != nil {
-		return nil, err
-	}
-
-	nftsIds := nftController.getNftsIds()
-
-	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
-	}
-
-	nftsIndexes := nftController.getIndexes()
-
-	k.SetApprovedNft(ctx, collectionIndex, nftsIndexes[0], creator, receiver, false)
-
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgRevokeNft),
-			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
-			sdk.NewAttribute(types.AttributeKeyNfts, nftsIds[0]),
-			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
-			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
-		),
-	)
-
-	return &types.MsgRevokeNftResponse{
-		Id:      nftsIds[0],
-		Address: receiver.String(),
+		Id:       nftsIds[0],
+		Address:  receiver.String(),
+		Approved: msg.Approved,
 	}, nil
 }
 
@@ -915,6 +706,12 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		return nil, err
 	}
 
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+
+	if err != nil {
+		return nil, err
+	}
+
 	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
 
 	if err != nil {
@@ -938,7 +735,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -954,13 +751,14 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
 		FilterNotExist().
+		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
@@ -992,6 +790,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNfts, nftsIds[0]),
 			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
 	)
@@ -1006,6 +805,12 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
 
 	if err != nil {
 		return nil, err
@@ -1034,7 +839,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, nil, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -1050,13 +855,14 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftController := NewNftController(ctx, collectionIndex, nil).
+	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
 		FilterNotExist().
+		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
@@ -1088,6 +894,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNfts, strings.Join(nftsIds[:], ",")),
 			sdk.NewAttribute(types.AttributeKeyCreator, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
 	)

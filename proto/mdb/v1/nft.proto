@@ -9,19 +9,18 @@ option (gogoproto.equal_all) = true;
 message Nft {
   bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
   string title = 2 [(gogoproto.moretags) = "yaml:\"title\""]; 
-  string did = 3 [(gogoproto.moretags) = "yaml:\"did\""];
-  repeated NftImage images = 4 [(gogoproto.moretags) = "yaml:\"images\""];
-  string url = 5 [(gogoproto.moretags) = "yaml:\"url\""];
-  string description = 6 [(gogoproto.moretags) = "yaml:\"description\""];
-  repeated NftLink links = 7 [(gogoproto.moretags) = "yaml:\"links\""];
-  repeated NftAttribute attributes = 8 [(gogoproto.moretags) = "yaml:\"attributes\""];
-  bool resellable = 9 [(gogoproto.moretags) = "yaml:\"resellable\""];
-  bytes creator = 10 [
+  repeated NftImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
+  string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
+  string description = 5 [(gogoproto.moretags) = "yaml:\"description\""];
+  repeated NftLink links = 6 [(gogoproto.moretags) = "yaml:\"links\""];
+  repeated NftAttribute attributes = 7 [(gogoproto.moretags) = "yaml:\"attributes\""];
+  bool resellable = 8 [(gogoproto.moretags) = "yaml:\"resellable\""];
+  bytes creator = 9 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  string collection_id = 11 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
-  bytes collection_index = 12 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
+  string collection_id = 10 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
+  bytes collection_index = 11 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
 }
 
 message NftAttribute {

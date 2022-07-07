@@ -21,12 +21,16 @@ type NftController struct {
 	ctx             sdk.Context
 }
 
-func NewNftController(ctx sdk.Context, collectionIndex []byte, metadata []*types.MsgNftMetadata) *NftController {
+func NewNftController(ctx sdk.Context, collectionIndex []byte) *NftController {
 	return &NftController{
-		metadata:        metadata,
 		collectionIndex: collectionIndex,
 		ctx:             ctx,
 	}
+}
+
+func (c *NftController) WithMetadata(metadata []*types.MsgNftMetadata) *NftController {
+	c.metadata = metadata
+	return c
 }
 
 func (c *NftController) WithId(id string) *NftController {

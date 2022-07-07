@@ -6,9 +6,7 @@ import (
 )
 
 const (
-	TypeMsgCreateNftCollection  = "create_nft_collection"
-	TypeMsgApproveNftCollection = "approve_nft_collection"
-	TypeMsgRevokeNftCollection  = "revoke_nft_collection"
+	TypeMsgCreateNftCollection = "create_nft_collection"
 )
 
 var (

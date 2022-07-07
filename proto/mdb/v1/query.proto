@@ -59,16 +59,15 @@ message QueryGetNftCollectionResponse {
   string name = 2;
   string symbol = 3;
   string description = 4;
-  string did = 5;
-  repeated NftCollectionImage images = 6;
-  string url = 7;
-  repeated NftCollectionLink links = 8;
-  repeated NftCollectionOption options = 9;
-  string category = 10;
-  string owner = 11;
-  string creator = 12;
-  bool opened = 13;
-  google.protobuf.Any data = 14;
+  repeated NftCollectionImage images = 5;
+  string url = 6;
+  repeated NftCollectionLink links = 7;
+  repeated NftCollectionOption options = 8;
+  string category = 9;
+  string owner = 10;
+  string creator = 11;
+  bool opened = 12;
+  google.protobuf.Any data = 13;
 }
 
 message QueryGetNftRequest {
@@ -80,17 +79,16 @@ message QueryGetNftRequest {
 message QueryGetNftResponse {
   string id = 1;
   string title = 2;
-  string did = 3;
-  string description = 4;
-  repeated NftImage images = 5;
-  string url = 6;
-  repeated NftLink links = 7;
-  repeated NftAttribute attributes = 8;
-  string owner = 9;
-  string creator = 10;
-  google.protobuf.Any data = 11;
-  string collection_id = 12;
-  bool resellable = 13;
+  string description = 3;
+  repeated NftImage images = 4;
+  string url = 5;
+  repeated NftLink links = 6;
+  repeated NftAttribute attributes = 7;
+  string owner = 8;
+  string creator = 9;
+  google.protobuf.Any data = 10;
+  string collection_id = 11;
+  bool resellable = 12;
 }
 
 message QueryGetNftCollectionsRequest {

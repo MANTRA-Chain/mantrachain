@@ -57,7 +57,6 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	return &types.QueryGetNftResponse{
 		Id:           nft.UriHash,
 		Title:        meta.Title,
-		Did:          meta.Did,
 		Description:  meta.Description,
 		Images:       meta.Images,
 		Url:          meta.Url,
@@ -115,7 +114,6 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 		nftsRes = append(nftsRes, &types.QueryGetNftResponse{
 			Id:           nft.UriHash,
 			Title:        meta.Title,
-			Did:          meta.Did,
 			Description:  meta.Description,
 			Images:       meta.Images,
 			Url:          meta.Url,
