@@ -6,11 +6,22 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
+const (
+	AttributeKeyNftCollection = "nft_collection"
+	AttributeKeyNfts          = "nfts"
+	AttributeKeyCreator       = "creator"
+	AttributeKeyReceiver      = "receiver"
+)
+
 var (
-	nftCollectionIndex    = "nft-collection-id"
-	nftCollectionStoreKey = "nft-collection-store"
-	nftIndex              = "nft-id"
-	nftStoreKey           = "nft-store"
+	nftIndex            = "nft-id"
+	nftCollectionIndex  = "nft-collection-id"
+	nftApprovedAllIndex = "nft-approved-all-index"
+
+	nftStoreKey            = "nft-store"
+	nftCollectionStoreKey  = "nft-collection-store"
+	nftApprovedStoreKey    = "nft-approved-store"
+	nftApprovedAllStoreKey = "nft-approved-all-store"
 
 	delimiter = []byte{0x00}
 )
@@ -79,5 +90,32 @@ func NftStoreKey(collectionIndex []byte) []byte {
 	copy(key[len(nftStoreKey):], delimiter)
 	copy(key[len(nftStoreKey)+len(delimiter):], collectionIndex)
 	copy(key[len(nftStoreKey)+len(delimiter)+len(collectionIndex):], delimiter)
+	return key
+}
+
+func NftApprovedStoreKey(collectionIndex []byte) []byte {
+	key := make([]byte, len(nftApprovedStoreKey)+len(delimiter)+len(collectionIndex)+len(delimiter))
+	copy(key, nftApprovedStoreKey)
+	copy(key[len(nftApprovedStoreKey):], delimiter)
+	copy(key[len(nftApprovedStoreKey)+len(delimiter):], collectionIndex)
+	copy(key[len(nftApprovedStoreKey)+len(delimiter)+len(collectionIndex):], delimiter)
+	return key
+}
+
+func NftApprovedAllStoreKey() []byte {
+	key := make([]byte, len(nftApprovedAllStoreKey)+len(delimiter))
+	copy(key, nftApprovedAllStoreKey)
+	copy(key[len(nftApprovedAllStoreKey):], delimiter)
+	return key
+}
+
+func GetNftApprovedAllIndex(owner sdk.AccAddress) []byte {
+	owner = address.MustLengthPrefix(owner)
+
+	key := make([]byte, len(nftApprovedAllIndex)+len(delimiter)+len(owner)+len(delimiter))
+	copy(key, nftApprovedAllIndex)
+	copy(key[len(nftApprovedAllIndex):], delimiter)
+	copy(key[len(nftApprovedAllIndex)+len(delimiter):], owner)
+	copy(key[len(nftApprovedAllIndex)+len(delimiter)+len(owner):], delimiter)
 	return key
 }

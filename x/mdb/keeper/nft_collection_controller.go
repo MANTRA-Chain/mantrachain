@@ -9,7 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// NftCollectionControllerFunc is the function signature for nftCollection validation functions
 type NftCollectionControllerFunc func(controller *NftCollectionController) error
 
 type NftCollectionController struct {
@@ -36,8 +35,16 @@ func (c *NftCollectionController) WithStore(store msgServer) *NftCollectionContr
 	return c
 }
 
-func (c *NftCollectionController) WithNftCollection(coll types.NftCollection) *NftCollectionController {
-	c.nftCollection = &coll
+func (c *NftCollectionController) WithId(id string) *NftCollectionController {
+	if c.metadata == nil {
+		c.metadata = &types.MsgCreateNftCollectionMetadata{}
+	}
+	c.metadata.Id = id
+	return c
+}
+
+func (c *NftCollectionController) WithNftCollection(collection types.NftCollection) *NftCollectionController {
+	c.nftCollection = &collection
 	return c
 }
 
@@ -63,19 +70,19 @@ func (c *NftCollectionController) CreateDefault() error {
 	c.metadata.Id = c.conf.NftCollectionDefaultId
 	c.metadata.Opened = true
 	c.metadata.Category = string(types.GeneralNftCollectionCat)
-	collIndex := c.getIndex()
+	collectionIndex := c.getIndex()
 
 	c.requireNftCollection()
 
 	if c.nftCollection == nil {
 		nftExecutor := NewNftExecutor(c.ctx, c.store.nftKeeper)
-		_, err := nftExecutor.SetDefaultClass(collIndex)
+		err := nftExecutor.SetDefaultClass(collectionIndex)
 		if err != nil {
 			return err
 		}
 
 		newNftCollection := types.NftCollection{
-			Index:    collIndex,
+			Index:    collectionIndex,
 			Opened:   c.metadata.Opened,
 			Category: c.metadata.Category,
 			Creator:  c.creator,
@@ -129,41 +136,34 @@ func (c *NftCollectionController) MustNotBeDefault() *NftCollectionController {
 	return c
 }
 
-func (c *NftCollectionController) CanMintNfts(minter sdk.AccAddress) *NftCollectionController {
+func (c *NftCollectionController) IsOpenedOrOwner(owner sdk.AccAddress) *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.canMintNfts(minter)
+		return controller.isOpenedOrOwner(owner)
 	})
 	return c
 }
 
-func (c *NftCollectionController) CanBurnNfts(burner sdk.AccAddress) *NftCollectionController {
+func (c *NftCollectionController) ValidCollectionMetadata() *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.canBurnNfts(burner)
-	})
-	return c
-}
-
-func (c *NftCollectionController) ValidNftCollectionMetadata() *NftCollectionController {
-	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataId()
+		return controller.validCollectionMetadataId()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataName()
+		return controller.validCollectionMetadataName()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataCategory()
+		return controller.validCollectionMetadataCategory()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataUrl()
+		return controller.validCollectionMetadataUrl()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataDescription()
+		return controller.validCollectionMetadataDescription()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataSymbol()
+		return controller.validCollectionMetadataSymbol()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataOptions()
+		return controller.validCollectionMetadataOptions()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataImages()
+		return controller.validCollectionMetadataImages()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataLinks()
+		return controller.validCollectionMetadataLinks()
 	}, func(controller *NftCollectionController) error {
-		return controller.validNftCollectionMetadataOpened()
+		return controller.validCollectionMetadataOpened()
 	})
 	return c
 }
@@ -176,14 +176,12 @@ func (c *NftCollectionController) HasOwner(owner sdk.AccAddress) *NftCollectionC
 }
 
 func (c *NftCollectionController) hasOwner(owner sdk.AccAddress) error {
-	// assert nftCollection exists
 	if err := c.requireNftCollection(); err != nil {
 		panic("validation check is not allowed on a non existing nftCollection")
 	}
 	if owner.Equals(c.nftCollection.Owner) {
 		return nil
 	}
-	// if it has expired return error
 	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
 }
 
@@ -198,8 +196,7 @@ func (c *NftCollectionController) mustNotBeDefault() error {
 	return nil
 }
 
-func (c *NftCollectionController) canMintNfts(minter sdk.AccAddress) error {
-	// assert nftCollection exists
+func (c *NftCollectionController) isOpenedOrOwner(owner sdk.AccAddress) error {
 	if err := c.requireNftCollection(); err != nil {
 		panic("validation check is not allowed on a non existing nftCollection")
 	}
@@ -208,23 +205,7 @@ func (c *NftCollectionController) canMintNfts(minter sdk.AccAddress) error {
 		return nil
 	}
 
-	if minter.Equals(c.nftCollection.Owner) {
-		return nil
-	}
-	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
-}
-
-func (c *NftCollectionController) canBurnNfts(burner sdk.AccAddress) error {
-	// assert nftCollection exists
-	if err := c.requireNftCollection(); err != nil {
-		panic("validation check is not allowed on a non existing nftCollection")
-	}
-
-	if c.nftCollection.Opened {
-		return nil
-	}
-
-	if burner.Equals(c.nftCollection.Owner) {
+	if owner.Equals(c.nftCollection.Owner) {
 		return nil
 	}
 	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
@@ -251,7 +232,7 @@ func (c *NftCollectionController) mustNotExist() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataCategory() error {
+func (c *NftCollectionController) validCollectionMetadataCategory() error {
 	if c.metadata.Category == "" {
 		return nil
 	}
@@ -261,7 +242,7 @@ func (c *NftCollectionController) validNftCollectionMetadataCategory() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataSymbol() error {
+func (c *NftCollectionController) validCollectionMetadataSymbol() error {
 	if c.metadata.Symbol == "" {
 		return nil
 	}
@@ -277,7 +258,7 @@ func (c *NftCollectionController) validNftCollectionMetadataSymbol() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataUrl() error {
+func (c *NftCollectionController) validCollectionMetadataUrl() error {
 	if c.metadata.Url == "" {
 		return nil
 	}
@@ -289,7 +270,7 @@ func (c *NftCollectionController) validNftCollectionMetadataUrl() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataDescription() error {
+func (c *NftCollectionController) validCollectionMetadataDescription() error {
 	if c.metadata.Description == "" {
 		return nil
 	}
@@ -301,7 +282,7 @@ func (c *NftCollectionController) validNftCollectionMetadataDescription() error 
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataId() error {
+func (c *NftCollectionController) validCollectionMetadataId() error {
 	validator := regexp.MustCompile(c.conf.ValidNftCollectionId)
 
 	if !validator.MatchString(c.metadata.Id) {
@@ -311,7 +292,7 @@ func (c *NftCollectionController) validNftCollectionMetadataId() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataName() error {
+func (c *NftCollectionController) validCollectionMetadataName() error {
 	if len(c.metadata.Name) == 0 {
 		return nil
 	}
@@ -323,7 +304,7 @@ func (c *NftCollectionController) validNftCollectionMetadataName() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataImages() error {
+func (c *NftCollectionController) validCollectionMetadataImages() error {
 	if len(c.metadata.Images) == 0 {
 		return nil
 	}
@@ -341,7 +322,7 @@ func (c *NftCollectionController) validNftCollectionMetadataImages() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataLinks() error {
+func (c *NftCollectionController) validCollectionMetadataLinks() error {
 	if len(c.metadata.Links) == 0 {
 		return nil
 	}
@@ -359,7 +340,7 @@ func (c *NftCollectionController) validNftCollectionMetadataLinks() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataOptions() error {
+func (c *NftCollectionController) validCollectionMetadataOptions() error {
 	if len(c.metadata.Options) == 0 {
 		return nil
 	}
@@ -377,7 +358,7 @@ func (c *NftCollectionController) validNftCollectionMetadataOptions() error {
 	return nil
 }
 
-func (c *NftCollectionController) validNftCollectionMetadataOpened() error {
+func (c *NftCollectionController) validCollectionMetadataOpened() error {
 	if c.metadata.Id != c.conf.NftCollectionDefaultId {
 		return nil
 	}

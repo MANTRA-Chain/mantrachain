@@ -9,25 +9,48 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// NftControllerFunc is the function signature for nft validation functions
 type NftControllerFunc func(controller *NftController) error
 
 type NftController struct {
-	actions    []NftControllerFunc
-	validators []NftControllerFunc
-	metadata   []*types.MsgNftMetadata
-	collIndex  []byte
-	store      msgServer
-	conf       *types.Params
-	ctx        sdk.Context
+	actions         []NftControllerFunc
+	validators      []NftControllerFunc
+	metadata        []*types.MsgNftMetadata
+	collectionIndex []byte
+	store           msgServer
+	conf            *types.Params
+	ctx             sdk.Context
 }
 
-func NewNftController(ctx sdk.Context, collIndex []byte, metadata []*types.MsgNftMetadata) *NftController {
+func NewNftController(ctx sdk.Context, collectionIndex []byte, metadata []*types.MsgNftMetadata) *NftController {
 	return &NftController{
-		metadata:  metadata,
-		collIndex: collIndex,
-		ctx:       ctx,
+		metadata:        metadata,
+		collectionIndex: collectionIndex,
+		ctx:             ctx,
 	}
+}
+
+func (c *NftController) WithId(id string) *NftController {
+	if c.metadata == nil {
+		c.metadata = make([]*types.MsgNftMetadata, 1)
+	}
+
+	c.metadata = append(c.metadata, &types.MsgNftMetadata{
+		Id: id,
+	})
+	return c
+}
+
+func (c *NftController) WithIds(ids []string) *NftController {
+	if c.metadata == nil {
+		c.metadata = make([]*types.MsgNftMetadata, 0)
+	}
+
+	for _, id := range ids {
+		c.metadata = append(c.metadata, &types.MsgNftMetadata{
+			Id: id,
+		})
+	}
+	return c
 }
 
 func (c *NftController) WithStore(store msgServer) *NftController {
@@ -72,71 +95,100 @@ func (c *NftController) FilterNotOwn(owner sdk.AccAddress) *NftController {
 	return c
 }
 
-func (c *NftController) ValidNftMetadata() *NftController {
+func (c *NftController) FilterCannotTransfer(operator sdk.AccAddress) *NftController {
+	c.actions = append(c.actions, func(controller *NftController) error {
+		return controller.filterCannotTransfer(operator)
+	})
+	return c
+}
+
+func (c *NftController) ValidMetadata() *NftController {
 	c.validators = append(c.validators, func(controller *NftController) error {
-		return controller.validNftMetadataCount()
+		return controller.validMetadataMaxCount()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataId()
+		return controller.validMetadataId()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataTitle()
+		return controller.validMetadataTitle()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataUrl()
+		return controller.validMetadataUrl()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataDescription()
+		return controller.validMetadataDescription()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataImages()
+		return controller.validMetadataImages()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataLinks()
+		return controller.validMetadataLinks()
 	}, func(controller *NftController) error {
-		return controller.validNftMetadataAttributes()
+		return controller.validMetadataAttributes()
 	})
 	return c
 }
 
 func (c *NftController) filterNotExist() error {
-	// TODO: use async iterator
+	byIndex := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
+	indexes := [][]byte{}
 
-	for _, nft := range c.metadata {
-		if nft.Id == "" {
+	for _, nftMetadata := range c.metadata {
+		if nftMetadata.Id == "" {
 			continue
 		}
 
-		index := types.GetNftIndex(c.collIndex, nft.Id)
-		if !c.store.HasNft(c.ctx, c.collIndex, index) {
-			filtered = append(filtered, nft)
-		}
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		indexes = append(indexes, index)
+		byIndex[string(index)] = nftMetadata
 	}
+
+	indexes = c.store.FilterNotExists(c.ctx, c.collectionIndex, indexes)
+	for _, index := range indexes {
+		nftMetadata := byIndex[string(index)]
+		filtered = append(filtered, nftMetadata)
+	}
+
 	c.metadata = filtered
 
 	return nil
 }
 
 func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
-	// TODO: use async iterator
+	byId := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
+	ids := make([]string, 0)
 
-	for _, nft := range c.metadata {
-		if nft.Id == "" {
-			continue
-		}
-
-		index := types.GetNftIndex(c.collIndex, nft.Id)
-		nftOwner := c.store.nftKeeper.GetOwner(c.ctx, string(c.collIndex), string(index))
-
-		if owner.Equals(nftOwner) {
-			filtered = append(filtered, nft)
-		}
+	for _, nftMetadata := range c.metadata {
+		id := nftMetadata.Id
+		ids = append(ids, id)
+		byId[id] = nftMetadata
 	}
+
+	ids = c.store.nftKeeper.FilterNotOwn(c.ctx, string(c.collectionIndex), ids)
+	for _, id := range ids {
+		nftMetadata := byId[id]
+		filtered = append(filtered, nftMetadata)
+	}
+
 	c.metadata = filtered
 
 	return nil
 }
 
-func (c *NftController) validNftMetadataCount() error {
-	if len(c.metadata) == 0 {
-		return sdkerrors.Wrapf(types.ErrInvalidNftsCount, "nfts count %d invalid, min 1", len(c.metadata))
+func (c *NftController) filterCannotTransfer(operator sdk.AccAddress) error {
+	filtered := []*types.MsgNftMetadata{}
+
+	for _, nftMetadata := range c.metadata {
+		id := nftMetadata.Id
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		owner := c.store.nftKeeper.GetOwner(c.ctx, string(c.collectionIndex), id)
+		if owner.Equals(operator) || c.store.IsApproved(c.ctx, c.collectionIndex, index, owner, operator) {
+			filtered = append(filtered, nftMetadata)
+		}
 	}
+
+	c.metadata = filtered
+
+	return nil
+}
+
+func (c *NftController) validMetadataMaxCount() error {
 	if int32(len(c.metadata)) > c.conf.ValidNftMetadataMaxCount {
 		return sdkerrors.Wrapf(types.ErrInvalidNftsCount, "nfts count %d invalid, max %d", len(c.metadata), c.conf.ValidNftMetadataMaxCount)
 	}
@@ -144,7 +196,7 @@ func (c *NftController) validNftMetadataCount() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataId() error {
+func (c *NftController) validMetadataId() error {
 	for i, nft := range c.metadata {
 		if nft.Id == "" {
 			return sdkerrors.Wrapf(types.ErrInvalidNftId, "id: %s, index %d", nft.Id, i)
@@ -160,7 +212,7 @@ func (c *NftController) validNftMetadataId() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataTitle() error {
+func (c *NftController) validMetadataTitle() error {
 	for i, nft := range c.metadata {
 		if nft.Title == "" {
 			continue
@@ -174,7 +226,7 @@ func (c *NftController) validNftMetadataTitle() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataUrl() error {
+func (c *NftController) validMetadataUrl() error {
 	for i, nft := range c.metadata {
 		if nft.Url == "" {
 			continue
@@ -188,7 +240,7 @@ func (c *NftController) validNftMetadataUrl() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataDescription() error {
+func (c *NftController) validMetadataDescription() error {
 	for i, nft := range c.metadata {
 		if nft.Description == "" {
 			continue
@@ -202,7 +254,7 @@ func (c *NftController) validNftMetadataDescription() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataImages() error {
+func (c *NftController) validMetadataImages() error {
 	for i, nft := range c.metadata {
 		if len(nft.Images) == 0 {
 			continue
@@ -225,7 +277,7 @@ func (c *NftController) validNftMetadataImages() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataLinks() error {
+func (c *NftController) validMetadataLinks() error {
 	for i, nft := range c.metadata {
 		if len(nft.Links) == 0 {
 			continue
@@ -248,7 +300,7 @@ func (c *NftController) validNftMetadataLinks() error {
 	return nil
 }
 
-func (c *NftController) validNftMetadataAttributes() error {
+func (c *NftController) validMetadataAttributes() error {
 	for i, nft := range c.metadata {
 		if len(nft.Attributes) == 0 {
 			continue
@@ -271,6 +323,28 @@ func (c *NftController) validNftMetadataAttributes() error {
 	return nil
 }
 
-func (c *NftController) getFiltered() []*types.MsgNftMetadata {
+func (c *NftController) getMetadata() []*types.MsgNftMetadata {
 	return c.metadata
+}
+
+func (c *NftController) getNftsIds() []string {
+	var nftsIds []string
+
+	for _, nftMetadata := range c.metadata {
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		nftsIds = append(nftsIds, string(index))
+	}
+
+	return nftsIds
+}
+
+func (c *NftController) getIndexes() [][]byte {
+	var indexes [][]byte
+
+	for _, nftMetadata := range c.metadata {
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		indexes = append(indexes, index)
+	}
+
+	return indexes
 }

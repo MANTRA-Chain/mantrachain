@@ -5,22 +5,52 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// Mint Nfts
-const TypeMsgMintNft = "mint_nfts"
+const (
+	TypeMsgMintNfts       = "mint_nfts"
+	TypeMsgBurnNfts       = "burn_nfts"
+	TypeMsgTransferNfts   = "transfer_nfts"
+	TypeMsgApproveNfts    = "approve_nfts"
+	TypeMsgRevokeNfts     = "revoke_nfts"
+	TypeMsgApproveAllNfts = "approve_all_nfts"
+	TypeMsgRevokeAllNfts  = "revoke_all_nfts"
+	TypeMsgMintNft        = "mint_nft"
+	TypeMsgBurnNft        = "burn_nft"
+	TypeMsgTransferNft    = "transfer_nft"
+	TypeMsgApproveNft     = "approve_nft"
+	TypeMsgRevokeNft      = "revoke_nft"
+)
 
-var _ sdk.Msg = &MsgMintNfts{}
+var (
+	_ sdk.Msg = &MsgMintNfts{}
+	_ sdk.Msg = &MsgBurnNfts{}
+	_ sdk.Msg = &MsgTransferNfts{}
+	_ sdk.Msg = &MsgApproveNfts{}
+	_ sdk.Msg = &MsgRevokeNfts{}
+	_ sdk.Msg = &MsgApproveAllNfts{}
+	_ sdk.Msg = &MsgRevokeAllNfts{}
+	_ sdk.Msg = &MsgMintNft{}
+	_ sdk.Msg = &MsgBurnNft{}
+	_ sdk.Msg = &MsgTransferNft{}
+	_ sdk.Msg = &MsgApproveNft{}
+	_ sdk.Msg = &MsgRevokeNft{}
+)
 
 func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
 	nfts *MsgNftsMetadata,
+	receiver string,
 	pubKeyHex string,
-	pubKeyType string) *MsgMintNfts {
+	pubKeyType string,
+	strict bool,
+) *MsgMintNfts {
 	return &MsgMintNfts{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nfts,
+		Receiver:          receiver,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		Strict:            strict,
 	}
 }
 
@@ -29,7 +59,7 @@ func (msg *MsgMintNfts) Route() string {
 }
 
 func (msg *MsgMintNfts) Type() string {
-	return TypeMsgMintNft
+	return TypeMsgMintNfts
 }
 
 func (msg *MsgMintNfts) GetSigners() []sdk.AccAddress {
@@ -50,18 +80,27 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	if msg.Receiver != "" {
+		_, err = sdk.AccAddressFromBech32(msg.Receiver)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		}
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
 	return nil
 }
-
-// Burn Nfts
-const TypeMsgBurnNft = "burn_nfts"
-
-var _ sdk.Msg = &MsgBurnNfts{}
 
 func NewMsgBurnNfts(creator string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
 	pubKeyHex string,
-	pubKeyType string) *MsgBurnNfts {
+	pubKeyType string,
+	strict bool,
+) *MsgBurnNfts {
 	return &MsgBurnNfts{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
@@ -69,6 +108,7 @@ func NewMsgBurnNfts(creator string, collectionCreator string, collectionId strin
 		Nfts:              nftsIds,
 		PubKeyHex:         pubKeyHex,
 		PubKeyType:        pubKeyType,
+		Strict:            strict,
 	}
 }
 
@@ -77,7 +117,7 @@ func (msg *MsgBurnNfts) Route() string {
 }
 
 func (msg *MsgBurnNfts) Type() string {
-	return TypeMsgBurnNft
+	return TypeMsgBurnNfts
 }
 
 func (msg *MsgBurnNfts) GetSigners() []sdk.AccAddress {
@@ -97,6 +137,528 @@ func (msg *MsgBurnNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgTransferNfts(creator string, receiver string, collectionCreator string, collectionId string,
+	nftsIds *MsgNftsIds,
+	pubKeyHex string,
+	pubKeyType string) *MsgTransferNfts {
+	return &MsgTransferNfts{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		Nfts:              nftsIds,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgTransferNfts) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgTransferNfts) Type() string {
+	return TypeMsgTransferNfts
+}
+
+func (msg *MsgTransferNfts) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgTransferNfts) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgTransferNfts) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgApproveNfts(creator string, receiver string, collectionCreator string, collectionId string,
+	nftsIds *MsgNftsIds,
+	pubKeyHex string,
+	pubKeyType string) *MsgApproveNfts {
+	return &MsgApproveNfts{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		Nfts:              nftsIds,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgApproveNfts) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgApproveNfts) Type() string {
+	return TypeMsgApproveNfts
+}
+
+func (msg *MsgApproveNfts) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgApproveNfts) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgApproveNfts) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgRevokeNfts(creator string, receiver string, collectionCreator string, collectionId string,
+	nftsIds *MsgNftsIds,
+	pubKeyHex string,
+	pubKeyType string) *MsgRevokeNfts {
+	return &MsgRevokeNfts{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		Nfts:              nftsIds,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgRevokeNfts) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgRevokeNfts) Type() string {
+	return TypeMsgRevokeNfts
+}
+
+func (msg *MsgRevokeNfts) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgRevokeNfts) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgRevokeNfts) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgRevokeAllNfts(creator string, receiver string, pubKeyHex string,
+	pubKeyType string) *MsgRevokeAllNfts {
+	return &MsgRevokeAllNfts{
+		Creator:    creator,
+		Receiver:   receiver,
+		PubKeyHex:  pubKeyHex,
+		PubKeyType: pubKeyType,
+	}
+}
+
+func (msg *MsgRevokeAllNfts) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgRevokeAllNfts) Type() string {
+	return TypeMsgRevokeAllNfts
+}
+
+func (msg *MsgRevokeAllNfts) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgRevokeAllNfts) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgRevokeAllNfts) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgApproveAllNfts(creator string, receiver string, pubKeyHex string,
+	pubKeyType string) *MsgApproveAllNfts {
+	return &MsgApproveAllNfts{
+		Creator:    creator,
+		Receiver:   receiver,
+		PubKeyHex:  pubKeyHex,
+		PubKeyType: pubKeyType,
+	}
+}
+
+func (msg *MsgApproveAllNfts) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgApproveAllNfts) Type() string {
+	return TypeMsgApproveAllNfts
+}
+
+func (msg *MsgApproveAllNfts) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgApproveAllNfts) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgApproveAllNfts) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	return nil
+}
+
+func NewMsgMintNft(creator string, collectionCreator string, collectionId string,
+	nft *MsgNftMetadata,
+	receiver string,
+	pubKeyHex string,
+	pubKeyType string) *MsgMintNft {
+	return &MsgMintNft{
+		Creator:           creator,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		Nft:               nft,
+		Receiver:          receiver,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgMintNft) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgMintNft) Type() string {
+	return TypeMsgMintNft
+}
+
+func (msg *MsgMintNft) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgMintNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgMintNft) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if msg.Receiver != "" {
+		_, err = sdk.AccAddressFromBech32(msg.Receiver)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		}
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgBurnNft(creator string, collectionCreator string, collectionId string,
+	nftId string,
+	pubKeyHex string,
+	pubKeyType string) *MsgBurnNft {
+	return &MsgBurnNft{
+		Creator:           creator,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftId:             nftId,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgBurnNft) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgBurnNft) Type() string {
+	return TypeMsgBurnNft
+}
+
+func (msg *MsgBurnNft) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgBurnNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgBurnNft) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgTransferNft(creator string, receiver string, collectionCreator string, collectionId string,
+	nftId string,
+	pubKeyHex string,
+	pubKeyType string) *MsgTransferNft {
+	return &MsgTransferNft{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftId:             nftId,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgTransferNft) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgTransferNft) Type() string {
+	return TypeMsgTransferNft
+}
+
+func (msg *MsgTransferNft) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgTransferNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgTransferNft) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgApproveNft(creator string, receiver string, collectionCreator string, collectionId string,
+	nftId string,
+	pubKeyHex string,
+	pubKeyType string) *MsgApproveNft {
+	return &MsgApproveNft{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftId:             nftId,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgApproveNft) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgApproveNft) Type() string {
+	return TypeMsgApproveNft
+}
+
+func (msg *MsgApproveNft) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgApproveNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgApproveNft) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	return nil
+}
+
+func NewMsgRevokeNft(creator string, receiver string, collectionCreator string, collectionId string,
+	nftId string,
+	pubKeyHex string,
+	pubKeyType string) *MsgRevokeNft {
+	return &MsgRevokeNft{
+		Creator:           creator,
+		Receiver:          receiver,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftId:             nftId,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
+	}
+}
+
+func (msg *MsgRevokeNft) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgRevokeNft) Type() string {
+	return TypeMsgRevokeNft
+}
+
+func (msg *MsgRevokeNft) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgRevokeNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgRevokeNft) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+	}
+	if msg.CollectionCreator != "" {
+		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
 	}
 	return nil
 }

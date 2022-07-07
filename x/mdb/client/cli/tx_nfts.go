@@ -2,12 +2,14 @@ package cli
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +17,7 @@ var _ = strconv.Itoa(0)
 
 func CmdMintNfts() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-nfts [collection_creator] [collection_id] [payload-json] --from [creator]",
+		Use:   "mint-nfts [collection_creator] [collection_id] [payload-json] --from [creator] --receiver [receiver] --strict [true/false]",
 		Short: "Broadcast message mint_nfts",
 		Long: "Mints new NFTS. " +
 			"[payload-json] is JSON encoded MsgMintNfts.",
@@ -38,9 +40,33 @@ func CmdMintNfts() *cobra.Command {
 				return err
 			}
 
+			receiver, err := cmd.Flags().GetString(FlagReceiver)
+			if err != nil {
+				return err
+			}
+
+			receiverStr := strings.TrimSpace(receiver)
+			if len(receiverStr) > 0 {
+				if _, err = sdk.AccAddressFromBech32(receiverStr); err != nil {
+					return err
+				}
+			} else {
+				receiver = signer.String()
+			}
+
 			pubKey := info.GetPubKey()
 			pubKeyHex := utils.GetPubKeyHex(pubKey)
 			pubKeyType, err := utils.DerivePubKeyType(pubKey)
+			if err != nil {
+				return err
+			}
+
+			strictFlag, err := cmd.Flags().GetString(FlagStrict)
+			if err != nil {
+				return err
+			}
+
+			strict, err := strconv.ParseBool(strictFlag)
 			if err != nil {
 				return err
 			}
@@ -57,8 +83,10 @@ func CmdMintNfts() *cobra.Command {
 				argCollectionCreator,
 				argCollectionId,
 				&nfts,
+				receiver,
 				pubKeyHex,
 				pubKeyType,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -68,6 +96,7 @@ func CmdMintNfts() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().AddFlagSet(FsNFT)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -75,7 +104,7 @@ func CmdMintNfts() *cobra.Command {
 
 func CmdBurnNfts() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-nfts [collection_creator] [collection_id] [payload-json] --from [owner]",
+		Use:   "burn-nfts [collection_creator] [collection_id] [payload-json] --from [creator]",
 		Short: "Broadcast message burn_nfts",
 		Long: "Burns NFTS. " +
 			"[payload-json] is JSON encoded MsgBurnNfts.",
@@ -105,6 +134,16 @@ func CmdBurnNfts() *cobra.Command {
 				return err
 			}
 
+			strictFlag, err := cmd.Flags().GetString(FlagStrict)
+			if err != nil {
+				return err
+			}
+
+			strict, err := strconv.ParseBool(strictFlag)
+			if err != nil {
+				return err
+			}
+
 			// Unmarshal payload
 			var nfts types.MsgNftsIds
 			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &nfts)
@@ -119,6 +158,7 @@ func CmdBurnNfts() *cobra.Command {
 				&nfts,
 				pubKeyHex,
 				pubKeyType,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -128,6 +168,7 @@ func CmdBurnNfts() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().AddFlagSet(FsNFT)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

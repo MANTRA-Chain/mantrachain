@@ -6,26 +6,133 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SetNft set a specific nft in the store from its index
 func (k Keeper) SetNft(ctx sdk.Context, nft types.Nft) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nft.CollectionIndex))
 	b := k.cdc.MustMarshal(&nft)
 	store.Set(nft.Index, b)
 }
 
-// GetNft returns a nft from its nft
+func (k Keeper) SetNfts(ctx sdk.Context, nfts []types.Nft) {
+	for _, nft := range nfts {
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nft.CollectionIndex))
+		b := k.cdc.MustMarshal(&nft)
+		store.Set(nft.Index, b)
+	}
+}
+
+func (k Keeper) SetApprovedNft(
+	ctx sdk.Context,
+	collectionIndex []byte,
+	nftIndex []byte,
+	owner sdk.AccAddress,
+	receiver sdk.AccAddress,
+	approved bool,
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	bz := store.Get(nftIndex)
+	var approvedAddresses types.ApprovedAddresses
+	k.cdc.MustUnmarshal(bz, &approvedAddresses)
+	approvedAddressesData := approvedAddresses.ApprovedAddresses[owner.String()]
+	approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
+	bz = k.cdc.MustMarshal(&approvedAddresses)
+	store.Set(nftIndex, bz)
+}
+
+func (k Keeper) IsApproved(
+	ctx sdk.Context,
+	collectionIndex []byte,
+	nftIndex []byte,
+	owner sdk.AccAddress,
+	operator sdk.AccAddress,
+) bool {
+	index := types.GetNftApprovedAllIndex(owner)
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
+	bz := store.Get(index)
+	var approvedAddressesData types.ApprovedAddressesData
+	k.cdc.MustUnmarshal(bz, &approvedAddressesData)
+
+	if approvedAddressesData.ApprovedAddressesData[operator.String()] {
+		return true
+	}
+
+	store = prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	bz = store.Get(index)
+	var approvedAddresses types.ApprovedAddresses
+	k.cdc.MustUnmarshal(bz, &approvedAddresses)
+	return approvedAddressesData.ApprovedAddressesData[operator.String()]
+}
+
+func (k Keeper) DeleteApprovedNft(
+	ctx sdk.Context,
+	collectionIndex []byte,
+	nftIndex []byte,
+	owner sdk.AccAddress,
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	store.Delete(nftIndex)
+}
+
+func (k Keeper) DeleteApprovedNfts(
+	ctx sdk.Context,
+	collectionIndex []byte,
+	nftsIndexes [][]byte,
+	owner sdk.AccAddress,
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	for _, nftIndex := range nftsIndexes {
+		store.Delete(nftIndex)
+	}
+}
+
+func (k Keeper) SetApprovedNfts(
+	ctx sdk.Context,
+	collectionIndex []byte,
+	nftsIndexes [][]byte,
+	owner sdk.AccAddress,
+	receiver sdk.AccAddress,
+	approved bool,
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	for _, nftIndex := range nftsIndexes {
+		bz := store.Get(nftIndex)
+		var approvedAddresses types.ApprovedAddresses
+		k.cdc.MustUnmarshal(bz, &approvedAddresses)
+		approvedAddressesData := approvedAddresses.ApprovedAddresses[owner.String()]
+		approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
+		bz = k.cdc.MustMarshal(&approvedAddresses)
+		store.Set(nftIndex, bz)
+	}
+}
+
+func (k Keeper) SetApprovedAllNfts(
+	ctx sdk.Context,
+	owner sdk.AccAddress,
+	receiver sdk.AccAddress,
+	approved bool,
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
+	index := types.GetNftApprovedAllIndex(owner)
+	bz := store.Get(index)
+	var approvedAddressesData types.ApprovedAddressesData
+	k.cdc.MustUnmarshal(bz, &approvedAddressesData)
+	approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
+	bz = k.cdc.MustMarshal(&approvedAddressesData)
+	store.Set(index, bz)
+}
+
 func (k Keeper) GetNft(
 	ctx sdk.Context,
-	collIndex []byte,
-	index []byte,
+	collectionIndex []byte,
+	nftIndex []byte,
 ) (val types.Nft, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collIndex))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
 
-	if !k.HasNft(ctx, collIndex, index) {
+	if !k.HasNft(ctx, collectionIndex, nftIndex) {
 		return types.Nft{}, false
 	}
 
-	b := store.Get(index)
+	b := store.Get(nftIndex)
 	if b == nil {
 		return val, false
 	}
@@ -34,25 +141,40 @@ func (k Keeper) GetNft(
 	return val, true
 }
 
-// HasNft checks if the nft exists in the store
 func (k Keeper) HasNft(
 	ctx sdk.Context,
-	collIndex []byte,
-	index []byte,
+	collectionIndex []byte,
+	nftIndex []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collIndex))
-	return store.Has(index)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	return store.Has(nftIndex)
 }
 
-// DeleteNft removes a specific nft in the store from its index
+func (k Keeper) FilterNotExists(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) (list [][]byte) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	for _, nftIndex := range nftsIndexes {
+		if store.Has(nftIndex) {
+			list = append(list, nftIndex)
+		}
+	}
+
+	return
+}
+
 func (k Keeper) DeleteNft(ctx sdk.Context, collectionIndex []byte, nftIndex []byte) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
 	store.Delete(nftIndex)
 }
 
-// GetAllNft returns all nft
-func (k Keeper) GetAllNft(ctx sdk.Context, collIndex []byte) (list []types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collIndex))
+func (k Keeper) DeleteNfts(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	for _, nftIndex := range nftsIndexes {
+		store.Delete(nftIndex)
+	}
+}
+
+func (k Keeper) GetAllNft(ctx sdk.Context, collectionIndex []byte) (list []types.Nft) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

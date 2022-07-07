@@ -49,3 +49,15 @@ message NftLink {
   string url = 2;
 }
 
+message ApprovedAddresses {
+    option (gogoproto.equal) = true;
+    
+    map<string, ApprovedAddressesData> approvedAddresses = 1;
+}
+
+message ApprovedAddressesData {
+    option (gogoproto.equal) = true;
+
+    map<string, bool> approvedAddressesData = 1;
+}
+

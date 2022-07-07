@@ -7,58 +7,64 @@ import (
 	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Convert owner address string to sdk.AccAddress
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 
 	if err != nil {
 		return nil, err
 	}
 
-	ctrl := NewNftCollectionController(ctx, msg.Collection, owner).
+	if msg.Collection.Id == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
+	}
+
+	collectionController := NewNftCollectionController(ctx, msg.Collection, owner).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = ctrl.
+	err = collectionController.
 		MustNotExist().
 		MustNotBeDefault().
-		ValidNftCollectionMetadata().
+		ValidCollectionMetadata().
 		Validate()
 
 	if err != nil {
 		return nil, err
 	}
 
-	index := ctrl.getIndex()
-	id := ctrl.getId()
-	indexHex := utils.GetIndexHex(index)
+	collectionIndex := collectionController.getIndex()
+	collectionId := collectionController.getId()
+	collectionIndexHex := utils.GetIndexHex(collectionIndex)
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	_, err = nftExecutor.SetClass(nfttypes.Class{
-		Id:          string(index),
+	err = nftExecutor.SetClass(nfttypes.Class{
+		Id:          string(collectionIndex),
 		Name:        msg.Collection.Name,
 		Symbol:      msg.Collection.Symbol,
 		Description: msg.Collection.Description,
 		Uri:         types.ModuleName,
-		UriHash:     id,
+		UriHash:     collectionId,
 		Data:        msg.Collection.Data,
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
 	didExecutor := NewDidExecutor(ctx, owner, msg.PubKeyHex, msg.PubKeyType, k.didKeeper)
-	_, err = didExecutor.SetDid(indexHex)
+	_, err = didExecutor.SetDid(collectionIndexHex)
+
 	if err != nil {
 		return nil, err
 	}
 
 	newNftCollection := types.NftCollection{
-		Index:    index,
+		Index:    collectionIndex,
 		Did:      didExecutor.GetDidId(),
 		Images:   msg.Collection.Images,
 		Url:      msg.Collection.Url,
@@ -72,9 +78,18 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 
 	k.SetNftCollection(ctx, newNftCollection)
 
-	// TODO: emit event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgCreateNftCollection),
+			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
+			sdk.NewAttribute(types.AttributeKeyCreator, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyReceiver, owner.String()),
+		),
+	)
 
 	return &types.MsgCreateNftCollectionResponse{
-		Id: id,
+		Id: collectionId,
 	}, nil
 }

@@ -208,3 +208,59 @@ func (k Keeper) updateTotalSupply(ctx sdk.Context, classID string, supply uint64
 	supplyKey := classTotalSupply(classID)
 	store.Set(supplyKey, sdk.Uint64ToBigEndian(supply))
 }
+
+func (k Keeper) FilterNotOwn(ctx sdk.Context, classID string, nftIDs []string) (list []string) {
+	store := ctx.KVStore(k.storeKey)
+	for _, id := range nftIDs {
+		if store.Get(ownerStoreKey(classID, id)) != nil {
+			list = append(list, id)
+		}
+	}
+
+	return
+}
+
+func (k Keeper) MintBatch(ctx sdk.Context, tokens []types.NFT, receiver sdk.AccAddress) error {
+	for _, token := range tokens {
+		err := k.Mint(ctx, token, receiver)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (k Keeper) BurnBatch(ctx sdk.Context, classID string, nftIDs []string) error {
+	for _, id := range nftIDs {
+		err := k.Burn(ctx, classID, id)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (k Keeper) TransferBatch(ctx sdk.Context, classID string, nftIDs []string, receiver sdk.AccAddress) error {
+	for _, id := range nftIDs {
+		err := k.Transfer(ctx, classID, id, receiver)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (k Keeper) GetNFTsByIds(ctx sdk.Context, classID string, nftIDs []string) (nfts []types.NFT) {
+	store := k.getNFTStore(ctx, classID)
+	for _, nftID := range nftIDs {
+		bz := store.Get([]byte(nftID))
+
+		var nft types.NFT
+		if len(bz) != 0 {
+			k.cdc.MustUnmarshal(bz, &nft)
+		}
+		nfts = append(nfts, nft)
+	}
+
+	return
+}

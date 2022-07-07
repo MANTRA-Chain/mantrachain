@@ -65,3 +65,18 @@ func (k Keeper) HasClass(ctx sdk.Context, classID string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(classStoreKey(classID))
 }
+
+func (k Keeper) GetClassesByIds(ctx sdk.Context, classesIds []string) (classes []types.Class) {
+	for _, id := range classesIds {
+		store := ctx.KVStore(k.storeKey)
+		bz := store.Get(classStoreKey(id))
+
+		var class types.Class
+		if len(bz) != 0 {
+			k.cdc.MustUnmarshal(bz, &class)
+		}
+		classes = append(classes, class)
+	}
+
+	return
+}

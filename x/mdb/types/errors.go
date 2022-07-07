@@ -37,5 +37,5 @@ var (
 	ErrInvalidNftLinksCount      = sdkerrors.Register(ModuleName, 1136, "nft links count provided is invalid")
 	ErrInvalidNftAttributesCount = sdkerrors.Register(ModuleName, 1137, "nft attributes count provided is invalid")
 	ErrInvalidNftsCount          = sdkerrors.Register(ModuleName, 1138, "nfts count provided is invalid")
-	ErrInvalidNftsBurnCount      = sdkerrors.Register(ModuleName, 1139, "nfts burn count provided is invalid")
+	ErrInvalidNft                = sdkerrors.Register(ModuleName, 1139, "nfts provided is invalid")
 )

@@ -11,6 +11,16 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateNftCollection{}, "mdb/CreateNftCollection", nil)
 	cdc.RegisterConcrete(&MsgMintNfts{}, "mdb/MintNfts", nil)
 	cdc.RegisterConcrete(&MsgBurnNfts{}, "mdb/BurnNfts", nil)
+	cdc.RegisterConcrete(&MsgTransferNfts{}, "mdb/TransferNfts", nil)
+	cdc.RegisterConcrete(&MsgApproveNfts{}, "mdb/ApproveNfts", nil)
+	cdc.RegisterConcrete(&MsgRevokeNfts{}, "mdb/RevokeNfts", nil)
+	cdc.RegisterConcrete(&MsgApproveAllNfts{}, "mdb/ApproveAllNfts", nil)
+	cdc.RegisterConcrete(&MsgRevokeAllNfts{}, "mdb/RevokeAllNfts", nil)
+	cdc.RegisterConcrete(&MsgMintNft{}, "mdb/MintNft", nil)
+	cdc.RegisterConcrete(&MsgBurnNft{}, "mdb/BurnNft", nil)
+	cdc.RegisterConcrete(&MsgTransferNft{}, "mdb/TransferNft", nil)
+	cdc.RegisterConcrete(&MsgApproveNft{}, "mdb/ApproveNft", nil)
+	cdc.RegisterConcrete(&MsgRevokeNft{}, "mdb/RevokeNft", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -19,6 +29,16 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreateNftCollection{},
 		&MsgMintNfts{},
 		&MsgBurnNfts{},
+		&MsgTransferNfts{},
+		&MsgApproveNfts{},
+		&MsgRevokeNfts{},
+		&MsgApproveAllNfts{},
+		&MsgRevokeAllNfts{},
+		&MsgMintNft{},
+		&MsgBurnNft{},
+		&MsgTransferNft{},
+		&MsgApproveNft{},
+		&MsgRevokeNft{},
 	)
 	// this line is used by starport scaffolding # 3
 

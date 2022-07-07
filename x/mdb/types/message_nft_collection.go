@@ -5,9 +5,15 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCreateNftCollection = "create_nft_collection"
+const (
+	TypeMsgCreateNftCollection  = "create_nft_collection"
+	TypeMsgApproveNftCollection = "approve_nft_collection"
+	TypeMsgRevokeNftCollection  = "revoke_nft_collection"
+)
 
-var _ sdk.Msg = &MsgCreateNftCollection{}
+var (
+	_ sdk.Msg = &MsgCreateNftCollection{}
+)
 
 func NewMsgCreateNftCollection(creator string, collection *MsgCreateNftCollectionMetadata,
 	pubKeyHex string,

@@ -18,25 +18,17 @@ func NewNftExecutor(ctx sdk.Context, nftKeeper types.NFTKeeper) *NftExecutor {
 	}
 }
 
-func (c *NftExecutor) SetClass(nftClass nfttypes.Class) (bool, error) {
-	err := c.nftKeeper.SaveClass(c.ctx, nftClass)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+func (c *NftExecutor) SetClass(nftClass nfttypes.Class) error {
+	return c.nftKeeper.SaveClass(c.ctx, nftClass)
 }
 
-func (c *NftExecutor) SetDefaultClass(collIndex []byte) (bool, error) {
-	err := c.nftKeeper.SaveClass(c.ctx, nfttypes.Class{
+func (c *NftExecutor) SetDefaultClass(collIndex []byte) error {
+	return c.nftKeeper.SaveClass(c.ctx, nfttypes.Class{
 		Id:      string(collIndex),
 		Name:    types.DefaultParams().NftCollectionDefaultName,
 		Uri:     types.ModuleName,
 		UriHash: types.DefaultParams().NftCollectionDefaultId,
 	})
-	if err != nil {
-		return false, err
-	}
-	return true, nil
 }
 
 func (c *NftExecutor) GetClass(classId string) (nfttypes.Class, bool) {
@@ -44,37 +36,23 @@ func (c *NftExecutor) GetClass(classId string) (nfttypes.Class, bool) {
 }
 
 func (c *NftExecutor) GetClasses(classesIds []string) []nfttypes.Class {
-	// TODO: use async iterator
-	var classes []nfttypes.Class
-	for _, classId := range classesIds {
-		class, _ := c.nftKeeper.GetClass(c.ctx, classId)
-
-		classes = append(classes, class)
-	}
-	return classes
+	return c.nftKeeper.GetClassesByIds(c.ctx, classesIds)
 }
 
-func (c *NftExecutor) MintNftBatch(nfts []nfttypes.NFT, receiver sdk.AccAddress) (bool, error) {
-	for _, nft := range nfts {
-		err := c.nftKeeper.Mint(c.ctx, nft, receiver)
-
-		if err != nil {
-			return false, err
-		}
-	}
-	return true, nil
+func (c *NftExecutor) MintNft(nft nfttypes.NFT, receiver sdk.AccAddress) error {
+	return c.nftKeeper.Mint(c.ctx, nft, receiver)
 }
 
-func (c *NftExecutor) BurnNftBatch(classId string, nftsIds []string) (bool, error) {
-	// TODO: use async iterator
-	for _, id := range nftsIds {
-		err := c.nftKeeper.Burn(c.ctx, classId, id)
+func (c *NftExecutor) MintNftBatch(nfts []nfttypes.NFT, receiver sdk.AccAddress) error {
+	return c.nftKeeper.MintBatch(c.ctx, nfts, receiver)
+}
 
-		if err != nil {
-			return false, err
-		}
-	}
-	return true, nil
+func (c *NftExecutor) BurnNftBatch(classId string, nftsIds []string) error {
+	return c.nftKeeper.BurnBatch(c.ctx, classId, nftsIds)
+}
+
+func (c *NftExecutor) BurnNft(classId string, nftId string) error {
+	return c.nftKeeper.Burn(c.ctx, classId, nftId)
 }
 
 func (c *NftExecutor) GetNft(classId string, nftId string) (nfttypes.NFT, bool) {
@@ -82,16 +60,17 @@ func (c *NftExecutor) GetNft(classId string, nftId string) (nfttypes.NFT, bool) 
 }
 
 func (c *NftExecutor) GetNfts(classId string, nftsIds []string) []nfttypes.NFT {
-	// TODO: use async iterator
-	var nfts []nfttypes.NFT
-	for _, nftId := range nftsIds {
-		nft, _ := c.nftKeeper.GetNFT(c.ctx, classId, nftId)
-
-		nfts = append(nfts, nft)
-	}
-	return nfts
+	return c.nftKeeper.GetNFTsByIds(c.ctx, classId, nftsIds)
 }
 
 func (c *NftExecutor) GetNftOwner(classId string, nftId string) sdk.AccAddress {
 	return c.nftKeeper.GetOwner(c.ctx, classId, nftId)
+}
+
+func (c *NftExecutor) TransferNft(classId string, nftId string, receiver sdk.AccAddress) error {
+	return c.nftKeeper.Transfer(c.ctx, classId, nftId, receiver)
+}
+
+func (c *NftExecutor) TransferNftBatch(classId string, nftsIds []string, receiver sdk.AccAddress) error {
+	return c.nftKeeper.TransferBatch(c.ctx, classId, nftsIds, receiver)
 }
