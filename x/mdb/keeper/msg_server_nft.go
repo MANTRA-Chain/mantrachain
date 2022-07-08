@@ -209,6 +209,14 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		ValidMetadataMaxCount().
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
 		FilterNotOwn(creator).
@@ -303,6 +311,14 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
+
+	err = nftController.
+		ValidMetadataMaxCount().
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
 
 	err = nftController.
 		FilterEmptyIds().
@@ -867,6 +883,14 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
+
+	err = nftController.
+		ValidMetadataMaxCount().
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
 
 	err = nftController.
 		FilterEmptyIds().

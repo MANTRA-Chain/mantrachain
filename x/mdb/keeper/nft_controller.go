@@ -134,6 +134,13 @@ func (c *NftController) ValidMetadata() *NftController {
 	return c
 }
 
+func (c *NftController) ValidMetadataMaxCount() *NftController {
+	c.validators = append(c.validators, func(controller *NftController) error {
+		return controller.validMetadataMaxCount()
+	})
+	return c
+}
+
 func (c *NftController) filterEmptyIds() error {
 	filtered := []*types.MsgNftMetadata{}
 
