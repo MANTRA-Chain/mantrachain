@@ -15,6 +15,7 @@ type NftCollectionController struct {
 	actions       []NftCollectionControllerFunc
 	validators    []NftCollectionControllerFunc
 	metadata      *types.MsgCreateNftCollectionMetadata
+	strict        bool
 	nftCollection *types.NftCollection
 	store         msgServer
 	conf          *types.Params
@@ -22,10 +23,11 @@ type NftCollectionController struct {
 	creator       sdk.AccAddress
 }
 
-func NewNftCollectionController(ctx sdk.Context, creator sdk.AccAddress) *NftCollectionController {
+func NewNftCollectionController(ctx sdk.Context, creator sdk.AccAddress, strict bool) *NftCollectionController {
 	return &NftCollectionController{
 		ctx:     ctx,
 		creator: creator,
+		strict:  strict,
 	}
 }
 
@@ -57,14 +59,10 @@ func (c *NftCollectionController) WithConfiguration(cfg types.Params) *NftCollec
 	return c
 }
 
-func (c *NftCollectionController) CreateDefaultIfNotExists() *NftCollectionController {
+func (c *NftCollectionController) CreateDefaultIfEmptyId() *NftCollectionController {
 	if c.metadata.Id == "" {
 		c.actions = append(c.actions, func(controller *NftCollectionController) error {
 			return controller.CreateDefault()
-		})
-	} else {
-		c.actions = append(c.actions, func(controller *NftCollectionController) error {
-			return c.MustExist().Validate()
 		})
 	}
 	return c
@@ -140,9 +138,9 @@ func (c *NftCollectionController) MustNotBeDefault() *NftCollectionController {
 	return c
 }
 
-func (c *NftCollectionController) IsOpenedOrOwner(owner sdk.AccAddress) *NftCollectionController {
+func (c *NftCollectionController) IsOpenedOrHasOwner(owner sdk.AccAddress) *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.isOpenedOrOwner(owner)
+		return controller.isOpenedOrHasOwner(owner)
 	})
 	return c
 }
@@ -200,7 +198,7 @@ func (c *NftCollectionController) mustNotBeDefault() error {
 	return nil
 }
 
-func (c *NftCollectionController) isOpenedOrOwner(owner sdk.AccAddress) error {
+func (c *NftCollectionController) isOpenedOrHasOwner(owner sdk.AccAddress) error {
 	if err := c.requireNftCollection(); err != nil {
 		panic("validation check is not allowed on a non existing nftCollection")
 	}
@@ -222,7 +220,7 @@ func (c *NftCollectionController) requireNftCollection() error {
 	creator := sdk.AccAddress(c.creator)
 	nftCollection, isFound := c.store.GetNftCollection(c.ctx, creator, c.getIndex())
 	if !isFound {
-		return sdkerrors.Wrapf(types.ErrNftCollectionDoesNotExist, "not found: %s", c.getIndex())
+		return sdkerrors.Wrapf(types.ErrNftCollectionDoesNotExist, "not found: %s", c.getId())
 	}
 	c.nftCollection = &nftCollection
 	return nil
@@ -373,7 +371,7 @@ func (c *NftCollectionController) validCollectionMetadataOpened() error {
 }
 
 func (c *NftCollectionController) getId() string {
-	if c.metadata.Id == "" {
+	if c.metadata.Id == "" && !c.strict {
 		return c.conf.NftCollectionDefaultId
 	}
 	return c.metadata.Id

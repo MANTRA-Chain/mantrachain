@@ -24,11 +24,11 @@ func CmdMintNfts() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsMetadata.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb mint-nfts <payload-json> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--receiver=<receiver> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -76,12 +76,7 @@ func CmdMintNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -101,7 +96,7 @@ func CmdMintNfts() *cobra.Command {
 				receiver,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -125,10 +120,10 @@ func CmdBurnNfts() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsIds.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb burn-nfts <payload-json> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -166,12 +161,7 @@ func CmdBurnNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -190,7 +180,7 @@ func CmdBurnNfts() *cobra.Command {
 				&nfts,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -216,10 +206,10 @@ func CmdTransferNfts() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsIds.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb transfer-nfts <owner> <receiver> <payload-json> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -259,12 +249,7 @@ func CmdTransferNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -285,7 +270,7 @@ func CmdTransferNfts() *cobra.Command {
 				argReceiver,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -311,10 +296,10 @@ func CmdApproveNfts() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsIds.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb approve-nfts <operator> <approved> <payload-json> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -359,12 +344,7 @@ func CmdApproveNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -385,7 +365,7 @@ func CmdApproveNfts() *cobra.Command {
 				approved,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -411,7 +391,7 @@ func CmdApproveAllNfts() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsIds.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb approve-all-nfts <operator> <approved> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -473,11 +453,11 @@ func CmdMintNft() *cobra.Command {
 			"[payload-json] is JSON encoded MsgNftsMetadata.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb mint-nft <payload-json> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--receiver=<receiver> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -525,12 +505,7 @@ func CmdMintNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -550,7 +525,7 @@ func CmdMintNft() *cobra.Command {
 				receiver,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -574,10 +549,10 @@ func CmdBurnNft() *cobra.Command {
 			"[nft-id] is the NFT id.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb burn-nft <nft-id> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -615,12 +590,7 @@ func CmdBurnNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -632,7 +602,7 @@ func CmdBurnNft() *cobra.Command {
 				argNftId,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -658,10 +628,10 @@ func CmdTransferNft() *cobra.Command {
 			"[nft-id] is the NFT id.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb transfer-nft <owner> <receiver> <nft-id> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -701,26 +671,21 @@ func CmdTransferNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgTransferNft(
 				clientCtx.GetFromAddress().String(),
+				argReceiver,
 				collectionCreator,
 				collectionId,
-				argNftId,
 				argOwner,
-				argReceiver,
+				argNftId,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -746,10 +711,10 @@ func CmdApproveNft() *cobra.Command {
 			"[nft-id] is the NFT id.",
 		Example: fmt.Sprintf(
 			"$ %s tx mdb approve-nft <operator> <approved> <nft-id> "+
-				"--from=<key-name> "+
+				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection=<true/false> "+
+				"--strict-collection "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -794,12 +759,7 @@ func CmdApproveNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetString(FlagStrictCollection)
-			if err != nil {
-				return err
-			}
-
-			strictCollection, err := strconv.ParseBool(strictCollectionFlag)
+			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
 			}
@@ -813,7 +773,7 @@ func CmdApproveNft() *cobra.Command {
 				approved,
 				pubKeyHex,
 				pubKeyType,
-				strictCollection,
+				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

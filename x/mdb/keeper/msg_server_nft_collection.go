@@ -22,7 +22,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
 	}
 
-	collectionController := NewNftCollectionController(ctx, owner).
+	collectionController := NewNftCollectionController(ctx, owner, false).
 		WithMetadata(msg.Collection).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))

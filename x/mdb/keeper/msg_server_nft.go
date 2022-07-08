@@ -38,7 +38,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -49,22 +49,24 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = collectionController.
-		CreateDefaultIfNotExists().
-		Execute()
+	if !msg.StrictCollection {
+		err = collectionController.
+			CreateDefaultIfEmptyId().
+			Execute()
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = collectionController.
 		MustExist().
-		IsOpenedOrOwner(creator).
+		IsOpenedOrHasOwner(creator).
 		Validate()
 
 	if err != nil {
@@ -80,7 +82,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
-		FilterNotExist().
+		FilterExist().
+		FilterEmptyIds().
 		Execute()
 
 	if err != nil {
@@ -174,7 +177,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -185,7 +188,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -207,6 +210,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
 		FilterNotOwn(creator).
 		Execute()
@@ -229,6 +233,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
+	k.DeleteApprovedNfts(ctx, collectionIndex, nftsIndexes)
 	k.DeleteNfts(ctx, collectionIndex, nftsIndexes)
 
 	ctx.EventManager().EmitEvent(
@@ -268,7 +273,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -279,7 +284,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -301,6 +306,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
 		FilterNotOwn(creator).
 		Execute()
@@ -398,7 +404,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -409,22 +415,24 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = collectionController.
-		CreateDefaultIfNotExists().
-		Execute()
+	if !msg.StrictCollection {
+		err = collectionController.
+			CreateDefaultIfEmptyId().
+			Execute()
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = collectionController.
 		MustExist().
-		IsOpenedOrOwner(creator).
+		IsOpenedOrHasOwner(creator).
 		Validate()
 
 	if err != nil {
@@ -434,16 +442,14 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	nftsMetadata := make([]*types.MsgNftMetadata, 1)
-	nftsMetadata = append(nftsMetadata, msg.Nft)
-
 	nftController := NewNftController(ctx, collectionIndex).
-		WithMetadata(nftsMetadata).
+		WithMetadata([]*types.MsgNftMetadata{msg.Nft}).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
-		FilterNotExist().
+		FilterEmptyIds().
+		FilterExist().
 		Execute()
 
 	if err != nil {
@@ -458,10 +464,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		return nil, err
 	}
 
-	nftsMetadata = nftController.getMetadata()
+	nftsMetadata := nftController.getMetadata()
 
 	if len(nftsMetadata) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "existing nft")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "existing or invalid nft")
 	}
 
 	nftMetadata := nftsMetadata[0]
@@ -532,7 +538,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -543,7 +549,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -565,6 +571,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
 		FilterNotOwn(creator).
 		Execute()
@@ -587,6 +594,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		return nil, err
 	}
 
+	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])
 	k.DeleteNft(ctx, collectionIndex, nftsIndexes[0])
 
 	ctx.EventManager().EmitEvent(
@@ -626,7 +634,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -637,7 +645,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -659,6 +667,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
 		FilterNotOwn(creator).
 		Execute()
@@ -724,7 +733,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -735,7 +744,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -757,8 +766,8 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
@@ -780,7 +789,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		return nil, err
 	}
 
-	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0], receiver)
+	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -828,7 +837,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" {
+	if msg.CollectionCreator == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -839,7 +848,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
 		WithId(msg.CollectionId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
@@ -861,8 +870,8 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
+		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
@@ -884,7 +893,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		return nil, err
 	}
 
-	k.DeleteApprovedNfts(ctx, collectionIndex, nftsIndexes, receiver)
+	k.DeleteApprovedNfts(ctx, collectionIndex, nftsIndexes)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

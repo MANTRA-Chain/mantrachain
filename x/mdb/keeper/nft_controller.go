@@ -34,20 +34,12 @@ func (c *NftController) WithMetadata(metadata []*types.MsgNftMetadata) *NftContr
 }
 
 func (c *NftController) WithId(id string) *NftController {
-	if c.metadata == nil {
-		c.metadata = make([]*types.MsgNftMetadata, 1)
-	}
-
-	c.metadata = append(c.metadata, &types.MsgNftMetadata{
-		Id: id,
-	})
+	c.metadata = []*types.MsgNftMetadata{{Id: id}}
 	return c
 }
 
 func (c *NftController) WithIds(ids []string) *NftController {
-	if c.metadata == nil {
-		c.metadata = make([]*types.MsgNftMetadata, 0)
-	}
+	c.metadata = []*types.MsgNftMetadata{}
 
 	for _, id := range ids {
 		c.metadata = append(c.metadata, &types.MsgNftMetadata{
@@ -83,6 +75,20 @@ func (c *NftController) Execute() error {
 		}
 	}
 	return nil
+}
+
+func (c *NftController) FilterEmptyIds() *NftController {
+	c.actions = append(c.actions, func(controller *NftController) error {
+		return controller.filterEmptyIds()
+	})
+	return c
+}
+
+func (c *NftController) FilterExist() *NftController {
+	c.actions = append(c.actions, func(controller *NftController) error {
+		return controller.filterExist()
+	})
+	return c
 }
 
 func (c *NftController) FilterNotExist() *NftController {
@@ -127,22 +133,55 @@ func (c *NftController) ValidMetadata() *NftController {
 	return c
 }
 
+func (c *NftController) filterEmptyIds() error {
+	filtered := []*types.MsgNftMetadata{}
+
+	for _, nftMetadata := range c.metadata {
+		if nftMetadata.Id == "" {
+			continue
+		}
+		filtered = append(filtered, nftMetadata)
+	}
+
+	c.metadata = filtered
+
+	return nil
+}
+
+func (c *NftController) filterExist() error {
+	byIndex := make(map[string]*types.MsgNftMetadata, 0)
+	filtered := []*types.MsgNftMetadata{}
+	indexes := [][]byte{}
+
+	for _, nftMetadata := range c.metadata {
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		indexes = append(indexes, index)
+		byIndex[string(index)] = nftMetadata
+	}
+
+	indexes = c.store.FilterExist(c.ctx, c.collectionIndex, indexes)
+	for _, index := range indexes {
+		nftMetadata := byIndex[string(index)]
+		filtered = append(filtered, nftMetadata)
+	}
+
+	c.metadata = filtered
+
+	return nil
+}
+
 func (c *NftController) filterNotExist() error {
 	byIndex := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
 	indexes := [][]byte{}
 
 	for _, nftMetadata := range c.metadata {
-		if nftMetadata.Id == "" {
-			continue
-		}
-
 		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
 		indexes = append(indexes, index)
 		byIndex[string(index)] = nftMetadata
 	}
 
-	indexes = c.store.FilterNotExists(c.ctx, c.collectionIndex, indexes)
+	indexes = c.store.FilterNotExist(c.ctx, c.collectionIndex, indexes)
 	for _, index := range indexes {
 		nftMetadata := byIndex[string(index)]
 		filtered = append(filtered, nftMetadata)
@@ -154,19 +193,19 @@ func (c *NftController) filterNotExist() error {
 }
 
 func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
-	byId := make(map[string]*types.MsgNftMetadata, 0)
+	byNftId := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
-	ids := make([]string, 0)
+	nftsIds := []string{}
 
 	for _, nftMetadata := range c.metadata {
-		id := nftMetadata.Id
-		ids = append(ids, id)
-		byId[id] = nftMetadata
+		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
+		nftsIds = append(nftsIds, string(index))
+		byNftId[string(index)] = nftMetadata
 	}
 
-	ids = c.store.nftKeeper.FilterNotOwn(c.ctx, string(c.collectionIndex), ids)
-	for _, id := range ids {
-		nftMetadata := byId[id]
+	nftsIds = c.store.nftKeeper.FilterNotOwn(c.ctx, string(c.collectionIndex), nftsIds, owner)
+	for _, nftId := range nftsIds {
+		nftMetadata := byNftId[nftId]
 		filtered = append(filtered, nftMetadata)
 	}
 
@@ -179,9 +218,8 @@ func (c *NftController) filterCannotTransfer(operator sdk.AccAddress) error {
 	filtered := []*types.MsgNftMetadata{}
 
 	for _, nftMetadata := range c.metadata {
-		id := nftMetadata.Id
 		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
-		owner := c.store.nftKeeper.GetOwner(c.ctx, string(c.collectionIndex), id)
+		owner := c.store.nftKeeper.GetOwner(c.ctx, string(c.collectionIndex), string(index))
 		if owner.Equals(operator) || c.store.IsApproved(c.ctx, c.collectionIndex, index, owner, operator) {
 			filtered = append(filtered, nftMetadata)
 		}

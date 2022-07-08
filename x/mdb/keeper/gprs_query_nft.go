@@ -49,6 +49,7 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+	// TODO: Get owner from nftExecutor
 	nft, found := nftExecutor.GetNft(string(collIndex), string(index))
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")

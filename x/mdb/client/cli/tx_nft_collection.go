@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
@@ -8,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +21,12 @@ func CmdCreateNftCollection() *cobra.Command {
 		Short: "Broadcast message create_nft_collection",
 		Long: "Creates a new NFT collection. " +
 			"[payload-json] is JSON encoded MsgCreateNftCollectionMetadata.",
+		Example: fmt.Sprintf(
+			"$ %s tx mdb create-nft-collection <payload-json> "+
+				"--from=<from> "+
+				"--chain-id=<chain-id> ",
+			version.AppName,
+		),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argMetadata := args[0]

@@ -142,7 +142,6 @@ message MsgCreateNftCollection {
   MsgCreateNftCollectionMetadata collection = 2;
   string pub_key_hex = 3;
   string pub_key_type = 4;
-  bool strict_collection = 5;
 }
 
 message MsgCreateNftCollectionMetadata {

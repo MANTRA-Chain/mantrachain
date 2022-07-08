@@ -16,7 +16,7 @@ type NFTKeeper interface {
 	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
 	Burn(ctx sdk.Context, classID string, nftID string) error
 	BurnBatch(ctx sdk.Context, classID string, nftIDs []string) error
-	FilterNotOwn(ctx sdk.Context, classID string, nftIDs []string) (list []string)
+	FilterNotOwn(ctx sdk.Context, classID string, nftIDs []string, owner sdk.AccAddress) (list []string)
 	GetClassesByIds(ctx sdk.Context, classesIds []string) (classes []nfttypes.Class)
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 	TransferBatch(ctx sdk.Context, classID string, nftIDs []string, receiver sdk.AccAddress) error
