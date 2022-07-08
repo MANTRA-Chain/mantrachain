@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -23,7 +24,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if req.Id == "" {
+	if strings.TrimSpace(req.Id) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 

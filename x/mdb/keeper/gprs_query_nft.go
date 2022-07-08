@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -23,13 +24,13 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if req.CollectionId == "" {
+	if strings.TrimSpace(req.CollectionId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty collection id")
 	}
 
 	var collectionIndex []byte
 
-	if req.Id == "" {
+	if strings.TrimSpace(req.Id) == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty nft id")
 	} else {
 		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
@@ -85,7 +86,7 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if req.CollectionId == "" {
+	if strings.TrimSpace(req.CollectionId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty collection id")
 	}
 

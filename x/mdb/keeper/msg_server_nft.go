@@ -22,7 +22,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		return nil, err
 	}
 
-	if msg.Receiver == "" {
+	if strings.TrimSpace(msg.Receiver) == "" {
 		msg.Receiver = msg.Creator
 	}
 
@@ -38,7 +38,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -177,7 +177,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -273,7 +273,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -388,7 +388,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		return nil, err
 	}
 
-	if msg.Receiver == "" {
+	if strings.TrimSpace(msg.Receiver) == "" {
 		msg.Receiver = msg.Creator
 	}
 
@@ -404,7 +404,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -532,13 +532,13 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		return nil, err
 	}
 
-	if msg.NftId == "" {
+	if strings.TrimSpace(msg.NftId) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft id cannot be empty")
 	}
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -628,13 +628,13 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		return nil, err
 	}
 
-	if msg.NftId == "" {
+	if strings.TrimSpace(msg.NftId) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft id cannot be empty")
 	}
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -727,13 +727,13 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		return nil, err
 	}
 
-	if msg.NftId == "" {
+	if strings.TrimSpace(msg.NftId) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft id cannot be empty")
 	}
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -838,7 +838,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 
 	var collectionCreator sdk.AccAddress
 
-	if msg.CollectionCreator == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {

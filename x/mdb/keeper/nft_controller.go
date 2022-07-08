@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"regexp"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/LimeChain/mantrachain/x/mdb/utils"
@@ -137,7 +138,7 @@ func (c *NftController) filterEmptyIds() error {
 	filtered := []*types.MsgNftMetadata{}
 
 	for _, nftMetadata := range c.metadata {
-		if nftMetadata.Id == "" {
+		if strings.TrimSpace(nftMetadata.Id) == "" {
 			continue
 		}
 		filtered = append(filtered, nftMetadata)
@@ -240,7 +241,7 @@ func (c *NftController) validMetadataMaxCount() error {
 
 func (c *NftController) validMetadataId() error {
 	for i, nft := range c.metadata {
-		if nft.Id == "" {
+		if strings.TrimSpace(nft.Id) == "" {
 			return sdkerrors.Wrapf(types.ErrInvalidNftId, "id: %s, index %d", nft.Id, i)
 		}
 
@@ -256,7 +257,7 @@ func (c *NftController) validMetadataId() error {
 
 func (c *NftController) validMetadataTitle() error {
 	for i, nft := range c.metadata {
-		if nft.Title == "" {
+		if strings.TrimSpace(nft.Title) == "" {
 			continue
 		}
 
@@ -270,7 +271,7 @@ func (c *NftController) validMetadataTitle() error {
 
 func (c *NftController) validMetadataUrl() error {
 	for i, nft := range c.metadata {
-		if nft.Url == "" {
+		if strings.TrimSpace(nft.Url) == "" {
 			continue
 		}
 
@@ -284,7 +285,7 @@ func (c *NftController) validMetadataUrl() error {
 
 func (c *NftController) validMetadataDescription() error {
 	for i, nft := range c.metadata {
-		if nft.Description == "" {
+		if strings.TrimSpace(nft.Description) == "" {
 			continue
 		}
 
@@ -307,7 +308,7 @@ func (c *NftController) validMetadataImages() error {
 		}
 
 		for k, image := range nft.Images {
-			if image.Type == "" || int32(len(image.Type)) > c.conf.ValidNftMetadataImagesTypeMaxLength {
+			if strings.TrimSpace(image.Type) == "" || int32(len(image.Type)) > c.conf.ValidNftMetadataImagesTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftImage, "image index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataImagesTypeMaxLength, i)
 			}
 			if !utils.IsUrl(image.Url) {
@@ -330,7 +331,7 @@ func (c *NftController) validMetadataLinks() error {
 		}
 
 		for k, link := range nft.Links {
-			if link.Type == "" || int32(len(link.Type)) > c.conf.ValidNftMetadataLinksTypeMaxLength {
+			if strings.TrimSpace(link.Type) == "" || int32(len(link.Type)) > c.conf.ValidNftMetadataLinksTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftLink, "link index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataLinksTypeMaxLength, i)
 			}
 			if !utils.IsUrl(link.Url) {
@@ -353,7 +354,7 @@ func (c *NftController) validMetadataAttributes() error {
 		}
 
 		for k, attrubute := range nft.Attributes {
-			if attrubute.Type == "" || int32(len(attrubute.Type)) > c.conf.ValidNftMetadataAttributesTypeMaxLength {
+			if strings.TrimSpace(attrubute.Type) == "" || int32(len(attrubute.Type)) > c.conf.ValidNftMetadataAttributesTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftAttribute, "attrubute index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataAttributesTypeMaxLength, i)
 			}
 			if int32(len(attrubute.Value)) > c.conf.ValidNftMetadataAttributesValueMaxLength || int32(len(attrubute.SubValue)) > c.conf.ValidNftMetadataAttributesSubValueMaxLength {

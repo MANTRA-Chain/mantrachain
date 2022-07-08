@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
@@ -18,7 +19,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	if msg.Collection.Id == "" {
+	if strings.TrimSpace(msg.Collection.Id) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
 	}
 
