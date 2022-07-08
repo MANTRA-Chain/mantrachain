@@ -46,7 +46,7 @@ func CmdGetNft() *cobra.Command {
 	return cmd
 }
 
-func CmdCollectionNfts() *cobra.Command {
+func CmdGetCollectionNfts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-nfts [collection-creator] [collection-id]",
 		Short: "Query collection-nfts",
@@ -62,9 +62,15 @@ func CmdCollectionNfts() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
 			params := &types.QueryGetCollectionNftsRequest{
 				CollectionCreator: reqCollectionCreator,
 				CollectionId:      reqCollectionId,
+				Pagination:        pageReq,
 			}
 
 			res, err := queryClient.CollectionNfts(cmd.Context(), params)
@@ -77,6 +83,7 @@ func CmdCollectionNfts() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "collection-nfts")
 
 	return cmd
 }

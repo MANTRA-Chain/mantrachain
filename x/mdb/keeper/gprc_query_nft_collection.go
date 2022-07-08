@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -71,24 +73,36 @@ func (k Keeper) NftCollections(c context.Context, req *types.QueryGetNftCollecti
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	colls := k.GetAllNftCollection(
-		ctx,
-		sdk.AccAddress(creator),
-	)
+	store := ctx.KVStore(k.storeKey)
+	collectionsStore := prefix.NewStore(store, types.NftCollectionStoreKey(creator))
 
-	var collsIndexes []string
+	var collections []*types.NftCollection
+	pageRes, err := query.Paginate(collectionsStore, req.Pagination, func(_ []byte, value []byte) error {
+		var collection types.NftCollection
+		if err := k.cdc.Unmarshal(value, &collection); err != nil {
+			return err
+		}
+		collections = append(collections, &collection)
+		return nil
+	})
 
-	for _, coll := range colls {
-		collsIndexes = append(collsIndexes, string(coll.Index))
+	if err != nil {
+		return nil, err
+	}
+
+	var collectionsIndexes []string
+
+	for _, collection := range collections {
+		collectionsIndexes = append(collectionsIndexes, string(collection.Index))
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nftColls := nftExecutor.GetClasses(collsIndexes)
+	nftColls := nftExecutor.GetClasses(collectionsIndexes)
 
 	var nftCollections []*types.QueryGetNftCollectionResponse
 
 	for i, nftColl := range nftColls {
-		meta := colls[i]
+		meta := collections[i]
 		nftCollections = append(nftCollections, &types.QueryGetNftCollectionResponse{
 			Id:          nftColl.UriHash,
 			Name:        nftColl.Name,
@@ -108,5 +122,64 @@ func (k Keeper) NftCollections(c context.Context, req *types.QueryGetNftCollecti
 
 	return &types.QueryGetNftCollectionsResponse{
 		NftCollections: nftCollections,
+		Pagination:     pageRes,
+	}, nil
+}
+
+func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCollectionsRequest) (*types.QueryGetAllNftCollectionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+	store := ctx.KVStore(k.storeKey)
+	collectionsStore := prefix.NewStore(store, types.NftCollectionStoreKey(nil))
+
+	var collections []*types.NftCollection
+	pageRes, err := query.Paginate(collectionsStore, req.Pagination, func(_ []byte, value []byte) error {
+		var collection types.NftCollection
+		if err := k.cdc.Unmarshal(value, &collection); err != nil {
+			return err
+		}
+		collections = append(collections, &collection)
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var collectionsIndexes []string
+
+	for _, collection := range collections {
+		collectionsIndexes = append(collectionsIndexes, string(collection.Index))
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+	nftColls := nftExecutor.GetClasses(collectionsIndexes)
+
+	var nftCollections []*types.QueryGetNftCollectionResponse
+
+	for i, nftColl := range nftColls {
+		meta := collections[i]
+		nftCollections = append(nftCollections, &types.QueryGetNftCollectionResponse{
+			Id:          nftColl.UriHash,
+			Name:        nftColl.Name,
+			Symbol:      nftColl.Symbol,
+			Description: nftColl.Description,
+			Images:      meta.Images,
+			Url:         meta.Url,
+			Links:       meta.Links,
+			Category:    meta.Category,
+			Options:     meta.Options,
+			Creator:     meta.Creator.String(),
+			Owner:       meta.Owner.String(),
+			Opened:      meta.Opened,
+			Data:        nftColl.Data,
+		})
+	}
+
+	return &types.QueryGetAllNftCollectionsResponse{
+		NftCollections: nftCollections,
+		Pagination:     pageRes,
 	}, nil
 }

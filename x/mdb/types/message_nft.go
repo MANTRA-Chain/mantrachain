@@ -469,9 +469,10 @@ func (msg *MsgBurnNft) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgTransferNft(creator string, receiver string, collectionCreator string, collectionId string,
-	owner string,
+func NewMsgTransferNft(creator string, collectionCreator string, collectionId string,
 	nftId string,
+	owner string,
+	receiver string,
 	pubKeyHex string,
 	pubKeyType string,
 	strictCollection bool,

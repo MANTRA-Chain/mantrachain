@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "mdb/v1/params.proto";
 import "mdb/v1/nft_collection.proto";
 import "mdb/v1/nft.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/mdb/types";
@@ -30,6 +31,10 @@ service Query {
   // Queries a list of NftCollections items.
 	rpc NftCollections(QueryGetNftCollectionsRequest) returns (QueryGetNftCollectionsResponse) {
 		option (google.api.http).get = "/mdb/v1/nftCollection/{creator}";
+	}
+
+  rpc AllNftCollections(QueryGetAllNftCollectionsRequest) returns (QueryGetAllNftCollectionsResponse) {
+		option (google.api.http).get = "/mdb/v1/nftCollection";
 	}
 
 // Queries a list of CollectionNfts items.
@@ -93,21 +98,37 @@ message QueryGetNftResponse {
 
 message QueryGetNftCollectionsRequest {
   string creator = 1;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryGetNftCollectionsResponse {
   repeated QueryGetNftCollectionResponse nftCollections = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetAllNftCollectionsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetAllNftCollectionsResponse {
+  repeated QueryGetNftCollectionResponse nftCollections = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetCollectionNftsRequest {
   string collection_creator = 1;
   string collection_id = 2;
 
-  // TODO: Pagination
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 message QueryGetCollectionNftsResponse {
   repeated QueryGetNftResponse nfts = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

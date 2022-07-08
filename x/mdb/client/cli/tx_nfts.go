@@ -678,11 +678,11 @@ func CmdTransferNft() *cobra.Command {
 
 			msg := types.NewMsgTransferNft(
 				clientCtx.GetFromAddress().String(),
-				argReceiver,
 				collectionCreator,
 				collectionId,
-				argOwner,
 				argNftId,
+				argOwner,
+				argReceiver,
 				pubKeyHex,
 				pubKeyType,
 				strictCollectionFlag,

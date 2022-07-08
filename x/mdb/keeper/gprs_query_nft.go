@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,23 +27,23 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		return nil, status.Error(codes.InvalidArgument, "empty collection id")
 	}
 
-	var collIndex []byte
+	var collectionIndex []byte
 
 	if req.Id == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty nft id")
 	} else {
-		collIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
 
-		if !k.HasNftCollection(ctx, collectionCreator, collIndex) {
+		if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
 			return nil, status.Error(codes.InvalidArgument, "collection not exists")
 		}
 	}
 
-	index := types.GetNftIndex(collIndex, req.Id)
+	index := types.GetNftIndex(collectionIndex, req.Id)
 
 	meta, found := k.GetNft(
 		ctx,
-		collIndex,
+		collectionIndex,
 		index,
 	)
 	if !found {
@@ -49,8 +51,8 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	// TODO: Get owner from nftExecutor
-	nft, found := nftExecutor.GetNft(string(collIndex), string(index))
+
+	nft, found := nftExecutor.GetNft(string(collectionIndex), string(index))
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
@@ -64,7 +66,7 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		Links:        meta.Links,
 		Attributes:   meta.Attributes,
 		Creator:      meta.Creator.String(),
-		Owner:        nftExecutor.GetNftOwner(string(collIndex), string(index)).String(),
+		Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(index)).String(),
 		Resellable:   meta.Resellable,
 		Data:         nft.Data,
 		CollectionId: meta.CollectionId,
@@ -87,16 +89,28 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 		return nil, status.Error(codes.InvalidArgument, "empty collection id")
 	}
 
-	collIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
 
-	if !k.HasNftCollection(ctx, collectionCreator, collIndex) {
+	if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
 		return nil, status.Error(codes.InvalidArgument, "collection not exists")
 	}
 
-	nftsMeta := k.GetAllNft(
-		ctx,
-		collIndex,
-	)
+	store := ctx.KVStore(k.storeKey)
+	nftsMetaStore := prefix.NewStore(store, types.NftStoreKey(collectionIndex))
+
+	var nftsMeta []*types.Nft
+	pageRes, err := query.Paginate(nftsMetaStore, req.Pagination, func(_ []byte, value []byte) error {
+		var nftMeta types.Nft
+		if err := k.cdc.Unmarshal(value, &nftMeta); err != nil {
+			return err
+		}
+		nftsMeta = append(nftsMeta, &nftMeta)
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	var nftsIndexes []string
 
@@ -105,7 +119,7 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nfts := nftExecutor.GetNfts(string(collIndex), nftsIndexes)
+	nfts := nftExecutor.GetNfts(string(collectionIndex), nftsIndexes)
 
 	var nftsRes []*types.QueryGetNftResponse
 
@@ -121,7 +135,7 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 			Links:        meta.Links,
 			Attributes:   meta.Attributes,
 			Creator:      meta.Creator.String(),
-			Owner:        nftExecutor.GetNftOwner(string(collIndex), string(meta.Index)).String(),
+			Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(meta.Index)).String(),
 			Resellable:   meta.Resellable,
 			Data:         nft.Data,
 			CollectionId: meta.CollectionId,
@@ -129,6 +143,7 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 	}
 
 	return &types.QueryGetCollectionNftsResponse{
-		Nfts: nftsRes,
+		Nfts:       nftsRes,
+		Pagination: pageRes,
 	}, nil
 }

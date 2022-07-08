@@ -64,13 +64,21 @@ func GetNftCollectionIndex(creator sdk.AccAddress, id string) []byte {
 }
 
 func NftCollectionStoreKey(creator sdk.AccAddress) []byte {
-	creator = address.MustLengthPrefix(creator)
+	var key []byte
+	if creator == nil {
+		key = make([]byte, len(nftCollectionStoreKey)+len(delimiter))
+		copy(key, nftCollectionStoreKey)
+		copy(key[len(nftCollectionStoreKey):], delimiter)
+	} else {
+		creator = address.MustLengthPrefix(creator)
 
-	key := make([]byte, len(nftCollectionStoreKey)+len(delimiter)+len(creator)+len(delimiter))
-	copy(key, nftCollectionStoreKey)
-	copy(key[len(nftCollectionStoreKey):], delimiter)
-	copy(key[len(nftCollectionStoreKey)+len(delimiter):], creator)
-	copy(key[len(nftCollectionStoreKey)+len(delimiter)+len(creator):], delimiter)
+		key = make([]byte, len(nftCollectionStoreKey)+len(delimiter)+len(creator)+len(delimiter))
+		copy(key, nftCollectionStoreKey)
+		copy(key[len(nftCollectionStoreKey):], delimiter)
+		copy(key[len(nftCollectionStoreKey)+len(delimiter):], creator)
+		copy(key[len(nftCollectionStoreKey)+len(delimiter)+len(creator):], delimiter)
+	}
+
 	return key
 }
 

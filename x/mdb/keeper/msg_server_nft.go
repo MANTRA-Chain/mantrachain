@@ -82,8 +82,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		WithConfiguration(k.GetParams(ctx))
 
 	err = nftController.
-		FilterExist().
 		FilterEmptyIds().
+		FilterExist().
 		Execute()
 
 	if err != nil {
@@ -768,6 +768,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
+		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
@@ -872,6 +873,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
+		FilterNotOwn(owner).
 		FilterCannotTransfer(creator).
 		Execute()
 
