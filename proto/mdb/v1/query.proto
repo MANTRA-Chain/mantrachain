@@ -93,7 +93,6 @@ message QueryGetNftResponse {
   string creator = 9;
   google.protobuf.Any data = 10;
   string collection_id = 11;
-  bool resellable = 12;
 }
 
 message QueryGetNftCollectionsRequest {

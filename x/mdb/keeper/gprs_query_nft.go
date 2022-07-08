@@ -68,7 +68,6 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		Attributes:   meta.Attributes,
 		Creator:      meta.Creator.String(),
 		Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(index)).String(),
-		Resellable:   meta.Resellable,
 		Data:         nft.Data,
 		CollectionId: meta.CollectionId,
 	}, nil
@@ -137,7 +136,6 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 			Attributes:   meta.Attributes,
 			Creator:      meta.Creator.String(),
 			Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(meta.Index)).String(),
-			Resellable:   meta.Resellable,
 			Data:         nft.Data,
 			CollectionId: meta.CollectionId,
 		})

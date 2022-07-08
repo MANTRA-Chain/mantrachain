@@ -186,7 +186,6 @@ message MsgNftMetadata {
   repeated NftLink links = 6;
   repeated NftAttribute attributes = 7;
   google.protobuf.Any data = 8;
-  bool resellable = 9;
 }
 
 message MsgMintNftsResponse {
