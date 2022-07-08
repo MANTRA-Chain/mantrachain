@@ -257,7 +257,7 @@ func (c *NftController) validMetadataId() error {
 
 func (c *NftController) validMetadataTitle() error {
 	for i, nft := range c.metadata {
-		if strings.TrimSpace(nft.Title) == "" {
+		if nft.Title == "" {
 			continue
 		}
 
@@ -271,7 +271,7 @@ func (c *NftController) validMetadataTitle() error {
 
 func (c *NftController) validMetadataUrl() error {
 	for i, nft := range c.metadata {
-		if strings.TrimSpace(nft.Url) == "" {
+		if nft.Url == "" {
 			continue
 		}
 
@@ -285,7 +285,7 @@ func (c *NftController) validMetadataUrl() error {
 
 func (c *NftController) validMetadataDescription() error {
 	for i, nft := range c.metadata {
-		if strings.TrimSpace(nft.Description) == "" {
+		if nft.Description == "" {
 			continue
 		}
 
@@ -308,7 +308,7 @@ func (c *NftController) validMetadataImages() error {
 		}
 
 		for k, image := range nft.Images {
-			if strings.TrimSpace(image.Type) == "" || int32(len(image.Type)) > c.conf.ValidNftMetadataImagesTypeMaxLength {
+			if image.Type == "" || int32(len(image.Type)) > c.conf.ValidNftMetadataImagesTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftImage, "image index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataImagesTypeMaxLength, i)
 			}
 			if !utils.IsUrl(image.Url) {
@@ -331,7 +331,7 @@ func (c *NftController) validMetadataLinks() error {
 		}
 
 		for k, link := range nft.Links {
-			if strings.TrimSpace(link.Type) == "" || int32(len(link.Type)) > c.conf.ValidNftMetadataLinksTypeMaxLength {
+			if link.Type == "" || int32(len(link.Type)) > c.conf.ValidNftMetadataLinksTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftLink, "link index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataLinksTypeMaxLength, i)
 			}
 			if !utils.IsUrl(link.Url) {
@@ -354,7 +354,7 @@ func (c *NftController) validMetadataAttributes() error {
 		}
 
 		for k, attrubute := range nft.Attributes {
-			if strings.TrimSpace(attrubute.Type) == "" || int32(len(attrubute.Type)) > c.conf.ValidNftMetadataAttributesTypeMaxLength {
+			if attrubute.Type == "" || int32(len(attrubute.Type)) > c.conf.ValidNftMetadataAttributesTypeMaxLength {
 				return sdkerrors.Wrapf(types.ErrInvalidNftAttribute, "attrubute index %d type empty or too long, max %d, nft index %d", k, c.conf.ValidNftMetadataAttributesTypeMaxLength, i)
 			}
 			if int32(len(attrubute.Value)) > c.conf.ValidNftMetadataAttributesValueMaxLength || int32(len(attrubute.SubValue)) > c.conf.ValidNftMetadataAttributesSubValueMaxLength {

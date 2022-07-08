@@ -236,7 +236,7 @@ func (c *NftCollectionController) mustNotExist() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataCategory() error {
-	if strings.TrimSpace(c.metadata.Category) == "" {
+	if c.metadata.Category == "" {
 		return nil
 	}
 	if types.ValidateNftCollectionCategory(types.NftCollectionCategory(c.metadata.Category)) != nil {
@@ -246,7 +246,7 @@ func (c *NftCollectionController) validCollectionMetadataCategory() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataSymbol() error {
-	if strings.TrimSpace(c.metadata.Symbol) == "" {
+	if c.metadata.Symbol == "" {
 		return nil
 	}
 
@@ -262,7 +262,7 @@ func (c *NftCollectionController) validCollectionMetadataSymbol() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataUrl() error {
-	if strings.TrimSpace(c.metadata.Url) == "" {
+	if c.metadata.Url == "" {
 		return nil
 	}
 
@@ -274,7 +274,7 @@ func (c *NftCollectionController) validCollectionMetadataUrl() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataDescription() error {
-	if strings.TrimSpace(c.metadata.Description) == "" {
+	if c.metadata.Description == "" {
 		return nil
 	}
 
@@ -315,7 +315,7 @@ func (c *NftCollectionController) validCollectionMetadataImages() error {
 		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImagesCount, "images count %d invalid, max %d", len(c.metadata.Images), c.conf.ValidNftCollectionMetadataImagesMaxCount)
 	}
 	for i, image := range c.metadata.Images {
-		if strings.TrimSpace(image.Type) == "" || int32(len(image.Type)) > c.conf.ValidNftCollectionMetadataImagesTypeMaxLength {
+		if image.Type == "" || int32(len(image.Type)) > c.conf.ValidNftCollectionMetadataImagesTypeMaxLength {
 			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionImage, "image type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataImagesTypeMaxLength)
 		}
 		if !utils.IsUrl(image.Url) {
@@ -333,7 +333,7 @@ func (c *NftCollectionController) validCollectionMetadataLinks() error {
 		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLinksCount, "links count %d invalid, max %d", len(c.metadata.Links), c.conf.ValidNftCollectionMetadataLinksMaxCount)
 	}
 	for i, link := range c.metadata.Links {
-		if strings.TrimSpace(link.Type) == "" || int32(len(link.Type)) > c.conf.ValidNftCollectionMetadataLinksTypeMaxLength {
+		if link.Type == "" || int32(len(link.Type)) > c.conf.ValidNftCollectionMetadataLinksTypeMaxLength {
 			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionLink, "link type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataLinksTypeMaxLength)
 		}
 		if !utils.IsUrl(link.Url) {
@@ -351,7 +351,7 @@ func (c *NftCollectionController) validCollectionMetadataOptions() error {
 		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionOptionsCount, "options count %d invalid, max %d", len(c.metadata.Options), c.conf.ValidNftCollectionMetadataOptionsMaxCount)
 	}
 	for i, option := range c.metadata.Options {
-		if strings.TrimSpace(option.Type) == "" || int32(len(option.Type)) > c.conf.ValidNftCollectionMetadataOptionsTypeMaxLength {
+		if option.Type == "" || int32(len(option.Type)) > c.conf.ValidNftCollectionMetadataOptionsTypeMaxLength {
 			return sdkerrors.Wrapf(types.ErrInvalidNftCollectionOption, "option type empty or length invalid, index %d , max %d", i, c.conf.ValidNftCollectionMetadataOptionsTypeMaxLength)
 		}
 		if int32(len(option.Value)) > c.conf.ValidNftCollectionMetadataOptionsValueMaxLength || int32(len(option.SubValue)) > c.conf.ValidNftCollectionMetadataOptionsSubValueMaxLength {
