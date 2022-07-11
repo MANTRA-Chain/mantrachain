@@ -35,6 +35,10 @@ func (c *NftExecutor) GetClass(classId string) (nfttypes.Class, bool) {
 	return c.nftKeeper.GetClass(c.ctx, classId)
 }
 
+func (c *NftExecutor) GetClassSupply(classId string) uint64 {
+	return c.nftKeeper.GetTotalSupply(c.ctx, classId)
+}
+
 func (c *NftExecutor) GetClasses(classesIds []string) []nfttypes.Class {
 	return c.nftKeeper.GetClassesByIds(c.ctx, classesIds)
 }
@@ -77,4 +81,8 @@ func (c *NftExecutor) TransferNft(classId string, nftId string, receiver sdk.Acc
 
 func (c *NftExecutor) TransferNftBatch(classId string, nftsIds []string, receiver sdk.AccAddress) error {
 	return c.nftKeeper.TransferBatch(c.ctx, classId, nftsIds, receiver)
+}
+
+func (c *NftExecutor) GetNftsOfClassByOwner(classId string, owner sdk.AccAddress) []nfttypes.NFT {
+	return c.nftKeeper.GetNFTsOfClassByOwner(c.ctx, classId, owner)
 }

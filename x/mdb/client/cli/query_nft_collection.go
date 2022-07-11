@@ -44,6 +44,38 @@ func CmdGetNftCollection() *cobra.Command {
 	return cmd
 }
 
+func CmdGetNftCollectionSupply() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "nft-collection-supply [creator] [id]",
+		Short: "Query a nft collection supply",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			creator := args[0]
+			id := args[1]
+
+			params := &types.QueryGetNftCollectionSupplyRequest{
+				Creator: creator,
+				Id:      id,
+			}
+
+			res, err := queryClient.NftCollectionSupply(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func CmdGetNftCollectionsByCreator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "nft-collections [creator]",

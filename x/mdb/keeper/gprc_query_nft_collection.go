@@ -185,3 +185,38 @@ func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCo
 		Pagination:     pageRes,
 	}, nil
 }
+
+func (k Keeper) NftCollectionSupply(c context.Context, req *types.QueryGetNftCollectionSupplyRequest) (*types.QueryGetNftCollectionSupplyResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	creator, err := sdk.AccAddressFromBech32(req.Creator)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if strings.TrimSpace(req.Id) == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	index := types.GetNftCollectionIndex(creator, req.Id)
+
+	if !k.HasNftCollection(
+		ctx,
+		sdk.AccAddress(creator),
+		index,
+	) {
+		return nil, status.Error(codes.InvalidArgument, "not found")
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+
+	return &types.QueryGetNftCollectionSupplyResponse{
+		Supply:  nftExecutor.GetClassSupply(string(index)),
+		Creator: creator.String(),
+		Id:      req.Id,
+	}, nil
+}

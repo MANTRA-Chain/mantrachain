@@ -83,7 +83,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "collection-nfts")
+	flags.AddPaginationFlagsToCmd(cmd, "all-collection-nfts")
 
 	return cmd
 }
@@ -109,6 +109,72 @@ func CmdGetNftOwner() *cobra.Command {
 			}
 
 			res, err := queryClient.NftOwner(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdGetIsApprovedForAllNfts() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "is-approved-for-all-nfts [owner] [operator]",
+		Short: "Query a operator is approved for all nfts",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			owner := args[0]
+			operator := args[1]
+
+			params := &types.QueryGetIsApprovedForAllNftsRequest{
+				Owner:    owner,
+				Operator: operator,
+			}
+
+			res, err := queryClient.IsApprovedForAllNfts(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdGetNftApproved() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "nft-approvals [collection_creator] [collection_id] [id]",
+		Short: "Query a nft approvals",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			collection_creator := args[0]
+			collection_id := args[1]
+			id := args[2]
+
+			params := &types.QueryGetNftApprovedRequest{
+				CollectionCreator: collection_creator,
+				CollectionId:      collection_id,
+				Id:                id,
+			}
+
+			res, err := queryClient.NftApproved(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -152,6 +218,41 @@ func CmdGetNftBalance() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdGetCollectionNftsByOwner() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "collection-nfts [collection_creator] [collection_id] [owner]",
+		Short: "Query collection nfts by owner",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			collection_creator := args[0]
+			collection_id := args[1]
+			owner := args[2]
+
+			params := &types.QueryGetCollectionNftsByOwnerRequest{
+				Owner:             owner,
+				CollectionCreator: collection_creator,
+				CollectionId:      collection_id,
+			}
+
+			res, err := queryClient.CollectionNftsByOwner(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "collection-nfts-by-owner")
 
 	return cmd
 }
