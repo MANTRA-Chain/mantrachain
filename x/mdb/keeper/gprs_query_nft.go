@@ -73,7 +73,7 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	}, nil
 }
 
-func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollectionNftsRequest) (*types.QueryGetCollectionNftsResponse, error) {
+func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllCollectionNftsRequest) (*types.QueryGetAllCollectionNftsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -141,8 +141,93 @@ func (k Keeper) CollectionNfts(goCtx context.Context, req *types.QueryGetCollect
 		})
 	}
 
-	return &types.QueryGetCollectionNftsResponse{
+	return &types.QueryGetAllCollectionNftsResponse{
 		Nfts:       nftsRes,
 		Pagination: pageRes,
+	}, nil
+}
+
+func (k Keeper) NftOwner(c context.Context, req *types.QueryGetNftOwnerRequest) (*types.QueryGetNftOwnerResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	collectionCreator, err := sdk.AccAddressFromBech32(req.CollectionCreator)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if strings.TrimSpace(req.CollectionId) == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	}
+
+	var collectionIndex []byte
+
+	if strings.TrimSpace(req.Id) == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty nft id")
+	} else {
+		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+
+		if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
+			return nil, status.Error(codes.InvalidArgument, "collection not exists")
+		}
+	}
+
+	index := types.GetNftIndex(collectionIndex, req.Id)
+
+	_, found := k.GetNft(
+		ctx,
+		collectionIndex,
+		index,
+	)
+	if !found {
+		return nil, status.Error(codes.InvalidArgument, "not found")
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+
+	return &types.QueryGetNftOwnerResponse{
+		Id:      req.Id,
+		Address: nftExecutor.GetNftOwner(string(collectionIndex), string(index)).String(),
+	}, nil
+}
+
+func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceRequest) (*types.QueryGetNftBalanceResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	owner, err := sdk.AccAddressFromBech32(req.Owner)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	collectionCreator, err := sdk.AccAddressFromBech32(req.CollectionCreator)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if strings.TrimSpace(req.CollectionId) == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	}
+
+	var collectionIndex []byte
+
+	collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+
+	if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
+		return nil, status.Error(codes.InvalidArgument, "collection not exists")
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+
+	return &types.QueryGetNftBalanceResponse{
+		Balance: nftExecutor.GetNftBalance(string(collectionIndex), owner),
+		Address: owner.String(),
 	}, nil
 }

@@ -306,6 +306,230 @@ func (m *QueryGetNftCollectionResponse) GetData() *types.Any {
 	return nil
 }
 
+type QueryGetNftBalanceRequest struct {
+	CollectionCreator string `protobuf:"bytes,1,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId      string `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	Owner             string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *QueryGetNftBalanceRequest) Reset()         { *m = QueryGetNftBalanceRequest{} }
+func (m *QueryGetNftBalanceRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftBalanceRequest) ProtoMessage()    {}
+func (*QueryGetNftBalanceRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{4}
+}
+func (m *QueryGetNftBalanceRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftBalanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftBalanceRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftBalanceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftBalanceRequest.Merge(m, src)
+}
+func (m *QueryGetNftBalanceRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftBalanceRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftBalanceRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftBalanceRequest proto.InternalMessageInfo
+
+func (m *QueryGetNftBalanceRequest) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *QueryGetNftBalanceRequest) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *QueryGetNftBalanceRequest) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+type QueryGetNftBalanceResponse struct {
+	Balance uint64 `protobuf:"varint,1,opt,name=balance,proto3" json:"balance,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryGetNftBalanceResponse) Reset()         { *m = QueryGetNftBalanceResponse{} }
+func (m *QueryGetNftBalanceResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftBalanceResponse) ProtoMessage()    {}
+func (*QueryGetNftBalanceResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{5}
+}
+func (m *QueryGetNftBalanceResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftBalanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftBalanceResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftBalanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftBalanceResponse.Merge(m, src)
+}
+func (m *QueryGetNftBalanceResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftBalanceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftBalanceResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftBalanceResponse proto.InternalMessageInfo
+
+func (m *QueryGetNftBalanceResponse) GetBalance() uint64 {
+	if m != nil {
+		return m.Balance
+	}
+	return 0
+}
+
+func (m *QueryGetNftBalanceResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryGetNftOwnerRequest struct {
+	CollectionCreator string `protobuf:"bytes,1,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId      string `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	Id                string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryGetNftOwnerRequest) Reset()         { *m = QueryGetNftOwnerRequest{} }
+func (m *QueryGetNftOwnerRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftOwnerRequest) ProtoMessage()    {}
+func (*QueryGetNftOwnerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{6}
+}
+func (m *QueryGetNftOwnerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftOwnerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftOwnerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftOwnerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftOwnerRequest.Merge(m, src)
+}
+func (m *QueryGetNftOwnerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftOwnerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftOwnerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftOwnerRequest proto.InternalMessageInfo
+
+func (m *QueryGetNftOwnerRequest) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *QueryGetNftOwnerRequest) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *QueryGetNftOwnerRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type QueryGetNftOwnerResponse struct {
+	Id      string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryGetNftOwnerResponse) Reset()         { *m = QueryGetNftOwnerResponse{} }
+func (m *QueryGetNftOwnerResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftOwnerResponse) ProtoMessage()    {}
+func (*QueryGetNftOwnerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{7}
+}
+func (m *QueryGetNftOwnerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftOwnerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftOwnerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftOwnerResponse.Merge(m, src)
+}
+func (m *QueryGetNftOwnerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftOwnerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftOwnerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftOwnerResponse proto.InternalMessageInfo
+
+func (m *QueryGetNftOwnerResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *QueryGetNftOwnerResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
 type QueryGetNftRequest struct {
 	CollectionCreator string `protobuf:"bytes,1,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
@@ -316,7 +540,7 @@ func (m *QueryGetNftRequest) Reset()         { *m = QueryGetNftRequest{} }
 func (m *QueryGetNftRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetNftRequest) ProtoMessage()    {}
 func (*QueryGetNftRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{4}
+	return fileDescriptor_132fca0299a5471d, []int{8}
 }
 func (m *QueryGetNftRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -384,7 +608,7 @@ func (m *QueryGetNftResponse) Reset()         { *m = QueryGetNftResponse{} }
 func (m *QueryGetNftResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetNftResponse) ProtoMessage()    {}
 func (*QueryGetNftResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{5}
+	return fileDescriptor_132fca0299a5471d, []int{9}
 }
 func (m *QueryGetNftResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -490,24 +714,26 @@ func (m *QueryGetNftResponse) GetCollectionId() string {
 	return ""
 }
 
-type QueryGetNftCollectionsRequest struct {
+type QueryGetNftCollectionsByCreatorRequest struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetNftCollectionsRequest) Reset()         { *m = QueryGetNftCollectionsRequest{} }
-func (m *QueryGetNftCollectionsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetNftCollectionsRequest) ProtoMessage()    {}
-func (*QueryGetNftCollectionsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{6}
+func (m *QueryGetNftCollectionsByCreatorRequest) Reset() {
+	*m = QueryGetNftCollectionsByCreatorRequest{}
 }
-func (m *QueryGetNftCollectionsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetNftCollectionsByCreatorRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftCollectionsByCreatorRequest) ProtoMessage()    {}
+func (*QueryGetNftCollectionsByCreatorRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{10}
+}
+func (m *QueryGetNftCollectionsByCreatorRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetNftCollectionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetNftCollectionsByCreatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetNftCollectionsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetNftCollectionsByCreatorRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -517,49 +743,52 @@ func (m *QueryGetNftCollectionsRequest) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryGetNftCollectionsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetNftCollectionsRequest.Merge(m, src)
+func (m *QueryGetNftCollectionsByCreatorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftCollectionsByCreatorRequest.Merge(m, src)
 }
-func (m *QueryGetNftCollectionsRequest) XXX_Size() int {
+func (m *QueryGetNftCollectionsByCreatorRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetNftCollectionsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetNftCollectionsRequest.DiscardUnknown(m)
+func (m *QueryGetNftCollectionsByCreatorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftCollectionsByCreatorRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetNftCollectionsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetNftCollectionsByCreatorRequest proto.InternalMessageInfo
 
-func (m *QueryGetNftCollectionsRequest) GetCreator() string {
+func (m *QueryGetNftCollectionsByCreatorRequest) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *QueryGetNftCollectionsRequest) GetPagination() *query.PageRequest {
+func (m *QueryGetNftCollectionsByCreatorRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryGetNftCollectionsResponse struct {
-	NftCollections []*QueryGetNftCollectionResponse `protobuf:"bytes,1,rep,name=nftCollections,proto3" json:"nftCollections,omitempty"`
-	Pagination     *query.PageResponse              `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+type QueryGetNftCollectionsByCreatorResponse struct {
+	Address        string                           `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	NftCollections []*QueryGetNftCollectionResponse `protobuf:"bytes,2,rep,name=nftCollections,proto3" json:"nftCollections,omitempty"`
+	Pagination     *query.PageResponse              `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetNftCollectionsResponse) Reset()         { *m = QueryGetNftCollectionsResponse{} }
-func (m *QueryGetNftCollectionsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetNftCollectionsResponse) ProtoMessage()    {}
-func (*QueryGetNftCollectionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{7}
+func (m *QueryGetNftCollectionsByCreatorResponse) Reset() {
+	*m = QueryGetNftCollectionsByCreatorResponse{}
 }
-func (m *QueryGetNftCollectionsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetNftCollectionsByCreatorResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftCollectionsByCreatorResponse) ProtoMessage()    {}
+func (*QueryGetNftCollectionsByCreatorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{11}
+}
+func (m *QueryGetNftCollectionsByCreatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetNftCollectionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetNftCollectionsByCreatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetNftCollectionsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetNftCollectionsByCreatorResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -569,26 +798,33 @@ func (m *QueryGetNftCollectionsResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryGetNftCollectionsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetNftCollectionsResponse.Merge(m, src)
+func (m *QueryGetNftCollectionsByCreatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftCollectionsByCreatorResponse.Merge(m, src)
 }
-func (m *QueryGetNftCollectionsResponse) XXX_Size() int {
+func (m *QueryGetNftCollectionsByCreatorResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetNftCollectionsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetNftCollectionsResponse.DiscardUnknown(m)
+func (m *QueryGetNftCollectionsByCreatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftCollectionsByCreatorResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetNftCollectionsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetNftCollectionsByCreatorResponse proto.InternalMessageInfo
 
-func (m *QueryGetNftCollectionsResponse) GetNftCollections() []*QueryGetNftCollectionResponse {
+func (m *QueryGetNftCollectionsByCreatorResponse) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *QueryGetNftCollectionsByCreatorResponse) GetNftCollections() []*QueryGetNftCollectionResponse {
 	if m != nil {
 		return m.NftCollections
 	}
 	return nil
 }
 
-func (m *QueryGetNftCollectionsResponse) GetPagination() *query.PageResponse {
+func (m *QueryGetNftCollectionsByCreatorResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -604,7 +840,7 @@ func (m *QueryGetAllNftCollectionsRequest) Reset()         { *m = QueryGetAllNft
 func (m *QueryGetAllNftCollectionsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetAllNftCollectionsRequest) ProtoMessage()    {}
 func (*QueryGetAllNftCollectionsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{8}
+	return fileDescriptor_132fca0299a5471d, []int{12}
 }
 func (m *QueryGetAllNftCollectionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -649,7 +885,7 @@ func (m *QueryGetAllNftCollectionsResponse) Reset()         { *m = QueryGetAllNf
 func (m *QueryGetAllNftCollectionsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetAllNftCollectionsResponse) ProtoMessage()    {}
 func (*QueryGetAllNftCollectionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{9}
+	return fileDescriptor_132fca0299a5471d, []int{13}
 }
 func (m *QueryGetAllNftCollectionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -692,25 +928,25 @@ func (m *QueryGetAllNftCollectionsResponse) GetPagination() *query.PageResponse 
 	return nil
 }
 
-type QueryGetCollectionNftsRequest struct {
+type QueryGetAllCollectionNftsRequest struct {
 	CollectionCreator string `protobuf:"bytes,1,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string `protobuf:"bytes,2,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetCollectionNftsRequest) Reset()         { *m = QueryGetCollectionNftsRequest{} }
-func (m *QueryGetCollectionNftsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetCollectionNftsRequest) ProtoMessage()    {}
-func (*QueryGetCollectionNftsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{10}
+func (m *QueryGetAllCollectionNftsRequest) Reset()         { *m = QueryGetAllCollectionNftsRequest{} }
+func (m *QueryGetAllCollectionNftsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAllCollectionNftsRequest) ProtoMessage()    {}
+func (*QueryGetAllCollectionNftsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{14}
 }
-func (m *QueryGetCollectionNftsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAllCollectionNftsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetCollectionNftsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAllCollectionNftsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetCollectionNftsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAllCollectionNftsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -720,56 +956,56 @@ func (m *QueryGetCollectionNftsRequest) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryGetCollectionNftsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetCollectionNftsRequest.Merge(m, src)
+func (m *QueryGetAllCollectionNftsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllCollectionNftsRequest.Merge(m, src)
 }
-func (m *QueryGetCollectionNftsRequest) XXX_Size() int {
+func (m *QueryGetAllCollectionNftsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetCollectionNftsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetCollectionNftsRequest.DiscardUnknown(m)
+func (m *QueryGetAllCollectionNftsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllCollectionNftsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetCollectionNftsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAllCollectionNftsRequest proto.InternalMessageInfo
 
-func (m *QueryGetCollectionNftsRequest) GetCollectionCreator() string {
+func (m *QueryGetAllCollectionNftsRequest) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionNftsRequest) GetCollectionId() string {
+func (m *QueryGetAllCollectionNftsRequest) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionNftsRequest) GetPagination() *query.PageRequest {
+func (m *QueryGetAllCollectionNftsRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryGetCollectionNftsResponse struct {
+type QueryGetAllCollectionNftsResponse struct {
 	Nfts       []*QueryGetNftResponse `protobuf:"bytes,1,rep,name=nfts,proto3" json:"nfts,omitempty"`
 	Pagination *query.PageResponse    `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryGetCollectionNftsResponse) Reset()         { *m = QueryGetCollectionNftsResponse{} }
-func (m *QueryGetCollectionNftsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetCollectionNftsResponse) ProtoMessage()    {}
-func (*QueryGetCollectionNftsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_132fca0299a5471d, []int{11}
+func (m *QueryGetAllCollectionNftsResponse) Reset()         { *m = QueryGetAllCollectionNftsResponse{} }
+func (m *QueryGetAllCollectionNftsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAllCollectionNftsResponse) ProtoMessage()    {}
+func (*QueryGetAllCollectionNftsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_132fca0299a5471d, []int{15}
 }
-func (m *QueryGetCollectionNftsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAllCollectionNftsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetCollectionNftsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAllCollectionNftsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetCollectionNftsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAllCollectionNftsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -779,26 +1015,26 @@ func (m *QueryGetCollectionNftsResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryGetCollectionNftsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetCollectionNftsResponse.Merge(m, src)
+func (m *QueryGetAllCollectionNftsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllCollectionNftsResponse.Merge(m, src)
 }
-func (m *QueryGetCollectionNftsResponse) XXX_Size() int {
+func (m *QueryGetAllCollectionNftsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetCollectionNftsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetCollectionNftsResponse.DiscardUnknown(m)
+func (m *QueryGetAllCollectionNftsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllCollectionNftsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetCollectionNftsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAllCollectionNftsResponse proto.InternalMessageInfo
 
-func (m *QueryGetCollectionNftsResponse) GetNfts() []*QueryGetNftResponse {
+func (m *QueryGetAllCollectionNftsResponse) GetNfts() []*QueryGetNftResponse {
 	if m != nil {
 		return m.Nfts
 	}
 	return nil
 }
 
-func (m *QueryGetCollectionNftsResponse) GetPagination() *query.PageResponse {
+func (m *QueryGetAllCollectionNftsResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -810,85 +1046,99 @@ func init() {
 	proto.RegisterType((*QueryParamsResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryGetNftCollectionRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionRequest")
 	proto.RegisterType((*QueryGetNftCollectionResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionResponse")
+	proto.RegisterType((*QueryGetNftBalanceRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftBalanceRequest")
+	proto.RegisterType((*QueryGetNftBalanceResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftBalanceResponse")
+	proto.RegisterType((*QueryGetNftOwnerRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftOwnerRequest")
+	proto.RegisterType((*QueryGetNftOwnerResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftOwnerResponse")
 	proto.RegisterType((*QueryGetNftRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftRequest")
 	proto.RegisterType((*QueryGetNftResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftResponse")
-	proto.RegisterType((*QueryGetNftCollectionsRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionsRequest")
-	proto.RegisterType((*QueryGetNftCollectionsResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionsResponse")
+	proto.RegisterType((*QueryGetNftCollectionsByCreatorRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionsByCreatorRequest")
+	proto.RegisterType((*QueryGetNftCollectionsByCreatorResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetNftCollectionsByCreatorResponse")
 	proto.RegisterType((*QueryGetAllNftCollectionsRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetAllNftCollectionsRequest")
 	proto.RegisterType((*QueryGetAllNftCollectionsResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetAllNftCollectionsResponse")
-	proto.RegisterType((*QueryGetCollectionNftsRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetCollectionNftsRequest")
-	proto.RegisterType((*QueryGetCollectionNftsResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetCollectionNftsResponse")
+	proto.RegisterType((*QueryGetAllCollectionNftsRequest)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetAllCollectionNftsRequest")
+	proto.RegisterType((*QueryGetAllCollectionNftsResponse)(nil), "LimeChain.mantrachain.mdb.v1.QueryGetAllCollectionNftsResponse")
 }
 
 func init() { proto.RegisterFile("mdb/v1/query.proto", fileDescriptor_132fca0299a5471d) }
 
 var fileDescriptor_132fca0299a5471d = []byte{
-	// 1032 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x56, 0xcd, 0x6f, 0xdc, 0x44,
-	0x14, 0xcf, 0x64, 0x3f, 0x92, 0xbc, 0x6d, 0x56, 0xe9, 0x74, 0x09, 0x66, 0x49, 0xb7, 0x5b, 0x53,
-	0xda, 0xa8, 0x2a, 0x76, 0x36, 0x08, 0x81, 0x28, 0x14, 0x25, 0x51, 0xbf, 0xa0, 0x0a, 0xc5, 0x37,
-	0xb8, 0x54, 0xb3, 0xf6, 0xec, 0xd6, 0xd4, 0xf6, 0x6c, 0xed, 0xd9, 0xd0, 0x55, 0x94, 0x03, 0x48,
-	0xdc, 0x91, 0xf8, 0x2b, 0x7a, 0x43, 0x02, 0xc1, 0x81, 0x33, 0x52, 0x4f, 0xa8, 0x88, 0x0b, 0x27,
-	0x84, 0x12, 0xfe, 0x0b, 0x2e, 0xc8, 0xe3, 0xf1, 0xda, 0xce, 0x7e, 0x2f, 0x70, 0xe0, 0xe6, 0x79,
-	0x33, 0xbf, 0xf7, 0x7e, 0xef, 0xbd, 0xdf, 0x3c, 0x0f, 0x60, 0xd7, 0x6a, 0xea, 0x07, 0x0d, 0xfd,
-	0x71, 0x97, 0xfa, 0x3d, 0xad, 0xe3, 0x33, 0xce, 0xf0, 0xc6, 0x3d, 0xdb, 0xa5, 0x7b, 0x0f, 0x89,
-	0xed, 0x69, 0x2e, 0xf1, 0xb8, 0x4f, 0xcc, 0xe8, 0xdb, 0x6a, 0x6a, 0x07, 0x8d, 0xea, 0x4b, 0x6d,
-	0xc6, 0xda, 0x0e, 0xd5, 0xc5, 0xd9, 0x66, 0xb7, 0xa5, 0x13, 0x4f, 0x02, 0xab, 0x95, 0x36, 0x6b,
-	0x33, 0xf1, 0xa9, 0x87, 0x5f, 0xd2, 0xba, 0x21, 0x01, 0xa4, 0x63, 0xeb, 0xc4, 0xf3, 0x18, 0x27,
-	0xdc, 0x66, 0x5e, 0x20, 0x77, 0xcf, 0x49, 0x02, 0x1d, 0xe2, 0x13, 0x37, 0x36, 0xbe, 0x2c, 0x8d,
-	0x5e, 0x8b, 0x3f, 0x30, 0x99, 0xe3, 0x50, 0x33, 0x84, 0xc8, 0xcd, 0xb5, 0x64, 0x53, 0x5a, 0xae,
-	0x9a, 0x2c, 0x70, 0x59, 0xa0, 0x37, 0x49, 0x40, 0xa3, 0x4c, 0xf4, 0x83, 0x46, 0x93, 0x72, 0x12,
-	0xba, 0x6d, 0xdb, 0x1e, 0x49, 0xd0, 0x6a, 0x05, 0xf0, 0x47, 0xe1, 0x89, 0xfb, 0x22, 0x9e, 0x41,
-	0x1f, 0x77, 0x69, 0xc0, 0xd5, 0x8f, 0xe1, 0x5c, 0xc6, 0x1a, 0x74, 0x98, 0x17, 0x50, 0xbc, 0x0b,
-	0xc5, 0x88, 0x97, 0x82, 0xea, 0x68, 0xb3, 0xb4, 0x7d, 0x49, 0x1b, 0x57, 0x1a, 0x2d, 0x42, 0xef,
-	0xe6, 0x9f, 0xfd, 0x7e, 0x61, 0xc1, 0x90, 0x48, 0xf5, 0x0e, 0x6c, 0x08, 0xd7, 0xb7, 0x29, 0xdf,
-	0x6f, 0xf1, 0xbd, 0x7e, 0x36, 0x32, 0x34, 0x56, 0x60, 0xc9, 0xf4, 0x29, 0xe1, 0xcc, 0x17, 0x41,
-	0x56, 0x8c, 0x78, 0x89, 0xcb, 0xb0, 0x68, 0x5b, 0xca, 0xa2, 0x30, 0x2e, 0xda, 0x96, 0xfa, 0x57,
-	0x0e, 0xce, 0x8f, 0x70, 0x25, 0xf9, 0x46, 0x08, 0x14, 0x23, 0x30, 0x86, 0xbc, 0x47, 0x5c, 0x2a,
-	0x7d, 0x88, 0x6f, 0xbc, 0x0e, 0xc5, 0xa0, 0xe7, 0x36, 0x99, 0xa3, 0xe4, 0x84, 0x55, 0xae, 0x70,
-	0x1d, 0x4a, 0x16, 0x0d, 0x4c, 0xdf, 0xee, 0x84, 0x2e, 0x95, 0xbc, 0xd8, 0x4c, 0x9b, 0xf0, 0x1d,
-	0x28, 0xda, 0x2e, 0x69, 0xd3, 0x40, 0x29, 0xd4, 0x73, 0x9b, 0xa5, 0xed, 0xad, 0xf1, 0xd5, 0xc8,
-	0x50, 0xbc, 0x1b, 0x02, 0x0d, 0x89, 0xc7, 0x6b, 0x90, 0xeb, 0xfa, 0x8e, 0x52, 0x14, 0x31, 0xc2,
-	0x4f, 0x7c, 0x13, 0x0a, 0x8e, 0xed, 0x3d, 0x0a, 0x94, 0x25, 0xe1, 0x5a, 0x9f, 0xc1, 0xf5, 0x3d,
-	0xdb, 0x7b, 0x64, 0x44, 0x68, 0xfc, 0x01, 0x2c, 0x31, 0x41, 0x36, 0x50, 0x96, 0x85, 0xa3, 0xc6,
-	0x0c, 0x8e, 0x3e, 0x14, 0x48, 0x23, 0xf6, 0x80, 0xab, 0xb0, 0x6c, 0x12, 0x4e, 0xdb, 0xcc, 0xef,
-	0x29, 0x2b, 0x82, 0x6a, 0x7f, 0x8d, 0x2b, 0x50, 0x60, 0x9f, 0x79, 0xd4, 0x57, 0x40, 0x6c, 0x44,
-	0x8b, 0x74, 0x2f, 0x4b, 0xd9, 0x5e, 0xae, 0x43, 0x91, 0x75, 0xa8, 0x47, 0x2d, 0xe5, 0x4c, 0x1d,
-	0x6d, 0x2e, 0x1b, 0x72, 0x85, 0x37, 0x21, 0x6f, 0x11, 0x4e, 0x94, 0x55, 0xa1, 0xaf, 0x8a, 0x16,
-	0xdd, 0x15, 0x2d, 0xbe, 0x5c, 0xda, 0x8e, 0xd7, 0x33, 0xc4, 0x09, 0xf5, 0x89, 0x14, 0x6e, 0xd4,
-	0xfc, 0x58, 0x3d, 0xaf, 0x01, 0x4e, 0x2e, 0xc8, 0x83, 0xac, 0x90, 0xce, 0x26, 0x3b, 0x7b, 0x92,
-	0xc6, 0x2b, 0xb0, 0x9a, 0x3a, 0xde, 0x57, 0xd7, 0x99, 0xc4, 0x78, 0xd7, 0x92, 0x2a, 0xca, 0xf5,
-	0x75, 0xf7, 0x43, 0x4e, 0xde, 0x8e, 0x38, 0xf4, 0x08, 0xb5, 0x55, 0xa0, 0xc0, 0x6d, 0xee, 0xc4,
-	0x72, 0x8b, 0x16, 0xa7, 0x75, 0x95, 0x1b, 0xd4, 0xd5, 0x8d, 0xbe, 0xae, 0xf2, 0xa2, 0x67, 0x97,
-	0x27, 0xf6, 0x6c, 0xa8, 0x9a, 0x0a, 0x89, 0x9a, 0xae, 0xc7, 0x6a, 0x2a, 0x0a, 0x87, 0xaf, 0x4e,
-	0x74, 0x98, 0xd6, 0xd0, 0xfb, 0x00, 0x84, 0x73, 0xdf, 0x6e, 0x76, 0x39, 0x8d, 0xf5, 0x78, 0x75,
-	0xa2, 0x87, 0x9d, 0x18, 0x62, 0xa4, 0xd0, 0x89, 0x4c, 0x96, 0x47, 0xc8, 0x64, 0x25, 0x2b, 0x93,
-	0x58, 0x0e, 0x30, 0x49, 0x0e, 0x83, 0x9d, 0x2c, 0x0d, 0x76, 0x52, 0xfd, 0x1c, 0x8d, 0x98, 0x18,
-	0xc1, 0xe4, 0xe9, 0x73, 0x0b, 0x20, 0x19, 0x9e, 0xa2, 0xa5, 0x61, 0x67, 0xa2, 0x49, 0xab, 0x85,
-	0x93, 0x56, 0x8b, 0xfe, 0x19, 0x72, 0xd2, 0x6a, 0xf7, 0xc3, 0x96, 0x44, 0x5e, 0x8d, 0x14, 0x52,
-	0xfd, 0x19, 0x41, 0x6d, 0x14, 0x07, 0x29, 0x24, 0x13, 0xca, 0x5e, 0x66, 0x47, 0x41, 0xa2, 0xea,
-	0xd7, 0xc7, 0x57, 0x7d, 0xec, 0x2c, 0x34, 0x4e, 0xb9, 0xc4, 0xb7, 0x87, 0xe4, 0x73, 0x65, 0x62,
-	0x3e, 0xd2, 0x59, 0x3a, 0xa1, 0x4f, 0xa1, 0x1e, 0x47, 0xde, 0x71, 0x9c, 0xe1, 0x65, 0xcd, 0x16,
-	0x0f, 0xcd, 0x5d, 0xbc, 0x5f, 0x10, 0x5c, 0x1c, 0x13, 0xec, 0x7f, 0x59, 0xbf, 0x1f, 0x53, 0xa2,
-	0x4c, 0x02, 0xec, 0xb7, 0x78, 0xf0, 0x5f, 0x0e, 0xb5, 0x6c, 0x47, 0x72, 0x73, 0x77, 0xe4, 0x9b,
-	0x94, 0x9c, 0x4f, 0xb3, 0x97, 0xed, 0xb8, 0x09, 0x79, 0xaf, 0xc5, 0xe3, 0x26, 0x34, 0xa6, 0x6e,
-	0x42, 0xbf, 0x5a, 0x02, 0xfe, 0xaf, 0x15, 0x7c, 0xfb, 0xe9, 0x32, 0x14, 0x44, 0x18, 0xfc, 0x25,
-	0x82, 0x62, 0xf4, 0x48, 0xc1, 0x5b, 0x53, 0xd0, 0xca, 0xbc, 0x91, 0xaa, 0x8d, 0x19, 0x10, 0x11,
-	0x0b, 0x75, 0xfd, 0x8b, 0x5f, 0xff, 0xfc, 0x7a, 0x71, 0x0d, 0x97, 0xf5, 0xcc, 0x2b, 0x0f, 0x7f,
-	0x8f, 0x60, 0x35, 0xa3, 0x3a, 0xfc, 0xf6, 0x5c, 0x52, 0x8d, 0x88, 0xfd, 0x13, 0x99, 0xab, 0xd7,
-	0x04, 0xc5, 0xcb, 0xf8, 0x92, 0x9e, 0x3c, 0x2b, 0x93, 0x63, 0xfa, 0xa1, 0x54, 0xdf, 0x91, 0x7e,
-	0x68, 0x5b, 0x47, 0xf8, 0x29, 0x82, 0xdc, 0x7e, 0x8b, 0x4f, 0x55, 0xbd, 0xcc, 0x8f, 0xba, 0x3a,
-	0xbb, 0x0c, 0xd4, 0x77, 0x05, 0xb5, 0x37, 0xf1, 0x1b, 0x29, 0x6a, 0xfa, 0xe1, 0xe0, 0xcd, 0x38,
-	0xca, 0x18, 0x6d, 0x4b, 0x72, 0xfd, 0x0e, 0x41, 0x39, 0x3b, 0x30, 0xf0, 0x3c, 0x95, 0xea, 0xf7,
-	0xff, 0x9d, 0xf9, 0xc0, 0x32, 0x99, 0x2b, 0x22, 0x99, 0x8b, 0xf8, 0xc2, 0x84, 0x3a, 0xe3, 0x6f,
-	0x11, 0x9c, 0x1d, 0x18, 0x75, 0xf8, 0xc6, 0x74, 0xc1, 0x47, 0x0d, 0xe4, 0xea, 0x7b, 0x73, 0xe3,
-	0x25, 0xff, 0xf3, 0x82, 0xff, 0x8b, 0xf8, 0x85, 0xa1, 0xfc, 0xf1, 0x4f, 0x08, 0xca, 0xd9, 0x71,
-	0x30, 0x6d, 0xb1, 0x87, 0x8e, 0xc0, 0x69, 0x8b, 0x3d, 0x7c, 0x02, 0xa9, 0x6f, 0x09, 0xb2, 0xdb,
-	0x78, 0x6b, 0x56, 0xe5, 0xec, 0xde, 0x7a, 0x76, 0x5c, 0x43, 0xcf, 0x8f, 0x6b, 0xe8, 0x8f, 0xe3,
-	0x1a, 0xfa, 0xea, 0xa4, 0xb6, 0xf0, 0xfc, 0xa4, 0xb6, 0xf0, 0xdb, 0x49, 0x6d, 0xe1, 0x93, 0x6b,
-	0x6d, 0x9b, 0x3f, 0xec, 0x36, 0x35, 0x93, 0xb9, 0x7a, 0x9f, 0x9b, 0x9e, 0xe2, 0xa6, 0x3f, 0x11,
-	0xd1, 0x78, 0xaf, 0x43, 0x83, 0x66, 0x51, 0x3c, 0x59, 0x5e, 0xff, 0x3b, 0x00, 0x00, 0xff, 0xff,
-	0xc0, 0x24, 0x87, 0xbb, 0x60, 0x0e, 0x00, 0x00,
+	// 1200 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
+	0x17, 0xcf, 0xf8, 0x57, 0x92, 0xe7, 0x26, 0x4a, 0xa7, 0xf9, 0x26, 0x5b, 0x7f, 0x53, 0x37, 0x5d,
+	0x4a, 0x12, 0x55, 0x65, 0x37, 0x0e, 0x2a, 0xad, 0x88, 0x5a, 0x88, 0xd3, 0xa4, 0x29, 0x54, 0x69,
+	0xd8, 0x1b, 0x5c, 0xaa, 0xb1, 0x77, 0xec, 0x2e, 0xb5, 0x77, 0xdd, 0xdd, 0x71, 0xa8, 0x15, 0xe5,
+	0x82, 0xd4, 0x0b, 0x27, 0x24, 0xfe, 0x0a, 0xce, 0x95, 0xe0, 0xd6, 0x73, 0xb9, 0x40, 0x11, 0x17,
+	0xc4, 0x01, 0xa1, 0x84, 0x7f, 0x80, 0x33, 0x17, 0xb4, 0xb3, 0x33, 0xde, 0xdd, 0xd8, 0x8e, 0x7f,
+	0x94, 0x70, 0xdb, 0x79, 0x33, 0xef, 0xbd, 0xcf, 0xfb, 0xf1, 0x99, 0x37, 0x0b, 0xb8, 0x6e, 0x96,
+	0xf4, 0xfd, 0x82, 0xfe, 0xb4, 0x49, 0xdd, 0x96, 0xd6, 0x70, 0x1d, 0xe6, 0xe0, 0x85, 0x07, 0x56,
+	0x9d, 0x6e, 0x3e, 0x26, 0x96, 0xad, 0xd5, 0x89, 0xcd, 0x5c, 0x52, 0x0e, 0xbe, 0xcd, 0x92, 0xb6,
+	0x5f, 0xc8, 0x5d, 0xac, 0x3a, 0x4e, 0xb5, 0x46, 0x75, 0x7e, 0xb6, 0xd4, 0xac, 0xe8, 0xc4, 0x16,
+	0x8a, 0xb9, 0xd9, 0xaa, 0x53, 0x75, 0xf8, 0xa7, 0xee, 0x7f, 0x09, 0xe9, 0x82, 0x50, 0x20, 0x0d,
+	0x4b, 0x27, 0xb6, 0xed, 0x30, 0xc2, 0x2c, 0xc7, 0xf6, 0xc4, 0xee, 0x05, 0x01, 0xa0, 0x41, 0x5c,
+	0x52, 0x97, 0xc2, 0xff, 0x0b, 0xa1, 0x5d, 0x61, 0x8f, 0xca, 0x4e, 0xad, 0x46, 0xcb, 0xbe, 0x8a,
+	0xd8, 0x9c, 0x09, 0x37, 0x85, 0xe4, 0x5a, 0xd9, 0xf1, 0xea, 0x8e, 0xa7, 0x97, 0x88, 0x47, 0x83,
+	0x48, 0xf4, 0xfd, 0x42, 0x89, 0x32, 0xe2, 0x9b, 0xad, 0x5a, 0x36, 0x09, 0xb5, 0xd5, 0x59, 0xc0,
+	0x9f, 0xf8, 0x27, 0xf6, 0xb8, 0x3f, 0x83, 0x3e, 0x6d, 0x52, 0x8f, 0xa9, 0x9f, 0xc2, 0x85, 0x98,
+	0xd4, 0x6b, 0x38, 0xb6, 0x47, 0x71, 0x11, 0x32, 0x01, 0x2e, 0x05, 0x2d, 0xa2, 0x95, 0xec, 0xda,
+	0x55, 0xed, 0xb4, 0xd4, 0x68, 0x81, 0x76, 0x31, 0xf5, 0xea, 0xf7, 0xcb, 0x63, 0x86, 0xd0, 0x54,
+	0x77, 0x60, 0x81, 0x9b, 0xbe, 0x47, 0xd9, 0x6e, 0x85, 0x6d, 0xb6, 0xa3, 0x11, 0xae, 0xb1, 0x02,
+	0xe3, 0x65, 0x97, 0x12, 0xe6, 0xb8, 0xdc, 0xc9, 0xa4, 0x21, 0x97, 0x78, 0x1a, 0x12, 0x96, 0xa9,
+	0x24, 0xb8, 0x30, 0x61, 0x99, 0xea, 0xdf, 0x49, 0xb8, 0xd4, 0xc3, 0x94, 0xc0, 0x1b, 0x68, 0x20,
+	0xa9, 0x81, 0x31, 0xa4, 0x6c, 0x52, 0xa7, 0xc2, 0x06, 0xff, 0xc6, 0x73, 0x90, 0xf1, 0x5a, 0xf5,
+	0x92, 0x53, 0x53, 0x92, 0x5c, 0x2a, 0x56, 0x78, 0x11, 0xb2, 0x26, 0xf5, 0xca, 0xae, 0xd5, 0xf0,
+	0x4d, 0x2a, 0x29, 0xbe, 0x19, 0x15, 0xe1, 0x1d, 0xc8, 0x58, 0x75, 0x52, 0xa5, 0x9e, 0x92, 0x5e,
+	0x4c, 0xae, 0x64, 0xd7, 0x56, 0x4f, 0xcf, 0x46, 0x0c, 0xe2, 0x7d, 0x5f, 0xd1, 0x10, 0xfa, 0x78,
+	0x06, 0x92, 0x4d, 0xb7, 0xa6, 0x64, 0xb8, 0x0f, 0xff, 0x13, 0x6f, 0x41, 0xba, 0x66, 0xd9, 0x4f,
+	0x3c, 0x65, 0x9c, 0x9b, 0xd6, 0x87, 0x30, 0xfd, 0xc0, 0xb2, 0x9f, 0x18, 0x81, 0x36, 0xfe, 0x18,
+	0xc6, 0x1d, 0x0e, 0xd6, 0x53, 0x26, 0xb8, 0xa1, 0xc2, 0x10, 0x86, 0x1e, 0x72, 0x4d, 0x43, 0x5a,
+	0xc0, 0x39, 0x98, 0x28, 0x13, 0x46, 0xab, 0x8e, 0xdb, 0x52, 0x26, 0x39, 0xd4, 0xf6, 0x1a, 0xcf,
+	0x42, 0xda, 0xf9, 0xc2, 0xa6, 0xae, 0x02, 0x7c, 0x23, 0x58, 0x44, 0x6b, 0x99, 0x8d, 0xd7, 0x72,
+	0x0e, 0x32, 0x4e, 0x83, 0xda, 0xd4, 0x54, 0xce, 0x2d, 0xa2, 0x95, 0x09, 0x43, 0xac, 0xf0, 0x0a,
+	0xa4, 0x4c, 0xc2, 0x88, 0x32, 0xc5, 0xfb, 0x6b, 0x56, 0x0b, 0xb8, 0xa2, 0x49, 0x72, 0x69, 0x1b,
+	0x76, 0xcb, 0xe0, 0x27, 0xd4, 0xe7, 0x08, 0x2e, 0x46, 0xaa, 0x5f, 0x24, 0x35, 0x62, 0x97, 0xa9,
+	0xec, 0xa2, 0x77, 0x00, 0x87, 0x44, 0x79, 0x14, 0x6f, 0xa8, 0xf3, 0xe1, 0xce, 0xa6, 0x80, 0xf3,
+	0x16, 0x4c, 0x45, 0x8e, 0xb7, 0xbb, 0xec, 0x5c, 0x28, 0xbc, 0x6f, 0x86, 0x31, 0x26, 0x23, 0x31,
+	0xaa, 0x7b, 0x90, 0xeb, 0x06, 0x43, 0x74, 0xa0, 0x02, 0xe3, 0xa5, 0x40, 0xc4, 0x9d, 0xa7, 0x0c,
+	0xb9, 0xf4, 0x77, 0x88, 0x69, 0xba, 0xd4, 0xf3, 0x84, 0x33, 0xb9, 0x54, 0x0f, 0x61, 0x3e, 0x62,
+	0xf1, 0xa1, 0xef, 0xe5, 0x2c, 0xc3, 0x0a, 0x48, 0x92, 0x6c, 0xd3, 0xea, 0x2e, 0x28, 0x9d, 0xee,
+	0x7b, 0x10, 0xaa, 0x77, 0x10, 0xcf, 0xc4, 0xbd, 0x12, 0x58, 0xf9, 0x2f, 0xf1, 0x7f, 0x9f, 0x14,
+	0x97, 0x97, 0x74, 0xdd, 0x03, 0xfb, 0x2c, 0xa4, 0x99, 0xc5, 0x6a, 0xf2, 0x36, 0x08, 0x16, 0x27,
+	0x69, 0x9f, 0xec, 0xa4, 0xfd, 0x9d, 0x36, 0xed, 0x53, 0x9c, 0x52, 0x4b, 0x7d, 0x29, 0xd5, 0x95,
+	0xec, 0xe9, 0x90, 0xec, 0xeb, 0x92, 0xec, 0x19, 0x6e, 0xf0, 0xed, 0xbe, 0x06, 0xa3, 0x14, 0xff,
+	0x08, 0x80, 0x30, 0xe6, 0x5a, 0xa5, 0x26, 0xa3, 0xf2, 0xba, 0xb8, 0xd6, 0xd7, 0xc2, 0x86, 0x54,
+	0x31, 0x22, 0xda, 0x61, 0x87, 0x4f, 0xf4, 0x60, 0xf1, 0x64, 0x9c, 0xc5, 0x92, 0xad, 0xd0, 0x8f,
+	0xad, 0x9d, 0x95, 0xcc, 0x76, 0x56, 0x52, 0xfd, 0x0a, 0xc1, 0x52, 0xd7, 0x0b, 0xdd, 0x2b, 0xb6,
+	0x44, 0x4b, 0xf4, 0x9f, 0x12, 0xdb, 0x00, 0xe1, 0x90, 0xe3, 0xb5, 0xf5, 0x4b, 0x14, 0x4c, 0x44,
+	0xcd, 0x9f, 0x88, 0x5a, 0x30, 0xdb, 0xc5, 0x44, 0xd4, 0xf6, 0xfc, 0xda, 0x04, 0x56, 0x8d, 0x88,
+	0xa6, 0xfa, 0x17, 0x82, 0xe5, 0xbe, 0x60, 0x42, 0x96, 0x4b, 0x1a, 0xa0, 0x18, 0x0d, 0x70, 0x19,
+	0xa6, 0xed, 0x98, 0xb2, 0x92, 0xe0, 0x15, 0x5a, 0x3f, 0xbd, 0x42, 0xa7, 0x8e, 0x35, 0xe3, 0x84,
+	0x49, 0x7c, 0x2f, 0x16, 0x72, 0x92, 0x87, 0xbc, 0xdc, 0x37, 0x64, 0x61, 0x2c, 0x1a, 0xf3, 0xe7,
+	0xb0, 0x28, 0x3d, 0x6f, 0xd4, 0x6a, 0xf1, 0xa8, 0x65, 0xe6, 0xe3, 0xf9, 0x45, 0x23, 0xe7, 0xf7,
+	0x67, 0x04, 0x57, 0x4e, 0x71, 0x26, 0x32, 0xdb, 0x99, 0x3f, 0x74, 0xd6, 0xf9, 0x4b, 0x8c, 0x9e,
+	0xbf, 0x97, 0x28, 0x96, 0xc0, 0xd0, 0xc7, 0x6e, 0x85, 0x79, 0x67, 0x79, 0x07, 0x6e, 0x77, 0xe9,
+	0x80, 0x51, 0x8a, 0xf2, 0x22, 0x5e, 0x94, 0x93, 0x01, 0x88, 0xa2, 0x6c, 0x41, 0xca, 0xae, 0x30,
+	0x59, 0x8a, 0xc2, 0xc0, 0xa5, 0x68, 0xe7, 0x8c, 0xab, 0xff, 0x6b, 0x69, 0x5f, 0xfb, 0x2d, 0x0b,
+	0x69, 0xee, 0x06, 0x3f, 0x47, 0x90, 0x09, 0x5e, 0x9d, 0x78, 0x75, 0x00, 0x58, 0xb1, 0x47, 0x6f,
+	0xae, 0x30, 0x84, 0x46, 0x80, 0x42, 0x9d, 0xfb, 0xf2, 0x97, 0x3f, 0xbf, 0x49, 0xcc, 0xe0, 0x69,
+	0x3d, 0xf6, 0x6c, 0xc7, 0xdf, 0x21, 0x98, 0x8a, 0xf5, 0x1e, 0x7e, 0x7f, 0xa4, 0x86, 0x0d, 0x80,
+	0xbd, 0x49, 0xb3, 0xab, 0xd7, 0x39, 0xc4, 0x25, 0x7c, 0x55, 0x0f, 0xff, 0x13, 0xc2, 0x63, 0xfa,
+	0x81, 0x68, 0xc0, 0x43, 0xfd, 0xc0, 0x32, 0x0f, 0xf1, 0xb7, 0x08, 0x92, 0xbb, 0x15, 0x36, 0x50,
+	0xf6, 0x62, 0xa3, 0x3d, 0x37, 0x7c, 0x1b, 0xa8, 0xb7, 0x39, 0xb4, 0x9b, 0xf8, 0x46, 0x04, 0x9a,
+	0x7e, 0xd0, 0x49, 0x8e, 0xc3, 0x98, 0xd0, 0x32, 0x05, 0xd6, 0x9f, 0x10, 0xcc, 0xf7, 0xb8, 0x99,
+	0xf1, 0xdd, 0x11, 0x52, 0xd6, 0x31, 0x65, 0x72, 0x5b, 0x6f, 0x68, 0x45, 0xc4, 0xb9, 0xcc, 0xe3,
+	0xbc, 0x82, 0x2f, 0xf7, 0x29, 0x01, 0x7e, 0x81, 0xe0, 0x7c, 0xc7, 0x5d, 0x88, 0xef, 0x0c, 0x86,
+	0xa2, 0xd7, 0x8d, 0x9d, 0xfb, 0x60, 0x64, 0x7d, 0x81, 0xff, 0x12, 0xc7, 0x3f, 0x8f, 0xff, 0xd7,
+	0x15, 0x3f, 0x7e, 0x89, 0x60, 0x42, 0xbe, 0x14, 0xf1, 0x8d, 0x81, 0x53, 0x16, 0x7d, 0xd8, 0xe6,
+	0xde, 0x1b, 0x56, 0x4d, 0x40, 0xdb, 0xe4, 0xd0, 0x6e, 0xe3, 0xf5, 0x91, 0x5a, 0x48, 0x0f, 0x1e,
+	0x38, 0x3f, 0x20, 0x80, 0xf0, 0xed, 0x8e, 0x6f, 0x0e, 0x8c, 0x25, 0xfe, 0xd3, 0x91, 0xbb, 0x35,
+	0xbc, 0xa2, 0x08, 0x63, 0x87, 0x87, 0x51, 0xc4, 0x1f, 0x0e, 0x1f, 0x06, 0x0f, 0xe1, 0x50, 0x97,
+	0xbf, 0x15, 0x3f, 0x06, 0x2d, 0x14, 0xbf, 0xb9, 0x87, 0x68, 0xa1, 0xae, 0x33, 0x6b, 0x88, 0x16,
+	0xea, 0x3e, 0x32, 0xd4, 0x5b, 0x3c, 0xc0, 0x35, 0xbc, 0x3a, 0x6c, 0x80, 0xc5, 0xed, 0x57, 0x47,
+	0x79, 0xf4, 0xfa, 0x28, 0x8f, 0xfe, 0x38, 0xca, 0xa3, 0xaf, 0x8f, 0xf3, 0x63, 0xaf, 0x8f, 0xf3,
+	0x63, 0xbf, 0x1e, 0xe7, 0xc7, 0x3e, 0xbb, 0x5e, 0xb5, 0xd8, 0xe3, 0x66, 0x49, 0x2b, 0x3b, 0x75,
+	0xbd, 0x0d, 0x4f, 0x8f, 0xc0, 0xd3, 0x9f, 0x71, 0x6f, 0xac, 0xd5, 0xa0, 0x5e, 0x29, 0xc3, 0x5f,
+	0xa5, 0xef, 0xfe, 0x13, 0x00, 0x00, 0xff, 0xff, 0x72, 0x0a, 0xcd, 0x3e, 0xe2, 0x11, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -910,10 +1160,11 @@ type QueryClient interface {
 	// Queries a Nft.
 	Nft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error)
 	// Queries a list of NftCollections items.
-	NftCollections(ctx context.Context, in *QueryGetNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsResponse, error)
+	NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error)
 	AllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error)
-	// Queries a list of CollectionNfts items.
-	CollectionNfts(ctx context.Context, in *QueryGetCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetCollectionNftsResponse, error)
+	NftOwner(ctx context.Context, in *QueryGetNftOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftOwnerResponse, error)
+	NftBalance(ctx context.Context, in *QueryGetNftBalanceRequest, opts ...grpc.CallOption) (*QueryGetNftBalanceResponse, error)
+	AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error)
 }
 
 type queryClient struct {
@@ -951,9 +1202,9 @@ func (c *queryClient) Nft(ctx context.Context, in *QueryGetNftRequest, opts ...g
 	return out, nil
 }
 
-func (c *queryClient) NftCollections(ctx context.Context, in *QueryGetNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsResponse, error) {
-	out := new(QueryGetNftCollectionsResponse)
-	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/NftCollections", in, out, opts...)
+func (c *queryClient) NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error) {
+	out := new(QueryGetNftCollectionsByCreatorResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/NftCollectionsByCreator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -969,9 +1220,27 @@ func (c *queryClient) AllNftCollections(ctx context.Context, in *QueryGetAllNftC
 	return out, nil
 }
 
-func (c *queryClient) CollectionNfts(ctx context.Context, in *QueryGetCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetCollectionNftsResponse, error) {
-	out := new(QueryGetCollectionNftsResponse)
-	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/CollectionNfts", in, out, opts...)
+func (c *queryClient) NftOwner(ctx context.Context, in *QueryGetNftOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftOwnerResponse, error) {
+	out := new(QueryGetNftOwnerResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/NftOwner", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) NftBalance(ctx context.Context, in *QueryGetNftBalanceRequest, opts ...grpc.CallOption) (*QueryGetNftBalanceResponse, error) {
+	out := new(QueryGetNftBalanceResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/NftBalance", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error) {
+	out := new(QueryGetAllCollectionNftsResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.mdb.v1.Query/AllCollectionNfts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -987,10 +1256,11 @@ type QueryServer interface {
 	// Queries a Nft.
 	Nft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error)
 	// Queries a list of NftCollections items.
-	NftCollections(context.Context, *QueryGetNftCollectionsRequest) (*QueryGetNftCollectionsResponse, error)
+	NftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error)
 	AllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error)
-	// Queries a list of CollectionNfts items.
-	CollectionNfts(context.Context, *QueryGetCollectionNftsRequest) (*QueryGetCollectionNftsResponse, error)
+	NftOwner(context.Context, *QueryGetNftOwnerRequest) (*QueryGetNftOwnerResponse, error)
+	NftBalance(context.Context, *QueryGetNftBalanceRequest) (*QueryGetNftBalanceResponse, error)
+	AllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1006,14 +1276,20 @@ func (*UnimplementedQueryServer) NftCollection(ctx context.Context, req *QueryGe
 func (*UnimplementedQueryServer) Nft(ctx context.Context, req *QueryGetNftRequest) (*QueryGetNftResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Nft not implemented")
 }
-func (*UnimplementedQueryServer) NftCollections(ctx context.Context, req *QueryGetNftCollectionsRequest) (*QueryGetNftCollectionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NftCollections not implemented")
+func (*UnimplementedQueryServer) NftCollectionsByCreator(ctx context.Context, req *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollectionsByCreator not implemented")
 }
 func (*UnimplementedQueryServer) AllNftCollections(ctx context.Context, req *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllNftCollections not implemented")
 }
-func (*UnimplementedQueryServer) CollectionNfts(ctx context.Context, req *QueryGetCollectionNftsRequest) (*QueryGetCollectionNftsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CollectionNfts not implemented")
+func (*UnimplementedQueryServer) NftOwner(ctx context.Context, req *QueryGetNftOwnerRequest) (*QueryGetNftOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftOwner not implemented")
+}
+func (*UnimplementedQueryServer) NftBalance(ctx context.Context, req *QueryGetNftBalanceRequest) (*QueryGetNftBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftBalance not implemented")
+}
+func (*UnimplementedQueryServer) AllCollectionNfts(ctx context.Context, req *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllCollectionNfts not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1074,20 +1350,20 @@ func _Query_Nft_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_NftCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetNftCollectionsRequest)
+func _Query_NftCollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetNftCollectionsByCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).NftCollections(ctx, in)
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/NftCollections",
+		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/NftCollectionsByCreator",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).NftCollections(ctx, req.(*QueryGetNftCollectionsRequest))
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, req.(*QueryGetNftCollectionsByCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1110,20 +1386,56 @@ func _Query_AllNftCollections_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetCollectionNftsRequest)
+func _Query_NftOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetNftOwnerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CollectionNfts(ctx, in)
+		return srv.(QueryServer).NftOwner(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/CollectionNfts",
+		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/NftOwner",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CollectionNfts(ctx, req.(*QueryGetCollectionNftsRequest))
+		return srv.(QueryServer).NftOwner(ctx, req.(*QueryGetNftOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_NftBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetNftBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).NftBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/NftBalance",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).NftBalance(ctx, req.(*QueryGetNftBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllCollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAllCollectionNftsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllCollectionNfts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.mdb.v1.Query/AllCollectionNfts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllCollectionNfts(ctx, req.(*QueryGetAllCollectionNftsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1145,16 +1457,24 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Nft_Handler,
 		},
 		{
-			MethodName: "NftCollections",
-			Handler:    _Query_NftCollections_Handler,
+			MethodName: "NftCollectionsByCreator",
+			Handler:    _Query_NftCollectionsByCreator_Handler,
 		},
 		{
 			MethodName: "AllNftCollections",
 			Handler:    _Query_AllNftCollections_Handler,
 		},
 		{
-			MethodName: "CollectionNfts",
-			Handler:    _Query_CollectionNfts_Handler,
+			MethodName: "NftOwner",
+			Handler:    _Query_NftOwner_Handler,
+		},
+		{
+			MethodName: "NftBalance",
+			Handler:    _Query_NftBalance_Handler,
+		},
+		{
+			MethodName: "AllCollectionNfts",
+			Handler:    _Query_AllCollectionNfts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1397,6 +1717,166 @@ func (m *QueryGetNftCollectionResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetNftBalanceRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftBalanceRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftBalanceRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetNftBalanceResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftBalanceResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftBalanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Balance != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Balance))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetNftOwnerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftOwnerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetNftOwnerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftOwnerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *QueryGetNftRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1567,7 +2047,7 @@ func (m *QueryGetNftResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetNftCollectionsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetNftCollectionsByCreatorRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1577,12 +2057,12 @@ func (m *QueryGetNftCollectionsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetNftCollectionsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetNftCollectionsByCreatorRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetNftCollectionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetNftCollectionsByCreatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1609,7 +2089,7 @@ func (m *QueryGetNftCollectionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetNftCollectionsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetNftCollectionsByCreatorResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1619,12 +2099,12 @@ func (m *QueryGetNftCollectionsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetNftCollectionsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetNftCollectionsByCreatorResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetNftCollectionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetNftCollectionsByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1639,7 +2119,7 @@ func (m *QueryGetNftCollectionsResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.NftCollections) > 0 {
 		for iNdEx := len(m.NftCollections) - 1; iNdEx >= 0; iNdEx-- {
@@ -1652,8 +2132,15 @@ func (m *QueryGetNftCollectionsResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
 		}
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -1742,7 +2229,7 @@ func (m *QueryGetAllNftCollectionsResponse) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetCollectionNftsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetAllCollectionNftsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1752,12 +2239,12 @@ func (m *QueryGetCollectionNftsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetCollectionNftsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetAllCollectionNftsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetCollectionNftsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetAllCollectionNftsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1791,7 +2278,7 @@ func (m *QueryGetCollectionNftsRequest) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetCollectionNftsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetAllCollectionNftsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1801,12 +2288,12 @@ func (m *QueryGetCollectionNftsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetCollectionNftsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetAllCollectionNftsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetCollectionNftsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetAllCollectionNftsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1954,6 +2441,81 @@ func (m *QueryGetNftCollectionResponse) Size() (n int) {
 	return n
 }
 
+func (m *QueryGetNftBalanceRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetNftBalanceResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Balance != 0 {
+		n += 1 + sovQuery(uint64(m.Balance))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetNftOwnerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetNftOwnerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *QueryGetNftRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2034,7 +2596,7 @@ func (m *QueryGetNftResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetNftCollectionsRequest) Size() (n int) {
+func (m *QueryGetNftCollectionsByCreatorRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2051,12 +2613,16 @@ func (m *QueryGetNftCollectionsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetNftCollectionsResponse) Size() (n int) {
+func (m *QueryGetNftCollectionsByCreatorResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	if len(m.NftCollections) > 0 {
 		for _, e := range m.NftCollections {
 			l = e.Size()
@@ -2102,7 +2668,7 @@ func (m *QueryGetAllNftCollectionsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetCollectionNftsRequest) Size() (n int) {
+func (m *QueryGetAllCollectionNftsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2123,7 +2689,7 @@ func (m *QueryGetCollectionNftsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetCollectionNftsResponse) Size() (n int) {
+func (m *QueryGetAllCollectionNftsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2859,6 +3425,513 @@ func (m *QueryGetNftCollectionResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *QueryGetNftBalanceRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftBalanceRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftBalanceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetNftBalanceResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftBalanceResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftBalanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Balance", wireType)
+			}
+			m.Balance = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Balance |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetNftOwnerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftOwnerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftOwnerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetNftOwnerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftOwnerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *QueryGetNftRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3417,7 +4490,7 @@ func (m *QueryGetNftResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetNftCollectionsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetNftCollectionsByCreatorRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3440,10 +4513,10 @@ func (m *QueryGetNftCollectionsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetNftCollectionsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetNftCollectionsByCreatorRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetNftCollectionsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetNftCollectionsByCreatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3535,7 +4608,7 @@ func (m *QueryGetNftCollectionsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetNftCollectionsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetNftCollectionsByCreatorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3558,13 +4631,45 @@ func (m *QueryGetNftCollectionsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetNftCollectionsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetNftCollectionsByCreatorResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetNftCollectionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetNftCollectionsByCreatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NftCollections", wireType)
 			}
@@ -3598,7 +4703,7 @@ func (m *QueryGetNftCollectionsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
 			}
@@ -3861,7 +4966,7 @@ func (m *QueryGetAllNftCollectionsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetCollectionNftsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetAllCollectionNftsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3884,10 +4989,10 @@ func (m *QueryGetCollectionNftsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetCollectionNftsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetAllCollectionNftsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetCollectionNftsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetAllCollectionNftsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4011,7 +5116,7 @@ func (m *QueryGetCollectionNftsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetCollectionNftsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetAllCollectionNftsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4034,10 +5139,10 @@ func (m *QueryGetCollectionNftsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetCollectionNftsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetAllCollectionNftsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetCollectionNftsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetAllCollectionNftsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

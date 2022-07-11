@@ -29,7 +29,7 @@ service Query {
 		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{id}";
 	}
   // Queries a list of NftCollections items.
-	rpc NftCollections(QueryGetNftCollectionsRequest) returns (QueryGetNftCollectionsResponse) {
+	rpc NftCollectionsByCreator(QueryGetNftCollectionsByCreatorRequest) returns (QueryGetNftCollectionsByCreatorResponse) {
 		option (google.api.http).get = "/mdb/v1/nftCollection/{creator}";
 	}
 
@@ -37,8 +37,15 @@ service Query {
 		option (google.api.http).get = "/mdb/v1/nftCollection";
 	}
 
-// Queries a list of CollectionNfts items.
-	rpc CollectionNfts(QueryGetCollectionNftsRequest) returns (QueryGetCollectionNftsResponse) {
+	rpc NftOwner(QueryGetNftOwnerRequest) returns (QueryGetNftOwnerResponse) {
+		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{id}/owner";
+	}
+
+	rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
+		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}/{owner}/balance";
+	}
+
+	rpc AllCollectionNfts(QueryGetAllCollectionNftsRequest) returns (QueryGetAllCollectionNftsResponse) {
 		option (google.api.http).get = "/mdb/v1/nft/{collection_creator}/{collection_id}";
 	}
 
@@ -75,6 +82,28 @@ message QueryGetNftCollectionResponse {
   google.protobuf.Any data = 13;
 }
 
+message QueryGetNftBalanceRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string owner = 3;
+}
+
+message QueryGetNftBalanceResponse {
+  uint64 balance = 1;
+  string address = 2;
+}
+
+message QueryGetNftOwnerRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+}
+
+message QueryGetNftOwnerResponse {
+  string id = 1;
+  string address = 2;
+}
+
 message QueryGetNftRequest {
   string collection_creator = 1;
   string collection_id = 2;
@@ -95,16 +124,17 @@ message QueryGetNftResponse {
   string collection_id = 11;
 }
 
-message QueryGetNftCollectionsRequest {
+message QueryGetNftCollectionsByCreatorRequest {
   string creator = 1;
 
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryGetNftCollectionsResponse {
-  repeated QueryGetNftCollectionResponse nftCollections = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryGetNftCollectionsByCreatorResponse {
+  string address = 1;
+  repeated QueryGetNftCollectionResponse nftCollections = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 message QueryGetAllNftCollectionsRequest {
@@ -117,7 +147,7 @@ message QueryGetAllNftCollectionsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetCollectionNftsRequest {
+message QueryGetAllCollectionNftsRequest {
   string collection_creator = 1;
   string collection_id = 2;
 
@@ -125,7 +155,7 @@ message QueryGetCollectionNftsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
-message QueryGetCollectionNftsResponse {
+message QueryGetAllCollectionNftsResponse {
   repeated QueryGetNftResponse nfts = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

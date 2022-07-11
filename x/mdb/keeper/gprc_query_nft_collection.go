@@ -62,7 +62,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 	}, nil
 }
 
-func (k Keeper) NftCollections(c context.Context, req *types.QueryGetNftCollectionsRequest) (*types.QueryGetNftCollectionsResponse, error) {
+func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNftCollectionsByCreatorRequest) (*types.QueryGetNftCollectionsByCreatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -121,7 +121,8 @@ func (k Keeper) NftCollections(c context.Context, req *types.QueryGetNftCollecti
 		})
 	}
 
-	return &types.QueryGetNftCollectionsResponse{
+	return &types.QueryGetNftCollectionsByCreatorResponse{
+		Address:        creator.String(),
 		NftCollections: nftCollections,
 		Pagination:     pageRes,
 	}, nil

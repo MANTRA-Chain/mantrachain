@@ -15,7 +15,7 @@ var _ = strconv.Itoa(0)
 func CmdGetNftCollection() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "nft-collection [creator] [id]",
-		Short: "Query a nftCollection",
+		Short: "Query a nft collection",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -44,10 +44,10 @@ func CmdGetNftCollection() *cobra.Command {
 	return cmd
 }
 
-func CmdGetNftCollections() *cobra.Command {
+func CmdGetNftCollectionsByCreator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "nft-collections [creator]",
-		Short: "Query nft-collections",
+		Short: "Query nft collections",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqCreator := args[0]
@@ -64,12 +64,12 @@ func CmdGetNftCollections() *cobra.Command {
 				return err
 			}
 
-			params := &types.QueryGetNftCollectionsRequest{
+			params := &types.QueryGetNftCollectionsByCreatorRequest{
 				Creator:    reqCreator,
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.NftCollections(cmd.Context(), params)
+			res, err := queryClient.NftCollectionsByCreator(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
@@ -87,7 +87,7 @@ func CmdGetNftCollections() *cobra.Command {
 func CmdGetAllNftCollections() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "all-nft-collections",
-		Short: "Query all-nft-collections",
+		Short: "Query all nft collections",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)

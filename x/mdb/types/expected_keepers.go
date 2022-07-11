@@ -20,6 +20,7 @@ type NFTKeeper interface {
 	GetClassesByIds(ctx sdk.Context, classesIds []string) (classes []nfttypes.Class)
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 	TransferBatch(ctx sdk.Context, classID string, nftIDs []string, receiver sdk.AccAddress) error
+	GetBalance(ctx sdk.Context, classID string, owner sdk.AccAddress) uint64
 }
 
 type MnsKeeper interface {
