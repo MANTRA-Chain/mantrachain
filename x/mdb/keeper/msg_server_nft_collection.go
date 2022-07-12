@@ -75,9 +75,9 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgCreateNftCollection),
-			sdk.NewAttribute(types.AttributeKeyNftCollection, collectionId),
-			sdk.NewAttribute(types.AttributeKeyCreator, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyReceiver, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
+			sdk.NewAttribute(types.AttributeKeySigner, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),
 	)
 

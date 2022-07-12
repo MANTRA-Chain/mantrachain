@@ -7,12 +7,14 @@ import (
 )
 
 const (
-	AttributeKeyNftCollection = "nft_collection"
-	AttributeKeyNfts          = "nfts"
-	AttributeKeyCreator       = "creator"
-	AttributeKeyOwner         = "owner"
-	AttributeKeyReceiver      = "receiver"
-	AttributeKeyApproved      = "approved"
+	AttributeKeyNftCollectionId      = "nft_collection_id"
+	AttributeKeyNftCollectionCreator = "nft_collection_creator"
+	AttributeKeyNftsIds              = "nfts_ids"
+	AttributeKeyNftId                = "nft_id"
+	AttributeKeySigner               = "signer"
+	AttributeKeyOwner                = "owner"
+	AttributeKeyReceiver             = "receiver"
+	AttributeKeyApproved             = "approved"
 )
 
 var (

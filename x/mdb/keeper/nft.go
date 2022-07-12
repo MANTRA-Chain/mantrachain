@@ -98,7 +98,7 @@ func (k Keeper) GetIsApprovedForAllNfts(
 	var approvedAddressesData types.ApprovedAddressesData
 	k.cdc.MustUnmarshal(bz, &approvedAddressesData)
 
-	return approvedAddressesData.ApprovedAddressesData[operator.String()] == true
+	return approvedAddressesData.ApprovedAddressesData[operator.String()]
 }
 
 func (k Keeper) DeleteApprovedNft(
@@ -249,11 +249,13 @@ func (k Keeper) GetAllNft(ctx sdk.Context, collectionIndex []byte) (list []types
 func (k Keeper) GetNftsByIndexes(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) (list []types.Nft) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
-		if store.Has(nftIndex) {
-			val := types.Nft{}
-			k.cdc.MustUnmarshal(store.Get(nftIndex), &val)
-			list = append(list, val)
+		bz := store.Get(nftIndex)
+
+		var nft types.Nft
+		if len(bz) != 0 {
+			k.cdc.MustUnmarshal(bz, &nft)
 		}
+		list = append(list, nft)
 	}
 
 	return

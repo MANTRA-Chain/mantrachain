@@ -126,6 +126,10 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 	for i, nft := range nfts {
 		meta := nftsMeta[i]
 
+		if nft.Id == "" || meta.Index == nil {
+			continue
+		}
+
 		nftsRes = append(nftsRes, &types.QueryGetNftResponse{
 			Id:           nft.UriHash,
 			Title:        meta.Title,
@@ -354,6 +358,10 @@ func (k Keeper) CollectionNftsByOwner(goCtx context.Context, req *types.QueryGet
 
 	for i, nft := range nfts {
 		meta := nftsMeta[i]
+
+		if nft.Id == "" || meta.Index == nil {
+			continue
+		}
 
 		nftsRes = append(nftsRes, &types.QueryGetNftResponse{
 			Id:           nft.UriHash,

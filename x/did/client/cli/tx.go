@@ -26,17 +26,17 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	// this line is used by starport scaffolding # 1
-	// cmd.AddCommand(
-	// 	NewCreateDidDocumentCmd(),
-	// 	NewAddVerificationCmd(),
-	// 	NewAddServiceCmd(),
-	// 	NewRevokeVerificationCmd(),
-	// 	NewDeleteServiceCmd(),
-	// 	NewSetVerificationRelationshipCmd(),
-	// 	NewLinkAriesAgentCmd(),
-	// 	NewAddControllerCmd(),
-	// 	NewDeleteControllerCmd(),
-	// )
+	cmd.AddCommand(
+		// NewCreateDidDocumentCmd(),
+		NewAddVerificationCmd(),
+		NewAddServiceCmd(),
+		NewRevokeVerificationCmd(),
+		NewDeleteServiceCmd(),
+		NewSetVerificationRelationshipCmd(),
+		NewLinkAriesAgentCmd(),
+		NewAddControllerCmd(),
+		NewDeleteControllerCmd(),
+	)
 
 	return cmd
 }
