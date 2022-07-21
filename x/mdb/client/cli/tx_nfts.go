@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
-	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -53,11 +52,6 @@ func CmdMintNfts() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -67,13 +61,6 @@ func CmdMintNfts() *cobra.Command {
 			receiverStr := strings.TrimSpace(receiver)
 			if len(receiverStr) == 0 {
 				receiver = signer.String()
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
 			}
 
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
@@ -94,8 +81,6 @@ func CmdMintNfts() *cobra.Command {
 				collectionId,
 				&nfts,
 				receiver,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -146,21 +131,6 @@ func CmdBurnNfts() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -178,8 +148,6 @@ func CmdBurnNfts() *cobra.Command {
 				collectionCreator,
 				collectionId,
 				&nfts,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -234,21 +202,6 @@ func CmdTransferNfts() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -268,8 +221,6 @@ func CmdTransferNfts() *cobra.Command {
 				&nftsIds,
 				argOwner,
 				argReceiver,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -329,21 +280,6 @@ func CmdApproveNfts() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -363,8 +299,6 @@ func CmdApproveNfts() *cobra.Command {
 				collectionId,
 				&nftsIds,
 				approved,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -410,27 +344,10 @@ func CmdApproveAllNfts() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			msg := types.NewMsgApproveAllNfts(
 				clientCtx.GetFromAddress().String(),
 				argReceiver,
 				approved,
-				pubKeyHex,
-				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -482,11 +399,6 @@ func CmdMintNft() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -496,13 +408,6 @@ func CmdMintNft() *cobra.Command {
 			receiverStr := strings.TrimSpace(receiver)
 			if len(receiverStr) == 0 {
 				receiver = signer.String()
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
 			}
 
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
@@ -523,8 +428,6 @@ func CmdMintNft() *cobra.Command {
 				collectionId,
 				&nft,
 				receiver,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -575,21 +478,6 @@ func CmdBurnNft() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -600,8 +488,6 @@ func CmdBurnNft() *cobra.Command {
 				collectionCreator,
 				collectionId,
 				argNftId,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -656,21 +542,6 @@ func CmdTransferNft() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -683,8 +554,6 @@ func CmdTransferNft() *cobra.Command {
 				argNftId,
 				argOwner,
 				argReceiver,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -744,21 +613,6 @@ func CmdApproveNft() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
 			if err != nil {
 				return err
@@ -771,8 +625,6 @@ func CmdApproveNft() *cobra.Command {
 				collectionId,
 				argNftId,
 				approved,
-				pubKeyHex,
-				pubKeyType,
 				strictCollectionFlag,
 			)
 			if err := msg.ValidateBasic(); err != nil {

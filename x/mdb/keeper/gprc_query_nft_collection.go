@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -24,7 +23,10 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.Id) == "" {
+	conf := k.GetParams(ctx)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id, nil)
+
+	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
@@ -198,7 +200,10 @@ func (k Keeper) NftCollectionSupply(c context.Context, req *types.QueryGetNftCol
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.Id) == "" {
+	conf := k.GetParams(ctx)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id, nil)
+
+	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 

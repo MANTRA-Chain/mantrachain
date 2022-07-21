@@ -30,9 +30,7 @@ message MsgApproveNft {
   string collection_id = 4;
   string nft_id = 5;
   bool approved = 6;
-  string pub_key_hex = 7;
-  string pub_key_type = 8;
-  bool strict_collection = 9;
+  bool strict_collection = 7;
 }
 
 message MsgApproveNftResponse {
@@ -48,9 +46,7 @@ message MsgTransferNft {
   string collection_creator = 4;
   string collection_id = 5;
   string nft_id = 6;
-  string pub_key_hex = 7;
-  string pub_key_type = 8;
-  bool strict_collection = 9;
+  bool strict_collection = 7;
 }
 
 message MsgTransferNftResponse {
@@ -63,9 +59,7 @@ message MsgBurnNft {
   string collection_creator = 2;
   string collection_id = 3;
   string nft_id = 4;
-  string pub_key_hex = 5;
-  string pub_key_type = 6;
-  bool strict_collection = 7;
+  bool strict_collection = 5;
 }
 
 message MsgBurnNftResponse {
@@ -78,9 +72,7 @@ message MsgMintNft {
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftMetadata nft = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict_collection = 8;
+  bool strict_collection = 6;
 }
 
 message MsgMintNftResponse {
@@ -92,9 +84,7 @@ message MsgApproveAllNfts {
   string creator = 1;
   string receiver = 2;
   bool approved = 3;
-  string pub_key_hex = 4;
-  string pub_key_type = 5;
-  bool strict_collection = 6;
+  bool strict_collection = 4;
 }
 
 message MsgApproveAllNftsResponse {
@@ -109,9 +99,7 @@ message MsgApproveNfts {
   string collection_id = 4;
   MsgNftsIds nfts = 5;
   bool approved = 6;
-  string pub_key_hex = 7;
-  string pub_key_type = 8;
-  bool strict_collection = 9;
+  bool strict_collection = 7;
 }
 
 message MsgApproveNftsResponse {
@@ -127,9 +115,7 @@ message MsgTransferNfts {
   string collection_creator = 4;
   string collection_id = 5;
   MsgNftsIds nfts = 6;
-  string pub_key_hex = 7;
-  string pub_key_type = 8;
-  bool strict_collection = 9;
+  bool strict_collection = 7;
 }
 
 message MsgTransferNftsResponse {
@@ -140,8 +126,6 @@ message MsgTransferNftsResponse {
 message MsgCreateNftCollection {
   string creator = 1;
   MsgCreateNftCollectionMetadata collection = 2;
-  string pub_key_hex = 3;
-  string pub_key_type = 4;
 }
 
 message MsgCreateNftCollectionMetadata {
@@ -168,9 +152,7 @@ message MsgMintNfts {
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftsMetadata nfts = 5;
-  string pub_key_hex = 6;
-  string pub_key_type = 7;
-  bool strict_collection = 8;
+  bool strict_collection = 6;
 }
 
 message MsgNftsMetadata {
@@ -198,9 +180,7 @@ message MsgBurnNfts {
   string collection_creator = 2;
   string collection_id = 3;
   MsgNftsIds nfts = 4;
-  string pub_key_hex = 5;
-  string pub_key_type = 6;
-  bool strict_collection = 7;
+  bool strict_collection = 5;
 }
 
 message MsgNftsIds {

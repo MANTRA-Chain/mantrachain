@@ -34,8 +34,6 @@ var (
 func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
 	nfts *MsgNftsMetadata,
 	receiver string,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgMintNfts {
 	return &MsgMintNfts{
@@ -44,8 +42,6 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 		CollectionId:      collectionId,
 		Nfts:              nfts,
 		Receiver:          receiver,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -101,8 +97,6 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 
 func NewMsgBurnNfts(creator string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgBurnNfts {
 	return &MsgBurnNfts{
@@ -110,8 +104,6 @@ func NewMsgBurnNfts(creator string, collectionCreator string, collectionId strin
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -163,8 +155,6 @@ func NewMsgTransferNfts(creator string, collectionCreator string, collectionId s
 	nftsIds *MsgNftsIds,
 	owner string,
 	receiver string,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgTransferNfts {
 	return &MsgTransferNfts{
@@ -174,8 +164,6 @@ func NewMsgTransferNfts(creator string, collectionCreator string, collectionId s
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -234,8 +222,6 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 func NewMsgApproveNfts(creator string, receiver string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
 	approved bool,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgApproveNfts {
 	return &MsgApproveNfts{
@@ -245,8 +231,6 @@ func NewMsgApproveNfts(creator string, receiver string, collectionCreator string
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
 		Approved:          approved,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -299,14 +283,11 @@ func (msg *MsgApproveNfts) ValidateBasic() error {
 }
 
 func NewMsgApproveAllNfts(creator string, receiver string,
-	approved bool, pubKeyHex string,
-	pubKeyType string) *MsgApproveAllNfts {
+	approved bool) *MsgApproveAllNfts {
 	return &MsgApproveAllNfts{
-		Creator:    creator,
-		Receiver:   receiver,
-		Approved:   approved,
-		PubKeyHex:  pubKeyHex,
-		PubKeyType: pubKeyType,
+		Creator:  creator,
+		Receiver: receiver,
+		Approved: approved,
 	}
 }
 
@@ -346,8 +327,6 @@ func (msg *MsgApproveAllNfts) ValidateBasic() error {
 func NewMsgMintNft(creator string, collectionCreator string, collectionId string,
 	nft *MsgNftMetadata,
 	receiver string,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgMintNft {
 	return &MsgMintNft{
@@ -356,8 +335,6 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 		CollectionId:      collectionId,
 		Nft:               nft,
 		Receiver:          receiver,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -413,8 +390,6 @@ func (msg *MsgMintNft) ValidateBasic() error {
 
 func NewMsgBurnNft(creator string, collectionCreator string, collectionId string,
 	nftId string,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgBurnNft {
 	return &MsgBurnNft{
@@ -422,8 +397,6 @@ func NewMsgBurnNft(creator string, collectionCreator string, collectionId string
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -475,8 +448,6 @@ func NewMsgTransferNft(creator string, collectionCreator string, collectionId st
 	nftId string,
 	owner string,
 	receiver string,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgTransferNft {
 	return &MsgTransferNft{
@@ -486,8 +457,6 @@ func NewMsgTransferNft(creator string, collectionCreator string, collectionId st
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }
@@ -542,8 +511,6 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 func NewMsgApproveNft(creator string, receiver string, collectionCreator string, collectionId string,
 	nftId string,
 	approved bool,
-	pubKeyHex string,
-	pubKeyType string,
 	strictCollection bool,
 ) *MsgApproveNft {
 	return &MsgApproveNft{
@@ -553,8 +520,6 @@ func NewMsgApproveNft(creator string, receiver string, collectionCreator string,
 		CollectionId:      collectionId,
 		NftId:             nftId,
 		Approved:          approved,
-		PubKeyHex:         pubKeyHex,
-		PubKeyType:        pubKeyType,
 		StrictCollection:  strictCollection,
 	}
 }

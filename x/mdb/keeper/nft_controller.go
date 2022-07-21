@@ -247,15 +247,12 @@ func (c *NftController) validMetadataMaxCount() error {
 }
 
 func (c *NftController) validMetadataId() error {
+	isValidNftId := regexp.MustCompile(c.conf.ValidNftId).MatchString
+
 	for i, nft := range c.metadata {
-		if strings.TrimSpace(nft.Id) == "" {
-			return sdkerrors.Wrapf(types.ErrInvalidNftId, "id: %s, index %d", nft.Id, i)
-		}
-
-		validator := regexp.MustCompile(c.conf.ValidNftId)
-
-		if !validator.MatchString(nft.Id) {
-			return sdkerrors.Wrapf(types.ErrInvalidNftId, "id: %s, index %d", nft.Id, i)
+		err := types.ValidateNftId(c.conf.ValidNftId, nft.Id, isValidNftId)
+		if err != nil {
+			return sdkerrors.Wrapf(err, "index %d", i)
 		}
 	}
 

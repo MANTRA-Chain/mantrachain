@@ -3,10 +3,13 @@ package cli
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +25,21 @@ func CmdGetNftCollection() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			creator := args[0]
-			id := args[1]
+			reqCreator := args[0]
+			reqId := args[1]
+
+			if strings.TrimSpace(reqId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			creator, err := sdk.AccAddressFromBech32(reqCreator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftCollectionRequest{
-				Creator: creator,
-				Id:      id,
+				Creator: creator.String(),
+				Id:      reqId,
 			}
 
 			res, err := queryClient.NftCollection(context.Background(), params)
@@ -54,12 +66,21 @@ func CmdGetNftCollectionSupply() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			creator := args[0]
-			id := args[1]
+			reqCreator := args[0]
+			reqId := args[1]
+
+			if strings.TrimSpace(reqId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			creator, err := sdk.AccAddressFromBech32(reqCreator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftCollectionSupplyRequest{
-				Creator: creator,
-				Id:      id,
+				Creator: creator.String(),
+				Id:      reqId,
 			}
 
 			res, err := queryClient.NftCollectionSupply(context.Background(), params)
@@ -82,9 +103,14 @@ func CmdGetNftCollectionsByCreator() *cobra.Command {
 		Short: "Query nft collections",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
 			reqCreator := args[0]
 
-			clientCtx, err := client.GetClientTxContext(cmd)
+			creator, err := sdk.AccAddressFromBech32(reqCreator)
 			if err != nil {
 				return err
 			}
@@ -97,7 +123,7 @@ func CmdGetNftCollectionsByCreator() *cobra.Command {
 			}
 
 			params := &types.QueryGetNftCollectionsByCreatorRequest{
-				Creator:    reqCreator,
+				Creator:    creator.String(),
 				Pagination: pageReq,
 			}
 

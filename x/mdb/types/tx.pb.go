@@ -35,9 +35,7 @@ type MsgApproveNft struct {
 	CollectionId      string `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	NftId             string `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
 	Approved          bool   `protobuf:"varint,6,opt,name=approved,proto3" json:"approved,omitempty"`
-	PubKeyHex         string `protobuf:"bytes,7,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string `protobuf:"bytes,8,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool   `protobuf:"varint,9,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool   `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgApproveNft) Reset()         { *m = MsgApproveNft{} }
@@ -115,20 +113,6 @@ func (m *MsgApproveNft) GetApproved() bool {
 	return false
 }
 
-func (m *MsgApproveNft) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgApproveNft) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgApproveNft) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -203,9 +187,7 @@ type MsgTransferNft struct {
 	CollectionCreator string `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	NftId             string `protobuf:"bytes,6,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-	PubKeyHex         string `protobuf:"bytes,7,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string `protobuf:"bytes,8,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool   `protobuf:"varint,9,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool   `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgTransferNft) Reset()         { *m = MsgTransferNft{} }
@@ -283,20 +265,6 @@ func (m *MsgTransferNft) GetNftId() string {
 	return ""
 }
 
-func (m *MsgTransferNft) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgTransferNft) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgTransferNft) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -361,9 +329,7 @@ type MsgBurnNft struct {
 	CollectionCreator string `protobuf:"bytes,2,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string `protobuf:"bytes,3,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	NftId             string `protobuf:"bytes,4,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-	PubKeyHex         string `protobuf:"bytes,5,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string `protobuf:"bytes,6,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool   `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool   `protobuf:"varint,5,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgBurnNft) Reset()         { *m = MsgBurnNft{} }
@@ -427,20 +393,6 @@ func (m *MsgBurnNft) GetNftId() string {
 	return ""
 }
 
-func (m *MsgBurnNft) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgBurnNft) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgBurnNft) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -498,9 +450,7 @@ type MsgMintNft struct {
 	CollectionCreator string          `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string          `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	Nft               *MsgNftMetadata `protobuf:"bytes,5,opt,name=nft,proto3" json:"nft,omitempty"`
-	PubKeyHex         string          `protobuf:"bytes,6,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string          `protobuf:"bytes,7,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool            `protobuf:"varint,8,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool            `protobuf:"varint,6,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgMintNft) Reset()         { *m = MsgMintNft{} }
@@ -571,20 +521,6 @@ func (m *MsgMintNft) GetNft() *MsgNftMetadata {
 	return nil
 }
 
-func (m *MsgMintNft) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgMintNft) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgMintNft) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -648,9 +584,7 @@ type MsgApproveAllNfts struct {
 	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Receiver         string `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
 	Approved         bool   `protobuf:"varint,3,opt,name=approved,proto3" json:"approved,omitempty"`
-	PubKeyHex        string `protobuf:"bytes,4,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType       string `protobuf:"bytes,5,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection bool   `protobuf:"varint,6,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection bool   `protobuf:"varint,4,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgApproveAllNfts) Reset()         { *m = MsgApproveAllNfts{} }
@@ -705,20 +639,6 @@ func (m *MsgApproveAllNfts) GetApproved() bool {
 		return m.Approved
 	}
 	return false
-}
-
-func (m *MsgApproveAllNfts) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgApproveAllNfts) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
 }
 
 func (m *MsgApproveAllNfts) GetStrictCollection() bool {
@@ -787,9 +707,7 @@ type MsgApproveNfts struct {
 	CollectionId      string      `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	Nfts              *MsgNftsIds `protobuf:"bytes,5,opt,name=nfts,proto3" json:"nfts,omitempty"`
 	Approved          bool        `protobuf:"varint,6,opt,name=approved,proto3" json:"approved,omitempty"`
-	PubKeyHex         string      `protobuf:"bytes,7,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string      `protobuf:"bytes,8,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool        `protobuf:"varint,9,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool        `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgApproveNfts) Reset()         { *m = MsgApproveNfts{} }
@@ -867,20 +785,6 @@ func (m *MsgApproveNfts) GetApproved() bool {
 	return false
 }
 
-func (m *MsgApproveNfts) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgApproveNfts) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgApproveNfts) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -955,9 +859,7 @@ type MsgTransferNfts struct {
 	CollectionCreator string      `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string      `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	Nfts              *MsgNftsIds `protobuf:"bytes,6,opt,name=nfts,proto3" json:"nfts,omitempty"`
-	PubKeyHex         string      `protobuf:"bytes,7,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string      `protobuf:"bytes,8,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool        `protobuf:"varint,9,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool        `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgTransferNfts) Reset()         { *m = MsgTransferNfts{} }
@@ -1035,20 +937,6 @@ func (m *MsgTransferNfts) GetNfts() *MsgNftsIds {
 	return nil
 }
 
-func (m *MsgTransferNfts) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgTransferNfts) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
-}
-
 func (m *MsgTransferNfts) GetStrictCollection() bool {
 	if m != nil {
 		return m.StrictCollection
@@ -1111,8 +999,6 @@ func (m *MsgTransferNftsResponse) GetAddress() string {
 type MsgCreateNftCollection struct {
 	Creator    string                          `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Collection *MsgCreateNftCollectionMetadata `protobuf:"bytes,2,opt,name=collection,proto3" json:"collection,omitempty"`
-	PubKeyHex  string                          `protobuf:"bytes,3,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType string                          `protobuf:"bytes,4,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
 }
 
 func (m *MsgCreateNftCollection) Reset()         { *m = MsgCreateNftCollection{} }
@@ -1160,20 +1046,6 @@ func (m *MsgCreateNftCollection) GetCollection() *MsgCreateNftCollectionMetadata
 		return m.Collection
 	}
 	return nil
-}
-
-func (m *MsgCreateNftCollection) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgCreateNftCollection) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
 }
 
 type MsgCreateNftCollectionMetadata struct {
@@ -1350,9 +1222,7 @@ type MsgMintNfts struct {
 	CollectionCreator string           `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string           `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	Nfts              *MsgNftsMetadata `protobuf:"bytes,5,opt,name=nfts,proto3" json:"nfts,omitempty"`
-	PubKeyHex         string           `protobuf:"bytes,6,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string           `protobuf:"bytes,7,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool             `protobuf:"varint,8,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool             `protobuf:"varint,6,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgMintNfts) Reset()         { *m = MsgMintNfts{} }
@@ -1421,20 +1291,6 @@ func (m *MsgMintNfts) GetNfts() *MsgNftsMetadata {
 		return m.Nfts
 	}
 	return nil
-}
-
-func (m *MsgMintNfts) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgMintNfts) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
 }
 
 func (m *MsgMintNfts) GetStrictCollection() bool {
@@ -1645,9 +1501,7 @@ type MsgBurnNfts struct {
 	CollectionCreator string      `protobuf:"bytes,2,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId      string      `protobuf:"bytes,3,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	Nfts              *MsgNftsIds `protobuf:"bytes,4,opt,name=nfts,proto3" json:"nfts,omitempty"`
-	PubKeyHex         string      `protobuf:"bytes,5,opt,name=pub_key_hex,json=pubKeyHex,proto3" json:"pub_key_hex,omitempty"`
-	PubKeyType        string      `protobuf:"bytes,6,opt,name=pub_key_type,json=pubKeyType,proto3" json:"pub_key_type,omitempty"`
-	StrictCollection  bool        `protobuf:"varint,7,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
+	StrictCollection  bool        `protobuf:"varint,5,opt,name=strict_collection,json=strictCollection,proto3" json:"strict_collection,omitempty"`
 }
 
 func (m *MsgBurnNfts) Reset()         { *m = MsgBurnNfts{} }
@@ -1709,20 +1563,6 @@ func (m *MsgBurnNfts) GetNfts() *MsgNftsIds {
 		return m.Nfts
 	}
 	return nil
-}
-
-func (m *MsgBurnNfts) GetPubKeyHex() string {
-	if m != nil {
-		return m.PubKeyHex
-	}
-	return ""
-}
-
-func (m *MsgBurnNfts) GetPubKeyType() string {
-	if m != nil {
-		return m.PubKeyType
-	}
-	return ""
 }
 
 func (m *MsgBurnNfts) GetStrictCollection() bool {
@@ -1850,84 +1690,80 @@ func init() {
 func init() { proto.RegisterFile("mdb/v1/tx.proto", fileDescriptor_a72ea68325814498) }
 
 var fileDescriptor_a72ea68325814498 = []byte{
-	// 1228 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0x4b, 0x6f, 0x1b, 0x45,
-	0x1c, 0xef, 0xee, 0xfa, 0x95, 0xbf, 0xd3, 0x34, 0x99, 0xa6, 0x65, 0x63, 0x90, 0x15, 0x99, 0x47,
-	0x0d, 0x4d, 0xbd, 0x49, 0x5a, 0xc4, 0x81, 0x2a, 0xc2, 0x89, 0x8a, 0x1a, 0x5a, 0x07, 0xb1, 0xf4,
-	0x84, 0x40, 0x61, 0xed, 0x1d, 0x3b, 0xab, 0xd8, 0xb3, 0xee, 0xce, 0x38, 0xc4, 0x9c, 0xb8, 0x72,
-	0xe3, 0x63, 0xf0, 0x09, 0xb8, 0x70, 0x46, 0x02, 0x89, 0x43, 0x85, 0x38, 0x70, 0x01, 0xa1, 0xe4,
-	0x63, 0x70, 0x41, 0x3b, 0xfb, 0xf0, 0xd8, 0x89, 0xf7, 0x61, 0x68, 0xe4, 0xdb, 0xce, 0xcc, 0xff,
-	0x31, 0xf3, 0xfb, 0xfd, 0x1f, 0x3b, 0x03, 0x37, 0x7a, 0x66, 0x53, 0x3b, 0xd9, 0xd2, 0xd8, 0x69,
-	0xad, 0xef, 0xd8, 0xcc, 0x46, 0xaf, 0x3d, 0xb5, 0x7a, 0x78, 0xef, 0xc8, 0xb0, 0x48, 0xad, 0x67,
-	0x10, 0xe6, 0x18, 0x2d, 0xef, 0xdb, 0x6c, 0xd6, 0x4e, 0xb6, 0x4a, 0x6b, 0x1d, 0xdb, 0xee, 0x74,
-	0xb1, 0xc6, 0x65, 0x9b, 0x83, 0xb6, 0x66, 0x90, 0xa1, 0xa7, 0x58, 0x7a, 0xd5, 0xb7, 0x44, 0xda,
-	0xec, 0xb0, 0x65, 0x77, 0xbb, 0xb8, 0xc5, 0x2c, 0x9b, 0xf8, 0x8b, 0xcb, 0xa3, 0x45, 0x6f, 0xa6,
-	0xf2, 0xa3, 0x0c, 0xd7, 0x1b, 0xb4, 0x53, 0xef, 0xf7, 0x1d, 0xfb, 0x04, 0x1f, 0xb4, 0x19, 0x52,
-	0x21, 0xdf, 0x72, 0xb0, 0xc1, 0x6c, 0x47, 0x95, 0xd6, 0xa5, 0xea, 0x82, 0x1e, 0x0c, 0x51, 0x09,
-	0x0a, 0x0e, 0x6e, 0x61, 0xeb, 0x04, 0x3b, 0xaa, 0xcc, 0x97, 0xc2, 0x31, 0xba, 0x07, 0x68, 0xe4,
-	0xed, 0x30, 0x30, 0xa0, 0x70, 0xa9, 0x95, 0xd1, 0xca, 0x9e, 0x6f, 0xea, 0x75, 0xb8, 0x2e, 0x88,
-	0x5b, 0xa6, 0x9a, 0xe1, 0x92, 0x8b, 0xa3, 0xc9, 0x7d, 0x13, 0xdd, 0x82, 0x9c, 0x7b, 0x0a, 0xcb,
-	0x54, 0xb3, 0x7c, 0x35, 0x4b, 0xda, 0x6c, 0xdf, 0x74, 0xb7, 0x61, 0x78, 0xdb, 0x35, 0xd5, 0xdc,
-	0xba, 0x54, 0x2d, 0xe8, 0xe1, 0x18, 0x95, 0xa1, 0xd8, 0x1f, 0x34, 0x0f, 0x8f, 0xf1, 0xf0, 0xf0,
-	0x08, 0x9f, 0xaa, 0x79, 0xae, 0xb7, 0xd0, 0x1f, 0x34, 0x9f, 0xe0, 0xe1, 0x63, 0x7c, 0x8a, 0xd6,
-	0x61, 0x31, 0x58, 0x67, 0xc3, 0x3e, 0x56, 0x0b, 0x5c, 0x00, 0x3c, 0x81, 0x67, 0xc3, 0x3e, 0x46,
-	0x77, 0x61, 0x85, 0x32, 0xc7, 0x6a, 0x89, 0xe8, 0xa9, 0x0b, 0xdc, 0xcd, 0xb2, 0xb7, 0xb0, 0x17,
-	0xce, 0x57, 0xbe, 0x80, 0x5b, 0x63, 0xe0, 0xe9, 0x98, 0xf6, 0x6d, 0x42, 0x31, 0x5a, 0x02, 0xd9,
-	0x32, 0x7d, 0xfc, 0x64, 0xcb, 0x74, 0x41, 0x35, 0x4c, 0xd3, 0xc1, 0x94, 0xfa, 0xc8, 0x05, 0xc3,
-	0xb1, 0xd3, 0x28, 0xe3, 0xa7, 0xa9, 0xfc, 0x20, 0xc3, 0x52, 0x83, 0x76, 0x9e, 0x39, 0x06, 0xa1,
-	0x6d, 0xec, 0x44, 0xb3, 0xb3, 0x0a, 0x59, 0xfb, 0x2b, 0x12, 0x52, 0xe3, 0x0d, 0xc6, 0x38, 0x53,
-	0x12, 0x71, 0x96, 0x49, 0xcc, 0x59, 0x36, 0x92, 0xb3, 0x9c, 0xc8, 0xd9, 0x15, 0xf3, 0xb2, 0x0b,
-	0xb7, 0xc7, 0x71, 0x4b, 0x4f, 0x4c, 0xe5, 0x1b, 0x19, 0xa0, 0x41, 0x3b, 0xbb, 0x03, 0x87, 0x44,
-	0x03, 0x7f, 0x39, 0x8c, 0x72, 0x62, 0x18, 0x95, 0x48, 0x18, 0x33, 0x11, 0x30, 0x66, 0xe3, 0x60,
-	0xcc, 0x25, 0x83, 0x31, 0x3f, 0x05, 0xc6, 0x37, 0x00, 0x8d, 0x10, 0x98, 0x06, 0x61, 0xe5, 0x27,
-	0x0f, 0xa8, 0x86, 0x45, 0xd8, 0x7c, 0xd5, 0x8f, 0x1d, 0x50, 0x48, 0x9b, 0x71, 0x94, 0x8a, 0xdb,
-	0x1b, 0xb5, 0xa8, 0x8a, 0x5a, 0x6b, 0xd0, 0xce, 0x41, 0x9b, 0x35, 0x30, 0x33, 0x4c, 0x83, 0x19,
-	0xba, 0xab, 0x38, 0x89, 0x76, 0x2e, 0x0e, 0xed, 0x7c, 0x32, 0xb4, 0x0b, 0x53, 0xd0, 0xde, 0xe1,
-	0x68, 0xfb, 0x30, 0xce, 0x10, 0xb0, 0xbf, 0x4b, 0xb0, 0x32, 0xaa, 0x46, 0xf5, 0x6e, 0xf7, 0xa0,
-	0xcd, 0xe8, 0x8c, 0x74, 0x44, 0x54, 0xa5, 0x49, 0x58, 0x32, 0x71, 0xb0, 0x64, 0x93, 0xc1, 0x92,
-	0x9b, 0x02, 0xcb, 0x27, 0xb0, 0x76, 0xe1, 0x54, 0x21, 0x3a, 0x02, 0x1a, 0xd2, 0xf4, 0xba, 0x2a,
-	0x4f, 0xd4, 0xd5, 0x73, 0xaf, 0xae, 0x8e, 0xea, 0x36, 0x9d, 0xa3, 0xa8, 0x7d, 0x08, 0x19, 0xd2,
-	0x66, 0xd4, 0x0f, 0xdb, 0x6a, 0x92, 0xb0, 0xa5, 0xfb, 0x26, 0xd5, 0xb9, 0xd6, 0x3c, 0x35, 0xc7,
-	0x2f, 0x79, 0x11, 0x16, 0x40, 0x0e, 0x59, 0x5b, 0x06, 0xc5, 0x32, 0x5d, 0xc6, 0x94, 0xea, 0x82,
-	0xee, 0x7e, 0xce, 0xd8, 0x1f, 0xff, 0x92, 0xe1, 0xc6, 0x78, 0x9d, 0xa7, 0x73, 0xdf, 0x20, 0x03,
-	0x7a, 0x73, 0x33, 0xd1, 0x7b, 0xc5, 0x14, 0x3e, 0x82, 0x57, 0x26, 0xf0, 0x9d, 0x85, 0xc3, 0xca,
-	0x6f, 0x12, 0x0f, 0x05, 0x8e, 0x93, 0x1b, 0x09, 0x23, 0x0f, 0x11, 0x74, 0x7d, 0x0e, 0x20, 0xec,
-	0x50, 0xe6, 0x70, 0x3d, 0x8c, 0x85, 0xeb, 0x12, 0x1f, 0x61, 0x51, 0x17, 0xec, 0x4d, 0x02, 0xa9,
-	0xc4, 0x01, 0x99, 0x99, 0x04, 0xb2, 0xf2, 0xab, 0x02, 0xe5, 0x68, 0x87, 0x17, 0x6a, 0x37, 0x82,
-	0x0c, 0x31, 0x7a, 0xd8, 0x87, 0x87, 0x7f, 0xa3, 0xc7, 0x90, 0xb3, 0x7a, 0x46, 0x07, 0x53, 0x55,
-	0x59, 0x57, 0xaa, 0xc5, 0xed, 0xcd, 0xe8, 0x23, 0x8e, 0x39, 0xda, 0x77, 0x15, 0x75, 0x5f, 0xdf,
-	0x65, 0x64, 0xe0, 0x74, 0xfd, 0x9d, 0xba, 0x9f, 0x68, 0x1d, 0x8a, 0x26, 0xa6, 0x2d, 0xc7, 0xea,
-	0x73, 0x0c, 0xbd, 0x70, 0x14, 0xa7, 0xd0, 0x23, 0xc8, 0x76, 0x2d, 0x72, 0xec, 0x86, 0xa3, 0xeb,
-	0x5c, 0x4b, 0xe1, 0xfc, 0xa9, 0x45, 0x8e, 0x75, 0x4f, 0x1b, 0x3d, 0x81, 0xbc, 0xcd, 0x0d, 0x52,
-	0x35, 0xcf, 0x0d, 0x6d, 0xa5, 0x30, 0xf4, 0x31, 0xd7, 0xd4, 0x03, 0x0b, 0x6e, 0x46, 0xb6, 0x0c,
-	0x86, 0x3b, 0xb6, 0x33, 0xf4, 0xe3, 0x37, 0x1c, 0xa3, 0xdb, 0x90, 0xa3, 0xc3, 0x5e, 0xd3, 0xee,
-	0xf2, 0x90, 0x5d, 0xd0, 0xfd, 0x91, 0x3b, 0x6f, 0xf7, 0x31, 0xc1, 0xa6, 0x0a, 0x3c, 0x94, 0xfd,
-	0x11, 0xaa, 0x42, 0xc6, 0x65, 0x42, 0x2d, 0xf2, 0xf0, 0x59, 0xad, 0x79, 0xf7, 0xa6, 0x5a, 0x70,
-	0x6f, 0xaa, 0xd5, 0xc9, 0x50, 0xe7, 0x12, 0x95, 0xcd, 0x69, 0x6c, 0x4e, 0xfd, 0xef, 0xf9, 0x45,
-	0x86, 0xe2, 0xa8, 0x61, 0xcf, 0x53, 0x0b, 0xa9, 0x8f, 0xb5, 0x90, 0x7b, 0x89, 0x6a, 0x4c, 0x98,
-	0x25, 0x97, 0x16, 0x9a, 0x97, 0xfd, 0xef, 0xf3, 0x29, 0x2f, 0xe4, 0xe2, 0x3e, 0xd0, 0x07, 0xfe,
-	0x21, 0x24, 0x1e, 0x50, 0xe9, 0x7e, 0xdf, 0xb8, 0x66, 0xe5, 0x4f, 0xaf, 0xcd, 0x0b, 0x0b, 0x17,
-	0x32, 0x72, 0x15, 0xb2, 0xcc, 0x62, 0xdd, 0x20, 0x25, 0xbd, 0x01, 0xda, 0x99, 0xc8, 0xc9, 0xb7,
-	0x62, 0xa3, 0xf9, 0xbf, 0x67, 0xe2, 0xfb, 0xe3, 0x99, 0xf8, 0x66, 0xac, 0x4b, 0x31, 0xff, 0x3e,
-	0x02, 0x30, 0x18, 0x73, 0xac, 0xe6, 0x80, 0xe1, 0x20, 0x05, 0xdf, 0x89, 0xb5, 0x50, 0x0f, 0x54,
-	0x74, 0x41, 0x3b, 0x4c, 0x99, 0x42, 0x6c, 0xca, 0xd4, 0xe1, 0xa6, 0x10, 0xff, 0x33, 0x75, 0x86,
-	0xef, 0xbd, 0x1c, 0xf2, 0xaf, 0x18, 0xf4, 0x8a, 0x6f, 0x59, 0x41, 0x2f, 0xce, 0xfc, 0x1f, 0xbd,
-	0xf8, 0x65, 0x5f, 0xc6, 0xee, 0xf0, 0x5b, 0x96, 0xbf, 0x05, 0xb4, 0x06, 0x05, 0x77, 0x13, 0x87,
-	0x23, 0xa4, 0xf3, 0xc4, 0x5b, 0xaa, 0xdc, 0xe1, 0xb4, 0x04, 0x90, 0x4e, 0xa7, 0x65, 0xfb, 0x9f,
-	0x02, 0x28, 0x0d, 0xda, 0x41, 0xdf, 0x4a, 0x70, 0xf3, 0xb2, 0xde, 0xfc, 0x60, 0x96, 0x6e, 0x5b,
-	0x9a, 0xa9, 0x47, 0x87, 0xbb, 0x3c, 0x82, 0x42, 0x58, 0x50, 0xdf, 0x8e, 0xb5, 0x14, 0x88, 0x96,
-	0xb6, 0x12, 0x8b, 0x8a, 0x9e, 0xc2, 0xb0, 0x8b, 0xf7, 0x14, 0x88, 0x26, 0xf0, 0x74, 0x01, 0x79,
-	0x06, 0x8b, 0x63, 0xbf, 0xa8, 0xf1, 0x05, 0x59, 0x14, 0x2f, 0xbd, 0x9b, 0x4a, 0x3c, 0xf4, 0xfa,
-	0x1c, 0x8a, 0xe2, 0x05, 0x27, 0xbe, 0x80, 0x0a, 0xd2, 0xa5, 0x07, 0x69, 0xa4, 0x43, 0x97, 0x5f,
-	0xc3, 0xd2, 0xc4, 0xed, 0x53, 0x4b, 0x6a, 0xc7, 0x57, 0x28, 0xbd, 0x97, 0x52, 0x21, 0xf4, 0x8d,
-	0x21, 0x1f, 0xbc, 0x40, 0x54, 0x93, 0x06, 0x43, 0x69, 0x33, 0xa9, 0xa4, 0xe8, 0x26, 0x78, 0x11,
-	0xaa, 0x26, 0x8d, 0x84, 0x04, 0x6e, 0x26, 0xdf, 0x58, 0x9e, 0x43, 0x51, 0x7c, 0xf5, 0xdb, 0x48,
-	0x13, 0x02, 0x09, 0xc8, 0xbb, 0xec, 0x65, 0x8c, 0x00, 0x08, 0xaf, 0xc0, 0x77, 0x53, 0x04, 0x40,
-	0xe9, 0x7e, 0x0a, 0xe1, 0xc0, 0xdf, 0xee, 0x87, 0x3f, 0x9f, 0x95, 0xa5, 0x17, 0x67, 0x65, 0xe9,
-	0xef, 0xb3, 0xb2, 0xf4, 0xdd, 0x79, 0xf9, 0xda, 0x8b, 0xf3, 0xf2, 0xb5, 0x3f, 0xce, 0xcb, 0xd7,
-	0x3e, 0xdb, 0xe8, 0x58, 0xec, 0x68, 0xd0, 0xac, 0xb5, 0xec, 0x9e, 0x16, 0x1a, 0xd6, 0x04, 0xc3,
-	0xda, 0xa9, 0xd6, 0x33, 0x9b, 0x9a, 0x5b, 0x55, 0x69, 0x33, 0xc7, 0x3b, 0xd3, 0xfd, 0x7f, 0x03,
-	0x00, 0x00, 0xff, 0xff, 0x45, 0x95, 0x59, 0x89, 0x43, 0x17, 0x00, 0x00,
+	// 1158 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcd, 0x6f, 0xdc, 0x44,
+	0x14, 0xaf, 0xd7, 0xfb, 0x95, 0xb7, 0x6d, 0x9a, 0x4c, 0xd3, 0xe2, 0x2c, 0x68, 0x15, 0x2d, 0x1f,
+	0x5d, 0x68, 0xba, 0x4e, 0xd2, 0x22, 0x0e, 0x54, 0x11, 0x9b, 0xa8, 0x88, 0x40, 0x37, 0x08, 0xc3,
+	0x09, 0x81, 0x82, 0x77, 0x3d, 0xeb, 0x58, 0xdd, 0x1d, 0x6f, 0x3d, 0x93, 0xd0, 0x70, 0xe5, 0x80,
+	0xb8, 0x55, 0x9c, 0xb9, 0xf0, 0x8f, 0x70, 0xe6, 0xc0, 0xa1, 0x47, 0x2e, 0x48, 0x28, 0x91, 0xf8,
+	0x0b, 0xb8, 0x20, 0x2e, 0xc8, 0xe3, 0xaf, 0x71, 0xb2, 0xfe, 0x5a, 0x2a, 0x94, 0x9b, 0xc7, 0xf3,
+	0x3e, 0xe6, 0xfd, 0xde, 0x7b, 0xbf, 0x37, 0x36, 0x5c, 0x9f, 0x18, 0x03, 0xf5, 0x78, 0x53, 0x65,
+	0x4f, 0xbb, 0x53, 0xc7, 0x66, 0x36, 0x7a, 0xe5, 0x91, 0x35, 0xc1, 0xbb, 0x87, 0xba, 0x45, 0xba,
+	0x13, 0x9d, 0x30, 0x47, 0x1f, 0x7a, 0xcf, 0xc6, 0xa0, 0x7b, 0xbc, 0xd9, 0x5c, 0x35, 0x6d, 0xdb,
+	0x1c, 0x63, 0x95, 0xcb, 0x0e, 0x8e, 0x46, 0xaa, 0x4e, 0x4e, 0x3c, 0xc5, 0xe6, 0xcb, 0xbe, 0x25,
+	0x32, 0x62, 0x07, 0x43, 0x7b, 0x3c, 0xc6, 0x43, 0x66, 0xd9, 0xc4, 0xdf, 0x5c, 0x8a, 0x36, 0xbd,
+	0x37, 0xed, 0xbf, 0x25, 0xb8, 0xd6, 0xa7, 0x66, 0x6f, 0x3a, 0x75, 0xec, 0x63, 0xbc, 0x3f, 0x62,
+	0x48, 0x81, 0xda, 0xd0, 0xc1, 0x3a, 0xb3, 0x1d, 0x45, 0x5a, 0x93, 0x3a, 0x0b, 0x5a, 0xb0, 0x44,
+	0x4d, 0xa8, 0x3b, 0x78, 0x88, 0xad, 0x63, 0xec, 0x28, 0x25, 0xbe, 0x15, 0xae, 0xd1, 0x5d, 0x40,
+	0x91, 0xb7, 0x83, 0xc0, 0x80, 0xcc, 0xa5, 0x96, 0xa3, 0x9d, 0x5d, 0xdf, 0xd4, 0xab, 0x70, 0x4d,
+	0x10, 0xb7, 0x0c, 0xa5, 0xcc, 0x25, 0xaf, 0x46, 0x2f, 0xf7, 0x0c, 0x74, 0x13, 0xaa, 0x6e, 0x14,
+	0x96, 0xa1, 0x54, 0xf8, 0x6e, 0x85, 0x8c, 0xd8, 0x9e, 0xe1, 0x1e, 0x43, 0xf7, 0x8e, 0x6b, 0x28,
+	0xd5, 0x35, 0xa9, 0x53, 0xd7, 0xc2, 0x35, 0xba, 0x03, 0xcb, 0x94, 0x39, 0xd6, 0x50, 0x8c, 0x5d,
+	0xa9, 0x71, 0xa1, 0x25, 0x6f, 0x63, 0x37, 0x7c, 0xdf, 0xfe, 0x12, 0x6e, 0xc6, 0x42, 0xd7, 0x30,
+	0x9d, 0xda, 0x84, 0x62, 0xb4, 0x08, 0x25, 0xcb, 0xf0, 0xa3, 0x2f, 0x59, 0x86, 0x0b, 0x89, 0x6e,
+	0x18, 0x0e, 0xa6, 0xd4, 0x8f, 0x3b, 0x58, 0xc6, 0xce, 0x22, 0xc7, 0xcf, 0xd2, 0xfe, 0x4b, 0x82,
+	0xc5, 0x3e, 0x35, 0x3f, 0x73, 0x74, 0x42, 0x47, 0xd8, 0x49, 0xc7, 0x76, 0x05, 0x2a, 0xf6, 0xd7,
+	0x24, 0x04, 0xd6, 0x5b, 0xc4, 0x10, 0x97, 0x73, 0x21, 0x5e, 0xce, 0x8d, 0x78, 0x25, 0x15, 0xf1,
+	0xaa, 0x88, 0x78, 0x21, 0x54, 0x77, 0xe0, 0x56, 0x3c, 0xea, 0xe2, 0xb0, 0xb6, 0x7f, 0x96, 0x00,
+	0xfa, 0xd4, 0xdc, 0x39, 0x72, 0x48, 0x3a, 0x6c, 0xb3, 0x41, 0x28, 0xe5, 0x06, 0x41, 0x4e, 0x05,
+	0xa1, 0x9c, 0x09, 0x42, 0x25, 0x01, 0x84, 0xd7, 0x00, 0x45, 0xe7, 0x4f, 0x02, 0xa0, 0xfd, 0x6d,
+	0x89, 0x87, 0xd9, 0xb7, 0x08, 0xbb, 0x5c, 0x9d, 0xb7, 0x0d, 0x32, 0x19, 0x31, 0x1e, 0x5d, 0x63,
+	0x6b, 0xbd, 0x9b, 0xc6, 0x45, 0xdd, 0x3e, 0x35, 0xf7, 0x47, 0xac, 0x8f, 0x99, 0x6e, 0xe8, 0x4c,
+	0xd7, 0x5c, 0xc5, 0xd9, 0x58, 0x55, 0x13, 0xb0, 0xda, 0xe6, 0x58, 0xf9, 0x20, 0xcc, 0x51, 0x2c,
+	0x3f, 0x48, 0xb0, 0x1c, 0xf5, 0x71, 0x6f, 0x3c, 0xde, 0x1f, 0x31, 0x3a, 0x27, 0x98, 0x29, 0xfd,
+	0x3c, 0x3b, 0xa8, 0x72, 0x42, 0x50, 0x9f, 0xc0, 0xea, 0x85, 0x33, 0x85, 0xb1, 0x09, 0xb1, 0x48,
+	0xc9, 0x7c, 0x52, 0x3a, 0xc7, 0x27, 0x3f, 0x95, 0x38, 0x9f, 0x44, 0x7c, 0x45, 0x2f, 0x51, 0xc5,
+	0x3c, 0x80, 0x32, 0x19, 0x31, 0xea, 0x97, 0x4c, 0x27, 0x4f, 0xc9, 0xd0, 0x3d, 0x83, 0x6a, 0x5c,
+	0xeb, 0xc5, 0x51, 0xfa, 0x57, 0x9c, 0x7c, 0x04, 0x88, 0x42, 0xcc, 0x97, 0x40, 0xb6, 0x0c, 0x17,
+	0x6f, 0xb9, 0xb3, 0xa0, 0xb9, 0x8f, 0x73, 0xb2, 0xfa, 0x8f, 0x25, 0xb8, 0x1e, 0xe7, 0x37, 0x7a,
+	0xe9, 0x69, 0x3d, 0x48, 0x4e, 0x75, 0xae, 0xe4, 0x14, 0x4a, 0xc0, 0x43, 0x78, 0xe9, 0x1c, 0x3a,
+	0xf3, 0x64, 0xa0, 0xfd, 0x4c, 0xe2, 0x89, 0xe4, 0x51, 0xba, 0x79, 0x8c, 0x3c, 0xa4, 0x80, 0xfd,
+	0x05, 0x80, 0x70, 0xc2, 0x12, 0x0f, 0xf6, 0x41, 0x66, 0xb0, 0x33, 0x7c, 0x84, 0x64, 0x26, 0xd8,
+	0x6b, 0xff, 0x2a, 0x43, 0x2b, 0x5d, 0xfc, 0x02, 0x67, 0x21, 0x28, 0x13, 0x7d, 0x82, 0xfd, 0xe0,
+	0xf8, 0x33, 0xfa, 0x00, 0xaa, 0xd6, 0x44, 0x37, 0x31, 0x55, 0xe4, 0x35, 0xb9, 0xd3, 0xd8, 0xda,
+	0x48, 0x3f, 0x60, 0xcc, 0xd1, 0x9e, 0xab, 0xa8, 0xf9, 0xfa, 0x2e, 0x9e, 0x47, 0xce, 0xd8, 0x2f,
+	0x0d, 0xf7, 0x11, 0xad, 0x41, 0xc3, 0xc0, 0x74, 0xe8, 0x58, 0xd3, 0x70, 0x38, 0x2d, 0x68, 0xe2,
+	0x2b, 0xf4, 0x10, 0x2a, 0x63, 0x8b, 0x3c, 0x76, 0x4b, 0xc1, 0x75, 0xae, 0x16, 0x70, 0xfe, 0xc8,
+	0x22, 0x8f, 0x35, 0x4f, 0x1b, 0x7d, 0x04, 0x35, 0x9b, 0x1b, 0xa4, 0x4a, 0x8d, 0x1b, 0xda, 0x2c,
+	0x60, 0xe8, 0x63, 0xae, 0xa9, 0x05, 0x16, 0xdc, 0x6e, 0x18, 0xea, 0x0c, 0x9b, 0xb6, 0x73, 0xa2,
+	0xd4, 0xbd, 0x6e, 0x08, 0xd6, 0xe8, 0x16, 0x54, 0xe9, 0xc9, 0x64, 0x60, 0x8f, 0x95, 0x05, 0xbe,
+	0xe3, 0xaf, 0xdc, 0xf7, 0xf6, 0x14, 0x13, 0x6c, 0x28, 0xc0, 0x0b, 0xd1, 0x5f, 0xa1, 0x0e, 0x94,
+	0xdd, 0x4c, 0x28, 0x0d, 0x9e, 0xfc, 0x95, 0xae, 0x77, 0x4f, 0xee, 0x06, 0xf7, 0xe4, 0x6e, 0x8f,
+	0x9c, 0x68, 0x5c, 0xa2, 0xbd, 0x91, 0x94, 0xcd, 0xc4, 0x69, 0xfd, 0x5d, 0x09, 0x1a, 0xd1, 0xa0,
+	0xba, 0x4c, 0xe4, 0xdb, 0x8b, 0x91, 0xef, 0xdd, 0x5c, 0xfd, 0x1d, 0xd6, 0x78, 0x4a, 0x93, 0x27,
+	0x4d, 0xec, 0x4f, 0x39, 0x05, 0x8a, 0x56, 0xd0, 0x7b, 0xfe, 0x11, 0x24, 0x5e, 0x0e, 0xc5, 0xae,
+	0x0c, 0x5c, 0xb3, 0xfd, 0xbb, 0x37, 0xde, 0x84, 0x8d, 0x0b, 0xfd, 0xb4, 0x02, 0x15, 0x66, 0xb1,
+	0x71, 0xd0, 0x50, 0xde, 0x02, 0x6d, 0x9f, 0xeb, 0xa8, 0x37, 0x32, 0x6b, 0xf1, 0xbf, 0xf7, 0xd1,
+	0xbb, 0xf1, 0x3e, 0x7a, 0x3d, 0xd3, 0xa5, 0xd8, 0x3d, 0x1f, 0x02, 0xe8, 0x8c, 0x39, 0xd6, 0xe0,
+	0x88, 0xe1, 0xa0, 0x81, 0xde, 0xca, 0xb4, 0xd0, 0x0b, 0x54, 0x34, 0x41, 0x3b, 0x2c, 0xf8, 0x7a,
+	0x66, 0xc1, 0xf7, 0xe0, 0x86, 0x50, 0xbd, 0x73, 0xb1, 0xf2, 0x9f, 0x12, 0xef, 0x00, 0xff, 0x5a,
+	0x4b, 0xff, 0xe7, 0x7b, 0x79, 0x30, 0xc5, 0xca, 0x2f, 0x6e, 0x8a, 0x25, 0x5d, 0xdf, 0x6f, 0xf3,
+	0x7b, 0xb9, 0x6f, 0x00, 0xad, 0x42, 0xdd, 0x35, 0x71, 0x10, 0xe1, 0x54, 0x23, 0xde, 0x56, 0xfb,
+	0x36, 0x07, 0x35, 0x00, 0x24, 0x19, 0xd4, 0xad, 0x7f, 0xea, 0x20, 0xf7, 0xa9, 0x89, 0xbe, 0x97,
+	0xe0, 0xc6, 0xac, 0xa9, 0x76, 0x7f, 0x9e, 0x39, 0xd5, 0x9c, 0x6b, 0xba, 0x85, 0xa7, 0x3c, 0x84,
+	0x7a, 0x48, 0x66, 0x6f, 0x66, 0x5a, 0x0a, 0x44, 0x9b, 0x9b, 0xb9, 0x45, 0x45, 0x4f, 0x61, 0xd1,
+	0x64, 0x7b, 0x0a, 0x44, 0x73, 0x78, 0xba, 0x80, 0x3c, 0x83, 0xab, 0xb1, 0xab, 0x59, 0x36, 0x19,
+	0x8a, 0xe2, 0xcd, 0xb7, 0x0b, 0x89, 0x87, 0x5e, 0x9f, 0x40, 0x43, 0xbc, 0x96, 0x67, 0xd3, 0x9f,
+	0x20, 0xdd, 0xbc, 0x5f, 0x44, 0x3a, 0x74, 0xf9, 0x0d, 0x2c, 0x9e, 0xfb, 0xe2, 0x51, 0xf3, 0xda,
+	0xf1, 0x15, 0x9a, 0xef, 0x14, 0x54, 0x08, 0x7d, 0x63, 0xa8, 0x05, 0xdf, 0xac, 0x9d, 0xbc, 0xc5,
+	0xd0, 0xdc, 0xc8, 0x2b, 0x29, 0xba, 0x09, 0xfe, 0x00, 0x74, 0xf2, 0x56, 0x42, 0x0e, 0x37, 0xe7,
+	0xbf, 0xca, 0x9f, 0x40, 0x43, 0xfc, 0x47, 0xb3, 0x5e, 0xa4, 0x04, 0x72, 0x24, 0x6f, 0xd6, 0x9f,
+	0x10, 0x02, 0x20, 0xfc, 0x71, 0xbb, 0x53, 0xa0, 0x00, 0x9a, 0xf7, 0x0a, 0x08, 0x07, 0xfe, 0x76,
+	0xde, 0xff, 0xe5, 0xb4, 0x25, 0x3d, 0x3f, 0x6d, 0x49, 0x7f, 0x9c, 0xb6, 0xa4, 0x67, 0x67, 0xad,
+	0x2b, 0xcf, 0xcf, 0x5a, 0x57, 0x7e, 0x3b, 0x6b, 0x5d, 0xf9, 0x7c, 0xdd, 0xb4, 0xd8, 0xe1, 0xd1,
+	0xa0, 0x3b, 0xb4, 0x27, 0x6a, 0x68, 0x58, 0x15, 0x0c, 0xab, 0x4f, 0xd5, 0x89, 0x31, 0x50, 0xd9,
+	0xc9, 0x14, 0xd3, 0x41, 0x95, 0xcf, 0x95, 0x7b, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0x3e, 0x74,
+	0x70, 0xb7, 0xaf, 0x14, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2362,21 +2198,7 @@ func (m *MsgApproveNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x38
 	}
 	if m.Approved {
 		i--
@@ -2501,21 +2323,7 @@ func (m *MsgTransferNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x38
 	}
 	if len(m.NftId) > 0 {
 		i -= len(m.NftId)
@@ -2627,21 +2435,7 @@ func (m *MsgBurnNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x38
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x28
 	}
 	if len(m.NftId) > 0 {
 		i -= len(m.NftId)
@@ -2732,21 +2526,7 @@ func (m *MsgMintNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x40
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x30
 	}
 	if m.Nft != nil {
 		{
@@ -2856,21 +2636,7 @@ func (m *MsgApproveAllNfts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x30
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x20
 	}
 	if m.Approved {
 		i--
@@ -2967,21 +2733,7 @@ func (m *MsgApproveNfts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x38
 	}
 	if m.Approved {
 		i--
@@ -3113,21 +2865,7 @@ func (m *MsgTransferNfts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x38
 	}
 	if m.Nfts != nil {
 		{
@@ -3238,20 +2976,6 @@ func (m *MsgCreateNftCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	_ = i
 	var l int
 	_ = l
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x1a
-	}
 	if m.Collection != nil {
 		{
 			size, err := m.Collection.MarshalToSizedBuffer(dAtA[:i])
@@ -3461,21 +3185,7 @@ func (m *MsgMintNfts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x40
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x3a
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x30
 	}
 	if m.Nfts != nil {
 		{
@@ -3729,21 +3439,7 @@ func (m *MsgBurnNfts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x38
-	}
-	if len(m.PubKeyType) > 0 {
-		i -= len(m.PubKeyType)
-		copy(dAtA[i:], m.PubKeyType)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyType)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.PubKeyHex) > 0 {
-		i -= len(m.PubKeyHex)
-		copy(dAtA[i:], m.PubKeyHex)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.PubKeyHex)))
-		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x28
 	}
 	if m.Nfts != nil {
 		{
@@ -3885,14 +3581,6 @@ func (m *MsgApproveNft) Size() (n int) {
 	if m.Approved {
 		n += 2
 	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.StrictCollection {
 		n += 2
 	}
@@ -3949,14 +3637,6 @@ func (m *MsgTransferNft) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.StrictCollection {
 		n += 2
 	}
@@ -3999,14 +3679,6 @@ func (m *MsgBurnNft) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.NftId)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -4055,14 +3727,6 @@ func (m *MsgMintNft) Size() (n int) {
 		l = m.Nft.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.StrictCollection {
 		n += 2
 	}
@@ -4102,14 +3766,6 @@ func (m *MsgApproveAllNfts) Size() (n int) {
 	}
 	if m.Approved {
 		n += 2
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
 	}
 	if m.StrictCollection {
 		n += 2
@@ -4161,14 +3817,6 @@ func (m *MsgApproveNfts) Size() (n int) {
 	}
 	if m.Approved {
 		n += 2
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
 	}
 	if m.StrictCollection {
 		n += 2
@@ -4228,14 +3876,6 @@ func (m *MsgTransferNfts) Size() (n int) {
 		l = m.Nfts.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	if m.StrictCollection {
 		n += 2
 	}
@@ -4273,14 +3913,6 @@ func (m *MsgCreateNftCollection) Size() (n int) {
 	}
 	if m.Collection != nil {
 		l = m.Collection.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
@@ -4381,14 +4013,6 @@ func (m *MsgMintNfts) Size() (n int) {
 	}
 	if m.Nfts != nil {
 		l = m.Nfts.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	if m.StrictCollection {
@@ -4498,14 +4122,6 @@ func (m *MsgBurnNfts) Size() (n int) {
 	}
 	if m.Nfts != nil {
 		l = m.Nfts.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyHex)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.PubKeyType)
-	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	if m.StrictCollection {
@@ -4760,70 +4376,6 @@ func (m *MsgApproveNft) Unmarshal(dAtA []byte) error {
 			}
 			m.Approved = bool(v != 0)
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -5220,70 +4772,6 @@ func (m *MsgTransferNft) Unmarshal(dAtA []byte) error {
 			m.NftId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -5596,70 +5084,6 @@ func (m *MsgBurnNft) Unmarshal(dAtA []byte) error {
 			m.NftId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -5976,70 +5400,6 @@ func (m *MsgMintNft) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -6308,70 +5668,6 @@ func (m *MsgApproveAllNfts) Unmarshal(dAtA []byte) error {
 			}
 			m.Approved = bool(v != 0)
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -6728,70 +6024,6 @@ func (m *MsgApproveNfts) Unmarshal(dAtA []byte) error {
 			}
 			m.Approved = bool(v != 0)
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -7192,70 +6424,6 @@ func (m *MsgTransferNfts) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -7506,70 +6674,6 @@ func (m *MsgCreateNftCollection) Unmarshal(dAtA []byte) error {
 			if err := m.Collection.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -8268,70 +7372,6 @@ func (m *MsgMintNfts) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}
@@ -9048,70 +8088,6 @@ func (m *MsgBurnNfts) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyHex", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyHex = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PubKeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.PubKeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrictCollection", wireType)
 			}

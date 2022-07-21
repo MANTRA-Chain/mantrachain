@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
@@ -286,13 +285,7 @@ func (c *NftCollectionController) validCollectionMetadataDescription() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataId() error {
-	validator := regexp.MustCompile(c.conf.ValidNftCollectionId)
-
-	if !validator.MatchString(c.metadata.Id) {
-		return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, c.metadata.Id)
-	}
-
-	return nil
+	return types.ValidateNftCollectionId(c.conf.ValidNftCollectionId, c.metadata.Id, nil)
 }
 
 func (c *NftCollectionController) validCollectionMetadataName() error {

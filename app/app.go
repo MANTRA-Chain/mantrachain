@@ -112,6 +112,8 @@ import (
 	nftkeeper "github.com/LimeChain/mantrachain/x/nft/keeper"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 
+	mwasm "github.com/LimeChain/mantrachain/wasmbinding"
+
 	//"github.com/tendermint/starport/starport/pkg/cosmoscmd"
 	"github.com/tendermint/starport/starport/pkg/openapiconsole"
 
@@ -425,7 +427,10 @@ func New(
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
-	supportedFeatures := "iterator,staking,stargate"
+	supportedFeatures := "iterator,staking,stargate,mantrachain"
+
+	wasmOpts = append(mwasm.RegisterCustomPlugins(&app.MdbKeeper), wasmOpts...)
+
 	app.wasmKeeper = wasm.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],

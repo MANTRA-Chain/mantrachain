@@ -3,10 +3,13 @@ package cli
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -22,14 +25,27 @@ func CmdGetNft() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			collection_creator := args[0]
-			collection_id := args[1]
-			id := args[2]
+			reqCollectionCreator := args[0]
+			reqCollectionId := args[1]
+			reqId := args[2]
+
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			if strings.TrimSpace(reqId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftRequest{
-				CollectionCreator: collection_creator,
-				CollectionId:      collection_id,
-				Id:                id,
+				CollectionCreator: collectionCreator.String(),
+				CollectionId:      reqCollectionId,
+				Id:                reqId,
 			}
 
 			res, err := queryClient.Nft(context.Background(), params)
@@ -52,10 +68,20 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 		Short: "Query all collection nfts",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
 			reqCollectionCreator := args[0]
 			reqCollectionId := args[1]
 
-			clientCtx, err := client.GetClientTxContext(cmd)
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
 			if err != nil {
 				return err
 			}
@@ -68,7 +94,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 			}
 
 			params := &types.QueryGetAllCollectionNftsRequest{
-				CollectionCreator: reqCollectionCreator,
+				CollectionCreator: collectionCreator.String(),
 				CollectionId:      reqCollectionId,
 				Pagination:        pageReq,
 			}
@@ -98,14 +124,27 @@ func CmdGetNftOwner() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			collection_creator := args[0]
-			collection_id := args[1]
-			id := args[2]
+			reqCollectionCreator := args[0]
+			reqCollectionId := args[1]
+			reqId := args[2]
+
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			if strings.TrimSpace(reqId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftOwnerRequest{
-				CollectionCreator: collection_creator,
-				CollectionId:      collection_id,
-				Id:                id,
+				CollectionCreator: collectionCreator.String(),
+				CollectionId:      reqCollectionId,
+				Id:                reqId,
 			}
 
 			res, err := queryClient.NftOwner(context.Background(), params)
@@ -132,12 +171,22 @@ func CmdGetIsApprovedForAllNfts() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			owner := args[0]
-			operator := args[1]
+			reqOwner := args[0]
+			reqOperator := args[1]
+
+			owner, err := sdk.AccAddressFromBech32(reqOwner)
+			if err != nil {
+				return err
+			}
+
+			operator, err := sdk.AccAddressFromBech32(reqOperator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetIsApprovedForAllNftsRequest{
-				Owner:    owner,
-				Operator: operator,
+				Owner:    owner.String(),
+				Operator: operator.String(),
 			}
 
 			res, err := queryClient.IsApprovedForAllNfts(context.Background(), params)
@@ -164,14 +213,27 @@ func CmdGetNftApproved() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			collection_creator := args[0]
-			collection_id := args[1]
-			id := args[2]
+			reqCollectionCreator := args[0]
+			reqCollectionId := args[1]
+			reqId := args[2]
+
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			if strings.TrimSpace(reqId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftApprovedRequest{
-				CollectionCreator: collection_creator,
-				CollectionId:      collection_id,
-				Id:                id,
+				CollectionCreator: collectionCreator.String(),
+				CollectionId:      reqCollectionId,
+				Id:                reqId,
 			}
 
 			res, err := queryClient.NftApproved(context.Background(), params)
@@ -198,14 +260,28 @@ func CmdGetNftBalance() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			collection_creator := args[0]
-			collection_id := args[1]
-			owner := args[2]
+			reqCollectionCreator := args[0]
+			reqCollectionId := args[1]
+			reqOwner := args[2]
+
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
+			if err != nil {
+				return err
+			}
+
+			owner, err := sdk.AccAddressFromBech32(reqOwner)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetNftBalanceRequest{
-				Owner:             owner,
-				CollectionCreator: collection_creator,
-				CollectionId:      collection_id,
+				Owner:             owner.String(),
+				CollectionCreator: collectionCreator.String(),
+				CollectionId:      reqCollectionId,
 			}
 
 			res, err := queryClient.NftBalance(context.Background(), params)
@@ -232,14 +308,28 @@ func CmdGetCollectionNftsByOwner() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			collection_creator := args[0]
-			collection_id := args[1]
-			owner := args[2]
+			reqCollectionCreator := args[0]
+			reqCollectionId := args[1]
+			reqOwner := args[2]
+
+			if strings.TrimSpace(reqCollectionId) == "" {
+				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+			}
+
+			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
+			if err != nil {
+				return err
+			}
+
+			owner, err := sdk.AccAddressFromBech32(reqOwner)
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetCollectionNftsByOwnerRequest{
-				Owner:             owner,
-				CollectionCreator: collection_creator,
-				CollectionId:      collection_id,
+				Owner:             owner.String(),
+				CollectionCreator: collectionCreator.String(),
+				CollectionId:      reqCollectionId,
 			}
 
 			res, err := queryClient.CollectionNftsByOwner(context.Background(), params)

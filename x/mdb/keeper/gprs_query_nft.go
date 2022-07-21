@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -24,20 +23,24 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var collectionIndex []byte
+	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
 
-	if strings.TrimSpace(req.Id) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty nft id")
-	} else {
-		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
-		if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
-			return nil, status.Error(codes.InvalidArgument, "collection not exists")
-		}
+	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+
+	if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
+		return nil, status.Error(codes.InvalidArgument, "collection not exists")
 	}
 
 	index := types.GetNftIndex(collectionIndex, req.Id)
@@ -85,8 +88,12 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
@@ -164,20 +171,24 @@ func (k Keeper) NftOwner(c context.Context, req *types.QueryGetNftOwnerRequest) 
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var collectionIndex []byte
+	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
 
-	if strings.TrimSpace(req.Id) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty nft id")
-	} else {
-		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
-		if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
-			return nil, status.Error(codes.InvalidArgument, "collection not exists")
-		}
+	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+
+	if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
+		return nil, status.Error(codes.InvalidArgument, "collection not exists")
 	}
 
 	index := types.GetNftIndex(collectionIndex, req.Id)
@@ -211,20 +222,24 @@ func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedReq
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var collectionIndex []byte
+	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
 
-	if strings.TrimSpace(req.Id) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty nft id")
-	} else {
-		collectionIndex = types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
-		if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
-			return nil, status.Error(codes.InvalidArgument, "collection not exists")
-		}
+	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
+
+	if !k.HasNftCollection(ctx, collectionCreator, collectionIndex) {
+		return nil, status.Error(codes.InvalidArgument, "collection not exists")
 	}
 
 	index := types.GetNftIndex(collectionIndex, req.Id)
@@ -296,8 +311,12 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)
@@ -332,8 +351,12 @@ func (k Keeper) CollectionNftsByOwner(goCtx context.Context, req *types.QueryGet
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.CollectionId) == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty collection id")
+	conf := k.GetParams(ctx)
+
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreator, req.CollectionId)

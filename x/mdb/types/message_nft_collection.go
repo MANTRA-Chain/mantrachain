@@ -13,14 +13,10 @@ var (
 	_ sdk.Msg = &MsgCreateNftCollection{}
 )
 
-func NewMsgCreateNftCollection(creator string, collection *MsgCreateNftCollectionMetadata,
-	pubKeyHex string,
-	pubKeyType string) *MsgCreateNftCollection {
+func NewMsgCreateNftCollection(creator string, collection *MsgCreateNftCollectionMetadata) *MsgCreateNftCollection {
 	return &MsgCreateNftCollection{
 		Creator:    creator,
 		Collection: collection,
-		PubKeyHex:  pubKeyHex,
-		PubKeyType: pubKeyType,
 	}
 }
 

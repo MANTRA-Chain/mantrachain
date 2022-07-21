@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/LimeChain/mantrachain/x/mdb/types"
-	"github.com/LimeChain/mantrachain/x/mdb/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -36,21 +35,6 @@ func CmdCreateNftCollection() *cobra.Command {
 				return err
 			}
 
-			// verification
-			signer := clientCtx.GetFromAddress()
-			// pubkey
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
-
-			pubKey := info.GetPubKey()
-			pubKeyHex := utils.GetPubKeyHex(pubKey)
-			pubKeyType, err := utils.DerivePubKeyType(pubKey)
-			if err != nil {
-				return err
-			}
-
 			// Unmarshal payload
 			var metadata types.MsgCreateNftCollectionMetadata
 			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &metadata)
@@ -61,8 +45,6 @@ func CmdCreateNftCollection() *cobra.Command {
 			msg := types.NewMsgCreateNftCollection(
 				clientCtx.GetFromAddress().String(),
 				&metadata,
-				pubKeyHex,
-				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
