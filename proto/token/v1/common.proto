@@ -8,7 +8,7 @@ option (gogoproto.equal_all) = true;
 
 message TokenOption {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
   
   string type = 1;
   string value = 2;
@@ -17,7 +17,7 @@ message TokenOption {
 
 message TokenAttribute {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
   
   string type = 1;
   string value = 2;
@@ -26,7 +26,7 @@ message TokenAttribute {
 
 message TokenImage {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
   
   string type = 1;
   string url = 2;
@@ -34,7 +34,7 @@ message TokenImage {
 
 message TokenLink {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
 
   string type = 1;
   string url = 2;

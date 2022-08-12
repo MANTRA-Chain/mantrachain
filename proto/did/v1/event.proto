@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 // DidDocumentCreatedEvent is an event triggered on a DID document creation
 message DidDocumentCreatedEvent {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
 
   // the did being created
   string did  = 1;
@@ -21,7 +21,7 @@ message DidDocumentCreatedEvent {
 // DidDocumentUpdatedEvent is an event triggered on a DID document update
 message DidDocumentUpdatedEvent {
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
 
   // the did being updated
   string did    = 1;
