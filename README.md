@@ -65,7 +65,14 @@ Now that you have created a local account, go ahead and grant it some `stake`to
 
 ## **Create a gentx.**
 
-`./build/mantrachaind gentx validator 100000000stake --chain-id mantrachain --keyring-backend test`  
+`./build/mantrachaind gentx validator 100000000stake --chain-id mantrachain --keyring-backend test` 
+
+## **Set up staking_validator_address in genesis.json**
+
+1. Open `~/.mantrachain/config/gentx/gentx-....json`. 
+2. Copy the `validator_address` prop value.
+3. Open `~/.mantrachain/config/genesis.json`. 
+4. Paste the value to the `staking_validator_address` field.
 
 **Add the gentx to the genesis file.**
 

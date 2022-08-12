@@ -1,0 +1,14 @@
+syntax = "proto3";
+package LimeChain.mantrachain.vault.v1;
+
+import "gogoproto/gogo.proto";
+import "vault/v1/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
+
+// GenesisState defines the vault module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

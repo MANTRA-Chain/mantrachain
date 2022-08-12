@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/exp/slices"
+
 	wasmappparams "github.com/CosmWasm/wasmd/app/params"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
@@ -104,13 +106,21 @@ import (
 	mnskeeper "github.com/LimeChain/mantrachain/x/mns/keeper"
 	mnstypes "github.com/LimeChain/mantrachain/x/mns/types"
 
-	"github.com/LimeChain/mantrachain/x/mdb"
-	mdbkeeper "github.com/LimeChain/mantrachain/x/mdb/keeper"
-	mdbtypes "github.com/LimeChain/mantrachain/x/mdb/types"
+	"github.com/LimeChain/mantrachain/x/token"
+	tokenkeeper "github.com/LimeChain/mantrachain/x/token/keeper"
+	tokentypes "github.com/LimeChain/mantrachain/x/token/types"
 
 	"github.com/LimeChain/mantrachain/x/nft"
 	nftkeeper "github.com/LimeChain/mantrachain/x/nft/keeper"
 	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
+
+	"github.com/LimeChain/mantrachain/x/marketplace"
+	marketplacekeeper "github.com/LimeChain/mantrachain/x/marketplace/keeper"
+	marketplacetypes "github.com/LimeChain/mantrachain/x/marketplace/types"
+
+	"github.com/LimeChain/mantrachain/x/vault"
+	vaultkeeper "github.com/LimeChain/mantrachain/x/vault/keeper"
+	vaulttypes "github.com/LimeChain/mantrachain/x/vault/types"
 
 	mwasm "github.com/LimeChain/mantrachain/wasmbinding"
 
@@ -195,8 +205,10 @@ var (
 		wasm.AppModuleBasic{},
 		did.AppModuleBasic{},
 		mns.AppModuleBasic{},
-		mdb.AppModuleBasic{},
+		token.AppModuleBasic{},
 		nft.AppModuleBasic{},
+		marketplace.AppModuleBasic{},
+		vault.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -209,6 +221,7 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		wasm.ModuleName:                {authtypes.Burner},
+		vaulttypes.ModuleName:          {authtypes.Staking},
 	}
 )
 
@@ -267,10 +280,12 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	scopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
-	DidKeeper didkeeper.Keeper
-	MnsKeeper mnskeeper.Keeper
-	MdbKeeper mdbkeeper.Keeper
-	NFTKeeper nftkeeper.Keeper
+	DidKeeper         didkeeper.Keeper
+	MnsKeeper         mnskeeper.Keeper
+	TokenKeeper       tokenkeeper.Keeper
+	NFTKeeper         nftkeeper.Keeper
+	MarketplaceKeeper marketplacekeeper.Keeper
+	VaultKeeper       vaultkeeper.Keeper
 
 	// mm is the module manager
 	mm *module.Manager
@@ -310,8 +325,10 @@ func New(
 		wasm.StoreKey,
 		didtypes.StoreKey,
 		mnstypes.StoreKey,
-		mdbtypes.StoreKey,
+		tokentypes.StoreKey,
 		nftkeeper.StoreKey,
+		marketplacetypes.StoreKey,
+		vaulttypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -344,8 +361,26 @@ func New(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
+
+	// Do not blacklist Vault Module so it account address can receive staking rewards
+	moduleAccountAddrs := app.ModuleAccountAddrs()
+	whitelistModuleAddrs := []string{app.AccountKeeper.GetModuleAddress(vaulttypes.ModuleName).String()}
+	blockedAddrs := make(map[string]bool)
+
+	for name, isBlkListed := range moduleAccountAddrs {
+		if !slices.Contains(whitelistModuleAddrs, name) {
+			blockedAddrs[name] = isBlkListed
+		} else {
+			blockedAddrs[name] = false
+		}
+	}
+
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.ModuleAccountAddrs(),
+		appCodec,
+		keys[banktypes.StoreKey],
+		app.AccountKeeper,
+		app.GetSubspace(banktypes.ModuleName),
+		blockedAddrs,
 	)
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName),
@@ -356,7 +391,7 @@ func New(
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, authtypes.FeeCollectorName, app.ModuleAccountAddrs(),
+		&stakingKeeper, authtypes.FeeCollectorName, blockedAddrs,
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
@@ -374,6 +409,16 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
+	app.VaultKeeper = *vaultkeeper.NewKeeper(
+		appCodec,
+		keys[vaulttypes.StoreKey],
+		keys[vaulttypes.MemStoreKey],
+		app.GetSubspace(vaulttypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+	)
+
 	app.DidKeeper = *didkeeper.NewKeeper(
 		appCodec,
 		keys[didtypes.StoreKey],
@@ -386,9 +431,22 @@ func New(
 
 	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
-	app.MdbKeeper = *mdbkeeper.NewKeeper(
-		appCodec, keys[mdbtypes.StoreKey], keys[mdbtypes.MemStoreKey], app.GetSubspace(mdbtypes.ModuleName), app.MnsKeeper, app.DidKeeper, app.NFTKeeper,
+	app.TokenKeeper = *tokenkeeper.NewKeeper(
+		appCodec, keys[tokentypes.StoreKey], keys[tokentypes.MemStoreKey], app.GetSubspace(tokentypes.ModuleName), app.MnsKeeper, app.DidKeeper, app.NFTKeeper,
 	)
+
+	app.MarketplaceKeeper = *marketplacekeeper.NewKeeper(
+		appCodec,
+		keys[marketplacetypes.StoreKey],
+		keys[marketplacetypes.MemStoreKey],
+		app.GetSubspace(marketplacetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.TokenKeeper,
+		app.NFTKeeper,
+		app.VaultKeeper,
+	)
+
 	// ... other modules keepers
 
 	// Create IBC Keeper
@@ -429,7 +487,7 @@ func New(
 	// if we want to allow any custom callbacks
 	supportedFeatures := "iterator,staking,stargate,mantrachain"
 
-	wasmOpts = append(mwasm.RegisterCustomPlugins(&app.MdbKeeper), wasmOpts...)
+	wasmOpts = append(mwasm.RegisterCustomPlugins(&app.TokenKeeper), wasmOpts...)
 
 	app.wasmKeeper = wasm.NewKeeper(
 		appCodec,
@@ -499,11 +557,13 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		did.NewAppModule(appCodec, app.DidKeeper),
 		mns.NewAppModule(appCodec, app.MnsKeeper),
-		mdb.NewAppModule(appCodec, app.MdbKeeper, app.AccountKeeper, app.BankKeeper),
+		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		marketplace.NewAppModule(appCodec, app.MarketplaceKeeper, app.AccountKeeper, app.BankKeeper),
+		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -521,7 +581,7 @@ func New(
 		ibchost.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
-		mdbtypes.ModuleName,
+		tokentypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -533,6 +593,8 @@ func New(
 		vestingtypes.ModuleName,
 		transfertypes.ModuleName,
 		nfttypes.ModuleName,
+		marketplacetypes.ModuleName,
+		vaulttypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -546,7 +608,7 @@ func New(
 		ibchost.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
-		mdbtypes.ModuleName,
+		tokentypes.ModuleName,
 		feegrant.ModuleName,
 		wasm.ModuleName,
 		authtypes.ModuleName,
@@ -558,6 +620,8 @@ func New(
 		vestingtypes.ModuleName,
 		transfertypes.ModuleName,
 		nfttypes.ModuleName,
+		marketplacetypes.ModuleName,
+		vaulttypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -578,7 +642,7 @@ func New(
 		ibchost.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
-		mdbtypes.ModuleName,
+		tokentypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -588,6 +652,8 @@ func New(
 		feegrant.ModuleName,
 		vestingtypes.ModuleName,
 		nfttypes.ModuleName,
+		marketplacetypes.ModuleName,
+		vaulttypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -806,8 +872,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(mnstypes.ModuleName)
-	paramsKeeper.Subspace(mdbtypes.ModuleName)
+	paramsKeeper.Subspace(tokentypes.ModuleName)
 	paramsKeeper.Subspace(nfttypes.ModuleName)
+	paramsKeeper.Subspace(marketplacetypes.ModuleName)
+	paramsKeeper.Subspace(vaulttypes.ModuleName)
 
 	return paramsKeeper
 }

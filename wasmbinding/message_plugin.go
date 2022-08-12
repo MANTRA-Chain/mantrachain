@@ -9,22 +9,22 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/LimeChain/mantrachain/wasmbinding/bindings"
-	mdbkeeper "github.com/LimeChain/mantrachain/x/mdb/keeper"
-	mdbtypes "github.com/LimeChain/mantrachain/x/mdb/types"
+	tokenkeeper "github.com/LimeChain/mantrachain/x/token/keeper"
+	tokentypes "github.com/LimeChain/mantrachain/x/token/types"
 )
 
-func CustomMessageDecorator(mdbkeeper *mdbkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+func CustomMessageDecorator(tokenkeeper *tokenkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
-			wrapped:   old,
-			mdbkeeper: mdbkeeper,
+			wrapped:     old,
+			tokenkeeper: tokenkeeper,
 		}
 	}
 }
 
 type CustomMessenger struct {
-	wrapped   wasmkeeper.Messenger
-	mdbkeeper *mdbkeeper.Keeper
+	wrapped     wasmkeeper.Messenger
+	tokenkeeper *tokenkeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -35,9 +35,9 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
 			return nil, nil, sdkerrors.Wrap(err, "mantra msg")
 		}
-		if contractMsg.Mdb != nil {
-			if contractMsg.Mdb.CreateNftCollection != nil {
-				return m.createNftCollection(ctx, contractAddr, contractMsg.Mdb.CreateNftCollection)
+		if contractMsg.Token != nil {
+			if contractMsg.Token.CreateNftCollection != nil {
+				return m.createNftCollection(ctx, contractAddr, contractMsg.Token.CreateNftCollection)
 			}
 		}
 	}
@@ -46,21 +46,21 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 }
 
 func (m *CustomMessenger) createNftCollection(ctx sdk.Context, contractAddr sdk.AccAddress, createNftCollection *bindings.CreateNftCollection) ([]sdk.Event, [][]byte, error) {
-	err := PerformCreateNftCollection(m.mdbkeeper, ctx, contractAddr, createNftCollection)
+	err := PerformCreateNftCollection(m.tokenkeeper, ctx, contractAddr, createNftCollection)
 	if err != nil {
 		return nil, nil, sdkerrors.Wrap(err, "perform create nft collection")
 	}
 	return nil, nil, nil
 }
 
-func PerformCreateNftCollection(f *mdbkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, createNftCollection *bindings.CreateNftCollection) error {
+func PerformCreateNftCollection(f *tokenkeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, createNftCollection *bindings.CreateNftCollection) error {
 	if createNftCollection.Collection == nil {
 		return wasmvmtypes.InvalidRequest{Err: "create nft collection null collection"}
 	}
 
-	msgServer := mdbkeeper.NewMsgServerImpl(*f)
+	msgServer := tokenkeeper.NewMsgServerImpl(*f)
 
-	msgCreateNftCollection := mdbtypes.NewMsgCreateNftCollection(contractAddr.String(), &mdbtypes.MsgCreateNftCollectionMetadata{
+	msgCreateNftCollection := tokentypes.NewMsgCreateNftCollection(contractAddr.String(), &tokentypes.MsgCreateNftCollectionMetadata{
 		Id: createNftCollection.Collection.Id,
 	})
 

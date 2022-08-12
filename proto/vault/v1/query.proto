@@ -1,0 +1,51 @@
+syntax = "proto3";
+package LimeChain.mantrachain.vault.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "vault/v1/params.proto";
+import "vault/v1/nft_stake.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/LimeChain/mantrachain/vault/params";
+  }
+
+  rpc NftStake(QueryGetNftStakeRequest) returns (QueryGetNftStakeResponse) {
+		option (google.api.http).get = "/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
+	}
+  // this line is used by starport scaffolding # 2
+}
+
+message QueryGetNftStakeRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string id = 5;
+}
+
+message QueryGetNftStakeResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5; 
+  repeated Stake staked = 6;
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// this line is used by starport scaffolding # 3

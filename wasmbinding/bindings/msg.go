@@ -1,10 +1,10 @@
 package bindings
 
 type MantraMsg struct {
-	Mdb *Mdb `json:"mdb,omitempty"`
+	Token *Token `json:"token,omitempty"`
 }
 
-type Mdb struct {
+type Token struct {
 	CreateNftCollection *CreateNftCollection `json:"create_nft_collection,omitempty"`
 }
 

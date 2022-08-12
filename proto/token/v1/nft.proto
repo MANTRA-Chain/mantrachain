@@ -1,0 +1,37 @@
+syntax = "proto3";
+package LimeChain.mantrachain.token.v1;
+
+import "gogoproto/gogo.proto";
+import "token/v1/common.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/token/types";
+option (gogoproto.equal_all) = true;
+
+message Nft {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  string title = 2 [(gogoproto.moretags) = "yaml:\"title\""]; 
+  repeated TokenImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
+  string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
+  string description = 5 [(gogoproto.moretags) = "yaml:\"description\""];
+  repeated TokenLink links = 6 [(gogoproto.moretags) = "yaml:\"links\""];
+  repeated TokenAttribute attributes = 7 [(gogoproto.moretags) = "yaml:\"attributes\""];
+  bytes creator = 8 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  string collection_id = 9 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
+  bytes collection_index = 10 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
+}
+
+message ApprovedAddresses {
+    option (gogoproto.equal) = true;
+    
+    map<string, ApprovedAddressesData> approvedAddresses = 1;
+}
+
+message ApprovedAddressesData {
+    option (gogoproto.equal) = true;
+
+    map<string, bool> approvedAddressesData = 1;
+}
+

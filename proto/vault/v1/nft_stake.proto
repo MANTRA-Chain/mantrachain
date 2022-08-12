@@ -1,0 +1,63 @@
+syntax = "proto3";
+package LimeChain.mantrachain.vault.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
+
+message NftStake {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  bytes marketplace_index = 2 [(gogoproto.moretags) = "yaml:\"marketplace_index\""]; 
+  bytes collection_index = 3 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
+  repeated Stake staked = 4 [
+    (gogoproto.moretags) = "yaml:\"staked\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Stake {
+  string amount = 1 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = true
+  ]; 
+  bool staked = 2 [
+    (gogoproto.moretags) = "yaml:\"staked\"",
+    (gogoproto.nullable) = true
+  ]; 
+  string shares = 3 [
+    (gogoproto.moretags) = "yaml:\"shares\"",
+    (gogoproto.nullable) = true
+  ]; 
+  string validator = 4 [
+    (gogoproto.moretags) = "yaml:\"validator\"",
+    (gogoproto.nullable) = true
+  ]; 
+  string chain = 5 [
+    (gogoproto.moretags) = "yaml:\"chain\"",
+    (gogoproto.nullable) = true
+  ];
+  google.protobuf.Any data = 6 [
+    (gogoproto.moretags) = "yaml:\"data\"",
+    (gogoproto.nullable) = true
+  ];  
+  bytes creator = 7 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  bytes owner = 8 [
+      (gogoproto.moretags) = "yaml:\"owner\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  google.protobuf.Timestamp staked_at = 9 [
+      (gogoproto.moretags) = "yaml:\"staked_at\"",
+      (gogoproto.nullable) = false,
+      (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp unstaked_at = 10 [
+      (gogoproto.moretags) = "yaml:\"unstaked_at\"",
+      (gogoproto.nullable) = true,
+      (gogoproto.stdtime) = true
+  ];
+}

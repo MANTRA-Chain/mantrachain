@@ -4,19 +4,19 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
-	mdbkeeper "github.com/LimeChain/mantrachain/x/mdb/keeper"
+	tokenkeeper "github.com/LimeChain/mantrachain/x/token/keeper"
 )
 
 func RegisterCustomPlugins(
-	mdbkeeper *mdbkeeper.Keeper,
+	tokenkeeper *tokenkeeper.Keeper,
 ) []wasmkeeper.Option {
-	wasmQueryPlugin := NewQueryPlugin(mdbkeeper)
+	wasmQueryPlugin := NewQueryPlugin(tokenkeeper)
 
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Custom: CustomQuerier(wasmQueryPlugin),
 	})
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
-		CustomMessageDecorator(mdbkeeper),
+		CustomMessageDecorator(tokenkeeper),
 	)
 
 	return []wasm.Option{

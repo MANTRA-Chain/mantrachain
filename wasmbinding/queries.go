@@ -1,16 +1,16 @@
 package wasmbinding
 
 import (
-	mdbkeeper "github.com/LimeChain/mantrachain/x/mdb/keeper"
+	tokenkeeper "github.com/LimeChain/mantrachain/x/token/keeper"
 )
 
 type QueryPlugin struct {
-	mdbkeeper *mdbkeeper.Keeper
+	tokenkeeper *tokenkeeper.Keeper
 }
 
 // NewQueryPlugin returns a reference to a new QueryPlugin.
-func NewQueryPlugin(mdbkeeper *mdbkeeper.Keeper) *QueryPlugin {
+func NewQueryPlugin(tokenkeeper *tokenkeeper.Keeper) *QueryPlugin {
 	return &QueryPlugin{
-		mdbkeeper: mdbkeeper,
+		tokenkeeper: tokenkeeper,
 	}
 }

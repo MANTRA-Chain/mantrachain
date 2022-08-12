@@ -1,0 +1,91 @@
+syntax = "proto3";
+package LimeChain.mantrachain.marketplace.v1;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "marketplace/v1/common.proto";
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc RegisterMarketplace(MsgRegisterMarketplace) returns (MsgRegisterMarketplaceResponse);
+      rpc ImportCollection(MsgImportCollection) returns (MsgImportCollectionResponse);
+      rpc BuyNft(MsgBuyNft) returns (MsgBuyNftResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgBuyNft {
+  string creator = 1;
+  string marketplace_creator = 2;
+  string marketplace_id = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  string nft_id = 6;
+}
+
+message MsgBuyNftResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  string owner = 6;
+  string receiver = 7;
+  bool staked = 8;
+}
+
+message MsgImportCollection {
+  string creator = 1;
+  string marketplace_creator = 2;
+  string marketplace_id = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  MsgCollectionSettings settings = 6;
+}
+
+message MsgCollectionSettings {
+  bool initially_collection_owner_nfts_for_sale = 1;
+  string initially_collection_owner_nfts_min_price = 2;
+  repeated MarketplaceEarning nfts_earnings_on_sale = 3;
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 4;
+  string initially_nfts_vault_lock_percentage = 5 [
+    (gogoproto.moretags) = "yaml:\"initially_nfts_vault_lock_percentage\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = true
+  ]; 
+}
+
+message MsgImportCollectionResponse {
+  string marketplace_id = 1;
+  string marketplace_owner = 2;
+  string collection_id = 3;
+  string collection_owner = 4;
+}
+
+message MsgRegisterMarketplace {
+  string creator = 1;
+  MsgMarketplaceMetadata marketplace = 2;
+}
+
+message MsgMarketplaceMetadata {
+  string id = 1;
+  string name = 2;
+  string url = 3;
+  string description = 4;
+  bool opened = 5;
+  repeated MarketplaceOption options = 6;
+  repeated MarketplaceAttribute attributes = 7;
+  repeated MarketplaceImage images = 8;
+  repeated MarketplaceLink links = 9;
+  google.protobuf.Any data = 10;
+}
+
+message MsgRegisterMarketplaceResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+}
+
+// this line is used by starport scaffolding # proto/tx/message
