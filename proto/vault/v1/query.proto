@@ -62,8 +62,9 @@ message QueryGetNftStakeResponse {
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5; 
-  repeated Stake staked = 6;
-  string creator = 7;
+  repeated NftStakeListItem staked = 6;
+  repeated NftStakeBalance balances = 7;
+  string creator = 8;
 }
 
 message QueryGetNftBalanceRequest {

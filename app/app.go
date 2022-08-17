@@ -407,6 +407,8 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
+
 	app.VaultKeeper = *vaultkeeper.NewKeeper(
 		appCodec,
 		keys[vaulttypes.StoreKey],
@@ -428,8 +430,6 @@ func New(
 	app.MnsKeeper = *mnskeeper.NewKeeper(
 		appCodec, keys[mnstypes.StoreKey], keys[mnstypes.MemStoreKey], app.GetSubspace(mnstypes.ModuleName), app.DidKeeper,
 	)
-
-	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
 	app.TokenKeeper = *tokenkeeper.NewKeeper(
 		appCodec, keys[tokentypes.StoreKey], keys[tokentypes.MemStoreKey], app.GetSubspace(tokentypes.ModuleName), app.MnsKeeper, app.DidKeeper, app.NFTKeeper,

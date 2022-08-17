@@ -76,20 +76,22 @@ func (k Keeper) UpsertNftStake(
 			Index:            index,
 			MarketplaceIndex: marketplaceIndex,
 			CollectionIndex:  collectionIndex,
-			Staked:           []types.Stake{},
-			Balances:         []sdk.DecCoin{},
+			Staked:           []*types.NftStakeListItem{},
+			Balances:         []*types.NftStakeBalance{},
 			Creator:          creator,
 		}
 	}
 
-	staked := types.Stake{
-		Amount:             amount.String(),
-		Validator:          valAddress.String(),
-		Chain:              ctx.ChainID(),
-		StakedAt:           ctx.BlockHeader().Time.Unix(),
-		Creator:            creator,
-		BlockHeight:        ctx.BlockHeight(),
-		LastEpochWithdrawn: types.UndefinedBlockHeight,
+	stakeAmount := sdk.NewDecFromInt(amount.Amount)
+
+	staked := types.NftStakeListItem{
+		Amount:      &stakeAmount,
+		Denom:       amount.Denom,
+		Validator:   valAddress.String(),
+		Chain:       ctx.ChainID(),
+		StakedAt:    ctx.BlockHeader().Time.Unix(),
+		Creator:     creator,
+		BlockHeight: ctx.BlockHeight(),
 	}
 
 	if delegate {
@@ -111,10 +113,10 @@ func (k Keeper) UpsertNftStake(
 			return sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 		}
 
-		staked.Epoch = lastEpochBlock.BlockHeight
+		staked.StakedEpoch = lastEpochBlock.BlockHeight
 	}
 
-	nftStake.Staked = append(nftStake.Staked, staked)
+	nftStake.Staked = append(nftStake.Staked, &staked)
 
 	k.SetNftStake(ctx, nftStake)
 

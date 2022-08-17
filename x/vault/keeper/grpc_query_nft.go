@@ -52,10 +52,7 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		return nil, err
 	}
 
-	var staked []*types.Stake = []*types.Stake{}
-	for _, stake := range rewardsController.getNftStake().Staked {
-		staked = append(staked, &stake)
-	}
+	nftStake := rewardsController.getNftStake()
 
 	return &types.QueryGetNftStakeResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
@@ -63,8 +60,9 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		CollectionCreator:  collectionCreator.String(),
 		CollectionId:       req.CollectionId,
 		NftId:              req.Id,
-		Creator:            rewardsController.getNftStake().Creator.String(),
-		Staked:             staked,
+		Creator:            nftStake.Creator.String(),
+		Staked:             nftStake.Staked,
+		Balances:           nftStake.Balances,
 	}, nil
 }
 
@@ -140,7 +138,8 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 		return nil, err
 	}
 
-	minEpochRewardsStartBH := rewardsController.getMinEpochRewardsStartBH(staked)
+	var lastEpochWithdrawn int64 = rewardsController.getLastWithdrawnEpochNative()
+	minEpochRewardsStartBH := rewardsController.getMinEpochRewardsStartBH(staked, lastEpochWithdrawn)
 
 	if minEpochRewardsStartBH != types.UndefinedBlockHeight {
 		epochs = k.GetNextRewardsEpochsFromPrevEpochId(
@@ -159,7 +158,7 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 		balance = rewardsController.calcNftBalance(epochs, staked, params.StakingValidatorDenom)
 	}
 
-	prevBalance := rewardsController.getPrevBalanceNative()
+	prevBalance := rewardsController.getBalanceCoinNative()
 	balance.Amount = balance.Amount.Add(prevBalance.Amount)
 
 	return &types.QueryGetNftBalanceResponse{

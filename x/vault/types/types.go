@@ -1,5 +1,5 @@
 package types
 
 const (
-	UndefinedBlockHeight = -1
+	UndefinedBlockHeight int64 = -1
 )

@@ -88,12 +88,17 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 	owner := nftExecutor.GetNftOwner(string(collectionIndex), string(index))
 
+	if owner == nil || owner.Empty() {
+		return nil, sdkerrors.Wrap(types.ErrUnavailable, "nft owner not found")
+	}
+
 	if !owner.Equals(creator) {
 		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "nft is not owned by the rewards recipient")
 	}
 
 	var startAt int64
 	var endAt int64
+	var lastEpochWithdrawn int64 = rewardsController.getLastWithdrawnEpochNative()
 	var epochs []*types.Epoch
 	var rewards sdk.DecCoin = sdk.NewDecCoin(params.StakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
 	var sent sdk.Coin = sdk.NewCoin(params.StakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
@@ -105,7 +110,7 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 		return nil, err
 	}
 
-	minEpochRewardsStartBH := rewardsController.getMinEpochRewardsStartBH(staked)
+	minEpochRewardsStartBH := rewardsController.getMinEpochRewardsStartBH(staked, lastEpochWithdrawn)
 
 	if minEpochRewardsStartBH != types.UndefinedBlockHeight {
 		epochs = k.GetNextRewardsEpochsFromPrevEpochId(
@@ -120,11 +125,12 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 	if len(epochs) > 0 {
 		startAt = epochs[0].StartAt
 		endAt = epochs[len(epochs)-1].EndAt
+		lastEpochWithdrawn = epochs[len(epochs)-1].BlockStart
 
 		rewards = rewardsController.calcNftBalance(epochs, staked, params.StakingValidatorDenom)
 	}
 
-	prevBalance := rewardsController.getPrevBalanceNative()
+	prevBalance := rewardsController.getBalanceCoinNative()
 	rewards.Amount = rewards.Amount.Add(prevBalance.Amount)
 
 	if rewards.Amount.GTE(sdk.NewDec(params.MinRewardWithdrawAmount)) {
@@ -138,9 +144,9 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 		sent = coins
 		balance = remainder
 
-		if !balance.IsZero() {
-			rewardsController.setNextBalanceNative(balance)
-		}
+		rewardsController.setBalanceNative(balance, lastEpochWithdrawn, ctx.BlockHeader().Time.Unix())
+
+		k.SetNftStake(ctx, *rewardsController.getNftStake())
 	}
 
 	return &types.MsgWithdrawNftRewardResponse{

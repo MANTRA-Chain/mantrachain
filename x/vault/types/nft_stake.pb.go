@@ -5,9 +5,8 @@ package types
 
 import (
 	fmt "fmt"
-	types1 "github.com/cosmos/cosmos-sdk/codec/types"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -30,8 +29,8 @@ type NftStake struct {
 	Index            []byte                                        `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty" yaml:"index"`
 	MarketplaceIndex []byte                                        `protobuf:"bytes,2,opt,name=marketplace_index,json=marketplaceIndex,proto3" json:"marketplace_index,omitempty" yaml:"marketplace_index"`
 	CollectionIndex  []byte                                        `protobuf:"bytes,3,opt,name=collection_index,json=collectionIndex,proto3" json:"collection_index,omitempty" yaml:"collection_index"`
-	Staked           []Stake                                       `protobuf:"bytes,4,rep,name=staked,proto3" json:"staked" yaml:"staked"`
-	Balances         github_com_cosmos_cosmos_sdk_types.DecCoins   `protobuf:"bytes,5,rep,name=balances,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.DecCoins" json:"balances" yaml:"balances"`
+	Staked           []*NftStakeListItem                           `protobuf:"bytes,4,rep,name=staked,proto3" json:"staked,omitempty" yaml:"staked"`
+	Balances         []*NftStakeBalance                            `protobuf:"bytes,5,rep,name=balances,proto3" json:"balances,omitempty" yaml:"balances"`
 	Creator          github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,6,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
 }
 
@@ -89,14 +88,14 @@ func (m *NftStake) GetCollectionIndex() []byte {
 	return nil
 }
 
-func (m *NftStake) GetStaked() []Stake {
+func (m *NftStake) GetStaked() []*NftStakeListItem {
 	if m != nil {
 		return m.Staked
 	}
 	return nil
 }
 
-func (m *NftStake) GetBalances() github_com_cosmos_cosmos_sdk_types.DecCoins {
+func (m *NftStake) GetBalances() []*NftStakeBalance {
 	if m != nil {
 		return m.Balances
 	}
@@ -110,32 +109,27 @@ func (m *NftStake) GetCreator() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	return nil
 }
 
-type Stake struct {
-	Amount             string                                        `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount,omitempty" yaml:"amount"`
-	Shares             string                                        `protobuf:"bytes,2,opt,name=shares,proto3" json:"shares,omitempty" yaml:"shares"`
-	Validator          string                                        `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty" yaml:"validator"`
-	Chain              string                                        `protobuf:"bytes,4,opt,name=chain,proto3" json:"chain,omitempty" yaml:"chain"`
-	Data               *types1.Any                                   `protobuf:"bytes,5,opt,name=data,proto3" json:"data,omitempty" yaml:"data"`
-	Creator            github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,6,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
-	BlockHeight        int64                                         `protobuf:"varint,7,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty" yaml:"block_height"`
-	StakedAt           int64                                         `protobuf:"varint,8,opt,name=staked_at,json=stakedAt,proto3" json:"staked_at,omitempty" yaml:"staked_at"`
-	UnstakedAt         int64                                         `protobuf:"varint,9,opt,name=unstaked_at,json=unstakedAt,proto3" json:"unstaked_at,omitempty" yaml:"unstaked_at"`
-	Epoch              int64                                         `protobuf:"varint,10,opt,name=epoch,proto3" json:"epoch,omitempty" yaml:"epoch"`
-	LastEpochWithdrawn int64                                         `protobuf:"varint,11,opt,name=last_epoch_withdrawn,json=lastEpochWithdrawn,proto3" json:"last_epoch_withdrawn,omitempty" yaml:"last_epoch_withdrawn"`
+type NftStakeBalance struct {
+	Amount             *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount,omitempty" yaml:"amount"`
+	Denom              string                                  `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
+	Validator          string                                  `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty" yaml:"validator"`
+	Chain              string                                  `protobuf:"bytes,4,opt,name=chain,proto3" json:"chain,omitempty" yaml:"chain"`
+	LastWithdrawnAt    int64                                   `protobuf:"varint,5,opt,name=last_withdrawn_at,json=lastWithdrawnAt,proto3" json:"last_withdrawn_at,omitempty" yaml:"last_withdrawn_at"`
+	LastWithdrawnEpoch int64                                   `protobuf:"varint,6,opt,name=last_withdrawn_epoch,json=lastWithdrawnEpoch,proto3" json:"last_withdrawn_epoch,omitempty" yaml:"last_withdrawn_epoch"`
 }
 
-func (m *Stake) Reset()         { *m = Stake{} }
-func (m *Stake) String() string { return proto.CompactTextString(m) }
-func (*Stake) ProtoMessage()    {}
-func (*Stake) Descriptor() ([]byte, []int) {
+func (m *NftStakeBalance) Reset()         { *m = NftStakeBalance{} }
+func (m *NftStakeBalance) String() string { return proto.CompactTextString(m) }
+func (*NftStakeBalance) ProtoMessage()    {}
+func (*NftStakeBalance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_76b576b5811bd884, []int{1}
 }
-func (m *Stake) XXX_Unmarshal(b []byte) error {
+func (m *NftStakeBalance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Stake) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NftStakeBalance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Stake.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NftStakeBalance.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -145,149 +139,227 @@ func (m *Stake) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Stake) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Stake.Merge(m, src)
+func (m *NftStakeBalance) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NftStakeBalance.Merge(m, src)
 }
-func (m *Stake) XXX_Size() int {
+func (m *NftStakeBalance) XXX_Size() int {
 	return m.Size()
 }
-func (m *Stake) XXX_DiscardUnknown() {
-	xxx_messageInfo_Stake.DiscardUnknown(m)
+func (m *NftStakeBalance) XXX_DiscardUnknown() {
+	xxx_messageInfo_NftStakeBalance.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Stake proto.InternalMessageInfo
+var xxx_messageInfo_NftStakeBalance proto.InternalMessageInfo
 
-func (m *Stake) GetAmount() string {
+func (m *NftStakeBalance) GetDenom() string {
 	if m != nil {
-		return m.Amount
+		return m.Denom
 	}
 	return ""
 }
 
-func (m *Stake) GetShares() string {
-	if m != nil {
-		return m.Shares
-	}
-	return ""
-}
-
-func (m *Stake) GetValidator() string {
+func (m *NftStakeBalance) GetValidator() string {
 	if m != nil {
 		return m.Validator
 	}
 	return ""
 }
 
-func (m *Stake) GetChain() string {
+func (m *NftStakeBalance) GetChain() string {
 	if m != nil {
 		return m.Chain
 	}
 	return ""
 }
 
-func (m *Stake) GetData() *types1.Any {
+func (m *NftStakeBalance) GetLastWithdrawnAt() int64 {
+	if m != nil {
+		return m.LastWithdrawnAt
+	}
+	return 0
+}
+
+func (m *NftStakeBalance) GetLastWithdrawnEpoch() int64 {
+	if m != nil {
+		return m.LastWithdrawnEpoch
+	}
+	return 0
+}
+
+type NftStakeListItem struct {
+	Amount      *github_com_cosmos_cosmos_sdk_types.Dec       `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"amount,omitempty" yaml:"amount"`
+	Denom       string                                        `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
+	Shares      string                                        `protobuf:"bytes,3,opt,name=shares,proto3" json:"shares,omitempty" yaml:"shares"`
+	Validator   string                                        `protobuf:"bytes,4,opt,name=validator,proto3" json:"validator,omitempty" yaml:"validator"`
+	Chain       string                                        `protobuf:"bytes,5,opt,name=chain,proto3" json:"chain,omitempty" yaml:"chain"`
+	Data        *types.Any                                    `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty" yaml:"data"`
+	Creator     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,7,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
+	BlockHeight int64                                         `protobuf:"varint,8,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty" yaml:"block_height"`
+	StakedAt    int64                                         `protobuf:"varint,9,opt,name=staked_at,json=stakedAt,proto3" json:"staked_at,omitempty" yaml:"staked_at"`
+	UnstakedAt  int64                                         `protobuf:"varint,10,opt,name=unstaked_at,json=unstakedAt,proto3" json:"unstaked_at,omitempty" yaml:"unstaked_at"`
+	StakedEpoch int64                                         `protobuf:"varint,11,opt,name=staked_epoch,json=stakedEpoch,proto3" json:"staked_epoch,omitempty" yaml:"staked_epoch"`
+}
+
+func (m *NftStakeListItem) Reset()         { *m = NftStakeListItem{} }
+func (m *NftStakeListItem) String() string { return proto.CompactTextString(m) }
+func (*NftStakeListItem) ProtoMessage()    {}
+func (*NftStakeListItem) Descriptor() ([]byte, []int) {
+	return fileDescriptor_76b576b5811bd884, []int{2}
+}
+func (m *NftStakeListItem) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NftStakeListItem) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NftStakeListItem.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NftStakeListItem) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NftStakeListItem.Merge(m, src)
+}
+func (m *NftStakeListItem) XXX_Size() int {
+	return m.Size()
+}
+func (m *NftStakeListItem) XXX_DiscardUnknown() {
+	xxx_messageInfo_NftStakeListItem.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NftStakeListItem proto.InternalMessageInfo
+
+func (m *NftStakeListItem) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *NftStakeListItem) GetShares() string {
+	if m != nil {
+		return m.Shares
+	}
+	return ""
+}
+
+func (m *NftStakeListItem) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *NftStakeListItem) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *NftStakeListItem) GetData() *types.Any {
 	if m != nil {
 		return m.Data
 	}
 	return nil
 }
 
-func (m *Stake) GetCreator() github_com_cosmos_cosmos_sdk_types.AccAddress {
+func (m *NftStakeListItem) GetCreator() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Creator
 	}
 	return nil
 }
 
-func (m *Stake) GetBlockHeight() int64 {
+func (m *NftStakeListItem) GetBlockHeight() int64 {
 	if m != nil {
 		return m.BlockHeight
 	}
 	return 0
 }
 
-func (m *Stake) GetStakedAt() int64 {
+func (m *NftStakeListItem) GetStakedAt() int64 {
 	if m != nil {
 		return m.StakedAt
 	}
 	return 0
 }
 
-func (m *Stake) GetUnstakedAt() int64 {
+func (m *NftStakeListItem) GetUnstakedAt() int64 {
 	if m != nil {
 		return m.UnstakedAt
 	}
 	return 0
 }
 
-func (m *Stake) GetEpoch() int64 {
+func (m *NftStakeListItem) GetStakedEpoch() int64 {
 	if m != nil {
-		return m.Epoch
-	}
-	return 0
-}
-
-func (m *Stake) GetLastEpochWithdrawn() int64 {
-	if m != nil {
-		return m.LastEpochWithdrawn
+		return m.StakedEpoch
 	}
 	return 0
 }
 
 func init() {
 	proto.RegisterType((*NftStake)(nil), "LimeChain.mantrachain.vault.v1.NftStake")
-	proto.RegisterType((*Stake)(nil), "LimeChain.mantrachain.vault.v1.Stake")
+	proto.RegisterType((*NftStakeBalance)(nil), "LimeChain.mantrachain.vault.v1.NftStakeBalance")
+	proto.RegisterType((*NftStakeListItem)(nil), "LimeChain.mantrachain.vault.v1.NftStakeListItem")
 }
 
 func init() { proto.RegisterFile("vault/v1/nft_stake.proto", fileDescriptor_76b576b5811bd884) }
 
 var fileDescriptor_76b576b5811bd884 = []byte{
-	// 706 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcb, 0x6e, 0xd3, 0x4c,
-	0x18, 0x8d, 0xff, 0x5c, 0x9a, 0x4c, 0xfa, 0xd3, 0xd4, 0x04, 0xd5, 0xb4, 0x95, 0x1d, 0x8d, 0x04,
-	0x0a, 0x42, 0xb5, 0x95, 0x22, 0x16, 0x94, 0x55, 0x52, 0xa8, 0x5a, 0x09, 0x21, 0x31, 0x20, 0x21,
-	0x21, 0xa1, 0x68, 0x32, 0x9e, 0x26, 0x56, 0x1c, 0x4f, 0x64, 0x4f, 0xd2, 0x66, 0xc7, 0x23, 0xf0,
-	0x1c, 0x3c, 0x49, 0x97, 0x5d, 0xb2, 0x32, 0xa8, 0x7d, 0x03, 0x2f, 0x91, 0x40, 0xc8, 0xdf, 0x38,
-	0x17, 0x2e, 0x42, 0x6c, 0x58, 0x75, 0xe6, 0x7c, 0xe7, 0x1c, 0xd7, 0xe7, 0x7c, 0x0e, 0x32, 0xa6,
-	0x74, 0xe2, 0x4b, 0x67, 0xda, 0x72, 0x82, 0x53, 0xd9, 0x8d, 0x24, 0x1d, 0x72, 0x7b, 0x1c, 0x0a,
-	0x29, 0x74, 0xf3, 0x99, 0x37, 0xe2, 0x87, 0x03, 0xea, 0x05, 0xf6, 0x88, 0x06, 0x32, 0xa4, 0x0c,
-	0xce, 0xc0, 0xb7, 0xa7, 0xad, 0x6d, 0x93, 0x89, 0x68, 0x24, 0x22, 0xa7, 0x47, 0x23, 0xee, 0x4c,
-	0x5b, 0x3d, 0x2e, 0x69, 0xcb, 0x61, 0xc2, 0x0b, 0x94, 0x7e, 0xfb, 0x76, 0x5f, 0x88, 0xbe, 0xcf,
-	0x1d, 0xb8, 0xf5, 0x26, 0xa7, 0x0e, 0x0d, 0x66, 0xd9, 0xa8, 0xde, 0x17, 0x7d, 0x01, 0x47, 0x27,
-	0x3d, 0x29, 0x14, 0x7f, 0xcd, 0xa3, 0xf2, 0xf3, 0x53, 0xf9, 0x32, 0xfd, 0x1f, 0xf4, 0xbb, 0xa8,
-	0xe8, 0x05, 0x2e, 0x3f, 0x37, 0xb4, 0x86, 0xd6, 0x5c, 0xef, 0xd4, 0x92, 0xd8, 0x5a, 0x9f, 0xd1,
-	0x91, 0x7f, 0x80, 0x01, 0xc6, 0x44, 0x8d, 0xf5, 0x13, 0xb4, 0x39, 0xa2, 0xe1, 0x90, 0xcb, 0xb1,
-	0x4f, 0x19, 0xef, 0x2a, 0xcd, 0x7f, 0xa0, 0xd9, 0x4d, 0x62, 0xcb, 0x50, 0x9a, 0x5f, 0x28, 0x98,
-	0xd4, 0x56, 0xb0, 0x13, 0xb0, 0x3a, 0x42, 0x35, 0x26, 0x7c, 0x9f, 0x33, 0xe9, 0x89, 0x20, 0x73,
-	0xca, 0x83, 0xd3, 0x4e, 0x12, 0x5b, 0x5b, 0xca, 0xe9, 0x67, 0x06, 0x26, 0x1b, 0x4b, 0x48, 0xf9,
-	0xbc, 0x42, 0x25, 0xc8, 0xd1, 0x35, 0x0a, 0x8d, 0x7c, 0xb3, 0xba, 0x7f, 0xc7, 0xfe, 0x73, 0x92,
-	0x36, 0xbc, 0x71, 0xe7, 0xd6, 0x45, 0x6c, 0xe5, 0x92, 0xd8, 0xfa, 0x5f, 0x3d, 0x48, 0x59, 0x60,
-	0x92, 0x79, 0xe9, 0xef, 0x34, 0x54, 0xee, 0x51, 0x9f, 0x06, 0x8c, 0x47, 0x46, 0x11, 0x8c, 0x77,
-	0x6d, 0x55, 0x81, 0x9d, 0x56, 0x60, 0x67, 0x15, 0xd8, 0x4f, 0x38, 0x3b, 0x14, 0x5e, 0xd0, 0x39,
-	0xca, 0xfc, 0x36, 0x94, 0xdf, 0x5c, 0x8b, 0x3f, 0x7c, 0xb2, 0xee, 0xf7, 0x3d, 0x39, 0x98, 0xf4,
-	0x6c, 0x26, 0x46, 0x4e, 0xd6, 0xa2, 0xfa, 0xb3, 0x17, 0xb9, 0x43, 0x47, 0xce, 0xc6, 0x3c, 0x9a,
-	0xdb, 0x44, 0x64, 0xf1, 0x54, 0xfd, 0x2d, 0x5a, 0x63, 0x21, 0xa7, 0x52, 0x84, 0x46, 0x09, 0x72,
-	0x39, 0x4c, 0x62, 0xeb, 0x46, 0x96, 0x8b, 0x1a, 0xe0, 0x2f, 0xb1, 0xb5, 0xf7, 0x17, 0xee, 0x6d,
-	0xc6, 0xda, 0xae, 0x1b, 0xf2, 0x28, 0x22, 0x73, 0x4f, 0xfc, 0xad, 0x80, 0x8a, 0xaa, 0xfc, 0x7b,
-	0xa8, 0x44, 0x47, 0x62, 0x12, 0x48, 0x68, 0xbf, 0xd2, 0xd9, 0x5c, 0xc6, 0xa2, 0x70, 0x4c, 0x32,
-	0x42, 0x4a, 0x8d, 0x06, 0x34, 0xe4, 0x11, 0x94, 0xfe, 0x03, 0x55, 0xe1, 0x69, 0x82, 0x70, 0xd0,
-	0xf7, 0x51, 0x65, 0x4a, 0x7d, 0xcf, 0x85, 0x17, 0xc8, 0x03, 0xbb, 0x9e, 0xc4, 0x56, 0x4d, 0xb1,
-	0x17, 0x23, 0x4c, 0x96, 0xb4, 0x74, 0x0d, 0xa1, 0x2c, 0xa3, 0x00, 0xfc, 0x95, 0x35, 0x04, 0x18,
-	0x13, 0x35, 0xd6, 0x1f, 0xa1, 0x82, 0x4b, 0x25, 0x35, 0x8a, 0x0d, 0xad, 0x59, 0xdd, 0xaf, 0xdb,
-	0x6a, 0xf7, 0xed, 0xf9, 0xee, 0xdb, 0xed, 0x60, 0xd6, 0xd9, 0x48, 0x62, 0xab, 0xaa, 0xc4, 0x29,
-	0x17, 0x13, 0x90, 0xfc, 0xe3, 0x54, 0xf5, 0x03, 0xb4, 0xde, 0xf3, 0x05, 0x1b, 0x76, 0x07, 0xdc,
-	0xeb, 0x0f, 0xa4, 0xb1, 0xd6, 0xd0, 0x9a, 0xf9, 0xce, 0x56, 0x12, 0x5b, 0x37, 0xb3, 0xc5, 0x58,
-	0x99, 0x62, 0x52, 0x85, 0xeb, 0x31, 0xdc, 0xf4, 0x87, 0xa8, 0xa2, 0xb6, 0xaf, 0x4b, 0xa5, 0x51,
-	0x06, 0xa1, 0x71, 0x11, 0x5b, 0xda, 0x32, 0xb5, 0xc5, 0x18, 0x93, 0xb2, 0x3a, 0xb7, 0xa5, 0xfe,
-	0x18, 0x55, 0x27, 0xc1, 0x52, 0x58, 0x01, 0xe1, 0x76, 0x26, 0xd4, 0x95, 0x70, 0x85, 0x80, 0x09,
-	0x9a, 0xdf, 0xda, 0x32, 0x4d, 0x9c, 0x8f, 0x05, 0x1b, 0x18, 0x08, 0x64, 0x2b, 0x89, 0x03, 0x8c,
-	0x89, 0x1a, 0xeb, 0x2f, 0x50, 0xdd, 0xa7, 0x91, 0xec, 0xc2, 0xad, 0x7b, 0xe6, 0xc9, 0x81, 0x1b,
-	0xd2, 0xb3, 0xc0, 0xa8, 0x82, 0xcc, 0x4a, 0x62, 0x6b, 0x47, 0xc9, 0x7e, 0xc7, 0xc2, 0x44, 0x4f,
-	0xe1, 0xa7, 0x29, 0xfa, 0x7a, 0x0e, 0x76, 0x8e, 0x2f, 0xae, 0x4c, 0xed, 0xf2, 0xca, 0xd4, 0x3e,
-	0x5f, 0x99, 0xda, 0xfb, 0x6b, 0x33, 0x77, 0x79, 0x6d, 0xe6, 0x3e, 0x5e, 0x9b, 0xb9, 0x37, 0xf6,
-	0x4a, 0xf8, 0x8b, 0x8f, 0xd9, 0x59, 0xf9, 0x98, 0x9d, 0x73, 0x47, 0xfd, 0x90, 0x42, 0x11, 0xbd,
-	0x12, 0x14, 0xff, 0xe0, 0x7b, 0x00, 0x00, 0x00, 0xff, 0xff, 0x56, 0x58, 0xeb, 0x19, 0x5e, 0x05,
-	0x00, 0x00,
+	// 746 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0x4d, 0x4f, 0xdb, 0x4a,
+	0x14, 0x25, 0x2f, 0x1f, 0x24, 0x13, 0xde, 0x4b, 0xf0, 0xcb, 0x7b, 0xb8, 0x50, 0xc5, 0x68, 0x16,
+	0x88, 0x2e, 0xb0, 0x0b, 0x5d, 0x54, 0xa5, 0xab, 0x98, 0xb6, 0x02, 0x09, 0x55, 0xea, 0xb0, 0xa8,
+	0x54, 0xa9, 0x8a, 0x26, 0xf6, 0x10, 0x5b, 0xb1, 0x3d, 0x91, 0x3d, 0x09, 0xe4, 0x17, 0x74, 0xdb,
+	0x45, 0x7f, 0x14, 0x4b, 0x96, 0x55, 0x17, 0x56, 0x05, 0xcb, 0xee, 0xbc, 0xec, 0xaa, 0xf2, 0x1d,
+	0x27, 0x31, 0xa1, 0x42, 0x54, 0xaa, 0xd4, 0x55, 0x66, 0xee, 0x3d, 0xe7, 0x5c, 0xcf, 0xb9, 0x77,
+	0x26, 0x48, 0x1d, 0xd3, 0x91, 0x27, 0x8c, 0xf1, 0xae, 0x11, 0x9c, 0x8a, 0x6e, 0x24, 0xe8, 0x80,
+	0xe9, 0xc3, 0x90, 0x0b, 0xae, 0xb4, 0x8f, 0x5d, 0x9f, 0x1d, 0x38, 0xd4, 0x0d, 0x74, 0x9f, 0x06,
+	0x22, 0xa4, 0x16, 0xac, 0x01, 0xaf, 0x8f, 0x77, 0xd7, 0x1f, 0xf4, 0x39, 0xef, 0x7b, 0xcc, 0x00,
+	0x74, 0x6f, 0x74, 0x6a, 0xd0, 0x60, 0x22, 0xa9, 0xeb, 0xad, 0x3e, 0xef, 0x73, 0x58, 0x1a, 0xe9,
+	0x4a, 0x46, 0xf1, 0xb7, 0x22, 0xaa, 0xbe, 0x3e, 0x15, 0x27, 0x69, 0x0d, 0x65, 0x0b, 0x95, 0xdd,
+	0xc0, 0x66, 0xe7, 0x6a, 0x61, 0xb3, 0xb0, 0xbd, 0x62, 0x36, 0x93, 0x58, 0x5b, 0x99, 0x50, 0xdf,
+	0xdb, 0xc7, 0x10, 0xc6, 0x44, 0xa6, 0x95, 0x23, 0xb4, 0xea, 0xd3, 0x70, 0xc0, 0xc4, 0xd0, 0xa3,
+	0x16, 0xeb, 0x4a, 0xce, 0x5f, 0xc0, 0x79, 0x98, 0xc4, 0x9a, 0x2a, 0x39, 0xb7, 0x20, 0x98, 0x34,
+	0x73, 0xb1, 0x23, 0x90, 0x7a, 0x85, 0x9a, 0x16, 0xf7, 0x3c, 0x66, 0x09, 0x97, 0x07, 0x99, 0x52,
+	0x11, 0x94, 0x36, 0x92, 0x58, 0x5b, 0x93, 0x4a, 0x8b, 0x08, 0x4c, 0x1a, 0xf3, 0x90, 0xd4, 0xe9,
+	0xa2, 0x0a, 0xf8, 0x64, 0xab, 0xa5, 0xcd, 0xe2, 0x76, 0x7d, 0xef, 0xb1, 0x7e, 0xb7, 0x53, 0xfa,
+	0xf4, 0xd0, 0xc7, 0x6e, 0x24, 0x8e, 0x04, 0xf3, 0xcd, 0xff, 0x2e, 0x62, 0xad, 0x90, 0xc4, 0xda,
+	0xdf, 0xb2, 0xa6, 0x54, 0xc3, 0x24, 0x93, 0x55, 0x6c, 0x54, 0xed, 0x51, 0x8f, 0x06, 0x16, 0x8b,
+	0xd4, 0x32, 0x94, 0x30, 0xee, 0x5b, 0xc2, 0x94, 0x3c, 0x73, 0x2d, 0xab, 0xd0, 0x90, 0x15, 0xa6,
+	0x72, 0x98, 0xcc, 0x94, 0x95, 0xf7, 0x68, 0xd9, 0x0a, 0x19, 0x15, 0x3c, 0x54, 0x2b, 0xe0, 0xc2,
+	0x41, 0x12, 0x6b, 0xff, 0x64, 0x2e, 0xc8, 0x04, 0xfe, 0x1e, 0x6b, 0x3b, 0x7d, 0x57, 0x38, 0xa3,
+	0x9e, 0x6e, 0x71, 0xdf, 0xb0, 0x78, 0xe4, 0xf3, 0x28, 0xfb, 0xd9, 0x89, 0xec, 0x81, 0x21, 0x26,
+	0x43, 0x16, 0xe9, 0x1d, 0xcb, 0xea, 0xd8, 0x76, 0xc8, 0xa2, 0x88, 0x4c, 0x35, 0xf1, 0x87, 0x22,
+	0x6a, 0x2c, 0x7c, 0x95, 0x72, 0x82, 0x2a, 0xd4, 0xe7, 0xa3, 0x40, 0x40, 0xd7, 0x6b, 0xe6, 0xf3,
+	0x2f, 0xb1, 0xb6, 0x75, 0x0f, 0xfd, 0x17, 0xcc, 0x9a, 0xbb, 0x25, 0x15, 0x30, 0xc9, 0xa4, 0xd2,
+	0x49, 0xb2, 0x59, 0xc0, 0x7d, 0x98, 0x8a, 0x5a, 0x7e, 0x92, 0x20, 0x8c, 0x89, 0x4c, 0x2b, 0x7b,
+	0xa8, 0x36, 0xa6, 0x9e, 0x6b, 0xc3, 0x89, 0x8b, 0x80, 0x6d, 0x25, 0xb1, 0xd6, 0x94, 0xd8, 0x59,
+	0x0a, 0x93, 0x39, 0x2c, 0xd5, 0x06, 0xa3, 0xd5, 0xd2, 0xa2, 0x36, 0x84, 0x31, 0x91, 0x69, 0xe5,
+	0x10, 0xad, 0x7a, 0x34, 0x12, 0xdd, 0x33, 0x57, 0x38, 0x76, 0x48, 0xcf, 0x82, 0x2e, 0x15, 0x6a,
+	0x79, 0xb3, 0xb0, 0x5d, 0xcc, 0x4f, 0xe9, 0x2d, 0x08, 0x26, 0x8d, 0x34, 0xf6, 0x76, 0x1a, 0xea,
+	0x08, 0xe5, 0x0d, 0x6a, 0x2d, 0xc0, 0xd8, 0x90, 0x5b, 0x0e, 0xb4, 0xa8, 0x68, 0x6a, 0x49, 0xac,
+	0x6d, 0xfc, 0x54, 0x0c, 0x50, 0x98, 0x28, 0x37, 0xf4, 0x5e, 0x42, 0xf0, 0x53, 0x19, 0x35, 0x17,
+	0x47, 0xf0, 0xcf, 0xb6, 0xe2, 0x11, 0xaa, 0x44, 0x0e, 0x0d, 0x59, 0x94, 0xf5, 0x61, 0x35, 0x77,
+	0x17, 0x20, 0x9e, 0xde, 0x05, 0x58, 0xdc, 0xec, 0x5a, 0xe9, 0x17, 0xbb, 0x56, 0xbe, 0xbb, 0x6b,
+	0xcf, 0x50, 0xc9, 0xa6, 0x82, 0x82, 0xb7, 0xf5, 0xbd, 0x96, 0x2e, 0x1f, 0x34, 0x7d, 0xfa, 0xa0,
+	0xe9, 0x9d, 0x60, 0x62, 0x36, 0x92, 0x58, 0xab, 0x67, 0x67, 0xa0, 0x82, 0x62, 0x02, 0x94, 0xfc,
+	0xe5, 0x59, 0xfe, 0xfd, 0x97, 0x47, 0xd9, 0x47, 0x2b, 0x3d, 0x8f, 0x5b, 0x83, 0xae, 0xc3, 0xdc,
+	0xbe, 0x23, 0xd4, 0x2a, 0x74, 0x7f, 0x2d, 0x89, 0xb5, 0x7f, 0xb3, 0x0b, 0x9d, 0xcb, 0x62, 0x52,
+	0x87, 0xed, 0x21, 0xec, 0x94, 0x5d, 0x54, 0x93, 0xef, 0x48, 0x3a, 0x83, 0x35, 0x20, 0xe6, 0x1c,
+	0x9b, 0xa5, 0x30, 0xa9, 0xca, 0x75, 0x47, 0x28, 0x4f, 0x51, 0x7d, 0x14, 0xcc, 0x49, 0x08, 0x48,
+	0xff, 0x27, 0xb1, 0xa6, 0x48, 0x52, 0x2e, 0x89, 0x09, 0x9a, 0xee, 0x3a, 0x22, 0xfd, 0xce, 0x2c,
+	0x23, 0xa7, 0xb4, 0xbe, 0xf8, 0x9d, 0xf9, 0x2c, 0x26, 0x75, 0xb9, 0x85, 0xb1, 0x34, 0x0f, 0x2f,
+	0xae, 0xda, 0x85, 0xcb, 0xab, 0x76, 0xe1, 0xeb, 0x55, 0xbb, 0xf0, 0xf1, 0xba, 0xbd, 0x74, 0x79,
+	0xdd, 0x5e, 0xfa, 0x7c, 0xdd, 0x5e, 0x7a, 0xa7, 0xe7, 0x5c, 0x9b, 0xbd, 0x7b, 0x46, 0xee, 0xdd,
+	0x33, 0xce, 0x0d, 0xf9, 0xb7, 0x05, 0x0e, 0xf6, 0x2a, 0xd0, 0xb1, 0x27, 0x3f, 0x02, 0x00, 0x00,
+	0xff, 0xff, 0x60, 0x35, 0x1a, 0xa7, 0xcc, 0x06, 0x00, 0x00,
 }
 
 func (m *NftStake) Marshal() (dAtA []byte, err error) {
@@ -369,7 +441,7 @@ func (m *NftStake) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Stake) Marshal() (dAtA []byte, err error) {
+func (m *NftStakeBalance) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -379,59 +451,25 @@ func (m *Stake) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Stake) MarshalTo(dAtA []byte) (int, error) {
+func (m *NftStakeBalance) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Stake) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NftStakeBalance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.LastEpochWithdrawn != 0 {
-		i = encodeVarintNftStake(dAtA, i, uint64(m.LastEpochWithdrawn))
+	if m.LastWithdrawnEpoch != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.LastWithdrawnEpoch))
 		i--
-		dAtA[i] = 0x58
+		dAtA[i] = 0x30
 	}
-	if m.Epoch != 0 {
-		i = encodeVarintNftStake(dAtA, i, uint64(m.Epoch))
+	if m.LastWithdrawnAt != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.LastWithdrawnAt))
 		i--
-		dAtA[i] = 0x50
-	}
-	if m.UnstakedAt != 0 {
-		i = encodeVarintNftStake(dAtA, i, uint64(m.UnstakedAt))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.StakedAt != 0 {
-		i = encodeVarintNftStake(dAtA, i, uint64(m.StakedAt))
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.BlockHeight != 0 {
-		i = encodeVarintNftStake(dAtA, i, uint64(m.BlockHeight))
-		i--
-		dAtA[i] = 0x38
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if m.Data != nil {
-		{
-			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintNftStake(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x28
 	}
 	if len(m.Chain) > 0 {
 		i -= len(m.Chain)
@@ -447,17 +485,124 @@ func (m *Stake) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Amount != nil {
+		{
+			size := m.Amount.Size()
+			i -= size
+			if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintNftStake(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NftStakeListItem) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NftStakeListItem) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NftStakeListItem) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.StakedEpoch != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.StakedEpoch))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.UnstakedAt != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.UnstakedAt))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.StakedAt != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.StakedAt))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.BlockHeight != 0 {
+		i = encodeVarintNftStake(dAtA, i, uint64(m.BlockHeight))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintNftStake(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.Shares) > 0 {
 		i -= len(m.Shares)
 		copy(dAtA[i:], m.Shares)
 		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Shares)))
 		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Denom)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Amount) > 0 {
-		i -= len(m.Amount)
-		copy(dAtA[i:], m.Amount)
-		i = encodeVarintNftStake(dAtA, i, uint64(len(m.Amount)))
+	if m.Amount != nil {
+		{
+			size := m.Amount.Size()
+			i -= size
+			if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintNftStake(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -512,13 +657,48 @@ func (m *NftStake) Size() (n int) {
 	return n
 }
 
-func (m *Stake) Size() (n int) {
+func (m *NftStakeBalance) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Amount)
+	if m.Amount != nil {
+		l = m.Amount.Size()
+		n += 1 + l + sovNftStake(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovNftStake(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovNftStake(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovNftStake(uint64(l))
+	}
+	if m.LastWithdrawnAt != 0 {
+		n += 1 + sovNftStake(uint64(m.LastWithdrawnAt))
+	}
+	if m.LastWithdrawnEpoch != 0 {
+		n += 1 + sovNftStake(uint64(m.LastWithdrawnEpoch))
+	}
+	return n
+}
+
+func (m *NftStakeListItem) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Amount != nil {
+		l = m.Amount.Size()
+		n += 1 + l + sovNftStake(uint64(l))
+	}
+	l = len(m.Denom)
 	if l > 0 {
 		n += 1 + l + sovNftStake(uint64(l))
 	}
@@ -551,11 +731,8 @@ func (m *Stake) Size() (n int) {
 	if m.UnstakedAt != 0 {
 		n += 1 + sovNftStake(uint64(m.UnstakedAt))
 	}
-	if m.Epoch != 0 {
-		n += 1 + sovNftStake(uint64(m.Epoch))
-	}
-	if m.LastEpochWithdrawn != 0 {
-		n += 1 + sovNftStake(uint64(m.LastEpochWithdrawn))
+	if m.StakedEpoch != 0 {
+		n += 1 + sovNftStake(uint64(m.StakedEpoch))
 	}
 	return n
 }
@@ -726,7 +903,7 @@ func (m *NftStake) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Staked = append(m.Staked, Stake{})
+			m.Staked = append(m.Staked, &NftStakeListItem{})
 			if err := m.Staked[len(m.Staked)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -760,7 +937,7 @@ func (m *NftStake) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Balances = append(m.Balances, types.DecCoin{})
+			m.Balances = append(m.Balances, &NftStakeBalance{})
 			if err := m.Balances[len(m.Balances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -820,7 +997,7 @@ func (m *NftStake) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Stake) Unmarshal(dAtA []byte) error {
+func (m *NftStakeBalance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -843,10 +1020,10 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Stake: wiretype end group for non-group")
+			return fmt.Errorf("proto: NftStakeBalance: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Stake: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NftStakeBalance: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -879,11 +1056,15 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Amount = string(dAtA[iNdEx:postIndex])
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Amount = &v
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Shares", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -911,7 +1092,7 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Shares = string(dAtA[iNdEx:postIndex])
+			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -978,6 +1159,258 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 			m.Chain = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastWithdrawnAt", wireType)
+			}
+			m.LastWithdrawnAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastWithdrawnAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastWithdrawnEpoch", wireType)
+			}
+			m.LastWithdrawnEpoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastWithdrawnEpoch |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipNftStake(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NftStakeListItem) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowNftStake
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NftStakeListItem: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NftStakeListItem: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Amount = &v
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Shares", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Shares = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftStake
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftStake
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
 			}
@@ -1007,13 +1440,13 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Data == nil {
-				m.Data = &types1.Any{}
+				m.Data = &types.Any{}
 			}
 			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
 			}
@@ -1047,7 +1480,7 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 				m.Creator = []byte{}
 			}
 			iNdEx = postIndex
-		case 7:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BlockHeight", wireType)
 			}
@@ -1066,7 +1499,7 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 8:
+		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StakedAt", wireType)
 			}
@@ -1085,7 +1518,7 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 9:
+		case 10:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field UnstakedAt", wireType)
 			}
@@ -1104,30 +1537,11 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Epoch", wireType)
-			}
-			m.Epoch = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftStake
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Epoch |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		case 11:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LastEpochWithdrawn", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StakedEpoch", wireType)
 			}
-			m.LastEpochWithdrawn = 0
+			m.StakedEpoch = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowNftStake
@@ -1137,7 +1551,7 @@ func (m *Stake) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.LastEpochWithdrawn |= int64(b&0x7F) << shift
+				m.StakedEpoch |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
