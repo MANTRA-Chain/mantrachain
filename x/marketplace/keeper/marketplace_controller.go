@@ -203,6 +203,5 @@ func (c *MarketplaceController) getId() string {
 }
 
 func (c *MarketplaceController) getIndex() []byte {
-	id := c.getId()
-	return types.GetMarketplaceIndex(c.creator, id)
+	return types.GetMarketplaceIndex(c.creator, c.getId())
 }

@@ -6,10 +6,15 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	types "github.com/cosmos/cosmos-sdk/types"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,19 +28,261 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgWithdrawNftReward struct {
+	Creator            string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MarketplaceCreator string `protobuf:"bytes,2,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string `protobuf:"bytes,3,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string `protobuf:"bytes,6,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Receiver           string `protobuf:"bytes,7,opt,name=receiver,proto3" json:"receiver,omitempty"`
+}
+
+func (m *MsgWithdrawNftReward) Reset()         { *m = MsgWithdrawNftReward{} }
+func (m *MsgWithdrawNftReward) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawNftReward) ProtoMessage()    {}
+func (*MsgWithdrawNftReward) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{0}
+}
+func (m *MsgWithdrawNftReward) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawNftReward) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawNftReward.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawNftReward) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawNftReward.Merge(m, src)
+}
+func (m *MsgWithdrawNftReward) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawNftReward) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawNftReward.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawNftReward proto.InternalMessageInfo
+
+func (m *MsgWithdrawNftReward) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetNftId() string {
+	if m != nil {
+		return m.NftId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftReward) GetReceiver() string {
+	if m != nil {
+		return m.Receiver
+	}
+	return ""
+}
+
+type MsgWithdrawNftRewardResponse struct {
+	MarketplaceCreator string         `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string         `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string         `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string         `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string         `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Owner              string         `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`
+	Receiver           string         `protobuf:"bytes,7,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	Reward             *types.Coin    `protobuf:"bytes,8,opt,name=reward,proto3" json:"reward,omitempty"`
+	Balance            *types.DecCoin `protobuf:"bytes,9,opt,name=balance,proto3" json:"balance,omitempty"`
+	StartAt            int64          `protobuf:"varint,10,opt,name=start_at,json=startAt,proto3" json:"start_at,omitempty"`
+	EndAt              int64          `protobuf:"varint,11,opt,name=end_at,json=endAt,proto3" json:"end_at,omitempty"`
+}
+
+func (m *MsgWithdrawNftRewardResponse) Reset()         { *m = MsgWithdrawNftRewardResponse{} }
+func (m *MsgWithdrawNftRewardResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawNftRewardResponse) ProtoMessage()    {}
+func (*MsgWithdrawNftRewardResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{1}
+}
+func (m *MsgWithdrawNftRewardResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawNftRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawNftRewardResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawNftRewardResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawNftRewardResponse.Merge(m, src)
+}
+func (m *MsgWithdrawNftRewardResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawNftRewardResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawNftRewardResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawNftRewardResponse proto.InternalMessageInfo
+
+func (m *MsgWithdrawNftRewardResponse) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetNftId() string {
+	if m != nil {
+		return m.NftId
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetReceiver() string {
+	if m != nil {
+		return m.Receiver
+	}
+	return ""
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetReward() *types.Coin {
+	if m != nil {
+		return m.Reward
+	}
+	return nil
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetBalance() *types.DecCoin {
+	if m != nil {
+		return m.Balance
+	}
+	return nil
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetStartAt() int64 {
+	if m != nil {
+		return m.StartAt
+	}
+	return 0
+}
+
+func (m *MsgWithdrawNftRewardResponse) GetEndAt() int64 {
+	if m != nil {
+		return m.EndAt
+	}
+	return 0
+}
+
+func init() {
+	proto.RegisterType((*MsgWithdrawNftReward)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftReward")
+	proto.RegisterType((*MsgWithdrawNftRewardResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftRewardResponse")
+}
+
 func init() { proto.RegisterFile("vault/v1/tx.proto", fileDescriptor_311d0123a4881c5c) }
 
 var fileDescriptor_311d0123a4881c5c = []byte{
-	// 137 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2c, 0x4b, 0x2c, 0xcd,
-	0x29, 0xd1, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0xf3,
-	0xc9, 0xcc, 0x4d, 0x75, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0xcb, 0x4d, 0xcc, 0x2b, 0x29, 0x4a, 0x4c,
-	0x06, 0xb3, 0xc1, 0x0a, 0xf5, 0xca, 0x0c, 0x8d, 0x58, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x9d, 0x3c,
-	0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5,
-	0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x2f, 0x3d, 0xb3, 0x24, 0xa3,
-	0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0x6e, 0x96, 0x3e, 0x92, 0x59, 0xfa, 0x15, 0xfa, 0x10,
-	0x6b, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xf6, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff,
-	0xff, 0x0d, 0x7d, 0x75, 0x1d, 0x8c, 0x00, 0x00, 0x00,
+	// 476 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0xeb, 0x76, 0x69, 0x3b, 0x8f, 0x21, 0xd5, 0x0c, 0x29, 0xab, 0xa6, 0xa8, 0x1a, 0x42,
+	0xea, 0x05, 0x5b, 0x19, 0x88, 0x13, 0x97, 0x51, 0x0e, 0x54, 0x62, 0x1c, 0x72, 0x41, 0xe2, 0x32,
+	0x39, 0x8e, 0xdb, 0x5a, 0x24, 0x76, 0xe5, 0xbc, 0xa5, 0xe3, 0x13, 0x70, 0x1c, 0x1f, 0x85, 0x8f,
+	0xc1, 0x71, 0x47, 0x8e, 0xa8, 0xfd, 0x22, 0xa8, 0x6e, 0xd3, 0x45, 0xa2, 0x54, 0x63, 0xb7, 0x3c,
+	0xff, 0x7f, 0x7f, 0x5b, 0xff, 0x97, 0xf7, 0x70, 0xa7, 0xe0, 0x57, 0x29, 0xb0, 0x22, 0x64, 0x70,
+	0x4d, 0xa7, 0xd6, 0x80, 0x21, 0xc1, 0x07, 0x95, 0xc9, 0xc1, 0x84, 0x2b, 0x4d, 0x33, 0xae, 0xc1,
+	0x72, 0xe1, 0xbe, 0x1d, 0x48, 0x8b, 0xb0, 0x1b, 0x08, 0x93, 0x67, 0x26, 0x67, 0x31, 0xcf, 0x25,
+	0x2b, 0xc2, 0x58, 0x02, 0x0f, 0x99, 0x30, 0x4a, 0xaf, 0xfc, 0xa7, 0x37, 0x75, 0x7c, 0x74, 0x91,
+	0x8f, 0x3f, 0x29, 0x98, 0x24, 0x96, 0xcf, 0x3e, 0x8e, 0x20, 0x92, 0x33, 0x6e, 0x13, 0xe2, 0xe3,
+	0x96, 0xb0, 0x92, 0x83, 0xb1, 0x3e, 0xea, 0xa1, 0xfe, 0x7e, 0x54, 0x96, 0x84, 0xe1, 0x27, 0x19,
+	0xb7, 0x5f, 0x24, 0x4c, 0x53, 0x2e, 0xe4, 0x65, 0x49, 0xd5, 0x1d, 0x45, 0x2a, 0xd2, 0x60, 0x6d,
+	0x78, 0x8e, 0x1f, 0x57, 0x0d, 0x2a, 0xf1, 0x1b, 0x8e, 0x3d, 0xac, 0x9c, 0x0e, 0x13, 0xf2, 0x02,
+	0x13, 0x61, 0xd2, 0x54, 0x0a, 0x50, 0x46, 0x6f, 0xae, 0xdd, 0x73, 0x68, 0xe7, 0x4e, 0x29, 0x6f,
+	0x7d, 0x86, 0x0f, 0x2b, 0xb8, 0x4a, 0x7c, 0xcf, 0x91, 0x8f, 0xee, 0x0e, 0x87, 0x09, 0x79, 0x8a,
+	0x9b, 0x7a, 0x04, 0x4b, 0xb5, 0xe9, 0x54, 0x4f, 0x8f, 0x60, 0x98, 0x90, 0x2e, 0x6e, 0x5b, 0x29,
+	0xa4, 0x2a, 0xa4, 0xf5, 0x5b, 0x4e, 0xd8, 0xd4, 0xa7, 0x3f, 0x1a, 0xf8, 0x64, 0x5b, 0x47, 0x22,
+	0x99, 0x4f, 0x8d, 0xce, 0xe5, 0xbf, 0xf2, 0xa3, 0xff, 0xc8, 0x5f, 0xbf, 0x7f, 0xfe, 0xc6, 0xbd,
+	0xf3, 0xef, 0xed, 0xcc, 0xef, 0x55, 0xf3, 0x1f, 0x61, 0xcf, 0xcc, 0xb4, 0xb4, 0x65, 0x57, 0x5c,
+	0xb1, 0xab, 0x2b, 0x24, 0xc4, 0x4d, 0xeb, 0xda, 0xe0, 0xb7, 0x7b, 0xa8, 0x7f, 0x70, 0x76, 0x4c,
+	0x57, 0x83, 0x45, 0x97, 0x83, 0x45, 0xd7, 0x83, 0x45, 0x07, 0x46, 0xe9, 0x68, 0x0d, 0x92, 0xd7,
+	0xb8, 0x15, 0xf3, 0x94, 0x6b, 0x21, 0xfd, 0x7d, 0xe7, 0x39, 0xd9, 0xea, 0x79, 0x27, 0x85, 0xb3,
+	0x95, 0x30, 0x39, 0xc6, 0xed, 0x1c, 0xb8, 0x85, 0x4b, 0x0e, 0x3e, 0xee, 0xa1, 0x7e, 0x23, 0x6a,
+	0xb9, 0xfa, 0x1c, 0x96, 0x71, 0xa4, 0x4e, 0x96, 0xc2, 0x81, 0x13, 0x3c, 0xa9, 0x93, 0x73, 0x38,
+	0xbb, 0x41, 0xb8, 0x71, 0x91, 0x8f, 0xc9, 0x37, 0x84, 0x3b, 0x7f, 0x4f, 0xf2, 0x2b, 0xba, 0x7b,
+	0x47, 0xe8, 0xb6, 0xbf, 0xdd, 0x7d, 0xf3, 0x10, 0x57, 0x39, 0x23, 0x6f, 0xdf, 0xff, 0x9c, 0x07,
+	0xe8, 0x76, 0x1e, 0xa0, 0xdf, 0xf3, 0x00, 0x7d, 0x5f, 0x04, 0xb5, 0xdb, 0x45, 0x50, 0xfb, 0xb5,
+	0x08, 0x6a, 0x9f, 0xe9, 0x58, 0xc1, 0xe4, 0x2a, 0xa6, 0xc2, 0x64, 0x6c, 0xf3, 0x02, 0xab, 0xbc,
+	0xc0, 0xae, 0xd9, 0x6a, 0xcd, 0xe1, 0xeb, 0x54, 0xe6, 0x71, 0xd3, 0xed, 0xe9, 0xcb, 0x3f, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0xb2, 0x86, 0xdf, 0x90, 0xfc, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -50,6 +297,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	WithdrawNftReward(ctx context.Context, in *MsgWithdrawNftReward, opts ...grpc.CallOption) (*MsgWithdrawNftRewardResponse, error)
 }
 
 type msgClient struct {
@@ -60,22 +308,1085 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) WithdrawNftReward(ctx context.Context, in *MsgWithdrawNftReward, opts ...grpc.CallOption) (*MsgWithdrawNftRewardResponse, error) {
+	out := new(MsgWithdrawNftRewardResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftReward", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	WithdrawNftReward(context.Context, *MsgWithdrawNftReward) (*MsgWithdrawNftRewardResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) WithdrawNftReward(ctx context.Context, req *MsgWithdrawNftReward) (*MsgWithdrawNftRewardResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawNftReward not implemented")
+}
+
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_WithdrawNftReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgWithdrawNftReward)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).WithdrawNftReward(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftReward",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).WithdrawNftReward(ctx, req.(*MsgWithdrawNftReward))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "LimeChain.mantrachain.vault.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "vault/v1/tx.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "WithdrawNftReward",
+			Handler:    _Msg_WithdrawNftReward_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "vault/v1/tx.proto",
 }
+
+func (m *MsgWithdrawNftReward) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawNftReward) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawNftReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Receiver) > 0 {
+		i -= len(m.Receiver)
+		copy(dAtA[i:], m.Receiver)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Receiver)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.NftId) > 0 {
+		i -= len(m.NftId)
+		copy(dAtA[i:], m.NftId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NftId)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgWithdrawNftRewardResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawNftRewardResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawNftRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.EndAt != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.EndAt))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.StartAt != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.StartAt))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.Balance != nil {
+		{
+			size, err := m.Balance.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x4a
+	}
+	if m.Reward != nil {
+		{
+			size, err := m.Reward.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Receiver) > 0 {
+		i -= len(m.Receiver)
+		copy(dAtA[i:], m.Receiver)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Receiver)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NftId) > 0 {
+		i -= len(m.NftId)
+		copy(dAtA[i:], m.NftId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NftId)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *MsgWithdrawNftReward) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NftId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Receiver)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgWithdrawNftRewardResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NftId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Receiver)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Reward != nil {
+		l = m.Reward.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Balance != nil {
+		l = m.Balance.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.StartAt != 0 {
+		n += 1 + sovTx(uint64(m.StartAt))
+	}
+	if m.EndAt != 0 {
+		n += 1 + sovTx(uint64(m.EndAt))
+	}
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgWithdrawNftReward) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawNftReward: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawNftReward: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Receiver", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Receiver = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawNftRewardResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawNftRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Receiver", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Receiver = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Reward == nil {
+				m.Reward = &types.Coin{}
+			}
+			if err := m.Reward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Balance", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Balance == nil {
+				m.Balance = &types.DecCoin{}
+			}
+			if err := m.Balance.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartAt", wireType)
+			}
+			m.StartAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndAt", wireType)
+			}
+			m.EndAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

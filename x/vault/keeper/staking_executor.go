@@ -62,3 +62,20 @@ func (c *StakingExecutor) Delegate(
 
 	return shares, nil
 }
+
+func (c *StakingExecutor) GetDelegatorDelegation(validator string) (sdk.Dec, error) {
+	shares := sdk.NewDec(0)
+
+	valAdr, err := sdk.ValAddressFromBech32(validator)
+	if err != nil {
+		return shares, sdkerrors.Wrap(err, "invalid validator address")
+	}
+
+	delegation, found := c.sk.GetDelegation(c.ctx, c.ac.GetModuleAddress(types.ModuleName), valAdr)
+
+	if !found {
+		return shares, sdkerrors.Wrap(err, "validator not exists")
+	}
+
+	return delegation.Shares, nil
+}

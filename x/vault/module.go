@@ -3,7 +3,8 @@ package vault
 import (
 	"encoding/json"
 	"fmt"
-    // this line is used by starport scaffolding # 1
+
+	// this line is used by starport scaffolding # 1
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -11,21 +12,19 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/LimeChain/mantrachain/x/vault/client/cli"
+	"github.com/LimeChain/mantrachain/x/vault/keeper"
+	"github.com/LimeChain/mantrachain/x/vault/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/LimeChain/mantrachain/x/vault/keeper"
-	"github.com/LimeChain/mantrachain/x/vault/types"
-	"github.com/LimeChain/mantrachain/x/vault/client/cli"
-	
 )
 
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
-	
 )
 
 // ----------------------------------------------------------------------------
@@ -79,17 +78,17 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-    // this line is used by starport scaffolding # 2
+	// this line is used by starport scaffolding # 2
 }
 
 // GetTxCmd returns the capability module's root tx command.
 func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-    return cli.GetTxCmd()
+	return cli.GetTxCmd()
 }
 
 // GetQueryCmd returns the capability module's root query command.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-    return cli.GetQueryCmd(types.StoreKey)
+	return cli.GetQueryCmd(types.StoreKey)
 }
 
 // ----------------------------------------------------------------------------
@@ -103,6 +102,8 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	stakingKeeper types.StakingKeeper
+	distrKeeper   types.DistrKeeper
 }
 
 func NewAppModule(
@@ -110,12 +111,16 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	stakingKeeper types.StakingKeeper,
+	distrKeeper types.DistrKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		stakingKeeper:  stakingKeeper,
+		distrKeeper:    distrKeeper,
 	}
 }
 
@@ -140,7 +145,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-    types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
 // RegisterInvariants registers the capability module's invariants.
@@ -172,6 +177,28 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 
 // EndBlock executes all ABCI EndBlock logic respective to the capability module. It
 // returns no validator updates.
-func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	params := am.keeper.GetParams(ctx)
+	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
+
+	if !found {
+		am.keeper.InitEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom, ctx.BlockHeight())
+	} else if ctx.BlockHeight() >= lastEpochBlock.BlockHeight+params.EpochBlockHeightOffset {
+		err := am.keeper.SetEpochEnd(
+			ctx,
+			ctx.ChainID(),
+			params.StakingValidatorAddress,
+			params.StakingValidatorDenom,
+			ctx.BlockHeight(),
+			lastEpochBlock.BlockHeight,
+			params.MinEpochWithdrawAmount,
+		)
+
+		if err != nil {
+			logger := am.keeper.Logger(ctx)
+			logger.Error("error while set epoch end", err)
+		}
+	}
+
 	return []abci.ValidatorUpdate{}
 }

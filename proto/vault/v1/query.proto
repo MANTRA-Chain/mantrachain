@@ -1,6 +1,7 @@
 syntax = "proto3";
 package LimeChain.mantrachain.vault.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "vault/v1/params.proto";
@@ -19,7 +20,32 @@ service Query {
   rpc NftStake(QueryGetNftStakeRequest) returns (QueryGetNftStakeResponse) {
 		option (google.api.http).get = "/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
 	}
+
+  rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
+		option (google.api.http).get = "/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
+	}
+
+  rpc LastEpochs(QueryGetLastEpochsRequest) returns (QueryGetLastEpochsResponse) {
+		option (google.api.http).get = "/vault/v1/last-epochs";
+	}
   // this line is used by starport scaffolding # 2
+}
+
+message QueryGetLastEpochsRequest {}
+
+message QueryGetEpochResponse {
+  int64 prev_epoch_block = 1; 
+  int64 next_epoch_block = 2; 
+  int64 block_start = 3; 
+  int64 block_end = 4;  
+  string staked = 5; 
+  cosmos.base.v1beta1.Coin rewards = 6; 
+  int64 start_at = 7; 
+  int64 end_at = 8; 
+}
+
+message QueryGetLastEpochsResponse {
+  repeated QueryGetEpochResponse epochs = 1;
 }
 
 message QueryGetNftStakeRequest {
@@ -37,6 +63,26 @@ message QueryGetNftStakeResponse {
   string collection_id = 4;
   string nft_id = 5; 
   repeated Stake staked = 6;
+  string creator = 7;
+}
+
+message QueryGetNftBalanceRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string id = 5;
+}
+
+message QueryGetNftBalanceResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5; 
+  cosmos.base.v1beta1.DecCoin balance = 6;
+  int64 start_at = 7; 
+  int64 end_at = 8; 
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.

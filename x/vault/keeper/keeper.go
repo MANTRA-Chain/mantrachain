@@ -20,6 +20,8 @@ type (
 		ac         types.AccountKeeper
 		bk         types.BankKeeper
 		sk         types.StakingKeeper
+		dk         types.DistrKeeper
+		nftKeeper  types.NFTKeeper
 	}
 )
 
@@ -32,6 +34,8 @@ func NewKeeper(
 	ac types.AccountKeeper,
 	bk types.BankKeeper,
 	sk types.StakingKeeper,
+	dk types.DistrKeeper,
+	nftKeeper types.NFTKeeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -45,7 +49,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
-		ac:         ac, bk: bk, sk: sk,
+		ac:         ac, bk: bk, sk: sk, dk: dk, nftKeeper: nftKeeper,
 	}
 
 	// TODO: check if StakingValidatorAddress has been set as param i.e. not empty

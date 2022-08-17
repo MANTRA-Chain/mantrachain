@@ -1,8 +1,8 @@
 syntax = "proto3";
 package LimeChain.mantrachain.vault.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
 import "google/protobuf/any.proto";
-import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
@@ -15,49 +15,52 @@ message NftStake {
     (gogoproto.moretags) = "yaml:\"staked\"",
     (gogoproto.nullable) = false
   ];
+  repeated cosmos.base.v1beta1.DecCoin balances = 5 [
+    (gogoproto.moretags) = "yaml:\"balances\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable) = false
+  ]; 
+  bytes creator = 6 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
 }
 
 message Stake {
   string amount = 1 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.nullable) = true
+    (gogoproto.moretags) = "yaml:\"amount\""
   ]; 
-  bool staked = 2 [
-    (gogoproto.moretags) = "yaml:\"staked\"",
-    (gogoproto.nullable) = true
+  string shares = 2 [
+    (gogoproto.moretags) = "yaml:\"shares\""
   ]; 
-  string shares = 3 [
-    (gogoproto.moretags) = "yaml:\"shares\"",
-    (gogoproto.nullable) = true
+  string validator = 3 [
+    (gogoproto.moretags) = "yaml:\"validator\""
   ]; 
-  string validator = 4 [
-    (gogoproto.moretags) = "yaml:\"validator\"",
-    (gogoproto.nullable) = true
-  ]; 
-  string chain = 5 [
-    (gogoproto.moretags) = "yaml:\"chain\"",
-    (gogoproto.nullable) = true
+  string chain = 4 [
+    (gogoproto.moretags) = "yaml:\"chain\""
   ];
-  google.protobuf.Any data = 6 [
-    (gogoproto.moretags) = "yaml:\"data\"",
-    (gogoproto.nullable) = true
+  google.protobuf.Any data = 5 [
+    (gogoproto.moretags) = "yaml:\"data\""
   ];  
-  bytes creator = 7 [
+  bytes creator = 6 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  bytes owner = 8 [
-      (gogoproto.moretags) = "yaml:\"owner\"",
-      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  int64 block_height = 7 [
+    (gogoproto.moretags) = "yaml:\"block_height\""
   ];
-  google.protobuf.Timestamp staked_at = 9 [
+  int64 staked_at = 8 [
       (gogoproto.moretags) = "yaml:\"staked_at\"",
-      (gogoproto.nullable) = false,
-      (gogoproto.stdtime) = true
+      (gogoproto.nullable) = true
   ];
-  google.protobuf.Timestamp unstaked_at = 10 [
+  int64 unstaked_at = 9 [
       (gogoproto.moretags) = "yaml:\"unstaked_at\"",
-      (gogoproto.nullable) = true,
-      (gogoproto.stdtime) = true
+      (gogoproto.nullable) = true
+  ];
+  int64 epoch = 10 [
+    (gogoproto.moretags) = "yaml:\"epoch\""
+  ];
+  int64 last_epoch_withdrawn = 11 [
+    (gogoproto.moretags) = "yaml:\"last_epoch_withdrawn\""
   ];
 }

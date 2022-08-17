@@ -4,6 +4,7 @@ import (
 	"github.com/LimeChain/mantrachain/x/vault/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) SetNftStake(ctx sdk.Context, nftStake types.NftStake) {
@@ -70,14 +71,25 @@ func (k Keeper) UpsertNftStake(
 	valAddress := sdk.AccAddress{}
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
 
+	if !found {
+		nftStake = types.NftStake{
+			Index:            index,
+			MarketplaceIndex: marketplaceIndex,
+			CollectionIndex:  collectionIndex,
+			Staked:           []types.Stake{},
+			Balances:         []sdk.DecCoin{},
+			Creator:          creator,
+		}
+	}
+
 	staked := types.Stake{
-		Amount:    amount.String(),
-		Staked:    true,
-		Validator: valAddress.String(),
-		Chain:     ctx.ChainID(),
-		StakedAt:  ctx.BlockHeader().Time,
-		Creator:   creator,
-		Owner:     k.ac.GetModuleAddress(types.ModuleName),
+		Amount:             amount.String(),
+		Validator:          valAddress.String(),
+		Chain:              ctx.ChainID(),
+		StakedAt:           ctx.BlockHeader().Time.Unix(),
+		Creator:            creator,
+		BlockHeight:        ctx.BlockHeight(),
+		LastEpochWithdrawn: types.UndefinedBlockHeight,
 	}
 
 	if delegate {
@@ -91,18 +103,18 @@ func (k Keeper) UpsertNftStake(
 		}
 
 		staked.Shares = shares.String()
+		staked.Validator = params.StakingValidatorAddress
+
+		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
+
+		if !found {
+			return sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
+		}
+
+		staked.Epoch = lastEpochBlock.BlockHeight
 	}
 
-	if !found {
-		nftStake = types.NftStake{
-			Index:            index,
-			MarketplaceIndex: marketplaceIndex,
-			CollectionIndex:  collectionIndex,
-			Staked:           []types.Stake{staked},
-		}
-	} else {
-		nftStake.Staked = append(nftStake.Staked, staked)
-	}
+	nftStake.Staked = append(nftStake.Staked, staked)
 
 	k.SetNftStake(ctx, nftStake)
 

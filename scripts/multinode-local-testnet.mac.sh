@@ -1,5 +1,4 @@
-
-echo "not working yet, try scripts/onenode-local-testnet.mac.sh instead"
+echo "not working yet, try ./scripts/onenode-local-testnet.mac instead"
 exit 1
 
 echo "install gsed, jq, tmux"
@@ -10,15 +9,7 @@ tmux kill-session -t validator1
 tmux kill-session -t validator2
 tmux kill-session -t validator3
 
-kill -9 $(lsof -t -i:26650)
-kill -9 $(lsof -t -i:26653)
-kill -9 $(lsof -t -i:26656)
-kill -9 $(lsof -t -i:6060)
-kill -9 $(lsof -t -i:6061)
-kill -9 $(lsof -t -i:6062)
-kill -9 $(lsof -t -i:1317)
-kill -9 $(lsof -t -i:1316)
-kill -9 $(lsof -t -i:1315)
+kill -9 $(lsof -t -i:26650) $(lsof -t -i:26653) $(lsof -t -i:26656)
 
 #!/bin/bash
 rm -rf $HOME/.mantrachain/

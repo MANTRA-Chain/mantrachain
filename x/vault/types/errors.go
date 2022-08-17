@@ -14,4 +14,8 @@ var (
 	ErrInvalidNftId                   = sdkerrors.Register(ModuleName, 1114, "nft id provided is invalid")
 	ErrValidatorDoesNotExist          = sdkerrors.Register(ModuleName, 1115, "validator does not exists")
 	ErrInvalidStakingValidatorAddress = sdkerrors.Register(ModuleName, 1116, "staking validator address is invalid")
+	ErrNftStakeDoesNotExist           = sdkerrors.Register(ModuleName, 1117, "nft stake does not exists")
+	ErrLastEpochBlockNotFound         = sdkerrors.Register(ModuleName, 1118, "last epoch block not found")
+	ErrUnavailable                    = sdkerrors.Register(ModuleName, 1119, "unavailable")
+	ErrUnauthorized                   = sdkerrors.Register(ModuleName, 1120, "unauthorized")
 )

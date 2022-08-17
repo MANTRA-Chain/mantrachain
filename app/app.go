@@ -362,7 +362,7 @@ func New(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
 
-	// Do not blacklist Vault Module so it account address can receive staking rewards
+	// Do not blacklist Vault Module so it account address can receive
 	moduleAccountAddrs := app.ModuleAccountAddrs()
 	whitelistModuleAddrs := []string{app.AccountKeeper.GetModuleAddress(vaulttypes.ModuleName).String()}
 	blockedAddrs := make(map[string]bool)
@@ -370,8 +370,6 @@ func New(
 	for name, isBlkListed := range moduleAccountAddrs {
 		if !slices.Contains(whitelistModuleAddrs, name) {
 			blockedAddrs[name] = isBlkListed
-		} else {
-			blockedAddrs[name] = false
 		}
 	}
 
@@ -391,7 +389,7 @@ func New(
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, authtypes.FeeCollectorName, blockedAddrs,
+		&stakingKeeper, authtypes.FeeCollectorName, app.ModuleAccountAddrs(),
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
@@ -417,6 +415,8 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
+		app.DistrKeeper,
+		app.NFTKeeper,
 	)
 
 	app.DidKeeper = *didkeeper.NewKeeper(
@@ -563,7 +563,7 @@ func New(
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper),
 		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		marketplace.NewAppModule(appCodec, app.MarketplaceKeeper, app.AccountKeeper, app.BankKeeper),
-		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper),
+		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.DistrKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that

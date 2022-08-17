@@ -1,0 +1,35 @@
+syntax = "proto3";
+package LimeChain.mantrachain.vault.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
+
+message Epoch {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  int64 prev_epoch_block = 2 [(gogoproto.moretags) = "yaml:\"prev_epoch_block\""]; 
+  int64 next_epoch_block = 3 [(gogoproto.moretags) = "yaml:\"next_epoch_block\""]; 
+  int64 block_start = 4 [(gogoproto.moretags) = "yaml:\"block_start\""]; 
+  int64 block_end = 5 [(gogoproto.moretags) = "yaml:\"block_end\""];  
+  string staked = 6 [
+    (gogoproto.moretags) = "yaml:\"staked\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; 
+  cosmos.base.v1beta1.Coin rewards = 7 [
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; 
+  int64 start_at = 8 [
+      (gogoproto.moretags) = "yaml:\"start_at\""
+  ];
+  int64 end_at = 9 [
+      (gogoproto.moretags) = "yaml:\"end_at\""
+  ];
+}
+
+message LastEpochBlock {
+  int64 block_height = 1 [(gogoproto.moretags) = "yaml:\"block_height\""]; 
+}

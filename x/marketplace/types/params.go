@@ -129,12 +129,12 @@ func validateValidMarketplaceId(i interface{}) error {
 	}
 
 	if v == "" {
-		return fmt.Errorf("valid marketplace id regex should not be empty")
+		return fmt.Errorf("valid marketplace id param regex should not be empty")
 	}
 
 	_, err := regexp.Compile(v)
 	if err != nil {
-		return fmt.Errorf("valid marketplace id is invalid regex %s", v)
+		return fmt.Errorf("valid marketplace id param is invalid regex %s", v)
 	}
 
 	return nil
@@ -147,7 +147,7 @@ func validateValidMarketplaceMetadataDescriptionMaxLength(i interface{}) error {
 	}
 
 	if v == 0 {
-		return fmt.Errorf("max validators must be positive: %d", v)
+		return fmt.Errorf("max validators param must be positive: %d", v)
 	}
 
 	return nil
@@ -160,7 +160,7 @@ func validateValidMarketplaceMetadataNameMaxLength(i interface{}) error {
 	}
 
 	if v == 0 {
-		return fmt.Errorf("max validators must be positive: %d", v)
+		return fmt.Errorf("max validators param must be positive: %d", v)
 	}
 
 	return nil
@@ -186,7 +186,7 @@ func validateValidNftsEarningsOnYieldRewardMaxCount(i interface{}) error {
 	}
 
 	if v == 0 {
-		return fmt.Errorf("max validators must be positive: %d", v)
+		return fmt.Errorf("max validators param must be positive: %d", v)
 	}
 
 	return nil

@@ -1,44 +1,28 @@
-echo "not working yet"
-exit 1
-
-echo "install gsed, jq, tmux"
-brew install gsed jq tmux
-
-echo "stop all the validators if any"
-tmux kill-session -t validator
-
-kill -9 $(lsof -t -i:26656)
-kill -9 $(lsof -t -i:6060)
-kill -9 $(lsof -t -i:1317)
-
 #!/bin/bash
+set -e # exit on first error
+
 rm -rf $HOME/.mantrachain/
 
-echo "make four mantrachain directories"
-mkdir $HOME/.mantrachain
-mkdir $HOME/.mantrachain
-
-echo "init the validator"
-mantrachaind init --chain-id=mantrachain validator --home=$HOME/.mantrachain
-
 echo "create keys for the validator"
-mantrachaind keys add validator --keyring-backend=test --home=$HOME/.mantrachain
-mantrachaind keys add recipient --keyring-backend=test --home=$HOME/.mantrachain
+./build/mantrachaind keys add validator --keyring-backend=test
+./build/mantrachaind keys add recipient --keyring-backend=test
 
 VALIDATOR=$(./build/mantrachaind keys show validator -a --keyring-backend test)
 RECIPIENT=$(./build/mantrachaind keys show recipient -a --keyring-backend test)
 
-echo "create validator node with tokens to transfer to the three other nodes"
-mantrachaind add-genesis-account $(mantrachaind keys show validator -a --keyring-backend=test --home=$HOME/.mantrachain) 100000000000stake --home=$HOME/.mantrachain
-mantrachaind gentx validator 500000000stake --keyring-backend=test --home=$HOME/.mantrachain --chain-id=mantrachain
+echo "init the validator"
+./build/mantrachaind init mantrachain --chain-id=mantrachain
+
+echo "create validator node with tokens to transfer to the node"
+./build/mantrachaind add-genesis-account $VALIDATOR 100000000000stake
+./build/mantrachaind gentx validator 100000000stake --keyring-backend=test --chain-id=mantrachain
 
 VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/config/gentx -AU | head -1) | jq '.body["messages"][0].validator_address')
 
 echo "update vault genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR_ADDRESS > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
-mantrachaind collect-gentxs --home=$HOME/.mantrachain
-
+./build/mantrachaind collect-gentxs
 
 echo "update staking genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["staking"]["params"]["unbonding_time"]="240s"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
@@ -48,7 +32,6 @@ cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["gov"]["voting_param
 
 echo "port key (validator uses default ports)"
 echo "validator 1317, 9090, 9091, 26658, 26657, 26656, 6060"
-
 
 echo "change app.toml values"
 
@@ -68,5 +51,11 @@ echo "validator"
 gsed -i -E 's|chain-id = \"\"|chain-id = \"mantrachain\"|g' $HOME/.mantrachain/config/client.toml
 
 echo "start the validator"
-# tmux new -s validator -d mantrachaind start --home=$HOME/.mantrachain
-# tmux a -t validator
+tmux new -s validator -d ./build/mantrachaind start
+
+echo "send stake from validator to recipient"
+sleep 7
+./build/mantrachaind tx bank send $VALIDATOR $RECIPIENT 10000000000stake --chain-id mantrachain --keyring-backend test --gas auto --gas-adjustment 1.25 --gas-prices 0.00001stake --yes
+
+echo "track logs"
+tmux a -t validator

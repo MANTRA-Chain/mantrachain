@@ -115,7 +115,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 	k.SetNftSettings(ctx, nftSettings)
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	owner := nftExecutor.GetNftOwner(msg.CollectionId, msg.NftId)
+	owner := nftExecutor.GetNftOwner(string(collection.Index), string(nft.Index))
 
 	if owner.Equals(creator) {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftBuyer, "nft is owned by the buyer")

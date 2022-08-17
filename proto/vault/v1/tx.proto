@@ -1,13 +1,39 @@
 syntax = "proto3";
 package LimeChain.mantrachain.vault.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 
 // Msg defines the Msg service.
 service Msg {
+    rpc WithdrawNftReward(MsgWithdrawNftReward) returns (MsgWithdrawNftRewardResponse);
     // this line is used by starport scaffolding # proto/tx/rpc
 }
+
+message MsgWithdrawNftReward {
+    string creator = 1;
+    string marketplace_creator = 2;
+    string marketplace_id = 3;
+    string collection_creator = 4;
+    string collection_id = 5;
+    string nft_id = 6;
+    string receiver = 7;
+  }
+  
+  message MsgWithdrawNftRewardResponse {
+    string marketplace_creator = 1;
+    string marketplace_id = 2;
+    string collection_creator = 3;
+    string collection_id = 4;
+    string nft_id = 5;
+    string owner = 6;
+    string receiver = 7;
+    cosmos.base.v1beta1.Coin reward = 8;
+    cosmos.base.v1beta1.DecCoin balance = 9;
+    int64 start_at = 10; 
+    int64 end_at = 11; 
+  }
 
 // this line is used by starport scaffolding # proto/tx/message
