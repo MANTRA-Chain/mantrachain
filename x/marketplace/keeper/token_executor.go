@@ -18,12 +18,12 @@ func NewTokenExecutor(ctx sdk.Context, tokenKeeper types.TokenKeeper) *TokenExec
 	}
 }
 
-func (c *TokenExecutor) GetCollection(creator sdk.AccAddress, id string) (tokentypes.NftCollection, bool) {
+func (c *TokenExecutor) GetNftCollection(creator sdk.AccAddress, id string) (tokentypes.NftCollection, bool) {
 	index := tokentypes.GetNftCollectionIndex(creator, id)
 	return c.tokenKeeper.GetNftCollection(c.ctx, creator, index)
 }
 
-func (c *TokenExecutor) HasCollection(creator sdk.AccAddress, id string) bool {
+func (c *TokenExecutor) HasNftCollection(creator sdk.AccAddress, id string) bool {
 	index := tokentypes.GetNftCollectionIndex(creator, id)
 	return c.tokenKeeper.HasNftCollection(c.ctx, creator, index)
 }

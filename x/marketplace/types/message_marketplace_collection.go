@@ -7,31 +7,31 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgImportCollection = "import_collection"
+const TypeMsgImportNftCollection = "import_nft_collection"
 
-var _ sdk.Msg = &MsgImportCollection{}
+var _ sdk.Msg = &MsgImportNftCollection{}
 
-func NewMsgImportCollection(creator string, marketplaceCreator string, marketplaceId string,
-	collectionCreator string, collectionId string, settings *MsgCollectionSettings) *MsgImportCollection {
-	return &MsgImportCollection{
+func NewMsgImportNftCollection(creator string, marketplaceCreator string, marketplaceId string,
+	collectionCreator string, collectionId string, collection *MsgMarketplaceCollection) *MsgImportNftCollection {
+	return &MsgImportNftCollection{
 		Creator:            creator,
 		MarketplaceCreator: marketplaceCreator,
 		MarketplaceId:      marketplaceId,
 		CollectionCreator:  collectionCreator,
 		CollectionId:       collectionId,
-		Settings:           settings,
+		Collection:         collection,
 	}
 }
 
-func (msg *MsgImportCollection) Route() string {
+func (msg *MsgImportNftCollection) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgImportCollection) Type() string {
-	return TypeMsgImportCollection
+func (msg *MsgImportNftCollection) Type() string {
+	return TypeMsgImportNftCollection
 }
 
-func (msg *MsgImportCollection) GetSigners() []sdk.AccAddress {
+func (msg *MsgImportNftCollection) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -39,12 +39,12 @@ func (msg *MsgImportCollection) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgImportCollection) GetSignBytes() []byte {
+func (msg *MsgImportNftCollection) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgImportCollection) ValidateBasic() error {
+func (msg *MsgImportNftCollection) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

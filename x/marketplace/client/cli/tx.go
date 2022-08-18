@@ -31,7 +31,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdRegisterMarketplace(),
-		CmdImportCollection(),
+		CmdImportNftCollection(),
 		CmdBuyNft(),
 	)
 

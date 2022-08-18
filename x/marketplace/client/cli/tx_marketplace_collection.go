@@ -14,14 +14,14 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdImportCollection() *cobra.Command {
+func CmdImportNftCollection() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "import-collection [payload-json]",
-		Short: "Broadcast message import-collection",
+		Use:   "import-nft-collection [payload-json]",
+		Short: "Broadcast message import-nft-collection",
 		Long: "Imports a NFT collection. " +
-			"[payload-json] is JSON encoded MsgCollectionSettings.",
+			"[payload-json] is JSON encoded MsgNftCollection.",
 		Example: fmt.Sprintf(
-			"$ %s tx marketplace import-collection <payload-json> "+
+			"$ %s tx marketplace import-nft-collection <payload-json> "+
 				"--from=<from> "+
 				"--marketplace-creator=<marketplace-creator> "+
 				"--marketplace-id=<marketplace-id> "+
@@ -32,7 +32,7 @@ func CmdImportCollection() *cobra.Command {
 		),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argSettings := args[0]
+			argCollection := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -60,19 +60,19 @@ func CmdImportCollection() *cobra.Command {
 			}
 
 			// Unmarshal payload
-			var settings types.MsgCollectionSettings
-			err = clientCtx.Codec.UnmarshalJSON([]byte(argSettings), &settings)
+			var collection types.MsgMarketplaceCollection
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argCollection), &collection)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgImportCollection(
+			msg := types.NewMsgImportNftCollection(
 				clientCtx.GetFromAddress().String(),
 				marketplaceCreator,
 				marketplaceId,
 				collectionCreator,
 				collectionId,
-				&settings,
+				&collection,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -81,7 +81,7 @@ func CmdImportCollection() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FsImportCollection)
+	cmd.Flags().AddFlagSet(FsImportNftCollection)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

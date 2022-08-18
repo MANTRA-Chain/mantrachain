@@ -55,16 +55,16 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 	marketplaceId := marketplaceController.getId()
 
 	tokenExecutor := NewTokenExecutor(ctx, k.tokenKeeper)
-	collection, found := tokenExecutor.GetCollection(collectionCreator, msg.CollectionId)
+	nftCollection, found := tokenExecutor.GetNftCollection(collectionCreator, msg.CollectionId)
 
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrCollectionDoesNotExist, "invalid or non-existent nft collection")
 	}
 
-	collectionSettingsController := NewCollectionSettingsController(ctx, marketplaceIndex, collection.Index, marketplaceId, msg.CollectionId).
+	marketplaceCollection := NewMarketplaceCollectionController(ctx, marketplaceIndex, nftCollection.Index, marketplaceId, msg.CollectionId).
 		WithStore(k)
 
-	err = collectionSettingsController.
+	err = marketplaceCollection.
 		MustExist().
 		Validate()
 
@@ -72,7 +72,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, err
 	}
 
-	collectionSettings := collectionSettingsController.getCollectionSettings()
+	collection := marketplaceCollection.getMarketplaceCollection()
 
 	nft, found := tokenExecutor.GetNft(collectionCreator, msg.CollectionId, msg.NftId)
 
@@ -80,42 +80,42 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrap(types.ErrNftDoesNotExist, "invalid or non-existent nft")
 	}
 
-	nftSettings, found := k.GetNftSettings(ctx, marketplaceIndex, collection.Index, nft.Index)
+	marketplaceNft, found := k.GetMarketplaceNft(ctx, marketplaceIndex, collection.Index, nft.Index)
 
-	nftsEarningsOnSale := collectionSettings.NftsEarningsOnSale
+	nftsEarningsOnSale := collection.NftsEarningsOnSale
 	var nftsVaultLockPercentage sdk.Int
 	initialSale := false
 
-	if !found || !nftSettings.InitiallySold {
+	if !found || !marketplaceNft.InitiallySold {
 		initialSale = true
-		nftsVaultLockPercentage = *collectionSettings.InitiallyNftsVaultLockPercentage
+		nftsVaultLockPercentage = *collection.InitiallyNftsVaultLockPercentage
 	}
 
 	if !found {
-		nftSettings = types.NftSettings{
+		marketplaceNft = types.MarketplaceNft{
 			Index:            nft.Index,
 			MarketplaceIndex: marketplaceIndex,
 			CollectionIndex:  collection.Index,
-			MinPrice:         collectionSettings.InitiallyCollectionOwnerNftsMinPrice,
-			ForSale:          collectionSettings.InitiallyCollectionOwnerNftsForSale,
+			MinPrice:         collection.InitiallyNftCollectionOwnerNftsMinPrice,
+			ForSale:          collection.InitiallyNftCollectionOwnerNftsForSale,
 			Creator:          creator,
 		}
 	}
 
-	if !nftSettings.ForSale {
+	if !marketplaceNft.ForSale {
 		return nil, sdkerrors.Wrap(types.ErrNftNotForSale, "nft is not for sale")
 	}
 
-	if !nftSettings.InitiallySold {
-		nftSettings.InitiallySold = true
+	if !marketplaceNft.InitiallySold {
+		marketplaceNft.InitiallySold = true
 	}
 
-	nftSettings.ForSale = false
+	marketplaceNft.ForSale = false
 
-	k.SetNftSettings(ctx, nftSettings)
+	k.SetMarketplaceNft(ctx, marketplaceNft)
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	owner := nftExecutor.GetNftOwner(string(collection.Index), string(nft.Index))
+	owner := nftExecutor.GetNftOwner(string(nftCollection.Index), string(nft.Index))
 
 	if owner == nil || owner.Empty() {
 		return nil, sdkerrors.Wrap(types.ErrUnavailable, "nft owner not found")
@@ -127,14 +127,14 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	staked, err := k.CollectFeesAndDelegateStake(
 		ctx,
-		nftSettings.MinPrice,
+		marketplaceNft.MinPrice,
 		nftsEarningsOnSale,
 		nftsVaultLockPercentage,
 		creator,
-		collection.Owner,
+		nftCollection.Owner,
 		owner,
 		marketplaceIndex,
-		collection.Index,
+		nftCollection.Index,
 		nft.Index,
 		initialSale,
 	)
@@ -143,7 +143,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrapf(err, "unable to collect fees and stake")
 	}
 
-	err = nftExecutor.TransferNft(string(collection.Index), string(nft.Index), creator)
+	err = nftExecutor.TransferNft(string(nftCollection.Index), string(nft.Index), creator)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgBuyNft),
 			sdk.NewAttribute(types.AttributeKeyMarketplaceCreator, marketplaceCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyMarketplaceId, marketplaceId),
-			sdk.NewAttribute(types.AttributeKeyCollectionCreator, collection.Owner.String()),
+			sdk.NewAttribute(types.AttributeKeyCollectionCreator, nftCollection.Owner.String()),
 			sdk.NewAttribute(types.AttributeKeyCollectionId, msg.CollectionId),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
@@ -168,7 +168,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		MarketplaceId:      marketplaceId,
 		MarketplaceCreator: marketplaceCreator.String(),
 		CollectionId:       msg.CollectionId,
-		CollectionCreator:  collection.Owner.String(),
+		CollectionCreator:  nftCollection.Owner.String(),
 		NftId:              msg.NftId,
 		Owner:              owner.String(),
 		Receiver:           creator.String(),

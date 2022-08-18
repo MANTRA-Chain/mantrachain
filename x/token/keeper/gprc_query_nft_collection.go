@@ -124,7 +124,7 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 	}
 
 	return &types.QueryGetNftCollectionsByCreatorResponse{
-		Address:        creator.String(),
+		Creator:        creator.String(),
 		NftCollections: nftCollections,
 		Pagination:     pageRes,
 	}, nil

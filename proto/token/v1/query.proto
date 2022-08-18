@@ -176,7 +176,7 @@ message QueryGetNftCollectionsByCreatorRequest {
 }
 
 message QueryGetNftCollectionsByCreatorResponse {
-  string address = 1;
+  string creator = 1;
   repeated QueryGetNftCollectionResponse nftCollections = 2;
   cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
@@ -200,9 +200,11 @@ message QueryGetAllCollectionNftsRequest {
 }
 
 message QueryGetAllCollectionNftsResponse {
-  string id = 1;
-  repeated QueryGetNftResponse nfts = 2;
-  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+  string collection_creator = 1;
+  string collection_id = 2;
+
+  repeated QueryGetNftResponse nfts = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
 message QueryGetCollectionNftsByOwnerRequest {

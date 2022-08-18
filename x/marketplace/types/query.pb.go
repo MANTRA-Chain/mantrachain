@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
+	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -30,6 +31,351 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type QueryGetAllMarketplaceCollectionsRequest struct {
+	MarketplaceCreator string `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	// pagination defines an optional pagination for the request.
+	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) Reset() {
+	*m = QueryGetAllMarketplaceCollectionsRequest{}
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAllMarketplaceCollectionsRequest) ProtoMessage()    {}
+func (*QueryGetAllMarketplaceCollectionsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{0}
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetAllMarketplaceCollectionsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllMarketplaceCollectionsRequest.Merge(m, src)
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllMarketplaceCollectionsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetAllMarketplaceCollectionsRequest proto.InternalMessageInfo
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetAllMarketplaceCollectionsResponse struct {
+	MarketplaceCreator string                                   `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string                                   `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	Collections        []*QueryGetMarketplaceCollectionResponse `protobuf:"bytes,3,rep,name=collections,proto3" json:"collections,omitempty"`
+	Pagination         *query.PageResponse                      `protobuf:"bytes,4,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) Reset() {
+	*m = QueryGetAllMarketplaceCollectionsResponse{}
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryGetAllMarketplaceCollectionsResponse) ProtoMessage() {}
+func (*QueryGetAllMarketplaceCollectionsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{1}
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetAllMarketplaceCollectionsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllMarketplaceCollectionsResponse.Merge(m, src)
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllMarketplaceCollectionsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetAllMarketplaceCollectionsResponse proto.InternalMessageInfo
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) GetCollections() []*QueryGetMarketplaceCollectionResponse {
+	if m != nil {
+		return m.Collections
+	}
+	return nil
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetMarketplacesByCreatorRequest struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// pagination defines an optional pagination for the request.
+	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) Reset()         { *m = QueryGetMarketplacesByCreatorRequest{} }
+func (m *QueryGetMarketplacesByCreatorRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetMarketplacesByCreatorRequest) ProtoMessage()    {}
+func (*QueryGetMarketplacesByCreatorRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{2}
+}
+func (m *QueryGetMarketplacesByCreatorRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetMarketplacesByCreatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetMarketplacesByCreatorRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetMarketplacesByCreatorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetMarketplacesByCreatorRequest.Merge(m, src)
+}
+func (m *QueryGetMarketplacesByCreatorRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetMarketplacesByCreatorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetMarketplacesByCreatorRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetMarketplacesByCreatorRequest proto.InternalMessageInfo
+
+func (m *QueryGetMarketplacesByCreatorRequest) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetMarketplacesByCreatorResponse struct {
+	Creator      string                         `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Marketplaces []*QueryGetMarketplaceResponse `protobuf:"bytes,2,rep,name=marketplaces,proto3" json:"marketplaces,omitempty"`
+	Pagination   *query.PageResponse            `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) Reset()         { *m = QueryGetMarketplacesByCreatorResponse{} }
+func (m *QueryGetMarketplacesByCreatorResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetMarketplacesByCreatorResponse) ProtoMessage()    {}
+func (*QueryGetMarketplacesByCreatorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{3}
+}
+func (m *QueryGetMarketplacesByCreatorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetMarketplacesByCreatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetMarketplacesByCreatorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetMarketplacesByCreatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetMarketplacesByCreatorResponse.Merge(m, src)
+}
+func (m *QueryGetMarketplacesByCreatorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetMarketplacesByCreatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetMarketplacesByCreatorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetMarketplacesByCreatorResponse proto.InternalMessageInfo
+
+func (m *QueryGetMarketplacesByCreatorResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) GetMarketplaces() []*QueryGetMarketplaceResponse {
+	if m != nil {
+		return m.Marketplaces
+	}
+	return nil
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetAllMarketplacesRequest struct {
+	// pagination defines an optional pagination for the request.
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetAllMarketplacesRequest) Reset()         { *m = QueryGetAllMarketplacesRequest{} }
+func (m *QueryGetAllMarketplacesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAllMarketplacesRequest) ProtoMessage()    {}
+func (*QueryGetAllMarketplacesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{4}
+}
+func (m *QueryGetAllMarketplacesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetAllMarketplacesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetAllMarketplacesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetAllMarketplacesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllMarketplacesRequest.Merge(m, src)
+}
+func (m *QueryGetAllMarketplacesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetAllMarketplacesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllMarketplacesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetAllMarketplacesRequest proto.InternalMessageInfo
+
+func (m *QueryGetAllMarketplacesRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetAllMarketplacesResponse struct {
+	Marketplaces []*QueryGetMarketplaceResponse `protobuf:"bytes,1,rep,name=marketplaces,proto3" json:"marketplaces,omitempty"`
+	Pagination   *query.PageResponse            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryGetAllMarketplacesResponse) Reset()         { *m = QueryGetAllMarketplacesResponse{} }
+func (m *QueryGetAllMarketplacesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAllMarketplacesResponse) ProtoMessage()    {}
+func (*QueryGetAllMarketplacesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{5}
+}
+func (m *QueryGetAllMarketplacesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetAllMarketplacesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetAllMarketplacesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetAllMarketplacesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAllMarketplacesResponse.Merge(m, src)
+}
+func (m *QueryGetAllMarketplacesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetAllMarketplacesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAllMarketplacesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetAllMarketplacesResponse proto.InternalMessageInfo
+
+func (m *QueryGetAllMarketplacesResponse) GetMarketplaces() []*QueryGetMarketplaceResponse {
+	if m != nil {
+		return m.Marketplaces
+	}
+	return nil
+}
+
+func (m *QueryGetAllMarketplacesResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 type QueryParamsRequest struct {
 }
@@ -38,7 +384,7 @@ func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{0}
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{6}
 }
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -77,7 +423,7 @@ func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
 func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{1}
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{7}
 }
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -122,7 +468,7 @@ func (m *QueryGetMarketplaceRequest) Reset()         { *m = QueryGetMarketplaceR
 func (m *QueryGetMarketplaceRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetMarketplaceRequest) ProtoMessage()    {}
 func (*QueryGetMarketplaceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{2}
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{8}
 }
 func (m *QueryGetMarketplaceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -184,7 +530,7 @@ func (m *QueryGetMarketplaceResponse) Reset()         { *m = QueryGetMarketplace
 func (m *QueryGetMarketplaceResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetMarketplaceResponse) ProtoMessage()    {}
 func (*QueryGetMarketplaceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{3}
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{9}
 }
 func (m *QueryGetMarketplaceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -297,25 +643,25 @@ func (m *QueryGetMarketplaceResponse) GetData() *types.Any {
 	return nil
 }
 
-type QueryGetCollectionSettingsRequest struct {
+type QueryGetMarketplaceCollectionRequest struct {
 	MarketplaceCreator string `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
 	MarketplaceId      string `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
 	CollectionCreator  string `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
 	CollectionId       string `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 }
 
-func (m *QueryGetCollectionSettingsRequest) Reset()         { *m = QueryGetCollectionSettingsRequest{} }
-func (m *QueryGetCollectionSettingsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetCollectionSettingsRequest) ProtoMessage()    {}
-func (*QueryGetCollectionSettingsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{4}
+func (m *QueryGetMarketplaceCollectionRequest) Reset()         { *m = QueryGetMarketplaceCollectionRequest{} }
+func (m *QueryGetMarketplaceCollectionRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetMarketplaceCollectionRequest) ProtoMessage()    {}
+func (*QueryGetMarketplaceCollectionRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{10}
 }
-func (m *QueryGetCollectionSettingsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetMarketplaceCollectionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetCollectionSettingsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetMarketplaceCollectionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetCollectionSettingsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetMarketplaceCollectionRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -325,71 +671,71 @@ func (m *QueryGetCollectionSettingsRequest) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *QueryGetCollectionSettingsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetCollectionSettingsRequest.Merge(m, src)
+func (m *QueryGetMarketplaceCollectionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetMarketplaceCollectionRequest.Merge(m, src)
 }
-func (m *QueryGetCollectionSettingsRequest) XXX_Size() int {
+func (m *QueryGetMarketplaceCollectionRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetCollectionSettingsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetCollectionSettingsRequest.DiscardUnknown(m)
+func (m *QueryGetMarketplaceCollectionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetMarketplaceCollectionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetCollectionSettingsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetMarketplaceCollectionRequest proto.InternalMessageInfo
 
-func (m *QueryGetCollectionSettingsRequest) GetMarketplaceCreator() string {
+func (m *QueryGetMarketplaceCollectionRequest) GetMarketplaceCreator() string {
 	if m != nil {
 		return m.MarketplaceCreator
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsRequest) GetMarketplaceId() string {
+func (m *QueryGetMarketplaceCollectionRequest) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsRequest) GetCollectionCreator() string {
+func (m *QueryGetMarketplaceCollectionRequest) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsRequest) GetCollectionId() string {
+func (m *QueryGetMarketplaceCollectionRequest) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-type QueryGetCollectionSettingsResponse struct {
-	MarketplaceCreator                   string                `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
-	MarketplaceId                        string                `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
-	CollectionCreator                    string                `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
-	CollectionId                         string                `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
-	InitiallyCollectionOwnerNftsForSale  bool                  `protobuf:"varint,5,opt,name=initially_collection_owner_nfts_for_sale,json=initiallyCollectionOwnerNftsForSale,proto3" json:"initially_collection_owner_nfts_for_sale,omitempty"`
-	InitiallyCollectionOwnerNftsMinPrice string                `protobuf:"bytes,6,opt,name=initially_collection_owner_nfts_min_price,json=initiallyCollectionOwnerNftsMinPrice,proto3" json:"initially_collection_owner_nfts_min_price,omitempty"`
-	NftsEarningsOnSale                   []*MarketplaceEarning `protobuf:"bytes,7,rep,name=nfts_earnings_on_sale,json=nftsEarningsOnSale,proto3" json:"nfts_earnings_on_sale,omitempty"`
-	NftsEarningsOnYieldReward            []*MarketplaceEarning `protobuf:"bytes,78,rep,name=nfts_earnings_on_yield_reward,json=nftsEarningsOnYieldReward,proto3" json:"nfts_earnings_on_yield_reward,omitempty"`
-	InitiallyNftsVaultLockPercentage     string                `protobuf:"bytes,9,opt,name=initially_nfts_vault_lock_percentage,json=initiallyNftsVaultLockPercentage,proto3" json:"initially_nfts_vault_lock_percentage,omitempty"`
-	Creator                              string                `protobuf:"bytes,10,opt,name=creator,proto3" json:"creator,omitempty"`
+type QueryGetMarketplaceCollectionResponse struct {
+	MarketplaceCreator                      string                `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId                           string                `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator                       string                `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId                            string                `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	InitiallyNftCollectionOwnerNftsForSale  bool                  `protobuf:"varint,5,opt,name=initially_nft_collection_owner_nfts_for_sale,json=initiallyNftCollectionOwnerNftsForSale,proto3" json:"initially_nft_collection_owner_nfts_for_sale,omitempty"`
+	InitiallyNftCollectionOwnerNftsMinPrice string                `protobuf:"bytes,6,opt,name=initially_nft_collection_owner_nfts_min_price,json=initiallyNftCollectionOwnerNftsMinPrice,proto3" json:"initially_nft_collection_owner_nfts_min_price,omitempty"`
+	NftsEarningsOnSale                      []*MarketplaceEarning `protobuf:"bytes,7,rep,name=nfts_earnings_on_sale,json=nftsEarningsOnSale,proto3" json:"nfts_earnings_on_sale,omitempty"`
+	NftsEarningsOnYieldReward               []*MarketplaceEarning `protobuf:"bytes,78,rep,name=nfts_earnings_on_yield_reward,json=nftsEarningsOnYieldReward,proto3" json:"nfts_earnings_on_yield_reward,omitempty"`
+	InitiallyNftsVaultLockPercentage        string                `protobuf:"bytes,9,opt,name=initially_nfts_vault_lock_percentage,json=initiallyNftsVaultLockPercentage,proto3" json:"initially_nfts_vault_lock_percentage,omitempty"`
+	Creator                                 string                `protobuf:"bytes,10,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
-func (m *QueryGetCollectionSettingsResponse) Reset()         { *m = QueryGetCollectionSettingsResponse{} }
-func (m *QueryGetCollectionSettingsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetCollectionSettingsResponse) ProtoMessage()    {}
-func (*QueryGetCollectionSettingsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_3f1bc025c6dc4b4a, []int{5}
+func (m *QueryGetMarketplaceCollectionResponse) Reset()         { *m = QueryGetMarketplaceCollectionResponse{} }
+func (m *QueryGetMarketplaceCollectionResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetMarketplaceCollectionResponse) ProtoMessage()    {}
+func (*QueryGetMarketplaceCollectionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_3f1bc025c6dc4b4a, []int{11}
 }
-func (m *QueryGetCollectionSettingsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetMarketplaceCollectionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetCollectionSettingsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetMarketplaceCollectionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetCollectionSettingsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetMarketplaceCollectionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -399,82 +745,82 @@ func (m *QueryGetCollectionSettingsResponse) XXX_Marshal(b []byte, deterministic
 		return b[:n], nil
 	}
 }
-func (m *QueryGetCollectionSettingsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetCollectionSettingsResponse.Merge(m, src)
+func (m *QueryGetMarketplaceCollectionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetMarketplaceCollectionResponse.Merge(m, src)
 }
-func (m *QueryGetCollectionSettingsResponse) XXX_Size() int {
+func (m *QueryGetMarketplaceCollectionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetCollectionSettingsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetCollectionSettingsResponse.DiscardUnknown(m)
+func (m *QueryGetMarketplaceCollectionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetMarketplaceCollectionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetCollectionSettingsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetMarketplaceCollectionResponse proto.InternalMessageInfo
 
-func (m *QueryGetCollectionSettingsResponse) GetMarketplaceCreator() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetMarketplaceCreator() string {
 	if m != nil {
 		return m.MarketplaceCreator
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetMarketplaceId() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetCollectionCreator() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetCollectionId() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetInitiallyCollectionOwnerNftsForSale() bool {
+func (m *QueryGetMarketplaceCollectionResponse) GetInitiallyNftCollectionOwnerNftsForSale() bool {
 	if m != nil {
-		return m.InitiallyCollectionOwnerNftsForSale
+		return m.InitiallyNftCollectionOwnerNftsForSale
 	}
 	return false
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetInitiallyCollectionOwnerNftsMinPrice() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetInitiallyNftCollectionOwnerNftsMinPrice() string {
 	if m != nil {
-		return m.InitiallyCollectionOwnerNftsMinPrice
+		return m.InitiallyNftCollectionOwnerNftsMinPrice
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetNftsEarningsOnSale() []*MarketplaceEarning {
+func (m *QueryGetMarketplaceCollectionResponse) GetNftsEarningsOnSale() []*MarketplaceEarning {
 	if m != nil {
 		return m.NftsEarningsOnSale
 	}
 	return nil
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetNftsEarningsOnYieldReward() []*MarketplaceEarning {
+func (m *QueryGetMarketplaceCollectionResponse) GetNftsEarningsOnYieldReward() []*MarketplaceEarning {
 	if m != nil {
 		return m.NftsEarningsOnYieldReward
 	}
 	return nil
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetInitiallyNftsVaultLockPercentage() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetInitiallyNftsVaultLockPercentage() string {
 	if m != nil {
 		return m.InitiallyNftsVaultLockPercentage
 	}
 	return ""
 }
 
-func (m *QueryGetCollectionSettingsResponse) GetCreator() string {
+func (m *QueryGetMarketplaceCollectionResponse) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
@@ -482,76 +828,100 @@ func (m *QueryGetCollectionSettingsResponse) GetCreator() string {
 }
 
 func init() {
+	proto.RegisterType((*QueryGetAllMarketplaceCollectionsRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetAllMarketplaceCollectionsRequest")
+	proto.RegisterType((*QueryGetAllMarketplaceCollectionsResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetAllMarketplaceCollectionsResponse")
+	proto.RegisterType((*QueryGetMarketplacesByCreatorRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplacesByCreatorRequest")
+	proto.RegisterType((*QueryGetMarketplacesByCreatorResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplacesByCreatorResponse")
+	proto.RegisterType((*QueryGetAllMarketplacesRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetAllMarketplacesRequest")
+	proto.RegisterType((*QueryGetAllMarketplacesResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetAllMarketplacesResponse")
 	proto.RegisterType((*QueryParamsRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryGetMarketplaceRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplaceRequest")
 	proto.RegisterType((*QueryGetMarketplaceResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplaceResponse")
-	proto.RegisterType((*QueryGetCollectionSettingsRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetCollectionSettingsRequest")
-	proto.RegisterType((*QueryGetCollectionSettingsResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetCollectionSettingsResponse")
+	proto.RegisterType((*QueryGetMarketplaceCollectionRequest)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplaceCollectionRequest")
+	proto.RegisterType((*QueryGetMarketplaceCollectionResponse)(nil), "LimeChain.mantrachain.marketplace.v1.QueryGetMarketplaceCollectionResponse")
 }
 
 func init() { proto.RegisterFile("marketplace/v1/query.proto", fileDescriptor_3f1bc025c6dc4b4a) }
 
 var fileDescriptor_3f1bc025c6dc4b4a = []byte{
-	// 916 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x96, 0x4f, 0x6f, 0x1b, 0x45,
-	0x14, 0xc0, 0xb3, 0xae, 0xed, 0x24, 0xcf, 0x6d, 0x05, 0xaf, 0xa1, 0xda, 0xba, 0x60, 0x8c, 0x5b,
-	0x24, 0x83, 0x5a, 0xaf, 0x1a, 0xfe, 0x73, 0x22, 0x8d, 0x68, 0x09, 0xa4, 0x4e, 0xba, 0x15, 0x20,
-	0x7a, 0x59, 0x4d, 0x76, 0x27, 0xee, 0xc8, 0xbb, 0x33, 0x9b, 0xd9, 0x71, 0x82, 0x89, 0x7c, 0xe1,
-	0x13, 0x20, 0xf5, 0x8c, 0xc4, 0x77, 0xe0, 0x3b, 0xa0, 0xde, 0xa8, 0xd4, 0x0b, 0x27, 0x84, 0x12,
-	0x3e, 0x08, 0xda, 0xd9, 0x59, 0x7b, 0x5d, 0xa7, 0x25, 0x26, 0x27, 0x6e, 0x3b, 0xef, 0xcf, 0xef,
-	0xfd, 0xf1, 0x7b, 0x33, 0x86, 0x7a, 0x44, 0x64, 0x9f, 0xaa, 0x38, 0x24, 0x3e, 0x75, 0xf6, 0x6f,
-	0x39, 0x7b, 0x03, 0x2a, 0x87, 0x9d, 0x58, 0x0a, 0x25, 0xf0, 0xfa, 0x26, 0x8b, 0xe8, 0xfa, 0x23,
-	0xc2, 0x78, 0x27, 0x22, 0x5c, 0x49, 0xe2, 0x9b, 0xef, 0xb1, 0x47, 0x67, 0xff, 0x56, 0xfd, 0x4a,
-	0x4f, 0x88, 0x5e, 0x48, 0x1d, 0xed, 0xb3, 0x33, 0xd8, 0x75, 0x08, 0x37, 0x80, 0xfa, 0x4a, 0x4f,
-	0xf4, 0x84, 0xfe, 0x74, 0xd2, 0x2f, 0x23, 0x7d, 0xdd, 0x38, 0x90, 0x98, 0x39, 0x84, 0x73, 0xa1,
-	0x88, 0x62, 0x82, 0x27, 0x46, 0x7b, 0xf5, 0xb9, 0x84, 0x62, 0x22, 0x49, 0xf4, 0x22, 0xa5, 0x2f,
-	0xa2, 0x48, 0xf0, 0x4c, 0xd9, 0x5a, 0x01, 0xbc, 0x9f, 0x66, 0xbf, 0xad, 0x3d, 0x5c, 0xba, 0x37,
-	0xa0, 0x89, 0x6a, 0x11, 0xb8, 0x34, 0x25, 0x4d, 0x62, 0xc1, 0x13, 0x8a, 0x5f, 0x42, 0x35, 0x23,
-	0xdb, 0x56, 0xd3, 0x6a, 0xd7, 0x56, 0x6f, 0x74, 0x4e, 0x53, 0x6c, 0x27, 0xa3, 0xdc, 0x2e, 0x3f,
-	0xf9, 0xf3, 0xcd, 0x05, 0xd7, 0x10, 0x5a, 0x77, 0xa0, 0xae, 0x43, 0xdc, 0xa5, 0xea, 0xde, 0xc4,
-	0xdc, 0x24, 0x80, 0x36, 0x2c, 0xfa, 0x92, 0x12, 0x25, 0xa4, 0x0e, 0xb5, 0xec, 0xe6, 0x47, 0xbc,
-	0x08, 0x25, 0x16, 0xd8, 0x25, 0x2d, 0x2c, 0xb1, 0xa0, 0xf5, 0x6b, 0x19, 0xae, 0x9e, 0x08, 0x32,
-	0x39, 0x67, 0xf6, 0x56, 0x6e, 0x8f, 0x08, 0x65, 0x4e, 0x22, 0x6a, 0x08, 0xfa, 0x1b, 0x9b, 0x50,
-	0x0b, 0x68, 0xe2, 0x4b, 0x16, 0xa7, 0x4d, 0xb5, 0xcf, 0x69, 0x55, 0x51, 0x84, 0xaf, 0xc0, 0xb9,
-	0x81, 0x0c, 0xed, 0xb2, 0xd6, 0xa4, 0x9f, 0xb8, 0x02, 0x15, 0x71, 0xc0, 0xa9, 0xb4, 0x2b, 0x5a,
-	0x96, 0x1d, 0x8a, 0x79, 0x57, 0xa7, 0xf3, 0xbe, 0x0c, 0x55, 0x11, 0x53, 0x4e, 0x03, 0x7b, 0xb1,
-	0x69, 0xb5, 0x97, 0x5c, 0x73, 0xc2, 0xfb, 0xb0, 0x28, 0x74, 0x8c, 0xc4, 0x5e, 0x6a, 0x9e, 0x6b,
-	0xd7, 0x56, 0x3f, 0x3a, 0x5d, 0x53, 0x0b, 0xb5, 0x6e, 0x69, 0x7f, 0x37, 0xe7, 0xe0, 0x43, 0x00,
-	0xa2, 0x94, 0x64, 0x3b, 0x03, 0x45, 0x13, 0x7b, 0x59, 0x53, 0x3f, 0x9d, 0x9b, 0xba, 0x96, 0x23,
-	0xdc, 0x02, 0x0d, 0xbb, 0x50, 0x65, 0x11, 0xe9, 0xd1, 0xc4, 0x06, 0xcd, 0xfd, 0x70, 0x6e, 0xee,
-	0x46, 0xea, 0xee, 0x1a, 0x0a, 0x7e, 0x05, 0x95, 0x90, 0xf1, 0x7e, 0x62, 0xd7, 0x34, 0xee, 0x83,
-	0xb9, 0x71, 0x9b, 0x8c, 0xf7, 0xdd, 0x8c, 0x81, 0x6d, 0x28, 0x07, 0x44, 0x11, 0xfb, 0xbc, 0x9e,
-	0xce, 0x95, 0x4e, 0xb6, 0x33, 0x9d, 0x7c, 0xc9, 0x3a, 0x6b, 0x7c, 0xe8, 0x6a, 0x8b, 0xd6, 0xef,
-	0x16, 0xbc, 0x95, 0x4f, 0xcd, 0xba, 0x08, 0x43, 0xea, 0xa7, 0xad, 0x7b, 0x40, 0x95, 0x62, 0xbc,
-	0x97, 0xaf, 0x01, 0x3a, 0x70, 0xa9, 0x10, 0xd8, 0x9b, 0x9e, 0x48, 0x2c, 0xa8, 0xd6, 0xcd, 0x8f,
-	0xfc, 0x36, 0x5c, 0x2c, 0x3a, 0x8c, 0x07, 0xf5, 0x42, 0x41, 0xba, 0x11, 0xe0, 0x4d, 0x40, 0x7f,
-	0x1c, 0x74, 0x8c, 0xcd, 0xc6, 0xee, 0xd5, 0x89, 0x26, 0xa7, 0x5e, 0x83, 0x0b, 0x05, 0x73, 0x16,
-	0x98, 0x31, 0x3c, 0x3f, 0x11, 0x6e, 0x04, 0xad, 0x67, 0x15, 0x68, 0xbd, 0xac, 0x22, 0xb3, 0x0e,
-	0xff, 0xa3, 0x92, 0xf0, 0x6b, 0x68, 0x33, 0xce, 0x14, 0x23, 0x61, 0x38, 0xf4, 0x0a, 0xe6, 0x7a,
-	0xd5, 0x3c, 0xbe, 0xab, 0x12, 0x6f, 0x57, 0x48, 0x2f, 0x21, 0x21, 0xd5, 0x5b, 0xb8, 0xe4, 0x5e,
-	0x1b, 0xdb, 0x4f, 0x5a, 0xb0, 0x95, 0x5a, 0x77, 0x77, 0x55, 0x72, 0x47, 0xc8, 0x07, 0x24, 0xa4,
-	0xf8, 0x2d, 0xbc, 0xf3, 0x6f, 0xd8, 0x88, 0x71, 0x2f, 0x96, 0xcc, 0xa7, 0x66, 0x8b, 0xaf, 0xbf,
-	0x8c, 0x7b, 0x8f, 0xf1, 0xed, 0xd4, 0x16, 0xfb, 0xf0, 0x9a, 0xf6, 0xa6, 0x44, 0xf2, 0xb4, 0xe9,
-	0x9e, 0xe0, 0x59, 0x72, 0x8b, 0x7a, 0xb6, 0x3f, 0x9e, 0x7b, 0xb6, 0x3f, 0xcf, 0x40, 0x2e, 0xa6,
-	0x58, 0x73, 0x48, 0xb6, 0xb8, 0xae, 0xe2, 0x07, 0x78, 0x63, 0x26, 0xd8, 0x90, 0xd1, 0x30, 0xf0,
-	0x24, 0x3d, 0x20, 0x32, 0xb0, 0xbb, 0x67, 0x0c, 0x7a, 0x65, 0x3a, 0xe8, 0x77, 0x29, 0xdb, 0xd5,
-	0x68, 0xec, 0xc2, 0xa4, 0x21, 0x59, 0xc3, 0xf6, 0xc9, 0x20, 0x54, 0x5e, 0x28, 0xfc, 0xbe, 0x17,
-	0x53, 0xe9, 0x53, 0xae, 0x48, 0x8f, 0xda, 0xcb, 0xba, 0x79, 0xcd, 0xb1, 0x6d, 0xda, 0xad, 0x6f,
-	0x52, 0xcb, 0x4d, 0xe1, 0xf7, 0xb7, 0xc7, 0x76, 0xc5, 0x5b, 0x13, 0xa6, 0x6e, 0xcd, 0xd5, 0xc7,
-	0x15, 0xa8, 0xe8, 0xa9, 0xc6, 0x9f, 0x2d, 0xa8, 0x66, 0x0f, 0x09, 0x9e, 0xb2, 0xa6, 0xd9, 0x77,
-	0xad, 0xfe, 0xc9, 0x7f, 0xf0, 0xcc, 0x16, 0xa7, 0xd5, 0xf8, 0xf1, 0xd9, 0xdf, 0x8f, 0x4b, 0x36,
-	0x5e, 0x76, 0x4e, 0x7c, 0x6b, 0xf1, 0x37, 0x0b, 0x6a, 0x85, 0x2e, 0xe2, 0x67, 0x73, 0x84, 0x3a,
-	0xf1, 0x0d, 0xac, 0xaf, 0x9d, 0x81, 0x60, 0x92, 0x5e, 0xd5, 0x49, 0xdf, 0xc0, 0x77, 0x9f, 0x4f,
-	0xba, 0x78, 0x3c, 0x34, 0xcd, 0x1e, 0x39, 0x87, 0x2c, 0x18, 0xe1, 0x2f, 0x25, 0xc0, 0xd9, 0x0b,
-	0x04, 0xef, 0xce, 0x97, 0xcd, 0x0b, 0x2f, 0xd5, 0xfa, 0x17, 0x67, 0x07, 0x99, 0xea, 0x0e, 0x74,
-	0x75, 0x7b, 0x28, 0x9c, 0x99, 0x7f, 0x38, 0xb9, 0xcf, 0xcd, 0xc4, 0x38, 0x39, 0x87, 0x27, 0x5c,
-	0x7b, 0xa3, 0x69, 0x29, 0x0b, 0x46, 0xce, 0xe1, 0xec, 0x2d, 0x36, 0x2d, 0x64, 0xc1, 0xe8, 0x76,
-	0xf7, 0xc9, 0x51, 0xc3, 0x7a, 0x7a, 0xd4, 0xb0, 0xfe, 0x3a, 0x6a, 0x58, 0x3f, 0x1d, 0x37, 0x16,
-	0x9e, 0x1e, 0x37, 0x16, 0xfe, 0x38, 0x6e, 0x2c, 0x3c, 0x7c, 0xbf, 0xc7, 0xd4, 0xa3, 0xc1, 0x4e,
-	0xc7, 0x17, 0x91, 0x33, 0x2e, 0xd3, 0x29, 0x94, 0xe9, 0x7c, 0x3f, 0x95, 0xac, 0x1a, 0xc6, 0x34,
-	0xd9, 0xa9, 0xea, 0x17, 0xea, 0xbd, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x92, 0x47, 0x27, 0x8a,
-	0x58, 0x0a, 0x00, 0x00,
+	// 1205 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x58, 0xcf, 0x4f, 0x1b, 0xc7,
+	0x17, 0x67, 0x0d, 0x98, 0xf0, 0x9c, 0xe4, 0xfb, 0xed, 0x84, 0x44, 0x8b, 0x69, 0x1c, 0xcb, 0x81,
+	0xe0, 0x46, 0xb0, 0x2b, 0xe8, 0xaf, 0xb4, 0xa7, 0x02, 0x0d, 0x11, 0x09, 0x18, 0xb2, 0x55, 0x2b,
+	0x35, 0xaa, 0x6a, 0x8d, 0x77, 0x07, 0x33, 0xf2, 0xee, 0x8c, 0xb3, 0xbb, 0x26, 0x75, 0x10, 0x97,
+	0x9e, 0x7a, 0xac, 0x94, 0x73, 0xff, 0x83, 0xde, 0x7a, 0xec, 0xb1, 0x52, 0x15, 0xf5, 0x94, 0xb6,
+	0x97, 0x5e, 0xfa, 0x43, 0x90, 0x7f, 0xa0, 0xff, 0x41, 0xb5, 0xb3, 0x63, 0x7b, 0xd7, 0x36, 0xe0,
+	0x1f, 0xa4, 0x52, 0x6f, 0x3b, 0x33, 0xef, 0x7d, 0xe6, 0x7d, 0x3e, 0xf3, 0xe6, 0xcd, 0xb3, 0x21,
+	0xed, 0x60, 0xb7, 0x42, 0xfc, 0xaa, 0x8d, 0x4d, 0xa2, 0xef, 0x2f, 0xe9, 0x8f, 0x6b, 0xc4, 0xad,
+	0x6b, 0x55, 0x97, 0xfb, 0x1c, 0xcd, 0x6e, 0x52, 0x87, 0xac, 0xed, 0x61, 0xca, 0x34, 0x07, 0x33,
+	0xdf, 0xc5, 0xa6, 0xfc, 0x6e, 0x7a, 0x68, 0xfb, 0x4b, 0xe9, 0xe9, 0x32, 0xe7, 0x65, 0x9b, 0xe8,
+	0xc2, 0xa7, 0x54, 0xdb, 0xd5, 0x31, 0x93, 0x00, 0xe9, 0xa9, 0x32, 0x2f, 0x73, 0xf1, 0xa9, 0x07,
+	0x5f, 0x72, 0xf6, 0x75, 0xe9, 0x80, 0xab, 0x54, 0xc7, 0x8c, 0x71, 0x1f, 0xfb, 0x94, 0x33, 0x4f,
+	0xae, 0xce, 0xb4, 0x05, 0x54, 0xc5, 0x2e, 0x76, 0x4e, 0x5a, 0x34, 0xb9, 0xe3, 0x70, 0x26, 0x17,
+	0x6f, 0x9b, 0xdc, 0x73, 0xb8, 0xa7, 0x97, 0xb0, 0x47, 0x42, 0x1e, 0xfa, 0xfe, 0x52, 0x89, 0xf8,
+	0x38, 0x00, 0x29, 0x53, 0x26, 0xb6, 0x09, 0x6d, 0x73, 0x3f, 0x29, 0x90, 0x7f, 0x18, 0x98, 0xdc,
+	0x23, 0xfe, 0x8a, 0x6d, 0x6f, 0xb5, 0x60, 0xd7, 0xb8, 0x6d, 0x13, 0x53, 0x44, 0x64, 0x90, 0xc7,
+	0x35, 0xe2, 0xf9, 0x48, 0x87, 0x2b, 0x91, 0x7d, 0x8b, 0xa6, 0x4b, 0xb0, 0xcf, 0x5d, 0x55, 0xc9,
+	0x2a, 0xf9, 0x49, 0x03, 0x45, 0x96, 0xd6, 0xc2, 0x15, 0x34, 0x07, 0x97, 0xa3, 0x0e, 0xd4, 0x52,
+	0x13, 0xc2, 0xf6, 0x52, 0x64, 0x76, 0xc3, 0x42, 0xeb, 0x00, 0xad, 0xc0, 0xd4, 0xd1, 0xac, 0x92,
+	0x4f, 0x2d, 0xdf, 0xd2, 0x42, 0x16, 0x5a, 0xc0, 0x42, 0x0b, 0x4f, 0x43, 0xb2, 0xd0, 0x76, 0x70,
+	0x99, 0xc8, 0x98, 0x8c, 0x88, 0x67, 0xee, 0xfb, 0x04, 0xbc, 0xd1, 0x03, 0x19, 0xaf, 0xca, 0x99,
+	0x47, 0x5e, 0x19, 0x1b, 0x07, 0x52, 0x66, 0x6b, 0x3b, 0x75, 0x34, 0x3b, 0x9a, 0x4f, 0x2d, 0x3f,
+	0xd0, 0x7a, 0xc9, 0x21, 0xad, 0x11, 0x7d, 0xd7, 0xd0, 0x1b, 0x91, 0x1b, 0x51, 0x7c, 0x74, 0x2f,
+	0x26, 0xde, 0x98, 0x10, 0x6f, 0xfe, 0x4c, 0xf1, 0x24, 0x52, 0x54, 0xbd, 0xaf, 0x14, 0x98, 0xed,
+	0xb2, 0xbf, 0xb7, 0x5a, 0x97, 0x02, 0x34, 0xd2, 0x40, 0x85, 0x89, 0xb8, 0x58, 0x8d, 0x61, 0xdb,
+	0x41, 0x26, 0x06, 0x3e, 0xc8, 0xbf, 0x15, 0x98, 0x3b, 0x23, 0x14, 0x79, 0x88, 0x27, 0xc7, 0x42,
+	0xe0, 0x62, 0x44, 0x5c, 0x4f, 0x4d, 0x88, 0x73, 0x58, 0x19, 0xf8, 0x1c, 0x9a, 0x9a, 0xc5, 0x60,
+	0xdb, 0xe4, 0x1f, 0x1d, 0x5c, 0xfe, 0x3d, 0xc8, 0x74, 0xcf, 0xdd, 0xe6, 0xf5, 0x8b, 0xab, 0xab,
+	0x0c, 0xac, 0xee, 0xcf, 0x0a, 0xdc, 0x38, 0x71, 0x2b, 0xa9, 0x6b, 0xbb, 0x7a, 0xca, 0xbf, 0xa1,
+	0x5e, 0x62, 0x70, 0xf5, 0xa6, 0x00, 0x89, 0x5d, 0x77, 0x44, 0x95, 0x94, 0xac, 0x73, 0x18, 0xae,
+	0xc4, 0x66, 0x25, 0xb9, 0xfb, 0x90, 0x0c, 0xab, 0xa9, 0x14, 0x71, 0xa1, 0x37, 0x5a, 0x21, 0xca,
+	0xea, 0xd8, 0xf3, 0x3f, 0x6e, 0x8c, 0x18, 0x12, 0x21, 0xb7, 0x0e, 0xe9, 0xae, 0x74, 0xcf, 0xba,
+	0x2a, 0x97, 0x21, 0xd1, 0x2c, 0x20, 0x09, 0x6a, 0xe5, 0xbe, 0x1b, 0x83, 0x99, 0x53, 0x74, 0x93,
+	0xf6, 0x4a, 0xc3, 0x1e, 0x21, 0x18, 0x63, 0xd8, 0x21, 0x12, 0x41, 0x7c, 0xa3, 0x2c, 0xa4, 0x2c,
+	0xe2, 0x99, 0x2e, 0xad, 0x36, 0x93, 0x71, 0xd2, 0x88, 0x4e, 0xa1, 0xff, 0xc3, 0x68, 0xcd, 0xb5,
+	0x45, 0x95, 0x98, 0x34, 0x82, 0x4f, 0x34, 0x05, 0xe3, 0xfc, 0x09, 0x23, 0xae, 0x3a, 0x2e, 0xe6,
+	0xc2, 0x41, 0x34, 0xee, 0x64, 0x3c, 0xee, 0x6b, 0x90, 0xe4, 0x55, 0xc2, 0x88, 0xa5, 0x4e, 0x64,
+	0x95, 0xfc, 0x05, 0x43, 0x8e, 0xd0, 0x43, 0x98, 0xe0, 0xd5, 0xb0, 0xe2, 0x5d, 0x10, 0xb9, 0xf2,
+	0x6e, 0x6f, 0xa2, 0x46, 0xb8, 0x6e, 0x0b, 0x7f, 0xa3, 0x81, 0x83, 0x1e, 0x01, 0x60, 0xdf, 0x77,
+	0x69, 0xa9, 0xe6, 0x13, 0x4f, 0x9d, 0x14, 0xa8, 0xef, 0xf7, 0x8d, 0xba, 0xd2, 0x80, 0x30, 0x22,
+	0x68, 0xa8, 0x00, 0x49, 0xea, 0xe0, 0x32, 0xf1, 0x54, 0x10, 0xb8, 0xef, 0xf4, 0x8d, 0xbb, 0x11,
+	0xb8, 0x1b, 0x12, 0x05, 0x3d, 0x80, 0x71, 0x9b, 0xb2, 0x8a, 0xa7, 0xa6, 0x04, 0xdc, 0xdb, 0x7d,
+	0xc3, 0x6d, 0x52, 0x56, 0x31, 0x42, 0x0c, 0x94, 0x87, 0x31, 0x0b, 0xfb, 0x58, 0xbd, 0x28, 0xb2,
+	0x73, 0x4a, 0x0b, 0xfb, 0x04, 0xad, 0xd1, 0x58, 0x68, 0x2b, 0xac, 0x6e, 0x08, 0x8b, 0xdc, 0x2f,
+	0xdd, 0x6b, 0x76, 0xf4, 0xcd, 0x78, 0xb5, 0x4f, 0xf7, 0x22, 0xa0, 0xd6, 0x63, 0xd4, 0x84, 0x0d,
+	0x33, 0xef, 0xb5, 0xd6, 0x4a, 0x03, 0xf5, 0x26, 0x5c, 0x8a, 0x98, 0x53, 0x4b, 0x66, 0xe2, 0xc5,
+	0xd6, 0xe4, 0x86, 0x95, 0x7b, 0x39, 0xde, 0xb5, 0xfa, 0x77, 0x3e, 0x84, 0xff, 0x25, 0x56, 0xe8,
+	0x33, 0x58, 0xa0, 0x8c, 0xfa, 0x14, 0xdb, 0x76, 0xbd, 0xc8, 0x76, 0xfd, 0x62, 0xc4, 0x45, 0x5c,
+	0xba, 0x60, 0xd2, 0x2b, 0xee, 0x72, 0xb7, 0xe8, 0x61, 0x9b, 0x88, 0xfb, 0x78, 0xc1, 0xb8, 0xd5,
+	0xf4, 0x29, 0xec, 0xfa, 0x2d, 0x05, 0xb6, 0x03, 0x87, 0xc2, 0xae, 0xef, 0xad, 0x73, 0xf7, 0x23,
+	0x6c, 0x13, 0xf4, 0x39, 0x2c, 0xf6, 0x82, 0xee, 0x50, 0x56, 0xac, 0xba, 0xd4, 0x24, 0xf2, 0x5a,
+	0xcf, 0x9f, 0x01, 0xbf, 0x45, 0xd9, 0x4e, 0x60, 0x8e, 0x2a, 0x70, 0x55, 0x00, 0x10, 0xec, 0x32,
+	0xca, 0xca, 0x5e, 0x91, 0xb3, 0x30, 0xcc, 0x09, 0x91, 0xef, 0x77, 0xfa, 0xce, 0xf7, 0xbb, 0x21,
+	0x90, 0x81, 0x02, 0x58, 0x39, 0xf0, 0xb6, 0x99, 0x20, 0xf3, 0x14, 0xae, 0x77, 0x6c, 0x56, 0xa7,
+	0xc4, 0xb6, 0x8a, 0x2e, 0x79, 0x82, 0x5d, 0x4b, 0x2d, 0x0c, 0xb9, 0xe9, 0x74, 0x7c, 0xd3, 0x4f,
+	0x03, 0x6c, 0x43, 0x40, 0xa3, 0x02, 0xcc, 0xc6, 0x84, 0xf4, 0x8a, 0xfb, 0xb8, 0x66, 0xfb, 0x45,
+	0x9b, 0x9b, 0x95, 0x62, 0x95, 0xb8, 0x26, 0x61, 0x3e, 0x2e, 0x13, 0x75, 0x52, 0xe8, 0x97, 0x8d,
+	0xea, 0xe7, 0x7d, 0x12, 0x58, 0x6e, 0x72, 0xb3, 0xb2, 0xd3, 0xb4, 0x8b, 0x56, 0x52, 0x88, 0x55,
+	0xd2, 0xe5, 0xdf, 0x01, 0xc6, 0x45, 0x9a, 0xa3, 0x6f, 0x14, 0x48, 0x86, 0x8f, 0x0b, 0xba, 0xd3,
+	0xc7, 0x0b, 0x1b, 0x7b, 0xeb, 0xd2, 0xef, 0x0d, 0xe0, 0x19, 0x5e, 0xa3, 0x5c, 0xe6, 0xcb, 0x5f,
+	0x5f, 0x3e, 0x4b, 0xa8, 0xe8, 0x9a, 0xde, 0xf5, 0x37, 0x07, 0xfa, 0x51, 0x81, 0x54, 0x44, 0x45,
+	0xf4, 0xc1, 0x10, 0x6d, 0x40, 0x18, 0xec, 0xf0, 0x8d, 0x44, 0x6e, 0x59, 0x04, 0xbd, 0x80, 0x6e,
+	0xb7, 0x07, 0x1d, 0x1d, 0x1e, 0x48, 0xb1, 0x0f, 0xf5, 0x03, 0x6a, 0x1d, 0xa2, 0x6f, 0x13, 0x70,
+	0xb5, 0x6b, 0x45, 0x41, 0xf7, 0xcf, 0xa5, 0x3f, 0x0f, 0xc9, 0x9d, 0x67, 0xaf, 0x9f, 0x7b, 0x2a,
+	0x68, 0xfa, 0xc8, 0x3d, 0x85, 0xe6, 0x62, 0xeb, 0xb2, 0xeb, 0x07, 0x5d, 0x0a, 0xe2, 0x61, 0x7c,
+	0x96, 0x5a, 0x87, 0xfa, 0x41, 0x67, 0x7d, 0x8b, 0x4f, 0x06, 0x72, 0xfd, 0xa9, 0xc4, 0xe4, 0x6a,
+	0xb5, 0xdf, 0x43, 0xc8, 0xd5, 0xf1, 0x73, 0x62, 0x08, 0xb9, 0x3a, 0x7f, 0x0f, 0xe4, 0x16, 0x85,
+	0x5c, 0xf3, 0x68, 0xae, 0xa7, 0xac, 0x40, 0x3f, 0x28, 0xf0, 0xbf, 0xb6, 0x16, 0x18, 0x7d, 0xd8,
+	0x5f, 0x3c, 0xdd, 0x9b, 0xf5, 0xf4, 0xdd, 0x21, 0x51, 0x24, 0x9f, 0x9b, 0x82, 0xcf, 0x75, 0x34,
+	0x73, 0x0a, 0x1f, 0xf4, 0x2c, 0x01, 0xd3, 0x27, 0xfe, 0xde, 0x45, 0x85, 0x61, 0x22, 0xe9, 0xfc,
+	0x17, 0x20, 0xbd, 0x7d, 0x6e, 0x78, 0x92, 0xe3, 0xc7, 0x82, 0xe3, 0x36, 0xda, 0x3a, 0xd7, 0x14,
+	0x5f, 0x2d, 0x3c, 0x3f, 0xca, 0x28, 0x2f, 0x8e, 0x32, 0xca, 0x5f, 0x47, 0x19, 0xe5, 0xeb, 0xe3,
+	0xcc, 0xc8, 0x8b, 0xe3, 0xcc, 0xc8, 0x6f, 0xc7, 0x99, 0x91, 0x47, 0x6f, 0x95, 0xa9, 0xbf, 0x57,
+	0x2b, 0x69, 0x26, 0x77, 0xf4, 0x26, 0x17, 0x3d, 0xc2, 0x45, 0xff, 0x22, 0x16, 0x8a, 0x5f, 0xaf,
+	0x12, 0xaf, 0x94, 0x14, 0xfd, 0xd7, 0x9b, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x05, 0x56,
+	0x9c, 0x2a, 0x12, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -569,7 +939,10 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	Marketplace(ctx context.Context, in *QueryGetMarketplaceRequest, opts ...grpc.CallOption) (*QueryGetMarketplaceResponse, error)
-	CollectionSettings(ctx context.Context, in *QueryGetCollectionSettingsRequest, opts ...grpc.CallOption) (*QueryGetCollectionSettingsResponse, error)
+	MarketplaceCollection(ctx context.Context, in *QueryGetMarketplaceCollectionRequest, opts ...grpc.CallOption) (*QueryGetMarketplaceCollectionResponse, error)
+	MarketplacesByCreator(ctx context.Context, in *QueryGetMarketplacesByCreatorRequest, opts ...grpc.CallOption) (*QueryGetMarketplacesByCreatorResponse, error)
+	AllMarketplaces(ctx context.Context, in *QueryGetAllMarketplacesRequest, opts ...grpc.CallOption) (*QueryGetAllMarketplacesResponse, error)
+	AllMarketplaceCollections(ctx context.Context, in *QueryGetAllMarketplaceCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllMarketplaceCollectionsResponse, error)
 }
 
 type queryClient struct {
@@ -598,9 +971,36 @@ func (c *queryClient) Marketplace(ctx context.Context, in *QueryGetMarketplaceRe
 	return out, nil
 }
 
-func (c *queryClient) CollectionSettings(ctx context.Context, in *QueryGetCollectionSettingsRequest, opts ...grpc.CallOption) (*QueryGetCollectionSettingsResponse, error) {
-	out := new(QueryGetCollectionSettingsResponse)
-	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Query/CollectionSettings", in, out, opts...)
+func (c *queryClient) MarketplaceCollection(ctx context.Context, in *QueryGetMarketplaceCollectionRequest, opts ...grpc.CallOption) (*QueryGetMarketplaceCollectionResponse, error) {
+	out := new(QueryGetMarketplaceCollectionResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Query/MarketplaceCollection", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) MarketplacesByCreator(ctx context.Context, in *QueryGetMarketplacesByCreatorRequest, opts ...grpc.CallOption) (*QueryGetMarketplacesByCreatorResponse, error) {
+	out := new(QueryGetMarketplacesByCreatorResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Query/MarketplacesByCreator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllMarketplaces(ctx context.Context, in *QueryGetAllMarketplacesRequest, opts ...grpc.CallOption) (*QueryGetAllMarketplacesResponse, error) {
+	out := new(QueryGetAllMarketplacesResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Query/AllMarketplaces", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllMarketplaceCollections(ctx context.Context, in *QueryGetAllMarketplaceCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllMarketplaceCollectionsResponse, error) {
+	out := new(QueryGetAllMarketplaceCollectionsResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Query/AllMarketplaceCollections", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -612,7 +1012,10 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	Marketplace(context.Context, *QueryGetMarketplaceRequest) (*QueryGetMarketplaceResponse, error)
-	CollectionSettings(context.Context, *QueryGetCollectionSettingsRequest) (*QueryGetCollectionSettingsResponse, error)
+	MarketplaceCollection(context.Context, *QueryGetMarketplaceCollectionRequest) (*QueryGetMarketplaceCollectionResponse, error)
+	MarketplacesByCreator(context.Context, *QueryGetMarketplacesByCreatorRequest) (*QueryGetMarketplacesByCreatorResponse, error)
+	AllMarketplaces(context.Context, *QueryGetAllMarketplacesRequest) (*QueryGetAllMarketplacesResponse, error)
+	AllMarketplaceCollections(context.Context, *QueryGetAllMarketplaceCollectionsRequest) (*QueryGetAllMarketplaceCollectionsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -625,8 +1028,17 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 func (*UnimplementedQueryServer) Marketplace(ctx context.Context, req *QueryGetMarketplaceRequest) (*QueryGetMarketplaceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Marketplace not implemented")
 }
-func (*UnimplementedQueryServer) CollectionSettings(ctx context.Context, req *QueryGetCollectionSettingsRequest) (*QueryGetCollectionSettingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CollectionSettings not implemented")
+func (*UnimplementedQueryServer) MarketplaceCollection(ctx context.Context, req *QueryGetMarketplaceCollectionRequest) (*QueryGetMarketplaceCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarketplaceCollection not implemented")
+}
+func (*UnimplementedQueryServer) MarketplacesByCreator(ctx context.Context, req *QueryGetMarketplacesByCreatorRequest) (*QueryGetMarketplacesByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarketplacesByCreator not implemented")
+}
+func (*UnimplementedQueryServer) AllMarketplaces(ctx context.Context, req *QueryGetAllMarketplacesRequest) (*QueryGetAllMarketplacesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllMarketplaces not implemented")
+}
+func (*UnimplementedQueryServer) AllMarketplaceCollections(ctx context.Context, req *QueryGetAllMarketplaceCollectionsRequest) (*QueryGetAllMarketplaceCollectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllMarketplaceCollections not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -669,20 +1081,74 @@ func _Query_Marketplace_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CollectionSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetCollectionSettingsRequest)
+func _Query_MarketplaceCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetMarketplaceCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CollectionSettings(ctx, in)
+		return srv.(QueryServer).MarketplaceCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Query/CollectionSettings",
+		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Query/MarketplaceCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CollectionSettings(ctx, req.(*QueryGetCollectionSettingsRequest))
+		return srv.(QueryServer).MarketplaceCollection(ctx, req.(*QueryGetMarketplaceCollectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_MarketplacesByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetMarketplacesByCreatorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MarketplacesByCreator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Query/MarketplacesByCreator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MarketplacesByCreator(ctx, req.(*QueryGetMarketplacesByCreatorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllMarketplaces_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAllMarketplacesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllMarketplaces(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Query/AllMarketplaces",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllMarketplaces(ctx, req.(*QueryGetAllMarketplacesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllMarketplaceCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAllMarketplaceCollectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllMarketplaceCollections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Query/AllMarketplaceCollections",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllMarketplaceCollections(ctx, req.(*QueryGetAllMarketplaceCollectionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -700,12 +1166,318 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Marketplace_Handler,
 		},
 		{
-			MethodName: "CollectionSettings",
-			Handler:    _Query_CollectionSettings_Handler,
+			MethodName: "MarketplaceCollection",
+			Handler:    _Query_MarketplaceCollection_Handler,
+		},
+		{
+			MethodName: "MarketplacesByCreator",
+			Handler:    _Query_MarketplacesByCreator_Handler,
+		},
+		{
+			MethodName: "AllMarketplaces",
+			Handler:    _Query_AllMarketplaces_Handler,
+		},
+		{
+			MethodName: "AllMarketplaceCollections",
+			Handler:    _Query_AllMarketplaceCollections_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "marketplace/v1/query.proto",
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetAllMarketplaceCollectionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Collections) > 0 {
+		for iNdEx := len(m.Collections) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Collections[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Marketplaces) > 0 {
+		for iNdEx := len(m.Marketplaces) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Marketplaces[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetAllMarketplacesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetAllMarketplacesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetAllMarketplacesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetAllMarketplacesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetAllMarketplacesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetAllMarketplacesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Marketplaces) > 0 {
+		for iNdEx := len(m.Marketplaces) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Marketplaces[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
@@ -944,7 +1716,7 @@ func (m *QueryGetMarketplaceResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetCollectionSettingsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetMarketplaceCollectionRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -954,12 +1726,12 @@ func (m *QueryGetCollectionSettingsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetCollectionSettingsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetMarketplaceCollectionRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetCollectionSettingsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetMarketplaceCollectionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -995,7 +1767,7 @@ func (m *QueryGetCollectionSettingsRequest) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetCollectionSettingsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetMarketplaceCollectionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1005,12 +1777,12 @@ func (m *QueryGetCollectionSettingsResponse) Marshal() (dAtA []byte, err error) 
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetCollectionSettingsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetMarketplaceCollectionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetCollectionSettingsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetMarketplaceCollectionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1059,16 +1831,16 @@ func (m *QueryGetCollectionSettingsResponse) MarshalToSizedBuffer(dAtA []byte) (
 			dAtA[i] = 0x3a
 		}
 	}
-	if len(m.InitiallyCollectionOwnerNftsMinPrice) > 0 {
-		i -= len(m.InitiallyCollectionOwnerNftsMinPrice)
-		copy(dAtA[i:], m.InitiallyCollectionOwnerNftsMinPrice)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.InitiallyCollectionOwnerNftsMinPrice)))
+	if len(m.InitiallyNftCollectionOwnerNftsMinPrice) > 0 {
+		i -= len(m.InitiallyNftCollectionOwnerNftsMinPrice)
+		copy(dAtA[i:], m.InitiallyNftCollectionOwnerNftsMinPrice)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.InitiallyNftCollectionOwnerNftsMinPrice)))
 		i--
 		dAtA[i] = 0x32
 	}
-	if m.InitiallyCollectionOwnerNftsForSale {
+	if m.InitiallyNftCollectionOwnerNftsForSale {
 		i--
-		if m.InitiallyCollectionOwnerNftsForSale {
+		if m.InitiallyNftCollectionOwnerNftsForSale {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1118,6 +1890,126 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *QueryGetAllMarketplaceCollectionsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetAllMarketplaceCollectionsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Collections) > 0 {
+		for _, e := range m.Collections {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetMarketplacesByCreatorRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetMarketplacesByCreatorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Marketplaces) > 0 {
+		for _, e := range m.Marketplaces {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetAllMarketplacesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetAllMarketplacesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Marketplaces) > 0 {
+		for _, e := range m.Marketplaces {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *QueryParamsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1219,7 +2111,7 @@ func (m *QueryGetMarketplaceResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetCollectionSettingsRequest) Size() (n int) {
+func (m *QueryGetMarketplaceCollectionRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1244,7 +2136,7 @@ func (m *QueryGetCollectionSettingsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetCollectionSettingsResponse) Size() (n int) {
+func (m *QueryGetMarketplaceCollectionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1266,10 +2158,10 @@ func (m *QueryGetCollectionSettingsResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.InitiallyCollectionOwnerNftsForSale {
+	if m.InitiallyNftCollectionOwnerNftsForSale {
 		n += 2
 	}
-	l = len(m.InitiallyCollectionOwnerNftsMinPrice)
+	l = len(m.InitiallyNftCollectionOwnerNftsMinPrice)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1301,6 +2193,816 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QueryGetAllMarketplaceCollectionsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetAllMarketplaceCollectionsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetAllMarketplaceCollectionsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetAllMarketplaceCollectionsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetAllMarketplaceCollectionsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetAllMarketplaceCollectionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Collections", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Collections = append(m.Collections, &QueryGetMarketplaceCollectionResponse{})
+			if err := m.Collections[len(m.Collections)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetMarketplacesByCreatorRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetMarketplacesByCreatorRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetMarketplacesByCreatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetMarketplacesByCreatorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetMarketplacesByCreatorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetMarketplacesByCreatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Marketplaces", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Marketplaces = append(m.Marketplaces, &QueryGetMarketplaceResponse{})
+			if err := m.Marketplaces[len(m.Marketplaces)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetAllMarketplacesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetAllMarketplacesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetAllMarketplacesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetAllMarketplacesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetAllMarketplacesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetAllMarketplacesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Marketplaces", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Marketplaces = append(m.Marketplaces, &QueryGetMarketplaceResponse{})
+			if err := m.Marketplaces[len(m.Marketplaces)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1983,7 +3685,7 @@ func (m *QueryGetMarketplaceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetCollectionSettingsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetMarketplaceCollectionRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2006,10 +3708,10 @@ func (m *QueryGetCollectionSettingsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetCollectionSettingsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetMarketplaceCollectionRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetCollectionSettingsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetMarketplaceCollectionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2161,7 +3863,7 @@ func (m *QueryGetCollectionSettingsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetCollectionSettingsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetMarketplaceCollectionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2184,10 +3886,10 @@ func (m *QueryGetCollectionSettingsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetCollectionSettingsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetMarketplaceCollectionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetCollectionSettingsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetMarketplaceCollectionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2320,7 +4022,7 @@ func (m *QueryGetCollectionSettingsResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyCollectionOwnerNftsForSale", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyNftCollectionOwnerNftsForSale", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -2337,10 +4039,10 @@ func (m *QueryGetCollectionSettingsResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.InitiallyCollectionOwnerNftsForSale = bool(v != 0)
+			m.InitiallyNftCollectionOwnerNftsForSale = bool(v != 0)
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyCollectionOwnerNftsMinPrice", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyNftCollectionOwnerNftsMinPrice", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2368,7 +4070,7 @@ func (m *QueryGetCollectionSettingsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.InitiallyCollectionOwnerNftsMinPrice = string(dAtA[iNdEx:postIndex])
+			m.InitiallyNftCollectionOwnerNftsMinPrice = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
 			if wireType != 2 {

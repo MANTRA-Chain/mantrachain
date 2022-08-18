@@ -8,23 +8,25 @@ import "marketplace/v1/common.proto";
 option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
 option (gogoproto.equal_all) = true;
 
-message CollectionSettings {
+message MarketplaceCollection {
   bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
   bytes marketplace_index = 2 [(gogoproto.moretags) = "yaml:\"marketplace_index\""]; 
-  bool initially_collection_owner_nfts_for_sale = 3 [(gogoproto.moretags) = "yaml:\"initially_collection_owner_nfts_for_sale\""]; 
-  cosmos.base.v1beta1.Coin initially_collection_owner_nfts_min_price = 4 [
-    (gogoproto.moretags) = "yaml:\"initially_collection_owner_nfts_min_price\"",
+  string collection_creator = 3 [(gogoproto.moretags) = "yaml:\"collection_creator\""]; 
+  string collection_id = 4 [(gogoproto.moretags) = "yaml:\"collection_id\""]; 
+  bool initially_nft_collection_owner_nfts_for_sale = 5 [(gogoproto.moretags) = "yaml:\"initially_nft_collection_owner_nfts_for_sale\""]; 
+  cosmos.base.v1beta1.Coin initially_nft_collection_owner_nfts_min_price = 6 [
+    (gogoproto.moretags) = "yaml:\"initially_nft_collection_owner_nfts_min_price\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = true
   ]; 
-  repeated MarketplaceEarning nfts_earnings_on_sale = 5 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_sale\""];
-  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 6 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_yield_reward\""];
-  string initially_nfts_vault_lock_percentage = 7 [
+  repeated MarketplaceEarning nfts_earnings_on_sale = 7 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_sale\""];
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 8 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_yield_reward\""];
+  string initially_nfts_vault_lock_percentage = 9 [
     (gogoproto.moretags) = "yaml:\"initially_nfts_vault_lock_percentage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = true
   ]; 
-  bytes creator = 8 [
+  bytes creator = 10 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];

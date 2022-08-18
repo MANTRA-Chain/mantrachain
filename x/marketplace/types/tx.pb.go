@@ -214,27 +214,27 @@ func (m *MsgBuyNftResponse) GetStaked() bool {
 	return false
 }
 
-type MsgImportCollection struct {
-	Creator            string                 `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	MarketplaceCreator string                 `protobuf:"bytes,2,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
-	MarketplaceId      string                 `protobuf:"bytes,3,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
-	CollectionCreator  string                 `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
-	CollectionId       string                 `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
-	Settings           *MsgCollectionSettings `protobuf:"bytes,6,opt,name=settings,proto3" json:"settings,omitempty"`
+type MsgImportNftCollection struct {
+	Creator            string                    `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MarketplaceCreator string                    `protobuf:"bytes,2,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string                    `protobuf:"bytes,3,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string                    `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string                    `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	Collection         *MsgMarketplaceCollection `protobuf:"bytes,6,opt,name=collection,proto3" json:"collection,omitempty"`
 }
 
-func (m *MsgImportCollection) Reset()         { *m = MsgImportCollection{} }
-func (m *MsgImportCollection) String() string { return proto.CompactTextString(m) }
-func (*MsgImportCollection) ProtoMessage()    {}
-func (*MsgImportCollection) Descriptor() ([]byte, []int) {
+func (m *MsgImportNftCollection) Reset()         { *m = MsgImportNftCollection{} }
+func (m *MsgImportNftCollection) String() string { return proto.CompactTextString(m) }
+func (*MsgImportNftCollection) ProtoMessage()    {}
+func (*MsgImportNftCollection) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd2162eda376e37c, []int{2}
 }
-func (m *MsgImportCollection) XXX_Unmarshal(b []byte) error {
+func (m *MsgImportNftCollection) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgImportCollection) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgImportNftCollection) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgImportCollection.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgImportNftCollection.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -244,80 +244,80 @@ func (m *MsgImportCollection) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgImportCollection) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgImportCollection.Merge(m, src)
+func (m *MsgImportNftCollection) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgImportNftCollection.Merge(m, src)
 }
-func (m *MsgImportCollection) XXX_Size() int {
+func (m *MsgImportNftCollection) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgImportCollection) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgImportCollection.DiscardUnknown(m)
+func (m *MsgImportNftCollection) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgImportNftCollection.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgImportCollection proto.InternalMessageInfo
+var xxx_messageInfo_MsgImportNftCollection proto.InternalMessageInfo
 
-func (m *MsgImportCollection) GetCreator() string {
+func (m *MsgImportNftCollection) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgImportCollection) GetMarketplaceCreator() string {
+func (m *MsgImportNftCollection) GetMarketplaceCreator() string {
 	if m != nil {
 		return m.MarketplaceCreator
 	}
 	return ""
 }
 
-func (m *MsgImportCollection) GetMarketplaceId() string {
+func (m *MsgImportNftCollection) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *MsgImportCollection) GetCollectionCreator() string {
+func (m *MsgImportNftCollection) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *MsgImportCollection) GetCollectionId() string {
+func (m *MsgImportNftCollection) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *MsgImportCollection) GetSettings() *MsgCollectionSettings {
+func (m *MsgImportNftCollection) GetCollection() *MsgMarketplaceCollection {
 	if m != nil {
-		return m.Settings
+		return m.Collection
 	}
 	return nil
 }
 
-type MsgCollectionSettings struct {
-	InitiallyCollectionOwnerNftsForSale  bool                                    `protobuf:"varint,1,opt,name=initially_collection_owner_nfts_for_sale,json=initiallyCollectionOwnerNftsForSale,proto3" json:"initially_collection_owner_nfts_for_sale,omitempty"`
-	InitiallyCollectionOwnerNftsMinPrice string                                  `protobuf:"bytes,2,opt,name=initially_collection_owner_nfts_min_price,json=initiallyCollectionOwnerNftsMinPrice,proto3" json:"initially_collection_owner_nfts_min_price,omitempty"`
-	NftsEarningsOnSale                   []*MarketplaceEarning                   `protobuf:"bytes,3,rep,name=nfts_earnings_on_sale,json=nftsEarningsOnSale,proto3" json:"nfts_earnings_on_sale,omitempty"`
-	NftsEarningsOnYieldReward            []*MarketplaceEarning                   `protobuf:"bytes,4,rep,name=nfts_earnings_on_yield_reward,json=nftsEarningsOnYieldReward,proto3" json:"nfts_earnings_on_yield_reward,omitempty"`
-	InitiallyNftsVaultLockPercentage     *github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=initially_nfts_vault_lock_percentage,json=initiallyNftsVaultLockPercentage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"initially_nfts_vault_lock_percentage,omitempty" yaml:"initially_nfts_vault_lock_percentage"`
+type MsgMarketplaceCollection struct {
+	InitiallyNftCollectionOwnerNftsForSale  bool                                    `protobuf:"varint,1,opt,name=initially_nft_collection_owner_nfts_for_sale,json=initiallyNftCollectionOwnerNftsForSale,proto3" json:"initially_nft_collection_owner_nfts_for_sale,omitempty"`
+	InitiallyNftCollectionOwnerNftsMinPrice string                                  `protobuf:"bytes,2,opt,name=initially_nft_collection_owner_nfts_min_price,json=initiallyNftCollectionOwnerNftsMinPrice,proto3" json:"initially_nft_collection_owner_nfts_min_price,omitempty"`
+	NftsEarningsOnSale                      []*MarketplaceEarning                   `protobuf:"bytes,3,rep,name=nfts_earnings_on_sale,json=nftsEarningsOnSale,proto3" json:"nfts_earnings_on_sale,omitempty"`
+	NftsEarningsOnYieldReward               []*MarketplaceEarning                   `protobuf:"bytes,4,rep,name=nfts_earnings_on_yield_reward,json=nftsEarningsOnYieldReward,proto3" json:"nfts_earnings_on_yield_reward,omitempty"`
+	InitiallyNftsVaultLockPercentage        *github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=initially_nfts_vault_lock_percentage,json=initiallyNftsVaultLockPercentage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"initially_nfts_vault_lock_percentage,omitempty" yaml:"initially_nfts_vault_lock_percentage"`
 }
 
-func (m *MsgCollectionSettings) Reset()         { *m = MsgCollectionSettings{} }
-func (m *MsgCollectionSettings) String() string { return proto.CompactTextString(m) }
-func (*MsgCollectionSettings) ProtoMessage()    {}
-func (*MsgCollectionSettings) Descriptor() ([]byte, []int) {
+func (m *MsgMarketplaceCollection) Reset()         { *m = MsgMarketplaceCollection{} }
+func (m *MsgMarketplaceCollection) String() string { return proto.CompactTextString(m) }
+func (*MsgMarketplaceCollection) ProtoMessage()    {}
+func (*MsgMarketplaceCollection) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd2162eda376e37c, []int{3}
 }
-func (m *MsgCollectionSettings) XXX_Unmarshal(b []byte) error {
+func (m *MsgMarketplaceCollection) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCollectionSettings) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgMarketplaceCollection) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCollectionSettings.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgMarketplaceCollection.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -327,65 +327,65 @@ func (m *MsgCollectionSettings) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgCollectionSettings) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCollectionSettings.Merge(m, src)
+func (m *MsgMarketplaceCollection) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgMarketplaceCollection.Merge(m, src)
 }
-func (m *MsgCollectionSettings) XXX_Size() int {
+func (m *MsgMarketplaceCollection) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCollectionSettings) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCollectionSettings.DiscardUnknown(m)
+func (m *MsgMarketplaceCollection) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgMarketplaceCollection.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCollectionSettings proto.InternalMessageInfo
+var xxx_messageInfo_MsgMarketplaceCollection proto.InternalMessageInfo
 
-func (m *MsgCollectionSettings) GetInitiallyCollectionOwnerNftsForSale() bool {
+func (m *MsgMarketplaceCollection) GetInitiallyNftCollectionOwnerNftsForSale() bool {
 	if m != nil {
-		return m.InitiallyCollectionOwnerNftsForSale
+		return m.InitiallyNftCollectionOwnerNftsForSale
 	}
 	return false
 }
 
-func (m *MsgCollectionSettings) GetInitiallyCollectionOwnerNftsMinPrice() string {
+func (m *MsgMarketplaceCollection) GetInitiallyNftCollectionOwnerNftsMinPrice() string {
 	if m != nil {
-		return m.InitiallyCollectionOwnerNftsMinPrice
+		return m.InitiallyNftCollectionOwnerNftsMinPrice
 	}
 	return ""
 }
 
-func (m *MsgCollectionSettings) GetNftsEarningsOnSale() []*MarketplaceEarning {
+func (m *MsgMarketplaceCollection) GetNftsEarningsOnSale() []*MarketplaceEarning {
 	if m != nil {
 		return m.NftsEarningsOnSale
 	}
 	return nil
 }
 
-func (m *MsgCollectionSettings) GetNftsEarningsOnYieldReward() []*MarketplaceEarning {
+func (m *MsgMarketplaceCollection) GetNftsEarningsOnYieldReward() []*MarketplaceEarning {
 	if m != nil {
 		return m.NftsEarningsOnYieldReward
 	}
 	return nil
 }
 
-type MsgImportCollectionResponse struct {
+type MsgImportNftCollectionResponse struct {
 	MarketplaceId    string `protobuf:"bytes,1,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
 	MarketplaceOwner string `protobuf:"bytes,2,opt,name=marketplace_owner,json=marketplaceOwner,proto3" json:"marketplace_owner,omitempty"`
 	CollectionId     string `protobuf:"bytes,3,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	CollectionOwner  string `protobuf:"bytes,4,opt,name=collection_owner,json=collectionOwner,proto3" json:"collection_owner,omitempty"`
 }
 
-func (m *MsgImportCollectionResponse) Reset()         { *m = MsgImportCollectionResponse{} }
-func (m *MsgImportCollectionResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgImportCollectionResponse) ProtoMessage()    {}
-func (*MsgImportCollectionResponse) Descriptor() ([]byte, []int) {
+func (m *MsgImportNftCollectionResponse) Reset()         { *m = MsgImportNftCollectionResponse{} }
+func (m *MsgImportNftCollectionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgImportNftCollectionResponse) ProtoMessage()    {}
+func (*MsgImportNftCollectionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd2162eda376e37c, []int{4}
 }
-func (m *MsgImportCollectionResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgImportNftCollectionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgImportCollectionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgImportNftCollectionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgImportCollectionResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgImportNftCollectionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -395,40 +395,40 @@ func (m *MsgImportCollectionResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgImportCollectionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgImportCollectionResponse.Merge(m, src)
+func (m *MsgImportNftCollectionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgImportNftCollectionResponse.Merge(m, src)
 }
-func (m *MsgImportCollectionResponse) XXX_Size() int {
+func (m *MsgImportNftCollectionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgImportCollectionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgImportCollectionResponse.DiscardUnknown(m)
+func (m *MsgImportNftCollectionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgImportNftCollectionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgImportCollectionResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgImportNftCollectionResponse proto.InternalMessageInfo
 
-func (m *MsgImportCollectionResponse) GetMarketplaceId() string {
+func (m *MsgImportNftCollectionResponse) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *MsgImportCollectionResponse) GetMarketplaceOwner() string {
+func (m *MsgImportNftCollectionResponse) GetMarketplaceOwner() string {
 	if m != nil {
 		return m.MarketplaceOwner
 	}
 	return ""
 }
 
-func (m *MsgImportCollectionResponse) GetCollectionId() string {
+func (m *MsgImportNftCollectionResponse) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *MsgImportCollectionResponse) GetCollectionOwner() string {
+func (m *MsgImportNftCollectionResponse) GetCollectionOwner() string {
 	if m != nil {
 		return m.CollectionOwner
 	}
@@ -658,9 +658,9 @@ func (m *MsgRegisterMarketplaceResponse) GetMarketplaceId() string {
 func init() {
 	proto.RegisterType((*MsgBuyNft)(nil), "LimeChain.mantrachain.marketplace.v1.MsgBuyNft")
 	proto.RegisterType((*MsgBuyNftResponse)(nil), "LimeChain.mantrachain.marketplace.v1.MsgBuyNftResponse")
-	proto.RegisterType((*MsgImportCollection)(nil), "LimeChain.mantrachain.marketplace.v1.MsgImportCollection")
-	proto.RegisterType((*MsgCollectionSettings)(nil), "LimeChain.mantrachain.marketplace.v1.MsgCollectionSettings")
-	proto.RegisterType((*MsgImportCollectionResponse)(nil), "LimeChain.mantrachain.marketplace.v1.MsgImportCollectionResponse")
+	proto.RegisterType((*MsgImportNftCollection)(nil), "LimeChain.mantrachain.marketplace.v1.MsgImportNftCollection")
+	proto.RegisterType((*MsgMarketplaceCollection)(nil), "LimeChain.mantrachain.marketplace.v1.MsgMarketplaceCollection")
+	proto.RegisterType((*MsgImportNftCollectionResponse)(nil), "LimeChain.mantrachain.marketplace.v1.MsgImportNftCollectionResponse")
 	proto.RegisterType((*MsgRegisterMarketplace)(nil), "LimeChain.mantrachain.marketplace.v1.MsgRegisterMarketplace")
 	proto.RegisterType((*MsgMarketplaceMetadata)(nil), "LimeChain.mantrachain.marketplace.v1.MsgMarketplaceMetadata")
 	proto.RegisterType((*MsgRegisterMarketplaceResponse)(nil), "LimeChain.mantrachain.marketplace.v1.MsgRegisterMarketplaceResponse")
@@ -669,70 +669,69 @@ func init() {
 func init() { proto.RegisterFile("marketplace/v1/tx.proto", fileDescriptor_fd2162eda376e37c) }
 
 var fileDescriptor_fd2162eda376e37c = []byte{
-	// 996 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x96, 0x4f, 0x6f, 0x1b, 0xc5,
-	0x1b, 0xc7, 0xb3, 0xfe, 0x17, 0xe7, 0xf1, 0xaf, 0xfd, 0x25, 0x93, 0xa4, 0x6c, 0x5d, 0xe1, 0x58,
-	0x6e, 0x41, 0xae, 0xaa, 0xee, 0xaa, 0xe1, 0x4f, 0xa1, 0x70, 0x49, 0x02, 0x48, 0x16, 0x71, 0x52,
-	0xb6, 0x82, 0x8a, 0x4a, 0xb0, 0x9a, 0xec, 0x8e, 0xb7, 0x23, 0xef, 0xce, 0x58, 0x33, 0xe3, 0x34,
-	0xe6, 0x55, 0x54, 0xdc, 0xb8, 0x71, 0xe4, 0xc2, 0x8d, 0x37, 0xc0, 0xad, 0xc7, 0x1e, 0x11, 0x87,
-	0xa8, 0x4a, 0x2e, 0x9c, 0x79, 0x01, 0x08, 0xed, 0xec, 0x7a, 0xbd, 0x4d, 0x4c, 0xb0, 0xa9, 0xb8,
-	0x70, 0xf2, 0xcc, 0xce, 0xf7, 0xf9, 0x3c, 0xf3, 0x3c, 0xf3, 0x3c, 0xe3, 0x81, 0xd7, 0x22, 0x2c,
-	0xfa, 0x44, 0x0d, 0x42, 0xec, 0x11, 0xfb, 0xf0, 0x8e, 0xad, 0x8e, 0xac, 0x81, 0xe0, 0x8a, 0xa3,
-	0x1b, 0xbb, 0x34, 0x22, 0x3b, 0x8f, 0x31, 0x65, 0x56, 0x84, 0x99, 0x12, 0xd8, 0x4b, 0xc7, 0x99,
-	0xdc, 0x3a, 0xbc, 0x53, 0xbf, 0x1a, 0x70, 0x1e, 0x84, 0xc4, 0xd6, 0x36, 0x07, 0xc3, 0x9e, 0x8d,
-	0xd9, 0x28, 0x01, 0xd4, 0xd7, 0x02, 0x1e, 0x70, 0x3d, 0xb4, 0xe3, 0x51, 0xfa, 0xf5, 0xda, 0x19,
-	0x7f, 0x1e, 0x8f, 0x22, 0xce, 0x92, 0xc5, 0xd6, 0x6f, 0x06, 0x2c, 0x75, 0x65, 0xb0, 0x3d, 0x1c,
-	0xed, 0xf5, 0x14, 0x32, 0x61, 0xd1, 0x13, 0x04, 0x2b, 0x2e, 0x4c, 0xa3, 0x69, 0xb4, 0x97, 0x9c,
-	0xf1, 0x14, 0xd9, 0xb0, 0x9a, 0xc3, 0xb8, 0x63, 0x55, 0x41, 0xab, 0x50, 0x6e, 0x69, 0x27, 0x35,
-	0x78, 0x03, 0x2e, 0xe7, 0x0d, 0xa8, 0x6f, 0x16, 0xb5, 0xf6, 0x52, 0xee, 0x6b, 0xc7, 0x47, 0xb7,
-	0x01, 0x79, 0x3c, 0x0c, 0x89, 0xa7, 0x28, 0x67, 0x19, 0xb6, 0xa4, 0xa5, 0x2b, 0x93, 0x95, 0x31,
-	0xf5, 0x3a, 0x5c, 0xca, 0xc9, 0xa9, 0x6f, 0x96, 0xb5, 0xf2, 0x7f, 0x93, 0x8f, 0x1d, 0x1f, 0xad,
-	0x43, 0x85, 0xf5, 0x54, 0xbc, 0x5a, 0xd1, 0xab, 0x65, 0xd6, 0x53, 0x1d, 0xbf, 0xf5, 0x7d, 0x01,
-	0x56, 0xb2, 0x50, 0x1d, 0x22, 0x07, 0x9c, 0x49, 0xf2, 0x57, 0x81, 0x19, 0x73, 0x04, 0x56, 0x98,
-	0x3d, 0xb0, 0xe2, 0xcc, 0x81, 0x95, 0x2e, 0x0c, 0xac, 0x9c, 0x0b, 0x0c, 0xad, 0x41, 0x99, 0x3f,
-	0x61, 0x44, 0x8c, 0xc3, 0xd5, 0x13, 0x54, 0x87, 0xaa, 0x20, 0x1e, 0xa1, 0x87, 0x44, 0x98, 0x8b,
-	0x7a, 0x21, 0x9b, 0xa3, 0x2b, 0x50, 0x91, 0x0a, 0xf7, 0x89, 0x6f, 0x56, 0x9b, 0x46, 0xbb, 0xea,
-	0xa4, 0xb3, 0xd6, 0x4f, 0x05, 0x58, 0xed, 0xca, 0xa0, 0x13, 0x0d, 0xb8, 0x50, 0x3b, 0x99, 0xeb,
-	0xff, 0x48, 0x5d, 0x3c, 0x84, 0xaa, 0x24, 0x4a, 0x51, 0x16, 0x48, 0x9d, 0xaa, 0xda, 0xe6, 0x07,
-	0xd6, 0x2c, 0x2d, 0x67, 0x75, 0x65, 0x30, 0x49, 0xc6, 0x83, 0x14, 0xe1, 0x64, 0xb0, 0xd6, 0x8b,
-	0x12, 0xac, 0x4f, 0xd5, 0xa0, 0xcf, 0xa1, 0x4d, 0x19, 0x55, 0x14, 0x87, 0xe1, 0xc8, 0xcd, 0xed,
-	0x50, 0x1f, 0x91, 0xcb, 0x7a, 0x4a, 0xba, 0x3d, 0x2e, 0x5c, 0x89, 0x43, 0xa2, 0x33, 0x5b, 0x75,
-	0xae, 0x67, 0xfa, 0x09, 0x6e, 0x3f, 0x56, 0xef, 0xf5, 0x94, 0xfc, 0x84, 0x8b, 0x07, 0x38, 0x24,
-	0xe8, 0x21, 0xdc, 0xfc, 0x3b, 0x6c, 0x44, 0x99, 0x3b, 0x10, 0xd4, 0x23, 0xe9, 0x59, 0xdc, 0xb8,
-	0x88, 0xdb, 0xa5, 0xec, 0x7e, 0xac, 0x45, 0x7d, 0x58, 0xd7, 0xd6, 0x04, 0x0b, 0x16, 0x07, 0xe0,
-	0x72, 0x96, 0x6c, 0xae, 0xd8, 0x2c, 0xb6, 0x6b, 0x9b, 0xef, 0xcd, 0x98, 0xaf, 0xc9, 0xf4, 0xe3,
-	0x04, 0xe4, 0xa0, 0x18, 0x9b, 0x4e, 0xe4, 0x3e, 0xd3, 0x51, 0x7c, 0x03, 0xaf, 0x9f, 0x73, 0x36,
-	0xa2, 0x24, 0xf4, 0x5d, 0x41, 0x9e, 0x60, 0x11, 0xf7, 0xc0, 0xab, 0x39, 0xbd, 0xfa, 0xb2, 0xd3,
-	0x2f, 0x63, 0xb6, 0xa3, 0xd1, 0xe8, 0x47, 0x03, 0x26, 0x19, 0x49, 0x32, 0x76, 0x88, 0x87, 0xa1,
-	0x72, 0x43, 0xee, 0xf5, 0xdd, 0x01, 0x11, 0x1e, 0x61, 0x0a, 0x07, 0x24, 0x29, 0xa4, 0xed, 0xaf,
-	0x9e, 0x1d, 0x6f, 0x18, 0xbf, 0x1e, 0x6f, 0xbc, 0x19, 0x50, 0xf5, 0x78, 0x78, 0x60, 0x79, 0x3c,
-	0xb2, 0x3d, 0x2e, 0x23, 0x2e, 0xd3, 0x9f, 0xdb, 0xd2, 0xef, 0xdb, 0x6a, 0x34, 0x20, 0xd2, 0xea,
-	0x30, 0xf5, 0xfb, 0xf1, 0xc6, 0xad, 0x11, 0x8e, 0xc2, 0x7b, 0xad, 0x59, 0x7c, 0xb4, 0x9c, 0x66,
-	0x26, 0x8b, 0x4f, 0xe3, 0x8b, 0x58, 0xb4, 0xcb, 0xbd, 0xfe, 0xfd, 0x89, 0xe4, 0x67, 0x03, 0xae,
-	0x4d, 0xe9, 0xcc, 0xec, 0x1a, 0x3b, 0xdf, 0x56, 0xc6, 0xb4, 0xb6, 0xba, 0x05, 0x2b, 0x79, 0x59,
-	0x72, 0x6d, 0x24, 0x05, 0xb2, 0x9c, 0x5b, 0xd0, 0x85, 0x71, 0xbe, 0xa9, 0x8a, 0x53, 0x9a, 0xea,
-	0x26, 0x2c, 0x9f, 0x2d, 0xc0, 0xb4, 0x4d, 0xff, 0xef, 0xbd, 0x5c, 0x68, 0xad, 0x6f, 0x0d, 0xb8,
-	0xd2, 0x95, 0x81, 0x43, 0x02, 0x2a, 0x15, 0x11, 0xb9, 0x03, 0xbb, 0xe0, 0x82, 0xf9, 0x1a, 0x6a,
-	0xb9, 0x8d, 0xe9, 0xbd, 0xd6, 0x36, 0x3f, 0x9c, 0xb9, 0x6f, 0x73, 0x4e, 0xba, 0x44, 0x61, 0x1f,
-	0x2b, 0xec, 0xe4, 0x81, 0xad, 0x3f, 0x8a, 0x7a, 0x53, 0x53, 0x74, 0xe8, 0x32, 0x14, 0xb2, 0x3c,
-	0x16, 0xa8, 0x8f, 0x10, 0x94, 0x18, 0x8e, 0xc6, 0x0d, 0xa5, 0xc7, 0x68, 0x19, 0x8a, 0x43, 0x11,
-	0xa6, 0x99, 0x89, 0x87, 0xa8, 0x09, 0x35, 0x9f, 0x48, 0x4f, 0xd0, 0x41, 0x1c, 0x79, 0x9a, 0x8b,
-	0xfc, 0xa7, 0xf8, 0xf6, 0xe5, 0x03, 0xc2, 0x48, 0x72, 0x4b, 0x55, 0x9d, 0x74, 0x86, 0x3e, 0x83,
-	0x45, 0xae, 0x15, 0xf1, 0xf5, 0x14, 0x57, 0xfe, 0xdd, 0xb9, 0x2b, 0x7f, 0x5f, 0xdb, 0x3b, 0x63,
-	0x0e, 0x7a, 0x04, 0x80, 0x95, 0x12, 0xf4, 0x60, 0xa8, 0x88, 0x34, 0x17, 0x35, 0xf5, 0xde, 0xdc,
-	0xd4, 0xad, 0x31, 0xc2, 0xc9, 0xd1, 0xd0, 0x1e, 0x54, 0x68, 0x84, 0x03, 0x22, 0xcd, 0xaa, 0xe6,
-	0xbe, 0x3b, 0x37, 0xb7, 0x13, 0x9b, 0x3b, 0x29, 0x05, 0x7d, 0x0a, 0xe5, 0x90, 0xb2, 0xbe, 0x34,
-	0x97, 0x34, 0xee, 0x9d, 0xb9, 0x71, 0xbb, 0x94, 0xf5, 0x9d, 0x84, 0x81, 0xda, 0x50, 0x8a, 0xcf,
-	0xd0, 0x04, 0x5d, 0x2f, 0x6b, 0x56, 0xf2, 0x68, 0xb2, 0xc6, 0x8f, 0x26, 0x6b, 0x8b, 0x8d, 0x1c,
-	0xad, 0x68, 0x1d, 0x41, 0x63, 0x7a, 0x51, 0xfe, 0xdb, 0x4f, 0x84, 0xcd, 0x1f, 0x8a, 0x50, 0xec,
-	0xca, 0x00, 0x7d, 0x67, 0xc0, 0xea, 0xb4, 0xa6, 0x98, 0xbd, 0xca, 0xa7, 0x58, 0xd7, 0x3f, 0x7a,
-	0x15, 0xeb, 0x2c, 0xf6, 0xa7, 0x06, 0x2c, 0x9f, 0x7b, 0x0e, 0xbc, 0x3f, 0x33, 0xfa, 0xac, 0x69,
-	0x7d, 0xeb, 0x1f, 0x9b, 0x66, 0x5b, 0x12, 0x50, 0x49, 0x9f, 0xab, 0xf6, 0xcc, 0xb0, 0xc4, 0xa0,
-	0x7e, 0x77, 0x4e, 0x83, 0xb1, 0xcf, 0xed, 0xbd, 0x67, 0x27, 0x0d, 0xe3, 0xf9, 0x49, 0xc3, 0x78,
-	0x71, 0xd2, 0x30, 0x9e, 0x9e, 0x36, 0x16, 0x9e, 0x9f, 0x36, 0x16, 0x7e, 0x39, 0x6d, 0x2c, 0x3c,
-	0x7a, 0x3b, 0xf7, 0x8f, 0x90, 0xc1, 0xed, 0x1c, 0xdc, 0x3e, 0xb2, 0xf3, 0x0f, 0x70, 0xfd, 0x1f,
-	0x71, 0x50, 0xd1, 0x85, 0xf8, 0xd6, 0x9f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xca, 0x2c, 0xc8, 0xe2,
-	0x0c, 0x0c, 0x00, 0x00,
+	// 988 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0xcf, 0x6e, 0x1b, 0x45,
+	0x18, 0xcf, 0xda, 0x89, 0xe3, 0x7c, 0xa1, 0x25, 0x99, 0xa6, 0x65, 0x6b, 0x84, 0x63, 0x99, 0x52,
+	0x82, 0x4a, 0x76, 0xd5, 0xf0, 0xa7, 0xa8, 0x42, 0x48, 0x4d, 0x00, 0xc9, 0x22, 0x76, 0xca, 0x22,
+	0x21, 0x51, 0x41, 0x56, 0x93, 0xdd, 0xf1, 0x76, 0xe4, 0xdd, 0x19, 0x6b, 0x66, 0x9c, 0xc6, 0x3c,
+	0x05, 0xe2, 0xc6, 0x8d, 0x17, 0xe0, 0xc0, 0x0b, 0x70, 0xe2, 0xd0, 0x63, 0x8f, 0x88, 0x43, 0x84,
+	0x92, 0x0b, 0x57, 0x78, 0x00, 0x84, 0x76, 0x76, 0xbd, 0x9e, 0x34, 0x6e, 0xb0, 0xa9, 0xb8, 0x70,
+	0xda, 0xf9, 0x66, 0x7e, 0xdf, 0x6f, 0xbe, 0xff, 0x3b, 0xf0, 0x52, 0x82, 0x45, 0x8f, 0xa8, 0x7e,
+	0x8c, 0x03, 0xe2, 0x1e, 0xde, 0x76, 0xd5, 0x91, 0xd3, 0x17, 0x5c, 0x71, 0x74, 0x63, 0x97, 0x26,
+	0x64, 0xe7, 0x21, 0xa6, 0xcc, 0x49, 0x30, 0x53, 0x02, 0x07, 0xf9, 0xba, 0x80, 0x3b, 0x87, 0xb7,
+	0x6b, 0xd7, 0x23, 0xce, 0xa3, 0x98, 0xb8, 0x5a, 0xe7, 0x60, 0xd0, 0x75, 0x31, 0x1b, 0x66, 0x04,
+	0xb5, 0xb5, 0x88, 0x47, 0x5c, 0x2f, 0xdd, 0x74, 0x95, 0xef, 0xbe, 0xfc, 0xd4, 0x7d, 0x01, 0x4f,
+	0x12, 0xce, 0xb2, 0xc3, 0xe6, 0xef, 0x16, 0x2c, 0xb5, 0x65, 0xb4, 0x3d, 0x18, 0x76, 0xba, 0x0a,
+	0xd9, 0xb0, 0x18, 0x08, 0x82, 0x15, 0x17, 0xb6, 0xd5, 0xb0, 0x36, 0x96, 0xbc, 0x91, 0x88, 0x5c,
+	0xb8, 0x62, 0xd0, 0xf8, 0x23, 0x54, 0x49, 0xa3, 0x90, 0x71, 0xb4, 0x93, 0x2b, 0xbc, 0x06, 0x97,
+	0x4d, 0x05, 0x1a, 0xda, 0x65, 0x8d, 0xbd, 0x64, 0xec, 0xb6, 0x42, 0xb4, 0x09, 0x28, 0xe0, 0x71,
+	0x4c, 0x02, 0x45, 0x39, 0x2b, 0x68, 0xe7, 0x35, 0x74, 0x75, 0x7c, 0x32, 0x62, 0x7d, 0x15, 0x2e,
+	0x19, 0x70, 0x1a, 0xda, 0x0b, 0x1a, 0xf9, 0xc2, 0x78, 0xb3, 0x15, 0xa2, 0xab, 0x50, 0x61, 0x5d,
+	0x95, 0x9e, 0x56, 0xf4, 0xe9, 0x02, 0xeb, 0xaa, 0x56, 0xd8, 0xfc, 0xbe, 0x04, 0xab, 0x85, 0xab,
+	0x1e, 0x91, 0x7d, 0xce, 0x24, 0x79, 0x96, 0x63, 0xd6, 0x0c, 0x8e, 0x95, 0xa6, 0x77, 0xac, 0x3c,
+	0xb5, 0x63, 0xf3, 0x17, 0x3a, 0xb6, 0x60, 0x38, 0x86, 0xd6, 0x60, 0x81, 0x3f, 0x62, 0x44, 0x8c,
+	0xdc, 0xd5, 0x02, 0xaa, 0x41, 0x55, 0x90, 0x80, 0xd0, 0x43, 0x22, 0xec, 0x45, 0x7d, 0x50, 0xc8,
+	0xe8, 0x1a, 0x54, 0xa4, 0xc2, 0x3d, 0x12, 0xda, 0xd5, 0x86, 0xb5, 0x51, 0xf5, 0x72, 0xa9, 0xf9,
+	0x53, 0x09, 0xae, 0xb5, 0x65, 0xd4, 0x4a, 0xfa, 0x5c, 0xa8, 0x4e, 0x57, 0xed, 0x14, 0xb7, 0xff,
+	0x4f, 0x4a, 0x63, 0x1f, 0x60, 0x2c, 0xeb, 0x78, 0x2d, 0x6f, 0x7d, 0xe0, 0x4c, 0xd3, 0x77, 0x4e,
+	0x5b, 0x46, 0x6d, 0xc3, 0x97, 0x82, 0xc5, 0x33, 0x18, 0x9b, 0x7f, 0xcc, 0x83, 0xfd, 0x2c, 0x20,
+	0xfa, 0x12, 0xde, 0xa4, 0x8c, 0x2a, 0x8a, 0xe3, 0x78, 0xe8, 0xa7, 0x89, 0x34, 0xec, 0xd5, 0x39,
+	0x4b, 0x37, 0xa5, 0xdf, 0xe5, 0xc2, 0x97, 0x38, 0x26, 0x3a, 0xce, 0x55, 0xef, 0x66, 0xa1, 0x73,
+	0x26, 0x21, 0x7b, 0xa9, 0x42, 0xa7, 0xab, 0xe4, 0xc7, 0x5c, 0x7c, 0x86, 0x63, 0x82, 0xf6, 0x61,
+	0x73, 0x1a, 0xf6, 0x84, 0x32, 0xbf, 0x2f, 0x68, 0x40, 0xf2, 0x04, 0xbd, 0xfe, 0x0f, 0xf4, 0x6d,
+	0xca, 0xee, 0xa7, 0x70, 0xd4, 0x83, 0xab, 0x9a, 0x80, 0x60, 0xc1, 0x28, 0x8b, 0xa4, 0xcf, 0x59,
+	0x66, 0x66, 0xb9, 0x51, 0xde, 0x58, 0xde, 0x7a, 0x6f, 0xca, 0x28, 0x8e, 0xc5, 0x8f, 0x32, 0x22,
+	0x0f, 0xa5, 0xb4, 0xb9, 0x20, 0xf7, 0x98, 0x76, 0xe6, 0x6b, 0x78, 0xe5, 0xdc, 0x65, 0x43, 0x4a,
+	0xe2, 0xd0, 0x17, 0xe4, 0x11, 0x16, 0x69, 0x7b, 0x3c, 0xdf, 0xa5, 0xd7, 0xcf, 0x5e, 0xfa, 0x45,
+	0xca, 0xed, 0x69, 0x6a, 0xf4, 0x83, 0x05, 0x37, 0xce, 0x44, 0x52, 0xfa, 0x87, 0x78, 0x10, 0x2b,
+	0x3f, 0xe6, 0x41, 0xcf, 0xef, 0x13, 0x11, 0x10, 0xa6, 0x70, 0x44, 0xb2, 0x02, 0xdb, 0xfe, 0xea,
+	0xf1, 0xf1, 0xba, 0xf5, 0xeb, 0xf1, 0xfa, 0xcd, 0x88, 0xaa, 0x87, 0x83, 0x03, 0x27, 0xe0, 0x89,
+	0x1b, 0x70, 0x99, 0x70, 0x99, 0x7f, 0x36, 0x65, 0xd8, 0x73, 0xd5, 0xb0, 0x4f, 0xa4, 0xd3, 0x62,
+	0xea, 0xcf, 0xe3, 0xf5, 0x5b, 0x43, 0x9c, 0xc4, 0x77, 0x9b, 0xd3, 0xdc, 0xd1, 0xf4, 0x1a, 0x66,
+	0x7e, 0xe4, 0xe7, 0x29, 0x68, 0x97, 0x07, 0xbd, 0xfb, 0x63, 0xc8, 0xcf, 0x16, 0xd4, 0x27, 0x37,
+	0x6d, 0x31, 0xe4, 0xce, 0x77, 0x9c, 0x35, 0xa9, 0xe3, 0x6e, 0xc1, 0xaa, 0x09, 0xcb, 0x86, 0x4a,
+	0x56, 0x26, 0x2b, 0xc6, 0x81, 0xae, 0x8d, 0xf3, 0xfd, 0x56, 0x9e, 0xd0, 0x6f, 0x6f, 0xc0, 0xca,
+	0xd3, 0x65, 0x98, 0x77, 0xf0, 0x8b, 0xc1, 0xd9, 0x5a, 0x6b, 0x7e, 0x6b, 0xe9, 0xd9, 0xe3, 0x91,
+	0x88, 0x4a, 0x45, 0x84, 0x91, 0xb3, 0x0b, 0x66, 0xcf, 0x3e, 0x2c, 0x1b, 0x86, 0x69, 0x5b, 0x97,
+	0xb7, 0xde, 0xff, 0x37, 0x0d, 0xdd, 0x26, 0x0a, 0x87, 0x58, 0x61, 0xcf, 0x24, 0x6c, 0xfe, 0x55,
+	0xd6, 0x46, 0x4d, 0xc0, 0xa1, 0xcb, 0x50, 0x2a, 0xe2, 0x58, 0xa2, 0x21, 0x42, 0x30, 0xcf, 0x70,
+	0x32, 0x6a, 0x2b, 0xbd, 0x46, 0x2b, 0x50, 0x1e, 0x88, 0x38, 0x8f, 0x4c, 0xba, 0x44, 0x0d, 0x58,
+	0x0e, 0x89, 0x0c, 0x04, 0xed, 0xeb, 0x09, 0x94, 0xc5, 0xc2, 0xdc, 0x4a, 0x67, 0x33, 0xef, 0x13,
+	0x46, 0xb2, 0x01, 0x56, 0xf5, 0x72, 0x09, 0x7d, 0x0a, 0x8b, 0x5c, 0x23, 0xa4, 0x5d, 0xd1, 0xc5,
+	0x7f, 0x67, 0xe6, 0xe2, 0xdf, 0xd3, 0xfa, 0xde, 0x88, 0x07, 0x3d, 0x00, 0xc0, 0x4a, 0x09, 0x7a,
+	0x30, 0x50, 0x44, 0xda, 0x8b, 0x9a, 0xf5, 0xee, 0xcc, 0xac, 0xf7, 0x46, 0x14, 0x9e, 0xc1, 0x86,
+	0x3a, 0x50, 0xa1, 0x09, 0x8e, 0x88, 0xb4, 0xab, 0x9a, 0xf7, 0xdd, 0x99, 0x79, 0x5b, 0xa9, 0xba,
+	0x97, 0xb3, 0xa0, 0x4f, 0x60, 0x21, 0xa6, 0xac, 0x27, 0xed, 0x25, 0x4d, 0xf7, 0xce, 0xcc, 0x74,
+	0xbb, 0x94, 0xf5, 0xbc, 0x8c, 0x03, 0x6d, 0xc0, 0x7c, 0x9a, 0x43, 0x1b, 0x74, 0xbd, 0xac, 0x39,
+	0xd9, 0x93, 0xca, 0x19, 0x3d, 0xa9, 0x9c, 0x7b, 0x6c, 0xe8, 0x69, 0x44, 0xf3, 0x48, 0xf7, 0xd6,
+	0x84, 0xa2, 0xfc, 0xaf, 0x1f, 0x10, 0x5b, 0x3f, 0x96, 0xa1, 0xdc, 0x96, 0x11, 0xfa, 0xce, 0x82,
+	0x2b, 0x93, 0x9a, 0x62, 0xfa, 0x2a, 0x9f, 0xa0, 0x5d, 0xfb, 0xf0, 0x79, 0xb4, 0x0b, 0xdf, 0x53,
+	0xdb, 0x26, 0x3d, 0x16, 0xa6, 0xb7, 0x6d, 0x82, 0xf6, 0x0c, 0xb6, 0x5d, 0x34, 0xf3, 0x04, 0x54,
+	0xf2, 0x57, 0xad, 0x3b, 0x35, 0x5f, 0xa6, 0x50, 0xbb, 0x33, 0xa3, 0xc2, 0xe8, 0xce, 0xed, 0xce,
+	0xe3, 0x93, 0xba, 0xf5, 0xe4, 0xa4, 0x6e, 0xfd, 0x76, 0x52, 0xb7, 0xbe, 0x39, 0xad, 0xcf, 0x3d,
+	0x39, 0xad, 0xcf, 0xfd, 0x72, 0x5a, 0x9f, 0x7b, 0xf0, 0xb6, 0xf1, 0x77, 0x28, 0xc8, 0x5d, 0x83,
+	0xdc, 0x3d, 0x72, 0xcd, 0x77, 0xba, 0xfe, 0x5f, 0x1c, 0x54, 0x74, 0x45, 0xbe, 0xf5, 0x77, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x79, 0x45, 0xd2, 0xc6, 0x33, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -748,7 +747,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	RegisterMarketplace(ctx context.Context, in *MsgRegisterMarketplace, opts ...grpc.CallOption) (*MsgRegisterMarketplaceResponse, error)
-	ImportCollection(ctx context.Context, in *MsgImportCollection, opts ...grpc.CallOption) (*MsgImportCollectionResponse, error)
+	ImportNftCollection(ctx context.Context, in *MsgImportNftCollection, opts ...grpc.CallOption) (*MsgImportNftCollectionResponse, error)
 	BuyNft(ctx context.Context, in *MsgBuyNft, opts ...grpc.CallOption) (*MsgBuyNftResponse, error)
 }
 
@@ -769,9 +768,9 @@ func (c *msgClient) RegisterMarketplace(ctx context.Context, in *MsgRegisterMark
 	return out, nil
 }
 
-func (c *msgClient) ImportCollection(ctx context.Context, in *MsgImportCollection, opts ...grpc.CallOption) (*MsgImportCollectionResponse, error) {
-	out := new(MsgImportCollectionResponse)
-	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Msg/ImportCollection", in, out, opts...)
+func (c *msgClient) ImportNftCollection(ctx context.Context, in *MsgImportNftCollection, opts ...grpc.CallOption) (*MsgImportNftCollectionResponse, error) {
+	out := new(MsgImportNftCollectionResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.marketplace.v1.Msg/ImportNftCollection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -790,7 +789,7 @@ func (c *msgClient) BuyNft(ctx context.Context, in *MsgBuyNft, opts ...grpc.Call
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	RegisterMarketplace(context.Context, *MsgRegisterMarketplace) (*MsgRegisterMarketplaceResponse, error)
-	ImportCollection(context.Context, *MsgImportCollection) (*MsgImportCollectionResponse, error)
+	ImportNftCollection(context.Context, *MsgImportNftCollection) (*MsgImportNftCollectionResponse, error)
 	BuyNft(context.Context, *MsgBuyNft) (*MsgBuyNftResponse, error)
 }
 
@@ -801,8 +800,8 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) RegisterMarketplace(ctx context.Context, req *MsgRegisterMarketplace) (*MsgRegisterMarketplaceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterMarketplace not implemented")
 }
-func (*UnimplementedMsgServer) ImportCollection(ctx context.Context, req *MsgImportCollection) (*MsgImportCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ImportCollection not implemented")
+func (*UnimplementedMsgServer) ImportNftCollection(ctx context.Context, req *MsgImportNftCollection) (*MsgImportNftCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportNftCollection not implemented")
 }
 func (*UnimplementedMsgServer) BuyNft(ctx context.Context, req *MsgBuyNft) (*MsgBuyNftResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BuyNft not implemented")
@@ -830,20 +829,20 @@ func _Msg_RegisterMarketplace_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_ImportCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgImportCollection)
+func _Msg_ImportNftCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgImportNftCollection)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).ImportCollection(ctx, in)
+		return srv.(MsgServer).ImportNftCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Msg/ImportCollection",
+		FullMethod: "/LimeChain.mantrachain.marketplace.v1.Msg/ImportNftCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ImportCollection(ctx, req.(*MsgImportCollection))
+		return srv.(MsgServer).ImportNftCollection(ctx, req.(*MsgImportNftCollection))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -875,8 +874,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_RegisterMarketplace_Handler,
 		},
 		{
-			MethodName: "ImportCollection",
-			Handler:    _Msg_ImportCollection_Handler,
+			MethodName: "ImportNftCollection",
+			Handler:    _Msg_ImportNftCollection_Handler,
 		},
 		{
 			MethodName: "BuyNft",
@@ -1034,7 +1033,7 @@ func (m *MsgBuyNftResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgImportCollection) Marshal() (dAtA []byte, err error) {
+func (m *MsgImportNftCollection) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1044,19 +1043,19 @@ func (m *MsgImportCollection) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgImportCollection) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgImportNftCollection) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgImportCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgImportNftCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Settings != nil {
+	if m.Collection != nil {
 		{
-			size, err := m.Settings.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.Collection.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1104,7 +1103,7 @@ func (m *MsgImportCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCollectionSettings) Marshal() (dAtA []byte, err error) {
+func (m *MsgMarketplaceCollection) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1114,12 +1113,12 @@ func (m *MsgCollectionSettings) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCollectionSettings) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgMarketplaceCollection) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCollectionSettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgMarketplaceCollection) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1164,16 +1163,16 @@ func (m *MsgCollectionSettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x1a
 		}
 	}
-	if len(m.InitiallyCollectionOwnerNftsMinPrice) > 0 {
-		i -= len(m.InitiallyCollectionOwnerNftsMinPrice)
-		copy(dAtA[i:], m.InitiallyCollectionOwnerNftsMinPrice)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.InitiallyCollectionOwnerNftsMinPrice)))
+	if len(m.InitiallyNftCollectionOwnerNftsMinPrice) > 0 {
+		i -= len(m.InitiallyNftCollectionOwnerNftsMinPrice)
+		copy(dAtA[i:], m.InitiallyNftCollectionOwnerNftsMinPrice)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.InitiallyNftCollectionOwnerNftsMinPrice)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.InitiallyCollectionOwnerNftsForSale {
+	if m.InitiallyNftCollectionOwnerNftsForSale {
 		i--
-		if m.InitiallyCollectionOwnerNftsForSale {
+		if m.InitiallyNftCollectionOwnerNftsForSale {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1184,7 +1183,7 @@ func (m *MsgCollectionSettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgImportCollectionResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgImportNftCollectionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1194,12 +1193,12 @@ func (m *MsgImportCollectionResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgImportCollectionResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgImportNftCollectionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgImportCollectionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgImportNftCollectionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1527,7 +1526,7 @@ func (m *MsgBuyNftResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgImportCollection) Size() (n int) {
+func (m *MsgImportNftCollection) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1553,23 +1552,23 @@ func (m *MsgImportCollection) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Settings != nil {
-		l = m.Settings.Size()
+	if m.Collection != nil {
+		l = m.Collection.Size()
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgCollectionSettings) Size() (n int) {
+func (m *MsgMarketplaceCollection) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.InitiallyCollectionOwnerNftsForSale {
+	if m.InitiallyNftCollectionOwnerNftsForSale {
 		n += 2
 	}
-	l = len(m.InitiallyCollectionOwnerNftsMinPrice)
+	l = len(m.InitiallyNftCollectionOwnerNftsMinPrice)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1592,7 +1591,7 @@ func (m *MsgCollectionSettings) Size() (n int) {
 	return n
 }
 
-func (m *MsgImportCollectionResponse) Size() (n int) {
+func (m *MsgImportNftCollectionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2249,7 +2248,7 @@ func (m *MsgBuyNftResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgImportCollection) Unmarshal(dAtA []byte) error {
+func (m *MsgImportNftCollection) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2272,10 +2271,10 @@ func (m *MsgImportCollection) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgImportCollection: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgImportNftCollection: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgImportCollection: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgImportNftCollection: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2440,7 +2439,7 @@ func (m *MsgImportCollection) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Settings", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Collection", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2467,10 +2466,10 @@ func (m *MsgImportCollection) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Settings == nil {
-				m.Settings = &MsgCollectionSettings{}
+			if m.Collection == nil {
+				m.Collection = &MsgMarketplaceCollection{}
 			}
-			if err := m.Settings.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Collection.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2495,7 +2494,7 @@ func (m *MsgImportCollection) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCollectionSettings) Unmarshal(dAtA []byte) error {
+func (m *MsgMarketplaceCollection) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2518,15 +2517,15 @@ func (m *MsgCollectionSettings) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCollectionSettings: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgMarketplaceCollection: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCollectionSettings: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgMarketplaceCollection: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyCollectionOwnerNftsForSale", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyNftCollectionOwnerNftsForSale", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -2543,10 +2542,10 @@ func (m *MsgCollectionSettings) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.InitiallyCollectionOwnerNftsForSale = bool(v != 0)
+			m.InitiallyNftCollectionOwnerNftsForSale = bool(v != 0)
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyCollectionOwnerNftsMinPrice", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InitiallyNftCollectionOwnerNftsMinPrice", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2574,7 +2573,7 @@ func (m *MsgCollectionSettings) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.InitiallyCollectionOwnerNftsMinPrice = string(dAtA[iNdEx:postIndex])
+			m.InitiallyNftCollectionOwnerNftsMinPrice = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -2701,7 +2700,7 @@ func (m *MsgCollectionSettings) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgImportCollectionResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgImportNftCollectionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2724,10 +2723,10 @@ func (m *MsgImportCollectionResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgImportCollectionResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgImportNftCollectionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgImportCollectionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgImportNftCollectionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

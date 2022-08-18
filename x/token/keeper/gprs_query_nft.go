@@ -153,9 +153,10 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 	}
 
 	return &types.QueryGetAllCollectionNftsResponse{
-		Id:         req.CollectionId,
-		Nfts:       nftsRes,
-		Pagination: pageRes,
+		CollectionCreator: collectionCreator.String(),
+		CollectionId:      req.CollectionId,
+		Nfts:              nftsRes,
+		Pagination:        pageRes,
 	}, nil
 }
 

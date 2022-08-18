@@ -17,7 +17,7 @@ echo "create validator node with tokens to transfer to the node"
 ./build/mantrachaind add-genesis-account $VALIDATOR 100000000000stake
 ./build/mantrachaind gentx validator 100000000stake --keyring-backend=test --chain-id=mantrachain
 
-VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/config/gentx -AU | head -1) | jq '.body["messages"][0].validator_address')
+VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
 
 echo "update vault genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR_ADDRESS > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json

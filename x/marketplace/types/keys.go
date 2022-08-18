@@ -18,10 +18,10 @@ const (
 )
 
 var (
-	marketplaceIndex           = "marketplace-id"
-	marketplaceStoreKey        = "marketplace-store"
-	collectionSettingsStoreKey = "collection-settings-store"
-	nftSettingsStoreKey        = "nft-settings-store"
+	marketplaceIndex              = "marketplace-id"
+	marketplaceStoreKey           = "marketplace-store"
+	marketplaceCollectionStoreKey = "marketplace-colelction-store"
+	marketplaceNftStoreKey        = "marketplace-nft-store"
 
 	delimiter = []byte{0x00}
 )
@@ -80,22 +80,22 @@ func MarketplaceStoreKey(creator sdk.AccAddress) []byte {
 	return key
 }
 
-func CollectionSettingsStoreKey(marketplaceIndex []byte) []byte {
-	key := make([]byte, len(collectionSettingsStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter))
-	copy(key, collectionSettingsStoreKey)
-	copy(key[len(collectionSettingsStoreKey):], delimiter)
-	copy(key[len(collectionSettingsStoreKey)+len(delimiter):], marketplaceIndex)
-	copy(key[len(collectionSettingsStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+func MarketplaceCollectionStoreKey(marketplaceIndex []byte) []byte {
+	key := make([]byte, len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter))
+	copy(key, marketplaceCollectionStoreKey)
+	copy(key[len(marketplaceCollectionStoreKey):], delimiter)
+	copy(key[len(marketplaceCollectionStoreKey)+len(delimiter):], marketplaceIndex)
+	copy(key[len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
 	return key
 }
 
-func NftSettingsStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
-	key := make([]byte, len(nftSettingsStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
-	copy(key, nftSettingsStoreKey)
-	copy(key[len(nftSettingsStoreKey):], delimiter)
-	copy(key[len(nftSettingsStoreKey)+len(delimiter):], marketplaceIndex)
-	copy(key[len(nftSettingsStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
-	copy(key[len(nftSettingsStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
-	copy(key[len(nftSettingsStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
+func MarketplaceNftStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
+	key := make([]byte, len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
+	copy(key, marketplaceNftStoreKey)
+	copy(key[len(marketplaceNftStoreKey):], delimiter)
+	copy(key[len(marketplaceNftStoreKey)+len(delimiter):], marketplaceIndex)
+	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
+	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
 	return key
 }

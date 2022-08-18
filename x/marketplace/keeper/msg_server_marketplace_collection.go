@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k msgServer) ImportCollection(goCtx context.Context, msg *types.MsgImportCollection) (*types.MsgImportCollectionResponse, error) {
+func (k msgServer) ImportNftCollection(goCtx context.Context, msg *types.MsgImportNftCollection) (*types.MsgImportNftCollectionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -55,68 +55,70 @@ func (k msgServer) ImportCollection(goCtx context.Context, msg *types.MsgImportC
 	marketplaceId := marketplaceController.getId()
 
 	tokenExecutor := NewTokenExecutor(ctx, k.tokenKeeper)
-	collection, found := tokenExecutor.GetCollection(collectionCreator, msg.CollectionId)
+	nftCollection, found := tokenExecutor.GetNftCollection(collectionCreator, msg.CollectionId)
 
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrCollectionDoesNotExist, "invalid or non-existent nft collection")
 	}
 
-	if !owner.Equals(collection.Owner) {
+	if !owner.Equals(nftCollection.Owner) {
 		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not a nft collection owner")
 	}
 
-	collectionSettingsController := NewCollectionSettingsController(ctx, marketplaceIndex, collection.Index, marketplaceId, msg.CollectionId).
-		WithSettings(msg.Settings).
+	marketplaceCollectionController := NewMarketplaceCollectionController(ctx, marketplaceIndex, nftCollection.Index, marketplaceId, msg.CollectionId).
+		WithCollection(msg.Collection).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = collectionSettingsController.
+	err = marketplaceCollectionController.
 		MustNotExist().
-		ValidSettings().
+		ValidCollection().
 		Validate()
 
 	if err != nil {
 		return nil, err
 	}
 
-	collectionSettingsIndex := collectionSettingsController.getIndex()
+	nftCollectionIndex := marketplaceCollectionController.getIndex()
 
-	parsed, err := sdk.ParseCoinNormalized(msg.Settings.InitiallyCollectionOwnerNftsMinPrice)
+	parsed, err := sdk.ParseCoinNormalized(msg.Collection.InitiallyNftCollectionOwnerNftsMinPrice)
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrInvalidInitiallyNftMinPrice, "initially nft min price is invalid")
 	}
 
-	newCollectionSettings := types.CollectionSettings{
-		Index:                                collectionSettingsIndex,
-		MarketplaceIndex:                     marketplaceIndex,
-		InitiallyCollectionOwnerNftsForSale:  msg.Settings.InitiallyCollectionOwnerNftsForSale,
-		InitiallyCollectionOwnerNftsMinPrice: &parsed,
-		NftsEarningsOnSale:                   msg.Settings.NftsEarningsOnSale,
-		NftsEarningsOnYieldReward:            msg.Settings.NftsEarningsOnYieldReward,
-		InitiallyNftsVaultLockPercentage:     msg.Settings.InitiallyNftsVaultLockPercentage,
-		Creator:                              owner,
+	newMarketplaceCollection := types.MarketplaceCollection{
+		Index:                                   nftCollectionIndex,
+		MarketplaceIndex:                        marketplaceIndex,
+		CollectionCreator:                       collectionCreator.String(),
+		CollectionId:                            msg.CollectionId,
+		InitiallyNftCollectionOwnerNftsForSale:  msg.Collection.InitiallyNftCollectionOwnerNftsForSale,
+		InitiallyNftCollectionOwnerNftsMinPrice: &parsed,
+		NftsEarningsOnSale:                      msg.Collection.NftsEarningsOnSale,
+		NftsEarningsOnYieldReward:               msg.Collection.NftsEarningsOnYieldReward,
+		InitiallyNftsVaultLockPercentage:        msg.Collection.InitiallyNftsVaultLockPercentage,
+		Creator:                                 owner,
 	}
 
-	k.SetCollectionSettings(ctx, newCollectionSettings)
+	k.SetMarketplaceCollection(ctx, newMarketplaceCollection)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgImportCollection),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgImportNftCollection),
 			sdk.NewAttribute(types.AttributeKeyMarketplaceCreator, marketplaceCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyMarketplaceId, marketplaceId),
-			sdk.NewAttribute(types.AttributeKeyCollectionCreator, collection.Owner.String()),
+			sdk.NewAttribute(types.AttributeKeyCollectionCreator, nftCollection.Owner.String()),
 			sdk.NewAttribute(types.AttributeKeyCollectionId, msg.CollectionId),
 			sdk.NewAttribute(types.AttributeKeySigner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),
 	)
 
-	return &types.MsgImportCollectionResponse{
+	return &types.MsgImportNftCollectionResponse{
 		MarketplaceId:    marketplaceId,
 		MarketplaceOwner: marketplaceCreator.String(),
 		CollectionId:     msg.CollectionId,
-		CollectionOwner:  collection.Owner.String(),
+		CollectionOwner:  nftCollection.Owner.String(),
 	}, nil
 }

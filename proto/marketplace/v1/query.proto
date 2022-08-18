@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "marketplace/v1/params.proto";
 import "marketplace/v1/common.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
@@ -21,10 +22,63 @@ service Query {
 		option (google.api.http).get = "/marketplace/v1/marketplace/{creator}/{id}";
 	}
 	
-	rpc CollectionSettings(QueryGetCollectionSettingsRequest) returns (QueryGetCollectionSettingsResponse) {
-		option (google.api.http).get = "/marketplace/v1/collection-settings/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}";
+	rpc MarketplaceCollection(QueryGetMarketplaceCollectionRequest) returns (QueryGetMarketplaceCollectionResponse) {
+		option (google.api.http).get = "/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}";
+	}
+
+  rpc MarketplacesByCreator(QueryGetMarketplacesByCreatorRequest) returns (QueryGetMarketplacesByCreatorResponse) {
+		option (google.api.http).get = "/marketplace/v1/marketplace/{creator}";
+	}
+
+  rpc AllMarketplaces(QueryGetAllMarketplacesRequest) returns (QueryGetAllMarketplacesResponse) {
+		option (google.api.http).get = "/marketplace/v1/marketplace";
+	}
+
+	rpc AllMarketplaceCollections(QueryGetAllMarketplaceCollectionsRequest) returns (QueryGetAllMarketplaceCollectionsResponse) {
+		option (google.api.http).get = "/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}";
 	}
   // this line is used by starport scaffolding # 2
+}
+
+message QueryGetAllMarketplaceCollectionsRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryGetAllMarketplaceCollectionsResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+
+  repeated QueryGetMarketplaceCollectionResponse collections = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
+}
+
+message QueryGetMarketplacesByCreatorRequest {
+  string creator = 1;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetMarketplacesByCreatorResponse {
+  string creator = 1;
+  repeated QueryGetMarketplaceResponse marketplaces = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+
+
+message QueryGetAllMarketplacesRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetAllMarketplacesResponse {
+  repeated QueryGetMarketplaceResponse marketplaces = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -56,20 +110,20 @@ message QueryGetMarketplaceResponse {
   google.protobuf.Any data = 12;
 }
 
-message QueryGetCollectionSettingsRequest {
+message QueryGetMarketplaceCollectionRequest {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
 }
 
-message QueryGetCollectionSettingsResponse {
+message QueryGetMarketplaceCollectionResponse {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
-  bool initially_collection_owner_nfts_for_sale = 5;
-  string initially_collection_owner_nfts_min_price = 6;
+  bool initially_nft_collection_owner_nfts_for_sale = 5;
+  string initially_nft_collection_owner_nfts_min_price = 6;
   repeated MarketplaceEarning nfts_earnings_on_sale = 7;
   repeated MarketplaceEarning nfts_earnings_on_yield_reward = 78;
   string initially_nfts_vault_lock_percentage = 9; 

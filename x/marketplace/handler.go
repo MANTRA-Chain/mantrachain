@@ -20,8 +20,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgRegisterMarketplace:
 			res, err := msgServer.RegisterMarketplace(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgImportCollection:
-			res, err := msgServer.ImportCollection(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgImportNftCollection:
+			res, err := msgServer.ImportNftCollection(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgBuyNft:
 			res, err := msgServer.BuyNft(sdk.WrapSDKContext(ctx), msg)

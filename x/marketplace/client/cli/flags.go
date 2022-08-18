@@ -12,15 +12,15 @@ const (
 )
 
 var (
-	FsImportCollection = flag.NewFlagSet("", flag.ContinueOnError)
-	FsBuyNft           = flag.NewFlagSet("", flag.ContinueOnError)
+	FsImportNftCollection = flag.NewFlagSet("", flag.ContinueOnError)
+	FsBuyNft              = flag.NewFlagSet("", flag.ContinueOnError)
 )
 
 func init() {
-	FsImportCollection.String(FlagMarketplaceCreator, "", "The marketplace creator address")
-	FsImportCollection.String(FlagMarketplaceId, "", "The marketplace id")
-	FsImportCollection.String(FlagCollectionCreator, "", "The collection creator address")
-	FsImportCollection.String(FlagCollectionId, "", "The collection id")
+	FsImportNftCollection.String(FlagMarketplaceCreator, "", "The marketplace creator address")
+	FsImportNftCollection.String(FlagMarketplaceId, "", "The marketplace id")
+	FsImportNftCollection.String(FlagCollectionCreator, "", "The collection creator address")
+	FsImportNftCollection.String(FlagCollectionId, "", "The collection id")
 
 	FsBuyNft.String(FlagMarketplaceCreator, "", "The marketplace creator address")
 	FsBuyNft.String(FlagMarketplaceId, "", "The marketplace id")

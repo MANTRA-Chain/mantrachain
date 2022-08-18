@@ -12,7 +12,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
 // Msg defines the Msg service.
 service Msg {
       rpc RegisterMarketplace(MsgRegisterMarketplace) returns (MsgRegisterMarketplaceResponse);
-      rpc ImportCollection(MsgImportCollection) returns (MsgImportCollectionResponse);
+      rpc ImportNftCollection(MsgImportNftCollection) returns (MsgImportNftCollectionResponse);
       rpc BuyNft(MsgBuyNft) returns (MsgBuyNftResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
@@ -37,18 +37,18 @@ message MsgBuyNftResponse {
   bool staked = 8;
 }
 
-message MsgImportCollection {
+message MsgImportNftCollection {
   string creator = 1;
   string marketplace_creator = 2;
   string marketplace_id = 3;
   string collection_creator = 4;
   string collection_id = 5;
-  MsgCollectionSettings settings = 6;
+  MsgMarketplaceCollection collection = 6;
 }
 
-message MsgCollectionSettings {
-  bool initially_collection_owner_nfts_for_sale = 1;
-  string initially_collection_owner_nfts_min_price = 2;
+message MsgMarketplaceCollection {
+  bool initially_nft_collection_owner_nfts_for_sale = 1;
+  string initially_nft_collection_owner_nfts_min_price = 2;
   repeated MarketplaceEarning nfts_earnings_on_sale = 3;
   repeated MarketplaceEarning nfts_earnings_on_yield_reward = 4;
   string initially_nfts_vault_lock_percentage = 5 [
@@ -58,7 +58,7 @@ message MsgCollectionSettings {
   ]; 
 }
 
-message MsgImportCollectionResponse {
+message MsgImportNftCollectionResponse {
   string marketplace_id = 1;
   string marketplace_owner = 2;
   string collection_id = 3;
