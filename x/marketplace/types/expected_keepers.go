@@ -7,17 +7,26 @@ import (
 
 type NFTKeeper interface {
 	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
-	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 }
 
 type TokenKeeper interface {
 	GetNftCollection(ctx sdk.Context, creator sdk.AccAddress, index []byte) (val tokentypes.NftCollection, found bool)
 	HasNftCollection(ctx sdk.Context, creator sdk.AccAddress, index []byte) (exists bool)
 	GetNft(ctx sdk.Context, collectionIndex []byte, nftIndex []byte) (val tokentypes.Nft, found bool)
+	GetIsApprovedForAllNfts(ctx sdk.Context, owner sdk.AccAddress, operator sdk.AccAddress) bool
+	TransferNft(
+		ctx sdk.Context,
+		operator sdk.AccAddress,
+		owner sdk.AccAddress,
+		receiver sdk.AccAddress,
+		collectionIndex []byte,
+		nftIndex []byte,
+	) error
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
+	GetModuleAddress(name string) sdk.AccAddress
 	// Methods imported from account should be defined here
 }
 

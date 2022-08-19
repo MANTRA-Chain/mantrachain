@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	math "math"
-
 	"github.com/LimeChain/mantrachain/x/marketplace/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -34,10 +32,10 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		}
 
 		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() {
-			earningAmount := earning.Percentage.Mul(minPrice.Amount).ToDec().MustFloat64() / 100
+			earningAmount := earning.Percentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
 
-			if earningAmount > 1 {
-				earningCoin := sdk.NewCoin(minPrice.GetDenom(), sdk.NewDec(int64(math.Floor(earningAmount))).TruncateInt())
+			if earningAmount.GT(sdk.NewDec(1)) {
+				earningCoin := sdk.NewCoin(minPrice.GetDenom(), earningAmount.TruncateInt())
 				err := k.bk.SendCoins(ctx, buyer, sdk.AccAddress(earning.Address), []sdk.Coin{earningCoin})
 
 				if err != nil {
@@ -50,10 +48,10 @@ func (k Keeper) CollectFeesAndDelegateStake(
 	}
 
 	if !nftsVaultLockPercentage.IsNil() && !nftsVaultLockPercentage.IsZero() {
-		lockAmount := nftsVaultLockPercentage.Mul(minPrice.Amount).ToDec().MustFloat64() / 100
+		lockAmount := nftsVaultLockPercentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
 
-		if lockAmount > 1 {
-			lockCoin := sdk.NewCoin(minPrice.GetDenom(), sdk.NewDec(int64(math.Floor(lockAmount))).TruncateInt())
+		if lockAmount.GT(sdk.NewDec(1)) {
+			lockCoin := sdk.NewCoin(minPrice.GetDenom(), lockAmount.TruncateInt())
 
 			vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
 			err := vaultExecutor.UpsertNftStake(marketplaceIndex, collectionIndex, nftIndex, buyer, lockCoin, true)

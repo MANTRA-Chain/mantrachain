@@ -36,4 +36,5 @@ var (
 	ErrInvalidMarketplaceNftsEarningsOnYieldRewardEarningType = sdkerrors.Register(ModuleName, 1136, "marketplace nfts earnings on yield reward earning type provided is invalid")
 	ErrInvalidMarketplaceEarningType                          = sdkerrors.Register(ModuleName, 1137, "marketplace earning type provided is invalid")
 	ErrUnavailable                                            = sdkerrors.Register(ModuleName, 1138, "unavailable")
+	ErrNftsNotApproved                                        = sdkerrors.Register(ModuleName, 1139, "nfts not approved")
 )

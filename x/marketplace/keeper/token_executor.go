@@ -33,3 +33,25 @@ func (c *TokenExecutor) GetNft(collectionCreator sdk.AccAddress, collectionId st
 	index := tokentypes.GetNftIndex(collectionIndex, id)
 	return c.tokenKeeper.GetNft(c.ctx, collectionIndex, index)
 }
+
+func (c *TokenExecutor) HasApprovedAllNfts(creator sdk.AccAddress, receiver sdk.AccAddress, approved bool) bool {
+	return c.tokenKeeper.GetIsApprovedForAllNfts(c.ctx, creator, receiver)
+}
+
+func (c *TokenExecutor) TransferNft(
+	operator sdk.AccAddress,
+	owner sdk.AccAddress,
+	receiver sdk.AccAddress,
+	collectionCreator sdk.AccAddress,
+	collectionIndex []byte,
+	index []byte,
+) error {
+	return c.tokenKeeper.TransferNft(
+		c.ctx,
+		operator,
+		owner,
+		receiver,
+		collectionIndex,
+		index,
+	)
+}

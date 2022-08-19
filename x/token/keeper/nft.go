@@ -4,6 +4,7 @@ import (
 	"github.com/LimeChain/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) SetNft(ctx sdk.Context, nft types.Nft) {
@@ -259,4 +260,27 @@ func (k Keeper) GetNftsByIndexes(ctx sdk.Context, collectionIndex []byte, nftsIn
 	}
 
 	return
+}
+
+func (k Keeper) TransferNft(
+	ctx sdk.Context,
+	operator sdk.AccAddress,
+	owner sdk.AccAddress,
+	receiver sdk.AccAddress,
+	collectionIndex []byte,
+	index []byte,
+) error {
+	if !owner.Equals(operator) && !k.IsApproved(ctx, collectionIndex, index, owner, operator) {
+		return sdkerrors.Wrap(types.ErrInvalidNft, "operator not approved to transfer nft")
+	}
+
+	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+	err := nftExecutor.TransferNft(string(collectionIndex), string(index), receiver)
+	if err != nil {
+		return err
+	}
+
+	k.DeleteApprovedNft(ctx, collectionIndex, index)
+
+	return nil
 }

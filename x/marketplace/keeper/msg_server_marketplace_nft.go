@@ -143,9 +143,19 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrapf(err, "unable to collect fees and stake")
 	}
 
-	err = nftExecutor.TransferNft(string(nftCollection.Index), string(nft.Index), creator)
+	// TODO: transfer the current yield reward to the owner
+
+	err = tokenExecutor.TransferNft(
+		k.ac.GetModuleAddress(types.ModuleName),
+		owner,
+		creator,
+		collectionCreator,
+		nftCollection.Index,
+		nft.Index,
+	)
+
 	if err != nil {
-		return nil, err
+		return nil, sdkerrors.Wrapf(err, "unable to transfer nft")
 	}
 
 	ctx.EventManager().EmitEvent(
