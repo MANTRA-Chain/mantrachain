@@ -108,6 +108,7 @@ func (k Keeper) MarketplacesByCreator(c context.Context, req *types.QueryGetMark
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 
 	creator, err := sdk.AccAddressFromBech32(req.Creator)

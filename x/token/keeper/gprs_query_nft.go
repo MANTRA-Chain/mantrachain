@@ -289,7 +289,7 @@ func (k Keeper) IsApprovedForAllNfts(c context.Context, req *types.QueryGetIsApp
 	}
 
 	return &types.QueryGetIsApprovedForAllNftsResponse{
-		Address:  operator.String(),
+		Operator: operator.String(),
 		Approved: k.GetIsApprovedForAllNfts(ctx, owner, operator),
 	}, nil
 }
