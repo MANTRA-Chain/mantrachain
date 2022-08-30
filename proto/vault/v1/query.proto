@@ -81,7 +81,7 @@ message QueryGetNftBalanceResponse {
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5; 
-  cosmos.base.v1beta1.DecCoin balance = 6;
+  cosmos.base.v1beta1.Coin balance = 6;
   int64 start_at = 7; 
   int64 end_at = 8; 
 }

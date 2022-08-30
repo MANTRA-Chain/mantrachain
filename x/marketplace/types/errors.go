@@ -37,4 +37,6 @@ var (
 	ErrInvalidMarketplaceEarningType                          = sdkerrors.Register(ModuleName, 1137, "marketplace earning type provided is invalid")
 	ErrUnavailable                                            = sdkerrors.Register(ModuleName, 1138, "unavailable")
 	ErrNftsNotApproved                                        = sdkerrors.Register(ModuleName, 1139, "nfts not approved")
+	ErrInvalidCollection                                      = sdkerrors.Register(ModuleName, 1140, "collection provided is invalid")
+	ErrInvalidMarketplaceMetadata                             = sdkerrors.Register(ModuleName, 1141, "marketplace metadata provided is invalid")
 )

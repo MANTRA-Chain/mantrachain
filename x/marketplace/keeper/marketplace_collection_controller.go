@@ -95,6 +95,8 @@ func (c *MarketplaceCollectionController) requireMarketplaceCollection() error {
 
 func (c *MarketplaceCollectionController) ValidCollection() *MarketplaceCollectionController {
 	c.validators = append(c.validators, func(controller *MarketplaceCollectionController) error {
+		return controller.collectionNotNil()
+	}, func(controller *MarketplaceCollectionController) error {
 		return controller.validInitiallyNftMinPrice()
 	}, func(controller *MarketplaceCollectionController) error {
 		return controller.validNftsEarningsOnSale()
@@ -131,6 +133,14 @@ func (c *MarketplaceCollectionController) validNftsEarningAndLockPercentage() er
 func (c *MarketplaceCollectionController) validInitiallyNftsVaultLockPercentage() error {
 	if c.collection.InitiallyNftsVaultLockPercentage.IsNegative() || c.collection.InitiallyNftsVaultLockPercentage.GT(sdk.NewInt(100)) {
 		return sdkerrors.Wrapf(types.ErrInvalidInitiallyNftsVaultLockPercentage, "initially nfts vault lock percentage %s is invalid", c.collection.InitiallyNftsVaultLockPercentage)
+	}
+
+	return nil
+}
+
+func (c *MarketplaceCollectionController) collectionNotNil() error {
+	if c.collection == nil {
+		return sdkerrors.Wrapf(types.ErrInvalidCollection, "collection is invalid")
 	}
 
 	return nil

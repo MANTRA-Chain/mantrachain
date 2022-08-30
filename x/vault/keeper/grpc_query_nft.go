@@ -161,13 +161,15 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 	prevBalance := rewardsController.getBalanceCoinNative()
 	balance.Amount = balance.Amount.Add(prevBalance.Amount)
 
+	intBalance, _ := balance.TruncateDecimal()
+
 	return &types.QueryGetNftBalanceResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
 		MarketplaceId:      req.MarketplaceId,
 		CollectionCreator:  collectionCreator.String(),
 		CollectionId:       req.CollectionId,
 		NftId:              req.Id,
-		Balance:            &balance,
+		Balance:            &intBalance,
 		StartAt:            startAt,
 		EndAt:              endAt,
 	}, nil

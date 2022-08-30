@@ -28,6 +28,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryParams(),
 		CmdGetMarketplace(),
 		CmdGetMarketplaceCollection(),
+		CmdGetMarketplaceNft(),
 		CmdGetAllMarketplaceCollections(),
 		CmdGetMarketplacesByCreator(),
 		CmdGetAllMarketplaces(),

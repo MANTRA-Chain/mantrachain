@@ -1,6 +1,7 @@
 syntax = "proto3";
 package LimeChain.mantrachain.marketplace.v1;
 
+import "cosmos/base/v1beta1/coin.proto";
 import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -28,6 +29,10 @@ service Query {
 	
 	rpc MarketplaceCollection(QueryGetMarketplaceCollectionRequest) returns (QueryGetMarketplaceCollectionResponse) {
 		option (google.api.http).get = "/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}";
+	}
+	
+	rpc MarketplaceNft(QueryGetMarketplaceNftRequest) returns (QueryGetMarketplaceNftResponse) {
+		option (google.api.http).get = "/marketplace/v1/marketplace-nft/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
 	}
 
   rpc MarketplacesByCreator(QueryGetMarketplacesByCreatorRequest) returns (QueryGetMarketplacesByCreatorResponse) {
@@ -133,11 +138,31 @@ message QueryGetMarketplaceCollectionResponse {
   string collection_creator = 3;
   string collection_id = 4;
   bool initially_nft_collection_owner_nfts_for_sale = 5;
-  string initially_nft_collection_owner_nfts_min_price = 6;
+  cosmos.base.v1beta1.Coin initially_nft_collection_owner_nfts_min_price = 6;
   repeated MarketplaceEarning nfts_earnings_on_sale = 7;
   repeated MarketplaceEarning nfts_earnings_on_yield_reward = 78;
   string initially_nfts_vault_lock_percentage = 9; 
   string creator = 10;
+}
+
+message QueryGetMarketplaceNftRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string id = 5;
+}
+
+message QueryGetMarketplaceNftResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  bool for_sale = 6;
+  bool initially_sold = 7;
+  cosmos.base.v1beta1.Coin min_price = 8;
+  string creator = 9;
 }
 
 // this line is used by starport scaffolding # 3

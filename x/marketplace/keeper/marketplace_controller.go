@@ -87,6 +87,8 @@ func (c *MarketplaceController) MustExist() *MarketplaceController {
 func (c *MarketplaceController) ValidMetadata() *MarketplaceController {
 	// TODO: Validate options, attrubute, images and links
 	c.validators = append(c.validators, func(controller *MarketplaceController) error {
+		return controller.marketplaceMetadataNotNil()
+	}, func(controller *MarketplaceController) error {
 		return controller.validMarketplaceMetadataId()
 	}, func(controller *MarketplaceController) error {
 		return controller.validMarketplaceMetadataName()
@@ -173,6 +175,14 @@ func (c *MarketplaceController) validMarketplaceMetadataDescription() error {
 
 	if uint32(len(c.metadata.Description)) > c.conf.ValidMarketplaceMetadataDescriptionMaxLength {
 		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceDescription, "description too long, max %d symbols", c.conf.ValidMarketplaceMetadataDescriptionMaxLength)
+	}
+
+	return nil
+}
+
+func (c *MarketplaceController) marketplaceMetadataNotNil() error {
+	if c.metadata == nil {
+		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceMetadata, "marketplace metadata is invalid")
 	}
 
 	return nil
