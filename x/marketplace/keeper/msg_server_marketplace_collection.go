@@ -65,7 +65,7 @@ func (k msgServer) ImportNftCollection(goCtx context.Context, msg *types.MsgImpo
 		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not a nft collection owner")
 	}
 
-	approved := tokenExecutor.HasApprovedAllNfts(owner, k.ac.GetModuleAddress(types.ModuleName), true)
+	approved := tokenExecutor.HasApprovedAllNfts(owner, k.GetAddress(ctx), true)
 
 	if !approved {
 		return nil, sdkerrors.Wrap(types.ErrNftsNotApproved, "nfts not approved for marketplace")

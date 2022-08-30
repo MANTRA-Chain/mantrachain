@@ -222,6 +222,7 @@ var (
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		wasm.ModuleName:                {authtypes.Burner},
 		vaulttypes.ModuleName:          {authtypes.Staking},
+		marketplacetypes.ModuleName:    {authtypes.Minter},
 	}
 )
 

@@ -31,6 +31,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdGetAllMarketplaceCollections(),
 		CmdGetMarketplacesByCreator(),
 		CmdGetAllMarketplaces(),
+		CmdQueryAddress(),
 	)
 	// this line is used by starport scaffolding # 1
 

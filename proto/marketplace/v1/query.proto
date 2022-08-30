@@ -17,6 +17,10 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/marketplace/v1/params";
   }
+
+  rpc Address(QueryAddressRequest) returns (QueryAddressResponse) {
+    option (google.api.http).get = "/vault/v1/vault/address";
+  }
 	
 	rpc Marketplace(QueryGetMarketplaceRequest) returns (QueryGetMarketplaceResponse) {
 		option (google.api.http).get = "/marketplace/v1/marketplace/{creator}/{id}";
@@ -38,6 +42,12 @@ service Query {
 		option (google.api.http).get = "/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}";
 	}
   // this line is used by starport scaffolding # 2
+}
+
+message QueryAddressRequest {}
+
+message QueryAddressResponse {
+  string address = 1;
 }
 
 message QueryGetAllMarketplaceCollectionsRequest {

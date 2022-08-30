@@ -14,7 +14,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/vault/params";
+    option (google.api.http).get = "/vault/v1/vault/params";
   }
 
   rpc NftStake(QueryGetNftStakeRequest) returns (QueryGetNftStakeResponse) {
