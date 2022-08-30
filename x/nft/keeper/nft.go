@@ -209,7 +209,7 @@ func (k Keeper) updateTotalSupply(ctx sdk.Context, classID string, supply uint64
 	store.Set(supplyKey, sdk.Uint64ToBigEndian(supply))
 }
 
-func (k Keeper) FilterNotOwn(ctx sdk.Context, classID string, nftIDs []string, owner sdk.AccAddress) (list []string) {
+func (k Keeper) FilterNotOwnNFTsIdsOfClass(ctx sdk.Context, classID string, nftIDs []string, owner sdk.AccAddress) (list []string) {
 	for _, id := range nftIDs {
 		if owner.Equals(k.GetOwner(ctx, classID, id)) {
 			list = append(list, id)

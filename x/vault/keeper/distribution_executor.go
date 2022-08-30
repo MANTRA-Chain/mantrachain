@@ -68,6 +68,10 @@ func (c *DistributionExecutor) WithdrawDelegationRewards(
 
 	amount, err := c.dk.WithdrawDelegationRewards(c.ctx, c.ac.GetModuleAddress(types.ModuleName), valAdr)
 
+	if err != nil {
+		return withdrawn, sdkerrors.Wrap(err, "cannot witdraw reward")
+	}
+
 	for _, v := range amount {
 		if v.Denom == denom {
 			withdrawn = withdrawn.AddAmount(v.Amount)

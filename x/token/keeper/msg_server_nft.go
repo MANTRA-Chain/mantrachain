@@ -221,7 +221,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		Execute()
 
 	if err != nil {
@@ -328,7 +328,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		Execute()
 
 	if err != nil {
@@ -599,7 +599,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		Execute()
 
 	if err != nil {
@@ -698,7 +698,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		Execute()
 
 	if err != nil {
@@ -801,7 +801,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		FilterCannotTransfer(operator).
 		Execute()
 
@@ -918,7 +918,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	err = nftController.
 		FilterEmptyIds().
 		FilterNotExist().
-		FilterNotOwn(owner).
+		FilterNotOwnOfClass(owner).
 		FilterCannotTransfer(operator).
 		Execute()
 

@@ -99,9 +99,9 @@ func (c *NftController) FilterNotExist() *NftController {
 	return c
 }
 
-func (c *NftController) FilterNotOwn(owner sdk.AccAddress) *NftController {
+func (c *NftController) FilterNotOwnOfClass(owner sdk.AccAddress) *NftController {
 	c.actions = append(c.actions, func(controller *NftController) error {
-		return controller.filterNotOwn(owner)
+		return controller.filterNotOwnOfClass(owner)
 	})
 	return c
 }
@@ -200,7 +200,7 @@ func (c *NftController) filterNotExist() error {
 	return nil
 }
 
-func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
+func (c *NftController) filterNotOwnOfClass(owner sdk.AccAddress) error {
 	byNftId := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
 	nftsIds := []string{}
@@ -211,7 +211,7 @@ func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
 		byNftId[string(index)] = nftMetadata
 	}
 
-	nftsIds = c.store.nftKeeper.FilterNotOwn(c.ctx, string(c.collectionIndex), nftsIds, owner)
+	nftsIds = c.store.nftKeeper.FilterNotOwnNFTsIdsOfClass(c.ctx, string(c.collectionIndex), nftsIds, owner)
 	for _, nftId := range nftsIds {
 		nftMetadata := byNftId[nftId]
 		filtered = append(filtered, nftMetadata)
