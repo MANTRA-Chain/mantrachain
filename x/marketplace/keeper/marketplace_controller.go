@@ -189,7 +189,7 @@ func (c *MarketplaceController) marketplaceMetadataNotNil() error {
 }
 
 func (c *MarketplaceController) validMarketplaceMetadataId() error {
-	return types.ValidateMarketplaceId(c.conf.ValidMarketplaceId, c.metadata.Id, nil)
+	return types.ValidateMarketplaceId(c.conf.ValidMarketplaceId, c.metadata.Id)
 }
 
 func (c *MarketplaceController) validMarketplaceMetadataName() error {

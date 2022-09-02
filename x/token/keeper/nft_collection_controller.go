@@ -284,7 +284,7 @@ func (c *NftCollectionController) validCollectionMetadataDescription() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataId() error {
-	return types.ValidateNftCollectionId(c.conf.ValidNftCollectionId, c.metadata.Id, nil)
+	return types.ValidateNftCollectionId(c.conf.ValidNftCollectionId, c.metadata.Id)
 }
 
 func (c *NftCollectionController) validCollectionMetadataName() error {

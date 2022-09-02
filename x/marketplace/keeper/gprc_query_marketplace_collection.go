@@ -26,7 +26,7 @@ func (k Keeper) MarketplaceCollection(c context.Context, req *types.QueryGetMark
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId, nil)
+	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -90,7 +90,7 @@ func (k Keeper) AllMarketplaceCollections(goCtx context.Context, req *types.Quer
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId, nil)
+	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

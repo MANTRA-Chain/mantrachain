@@ -24,7 +24,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 	}
 
 	conf := k.GetParams(ctx)
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -201,7 +201,7 @@ func (k Keeper) NftCollectionSupply(c context.Context, req *types.QueryGetNftCol
 	}
 
 	conf := k.GetParams(ctx)
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

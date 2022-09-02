@@ -17,40 +17,32 @@ func ValidateNftCollectionCategory(cat NftCollectionCategory) error {
 	}
 }
 
-func ValidateNftCollectionId(validNftCollectionId string, collectionId string, isValidNftCollectionId func(s string) bool) error {
+func ValidateNftCollectionId(validNftCollectionId string, collectionId string) error {
 	if strings.TrimSpace(collectionId) == "" {
 		return errors.Wrapf(ErrInvalidNftCollectionId, "invalid nft collection id %s", collectionId)
 	}
 
-	if validNftCollectionId == "" && isValidNftCollectionId == nil {
+	if validNftCollectionId == "" {
 		return errors.Wrap(ErrInvalidNftCollectionId, "missing nft collection id regex param")
 	}
 
-	if isValidNftCollectionId == nil {
-		isValidNftCollectionId = regexp.MustCompile(validNftCollectionId).MatchString
-	}
-
-	if !isValidNftCollectionId(collectionId) {
+	if !regexp.MustCompile(validNftCollectionId).MatchString(collectionId) {
 		return errors.Wrap(ErrInvalidNftCollectionId, collectionId)
 	}
 
 	return nil
 }
 
-func ValidateNftId(validNftId string, nftId string, isValidNftId func(s string) bool) error {
+func ValidateNftId(validNftId string, nftId string) error {
 	if strings.TrimSpace(nftId) == "" {
 		return errors.Wrapf(ErrInvalidNftId, "invalid nft id %s", nftId)
 	}
 
-	if validNftId == "" && isValidNftId == nil {
+	if validNftId == "" {
 		return errors.Wrap(ErrInvalidNftId, "missing nft id regex param")
 	}
 
-	if isValidNftId == nil {
-		isValidNftId = regexp.MustCompile(validNftId).MatchString
-	}
-
-	if !isValidNftId(nftId) {
+	if !regexp.MustCompile(validNftId).MatchString(nftId) {
 		return errors.Wrapf(ErrInvalidNftId, "invalid nft id %s", nftId)
 	}
 

@@ -25,13 +25,13 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
+	err = types.ValidateNftId(conf.ValidNftId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -90,7 +90,7 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -174,13 +174,13 @@ func (k Keeper) NftOwner(c context.Context, req *types.QueryGetNftOwnerRequest) 
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
+	err = types.ValidateNftId(conf.ValidNftId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -225,13 +225,13 @@ func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedReq
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	err = types.ValidateNftId(conf.ValidNftId, req.Id, nil)
+	err = types.ValidateNftId(conf.ValidNftId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -314,7 +314,7 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -354,7 +354,7 @@ func (k Keeper) CollectionNftsByOwner(goCtx context.Context, req *types.QueryGet
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId, nil)
+	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

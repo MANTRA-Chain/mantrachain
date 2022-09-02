@@ -16,20 +16,16 @@ func ValidateMarketplaceEarningType(earningType MarketplaceEarningType) error {
 	}
 }
 
-func ValidateMarketplaceId(validMarketplaceId string, marketplaceId string, isValidMarketplaceId func(s string) bool) error {
+func ValidateMarketplaceId(validMarketplaceId string, marketplaceId string) error {
 	if strings.TrimSpace(marketplaceId) == "" {
 		return errors.Wrapf(ErrInvalidMarketplaceId, "invalid marketplace id %s", marketplaceId)
 	}
 
-	if validMarketplaceId == "" && isValidMarketplaceId == nil {
+	if validMarketplaceId == "" {
 		return errors.Wrap(ErrInvalidMarketplaceId, "missing marketplace id regex param")
 	}
 
-	if isValidMarketplaceId == nil {
-		isValidMarketplaceId = regexp.MustCompile(validMarketplaceId).MatchString
-	}
-
-	if !isValidMarketplaceId(marketplaceId) {
+	if !regexp.MustCompile(validMarketplaceId).MatchString(marketplaceId) {
 		return errors.Wrap(ErrInvalidMarketplaceId, marketplaceId)
 	}
 

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultValidMarketplaceId                           string = "[a-zA-Z0-9_/:-]{0,100}"
+	DefaultValidMarketplaceId                           string = "^[a-zA-Z0-9_/:-]{0,100}$"
 	DefaultValidMarketplaceMetadataDescriptionMaxLength uint32 = 1000
 	DefaultValidMarketplaceMetadataNameMaxLength        uint32 = 100
 	DefaultValidNftsEarningsOnSaleMaxCount              uint32 = 5

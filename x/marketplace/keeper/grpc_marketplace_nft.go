@@ -24,7 +24,7 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 
 	conf := k.GetParams(ctx)
 
-	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId, nil)
+	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.MarketplaceId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

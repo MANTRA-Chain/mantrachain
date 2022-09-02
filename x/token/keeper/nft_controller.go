@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/token/types"
@@ -247,10 +246,8 @@ func (c *NftController) validMetadataMaxCount() error {
 }
 
 func (c *NftController) validMetadataId() error {
-	isValidNftId := regexp.MustCompile(c.conf.ValidNftId).MatchString
-
 	for i, nft := range c.metadata {
-		err := types.ValidateNftId(c.conf.ValidNftId, nft.Id, isValidNftId)
+		err := types.ValidateNftId(c.conf.ValidNftId, nft.Id)
 		if err != nil {
 			return sdkerrors.Wrapf(err, "index %d", i)
 		}

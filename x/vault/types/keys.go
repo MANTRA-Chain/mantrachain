@@ -32,6 +32,15 @@ var (
 	delimiter = []byte{0x00}
 )
 
+const (
+	TypeMsgEpochEnd = "epoch_end"
+
+	AttributeKeyChainId   = "chain_id"
+	AttributeKeyValidator = "validator"
+	AttributeKeyDenom     = "denom"
+	AttributeBlockHeight  = "block_height"
+)
+
 func NftStakeStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
 	key := make([]byte, len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
 	copy(key, nftStakeStoreKey)

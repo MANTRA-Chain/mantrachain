@@ -24,7 +24,7 @@ func (k Keeper) Marketplace(c context.Context, req *types.QueryGetMarketplaceReq
 	}
 
 	conf := k.GetParams(ctx)
-	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.Id, nil)
+	err = types.ValidateMarketplaceId(conf.ValidMarketplaceId, req.Id)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
