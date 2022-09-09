@@ -156,7 +156,7 @@ func (c *MarketplaceCollectionController) validInitiallyNftMinPrice() error {
 }
 
 func (c *MarketplaceCollectionController) validNftsEarningsOnSale() error {
-	if uint32(len(c.collection.NftsEarningsOnSale)) > c.conf.ValidNftsEarningsOnSaleMaxCount {
+	if int32(len(c.collection.NftsEarningsOnSale)) > c.conf.ValidNftsEarningsOnSaleMaxCount {
 		return sdkerrors.Wrapf(types.ErrInvalidNftsEarningsOnSaleMaxCount, "nfts earnings on sale count %d invalid, max %d", len(c.collection.NftsEarningsOnSale), c.conf.ValidNftsEarningsOnSaleMaxCount)
 	}
 
@@ -176,7 +176,7 @@ func (c *MarketplaceCollectionController) validNftsEarningsOnSale() error {
 }
 
 func (c *MarketplaceCollectionController) validNftsEarningsOnYieldReward() error {
-	if uint32(len(c.collection.NftsEarningsOnYieldReward)) > c.conf.ValidNftsEarningsOnYieldRewardMaxCount {
+	if int32(len(c.collection.NftsEarningsOnYieldReward)) > c.conf.ValidNftsEarningsOnYieldRewardMaxCount {
 		return sdkerrors.Wrapf(types.ErrInvalidNftsEarningsOnYieldRewardMaxCount, "nfts earnings on yield reward count %d invalid, max %d", len(c.collection.NftsEarningsOnYieldReward), c.conf.ValidNftsEarningsOnYieldRewardMaxCount)
 	}
 

@@ -146,7 +146,7 @@ func validateEpochBlockHeightOffset(i interface{}) error {
 	}
 
 	if v <= 0 {
-		return fmt.Errorf("epoch block height offset should be positive")
+		return fmt.Errorf("epoch block height offset param should be positive")
 	}
 
 	return nil
@@ -159,7 +159,7 @@ func validateMinEpochWithdrawAmount(i interface{}) error {
 	}
 
 	if v <= 0 {
-		return fmt.Errorf("min epoch withdraw amount should be positive")
+		return fmt.Errorf("min epoch withdraw amount param should be positive")
 	}
 
 	return nil
@@ -172,7 +172,7 @@ func validateMinRewardWithdrawAmount(i interface{}) error {
 	}
 
 	if v <= 0 {
-		return fmt.Errorf("min reward withdraw amount should be positive")
+		return fmt.Errorf("min reward withdraw amount param should be positive")
 	}
 
 	return nil

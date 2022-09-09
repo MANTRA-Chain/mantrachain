@@ -11,10 +11,10 @@ import (
 
 const (
 	DefaultValidMarketplaceId                           string = "^[a-zA-Z0-9_/:-]{0,100}$"
-	DefaultValidMarketplaceMetadataDescriptionMaxLength uint32 = 1000
-	DefaultValidMarketplaceMetadataNameMaxLength        uint32 = 100
-	DefaultValidNftsEarningsOnSaleMaxCount              uint32 = 5
-	DefaultValidNftsEarningsOnYieldRewardMaxCount       uint32 = 5
+	DefaultValidMarketplaceMetadataDescriptionMaxLength int32  = 1000
+	DefaultValidMarketplaceMetadataNameMaxLength        int32  = 100
+	DefaultValidNftsEarningsOnSaleMaxCount              int32  = 5
+	DefaultValidNftsEarningsOnYieldRewardMaxCount       int32  = 5
 )
 
 var (
@@ -35,10 +35,10 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams(
 	validMarketplaceId string,
-	validMarketplaceMetadataDescriptionMaxLength uint32,
-	validMarketplaceMetadataNameMaxLength uint32,
-	validNftsEarningsOnSaleMaxCount uint32,
-	validNftsEarningsOnYieldRewardMaxCount uint32,
+	validMarketplaceMetadataDescriptionMaxLength int32,
+	validMarketplaceMetadataNameMaxLength int32,
+	validNftsEarningsOnSaleMaxCount int32,
+	validNftsEarningsOnYieldRewardMaxCount int32,
 ) Params {
 	return Params{
 		ValidMarketplaceId:                           validMarketplaceId,
@@ -141,52 +141,52 @@ func validateValidMarketplaceId(i interface{}) error {
 }
 
 func validateValidMarketplaceMetadataDescriptionMaxLength(i interface{}) error {
-	v, ok := i.(uint32)
+	v, ok := i.(int32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max validators param must be positive: %d", v)
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata description max length param must be positive: %d", v)
 	}
 
 	return nil
 }
 
 func validateValidMarketplaceMetadataNameMaxLength(i interface{}) error {
-	v, ok := i.(uint32)
+	v, ok := i.(int32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max validators param must be positive: %d", v)
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata name max length param must be positive: %d", v)
 	}
 
 	return nil
 }
 
 func validateValidNftsEarningsOnSaleMaxCount(i interface{}) error {
-	v, ok := i.(uint32)
+	v, ok := i.(int32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max validators must be positive: %d", v)
+	if v <= 0 {
+		return fmt.Errorf("valid nfts earnings on sale max count param must be positive: %d", v)
 	}
 
 	return nil
 }
 
 func validateValidNftsEarningsOnYieldRewardMaxCount(i interface{}) error {
-	v, ok := i.(uint32)
+	v, ok := i.(int32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v == 0 {
-		return fmt.Errorf("max validators param must be positive: %d", v)
+	if v <= 0 {
+		return fmt.Errorf("valid nfts earnings on yield reward max count param must be positive: %d", v)
 	}
 
 	return nil

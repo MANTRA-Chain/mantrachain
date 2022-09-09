@@ -173,7 +173,7 @@ func (c *MarketplaceController) validMarketplaceMetadataDescription() error {
 		return nil
 	}
 
-	if uint32(len(c.metadata.Description)) > c.conf.ValidMarketplaceMetadataDescriptionMaxLength {
+	if int32(len(c.metadata.Description)) > c.conf.ValidMarketplaceMetadataDescriptionMaxLength {
 		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceDescription, "description too long, max %d symbols", c.conf.ValidMarketplaceMetadataDescriptionMaxLength)
 	}
 
@@ -197,7 +197,7 @@ func (c *MarketplaceController) validMarketplaceMetadataName() error {
 		return nil
 	}
 
-	if uint32(len(c.metadata.Name)) > c.conf.ValidMarketplaceMetadataNameMaxLength {
+	if int32(len(c.metadata.Name)) > c.conf.ValidMarketplaceMetadataNameMaxLength {
 		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceName, "name length %d invalid, max %d", len(c.metadata.Name), c.conf.ValidMarketplaceMetadataNameMaxLength)
 	}
 

@@ -4,8 +4,10 @@ set -e # exit on first error
 rm -rf $HOME/.mantrachain/
 
 echo "create keys for the validator"
+{
 ./build/mantrachaind keys add validator --keyring-backend=test
 ./build/mantrachaind keys add recipient --keyring-backend=test
+} 2>&1 | tee accounts.txt
 
 VALIDATOR=$(./build/mantrachaind keys show validator -a --keyring-backend test)
 RECIPIENT=$(./build/mantrachaind keys show recipient -a --keyring-backend test)
