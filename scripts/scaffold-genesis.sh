@@ -31,7 +31,7 @@ VALIDATOR1_ADDRESS=$(./build/mantrachaind keys show "$VALIDATOR1_NAME" -a --keyr
   ./build/mantrachaind tendermint show-node-id --home=./$CHAIN_DATA_PATH/validator-1
 } 2>&1 | tee $CHAIN_DATA_PATH/validator-1/validator-node-1-id.txt
 
-./build/mantrachaind add-genesis-account "$VALIDATOR1_ADDRESS" 100000000000stake --home=./$CHAIN_DATA_PATH/validator-1
+./build/mantrachaind add-genesis-account "$VALIDATOR1_ADDRESS" 100000000000000000ustake --home=./$CHAIN_DATA_PATH/validator-1
 
 # validator-2
 ##################################################################
@@ -50,6 +50,10 @@ VALIDATOR2_ADDRESS=$(./build/mantrachaind keys show $VALIDATOR2_NAME -a --keyrin
 
 # Add params to genesis
 ##################################################################
+echo "change staking denom to ustake"
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]["params"]["bond_denom"]="ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+
+echo "update vault genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]="'"$VALIDATOR1_ADDRESS"'"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
 echo "update staking genesis"
@@ -58,15 +62,21 @@ cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]
 echo "udpate gov genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
+echo "update denom metadata"
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["bank"]["denom_metadata"]=''[{"description":"The native staking token of the Cosmos Hub.","denom_units":[{"denom":"ustake","exponent":0,"aliases":["microstake"]},{"denom":"mstake","exponent":3,"aliases":["millistake"]},{"denom":"stake","exponent":6}],"base":"ustake","display":"stake"}]' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+
+echo "update crisis variable to ustake"
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+
 #Add validator-2 as genesis account
 ##################################################################
-./build/mantrachaind add-genesis-account "$VALIDATOR2_ADDRESS" 100000000000stake --home=./$CHAIN_DATA_PATH/validator-1
+./build/mantrachaind add-genesis-account "$VALIDATOR2_ADDRESS" 100000000000000000ustake --home=./$CHAIN_DATA_PATH/validator-1
 
 #Send the genesis to validator-2 for review
 ##################################################################
 cp $CHAIN_DATA_PATH/validator-1/config/genesis.json $CHAIN_DATA_PATH/validator-2/config/genesis.json
 
-./build/mantrachaind gentx $VALIDATOR2_NAME 100000000stake --keyring-backend=$KEYRING_BACKEND --chain-id=$CHAIN_ID --home=./$CHAIN_DATA_PATH/validator-2
+./build/mantrachaind gentx $VALIDATOR2_NAME 100000000000000ustake --keyring-backend=$KEYRING_BACKEND --chain-id=$CHAIN_ID --home=./$CHAIN_DATA_PATH/validator-2
 
 
 #Recieve back its genesis transactions
@@ -77,7 +87,7 @@ cp $CHAIN_DATA_PATH/validator-2/config/gentx/gentx-* $CHAIN_DATA_PATH/validator-
 
 #Add validator-1 genesis transaction
 ##################################################################
-./build/mantrachaind gentx $VALIDATOR1_NAME 100000000stake --keyring-backend=$KEYRING_BACKEND --chain-id=$CHAIN_ID --home=./$CHAIN_DATA_PATH/validator-1
+./build/mantrachaind gentx $VALIDATOR1_NAME 100000000000000ustake --keyring-backend=$KEYRING_BACKEND --chain-id=$CHAIN_ID --home=./$CHAIN_DATA_PATH/validator-1
 
 #Execute the transactions against the genesis
 ##################################################################

@@ -15,14 +15,23 @@ RECIPIENT=$(./build/mantrachaind keys show recipient -a --keyring-backend test)
 echo "init the validator"
 ./build/mantrachaind init mantrachain --chain-id=mantrachain
 
+echo "change staking denom to ustake"
+cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["staking"]["params"]["bond_denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
+
 echo "create validator node with tokens to transfer to the node"
-./build/mantrachaind add-genesis-account $VALIDATOR 100000000000stake
-./build/mantrachaind gentx validator 100000000stake --keyring-backend=test --chain-id=mantrachain
+./build/mantrachaind add-genesis-account $VALIDATOR 100000000000000000ustake
+./build/mantrachaind gentx validator 100000000000000ustake --keyring-backend=test --chain-id=mantrachain
 
 VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
 
 echo "update vault genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR_ADDRESS >$HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
+
+echo "update denom metadata"
+cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["bank"]["denom_metadata"]=''[{"description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"ustake","exponent":0,"aliases":["microstake"]},{"denom":"mstake","exponent":3,"aliases":["millistake"]},{"denom":"stake","exponent":6}],"base":"ustake","display":"stake"}]' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
+
+echo "update crisis variable to ustake"
+cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
 ./build/mantrachaind collect-gentxs
 
@@ -40,7 +49,8 @@ echo "change app.toml values"
 echo "validator"
 sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $HOME/.mantrachain/config/app.toml
 sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $HOME/.mantrachain/config/app.toml
-sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.00001stake\"|g' $HOME/.mantrachain/config/app.toml
+sed -i -E 's|enable = false|enable = true|g' $HOME/.mantrachain/config/app.toml
+sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001ustake\"|g' $HOME/.mantrachain/config/app.toml
 
 echo "change config.toml values"
 
@@ -55,9 +65,9 @@ sed -i -E 's|chain-id = \"\"|chain-id = \"mantrachain\"|g' $HOME/.mantrachain/co
 echo "start the validator"
 tmux new -s validator -d ./build/mantrachaind start
 
-echo "send stake from validator to recipient"
+echo "send ustake from validator to recipient"
 sleep 7
-./build/mantrachaind tx bank send $VALIDATOR $RECIPIENT 10000000000stake --chain-id mantrachain --keyring-backend test --gas auto --gas-adjustment 1.25 --gas-prices 0.00001stake --yes
+./build/mantrachaind tx bank send $VALIDATOR $RECIPIENT 100000000000000ustake --chain-id mantrachain --keyring-backend test --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --yes
 
 echo "track logs"
 tmux a -t validator
