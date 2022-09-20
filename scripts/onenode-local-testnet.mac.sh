@@ -1,4 +1,10 @@
 #!/bin/bash
+
+echo "stop the validators if any"
+tmux kill-session -t validator
+
+kill -9 $(lsof -t -i:26656)
+
 set -e # exit on first error
 
 rm -rf $HOME/.mantrachain/
@@ -49,7 +55,7 @@ echo "change app.toml values"
 echo "validator"
 gsed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $HOME/.mantrachain/config/app.toml
 gsed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $HOME/.mantrachain/config/app.toml
-gsed -i -E 's|enable = false|enable = true|g' $HOME/.mantrachain/config/app.toml
+gsed -i -E '1,/enable = false/s|enable = false|enable = true|g' $HOME/.mantrachain/config/app.toml
 gsed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001ustake\"|g' $HOME/.mantrachain/config/app.toml
 
 echo "change config.toml values"
