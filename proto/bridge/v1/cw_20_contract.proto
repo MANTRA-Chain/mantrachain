@@ -1,0 +1,11 @@
+syntax = "proto3";
+package limechain.mantrachain.bridge.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+message Cw20Contract {
+  uint64 codeId = 1; 
+  string ver = 2; 
+  string path = 3; 
+  string creator = 4;
+}

@@ -1,0 +1,97 @@
+syntax = "proto3";
+package limechain.mantrachain.bridge.v1;
+
+import "bridge/v1/cw_20_contract.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+// Msg defines the Msg service.
+service Msg {
+    rpc RegisterBridge(MsgRegisterBridge) returns (MsgRegisterBridgeResponse);
+    rpc Mint(MsgMint) returns (MsgMintResponse);
+      rpc CreateCw20Contract(MsgCreateCw20Contract) returns (MsgCreateCw20ContractResponse);
+  rpc UpdateCw20Contract(MsgUpdateCw20Contract) returns (MsgUpdateCw20ContractResponse);
+  rpc DeleteCw20Contract(MsgDeleteCw20Contract) returns (MsgDeleteCw20ContractResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgRegisterBridge {
+  string creator = 1;
+  MsgBridgeMetadata bridge = 2;
+}
+
+message MsgCw20InitialBalances {
+  string address = 1;
+  string amount = 2;
+}
+
+message MsgCw20Mint {
+  string minter = 1;
+}
+
+message MsgBridgeMetadata {
+  string id = 1;
+  string bridge_account = 2;
+  string cw20_contract_address = 3;
+  string cw20_name = 4;
+  string cw20_symbol = 5;
+  uint32 cw20_decimals = 6;
+  repeated MsgCw20InitialBalances cw20_initial_balances = 7;
+  MsgCw20Mint cw20_mint = 8;
+}
+
+message MsgRegisterBridgeResponse {
+  string bridge_id = 1;
+  string cw20_contract_address = 2;
+  string bridge_creator = 3;
+}
+
+message MsgMint {
+  string creator = 1;
+  string bridge_id = 2;
+  string bridge_creator = 3;
+  // TODO: This should be an array, i.e. repeated
+  MsgMintMetadata mint = 4;
+}
+
+message MsgMintMetadata {
+  string receiver = 1;
+  // TODO: Should be uint128
+  uint64 amount = 2;
+  string tx_hash = 3;
+}
+
+message MsgMintResponse {
+  string bridge_id = 1;
+  string creator = 2;
+  string cw20_contract_address = 3;
+  string bridge_creator = 4;
+  string receiver = 5;
+  // TODO: Should be uint128
+  uint64 amount = 6;
+  string tx_hash = 7;
+  string type = 8;
+}
+
+message MsgCreateCw20Contract {
+  string creator = 1;
+  uint64 codeId = 2;
+  string ver = 3;
+  string path = 4;
+}
+message MsgCreateCw20ContractResponse {}
+
+message MsgUpdateCw20Contract {
+  string creator = 1;
+  uint64 codeId = 2;
+  string ver = 3;
+  string path = 4;
+}
+message MsgUpdateCw20ContractResponse {}
+
+message MsgDeleteCw20Contract {
+  string creator = 1;
+}
+message MsgDeleteCw20ContractResponse {}
+// this line is used by starport scaffolding # proto/tx/message

@@ -51,8 +51,6 @@ func NewKeeper(
 		paramstore: ps,
 		ac:         ac, bk: bk, sk: sk, dk: dk, nftKeeper: nftKeeper,
 	}
-
-	// TODO: check if StakingValidatorAddress has been set as param i.e. not empty
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

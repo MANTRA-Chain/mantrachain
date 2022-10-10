@@ -6,6 +6,7 @@ KEYRING_BACKEND="test"
 CHAIN_ID="mantrachain-1"
 VALIDATOR1_NAME="validator-1"
 VALIDATOR2_NAME="validator-2"
+ADMIN1_NAME="admin-1"
 
 # clear previous data
 rm -rf $CHAIN_DATA_PATH
@@ -47,6 +48,14 @@ VALIDATOR2_ADDRESS=$(./build/mantrachaind keys show $VALIDATOR2_NAME -a --keyrin
   ./build/mantrachaind tendermint show-node-id --home=./$CHAIN_DATA_PATH/validator-2
 } 2>&1 | tee $CHAIN_DATA_PATH/validator-2/validator-node-2-id.txt
 
+# Generate admin account
+# admin-1
+##################################################################
+{
+  ./build/mantrachaind keys add "$ADMIN1_NAME" --keyring-backend=$KEYRING_BACKEND --home=./$CHAIN_DATA_PATH/validator-1
+} 2>&1 | tee $CHAIN_DATA_PATH/validator-1/admin-1.txt
+
+ADMIN1_ADDRESS=$(./build/mantrachaind keys show "$ADMIN1_NAME" -a --keyring-backend=$KEYRING_BACKEND --home=./$CHAIN_DATA_PATH/validator-1)
 
 # Add params to genesis
 ##################################################################
@@ -55,6 +64,9 @@ cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]
 
 echo "update vault genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]="'"$VALIDATOR1_ADDRESS"'"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+
+echo "update bridge genesis"
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["bridge"]["params"]["admin_account"]='\"$ADMIN1_ADDRESS\" >$CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
 echo "update staking genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]["params"]["unbonding_time"]="240s"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json

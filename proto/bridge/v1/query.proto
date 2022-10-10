@@ -1,0 +1,40 @@
+syntax = "proto3";
+package limechain.mantrachain.bridge.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "bridge/v1/params.proto";
+import "bridge/v1/cw_20_contract.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/bridge/v1/params";
+  }
+
+// Queries a Cw20Contract by index.
+	rpc Cw20Contract(QueryGetCw20ContractRequest) returns (QueryGetCw20ContractResponse) {
+		option (google.api.http).get = "/LimeChain/mantrachain/bridge/cw_20_contract";
+	}
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetCw20ContractRequest {}
+
+message QueryGetCw20ContractResponse {
+	Cw20Contract Cw20Contract = 1 [(gogoproto.nullable) = false];
+}
+// this line is used by starport scaffolding # 3

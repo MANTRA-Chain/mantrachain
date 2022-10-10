@@ -3,7 +3,7 @@
 
 ## Chain scaffolding
 
-- `starport scaffold chain github.com/LimeChain/mantrachain --no-module`
+- `ignite scaffold chain github.com/LimeChain/mantrachain --no-module`
 - remove config.yaml;
 - create make file, build command based on cosmos-sdk;
 

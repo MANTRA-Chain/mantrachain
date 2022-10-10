@@ -21,6 +21,7 @@ echo "create keys for all three validators"
 {
 ./build/mantrachaind keys add validator1 --keyring-backend=test --home=$HOME/.mantrachain/validator1
 ./build/mantrachaind keys add recipient1 --keyring-backend=test --home=$HOME/.mantrachain/validator1
+./build/mantrachaind keys add admin1 --keyring-backend=test --home=$HOME/.mantrachain/validator1
 } 2>&1 | tee accounts1.txt
 {
 ./build/mantrachaind keys add validator2 --keyring-backend=test --home=$HOME/.mantrachain/validator2
@@ -41,10 +42,15 @@ echo "create validator node with tokens to transfer to the three other nodes"
 ./build/mantrachaind add-genesis-account $(./build/mantrachaind keys show validator1 -a --keyring-backend=test --home=$HOME/.mantrachain/validator1) 100000000000000000ustake --home=$HOME/.mantrachain/validator1
 ./build/mantrachaind gentx validator1 100000000000000ustake --keyring-backend=test --home=$HOME/.mantrachain/validator1 --chain-id=mantrachain
 
-VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/validator1/config/gentx/$(ls $HOME/.mantrachain/validator1/config/gentx -AU | head -1) | jq '.body["messages"][0].validator_address')
+VALIDATOR1_ADDRESS=$(cat $HOME/.mantrachain/validator1/config/gentx/$(ls $HOME/.mantrachain/validator1/config/gentx -AU | head -1) | jq '.body["messages"][0].validator_address')
+
+ADMIN1=$(./build/mantrachaind keys show admin1 -a --keyring-backend=test --home=$HOME/.mantrachain/validator1)
 
 echo "update vault genesis"
-cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR_ADDRESS > $HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
+cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR1_ADDRESS > $HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
+
+echo "update bridge genesis"
+cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["bridge"]["params"]["admin_account"]='\"$ADMIN1\" >$HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
 
 echo "update denom metadata"
 cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["bank"]["denom_metadata"]=''[{"description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"ustake","exponent":0,"aliases":["microstake"]},{"denom":"mstake","exponent":3,"aliases":["millistake"]},{"denom":"stake","exponent":6}],"base":"ustake","display":"stake"}]' > $HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json

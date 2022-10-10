@@ -14,19 +14,19 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/vault/v1/vault/params";
+    option (google.api.http).get = "/vault/v1/params";
   }
 
   rpc NftStake(QueryGetNftStakeRequest) returns (QueryGetNftStakeResponse) {
-		option (google.api.http).get = "/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
-		option (google.api.http).get = "/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc LastEpochs(QueryGetLastEpochsRequest) returns (QueryGetLastEpochsResponse) {
-		option (google.api.http).get = "/vault/v1/last-epochs";
+		option (google.api.http).get = "/vault/v1/vault/last-epochs";
 	}
   // this line is used by starport scaffolding # 2
 }
@@ -53,7 +53,7 @@ message QueryGetNftStakeRequest {
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
-  string id = 5;
+  string nft_id = 5;
 }
 
 message QueryGetNftStakeResponse {
@@ -72,7 +72,7 @@ message QueryGetNftBalanceRequest {
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
-  string id = 5;
+  string nft_id = 5;
 }
 
 message QueryGetNftBalanceResponse {

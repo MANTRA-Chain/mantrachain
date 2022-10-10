@@ -106,15 +106,15 @@ func request_Query_NftStake_0(ctx context.Context, marshaler runtime.Marshaler, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := client.NftStake(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -177,15 +177,15 @@ func local_request_Query_NftStake_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := server.NftStake(ctx, &protoReq)
@@ -248,15 +248,15 @@ func request_Query_NftBalance_0(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := client.NftBalance(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -319,15 +319,15 @@ func local_request_Query_NftBalance_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := server.NftBalance(ctx, &protoReq)
@@ -576,13 +576,13 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 2, 2}, []string{"vault", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"vault", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NftStake_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"vault", "v1", "nft-stake", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NftStake_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"vault", "v1", "nft-stake", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NftBalance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8}, []string{"vault", "v1", "nft", "balance", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NftBalance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8}, []string{"vault", "v1", "nft", "balance", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LastEpochs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"vault", "v1", "last-epochs"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LastEpochs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 2, 2}, []string{"vault", "v1", "last-epochs"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

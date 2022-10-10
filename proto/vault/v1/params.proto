@@ -14,5 +14,4 @@ message Params {
   int64 epoch_block_height_offset = 3;
   int64 min_epoch_withdraw_amount = 4;
   int64 min_reward_withdraw_amount = 5;
-  
 }

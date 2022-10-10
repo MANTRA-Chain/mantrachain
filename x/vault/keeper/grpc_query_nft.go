@@ -36,12 +36,12 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.Id) == "" {
+	if strings.TrimSpace(req.NftId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	rewardsController := NewRewardsController(ctx, marketplaceCreator, req.MarketplaceId, collectionCreator, req.CollectionId).
-		WithNftId(req.Id).
+		WithNftId(req.NftId).
 		WithKeeper(k)
 
 	err = rewardsController.
@@ -59,7 +59,7 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		MarketplaceId:      req.MarketplaceId,
 		CollectionCreator:  collectionCreator.String(),
 		CollectionId:       req.CollectionId,
-		NftId:              req.Id,
+		NftId:              req.NftId,
 		Creator:            nftStake.Creator.String(),
 		Staked:             nftStake.Staked,
 		Balances:           nftStake.Balances,
@@ -110,12 +110,12 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if strings.TrimSpace(req.Id) == "" {
+	if strings.TrimSpace(req.NftId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	rewardsController := NewRewardsController(ctx, marketplaceCreator, req.MarketplaceId, collectionCreator, req.CollectionId).
-		WithNftId(req.Id).
+		WithNftId(req.NftId).
 		WithKeeper(k).
 		WithConfiguration(params)
 
@@ -168,7 +168,7 @@ func (k Keeper) NftBalance(c context.Context, req *types.QueryGetNftBalanceReque
 		MarketplaceId:      req.MarketplaceId,
 		CollectionCreator:  collectionCreator.String(),
 		CollectionId:       req.CollectionId,
-		NftId:              req.Id,
+		NftId:              req.NftId,
 		Balance:            &intBalance,
 		StartAt:            startAt,
 		EndAt:              endAt,

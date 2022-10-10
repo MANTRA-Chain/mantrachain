@@ -42,12 +42,12 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 	}
 
 	// TODO: Add correct validation for nft id
-	if strings.TrimSpace(req.Id) == "" {
+	if strings.TrimSpace(req.NftId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	tokenExecutor := NewTokenExecutor(ctx, k.tokenKeeper)
-	nft, found := tokenExecutor.GetNft(collectionCreator, req.CollectionId, req.Id)
+	nft, found := tokenExecutor.GetNft(collectionCreator, req.CollectionId, req.NftId)
 
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -93,7 +93,7 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 		MarketplaceId:      req.MarketplaceId,
 		CollectionCreator:  req.CollectionCreator,
 		CollectionId:       req.CollectionId,
-		NftId:              req.Id,
+		NftId:              req.NftId,
 		ForSale:            forSale,
 		InitiallySold:      initiallySold,
 		MinPrice:           &minPrice,

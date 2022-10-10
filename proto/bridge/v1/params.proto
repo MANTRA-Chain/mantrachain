@@ -1,0 +1,14 @@
+syntax = "proto3";
+package limechain.mantrachain.bridge.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+  string admin_account = 1;
+  string valid_bridge_id = 2;
+}

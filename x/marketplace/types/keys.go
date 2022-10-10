@@ -20,7 +20,7 @@ const (
 var (
 	marketplaceIndex              = "marketplace-id"
 	marketplaceStoreKey           = "marketplace-store"
-	marketplaceCollectionStoreKey = "marketplace-colelction-store"
+	marketplaceCollectionStoreKey = "marketplace-collection-store"
 	marketplaceNftStoreKey        = "marketplace-nft-store"
 
 	delimiter = []byte{0x00}

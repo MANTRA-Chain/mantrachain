@@ -320,15 +320,15 @@ func request_Query_MarketplaceNft_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := client.MarketplaceNft(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -391,15 +391,15 @@ func local_request_Query_MarketplaceNft_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "collection_id", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["nft_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.NftId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
 	}
 
 	msg, err := server.MarketplaceNft(ctx, &protoReq)
@@ -1006,13 +1006,13 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"marketplace", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Address_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 2, 2}, []string{"vault", "v1", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Address_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"marketplace", "v1", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_Marketplace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"marketplace", "v1", "creator", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_MarketplaceCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"marketplace", "v1", "marketplace-collection", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_MarketplaceNft_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"marketplace", "v1", "marketplace-nft", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MarketplaceNft_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"marketplace", "v1", "marketplace-nft", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_MarketplacesByCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 1, 0, 4, 1, 5, 2}, []string{"marketplace", "v1", "creator"}, "", runtime.AssumeColonVerbOpt(false)))
 

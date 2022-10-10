@@ -1,0 +1,18 @@
+syntax = "proto3";
+package limechain.mantrachain.bridge.v1;
+
+import "gogoproto/gogo.proto";
+import "bridge/v1/params.proto";
+import "bridge/v1/tx_hash.proto";
+import "bridge/v1/cw_20_contract.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+// GenesisState defines the bridge module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated TxHash txHashList = 2 [(gogoproto.nullable) = false];
+  Cw20Contract cw20Contract = 3;
+  // this line is used by starport scaffolding # genesis/proto/state
+}

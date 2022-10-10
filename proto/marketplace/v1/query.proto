@@ -20,7 +20,7 @@ service Query {
   }
 
   rpc Address(QueryAddressRequest) returns (QueryAddressResponse) {
-    option (google.api.http).get = "/vault/v1/vault/address";
+    option (google.api.http).get = "/marketplace/v1/address";
   }
 	
 	rpc Marketplace(QueryGetMarketplaceRequest) returns (QueryGetMarketplaceResponse) {
@@ -32,7 +32,7 @@ service Query {
 	}
 	
 	rpc MarketplaceNft(QueryGetMarketplaceNftRequest) returns (QueryGetMarketplaceNftResponse) {
-		option (google.api.http).get = "/marketplace/v1/marketplace-nft/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/marketplace/v1/marketplace-nft/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc MarketplacesByCreator(QueryGetMarketplacesByCreatorRequest) returns (QueryGetMarketplacesByCreatorResponse) {
@@ -150,7 +150,7 @@ message QueryGetMarketplaceNftRequest {
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
-  string id = 5;
+  string nft_id = 5;
 }
 
 message QueryGetMarketplaceNftResponse {

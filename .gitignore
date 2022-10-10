@@ -4,5 +4,11 @@ release/
 .idea/
 .vscode/
 .DS_Store
+.history
+*.pem
+*.json
+*.csr
+*.txt
+accounts.txt
 build
 data

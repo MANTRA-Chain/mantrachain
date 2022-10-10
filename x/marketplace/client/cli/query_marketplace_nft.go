@@ -29,7 +29,7 @@ func CmdGetMarketplaceNft() *cobra.Command {
 			reqMarketplaceId := args[1]
 			reqCollectionCreator := args[2]
 			reqCollectionId := args[3]
-			reqId := args[4]
+			reqNftId := args[4]
 
 			if strings.TrimSpace(reqMarketplaceId) == "" {
 				return sdkerrors.Wrap(types.ErrInvalidMarketplaceId, "empty marketplace id")
@@ -39,7 +39,7 @@ func CmdGetMarketplaceNft() *cobra.Command {
 				return sdkerrors.Wrap(types.ErrInvalidCollectionId, "empty collection id")
 			}
 
-			if strings.TrimSpace(reqId) == "" {
+			if strings.TrimSpace(reqNftId) == "" {
 				return sdkerrors.Wrap(types.ErrInvalidCollectionId, "empty nft id")
 			}
 
@@ -58,7 +58,7 @@ func CmdGetMarketplaceNft() *cobra.Command {
 				MarketplaceId:      reqMarketplaceId,
 				CollectionCreator:  collectionCreator.String(),
 				CollectionId:       reqCollectionId,
-				Id:                 reqId,
+				NftId:              reqNftId,
 			}
 
 			res, err := queryClient.MarketplaceNft(context.Background(), params)
