@@ -67,8 +67,10 @@ func (k Keeper) UpsertNftStake(
 	creator sdk.AccAddress,
 	amount sdk.Coin,
 	delegate bool,
-) error {
-	valAddress := sdk.AccAddress{}
+	stakingChain string,
+	stakingValidator string,
+) (bool, error) {
+	var isStaked bool = false
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
 
 	if !found {
@@ -85,13 +87,9 @@ func (k Keeper) UpsertNftStake(
 	stakeAmount := sdk.NewDecFromInt(amount.Amount)
 
 	staked := types.NftStakeListItem{
-		Amount:      &stakeAmount,
-		Denom:       amount.Denom,
-		Validator:   valAddress.String(),
-		Chain:       ctx.ChainID(),
-		StakedAt:    ctx.BlockHeader().Time.Unix(),
-		Creator:     creator,
-		BlockHeight: ctx.BlockHeight(),
+		Amount:  &stakeAmount,
+		Denom:   amount.Denom,
+		Creator: creator,
 	}
 
 	if delegate {
@@ -101,24 +99,33 @@ func (k Keeper) UpsertNftStake(
 		shares, err := se.Delegate(creator, amount, params.StakingValidatorAddress)
 
 		if err != nil {
-			return err
+			return isStaked, err
 		}
 
-		staked.Shares = shares.String()
+		staked.StakedAt = ctx.BlockHeader().Time.Unix()
+		staked.Chain = ctx.ChainID()
+		staked.BlockHeight = ctx.BlockHeight()
 		staked.Validator = params.StakingValidatorAddress
+		staked.Shares = shares.String()
 
 		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
 
 		if !found {
-			return sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
+			return isStaked, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 		}
 
 		staked.StakedEpoch = lastEpochBlock.BlockHeight
+
+		isStaked = true
+	} else {
+		staked.Chain = stakingChain
+		staked.Validator = stakingValidator
+		staked.Shares = amount.String()
 	}
 
 	nftStake.Staked = append(nftStake.Staked, &staked)
 
 	k.SetNftStake(ctx, nftStake)
 
-	return nil
+	return isStaked, nil
 }

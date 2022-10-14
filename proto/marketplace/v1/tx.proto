@@ -24,6 +24,9 @@ message MsgBuyNft {
   string collection_creator = 4;
   string collection_id = 5;
   string nft_id = 6;
+  string cw20_contract_address = 7;
+  string staking_chain = 8;
+  string staking_validator = 9;
 }
 
 message MsgBuyNftResponse {
@@ -35,6 +38,8 @@ message MsgBuyNftResponse {
   string owner = 6;
   string receiver = 7;
   bool staked = 8;
+  string staking_chain = 9;
+  string staking_validator = 10;
 }
 
 message MsgImportNftCollection {

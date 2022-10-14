@@ -445,18 +445,6 @@ func New(
 		appCodec, keys[tokentypes.StoreKey], keys[tokentypes.MemStoreKey], app.GetSubspace(tokentypes.ModuleName), app.MnsKeeper, app.DidKeeper, app.NFTKeeper,
 	)
 
-	app.MarketplaceKeeper = *marketplacekeeper.NewKeeper(
-		appCodec,
-		keys[marketplacetypes.StoreKey],
-		keys[marketplacetypes.MemStoreKey],
-		app.GetSubspace(marketplacetypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.TokenKeeper,
-		app.NFTKeeper,
-		app.VaultKeeper,
-	)
-
 	// ... other modules keepers
 
 	// Create IBC Keeper
@@ -526,6 +514,20 @@ func New(
 	)
 
 	wasmContractKeeper := wasmkeeper.NewDefaultPermissionKeeper(&app.WasmKeeper)
+
+	app.MarketplaceKeeper = *marketplacekeeper.NewKeeper(
+		appCodec,
+		keys[marketplacetypes.StoreKey],
+		keys[marketplacetypes.MemStoreKey],
+		app.GetSubspace(marketplacetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.TokenKeeper,
+		app.NFTKeeper,
+		app.VaultKeeper,
+		app.WasmKeeper,
+		wasmContractKeeper,
+	)
 
 	app.BridgeKeeper = *bridgekeeper.NewKeeper(
 		appCodec,

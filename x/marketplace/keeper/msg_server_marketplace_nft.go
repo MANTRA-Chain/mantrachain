@@ -39,6 +39,20 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "marketplace id should not be empty")
 	}
 
+	var cw20ContractAddress sdk.AccAddress
+
+	if strings.TrimSpace(msg.Cw20ContractAddress) != "" {
+		cw20ContractAddress, err = sdk.AccAddressFromBech32(msg.Cw20ContractAddress)
+
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO: Validate if the selling price denom is the same as the cw20 contract denom
+	}
+
+	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists
+
 	marketplaceController := NewMarketplaceController(ctx, marketplaceCreator).
 		WithId(msg.MarketplaceId).
 		WithStore(k)
@@ -125,7 +139,9 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftBuyer, "nft is owned by the buyer")
 	}
 
-	staked, err := k.CollectFeesAndDelegateStake(
+	var staked bool
+
+	staked, err = k.CollectFeesAndDelegateStake(
 		ctx,
 		marketplaceNft.MinPrice,
 		nftsEarningsOnSale,
@@ -137,13 +153,17 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		nftCollection.Index,
 		nft.Index,
 		initialSale,
+		cw20ContractAddress,
+		cw20ContractAddress.Empty(), // Do not delegate if cw20 contract address is provided because the user is not paying in native currency
+		msg.StakingChain,
+		msg.StakingValidator,
 	)
 
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "unable to collect fees and stake")
 	}
 
-	// TODO: transfer the current yield reward to the owner
+	// TODO: transfer the current yield reward to the owner if the nft is staked
 
 	err = tokenExecutor.TransferNft(
 		k.ac.GetModuleAddress(types.ModuleName),
@@ -170,6 +190,8 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyStakingChain, msg.StakingChain),
+			sdk.NewAttribute(types.AttributeKeyStakingValidator, msg.StakingValidator),
 			sdk.NewAttribute(types.AttributeKeyStaked, strconv.FormatBool(staked)),
 		),
 	)

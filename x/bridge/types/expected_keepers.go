@@ -6,7 +6,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-// AccountKeeper defines the expected account keeper used for simulations (noalias)
 type WasmViewKeeper interface {
 	QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error)
 	HasContractInfo(ctx sdk.Context, contractAddress sdk.AccAddress) bool

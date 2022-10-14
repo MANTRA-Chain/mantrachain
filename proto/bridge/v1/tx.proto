@@ -8,9 +8,9 @@ option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
 
 // Msg defines the Msg service.
 service Msg {
-    rpc RegisterBridge(MsgRegisterBridge) returns (MsgRegisterBridgeResponse);
-    rpc Mint(MsgMint) returns (MsgMintResponse);
-      rpc CreateCw20Contract(MsgCreateCw20Contract) returns (MsgCreateCw20ContractResponse);
+  rpc RegisterBridge(MsgRegisterBridge) returns (MsgRegisterBridgeResponse);
+  rpc Mint(MsgMint) returns (MsgMintResponse);
+  rpc CreateCw20Contract(MsgCreateCw20Contract) returns (MsgCreateCw20ContractResponse);
   rpc UpdateCw20Contract(MsgUpdateCw20Contract) returns (MsgUpdateCw20ContractResponse);
   rpc DeleteCw20Contract(MsgDeleteCw20Contract) returns (MsgDeleteCw20ContractResponse);
 // this line is used by starport scaffolding # proto/tx/rpc

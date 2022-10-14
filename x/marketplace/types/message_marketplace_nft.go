@@ -12,14 +12,18 @@ const TypeMsgBuyNft = "buy_nft"
 var _ sdk.Msg = &MsgBuyNft{}
 
 func NewMsgBuyNft(creator string, marketplaceCreator string, marketplaceId string,
-	collectionCreator string, collectionId string, nftId string) *MsgBuyNft {
+	collectionCreator string, collectionId string, nftId string, cw20ContractAddress string,
+	stakingChain string, stakingValidator string) *MsgBuyNft {
 	return &MsgBuyNft{
-		Creator:            creator,
-		MarketplaceCreator: marketplaceCreator,
-		MarketplaceId:      marketplaceId,
-		CollectionCreator:  collectionCreator,
-		CollectionId:       collectionId,
-		NftId:              nftId,
+		Creator:             creator,
+		MarketplaceCreator:  marketplaceCreator,
+		MarketplaceId:       marketplaceId,
+		CollectionCreator:   collectionCreator,
+		CollectionId:        collectionId,
+		NftId:               nftId,
+		Cw20ContractAddress: cw20ContractAddress,
+		StakingChain:        stakingChain,
+		StakingValidator:    stakingValidator,
 	}
 }
 
@@ -45,6 +49,7 @@ func (msg *MsgBuyNft) GetSignBytes() []byte {
 }
 
 func (msg *MsgBuyNft) ValidateBasic() error {
+	// TODO: Validate stakingChain and stakingValidator if not empty
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -65,6 +70,12 @@ func (msg *MsgBuyNft) ValidateBasic() error {
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "nft id should not be empty")
+	}
+	if strings.TrimSpace(msg.Cw20ContractAddress) != "" {
+		_, err = sdk.AccAddressFromBech32(msg.Cw20ContractAddress)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid cw20 contract address (%s)", err)
+		}
 	}
 	return nil
 }

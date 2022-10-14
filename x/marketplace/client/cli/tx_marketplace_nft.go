@@ -27,7 +27,10 @@ func CmdBuyNft() *cobra.Command {
 				"--marketplace-id=<marketplace-id> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--chain-id=<chain-id> ",
+				"--cw20-contract-address=<cw20-contract-address> "+
+				"--chain-id=<chain-id> "+
+				"--chain=<chain> "+
+				"--validator=<validator> ",
 			version.AppName,
 		),
 		Args: cobra.ExactArgs(1),
@@ -59,6 +62,21 @@ func CmdBuyNft() *cobra.Command {
 				return err
 			}
 
+			cw20ContractAddress, err := cmd.Flags().GetString(FlagCw20ContractAddress)
+			if err != nil {
+				return err
+			}
+
+			stakingChain, err := cmd.Flags().GetString(FlagStakingChain)
+			if err != nil {
+				return err
+			}
+
+			stakingValidator, err := cmd.Flags().GetString(FlagStakingValidator)
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgBuyNft(
 				clientCtx.GetFromAddress().String(),
 				marketplaceCreator,
@@ -66,6 +84,9 @@ func CmdBuyNft() *cobra.Command {
 				collectionCreator,
 				collectionId,
 				argNftId,
+				cw20ContractAddress,
+				stakingChain,
+				stakingValidator,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

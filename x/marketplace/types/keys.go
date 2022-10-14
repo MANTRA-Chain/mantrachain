@@ -15,6 +15,8 @@ const (
 	AttributeKeyOwner              = "owner"
 	AttributeKeyReceiver           = "receiver"
 	AttributeKeyStaked             = "staked"
+	AttributeKeyStakingChain       = "staking_chain"
+	AttributeKeyStakingValidator   = "staking_validator"
 )
 
 var (

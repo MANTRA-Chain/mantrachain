@@ -18,7 +18,7 @@ service Query {
 
 // Queries a Cw20Contract by index.
 	rpc Cw20Contract(QueryGetCw20ContractRequest) returns (QueryGetCw20ContractResponse) {
-		option (google.api.http).get = "/LimeChain/mantrachain/bridge/cw_20_contract";
+		option (google.api.http).get = "/bridge/v1/cw_20_contract";
 	}
 // this line is used by starport scaffolding # 2
 }

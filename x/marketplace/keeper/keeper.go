@@ -18,11 +18,13 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
-		ac          types.AccountKeeper
-		bk          types.BankKeeper
-		tokenKeeper types.TokenKeeper
-		nftKeeper   types.NFTKeeper
-		vaultKeeper types.VaultKeeper
+		ac                 types.AccountKeeper
+		bk                 types.BankKeeper
+		tokenKeeper        types.TokenKeeper
+		nftKeeper          types.NFTKeeper
+		vaultKeeper        types.VaultKeeper
+		wasmViewKeeper     types.WasmViewKeeper
+		wasmContractKeeper types.WasmContractOpsKeeper
 	}
 )
 
@@ -37,6 +39,8 @@ func NewKeeper(
 	tokenKeeper types.TokenKeeper,
 	nftKeeper types.NFTKeeper,
 	vaultKeeper types.VaultKeeper,
+	wasmViewKeeper types.WasmViewKeeper,
+	wasmContractKeeper types.WasmContractOpsKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -51,6 +55,8 @@ func NewKeeper(
 		paramstore: ps,
 
 		ac: ac, bk: bk, tokenKeeper: tokenKeeper, nftKeeper: nftKeeper, vaultKeeper: vaultKeeper,
+		wasmViewKeeper:     wasmViewKeeper,
+		wasmContractKeeper: wasmContractKeeper,
 	}
 }
 
