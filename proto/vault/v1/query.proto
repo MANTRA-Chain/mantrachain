@@ -14,19 +14,19 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/vault/v1/params";
+    option (google.api.http).get = "/mantrachain/vault/v1/params";
   }
 
   rpc NftStake(QueryGetNftStakeRequest) returns (QueryGetNftStakeResponse) {
-		option (google.api.http).get = "/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
+		option (google.api.http).get = "/mantrachain/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
-		option (google.api.http).get = "/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
+		option (google.api.http).get = "/mantrachain/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc LastEpochs(QueryGetLastEpochsRequest) returns (QueryGetLastEpochsResponse) {
-		option (google.api.http).get = "/vault/v1/vault/last-epochs";
+		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epochs";
 	}
   // this line is used by starport scaffolding # 2
 }

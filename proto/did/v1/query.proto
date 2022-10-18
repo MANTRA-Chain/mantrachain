@@ -15,11 +15,11 @@ option go_package = "github.com/LimeChain/mantrachain/x/did/types";
 service Query {
   // DidDocuments queries all did documents that match the given status.
   rpc DidDocuments(QueryDidDocumentsRequest) returns (QueryDidDocumentsResponse) {
-    option (google.api.http).get = "/did/v1/dids";
+    option (google.api.http).get = "/mantrachain/did/v1/dids";
   }
   // DidDocument queries a did documents with an id.
   rpc DidDocument(QueryDidDocumentRequest) returns (QueryDidDocumentResponse) {
-    option (google.api.http).get = "/did/v1/dids/{id}";
+    option (google.api.http).get = "/mantrachain/did/v1/dids/{id}";
   }
 }
 

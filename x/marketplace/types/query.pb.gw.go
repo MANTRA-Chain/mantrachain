@@ -1004,21 +1004,21 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"marketplace", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketplace", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Address_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"marketplace", "v1", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Address_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketplace", "v1", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Marketplace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"marketplace", "v1", "creator", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Marketplace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "marketplace", "v1", "creator", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_MarketplaceCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"marketplace", "v1", "marketplace-collection", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MarketplaceCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"mantrachain", "marketplace", "v1", "marketplace-collection", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_MarketplaceNft_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"marketplace", "v1", "marketplace-nft", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MarketplaceNft_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8}, []string{"mantrachain", "marketplace", "v1", "marketplace-nft", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_MarketplacesByCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 1, 0, 4, 1, 5, 2}, []string{"marketplace", "v1", "creator"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MarketplacesByCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 1, 0, 4, 1, 5, 3}, []string{"mantrachain", "marketplace", "v1", "creator"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AllMarketplaces_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"marketplace", "v1"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllMarketplaces_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1}, []string{"mantrachain", "marketplace", "v1"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AllMarketplaceCollections_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"marketplace", "v1", "marketplace-collection", "marketplace_creator", "marketplace_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AllMarketplaceCollections_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "marketplace", "v1", "marketplace-collection", "marketplace_creator", "marketplace_id"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

@@ -14,51 +14,51 @@ option go_package = "github.com/LimeChain/mantrachain/x/token/types";
 // Query defines the gRPC querier service.
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/token/v1/params";
+    option (google.api.http).get = "/mantrachain/token/v1/params";
   }
 	
 	rpc NftCollection(QueryGetNftCollectionRequest) returns (QueryGetNftCollectionResponse) {
-		option (google.api.http).get = "/token/v1/nft-collection/{creator}/{id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}/{id}";
 	}
 	
 	rpc NftCollectionSupply(QueryGetNftCollectionSupplyRequest) returns (QueryGetNftCollectionSupplyResponse) {
-		option (google.api.http).get = "/token/v1/nft-collection/supply/{creator}/{id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/supply/{creator}/{id}";
 	}
 
 	rpc NftCollectionsByCreator(QueryGetNftCollectionsByCreatorRequest) returns (QueryGetNftCollectionsByCreatorResponse) {
-		option (google.api.http).get = "/token/v1/nft-collection/{creator}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}";
 	}
 
   rpc AllNftCollections(QueryGetAllNftCollectionsRequest) returns (QueryGetAllNftCollectionsResponse) {
-		option (google.api.http).get = "/token/v1/nft-collection";
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection";
 	}
 	
 	rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
-		option (google.api.http).get = "/token/v1/nft/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{id}";
 	}
 
 	rpc NftOwner(QueryGetNftOwnerRequest) returns (QueryGetNftOwnerResponse) {
-		option (google.api.http).get = "/token/v1/nft/owner/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/owner/{collection_creator}/{collection_id}/{id}";
 	}
 
 	rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
-		option (google.api.http).get = "/token/v1/nft/balance/{collection_creator}/{collection_id}/{owner}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/balance/{collection_creator}/{collection_id}/{owner}";
 	}
 
 	rpc NftApproved(QueryGetNftApprovedRequest) returns (QueryGetNftApprovedResponse) {
-		option (google.api.http).get = "/token/v1/nft/approvals/{collection_creator}/{collection_id}/{id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{collection_creator}/{collection_id}/{id}";
 	}
 
 	rpc IsApprovedForAllNfts(QueryGetIsApprovedForAllNftsRequest) returns (QueryGetIsApprovedForAllNftsResponse) {
-		option (google.api.http).get = "/token/v1/nft/approvals/{owner}/{operator}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{owner}/{operator}";
 	}
 
 	rpc AllCollectionNfts(QueryGetAllCollectionNftsRequest) returns (QueryGetAllCollectionNftsResponse) {
-		option (google.api.http).get = "/token/v1/nft/{collection_creator}/{collection_id}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}";
 	}
 
 	rpc CollectionNftsByOwner(QueryGetCollectionNftsByOwnerRequest) returns (QueryGetCollectionNftsByOwnerResponse) {
-		option (google.api.http).get = "/token/v1/nft/{collection_creator}/{collection_id}/{owner}";
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{owner}";
 	}
 
 // this line is used by starport scaffolding # 2

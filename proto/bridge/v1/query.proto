@@ -13,12 +13,12 @@ option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/bridge/v1/params";
+    option (google.api.http).get = "/mantrachain/bridge/v1/params";
   }
 
 // Queries a Cw20Contract by index.
 	rpc Cw20Contract(QueryGetCw20ContractRequest) returns (QueryGetCw20ContractResponse) {
-		option (google.api.http).get = "/bridge/v1/cw_20_contract";
+		option (google.api.http).get = "/mantrachain/bridge/v1/cw_20_contract";
 	}
 // this line is used by starport scaffolding # 2
 }

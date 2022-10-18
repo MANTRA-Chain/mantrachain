@@ -12,11 +12,11 @@ import (
 
 func CmdCreateCw20Contract() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-cw-20-contract [store-id] [ver] [path]",
+		Use:   "create-cw-20-contract [code-id] [ver] [path]",
 		Short: "Create Cw20Contract",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argStoreId, err := cast.ToUint64E(args[0])
+			argCodeId, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
@@ -28,7 +28,7 @@ func CmdCreateCw20Contract() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateCw20Contract(clientCtx.GetFromAddress().String(), argStoreId, argVer, argPath)
+			msg := types.NewMsgCreateCw20Contract(clientCtx.GetFromAddress().String(), argCodeId, argVer, argPath)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -43,11 +43,11 @@ func CmdCreateCw20Contract() *cobra.Command {
 
 func CmdUpdateCw20Contract() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-cw-20-contract [store-id] [ver] [path]",
+		Use:   "update-cw-20-contract [code-id] [ver] [path]",
 		Short: "Update Cw20Contract",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argStoreId, err := cast.ToUint64E(args[0])
+			argCodeId, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
@@ -59,7 +59,7 @@ func CmdUpdateCw20Contract() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateCw20Contract(clientCtx.GetFromAddress().String(), argStoreId, argVer, argPath)
+			msg := types.NewMsgUpdateCw20Contract(clientCtx.GetFromAddress().String(), argCodeId, argVer, argPath)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

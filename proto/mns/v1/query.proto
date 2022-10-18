@@ -15,22 +15,22 @@ option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
 service Query {
 	// Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/mns/v1/params";
+    option (google.api.http).get = "/mantrachain/mns/v1/params";
   }
 	
   // Queries a Domain by name.
 	rpc Domain(QueryGetDomainRequest) returns (QueryGetDomainResponse) {
-		option (google.api.http).get = "/mns/v1/domain/{domain}";
+		option (google.api.http).get = "/mantrachain/mns/v1/domain/{domain}";
 	}
 
 	// Queries a list of Domain items.
 	rpc DomainAll(QueryAllDomainRequest) returns (QueryAllDomainResponse) {
-		option (google.api.http).get = "/mns/v1/domain";
+		option (google.api.http).get = "/mantrachain/mns/v1/domain";
 	}
 
 // Queries a DomainName by index.
 	rpc DomainName(QueryGetDomainNameRequest) returns (QueryGetDomainNameResponse) {
-		option (google.api.http).get = "/mns/v1/domain/{domain}/domain_name/{domainName}";
+		option (google.api.http).get = "/mantrachain/mns/v1/domain/{domain}/domain_name/{domainName}";
 	}
 
 // this line is used by starport scaffolding # 2
