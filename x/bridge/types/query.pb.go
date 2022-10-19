@@ -192,41 +192,181 @@ func (m *QueryGetCw20ContractResponse) GetCw20Contract() Cw20Contract {
 	return Cw20Contract{}
 }
 
+type QueryGetBridgeRequest struct {
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryGetBridgeRequest) Reset()         { *m = QueryGetBridgeRequest{} }
+func (m *QueryGetBridgeRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBridgeRequest) ProtoMessage()    {}
+func (*QueryGetBridgeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cb8494a61959c292, []int{4}
+}
+func (m *QueryGetBridgeRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetBridgeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetBridgeRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetBridgeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBridgeRequest.Merge(m, src)
+}
+func (m *QueryGetBridgeRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetBridgeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBridgeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetBridgeRequest proto.InternalMessageInfo
+
+func (m *QueryGetBridgeRequest) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *QueryGetBridgeRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type QueryGetBridgeResponse struct {
+	Id                  string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	BridgeAccount       string `protobuf:"bytes,2,opt,name=bridge_account,json=bridgeAccount,proto3" json:"bridge_account,omitempty"`
+	Cw20ContractAddress string `protobuf:"bytes,3,opt,name=cw20_contract_address,json=cw20ContractAddress,proto3" json:"cw20_contract_address,omitempty"`
+	Owner               string `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
+	Creator             string `protobuf:"bytes,5,opt,name=creator,proto3" json:"creator,omitempty"`
+}
+
+func (m *QueryGetBridgeResponse) Reset()         { *m = QueryGetBridgeResponse{} }
+func (m *QueryGetBridgeResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBridgeResponse) ProtoMessage()    {}
+func (*QueryGetBridgeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cb8494a61959c292, []int{5}
+}
+func (m *QueryGetBridgeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetBridgeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetBridgeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetBridgeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBridgeResponse.Merge(m, src)
+}
+func (m *QueryGetBridgeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetBridgeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBridgeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetBridgeResponse proto.InternalMessageInfo
+
+func (m *QueryGetBridgeResponse) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *QueryGetBridgeResponse) GetBridgeAccount() string {
+	if m != nil {
+		return m.BridgeAccount
+	}
+	return ""
+}
+
+func (m *QueryGetBridgeResponse) GetCw20ContractAddress() string {
+	if m != nil {
+		return m.Cw20ContractAddress
+	}
+	return ""
+}
+
+func (m *QueryGetBridgeResponse) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *QueryGetBridgeResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "limechain.mantrachain.bridge.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "limechain.mantrachain.bridge.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryGetCw20ContractRequest)(nil), "limechain.mantrachain.bridge.v1.QueryGetCw20ContractRequest")
 	proto.RegisterType((*QueryGetCw20ContractResponse)(nil), "limechain.mantrachain.bridge.v1.QueryGetCw20ContractResponse")
+	proto.RegisterType((*QueryGetBridgeRequest)(nil), "limechain.mantrachain.bridge.v1.QueryGetBridgeRequest")
+	proto.RegisterType((*QueryGetBridgeResponse)(nil), "limechain.mantrachain.bridge.v1.QueryGetBridgeResponse")
 }
 
 func init() { proto.RegisterFile("bridge/v1/query.proto", fileDescriptor_cb8494a61959c292) }
 
 var fileDescriptor_cb8494a61959c292 = []byte{
-	// 378 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4d, 0x2a, 0xca, 0x4c,
-	0x49, 0x4f, 0xd5, 0x2f, 0x33, 0xd4, 0x2f, 0x2c, 0x4d, 0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f,
-	0xc9, 0x17, 0x92, 0xcf, 0xc9, 0xcc, 0x4d, 0x4d, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0xcb, 0x4d, 0xcc,
-	0x2b, 0x29, 0x4a, 0x84, 0xb0, 0x21, 0x8a, 0xf5, 0xca, 0x0c, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3,
-	0xc1, 0x6a, 0xf5, 0x41, 0x2c, 0x88, 0x36, 0x29, 0x99, 0xf4, 0xfc, 0xfc, 0xf4, 0x9c, 0x54, 0xfd,
-	0xc4, 0x82, 0x4c, 0xfd, 0xc4, 0xbc, 0xbc, 0xfc, 0x92, 0xc4, 0x92, 0xcc, 0xfc, 0xbc, 0x62, 0xa8,
-	0xac, 0x18, 0xc2, 0xae, 0x82, 0xc4, 0xa2, 0xc4, 0x5c, 0x98, 0xb8, 0x1c, 0x42, 0x3c, 0xb9, 0x3c,
-	0xde, 0xc8, 0x20, 0x3e, 0x39, 0x1f, 0x6c, 0x65, 0x09, 0x44, 0x5e, 0x49, 0x84, 0x4b, 0x28, 0x10,
-	0xe4, 0xb6, 0x00, 0xb0, 0xa6, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0xa5, 0x18, 0x2e, 0x61,
-	0x14, 0xd1, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0x21, 0x57, 0x2e, 0x36, 0x88, 0xe1, 0x12, 0x8c,
-	0x0a, 0x8c, 0x1a, 0xdc, 0x46, 0xea, 0x7a, 0x04, 0xbc, 0xa2, 0x07, 0x31, 0xc0, 0x89, 0xe5, 0xc4,
-	0x3d, 0x79, 0x86, 0x20, 0xa8, 0x66, 0x25, 0x59, 0x2e, 0x69, 0xb0, 0xe9, 0xee, 0xa9, 0x25, 0xce,
-	0xe5, 0x46, 0x06, 0xce, 0x50, 0x17, 0xc1, 0x2c, 0x2f, 0xe7, 0x92, 0xc1, 0x2e, 0x0d, 0x75, 0x45,
-	0x38, 0x17, 0x0f, 0xb2, 0x38, 0xd4, 0x2d, 0xba, 0x04, 0xdd, 0x82, 0xac, 0x09, 0xea, 0x22, 0x14,
-	0x83, 0x8c, 0x1e, 0x32, 0x71, 0xb1, 0x82, 0x6d, 0x16, 0x9a, 0xc5, 0xc8, 0xc5, 0x06, 0x71, 0xba,
-	0x90, 0x31, 0x41, 0x73, 0x31, 0xc3, 0x4f, 0xca, 0x84, 0x34, 0x4d, 0x10, 0x8f, 0x29, 0xa9, 0x36,
-	0x5d, 0x7e, 0x32, 0x99, 0x49, 0x5e, 0x48, 0x56, 0x1f, 0x49, 0x8f, 0x3e, 0x7a, 0xc4, 0x0a, 0xed,
-	0x62, 0x44, 0x0d, 0x00, 0x21, 0x1b, 0xe2, 0x6c, 0xc3, 0x1e, 0xdc, 0x52, 0xb6, 0x64, 0xea, 0x86,
-	0x3a, 0x5a, 0x17, 0xec, 0x68, 0x75, 0x21, 0x55, 0x1c, 0x8e, 0x46, 0x4d, 0x75, 0x4e, 0x9e, 0x27,
-	0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c,
-	0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x9f, 0x9e, 0x59, 0x92, 0x51, 0x9a,
-	0xa4, 0x97, 0x9c, 0x9f, 0xab, 0xef, 0x93, 0x99, 0x9b, 0xea, 0x0c, 0x36, 0x08, 0xd9, 0xd0, 0x0a,
-	0x98, 0xb1, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x14, 0x6c, 0x0c, 0x08, 0x00, 0x00,
-	0xff, 0xff, 0xd6, 0x18, 0x71, 0x57, 0x67, 0x03, 0x00, 0x00,
+	// 536 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0xeb, 0xb2, 0x16, 0x61, 0x60, 0x07, 0xaf, 0x9d, 0xa2, 0xb0, 0xa5, 0x28, 0x52, 0x35,
+	0x0e, 0x2c, 0xde, 0xb2, 0x09, 0x2e, 0x70, 0x68, 0x2b, 0x84, 0x90, 0x38, 0x40, 0x2f, 0x48, 0x08,
+	0xa9, 0x72, 0x13, 0x2b, 0xb3, 0xb4, 0xc4, 0x99, 0xe3, 0x2e, 0x4c, 0xd3, 0x2e, 0x7c, 0x02, 0xa4,
+	0xdd, 0xf8, 0x12, 0x1c, 0xb8, 0xf1, 0x09, 0x76, 0x9c, 0xc4, 0x85, 0x13, 0x42, 0x2d, 0x1f, 0x04,
+	0xcd, 0x76, 0xb4, 0x64, 0x6c, 0xea, 0xc6, 0xcd, 0x79, 0xef, 0xfd, 0xff, 0xef, 0xf7, 0xec, 0xd7,
+	0xc2, 0xf6, 0x58, 0xb0, 0x30, 0xa2, 0x78, 0x7f, 0x13, 0xef, 0x4d, 0xa8, 0x38, 0xf0, 0x52, 0xc1,
+	0x25, 0x47, 0x9d, 0x5d, 0x16, 0xd3, 0x60, 0x87, 0xb0, 0xc4, 0x8b, 0x49, 0x22, 0x05, 0xd1, 0x67,
+	0x5d, 0xec, 0xed, 0x6f, 0xda, 0xad, 0x88, 0x47, 0x5c, 0xd5, 0xe2, 0xb3, 0x93, 0x96, 0xd9, 0x2b,
+	0x11, 0xe7, 0xd1, 0x2e, 0xc5, 0x24, 0x65, 0x98, 0x24, 0x09, 0x97, 0x44, 0x32, 0x9e, 0x64, 0x26,
+	0xbb, 0x7c, 0xde, 0x2b, 0x25, 0x82, 0xc4, 0x45, 0xdc, 0x39, 0x8f, 0x07, 0xf9, 0xc8, 0xdf, 0x18,
+	0x05, 0x5c, 0xb5, 0x94, 0x3a, 0xef, 0xb6, 0x20, 0x7a, 0x7b, 0xc6, 0xf6, 0x46, 0x89, 0x86, 0x74,
+	0x6f, 0x42, 0x33, 0xe9, 0x7e, 0x80, 0x4b, 0x95, 0x68, 0x96, 0xf2, 0x24, 0xa3, 0xe8, 0x05, 0x6c,
+	0x6a, 0x73, 0x0b, 0x3c, 0x04, 0x8f, 0xee, 0xfa, 0x6b, 0xde, 0x9c, 0x51, 0x3c, 0x6d, 0xd0, 0x5f,
+	0x38, 0xf9, 0xd5, 0xa9, 0x0d, 0x8d, 0xd8, 0x5d, 0x85, 0x0f, 0x94, 0xfb, 0x4b, 0x2a, 0x07, 0xb9,
+	0xbf, 0x31, 0x30, 0x44, 0x45, 0xf3, 0x1c, 0xae, 0x5c, 0x9e, 0x36, 0x14, 0xef, 0xe0, 0xbd, 0x72,
+	0xdc, 0xb0, 0xac, 0xcf, 0x65, 0x29, 0x8b, 0x0c, 0x51, 0xc5, 0xc8, 0xed, 0xc1, 0x76, 0xd1, 0xb8,
+	0xaf, 0x54, 0x86, 0x08, 0x59, 0xf0, 0x76, 0x20, 0x28, 0x91, 0x5c, 0xa8, 0x66, 0x77, 0x86, 0xc5,
+	0x27, 0x5a, 0x84, 0x75, 0x16, 0x5a, 0x75, 0x15, 0xac, 0xb3, 0xd0, 0xfd, 0x06, 0xe0, 0xf2, 0x45,
+	0x0f, 0x83, 0xad, 0x4b, 0x41, 0x51, 0x8a, 0xba, 0x70, 0x51, 0xb3, 0x8d, 0x48, 0x10, 0xf0, 0x49,
+	0x22, 0x8d, 0xcd, 0x7d, 0x1d, 0xed, 0xe9, 0x20, 0xf2, 0x61, 0x3b, 0xc8, 0x4b, 0xef, 0x36, 0x22,
+	0x61, 0x28, 0x68, 0x96, 0x59, 0xb7, 0x54, 0xf5, 0x52, 0x50, 0x9a, 0xa0, 0xa7, 0x53, 0xa8, 0x05,
+	0x1b, 0x3c, 0x4f, 0xa8, 0xb0, 0x16, 0x54, 0x8d, 0xfe, 0x28, 0x4f, 0xd1, 0xa8, 0x4c, 0xe1, 0x1f,
+	0x2f, 0xc0, 0x86, 0xa2, 0x46, 0x5f, 0x00, 0x6c, 0xea, 0x37, 0x43, 0x5b, 0x73, 0x2f, 0xf4, 0xdf,
+	0xc5, 0xb1, 0xb7, 0x6f, 0x26, 0xd2, 0x57, 0xe3, 0x76, 0x3f, 0xfd, 0xf8, 0x73, 0x5c, 0xef, 0xa0,
+	0x55, 0x5c, 0xd2, 0xe0, 0x8b, 0x1b, 0x8d, 0xbe, 0x83, 0xea, 0xcb, 0xa3, 0x67, 0xd7, 0xeb, 0x76,
+	0xf9, 0x9e, 0xd9, 0xcf, 0xff, 0x53, 0x6d, 0xa0, 0xd7, 0x15, 0xf4, 0x1a, 0xea, 0x5e, 0x01, 0x5d,
+	0xfd, 0xb9, 0xa1, 0xaf, 0x00, 0x36, 0xf5, 0x46, 0xa0, 0x27, 0xd7, 0x6e, 0x5c, 0x59, 0x43, 0xfb,
+	0xe9, 0x8d, 0x75, 0x06, 0x75, 0x5b, 0xa1, 0x7a, 0xe8, 0xf1, 0x15, 0xa8, 0xe6, 0x74, 0x68, 0xf6,
+	0xe1, 0x08, 0x1f, 0xb2, 0xf0, 0xa8, 0xff, 0xea, 0x64, 0xea, 0x80, 0xd3, 0xa9, 0x03, 0x7e, 0x4f,
+	0x1d, 0xf0, 0x79, 0xe6, 0xd4, 0x4e, 0x67, 0x4e, 0xed, 0xe7, 0xcc, 0xa9, 0xbd, 0xc7, 0x11, 0x93,
+	0x3b, 0x93, 0xb1, 0x17, 0xf0, 0x18, 0xbf, 0x66, 0x31, 0x1d, 0x28, 0xbf, 0xb2, 0xf7, 0xc7, 0xc2,
+	0x53, 0x1e, 0xa4, 0x34, 0x1b, 0x37, 0xd5, 0x9f, 0xcd, 0xd6, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x84, 0xe7, 0xae, 0xb2, 0x12, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -245,6 +385,7 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a Cw20Contract by index.
 	Cw20Contract(ctx context.Context, in *QueryGetCw20ContractRequest, opts ...grpc.CallOption) (*QueryGetCw20ContractResponse, error)
+	Bridge(ctx context.Context, in *QueryGetBridgeRequest, opts ...grpc.CallOption) (*QueryGetBridgeResponse, error)
 }
 
 type queryClient struct {
@@ -273,12 +414,22 @@ func (c *queryClient) Cw20Contract(ctx context.Context, in *QueryGetCw20Contract
 	return out, nil
 }
 
+func (c *queryClient) Bridge(ctx context.Context, in *QueryGetBridgeRequest, opts ...grpc.CallOption) (*QueryGetBridgeResponse, error) {
+	out := new(QueryGetBridgeResponse)
+	err := c.cc.Invoke(ctx, "/limechain.mantrachain.bridge.v1.Query/Bridge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a Cw20Contract by index.
 	Cw20Contract(context.Context, *QueryGetCw20ContractRequest) (*QueryGetCw20ContractResponse, error)
+	Bridge(context.Context, *QueryGetBridgeRequest) (*QueryGetBridgeResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -290,6 +441,9 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 }
 func (*UnimplementedQueryServer) Cw20Contract(ctx context.Context, req *QueryGetCw20ContractRequest) (*QueryGetCw20ContractResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Cw20Contract not implemented")
+}
+func (*UnimplementedQueryServer) Bridge(ctx context.Context, req *QueryGetBridgeRequest) (*QueryGetBridgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Bridge not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -332,6 +486,24 @@ func _Query_Cw20Contract_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Bridge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBridgeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Bridge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/limechain.mantrachain.bridge.v1.Query/Bridge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Bridge(ctx, req.(*QueryGetBridgeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "limechain.mantrachain.bridge.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -343,6 +515,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Cw20Contract",
 			Handler:    _Query_Cw20Contract_Handler,
+		},
+		{
+			MethodName: "Bridge",
+			Handler:    _Query_Bridge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -461,6 +637,101 @@ func (m *QueryGetCw20ContractResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetBridgeRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetBridgeRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetBridgeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetBridgeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetBridgeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetBridgeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Cw20ContractAddress) > 0 {
+		i -= len(m.Cw20ContractAddress)
+		copy(dAtA[i:], m.Cw20ContractAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cw20ContractAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.BridgeAccount) > 0 {
+		i -= len(m.BridgeAccount)
+		copy(dAtA[i:], m.BridgeAccount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.BridgeAccount)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -509,6 +780,52 @@ func (m *QueryGetCw20ContractResponse) Size() (n int) {
 	_ = l
 	l = m.Cw20Contract.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryGetBridgeRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetBridgeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.BridgeAccount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Cw20ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -762,6 +1079,330 @@ func (m *QueryGetCw20ContractResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Cw20Contract.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetBridgeRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetBridgeRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetBridgeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetBridgeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetBridgeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetBridgeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeAccount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeAccount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cw20ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cw20ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

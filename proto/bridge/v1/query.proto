@@ -20,6 +20,10 @@ service Query {
 	rpc Cw20Contract(QueryGetCw20ContractRequest) returns (QueryGetCw20ContractResponse) {
 		option (google.api.http).get = "/mantrachain/bridge/v1/cw_20_contract";
 	}
+
+  rpc Bridge(QueryGetBridgeRequest) returns (QueryGetBridgeResponse) {
+		option (google.api.http).get = "/mantrachain/bridge/v1/bridge/{creator}/{id}";
+	}
 // this line is used by starport scaffolding # 2
 }
 
@@ -37,4 +41,18 @@ message QueryGetCw20ContractRequest {}
 message QueryGetCw20ContractResponse {
 	Cw20Contract Cw20Contract = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetBridgeRequest {
+  string creator = 1;
+  string id = 2;
+}
+
+message QueryGetBridgeResponse {
+  string id = 1;
+  string bridge_account = 2;
+  string cw20_contract_address = 3;
+  string owner = 4;
+  string creator = 5;
+}
+
 // this line is used by starport scaffolding # 3
