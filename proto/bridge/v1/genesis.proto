@@ -1,5 +1,5 @@
 syntax = "proto3";
-package limechain.mantrachain.bridge.v1;
+package LimeChain.mantrachain.bridge.v1;
 
 import "gogoproto/gogo.proto";
 import "bridge/v1/params.proto";

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package limechain.mantrachain.bridge.v1;
+package LimeChain.mantrachain.bridge.v1;
 
 import "bridge/v1/cw_20_contract.proto";
 // this line is used by starport scaffolding # proto/tx/import
