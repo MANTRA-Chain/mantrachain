@@ -92,6 +92,7 @@ func (k Keeper) UpsertNftStake(
 		Creator: creator,
 	}
 
+	// Delegate stake on mantrachain validator
 	if delegate {
 		params := k.GetParams(ctx)
 
@@ -117,10 +118,10 @@ func (k Keeper) UpsertNftStake(
 		staked.StakedEpoch = lastEpochBlock.BlockHeight
 
 		isStaked = true
-	} else {
+	} else { // If the stake will be on a remote chain
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
-		staked.Shares = amount.String()
+		staked.Shares = amount.Amount.String()
 	}
 
 	nftStake.Staked = append(nftStake.Staked, &staked)
