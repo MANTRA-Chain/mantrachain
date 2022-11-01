@@ -26,3 +26,9 @@ func (c *WasmExecutor) Transfer(contractAddress sdk.AccAddress, creator sdk.AccA
 	_, err = c.wasmContractKeeper.Execute(c.ctx, contractAddress, creator, transferData, nil)
 	return
 }
+
+func (c *WasmExecutor) Burn(contractAddress sdk.AccAddress, creator sdk.AccAddress, amount uint64) (err error) {
+	burnData := []byte("{\"burn\": {\"amount\": \"" + strconv.FormatUint(amount, 10) + "\"}}")
+	_, err = c.wasmContractKeeper.Execute(c.ctx, contractAddress, creator, burnData, nil)
+	return
+}

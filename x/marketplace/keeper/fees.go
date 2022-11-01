@@ -78,6 +78,17 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				return isStaked, err
 			}
 
+			if !delegate && !cw20ContractAddress.Empty() {
+				if wasmExecutor == nil {
+					wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
+				}
+				err = wasmExecutor.Burn(cw20ContractAddress, buyer, lockCoin.Amount.Abs().Uint64())
+
+				if err != nil {
+					return isStaked, err
+				}
+			}
+
 			currAmount = currAmount.Add(lockCoin.Amount)
 		}
 	}
