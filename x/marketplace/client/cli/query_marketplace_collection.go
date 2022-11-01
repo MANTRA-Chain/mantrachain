@@ -72,7 +72,7 @@ func CmdGetMarketplaceCollection() *cobra.Command {
 func CmdGetAllMarketplaceCollections() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "all-marketplace-collections [marketplace-creator] [marketplace-id]",
-		Short: "Query all marketplace nfts",
+		Short: "Query all marketplace collections",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

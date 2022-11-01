@@ -47,11 +47,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		if err != nil {
 			return nil, err
 		}
-
-		// TODO: Validate if the selling price denom is the same as the cw20 contract denom
 	}
-
-	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists
 
 	marketplaceController := NewMarketplaceController(ctx, marketplaceCreator).
 		WithId(msg.MarketplaceId).
@@ -116,6 +112,11 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		}
 	}
 
+	// TODO: Validate if the selling price denom is the same as the cw20 contract denom
+	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists
+	// TODO: Validate if cw20ContractAddress denom is the same as minPrce.denom
+	// TODO: Validate if minPrce.denom is the same as stake -> bond denom if cw20ContractAddress is empty
+
 	if !marketplaceNft.ForSale {
 		return nil, sdkerrors.Wrap(types.ErrNftNotForSale, "nft is not for sale")
 	}
@@ -154,7 +155,6 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		nft.Index,
 		initialSale,
 		cw20ContractAddress,
-		cw20ContractAddress.Empty(), // Do not delegate if cw20 contract address is provided because the user is not paying in native currency
 		msg.StakingChain,
 		msg.StakingValidator,
 	)

@@ -19,7 +19,6 @@ func (k Keeper) CollectFeesAndDelegateStake(
 	nftIndex []byte,
 	initialSale bool,
 	cw20ContractAddress sdk.AccAddress,
-	delegate bool,
 	stakingChain string,
 	stakingValidator string,
 ) (bool, error) {
@@ -30,7 +29,12 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		return isStaked, nil
 	}
 
+	// Do not delegate if cw20 contract address is provided
+	// because the user is not paying in native currency
+	delegate := cw20ContractAddress.Empty()
 	currAmount := sdk.NewInt(0)
+
+	// TODO: Add subtract service fees, e.g. gas fees, swap fees, etc.
 
 	// The rooyalties amount is calculated based on the price of the NFT
 	for _, earning := range nftsEarningsOnSale {
@@ -45,13 +49,13 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				earningCoin := sdk.NewCoin(minPrice.GetDenom(), earningAmount.TruncateInt())
 				var err error
 
-				if !cw20ContractAddress.Empty() {
+				if delegate {
+					err = k.bk.SendCoins(ctx, buyer, sdk.AccAddress(earning.Address), []sdk.Coin{earningCoin})
+				} else {
 					if wasmExecutor == nil {
 						wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 					}
 					err = wasmExecutor.Transfer(cw20ContractAddress, buyer, sdk.AccAddress(earning.Address), earningCoin.Amount.Abs().Uint64())
-				} else {
-					err = k.bk.SendCoins(ctx, buyer, sdk.AccAddress(earning.Address), []sdk.Coin{earningCoin})
 				}
 
 				if err != nil {
@@ -78,10 +82,11 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				return isStaked, err
 			}
 
-			if !delegate && !cw20ContractAddress.Empty() {
+			if !delegate {
 				if wasmExecutor == nil {
 					wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 				}
+				// Burn the cw20 staking amount which goes for anothe chain delegation
 				err = wasmExecutor.Burn(cw20ContractAddress, buyer, lockCoin.Amount.Abs().Uint64())
 
 				if err != nil {
@@ -98,13 +103,14 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		remainning := minPrice.Amount.Sub(currAmount)
 		var err error
 
-		if !cw20ContractAddress.Empty() {
+		// The remaining amount is transferred to the nft owner
+		if delegate {
+			err = k.bk.SendCoins(ctx, buyer, nftOwner, []sdk.Coin{sdk.NewCoin(minPrice.GetDenom(), remainning)})
+		} else {
 			if wasmExecutor == nil {
 				wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 			}
-			err = wasmExecutor.Transfer(cw20ContractAddress, buyer, nftOwner, remainning.Abs().Uint64())
-		} else {
-			err = k.bk.SendCoins(ctx, buyer, nftOwner, []sdk.Coin{sdk.NewCoin(minPrice.GetDenom(), remainning)})
+			err = wasmExecutor.Transfer(cw20ContractAddress, buyer, nftOwner, remainning.Uint64())
 		}
 
 		if err != nil {
