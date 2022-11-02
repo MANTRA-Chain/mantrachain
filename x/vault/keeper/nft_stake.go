@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strings"
+
 	"github.com/LimeChain/mantrachain/x/vault/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -66,12 +68,12 @@ func (k Keeper) UpsertNftStake(
 	index []byte,
 	creator sdk.AccAddress,
 	amount sdk.Coin,
-	delegate bool,
 	stakingChain string,
 	stakingValidator string,
 ) (bool, error) {
 	var isStaked bool = false
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
+	delegate := strings.TrimSpace(stakingChain) == "" && strings.TrimSpace(stakingValidator) == ""
 
 	if !found {
 		nftStake = types.NftStake{
@@ -118,7 +120,7 @@ func (k Keeper) UpsertNftStake(
 		staked.StakedEpoch = lastEpochBlock.BlockHeight
 
 		isStaked = true
-	} else { // If the stake will be on a remote chain
+	} else { // If the stake will be on a another chain
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
 		staked.Shares = amount.Amount.String()

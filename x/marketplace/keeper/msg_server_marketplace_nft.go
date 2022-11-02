@@ -112,10 +112,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		}
 	}
 
-	// TODO: Validate if the selling price denom is the same as the cw20 contract denom
 	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists
-	// TODO: Validate if cw20ContractAddress denom is the same as minPrce.denom
-	// TODO: Validate if minPrce.denom is the same as stake -> bond denom if cw20ContractAddress is empty
 
 	if !marketplaceNft.ForSale {
 		return nil, sdkerrors.Wrap(types.ErrNftNotForSale, "nft is not for sale")

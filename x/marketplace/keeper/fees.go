@@ -29,9 +29,13 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		return isStaked, nil
 	}
 
-	// Do not delegate if cw20 contract address is provided
-	// because the user is not paying in native currency
-	delegate := cw20ContractAddress.Empty()
+	// TODO: Validate if cw20ContractAddress denom is the same as minPrice.denom, if not validate if minPrice.denom
+	// is the same as staking bond denom and also:
+	// if err := sdk.ValidateDenom(minPrice.Denom); err != nil {
+	// 	return isStaked, err
+	// }
+	// strings.TrimSpace(strings.ToLower(minPrce.Denom)) == strings.TrimSpace(strings.ToLower(k.sk.BondDenom(ctx)))
+
 	currAmount := sdk.NewInt(0)
 
 	// TODO: Add subtract service fees, e.g. gas fees, swap fees, etc.
@@ -49,7 +53,7 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				earningCoin := sdk.NewCoin(minPrice.GetDenom(), earningAmount.TruncateInt())
 				var err error
 
-				if delegate {
+				if cw20ContractAddress.Empty() {
 					err = k.bk.SendCoins(ctx, buyer, sdk.AccAddress(earning.Address), []sdk.Coin{earningCoin})
 				} else {
 					if wasmExecutor == nil {
@@ -76,13 +80,21 @@ func (k Keeper) CollectFeesAndDelegateStake(
 			lockCoin := sdk.NewCoin(minPrice.GetDenom(), lockAmount.TruncateInt())
 
 			vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
-			isStaked, err = vaultExecutor.UpsertNftStake(marketplaceIndex, collectionIndex, nftIndex, buyer, lockCoin, delegate, stakingChain, stakingValidator)
+			isStaked, err = vaultExecutor.UpsertNftStake(
+				marketplaceIndex,
+				collectionIndex,
+				nftIndex,
+				buyer,
+				lockCoin,
+				stakingChain,
+				stakingValidator,
+			)
 
 			if err != nil {
 				return isStaked, err
 			}
 
-			if !delegate {
+			if !cw20ContractAddress.Empty() {
 				if wasmExecutor == nil {
 					wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 				}
@@ -104,7 +116,7 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		var err error
 
 		// The remaining amount is transferred to the nft owner
-		if delegate {
+		if cw20ContractAddress.Empty() {
 			err = k.bk.SendCoins(ctx, buyer, nftOwner, []sdk.Coin{sdk.NewCoin(minPrice.GetDenom(), remainning)})
 		} else {
 			if wasmExecutor == nil {

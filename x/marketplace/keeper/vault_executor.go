@@ -23,9 +23,8 @@ func (c *VaultExecutor) UpsertNftStake(
 	nftIndex []byte,
 	creator sdk.AccAddress,
 	amount sdk.Coin,
-	delegate bool,
 	stakingChain string,
 	stakingValidator string,
 ) (bool, error) {
-	return c.vaultKeeper.UpsertNftStake(c.ctx, marketplaceIndex, collectionIndex, nftIndex, creator, amount, delegate, stakingChain, stakingValidator)
+	return c.vaultKeeper.UpsertNftStake(c.ctx, marketplaceIndex, collectionIndex, nftIndex, creator, amount, stakingChain, stakingValidator)
 }
