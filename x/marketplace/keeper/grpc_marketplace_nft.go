@@ -60,6 +60,7 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 	var forSale bool
 	var initiallySold bool
 	var minPrice sdk.Coin
+	var cw20ContractAddress sdk.AccAddress
 
 	marketplaceNft, found := k.GetMarketplaceNft(
 		ctx,
@@ -82,21 +83,24 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 		forSale = marketplaceCollection.InitiallyNftCollectionOwnerNftsForSale
 		initiallySold = false
 		minPrice = *marketplaceCollection.InitiallyNftCollectionOwnerNftsMinPrice
+		cw20ContractAddress = marketplaceCollection.Cw20ContractAddress
 	} else {
 		forSale = marketplaceNft.ForSale
 		initiallySold = marketplaceNft.InitiallySold
 		minPrice = *marketplaceNft.MinPrice
+		cw20ContractAddress = marketplaceNft.Cw20ContractAddress
 	}
 
 	return &types.QueryGetMarketplaceNftResponse{
-		MarketplaceCreator: marketplaceCreator.String(),
-		MarketplaceId:      req.MarketplaceId,
-		CollectionCreator:  req.CollectionCreator,
-		CollectionId:       req.CollectionId,
-		NftId:              req.NftId,
-		ForSale:            forSale,
-		InitiallySold:      initiallySold,
-		MinPrice:           &minPrice,
-		Creator:            marketplaceNft.Creator.String(),
+		MarketplaceCreator:  marketplaceCreator.String(),
+		MarketplaceId:       req.MarketplaceId,
+		CollectionCreator:   req.CollectionCreator,
+		CollectionId:        req.CollectionId,
+		NftId:               req.NftId,
+		ForSale:             forSale,
+		InitiallySold:       initiallySold,
+		MinPrice:            &minPrice,
+		Cw20ContractAddress: cw20ContractAddress.String(),
+		Creator:             marketplaceNft.Creator.String(),
 	}, nil
 }

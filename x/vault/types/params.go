@@ -4,24 +4,25 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 
 const (
+	DefaultAdminAccount            = ""
 	DefaultStakingValidatorAddress = ""
-	DefaultStakingValidatorDenom   = "stake"
-	DefaultEpochBlockHeightOffset  = int64(5)
-	DefaultMinEpochWithdrawAmount  = int64(1)
-	DefaultMinRewardWithdrawAmount = int64(1)
+	DefaultEpochBlockHeightOffset  = 100
+	DefaultEpochMinWithdraw        = ""
+	DefaultRewardMinClaim          = ""
 )
 
 var (
+	KeyAdminAccount            = []byte("AdminAccount")
 	KeyStakingValidatorAddress = []byte("StakingValidatorAddress")
-	KeyStakingValidatorDenom   = []byte("StakingValidatorDenom")
 	KeyEpochBlockHeightOffset  = []byte("EpochBlockHeightOffset")
-	KeyMinEpochWithdrawAmount  = []byte("MinEpochWithdrawAmount")
-	KeyMinRewardWithdrawAmount = []byte("MinRewardWithdrawAmount")
+	KeyEpochMinWithdraw        = []byte("EpochMinWithdraw")
+	KeyRewardMinClaim          = []byte("RewardMinClaim")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -33,40 +34,40 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams(
+	adminAccount string,
 	stakingValidatorAddress string,
-	stakingValidatorDenom string,
 	epochBlockHeightOffset int64,
-	minEpochWithdrawAmount int64,
-	minRewardWithdrawAmount int64,
+	epochMinWithdraw string,
+	rewardMinClaim string,
 ) Params {
 	return Params{
+		AdminAccount:            adminAccount,
 		StakingValidatorAddress: stakingValidatorAddress,
-		StakingValidatorDenom:   stakingValidatorDenom,
 		EpochBlockHeightOffset:  epochBlockHeightOffset,
-		MinEpochWithdrawAmount:  minEpochWithdrawAmount,
-		MinRewardWithdrawAmount: minRewardWithdrawAmount,
+		EpochMinWithdraw:        epochMinWithdraw,
+		RewardMinClaim:          rewardMinClaim,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
+		DefaultAdminAccount,
 		DefaultStakingValidatorAddress,
-		DefaultStakingValidatorDenom,
 		DefaultEpochBlockHeightOffset,
-		DefaultMinEpochWithdrawAmount,
-		DefaultMinRewardWithdrawAmount,
+		DefaultEpochMinWithdraw,
+		DefaultRewardMinClaim,
 	)
 }
 
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
+		paramtypes.NewParamSetPair(KeyAdminAccount, &p.AdminAccount, validateAdminAccount),
 		paramtypes.NewParamSetPair(KeyStakingValidatorAddress, &p.StakingValidatorAddress, validateStakingValidatorAddress),
-		paramtypes.NewParamSetPair(KeyStakingValidatorDenom, &p.StakingValidatorDenom, validateStakingValidatorDenom),
 		paramtypes.NewParamSetPair(KeyEpochBlockHeightOffset, &p.EpochBlockHeightOffset, validateEpochBlockHeightOffset),
-		paramtypes.NewParamSetPair(KeyMinEpochWithdrawAmount, &p.MinEpochWithdrawAmount, validateMinEpochWithdrawAmount),
-		paramtypes.NewParamSetPair(KeyMinRewardWithdrawAmount, &p.MinRewardWithdrawAmount, validateMinRewardWithdrawAmount),
+		paramtypes.NewParamSetPair(KeyEpochMinWithdraw, &p.EpochMinWithdraw, validateEpochMinWithdraw),
+		paramtypes.NewParamSetPair(KeyRewardMinClaim, &p.RewardMinClaim, validateRewardMinClaim),
 	}
 }
 
@@ -92,20 +93,29 @@ func UnmarshalParams(cdc *codec.LegacyAmino, value []byte) (params Params, err e
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateStakingValidatorAddress(p.StakingValidatorAddress); err != nil {
+	if err := validateAdminAccount(p.AdminAccount); err != nil {
 		return err
 	}
-	if err := validateStakingValidatorDenom(p.StakingValidatorDenom); err != nil {
+	if err := validateStakingValidatorAddress(p.StakingValidatorAddress); err != nil {
 		return err
 	}
 	if err := validateEpochBlockHeightOffset(p.EpochBlockHeightOffset); err != nil {
 		return err
 	}
-	if err := validateMinEpochWithdrawAmount(p.MinEpochWithdrawAmount); err != nil {
+	if err := validateEpochMinWithdraw(p.EpochMinWithdraw); err != nil {
 		return err
 	}
-	if err := validateMinRewardWithdrawAmount(p.MinRewardWithdrawAmount); err != nil {
+	if err := validateRewardMinClaim(p.RewardMinClaim); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func validateAdminAccount(i interface{}) error {
+	_, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	return nil
@@ -152,27 +162,33 @@ func validateEpochBlockHeightOffset(i interface{}) error {
 	return nil
 }
 
-func validateMinEpochWithdrawAmount(i interface{}) error {
-	v, ok := i.(int64)
+func validateEpochMinWithdraw(i interface{}) error {
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v <= 0 {
-		return fmt.Errorf("min epoch withdraw amount param should be positive")
+	if v != "" {
+		parsed, err := sdk.ParseCoinNormalized(v)
+		if err != nil || parsed.IsNegative() {
+			return fmt.Errorf("epoch min withdraw claim param is negative or invalid")
+		}
 	}
 
 	return nil
 }
 
-func validateMinRewardWithdrawAmount(i interface{}) error {
-	v, ok := i.(int64)
+func validateRewardMinClaim(i interface{}) error {
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if v <= 0 {
-		return fmt.Errorf("min reward withdraw amount param should be positive")
+	if v != "" {
+		parsed, err := sdk.ParseCoinNormalized(v)
+		if err != nil || parsed.IsNegative() {
+			return fmt.Errorf("reward min claim param is negative or invalid")
+		}
 	}
 
 	return nil

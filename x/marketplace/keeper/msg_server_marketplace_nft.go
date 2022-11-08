@@ -39,16 +39,6 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "marketplace id should not be empty")
 	}
 
-	var cw20ContractAddress sdk.AccAddress
-
-	if strings.TrimSpace(msg.Cw20ContractAddress) != "" {
-		cw20ContractAddress, err = sdk.AccAddressFromBech32(msg.Cw20ContractAddress)
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	marketplaceController := NewMarketplaceController(ctx, marketplaceCreator).
 		WithId(msg.MarketplaceId).
 		WithStore(k)
@@ -103,16 +93,18 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	if !found {
 		marketplaceNft = types.MarketplaceNft{
-			Index:            nft.Index,
-			MarketplaceIndex: marketplaceIndex,
-			CollectionIndex:  collection.Index,
-			MinPrice:         collection.InitiallyNftCollectionOwnerNftsMinPrice,
-			ForSale:          collection.InitiallyNftCollectionOwnerNftsForSale,
-			Creator:          creator,
+			Index:               nft.Index,
+			MarketplaceIndex:    marketplaceIndex,
+			CollectionIndex:     collection.Index,
+			MinPrice:            collection.InitiallyNftCollectionOwnerNftsMinPrice,
+			Cw20ContractAddress: collection.Cw20ContractAddress,
+			ForSale:             collection.InitiallyNftCollectionOwnerNftsForSale,
+			Creator:             creator,
 		}
 	}
 
-	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists
+	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists in vault ChainValidatorBridge
+	// and if not, return error
 
 	if !marketplaceNft.ForSale {
 		return nil, sdkerrors.Wrap(types.ErrNftNotForSale, "nft is not for sale")
@@ -151,7 +143,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		nftCollection.Index,
 		nft.Index,
 		initialSale,
-		cw20ContractAddress,
+		collection.Cw20ContractAddress,
 		msg.StakingChain,
 		msg.StakingValidator,
 	)

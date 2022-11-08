@@ -5,13 +5,12 @@ import (
 )
 
 const (
-	FlagMarketplaceCreator  = "marketplace-creator"
-	FlagMarketplaceId       = "marketplace-id"
-	FlagCollectionCreator   = "collection-creator"
-	FlagCollectionId        = "collection-id"
-	FlagCw20ContractAddress = "cw20-contract-address"
-	FlagStakingChain        = "staking-chain"
-	FlagStakingValidator    = "staking-validator"
+	FlagMarketplaceCreator = "marketplace-creator"
+	FlagMarketplaceId      = "marketplace-id"
+	FlagCollectionCreator  = "collection-creator"
+	FlagCollectionId       = "collection-id"
+	FlagStakingChain       = "staking-chain"
+	FlagStakingValidator   = "staking-validator"
 )
 
 var (
@@ -29,7 +28,6 @@ func init() {
 	FsBuyNft.String(FlagMarketplaceId, "", "The marketplace id")
 	FsBuyNft.String(FlagCollectionCreator, "", "The collection creator address")
 	FsBuyNft.String(FlagCollectionId, "", "The collection id")
-	FsBuyNft.String(FlagCw20ContractAddress, "", "The cw 20 contract address")
 	FsBuyNft.String(FlagStakingChain, "", "The chain for staking")
 	FsBuyNft.String(FlagStakingValidator, "", "The validator for staking")
 }

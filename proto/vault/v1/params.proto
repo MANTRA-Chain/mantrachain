@@ -9,9 +9,9 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  string staking_validator_address = 1;
-  string staking_validator_denom = 2;
+  string admin_account = 1;
+  string staking_validator_address = 2;
   int64 epoch_block_height_offset = 3;
-  int64 min_epoch_withdraw_amount = 4;
-  int64 min_reward_withdraw_amount = 5;
+  string epoch_min_withdraw = 4;
+  string reward_min_claim = 5;
 }

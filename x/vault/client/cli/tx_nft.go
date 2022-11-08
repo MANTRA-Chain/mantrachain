@@ -15,11 +15,11 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdWithdrawNftReward() *cobra.Command {
+func CmdWithdrawNftRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-nft-reward [nft-id]",
+		Use:   "withdraw-nft-rewards [nft-id]",
 		Short: "Broadcast message withdraw-nft-reward",
-		Long: "Buy a NFT. " +
+		Long: "Withdraw NFT rewards. " +
 			"[nft-id] is the NFT id.",
 		Example: fmt.Sprintf(
 			"$ %s tx marketplace withdraw-nft-reward <nft-id> "+
@@ -29,6 +29,8 @@ func CmdWithdrawNftReward() *cobra.Command {
 				"--marketplace-id=<marketplace-id> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
+				"--staking-chain=<staking-chain> "+
+				"--staking-validator=<staking-validator> "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -61,6 +63,16 @@ func CmdWithdrawNftReward() *cobra.Command {
 				return err
 			}
 
+			stakingChain, err := cmd.Flags().GetString(FlagStakingChain)
+			if err != nil {
+				return err
+			}
+
+			stakingValidator, err := cmd.Flags().GetString(FlagStakingValidator)
+			if err != nil {
+				return err
+			}
+
 			// verification
 			signer := clientCtx.GetFromAddress()
 
@@ -74,7 +86,7 @@ func CmdWithdrawNftReward() *cobra.Command {
 				receiver = signer.String()
 			}
 
-			msg := types.NewMsgWithdrawNftReward(
+			msg := types.NewMsgWithdrawNftRewards(
 				clientCtx.GetFromAddress().String(),
 				marketplaceCreator,
 				marketplaceId,
@@ -82,6 +94,8 @@ func CmdWithdrawNftReward() *cobra.Command {
 				collectionId,
 				argNftId,
 				receiver,
+				stakingChain,
+				stakingValidator,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -90,7 +104,7 @@ func CmdWithdrawNftReward() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FsWithdrawNftReward)
+	cmd.Flags().AddFlagSet(FsWithdrawNftRewards)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

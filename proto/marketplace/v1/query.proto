@@ -139,10 +139,11 @@ message QueryGetMarketplaceCollectionResponse {
   string collection_id = 4;
   bool initially_nft_collection_owner_nfts_for_sale = 5;
   cosmos.base.v1beta1.Coin initially_nft_collection_owner_nfts_min_price = 6;
-  repeated MarketplaceEarning nfts_earnings_on_sale = 7;
-  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 78;
-  string initially_nfts_vault_lock_percentage = 9; 
-  string creator = 10;
+  string cw20_contract_address = 7;
+  repeated MarketplaceEarning nfts_earnings_on_sale = 8;
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 9;
+  string initially_nfts_vault_lock_percentage = 10; 
+  string creator = 11;
 }
 
 message QueryGetMarketplaceNftRequest {
@@ -162,7 +163,8 @@ message QueryGetMarketplaceNftResponse {
   bool for_sale = 6;
   bool initially_sold = 7;
   cosmos.base.v1beta1.Coin min_price = 8;
-  string creator = 9;
+  string cw20_contract_address = 9;
+  string creator = 10;
 }
 
 // this line is used by starport scaffolding # 3

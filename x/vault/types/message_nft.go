@@ -7,13 +7,13 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgWithdrawNftReward = "withdraw_nft_reward"
+const TypeMsgWithdrawNftRewards = "withdraw_nft_rewards"
 
-var _ sdk.Msg = &MsgWithdrawNftReward{}
+var _ sdk.Msg = &MsgWithdrawNftRewards{}
 
-func NewMsgWithdrawNftReward(creator string, marketplaceCreator string, marketplaceId string,
-	collectionCreator string, collectionId string, nftId string, receiver string) *MsgWithdrawNftReward {
-	return &MsgWithdrawNftReward{
+func NewMsgWithdrawNftRewards(creator string, marketplaceCreator string, marketplaceId string,
+	collectionCreator string, collectionId string, nftId string, receiver string, stakingChain string, stakingValidator string) *MsgWithdrawNftRewards {
+	return &MsgWithdrawNftRewards{
 		Creator:            creator,
 		MarketplaceCreator: marketplaceCreator,
 		MarketplaceId:      marketplaceId,
@@ -21,18 +21,20 @@ func NewMsgWithdrawNftReward(creator string, marketplaceCreator string, marketpl
 		CollectionId:       collectionId,
 		NftId:              nftId,
 		Receiver:           receiver,
+		StakingChain:       stakingChain,
+		StakingValidator:   stakingValidator,
 	}
 }
 
-func (msg *MsgWithdrawNftReward) Route() string {
+func (msg *MsgWithdrawNftRewards) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgWithdrawNftReward) Type() string {
-	return TypeMsgWithdrawNftReward
+func (msg *MsgWithdrawNftRewards) Type() string {
+	return TypeMsgWithdrawNftRewards
 }
 
-func (msg *MsgWithdrawNftReward) GetSigners() []sdk.AccAddress {
+func (msg *MsgWithdrawNftRewards) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -40,12 +42,12 @@ func (msg *MsgWithdrawNftReward) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgWithdrawNftReward) GetSignBytes() []byte {
+func (msg *MsgWithdrawNftRewards) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgWithdrawNftReward) ValidateBasic() error {
+func (msg *MsgWithdrawNftRewards) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

@@ -28,7 +28,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryParams(),
 		CmdGetNftStake(),
 		CmdGetLastEpochs(),
-		CmdGetNftBalance(),
+		CmdGetNftBalances(),
+		CmdGetChainValidatorBridge(),
 	)
 	// this line is used by starport scaffolding # 1
 

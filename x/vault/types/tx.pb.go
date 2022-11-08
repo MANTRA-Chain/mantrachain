@@ -28,7 +28,191 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgWithdrawNftReward struct {
+type MsgStartEpoch struct {
+	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	BlockStart int64  `protobuf:"varint,2,opt,name=block_start,json=blockStart,proto3" json:"block_start,omitempty"`
+	Reward     string `protobuf:"bytes,3,opt,name=reward,proto3" json:"reward,omitempty"`
+	Chain      string `protobuf:"bytes,4,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator  string `protobuf:"bytes,5,opt,name=validator,proto3" json:"validator,omitempty"`
+}
+
+func (m *MsgStartEpoch) Reset()         { *m = MsgStartEpoch{} }
+func (m *MsgStartEpoch) String() string { return proto.CompactTextString(m) }
+func (*MsgStartEpoch) ProtoMessage()    {}
+func (*MsgStartEpoch) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{0}
+}
+func (m *MsgStartEpoch) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgStartEpoch) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgStartEpoch.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgStartEpoch) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgStartEpoch.Merge(m, src)
+}
+func (m *MsgStartEpoch) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgStartEpoch) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgStartEpoch.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgStartEpoch proto.InternalMessageInfo
+
+func (m *MsgStartEpoch) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgStartEpoch) GetBlockStart() int64 {
+	if m != nil {
+		return m.BlockStart
+	}
+	return 0
+}
+
+func (m *MsgStartEpoch) GetReward() string {
+	if m != nil {
+		return m.Reward
+	}
+	return ""
+}
+
+func (m *MsgStartEpoch) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgStartEpoch) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+type MsgStartEpochResponse struct {
+	PrevEpochBlock      int64         `protobuf:"varint,1,opt,name=prev_epoch_block,json=prevEpochBlock,proto3" json:"prev_epoch_block,omitempty"`
+	NextEpochBlock      int64         `protobuf:"varint,2,opt,name=next_epoch_block,json=nextEpochBlock,proto3" json:"next_epoch_block,omitempty"`
+	BlockStart          int64         `protobuf:"varint,3,opt,name=block_start,json=blockStart,proto3" json:"block_start,omitempty"`
+	BlockEnd            int64         `protobuf:"varint,4,opt,name=block_end,json=blockEnd,proto3" json:"block_end,omitempty"`
+	Staked              string        `protobuf:"bytes,5,opt,name=staked,proto3" json:"staked,omitempty"`
+	PrevEpochRewards    []*types.Coin `protobuf:"bytes,6,rep,name=prev_epoch_rewards,json=prevEpochRewards,proto3" json:"prev_epoch_rewards,omitempty"`
+	Chain               string        `protobuf:"bytes,7,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator           string        `protobuf:"bytes,8,opt,name=validator,proto3" json:"validator,omitempty"`
+	Cw20ContractAddress string        `protobuf:"bytes,9,opt,name=cw20_contract_address,json=cw20ContractAddress,proto3" json:"cw20_contract_address,omitempty"`
+}
+
+func (m *MsgStartEpochResponse) Reset()         { *m = MsgStartEpochResponse{} }
+func (m *MsgStartEpochResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgStartEpochResponse) ProtoMessage()    {}
+func (*MsgStartEpochResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{1}
+}
+func (m *MsgStartEpochResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgStartEpochResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgStartEpochResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgStartEpochResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgStartEpochResponse.Merge(m, src)
+}
+func (m *MsgStartEpochResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgStartEpochResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgStartEpochResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgStartEpochResponse proto.InternalMessageInfo
+
+func (m *MsgStartEpochResponse) GetPrevEpochBlock() int64 {
+	if m != nil {
+		return m.PrevEpochBlock
+	}
+	return 0
+}
+
+func (m *MsgStartEpochResponse) GetNextEpochBlock() int64 {
+	if m != nil {
+		return m.NextEpochBlock
+	}
+	return 0
+}
+
+func (m *MsgStartEpochResponse) GetBlockStart() int64 {
+	if m != nil {
+		return m.BlockStart
+	}
+	return 0
+}
+
+func (m *MsgStartEpochResponse) GetBlockEnd() int64 {
+	if m != nil {
+		return m.BlockEnd
+	}
+	return 0
+}
+
+func (m *MsgStartEpochResponse) GetStaked() string {
+	if m != nil {
+		return m.Staked
+	}
+	return ""
+}
+
+func (m *MsgStartEpochResponse) GetPrevEpochRewards() []*types.Coin {
+	if m != nil {
+		return m.PrevEpochRewards
+	}
+	return nil
+}
+
+func (m *MsgStartEpochResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgStartEpochResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgStartEpochResponse) GetCw20ContractAddress() string {
+	if m != nil {
+		return m.Cw20ContractAddress
+	}
+	return ""
+}
+
+type MsgWithdrawNftRewards struct {
 	Creator            string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	MarketplaceCreator string `protobuf:"bytes,2,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
 	MarketplaceId      string `protobuf:"bytes,3,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
@@ -36,20 +220,22 @@ type MsgWithdrawNftReward struct {
 	CollectionId       string `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
 	NftId              string `protobuf:"bytes,6,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
 	Receiver           string `protobuf:"bytes,7,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	StakingChain       string `protobuf:"bytes,8,opt,name=staking_chain,json=stakingChain,proto3" json:"staking_chain,omitempty"`
+	StakingValidator   string `protobuf:"bytes,9,opt,name=staking_validator,json=stakingValidator,proto3" json:"staking_validator,omitempty"`
 }
 
-func (m *MsgWithdrawNftReward) Reset()         { *m = MsgWithdrawNftReward{} }
-func (m *MsgWithdrawNftReward) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawNftReward) ProtoMessage()    {}
-func (*MsgWithdrawNftReward) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{0}
+func (m *MsgWithdrawNftRewards) Reset()         { *m = MsgWithdrawNftRewards{} }
+func (m *MsgWithdrawNftRewards) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawNftRewards) ProtoMessage()    {}
+func (*MsgWithdrawNftRewards) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{2}
 }
-func (m *MsgWithdrawNftReward) XXX_Unmarshal(b []byte) error {
+func (m *MsgWithdrawNftRewards) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawNftReward) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgWithdrawNftRewards) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawNftReward.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgWithdrawNftRewards.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -59,93 +245,107 @@ func (m *MsgWithdrawNftReward) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawNftReward) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawNftReward.Merge(m, src)
+func (m *MsgWithdrawNftRewards) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawNftRewards.Merge(m, src)
 }
-func (m *MsgWithdrawNftReward) XXX_Size() int {
+func (m *MsgWithdrawNftRewards) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawNftReward) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawNftReward.DiscardUnknown(m)
+func (m *MsgWithdrawNftRewards) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawNftRewards.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawNftReward proto.InternalMessageInfo
+var xxx_messageInfo_MsgWithdrawNftRewards proto.InternalMessageInfo
 
-func (m *MsgWithdrawNftReward) GetCreator() string {
+func (m *MsgWithdrawNftRewards) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetMarketplaceCreator() string {
+func (m *MsgWithdrawNftRewards) GetMarketplaceCreator() string {
 	if m != nil {
 		return m.MarketplaceCreator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetMarketplaceId() string {
+func (m *MsgWithdrawNftRewards) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetCollectionCreator() string {
+func (m *MsgWithdrawNftRewards) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetCollectionId() string {
+func (m *MsgWithdrawNftRewards) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetNftId() string {
+func (m *MsgWithdrawNftRewards) GetNftId() string {
 	if m != nil {
 		return m.NftId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftReward) GetReceiver() string {
+func (m *MsgWithdrawNftRewards) GetReceiver() string {
 	if m != nil {
 		return m.Receiver
 	}
 	return ""
 }
 
-type MsgWithdrawNftRewardResponse struct {
-	MarketplaceCreator string         `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
-	MarketplaceId      string         `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
-	CollectionCreator  string         `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
-	CollectionId       string         `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
-	NftId              string         `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-	Owner              string         `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`
-	Receiver           string         `protobuf:"bytes,7,opt,name=receiver,proto3" json:"receiver,omitempty"`
-	Reward             *types.Coin    `protobuf:"bytes,8,opt,name=reward,proto3" json:"reward,omitempty"`
-	Balance            *types.DecCoin `protobuf:"bytes,9,opt,name=balance,proto3" json:"balance,omitempty"`
-	StartAt            int64          `protobuf:"varint,10,opt,name=start_at,json=startAt,proto3" json:"start_at,omitempty"`
-	EndAt              int64          `protobuf:"varint,11,opt,name=end_at,json=endAt,proto3" json:"end_at,omitempty"`
+func (m *MsgWithdrawNftRewards) GetStakingChain() string {
+	if m != nil {
+		return m.StakingChain
+	}
+	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) Reset()         { *m = MsgWithdrawNftRewardResponse{} }
-func (m *MsgWithdrawNftRewardResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawNftRewardResponse) ProtoMessage()    {}
-func (*MsgWithdrawNftRewardResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{1}
+func (m *MsgWithdrawNftRewards) GetStakingValidator() string {
+	if m != nil {
+		return m.StakingValidator
+	}
+	return ""
 }
-func (m *MsgWithdrawNftRewardResponse) XXX_Unmarshal(b []byte) error {
+
+type MsgWithdrawNftRewardsResponse struct {
+	MarketplaceCreator string           `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string           `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string           `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string           `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string           `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Owner              string           `protobuf:"bytes,6,opt,name=owner,proto3" json:"owner,omitempty"`
+	Receiver           string           `protobuf:"bytes,7,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	Rewards            []*types.Coin    `protobuf:"bytes,8,rep,name=rewards,proto3" json:"rewards,omitempty"`
+	Balances           []*types.DecCoin `protobuf:"bytes,9,rep,name=balances,proto3" json:"balances,omitempty"`
+	StartAt            int64            `protobuf:"varint,10,opt,name=start_at,json=startAt,proto3" json:"start_at,omitempty"`
+	EndAt              int64            `protobuf:"varint,11,opt,name=end_at,json=endAt,proto3" json:"end_at,omitempty"`
+}
+
+func (m *MsgWithdrawNftRewardsResponse) Reset()         { *m = MsgWithdrawNftRewardsResponse{} }
+func (m *MsgWithdrawNftRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawNftRewardsResponse) ProtoMessage()    {}
+func (*MsgWithdrawNftRewardsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{3}
+}
+func (m *MsgWithdrawNftRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawNftRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgWithdrawNftRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawNftRewardResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgWithdrawNftRewardsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -155,134 +355,566 @@ func (m *MsgWithdrawNftRewardResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawNftRewardResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawNftRewardResponse.Merge(m, src)
+func (m *MsgWithdrawNftRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawNftRewardsResponse.Merge(m, src)
 }
-func (m *MsgWithdrawNftRewardResponse) XXX_Size() int {
+func (m *MsgWithdrawNftRewardsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawNftRewardResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawNftRewardResponse.DiscardUnknown(m)
+func (m *MsgWithdrawNftRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawNftRewardsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawNftRewardResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgWithdrawNftRewardsResponse proto.InternalMessageInfo
 
-func (m *MsgWithdrawNftRewardResponse) GetMarketplaceCreator() string {
+func (m *MsgWithdrawNftRewardsResponse) GetMarketplaceCreator() string {
 	if m != nil {
 		return m.MarketplaceCreator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetMarketplaceId() string {
+func (m *MsgWithdrawNftRewardsResponse) GetMarketplaceId() string {
 	if m != nil {
 		return m.MarketplaceId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetCollectionCreator() string {
+func (m *MsgWithdrawNftRewardsResponse) GetCollectionCreator() string {
 	if m != nil {
 		return m.CollectionCreator
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetCollectionId() string {
+func (m *MsgWithdrawNftRewardsResponse) GetCollectionId() string {
 	if m != nil {
 		return m.CollectionId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetNftId() string {
+func (m *MsgWithdrawNftRewardsResponse) GetNftId() string {
 	if m != nil {
 		return m.NftId
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetOwner() string {
+func (m *MsgWithdrawNftRewardsResponse) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetReceiver() string {
+func (m *MsgWithdrawNftRewardsResponse) GetReceiver() string {
 	if m != nil {
 		return m.Receiver
 	}
 	return ""
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetReward() *types.Coin {
+func (m *MsgWithdrawNftRewardsResponse) GetRewards() []*types.Coin {
 	if m != nil {
-		return m.Reward
+		return m.Rewards
 	}
 	return nil
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetBalance() *types.DecCoin {
+func (m *MsgWithdrawNftRewardsResponse) GetBalances() []*types.DecCoin {
 	if m != nil {
-		return m.Balance
+		return m.Balances
 	}
 	return nil
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetStartAt() int64 {
+func (m *MsgWithdrawNftRewardsResponse) GetStartAt() int64 {
 	if m != nil {
 		return m.StartAt
 	}
 	return 0
 }
 
-func (m *MsgWithdrawNftRewardResponse) GetEndAt() int64 {
+func (m *MsgWithdrawNftRewardsResponse) GetEndAt() int64 {
 	if m != nil {
 		return m.EndAt
 	}
 	return 0
 }
 
+type MsgCreateChainValidatorBridge struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	BridgeId  string `protobuf:"bytes,4,opt,name=bridge_id,json=bridgeId,proto3" json:"bridge_id,omitempty"`
+}
+
+func (m *MsgCreateChainValidatorBridge) Reset()         { *m = MsgCreateChainValidatorBridge{} }
+func (m *MsgCreateChainValidatorBridge) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateChainValidatorBridge) ProtoMessage()    {}
+func (*MsgCreateChainValidatorBridge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{4}
+}
+func (m *MsgCreateChainValidatorBridge) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateChainValidatorBridge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateChainValidatorBridge.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateChainValidatorBridge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateChainValidatorBridge.Merge(m, src)
+}
+func (m *MsgCreateChainValidatorBridge) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateChainValidatorBridge) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateChainValidatorBridge.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateChainValidatorBridge proto.InternalMessageInfo
+
+func (m *MsgCreateChainValidatorBridge) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridge) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridge) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridge) GetBridgeId() string {
+	if m != nil {
+		return m.BridgeId
+	}
+	return ""
+}
+
+type MsgCreateChainValidatorBridgeResponse struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	BridgeId  string `protobuf:"bytes,4,opt,name=bridge_id,json=bridgeId,proto3" json:"bridge_id,omitempty"`
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) Reset()         { *m = MsgCreateChainValidatorBridgeResponse{} }
+func (m *MsgCreateChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateChainValidatorBridgeResponse) ProtoMessage()    {}
+func (*MsgCreateChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{5}
+}
+func (m *MsgCreateChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateChainValidatorBridgeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateChainValidatorBridgeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateChainValidatorBridgeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateChainValidatorBridgeResponse.Merge(m, src)
+}
+func (m *MsgCreateChainValidatorBridgeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateChainValidatorBridgeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateChainValidatorBridgeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateChainValidatorBridgeResponse proto.InternalMessageInfo
+
+func (m *MsgCreateChainValidatorBridgeResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) GetBridgeId() string {
+	if m != nil {
+		return m.BridgeId
+	}
+	return ""
+}
+
+type MsgUpdateChainValidatorBridge struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	BridgeId  string `protobuf:"bytes,4,opt,name=bridge_id,json=bridgeId,proto3" json:"bridge_id,omitempty"`
+}
+
+func (m *MsgUpdateChainValidatorBridge) Reset()         { *m = MsgUpdateChainValidatorBridge{} }
+func (m *MsgUpdateChainValidatorBridge) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateChainValidatorBridge) ProtoMessage()    {}
+func (*MsgUpdateChainValidatorBridge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{6}
+}
+func (m *MsgUpdateChainValidatorBridge) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateChainValidatorBridge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateChainValidatorBridge.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateChainValidatorBridge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateChainValidatorBridge.Merge(m, src)
+}
+func (m *MsgUpdateChainValidatorBridge) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateChainValidatorBridge) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateChainValidatorBridge.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateChainValidatorBridge proto.InternalMessageInfo
+
+func (m *MsgUpdateChainValidatorBridge) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridge) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridge) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridge) GetBridgeId() string {
+	if m != nil {
+		return m.BridgeId
+	}
+	return ""
+}
+
+type MsgUpdateChainValidatorBridgeResponse struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	BridgeId  string `protobuf:"bytes,4,opt,name=bridge_id,json=bridgeId,proto3" json:"bridge_id,omitempty"`
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) Reset()         { *m = MsgUpdateChainValidatorBridgeResponse{} }
+func (m *MsgUpdateChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateChainValidatorBridgeResponse) ProtoMessage()    {}
+func (*MsgUpdateChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{7}
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateChainValidatorBridgeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateChainValidatorBridgeResponse.Merge(m, src)
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateChainValidatorBridgeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateChainValidatorBridgeResponse proto.InternalMessageInfo
+
+func (m *MsgUpdateChainValidatorBridgeResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) GetBridgeId() string {
+	if m != nil {
+		return m.BridgeId
+	}
+	return ""
+}
+
+type MsgDeleteChainValidatorBridge struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+}
+
+func (m *MsgDeleteChainValidatorBridge) Reset()         { *m = MsgDeleteChainValidatorBridge{} }
+func (m *MsgDeleteChainValidatorBridge) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteChainValidatorBridge) ProtoMessage()    {}
+func (*MsgDeleteChainValidatorBridge) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{8}
+}
+func (m *MsgDeleteChainValidatorBridge) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteChainValidatorBridge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteChainValidatorBridge.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteChainValidatorBridge) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteChainValidatorBridge.Merge(m, src)
+}
+func (m *MsgDeleteChainValidatorBridge) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteChainValidatorBridge) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteChainValidatorBridge.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteChainValidatorBridge proto.InternalMessageInfo
+
+func (m *MsgDeleteChainValidatorBridge) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgDeleteChainValidatorBridge) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgDeleteChainValidatorBridge) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+type MsgDeleteChainValidatorBridgeResponse struct {
+	Creator   string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Chain     string `protobuf:"bytes,2,opt,name=chain,proto3" json:"chain,omitempty"`
+	Validator string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	BridgeId  string `protobuf:"bytes,4,opt,name=bridge_id,json=bridgeId,proto3" json:"bridge_id,omitempty"`
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) Reset()         { *m = MsgDeleteChainValidatorBridgeResponse{} }
+func (m *MsgDeleteChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteChainValidatorBridgeResponse) ProtoMessage()    {}
+func (*MsgDeleteChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{9}
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDeleteChainValidatorBridgeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteChainValidatorBridgeResponse.Merge(m, src)
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteChainValidatorBridgeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDeleteChainValidatorBridgeResponse proto.InternalMessageInfo
+
+func (m *MsgDeleteChainValidatorBridgeResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) GetBridgeId() string {
+	if m != nil {
+		return m.BridgeId
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*MsgWithdrawNftReward)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftReward")
-	proto.RegisterType((*MsgWithdrawNftRewardResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftRewardResponse")
+	proto.RegisterType((*MsgStartEpoch)(nil), "LimeChain.mantrachain.vault.v1.MsgStartEpoch")
+	proto.RegisterType((*MsgStartEpochResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgStartEpochResponse")
+	proto.RegisterType((*MsgWithdrawNftRewards)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftRewards")
+	proto.RegisterType((*MsgWithdrawNftRewardsResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftRewardsResponse")
+	proto.RegisterType((*MsgCreateChainValidatorBridge)(nil), "LimeChain.mantrachain.vault.v1.MsgCreateChainValidatorBridge")
+	proto.RegisterType((*MsgCreateChainValidatorBridgeResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgCreateChainValidatorBridgeResponse")
+	proto.RegisterType((*MsgUpdateChainValidatorBridge)(nil), "LimeChain.mantrachain.vault.v1.MsgUpdateChainValidatorBridge")
+	proto.RegisterType((*MsgUpdateChainValidatorBridgeResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgUpdateChainValidatorBridgeResponse")
+	proto.RegisterType((*MsgDeleteChainValidatorBridge)(nil), "LimeChain.mantrachain.vault.v1.MsgDeleteChainValidatorBridge")
+	proto.RegisterType((*MsgDeleteChainValidatorBridgeResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgDeleteChainValidatorBridgeResponse")
 }
 
 func init() { proto.RegisterFile("vault/v1/tx.proto", fileDescriptor_311d0123a4881c5c) }
 
 var fileDescriptor_311d0123a4881c5c = []byte{
-	// 476 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0x41, 0x6f, 0xd3, 0x30,
-	0x14, 0xc7, 0xeb, 0x76, 0x69, 0x3b, 0x8f, 0x21, 0xd5, 0x0c, 0x29, 0xab, 0xa6, 0xa8, 0x1a, 0x42,
-	0xea, 0x05, 0x5b, 0x19, 0x88, 0x13, 0x97, 0x51, 0x0e, 0x54, 0x62, 0x1c, 0x72, 0x41, 0xe2, 0x32,
-	0x39, 0x8e, 0xdb, 0x5a, 0x24, 0x76, 0xe5, 0xbc, 0xa5, 0xe3, 0x13, 0x70, 0x1c, 0x1f, 0x85, 0x8f,
-	0xc1, 0x71, 0x47, 0x8e, 0xa8, 0xfd, 0x22, 0xa8, 0x6e, 0xd3, 0x45, 0xa2, 0x54, 0x63, 0xb7, 0x3c,
-	0xff, 0x7f, 0x7f, 0x5b, 0xff, 0x97, 0xf7, 0x70, 0xa7, 0xe0, 0x57, 0x29, 0xb0, 0x22, 0x64, 0x70,
-	0x4d, 0xa7, 0xd6, 0x80, 0x21, 0xc1, 0x07, 0x95, 0xc9, 0xc1, 0x84, 0x2b, 0x4d, 0x33, 0xae, 0xc1,
-	0x72, 0xe1, 0xbe, 0x1d, 0x48, 0x8b, 0xb0, 0x1b, 0x08, 0x93, 0x67, 0x26, 0x67, 0x31, 0xcf, 0x25,
-	0x2b, 0xc2, 0x58, 0x02, 0x0f, 0x99, 0x30, 0x4a, 0xaf, 0xfc, 0xa7, 0x37, 0x75, 0x7c, 0x74, 0x91,
-	0x8f, 0x3f, 0x29, 0x98, 0x24, 0x96, 0xcf, 0x3e, 0x8e, 0x20, 0x92, 0x33, 0x6e, 0x13, 0xe2, 0xe3,
-	0x96, 0xb0, 0x92, 0x83, 0xb1, 0x3e, 0xea, 0xa1, 0xfe, 0x7e, 0x54, 0x96, 0x84, 0xe1, 0x27, 0x19,
-	0xb7, 0x5f, 0x24, 0x4c, 0x53, 0x2e, 0xe4, 0x65, 0x49, 0xd5, 0x1d, 0x45, 0x2a, 0xd2, 0x60, 0x6d,
-	0x78, 0x8e, 0x1f, 0x57, 0x0d, 0x2a, 0xf1, 0x1b, 0x8e, 0x3d, 0xac, 0x9c, 0x0e, 0x13, 0xf2, 0x02,
-	0x13, 0x61, 0xd2, 0x54, 0x0a, 0x50, 0x46, 0x6f, 0xae, 0xdd, 0x73, 0x68, 0xe7, 0x4e, 0x29, 0x6f,
-	0x7d, 0x86, 0x0f, 0x2b, 0xb8, 0x4a, 0x7c, 0xcf, 0x91, 0x8f, 0xee, 0x0e, 0x87, 0x09, 0x79, 0x8a,
-	0x9b, 0x7a, 0x04, 0x4b, 0xb5, 0xe9, 0x54, 0x4f, 0x8f, 0x60, 0x98, 0x90, 0x2e, 0x6e, 0x5b, 0x29,
-	0xa4, 0x2a, 0xa4, 0xf5, 0x5b, 0x4e, 0xd8, 0xd4, 0xa7, 0x3f, 0x1a, 0xf8, 0x64, 0x5b, 0x47, 0x22,
-	0x99, 0x4f, 0x8d, 0xce, 0xe5, 0xbf, 0xf2, 0xa3, 0xff, 0xc8, 0x5f, 0xbf, 0x7f, 0xfe, 0xc6, 0xbd,
-	0xf3, 0xef, 0xed, 0xcc, 0xef, 0x55, 0xf3, 0x1f, 0x61, 0xcf, 0xcc, 0xb4, 0xb4, 0x65, 0x57, 0x5c,
-	0xb1, 0xab, 0x2b, 0x24, 0xc4, 0x4d, 0xeb, 0xda, 0xe0, 0xb7, 0x7b, 0xa8, 0x7f, 0x70, 0x76, 0x4c,
-	0x57, 0x83, 0x45, 0x97, 0x83, 0x45, 0xd7, 0x83, 0x45, 0x07, 0x46, 0xe9, 0x68, 0x0d, 0x92, 0xd7,
-	0xb8, 0x15, 0xf3, 0x94, 0x6b, 0x21, 0xfd, 0x7d, 0xe7, 0x39, 0xd9, 0xea, 0x79, 0x27, 0x85, 0xb3,
-	0x95, 0x30, 0x39, 0xc6, 0xed, 0x1c, 0xb8, 0x85, 0x4b, 0x0e, 0x3e, 0xee, 0xa1, 0x7e, 0x23, 0x6a,
-	0xb9, 0xfa, 0x1c, 0x96, 0x71, 0xa4, 0x4e, 0x96, 0xc2, 0x81, 0x13, 0x3c, 0xa9, 0x93, 0x73, 0x38,
-	0xbb, 0x41, 0xb8, 0x71, 0x91, 0x8f, 0xc9, 0x37, 0x84, 0x3b, 0x7f, 0x4f, 0xf2, 0x2b, 0xba, 0x7b,
-	0x47, 0xe8, 0xb6, 0xbf, 0xdd, 0x7d, 0xf3, 0x10, 0x57, 0x39, 0x23, 0x6f, 0xdf, 0xff, 0x9c, 0x07,
-	0xe8, 0x76, 0x1e, 0xa0, 0xdf, 0xf3, 0x00, 0x7d, 0x5f, 0x04, 0xb5, 0xdb, 0x45, 0x50, 0xfb, 0xb5,
-	0x08, 0x6a, 0x9f, 0xe9, 0x58, 0xc1, 0xe4, 0x2a, 0xa6, 0xc2, 0x64, 0x6c, 0xf3, 0x02, 0xab, 0xbc,
-	0xc0, 0xae, 0xd9, 0x6a, 0xcd, 0xe1, 0xeb, 0x54, 0xe6, 0x71, 0xd3, 0xed, 0xe9, 0xcb, 0x3f, 0x01,
-	0x00, 0x00, 0xff, 0xff, 0xb2, 0x86, 0xdf, 0x90, 0xfc, 0x03, 0x00, 0x00,
+	// 853 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xdb, 0x46,
+	0x10, 0x36, 0xc5, 0xe8, 0x6f, 0x1c, 0x1b, 0xf6, 0x26, 0x2e, 0x18, 0x35, 0x65, 0x0d, 0x15, 0x01,
+	0x04, 0x14, 0x21, 0x2b, 0x05, 0x01, 0x7a, 0xe9, 0xc1, 0x56, 0x8c, 0x56, 0x40, 0xd3, 0x83, 0x8a,
+	0xb6, 0x40, 0x2f, 0xc4, 0x8a, 0xbb, 0x96, 0x08, 0x53, 0x4b, 0x61, 0xb9, 0x91, 0xdc, 0x57, 0xc8,
+	0xa9, 0xe8, 0xa1, 0x0f, 0xd0, 0x77, 0xe8, 0x3b, 0xf4, 0x98, 0x63, 0x8f, 0x85, 0xfc, 0x06, 0x05,
+	0x7a, 0x2f, 0x76, 0x97, 0xa4, 0x68, 0x57, 0x64, 0x98, 0x16, 0xb0, 0x7b, 0xd3, 0xcc, 0x7c, 0xb3,
+	0xfb, 0xcd, 0x37, 0x33, 0xd4, 0xc2, 0xe1, 0x12, 0xbf, 0x0a, 0x85, 0xbb, 0xec, 0xbb, 0xe2, 0xd2,
+	0x59, 0xf0, 0x48, 0x44, 0xc8, 0xfe, 0x32, 0x98, 0xd3, 0xe1, 0x0c, 0x07, 0xcc, 0x99, 0x63, 0x26,
+	0x38, 0xf6, 0xd5, 0x6f, 0x05, 0x74, 0x96, 0xfd, 0x8e, 0xed, 0x47, 0xf1, 0x3c, 0x8a, 0xdd, 0x09,
+	0x8e, 0xa9, 0xbb, 0xec, 0x4f, 0xa8, 0xc0, 0x7d, 0xd7, 0x8f, 0x02, 0xa6, 0xf3, 0xbb, 0x3f, 0x1b,
+	0xb0, 0xf7, 0x32, 0x9e, 0x7e, 0x2d, 0x30, 0x17, 0x67, 0x8b, 0xc8, 0x9f, 0x21, 0x0b, 0x9a, 0x3e,
+	0xa7, 0x58, 0x44, 0xdc, 0x32, 0x8e, 0x8d, 0x5e, 0x7b, 0x9c, 0x9a, 0xe8, 0x43, 0xd8, 0x9d, 0x84,
+	0x91, 0x7f, 0xe1, 0xc5, 0x12, 0x6d, 0xd5, 0x8e, 0x8d, 0x9e, 0x39, 0x06, 0xe5, 0x52, 0xf9, 0xe8,
+	0x3d, 0x68, 0x70, 0xba, 0xc2, 0x9c, 0x58, 0xa6, 0xca, 0x4c, 0x2c, 0xf4, 0x10, 0xea, 0x8a, 0x96,
+	0x75, 0x4f, 0xb9, 0xb5, 0x81, 0x1e, 0x43, 0x7b, 0x89, 0xc3, 0x80, 0xa8, 0xab, 0xea, 0x2a, 0xb2,
+	0x71, 0x74, 0xff, 0xac, 0xc1, 0xd1, 0x35, 0x62, 0x63, 0x1a, 0x2f, 0x22, 0x16, 0x53, 0xd4, 0x83,
+	0x83, 0x05, 0xa7, 0x4b, 0x8f, 0x4a, 0xaf, 0xa7, 0xae, 0x57, 0x4c, 0xcd, 0xf1, 0xbe, 0xf4, 0x2b,
+	0xf0, 0xa9, 0xf4, 0x4a, 0x24, 0xa3, 0x97, 0xe2, 0x1a, 0x52, 0xb3, 0xde, 0x97, 0xfe, 0x1c, 0xf2,
+	0x46, 0x69, 0xe6, 0x3f, 0x4a, 0x7b, 0x1f, 0xda, 0x1a, 0x40, 0x19, 0x51, 0x65, 0x98, 0xe3, 0x96,
+	0x72, 0x9c, 0x31, 0x22, 0xeb, 0x8e, 0x05, 0xbe, 0xa0, 0x24, 0x29, 0x23, 0xb1, 0xd0, 0xe7, 0x80,
+	0x72, 0x4c, 0xb5, 0x18, 0xb1, 0xd5, 0x38, 0x36, 0x7b, 0xbb, 0x83, 0x47, 0x8e, 0xee, 0x8c, 0x23,
+	0x3b, 0xe3, 0x24, 0x9d, 0x71, 0x86, 0x51, 0xc0, 0xc6, 0x07, 0x59, 0x19, 0x63, 0x9d, 0xb2, 0x11,
+	0xb0, 0x59, 0x28, 0x60, 0xeb, 0x86, 0x80, 0x68, 0x00, 0x47, 0xfe, 0x6a, 0xf0, 0x89, 0xe7, 0x47,
+	0x6a, 0x2c, 0x84, 0x87, 0x09, 0xe1, 0x34, 0x8e, 0xad, 0xb6, 0x42, 0x3e, 0x90, 0xc1, 0x61, 0x12,
+	0x3b, 0xd1, 0xa1, 0xee, 0x5a, 0x8b, 0xfe, 0x5d, 0x20, 0x66, 0x84, 0xe3, 0xd5, 0x57, 0xe7, 0x22,
+	0x65, 0x50, 0x3c, 0x15, 0x2e, 0x3c, 0x98, 0x63, 0x7e, 0x41, 0xc5, 0x22, 0xc4, 0x3e, 0xf5, 0x52,
+	0x54, 0x4d, 0xa1, 0x50, 0x2e, 0x34, 0x4c, 0x12, 0x9e, 0xc0, 0x7e, 0x3e, 0x21, 0x48, 0xa7, 0x65,
+	0x2f, 0xe7, 0x1d, 0x11, 0xf4, 0x14, 0x90, 0x1f, 0x85, 0x21, 0xf5, 0x45, 0x10, 0xb1, 0xec, 0x58,
+	0x3d, 0x41, 0x87, 0x9b, 0x48, 0x7a, 0xea, 0x47, 0xb0, 0x97, 0x83, 0x07, 0x69, 0x2b, 0xee, 0x6f,
+	0x9c, 0x23, 0x82, 0x8e, 0xa0, 0xc1, 0xce, 0x85, 0x8c, 0x36, 0xb4, 0x90, 0xec, 0x5c, 0x8c, 0x08,
+	0xea, 0x40, 0x8b, 0x53, 0x9f, 0x06, 0x4b, 0xca, 0x13, 0x85, 0x33, 0x5b, 0x9e, 0x2b, 0xbb, 0x19,
+	0xb0, 0xa9, 0xa7, 0x5b, 0xa0, 0x85, 0xbe, 0x9f, 0x38, 0xd5, 0xea, 0xa1, 0x8f, 0xe1, 0x30, 0x05,
+	0x6d, 0x3a, 0xa2, 0x75, 0x3e, 0x48, 0x02, 0xdf, 0x66, 0x93, 0xfd, 0xab, 0x09, 0x1f, 0x6c, 0x15,
+	0x39, 0x9b, 0xf0, 0x02, 0x49, 0x8d, 0x77, 0x90, 0xb4, 0x56, 0x5d, 0x52, 0xb3, 0xb2, 0xa4, 0xf7,
+	0x4a, 0x25, 0xad, 0xe7, 0x25, 0x7d, 0x08, 0xf5, 0x68, 0xc5, 0x28, 0x4f, 0x85, 0x56, 0x46, 0xa9,
+	0xd0, 0xcf, 0xa0, 0x99, 0x6e, 0x48, 0xeb, 0x6d, 0x1b, 0x92, 0x22, 0xd1, 0xa7, 0xd0, 0x9a, 0xe0,
+	0x10, 0x33, 0x9f, 0xca, 0xb9, 0x96, 0x59, 0x8f, 0xb7, 0x66, 0xbd, 0xa0, 0xbe, 0x4a, 0xcc, 0xd0,
+	0xe8, 0x11, 0xb4, 0xd4, 0xae, 0x7b, 0x58, 0x58, 0xa0, 0xf6, 0xb9, 0xa9, 0xec, 0x13, 0x21, 0x4b,
+	0xa2, 0x8c, 0xc8, 0xc0, 0xae, 0x0a, 0xd4, 0x29, 0x23, 0x27, 0xa2, 0xfb, 0xda, 0x50, 0x7d, 0x53,
+	0xea, 0xe8, 0x4f, 0x6e, 0xd6, 0xd3, 0x53, 0x1e, 0x90, 0x29, 0x2d, 0x59, 0x92, 0x6c, 0x81, 0x6b,
+	0x85, 0x0b, 0x6c, 0xde, 0x5c, 0x60, 0xf9, 0xc9, 0x51, 0xe7, 0x6e, 0xa4, 0x6f, 0x69, 0xc7, 0x88,
+	0x74, 0x7f, 0x32, 0xe0, 0x49, 0x29, 0x99, 0x6c, 0x98, 0x6e, 0x91, 0x54, 0xa2, 0xd0, 0x37, 0x0b,
+	0xf2, 0xff, 0x51, 0xa8, 0x98, 0xcc, 0x5d, 0x28, 0x34, 0x57, 0x02, 0xbd, 0xa0, 0x21, 0xbd, 0x0d,
+	0x81, 0x52, 0x0d, 0x8a, 0xef, 0xbb, 0x03, 0x0d, 0x06, 0x7f, 0xd5, 0xc1, 0x7c, 0x19, 0x4f, 0xd1,
+	0x6b, 0x03, 0xd0, 0x96, 0x7f, 0x9a, 0xe7, 0x4e, 0xf9, 0x93, 0xc6, 0xd9, 0xfa, 0xed, 0xec, 0x7c,
+	0xf6, 0xaf, 0xd2, 0xb2, 0xfa, 0x39, 0x40, 0xee, 0x0d, 0xf4, 0xb4, 0xc2, 0x61, 0x1b, 0x78, 0xe7,
+	0xf9, 0x3b, 0xc1, 0xb3, 0x3b, 0x7f, 0x31, 0xa0, 0x53, 0xf2, 0x35, 0xa9, 0x52, 0x51, 0x71, 0x7a,
+	0xe7, 0xec, 0x3f, 0xa5, 0x5f, 0x23, 0x59, 0xb2, 0xd0, 0x55, 0x48, 0x16, 0xa7, 0x57, 0x22, 0x59,
+	0x61, 0x83, 0x25, 0xc9, 0x92, 0xa5, 0xaa, 0x42, 0xb2, 0x38, 0xbd, 0x12, 0xc9, 0xb7, 0xaf, 0xd8,
+	0xe9, 0x17, 0xbf, 0xad, 0x6d, 0xe3, 0xcd, 0xda, 0x36, 0xfe, 0x58, 0xdb, 0xc6, 0x8f, 0x57, 0xf6,
+	0xce, 0x9b, 0x2b, 0x7b, 0xe7, 0xf7, 0x2b, 0x7b, 0xe7, 0x7b, 0x67, 0x1a, 0x88, 0xd9, 0xab, 0x89,
+	0xe3, 0x47, 0x73, 0x37, 0xbb, 0xca, 0xcd, 0x5d, 0xe5, 0x5e, 0xba, 0xfa, 0xe9, 0x2f, 0x7e, 0x58,
+	0xd0, 0x78, 0xd2, 0x50, 0x6f, 0xf7, 0x67, 0x7f, 0x07, 0x00, 0x00, 0xff, 0xff, 0x1a, 0x82, 0xa4,
+	0x09, 0x10, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -297,7 +929,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	WithdrawNftReward(ctx context.Context, in *MsgWithdrawNftReward, opts ...grpc.CallOption) (*MsgWithdrawNftRewardResponse, error)
+	WithdrawNftRewards(ctx context.Context, in *MsgWithdrawNftRewards, opts ...grpc.CallOption) (*MsgWithdrawNftRewardsResponse, error)
+	StartEpoch(ctx context.Context, in *MsgStartEpoch, opts ...grpc.CallOption) (*MsgStartEpochResponse, error)
+	CreateChainValidatorBridge(ctx context.Context, in *MsgCreateChainValidatorBridge, opts ...grpc.CallOption) (*MsgCreateChainValidatorBridgeResponse, error)
+	UpdateChainValidatorBridge(ctx context.Context, in *MsgUpdateChainValidatorBridge, opts ...grpc.CallOption) (*MsgUpdateChainValidatorBridgeResponse, error)
+	DeleteChainValidatorBridge(ctx context.Context, in *MsgDeleteChainValidatorBridge, opts ...grpc.CallOption) (*MsgDeleteChainValidatorBridgeResponse, error)
 }
 
 type msgClient struct {
@@ -308,9 +944,45 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) WithdrawNftReward(ctx context.Context, in *MsgWithdrawNftReward, opts ...grpc.CallOption) (*MsgWithdrawNftRewardResponse, error) {
-	out := new(MsgWithdrawNftRewardResponse)
-	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftReward", in, out, opts...)
+func (c *msgClient) WithdrawNftRewards(ctx context.Context, in *MsgWithdrawNftRewards, opts ...grpc.CallOption) (*MsgWithdrawNftRewardsResponse, error) {
+	out := new(MsgWithdrawNftRewardsResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftRewards", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) StartEpoch(ctx context.Context, in *MsgStartEpoch, opts ...grpc.CallOption) (*MsgStartEpochResponse, error) {
+	out := new(MsgStartEpochResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/StartEpoch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateChainValidatorBridge(ctx context.Context, in *MsgCreateChainValidatorBridge, opts ...grpc.CallOption) (*MsgCreateChainValidatorBridgeResponse, error) {
+	out := new(MsgCreateChainValidatorBridgeResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/CreateChainValidatorBridge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateChainValidatorBridge(ctx context.Context, in *MsgUpdateChainValidatorBridge, opts ...grpc.CallOption) (*MsgUpdateChainValidatorBridgeResponse, error) {
+	out := new(MsgUpdateChainValidatorBridgeResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/UpdateChainValidatorBridge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeleteChainValidatorBridge(ctx context.Context, in *MsgDeleteChainValidatorBridge, opts ...grpc.CallOption) (*MsgDeleteChainValidatorBridgeResponse, error) {
+	out := new(MsgDeleteChainValidatorBridgeResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/DeleteChainValidatorBridge", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -319,35 +991,123 @@ func (c *msgClient) WithdrawNftReward(ctx context.Context, in *MsgWithdrawNftRew
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	WithdrawNftReward(context.Context, *MsgWithdrawNftReward) (*MsgWithdrawNftRewardResponse, error)
+	WithdrawNftRewards(context.Context, *MsgWithdrawNftRewards) (*MsgWithdrawNftRewardsResponse, error)
+	StartEpoch(context.Context, *MsgStartEpoch) (*MsgStartEpochResponse, error)
+	CreateChainValidatorBridge(context.Context, *MsgCreateChainValidatorBridge) (*MsgCreateChainValidatorBridgeResponse, error)
+	UpdateChainValidatorBridge(context.Context, *MsgUpdateChainValidatorBridge) (*MsgUpdateChainValidatorBridgeResponse, error)
+	DeleteChainValidatorBridge(context.Context, *MsgDeleteChainValidatorBridge) (*MsgDeleteChainValidatorBridgeResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) WithdrawNftReward(ctx context.Context, req *MsgWithdrawNftReward) (*MsgWithdrawNftRewardResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawNftReward not implemented")
+func (*UnimplementedMsgServer) WithdrawNftRewards(ctx context.Context, req *MsgWithdrawNftRewards) (*MsgWithdrawNftRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawNftRewards not implemented")
+}
+func (*UnimplementedMsgServer) StartEpoch(ctx context.Context, req *MsgStartEpoch) (*MsgStartEpochResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartEpoch not implemented")
+}
+func (*UnimplementedMsgServer) CreateChainValidatorBridge(ctx context.Context, req *MsgCreateChainValidatorBridge) (*MsgCreateChainValidatorBridgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChainValidatorBridge not implemented")
+}
+func (*UnimplementedMsgServer) UpdateChainValidatorBridge(ctx context.Context, req *MsgUpdateChainValidatorBridge) (*MsgUpdateChainValidatorBridgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChainValidatorBridge not implemented")
+}
+func (*UnimplementedMsgServer) DeleteChainValidatorBridge(ctx context.Context, req *MsgDeleteChainValidatorBridge) (*MsgDeleteChainValidatorBridgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteChainValidatorBridge not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_WithdrawNftReward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgWithdrawNftReward)
+func _Msg_WithdrawNftRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgWithdrawNftRewards)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).WithdrawNftReward(ctx, in)
+		return srv.(MsgServer).WithdrawNftRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftReward",
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/WithdrawNftRewards",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).WithdrawNftReward(ctx, req.(*MsgWithdrawNftReward))
+		return srv.(MsgServer).WithdrawNftRewards(ctx, req.(*MsgWithdrawNftRewards))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_StartEpoch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgStartEpoch)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).StartEpoch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/StartEpoch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).StartEpoch(ctx, req.(*MsgStartEpoch))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateChainValidatorBridge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateChainValidatorBridge)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateChainValidatorBridge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/CreateChainValidatorBridge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateChainValidatorBridge(ctx, req.(*MsgCreateChainValidatorBridge))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateChainValidatorBridge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateChainValidatorBridge)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateChainValidatorBridge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/UpdateChainValidatorBridge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateChainValidatorBridge(ctx, req.(*MsgUpdateChainValidatorBridge))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeleteChainValidatorBridge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteChainValidatorBridge)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeleteChainValidatorBridge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/DeleteChainValidatorBridge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeleteChainValidatorBridge(ctx, req.(*MsgDeleteChainValidatorBridge))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -357,15 +1117,31 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "WithdrawNftReward",
-			Handler:    _Msg_WithdrawNftReward_Handler,
+			MethodName: "WithdrawNftRewards",
+			Handler:    _Msg_WithdrawNftRewards_Handler,
+		},
+		{
+			MethodName: "StartEpoch",
+			Handler:    _Msg_StartEpoch_Handler,
+		},
+		{
+			MethodName: "CreateChainValidatorBridge",
+			Handler:    _Msg_CreateChainValidatorBridge_Handler,
+		},
+		{
+			MethodName: "UpdateChainValidatorBridge",
+			Handler:    _Msg_UpdateChainValidatorBridge_Handler,
+		},
+		{
+			MethodName: "DeleteChainValidatorBridge",
+			Handler:    _Msg_DeleteChainValidatorBridge_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "vault/v1/tx.proto",
 }
 
-func (m *MsgWithdrawNftReward) Marshal() (dAtA []byte, err error) {
+func (m *MsgStartEpoch) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -375,16 +1151,171 @@ func (m *MsgWithdrawNftReward) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawNftReward) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgStartEpoch) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawNftReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgStartEpoch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Reward) > 0 {
+		i -= len(m.Reward)
+		copy(dAtA[i:], m.Reward)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Reward)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.BlockStart != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.BlockStart))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgStartEpochResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgStartEpochResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgStartEpochResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Cw20ContractAddress) > 0 {
+		i -= len(m.Cw20ContractAddress)
+		copy(dAtA[i:], m.Cw20ContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Cw20ContractAddress)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.PrevEpochRewards) > 0 {
+		for iNdEx := len(m.PrevEpochRewards) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.PrevEpochRewards[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Staked) > 0 {
+		i -= len(m.Staked)
+		copy(dAtA[i:], m.Staked)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Staked)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.BlockEnd != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.BlockEnd))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.BlockStart != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.BlockStart))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.NextEpochBlock != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.NextEpochBlock))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PrevEpochBlock != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PrevEpochBlock))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgWithdrawNftRewards) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawNftRewards) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawNftRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.StakingValidator) > 0 {
+		i -= len(m.StakingValidator)
+		copy(dAtA[i:], m.StakingValidator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingValidator)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.StakingChain) > 0 {
+		i -= len(m.StakingChain)
+		copy(dAtA[i:], m.StakingChain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingChain)))
+		i--
+		dAtA[i] = 0x42
+	}
 	if len(m.Receiver) > 0 {
 		i -= len(m.Receiver)
 		copy(dAtA[i:], m.Receiver)
@@ -437,7 +1368,7 @@ func (m *MsgWithdrawNftReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawNftRewardResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgWithdrawNftRewardsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -447,12 +1378,12 @@ func (m *MsgWithdrawNftRewardResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawNftRewardResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgWithdrawNftRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawNftRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgWithdrawNftRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -467,29 +1398,33 @@ func (m *MsgWithdrawNftRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 		i--
 		dAtA[i] = 0x50
 	}
-	if m.Balance != nil {
-		{
-			size, err := m.Balance.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if len(m.Balances) > 0 {
+		for iNdEx := len(m.Balances) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Balances[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0x4a
 		}
-		i--
-		dAtA[i] = 0x4a
 	}
-	if m.Reward != nil {
-		{
-			size, err := m.Reward.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if len(m.Rewards) > 0 {
+		for iNdEx := len(m.Rewards) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Rewards[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0x42
 		}
-		i--
-		dAtA[i] = 0x42
 	}
 	if len(m.Receiver) > 0 {
 		i -= len(m.Receiver)
@@ -543,6 +1478,305 @@ func (m *MsgWithdrawNftRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgCreateChainValidatorBridge) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateChainValidatorBridge) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateChainValidatorBridge) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BridgeId) > 0 {
+		i -= len(m.BridgeId)
+		copy(dAtA[i:], m.BridgeId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BridgeId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BridgeId) > 0 {
+		i -= len(m.BridgeId)
+		copy(dAtA[i:], m.BridgeId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BridgeId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateChainValidatorBridge) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateChainValidatorBridge) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateChainValidatorBridge) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BridgeId) > 0 {
+		i -= len(m.BridgeId)
+		copy(dAtA[i:], m.BridgeId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BridgeId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BridgeId) > 0 {
+		i -= len(m.BridgeId)
+		copy(dAtA[i:], m.BridgeId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BridgeId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteChainValidatorBridge) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteChainValidatorBridge) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteChainValidatorBridge) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BridgeId) > 0 {
+		i -= len(m.BridgeId)
+		copy(dAtA[i:], m.BridgeId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BridgeId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -554,7 +1788,78 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgWithdrawNftReward) Size() (n int) {
+func (m *MsgStartEpoch) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.BlockStart != 0 {
+		n += 1 + sovTx(uint64(m.BlockStart))
+	}
+	l = len(m.Reward)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgStartEpochResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PrevEpochBlock != 0 {
+		n += 1 + sovTx(uint64(m.PrevEpochBlock))
+	}
+	if m.NextEpochBlock != 0 {
+		n += 1 + sovTx(uint64(m.NextEpochBlock))
+	}
+	if m.BlockStart != 0 {
+		n += 1 + sovTx(uint64(m.BlockStart))
+	}
+	if m.BlockEnd != 0 {
+		n += 1 + sovTx(uint64(m.BlockEnd))
+	}
+	l = len(m.Staked)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.PrevEpochRewards) > 0 {
+		for _, e := range m.PrevEpochRewards {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Cw20ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgWithdrawNftRewards) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -588,10 +1893,18 @@ func (m *MsgWithdrawNftReward) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.StakingChain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StakingValidator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgWithdrawNftRewardResponse) Size() (n int) {
+func (m *MsgWithdrawNftRewardsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -625,13 +1938,17 @@ func (m *MsgWithdrawNftRewardResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.Reward != nil {
-		l = m.Reward.Size()
-		n += 1 + l + sovTx(uint64(l))
+	if len(m.Rewards) > 0 {
+		for _, e := range m.Rewards {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
 	}
-	if m.Balance != nil {
-		l = m.Balance.Size()
-		n += 1 + l + sovTx(uint64(l))
+	if len(m.Balances) > 0 {
+		for _, e := range m.Balances {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
 	}
 	if m.StartAt != 0 {
 		n += 1 + sovTx(uint64(m.StartAt))
@@ -642,13 +1959,159 @@ func (m *MsgWithdrawNftRewardResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgCreateChainValidatorBridge) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BridgeId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateChainValidatorBridgeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BridgeId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateChainValidatorBridge) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BridgeId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateChainValidatorBridgeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BridgeId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeleteChainValidatorBridge) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDeleteChainValidatorBridgeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BridgeId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgWithdrawNftReward) Unmarshal(dAtA []byte) error {
+func (m *MsgStartEpoch) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -671,10 +2134,495 @@ func (m *MsgWithdrawNftReward) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawNftReward: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgStartEpoch: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawNftReward: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgStartEpoch: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockStart", wireType)
+			}
+			m.BlockStart = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockStart |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reward = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgStartEpochResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgStartEpochResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgStartEpochResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PrevEpochBlock", wireType)
+			}
+			m.PrevEpochBlock = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PrevEpochBlock |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextEpochBlock", wireType)
+			}
+			m.NextEpochBlock = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NextEpochBlock |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockStart", wireType)
+			}
+			m.BlockStart = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockStart |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockEnd", wireType)
+			}
+			m.BlockEnd = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockEnd |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staked", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staked = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PrevEpochRewards", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PrevEpochRewards = append(m.PrevEpochRewards, &types.Coin{})
+			if err := m.PrevEpochRewards[len(m.PrevEpochRewards)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cw20ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cw20ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawNftRewards) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawNftRewards: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawNftRewards: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -901,6 +2849,70 @@ func (m *MsgWithdrawNftReward) Unmarshal(dAtA []byte) error {
 			}
 			m.Receiver = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingChain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingChain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingValidator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingValidator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -922,7 +2934,7 @@ func (m *MsgWithdrawNftReward) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgWithdrawNftRewardsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -945,10 +2957,10 @@ func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawNftRewardResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgWithdrawNftRewardsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawNftRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgWithdrawNftRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1177,7 +3189,7 @@ func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 8:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Rewards", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1204,16 +3216,14 @@ func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Reward == nil {
-				m.Reward = &types.Coin{}
-			}
-			if err := m.Reward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Rewards = append(m.Rewards, &types.Coin{})
+			if err := m.Rewards[len(m.Rewards)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Balance", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Balances", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1240,10 +3250,8 @@ func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Balance == nil {
-				m.Balance = &types.DecCoin{}
-			}
-			if err := m.Balance.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Balances = append(m.Balances, &types.DecCoin{})
+			if err := m.Balances[len(m.Balances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1285,6 +3293,1042 @@ func (m *MsgWithdrawNftRewardResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateChainValidatorBridge) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateChainValidatorBridge: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateChainValidatorBridge: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateChainValidatorBridgeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateChainValidatorBridgeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateChainValidatorBridgeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateChainValidatorBridge) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateChainValidatorBridge: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateChainValidatorBridge: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateChainValidatorBridgeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateChainValidatorBridgeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateChainValidatorBridgeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteChainValidatorBridge) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteChainValidatorBridge: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteChainValidatorBridge: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDeleteChainValidatorBridgeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDeleteChainValidatorBridgeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDeleteChainValidatorBridgeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BridgeId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BridgeId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

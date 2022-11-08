@@ -17,7 +17,7 @@ message Epoch {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ]; 
-  cosmos.base.v1beta1.Coin rewards = 7 [
+  repeated cosmos.base.v1beta1.Coin rewards = 7 [
     (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
@@ -32,4 +32,5 @@ message Epoch {
 
 message LastEpochBlock {
   int64 block_height = 1 [(gogoproto.moretags) = "yaml:\"block_height\""]; 
+  string creator = 2 [(gogoproto.moretags) = "yaml:\"creator\""];
 }

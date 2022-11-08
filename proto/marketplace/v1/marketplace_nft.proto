@@ -18,7 +18,11 @@ message MarketplaceNft {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = true
   ]; 
-  bytes creator = 7 [
+  bytes cw20_contract_address = 7 [
+    (gogoproto.moretags) = "yaml:\"cw20_contract_address\"",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  bytes creator = 8 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];

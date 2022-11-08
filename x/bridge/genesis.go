@@ -19,14 +19,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if _, err := sdk.AccAddressFromBech32(genState.Params.AdminAccount); err != nil {
 		panic(sdkerrors.Wrap(types.ErrInvalidAdminAccount, "admin account param is invalid"))
 	}
-	// Set all the txHash
-	for _, elem := range genState.TxHashList {
-		k.SetTxHash(ctx, elem)
-	}
-	// Set if defined
-	if genState.Cw20Contract != nil {
-		k.SetCw20Contract(ctx, *genState.Cw20Contract)
-	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -36,11 +28,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
-	// Get all cw20Contract
-	cw20Contract, found := k.GetCw20Contract(ctx)
-	if found {
-		genesis.Cw20Contract = &cw20Contract
-	}
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

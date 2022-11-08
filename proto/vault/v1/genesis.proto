@@ -3,6 +3,7 @@ package LimeChain.mantrachain.vault.v1;
 
 import "gogoproto/gogo.proto";
 import "vault/v1/params.proto";
+import "vault/v1/chain_validator_bridge.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
@@ -10,5 +11,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 // GenesisState defines the vault module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated ChainValidatorBridge chainValidatorBridgeList = 2 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

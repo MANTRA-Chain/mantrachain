@@ -1,7 +1,9 @@
 package types
 
 import (
+	bridgetypes "github.com/LimeChain/mantrachain/x/bridge/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	sktypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
@@ -11,12 +13,14 @@ type NFTKeeper interface {
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 	GetModuleAddress(name string) sdk.AccAddress
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
+	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
@@ -39,4 +43,18 @@ type DistrKeeper interface {
 	CalculateDelegationRewards(ctx sdk.Context, val sktypes.ValidatorI, del sktypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins)
 	WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error)
 	// Methods imported from bank should be defined here
+}
+
+type BridgeKeeper interface {
+	GetBridge(
+		ctx sdk.Context,
+		creator sdk.AccAddress,
+		index []byte,
+	) (val bridgetypes.Bridge, found bool)
+}
+
+type WasmViewKeeper interface{}
+
+type WasmContractOpsKeeper interface {
+	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
 }

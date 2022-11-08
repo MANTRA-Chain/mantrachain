@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "vault/v1/params.proto";
 import "vault/v1/nft_stake.proto";
+import "vault/v1/chain_validator_bridge.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
@@ -21,14 +22,20 @@ service Query {
 		option (google.api.http).get = "/mantrachain/vault/v1/nft-stake/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
-  rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
+  rpc NftBalances(QueryGetNftBalancesRequest) returns (QueryGetNftBalancesResponse) {
 		option (google.api.http).get = "/mantrachain/vault/v1/nft/balance/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
 	}
 
   rpc LastEpochs(QueryGetLastEpochsRequest) returns (QueryGetLastEpochsResponse) {
 		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epochs";
 	}
-  // this line is used by starport scaffolding # 2
+
+  // Queries a ChainValidatorBridge by index.
+	rpc ChainValidatorBridge(QueryGetChainValidatorBridgeRequest) returns (QueryGetChainValidatorBridgeResponse) {
+		option (google.api.http).get = "/mantrachain/vault/v1/chain_validator_bridge/{chain}/{validator}";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 message QueryGetLastEpochsRequest {}
@@ -39,7 +46,7 @@ message QueryGetEpochResponse {
   int64 block_start = 3; 
   int64 block_end = 4;  
   string staked = 5; 
-  cosmos.base.v1beta1.Coin rewards = 6; 
+  repeated cosmos.base.v1beta1.Coin rewards = 6; 
   int64 start_at = 7; 
   int64 end_at = 8; 
 }
@@ -67,23 +74,27 @@ message QueryGetNftStakeResponse {
   string creator = 8;
 }
 
-message QueryGetNftBalanceRequest {
+message QueryGetNftBalancesRequest {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5;
+  string staking_chain = 6;
+  string staking_validator = 7;
 }
 
-message QueryGetNftBalanceResponse {
+message QueryGetNftBalancesResponse {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5; 
-  cosmos.base.v1beta1.Coin balance = 6;
+  repeated cosmos.base.v1beta1.Coin balances = 6;
   int64 start_at = 7; 
   int64 end_at = 8; 
+  string staking_chain = 9;
+  string staking_validator = 10;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -93,6 +104,16 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetChainValidatorBridgeRequest {
+	  string chain = 1;
+	  string validator = 2;
+
+}
+
+message QueryGetChainValidatorBridgeResponse {
+	ChainValidatorBridge chainValidatorBridge = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3

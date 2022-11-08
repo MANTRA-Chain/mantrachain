@@ -21,17 +21,13 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 		return nil, status.Error(codes.Unavailable, "staking validator address param not set")
 	}
 
-	if params.StakingValidatorDenom == "" {
-		return nil, status.Error(codes.Unavailable, "staking validator denom param not set")
-	}
-
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "last epoch block not found")
 	}
 
-	lastEpoch, found := k.GetEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom, lastEpochBlock.BlockHeight)
+	lastEpoch, found := k.GetEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, lastEpochBlock.BlockHeight)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "last epoch not found")
@@ -40,7 +36,7 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 	var epochs []*types.Epoch = []*types.Epoch{&lastEpoch}
 
 	if lastEpoch.PrevEpochBlock != types.UndefinedBlockHeight {
-		prevEpoch, found := k.GetEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom, lastEpoch.PrevEpochBlock)
+		prevEpoch, found := k.GetEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, lastEpoch.PrevEpochBlock)
 
 		if !found {
 			return nil, status.Error(codes.NotFound, "prev epoch not found")
@@ -52,14 +48,19 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 	var epochsRes []*types.QueryGetEpochResponse
 
 	for _, epoch := range epochs {
+		rewards := make([]*sdk.Coin, len(epoch.Rewards))
+		for _, reward := range epoch.Rewards {
+			rewards = append(rewards, &sdk.Coin{
+				Denom:  reward.Denom,
+				Amount: reward.Amount,
+			})
+		}
+
 		epochsRes = append(epochsRes, &types.QueryGetEpochResponse{
-			BlockStart: epoch.BlockStart,
-			BlockEnd:   epoch.BlockEnd,
-			Staked:     epoch.Staked.String(),
-			Rewards: &sdk.Coin{
-				Denom:  epoch.Rewards.Denom,
-				Amount: epoch.Rewards.Amount,
-			},
+			BlockStart:     epoch.BlockStart,
+			BlockEnd:       epoch.BlockEnd,
+			Staked:         epoch.Staked.String(),
+			Rewards:        rewards,
 			PrevEpochBlock: epoch.PrevEpochBlock,
 			NextEpochBlock: epoch.NextEpochBlock,
 			StartAt:        epoch.StartAt,

@@ -13,15 +13,18 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   sdk.StoreKey
-		memKey     sdk.StoreKey
-		paramstore paramtypes.Subspace
-		ac         types.AccountKeeper
-		bk         types.BankKeeper
-		sk         types.StakingKeeper
-		dk         types.DistrKeeper
-		nftKeeper  types.NFTKeeper
+		cdc                codec.BinaryCodec
+		storeKey           sdk.StoreKey
+		memKey             sdk.StoreKey
+		paramstore         paramtypes.Subspace
+		ac                 types.AccountKeeper
+		bk                 types.BankKeeper
+		sk                 types.StakingKeeper
+		dk                 types.DistrKeeper
+		nftKeeper          types.NFTKeeper
+		bridgeKeeper       types.BridgeKeeper
+		wasmViewKeeper     types.WasmViewKeeper
+		wasmContractKeeper types.WasmContractOpsKeeper
 	}
 )
 
@@ -36,7 +39,9 @@ func NewKeeper(
 	sk types.StakingKeeper,
 	dk types.DistrKeeper,
 	nftKeeper types.NFTKeeper,
-
+	bridgeKeeper types.BridgeKeeper,
+	wasmViewKeeper types.WasmViewKeeper,
+	wasmContractKeeper types.WasmContractOpsKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -49,7 +54,9 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
-		ac:         ac, bk: bk, sk: sk, dk: dk, nftKeeper: nftKeeper,
+		ac:         ac, bk: bk, sk: sk, dk: dk, nftKeeper: nftKeeper, bridgeKeeper: bridgeKeeper,
+		wasmViewKeeper:     wasmViewKeeper,
+		wasmContractKeeper: wasmContractKeeper,
 	}
 }
 

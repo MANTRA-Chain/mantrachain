@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	// this line is used by starport scaffolding # 1
+	"context"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -79,7 +79,7 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	// this line is used by starport scaffolding # 2
+	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 }
 
 // GetTxCmd returns the capability module's root tx command.
@@ -180,19 +180,18 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // returns no validator updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	params := am.keeper.GetParams(ctx)
-	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
+	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 	if !found {
-		am.keeper.InitEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom, ctx.BlockHeight())
+		am.keeper.InitEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, ctx.BlockHeight())
 	} else if ctx.BlockHeight() >= lastEpochBlock.BlockHeight+params.EpochBlockHeightOffset {
-		err := am.keeper.SetEpochEnd(
+		err := am.keeper.SetEpochEndNative(
 			ctx,
 			ctx.ChainID(),
 			params.StakingValidatorAddress,
-			params.StakingValidatorDenom,
 			ctx.BlockHeight(),
 			lastEpochBlock.BlockHeight,
-			params.MinEpochWithdrawAmount,
+			params.EpochMinWithdraw,
 		)
 
 		if err != nil {
@@ -206,7 +205,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 					sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgEpochEnd),
 					sdk.NewAttribute(types.AttributeKeyChainId, ctx.ChainID()),
 					sdk.NewAttribute(types.AttributeKeyValidator, params.StakingValidatorAddress),
-					sdk.NewAttribute(types.AttributeKeyDenom, params.StakingValidatorDenom),
 					sdk.NewAttribute(types.AttributeBlockHeight, strconv.FormatInt(ctx.BlockHeight(), 10)),
 				),
 			)

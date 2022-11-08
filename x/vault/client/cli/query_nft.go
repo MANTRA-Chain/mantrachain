@@ -75,11 +75,11 @@ func CmdGetNftStake() *cobra.Command {
 	return cmd
 }
 
-func CmdGetNftBalance() *cobra.Command {
+func CmdGetNftBalances() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "nft-balance [marketplace_creator] [marketplace_id] [collection_creator] [collection_id] [id]",
+		Use:   "nft-balances [marketplace_creator] [marketplace_id] [collection_creator] [collection_id] [id] [staking_chain] [staking_validator]",
 		Short: "Query a nft balance",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -90,6 +90,8 @@ func CmdGetNftBalance() *cobra.Command {
 			reqCollectionCreator := args[2]
 			reqCollectionId := args[3]
 			reqNftId := args[4]
+			reqStakingChain := args[5]
+			reqStakingValidator := args[6]
 
 			if strings.TrimSpace(reqMarketplaceId) == "" {
 				return sdkerrors.Wrap(types.ErrInvalidMarketplaceId, "empty marketplace id")
@@ -113,15 +115,17 @@ func CmdGetNftBalance() *cobra.Command {
 				return err
 			}
 
-			params := &types.QueryGetNftBalanceRequest{
+			params := &types.QueryGetNftBalancesRequest{
 				MarketplaceCreator: marketplaceCreator.String(),
 				MarketplaceId:      reqMarketplaceId,
 				CollectionCreator:  collectionCreator.String(),
 				CollectionId:       reqCollectionId,
 				NftId:              reqNftId,
+				StakingChain:       reqStakingChain,
+				StakingValidator:   reqStakingValidator,
 			}
 
-			res, err := queryClient.NftBalance(context.Background(), params)
+			res, err := queryClient.NftBalances(context.Background(), params)
 			if err != nil {
 				return err
 			}

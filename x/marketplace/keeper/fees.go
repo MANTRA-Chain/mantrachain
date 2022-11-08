@@ -29,16 +29,7 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		return isStaked, nil
 	}
 
-	// TODO: Validate if cw20ContractAddress denom is the same as minPrice.denom, if not validate if minPrice.denom
-	// is the same as staking bond denom and also:
-	// if err := sdk.ValidateDenom(minPrice.Denom); err != nil {
-	// 	return isStaked, err
-	// }
-	// strings.TrimSpace(strings.ToLower(minPrce.Denom)) == strings.TrimSpace(strings.ToLower(k.sk.BondDenom(ctx)))
-
 	currAmount := sdk.NewInt(0)
-
-	// TODO: Add subtract service fees, e.g. gas fees, swap fees, etc.
 
 	// The rooyalties amount is calculated based on the price of the NFT
 	for _, earning := range nftsEarningsOnSale {

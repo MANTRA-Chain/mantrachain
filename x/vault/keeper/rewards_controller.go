@@ -62,11 +62,6 @@ func (c *RewardsController) WithNftStake(nftStake types.NftStake) *RewardsContro
 	return c
 }
 
-func (c *RewardsController) WithConfiguration(cfg types.Params) *RewardsController {
-	c.conf = &cfg
-	return c
-}
-
 func (c *RewardsController) Validate() error {
 	for _, check := range c.validators {
 		if err := check(c); err != nil {
@@ -126,12 +121,11 @@ func (c *RewardsController) getIndex() []byte {
 	return NewTokenResolver().GetNftIndex(c.collectionCreator, c.collectionId, c.getId())
 }
 
-func (c *RewardsController) getNativeStaked() (staked []*types.NftStakeListItem, err error) {
+func (c *RewardsController) getStaked(chain string, validator string) (staked []*types.NftStakeListItem, err error) {
 	if len(c.nftStake.Staked) > 0 {
 		for _, v := range c.nftStake.Staked {
-			if v.Chain == c.ctx.ChainID() &&
-				v.Validator == c.conf.StakingValidatorAddress &&
-				v.Denom == c.conf.StakingValidatorDenom {
+			if v.Chain == chain &&
+				v.Validator == validator {
 				staked = append(staked, v)
 			}
 		}
@@ -140,14 +134,13 @@ func (c *RewardsController) getNativeStaked() (staked []*types.NftStakeListItem,
 	return
 }
 
-func (c *RewardsController) getLastWithdrawnEpochNative() int64 {
+func (c *RewardsController) getLastWithdrawnEpoch(chain string, validator string) int64 {
 	lastWithdrawnEpoch := types.UndefinedBlockHeight
 
 	if len(c.nftStake.Balances) > 0 {
 		for _, v := range c.nftStake.Balances {
-			if v.Chain == c.ctx.ChainID() &&
-				v.Validator == c.conf.StakingValidatorAddress &&
-				v.Denom == c.conf.StakingValidatorDenom {
+			if v.Chain == chain &&
+				v.Validator == validator {
 				lastWithdrawnEpoch = v.LastWithdrawnEpoch
 
 				return lastWithdrawnEpoch
@@ -189,13 +182,26 @@ func (c *RewardsController) getMinEpochRewardsStartBH(
 	return minEpochRewardsStart
 }
 
-func (c *RewardsController) calcNftBalance(epochs []*types.Epoch, staked []*types.NftStakeListItem, stakingValidatorDenom string) (balance sdk.DecCoin) {
-	balance = sdk.NewDecCoin(stakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
+func (c *RewardsController) calcNftBalances(epochs []*types.Epoch, staked []*types.NftStakeListItem) (balances []*sdk.DecCoin) {
+	balances = []*sdk.DecCoin{}
 	for _, epoch := range epochs {
 		for _, stake := range staked {
 			if stake.StakedEpoch < epoch.BlockStart {
-				rewardPerShare := epoch.Rewards.Amount.ToDec().Quo(epoch.Staked)
-				balance.Amount = balance.Amount.Add(rewardPerShare.Mul(*stake.Amount))
+				for _, reward := range epoch.Rewards {
+					var balance *sdk.DecCoin = nil
+					for i := range balances {
+						if balances[i].Denom == reward.Denom {
+							balance = balances[i]
+						}
+					}
+					if balance == nil {
+						coin := sdk.NewDecCoinFromDec(reward.Denom, sdk.ZeroDec())
+						balance = &coin
+						balances = append(balances, balance)
+					}
+					rewardPerShare := reward.Amount.ToDec().Quo(epoch.Staked)
+					balance.Amount = balance.Amount.Add(rewardPerShare.Mul(*stake.Amount))
+				}
 			}
 		}
 	}
@@ -203,48 +209,40 @@ func (c *RewardsController) calcNftBalance(epochs []*types.Epoch, staked []*type
 	return
 }
 
-func (c *RewardsController) getBalanceCoinNative() (balance sdk.DecCoin) {
-	balance = sdk.NewDecCoin(c.conf.StakingValidatorDenom, sdk.NewInt(0))
-
+func (c *RewardsController) getBalancesCoin(chain string, validator string) (balances []*sdk.DecCoin) {
 	if len(c.nftStake.Balances) > 0 {
 		for _, v := range c.nftStake.Balances {
-			if v.Chain == c.ctx.ChainID() &&
-				v.Validator == c.conf.StakingValidatorAddress &&
-				v.Denom == c.conf.StakingValidatorDenom {
-				balance = sdk.NewDecCoinFromDec(v.Denom, *v.Amount)
-
-				return balance
+			if v.Chain == chain &&
+				v.Validator == validator {
+				coin := sdk.DecCoin{
+					Denom:  v.Denom,
+					Amount: *v.Amount,
+				}
+				balances = append(balances, &coin)
 			}
 		}
 	}
 
-	return balance
+	return balances
 }
 
-func (c *RewardsController) setBalanceNative(balanceCoin sdk.DecCoin, lastEpochWithdrawn int64, withdrawnAt int64) {
-	var balance *types.NftStakeBalance
-
-	if len(c.nftStake.Balances) > 0 {
-		for _, v := range c.nftStake.Balances {
-			if v.Chain == c.ctx.ChainID() &&
-				v.Validator == c.conf.StakingValidatorAddress &&
-				v.Denom == c.conf.StakingValidatorDenom {
-				balance = v
-			}
+func (c *RewardsController) setBalances(chain string, validator string, balancesCoins []*sdk.DecCoin, lastEpochWithdrawn int64, withdrawnAt int64) {
+	var filtered []*types.NftStakeBalance = nil
+	for _, v := range c.nftStake.Balances {
+		if v.Chain != chain &&
+			v.Validator != validator {
+			filtered = append(filtered, v)
 		}
 	}
 
-	if balance != nil {
-		balance.Amount = &balanceCoin.Amount
-		balance.Denom = balanceCoin.Denom
-		balance.LastWithdrawnEpoch = lastEpochWithdrawn
-		balance.LastWithdrawnAt = withdrawnAt
-	} else {
+	c.nftStake.Balances = filtered
+
+	for _, v := range balancesCoins {
 		c.nftStake.Balances = append(c.nftStake.Balances, &types.NftStakeBalance{
-			Chain:              c.ctx.ChainID(),
-			Validator:          c.conf.StakingValidatorAddress,
-			Denom:              c.conf.StakingValidatorDenom,
-			Amount:             &balanceCoin.Amount,
+			Chain:              chain,
+			Validator:          validator,
+			Denom:              v.Denom,
+			Amount:             &v.Amount,
 			LastWithdrawnEpoch: lastEpochWithdrawn,
 			LastWithdrawnAt:    withdrawnAt,
 		})

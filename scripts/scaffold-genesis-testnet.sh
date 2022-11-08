@@ -64,6 +64,8 @@ cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]
 
 echo "update vault genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]="'"$VALIDATOR1_ADDRESS"'"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["vault"]["params"]["epoch_min_withdraw"]="1ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["vault"]["params"]["admin_account"]='\"$ADMIN1_ADDRESS\" >$CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
 echo "update bridge genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["bridge"]["params"]["admin_account"]='\"$ADMIN1_ADDRESS\" >$CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json

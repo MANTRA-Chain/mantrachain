@@ -10,16 +10,20 @@ const (
 	FlagCollectionCreator  = "collection-creator"
 	FlagCollectionId       = "collection-id"
 	FlagReceiver           = "receiver"
+	FlagStakingChain       = "staking-chain"
+	FlagStakingValidator   = "staking-validator"
 )
 
 var (
-	FsWithdrawNftReward = flag.NewFlagSet("", flag.ContinueOnError)
+	FsWithdrawNftRewards = flag.NewFlagSet("", flag.ContinueOnError)
 )
 
 func init() {
-	FsWithdrawNftReward.String(FlagMarketplaceCreator, "", "The marketplace creator address")
-	FsWithdrawNftReward.String(FlagMarketplaceId, "", "The marketplace id")
-	FsWithdrawNftReward.String(FlagCollectionCreator, "", "The collection creator address")
-	FsWithdrawNftReward.String(FlagCollectionId, "", "The collection id")
-	FsWithdrawNftReward.String(FlagReceiver, "", "The withdraw reward receiver")
+	FsWithdrawNftRewards.String(FlagMarketplaceCreator, "", "The marketplace creator address")
+	FsWithdrawNftRewards.String(FlagMarketplaceId, "", "The marketplace id")
+	FsWithdrawNftRewards.String(FlagCollectionCreator, "", "The collection creator address")
+	FsWithdrawNftRewards.String(FlagCollectionId, "", "The collection id")
+	FsWithdrawNftRewards.String(FlagReceiver, "", "The withdraw reward receiver")
+	FsWithdrawNftRewards.String(FlagStakingChain, "", "The staking chain")
+	FsWithdrawNftRewards.String(FlagStakingValidator, "", "The staking validator")
 }

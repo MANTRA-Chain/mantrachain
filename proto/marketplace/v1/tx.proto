@@ -24,9 +24,8 @@ message MsgBuyNft {
   string collection_creator = 4;
   string collection_id = 5;
   string nft_id = 6;
-  string cw20_contract_address = 7;
-  string staking_chain = 8;
-  string staking_validator = 9;
+  string staking_chain = 7;
+  string staking_validator = 8;
 }
 
 message MsgBuyNftResponse {
@@ -54,9 +53,10 @@ message MsgImportNftCollection {
 message MsgMarketplaceCollection {
   bool initially_nft_collection_owner_nfts_for_sale = 1;
   string initially_nft_collection_owner_nfts_min_price = 2;
-  repeated MarketplaceEarning nfts_earnings_on_sale = 3;
-  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 4;
-  string initially_nfts_vault_lock_percentage = 5 [
+  string cw20_contract_address = 3;
+  repeated MarketplaceEarning nfts_earnings_on_sale = 4;
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 5;
+  string initially_nfts_vault_lock_percentage = 6 [
     (gogoproto.moretags) = "yaml:\"initially_nfts_vault_lock_percentage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = true

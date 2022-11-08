@@ -111,7 +111,7 @@ func (k Keeper) UpsertNftStake(
 		staked.Validator = params.StakingValidatorAddress
 		staked.Shares = shares.String()
 
-		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress, params.StakingValidatorDenom)
+		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 		if !found {
 			return isStaked, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
@@ -124,6 +124,16 @@ func (k Keeper) UpsertNftStake(
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
 		staked.Shares = amount.Amount.String()
+
+		chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, stakingChain, stakingValidator)
+
+		if !found {
+			return isStaked, sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
+		}
+
+		chainValidatorBridge.Staked = chainValidatorBridge.Staked.Add(amount.Amount.ToDec())
+
+		k.SetChainValidatorBridge(ctx, stakingChain, stakingValidator, chainValidatorBridge)
 	}
 
 	nftStake.Staked = append(nftStake.Staked, &staked)

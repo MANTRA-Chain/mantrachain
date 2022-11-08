@@ -15,6 +15,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if strings.TrimSpace(genState.Params.StakingValidatorAddress) == "" {
 		panic(sdkerrors.Wrap(types.ErrInvalidStakingValidatorAddress, "staking validator address param should not be empty"))
 	}
+
+	if _, err := sdk.AccAddressFromBech32(genState.Params.AdminAccount); err != nil {
+		panic(sdkerrors.Wrap(types.ErrInvalidAdminAccount, "admin account param is invalid"))
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }

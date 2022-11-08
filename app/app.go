@@ -419,18 +419,6 @@ func New(
 
 	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
-	app.VaultKeeper = *vaultkeeper.NewKeeper(
-		appCodec,
-		keys[vaulttypes.StoreKey],
-		keys[vaulttypes.MemStoreKey],
-		app.GetSubspace(vaulttypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.StakingKeeper,
-		app.DistrKeeper,
-		app.NFTKeeper,
-	)
-
 	app.DidKeeper = *didkeeper.NewKeeper(
 		appCodec,
 		keys[didtypes.StoreKey],
@@ -515,6 +503,32 @@ func New(
 
 	wasmContractKeeper := wasmkeeper.NewDefaultPermissionKeeper(&app.WasmKeeper)
 
+	app.BridgeKeeper = *bridgekeeper.NewKeeper(
+		appCodec,
+		keys[bridgetypes.StoreKey],
+		keys[bridgetypes.MemStoreKey],
+		app.GetSubspace(bridgetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.WasmKeeper,
+		wasmContractKeeper,
+	)
+
+	app.VaultKeeper = *vaultkeeper.NewKeeper(
+		appCodec,
+		keys[vaulttypes.StoreKey],
+		keys[vaulttypes.MemStoreKey],
+		app.GetSubspace(vaulttypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.NFTKeeper,
+		app.BridgeKeeper,
+		app.WasmKeeper,
+		wasmContractKeeper,
+	)
+
 	app.MarketplaceKeeper = *marketplacekeeper.NewKeeper(
 		appCodec,
 		keys[marketplacetypes.StoreKey],
@@ -525,17 +539,6 @@ func New(
 		app.TokenKeeper,
 		app.NFTKeeper,
 		app.VaultKeeper,
-		app.WasmKeeper,
-		wasmContractKeeper,
-	)
-
-	app.BridgeKeeper = *bridgekeeper.NewKeeper(
-		appCodec,
-		keys[bridgetypes.StoreKey],
-		keys[bridgetypes.MemStoreKey],
-		app.GetSubspace(bridgetypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
 		app.WasmKeeper,
 		wasmContractKeeper,
 	)

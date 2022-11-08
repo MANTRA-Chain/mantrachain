@@ -19,14 +19,18 @@ message MarketplaceCollection {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = true
   ]; 
-  repeated MarketplaceEarning nfts_earnings_on_sale = 7 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_sale\""];
-  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 8 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_yield_reward\""];
-  string initially_nfts_vault_lock_percentage = 9 [
+  bytes cw20_contract_address = 7 [
+    (gogoproto.moretags) = "yaml:\"cw20_contract_address\"",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  repeated MarketplaceEarning nfts_earnings_on_sale = 8 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_sale\""];
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 9 [(gogoproto.moretags) = "yaml:\"nfts_earnings_on_yield_reward\""];
+  string initially_nfts_vault_lock_percentage = 10 [
     (gogoproto.moretags) = "yaml:\"initially_nfts_vault_lock_percentage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = true
   ]; 
-  bytes creator = 10 [
+  bytes creator = 11 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];

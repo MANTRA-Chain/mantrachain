@@ -92,6 +92,16 @@ func (k msgServer) ImportNftCollection(goCtx context.Context, msg *types.MsgImpo
 		return nil, sdkerrors.Wrap(types.ErrInvalidInitiallyNftMinPrice, "initially nft min price is invalid")
 	}
 
+	var cw20ContractAddress sdk.AccAddress
+
+	if strings.TrimSpace(msg.Collection.Cw20ContractAddress) != "" {
+		cw20ContractAddress, err = sdk.AccAddressFromBech32(msg.Collection.Cw20ContractAddress)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	newMarketplaceCollection := types.MarketplaceCollection{
 		Index:                                   nftCollectionIndex,
 		MarketplaceIndex:                        marketplaceIndex,
@@ -99,6 +109,7 @@ func (k msgServer) ImportNftCollection(goCtx context.Context, msg *types.MsgImpo
 		CollectionId:                            msg.CollectionId,
 		InitiallyNftCollectionOwnerNftsForSale:  msg.Collection.InitiallyNftCollectionOwnerNftsForSale,
 		InitiallyNftCollectionOwnerNftsMinPrice: &parsed,
+		Cw20ContractAddress:                     cw20ContractAddress,
 		NftsEarningsOnSale:                      msg.Collection.NftsEarningsOnSale,
 		NftsEarningsOnYieldReward:               msg.Collection.NftsEarningsOnYieldReward,
 		InitiallyNftsVaultLockPercentage:        msg.Collection.InitiallyNftsVaultLockPercentage,

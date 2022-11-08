@@ -5,28 +5,30 @@ import (
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
+	"github.com/LimeChain/mantrachain/x/vault/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdrawNftReward) (*types.MsgWithdrawNftRewardResponse, error) {
+func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithdrawNftRewards) (*types.MsgWithdrawNftRewardsResponse, error) {
+	var stakingChain = ""
+	var stakingValidator = ""
+	var isNativeReward = false
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	params := k.GetParams(ctx)
 
-	if params.StakingValidatorAddress == "" {
+	if strings.TrimSpace(msg.StakingChain) != "" {
+		stakingChain = msg.StakingChain
+		stakingValidator = msg.StakingValidator
+	} else {
+		isNativeReward = true
+		stakingChain = ctx.ChainID()
+		stakingValidator = params.StakingValidatorAddress
+	}
+
+	if strings.TrimSpace(stakingValidator) == "" {
 		return nil, sdkerrors.Wrap(types.ErrUnavailable, "staking validator address param not set")
-	}
-
-	if params.StakingValidatorDenom == "" {
-		return nil, sdkerrors.Wrap(types.ErrUnavailable, "staking validator denom param not set")
-	}
-
-	if params.MinRewardWithdrawAmount == 0 {
-		return nil, sdkerrors.Wrap(types.ErrUnavailable, "min reward withdraw amount param not set")
-	}
-
-	if ctx.ChainID() == "" {
-		return nil, sdkerrors.Wrap(types.ErrUnavailable, "chain id not set yet")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -71,8 +73,7 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 
 	rewardsController := NewRewardsController(ctx, marketplaceCreator, msg.MarketplaceId, collectionCreator, msg.CollectionId).
 		WithNftId(msg.NftId).
-		WithKeeper(k.Keeper).
-		WithConfiguration(params)
+		WithKeeper(k.Keeper)
 
 	err = rewardsController.
 		NftStakeMustExist().
@@ -98,13 +99,17 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 
 	var startAt int64
 	var endAt int64
-	var lastEpochWithdrawn int64 = rewardsController.getLastWithdrawnEpochNative()
+	var lastEpochWithdrawn int64 = rewardsController.getLastWithdrawnEpoch(stakingChain, stakingValidator)
 	var epochs []*types.Epoch
-	var rewards sdk.DecCoin = sdk.NewDecCoin(params.StakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
-	var sent sdk.Coin = sdk.NewCoin(params.StakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
-	var balance sdk.DecCoin = sdk.NewDecCoin(params.StakingValidatorDenom, sdk.Int(sdk.NewDec(0)))
+	var rewards []*sdk.DecCoin = nil
+	var intRewards []*sdk.Coin = nil
+	var remainBalances []*sdk.DecCoin = nil
+	var minTreshold sdk.Coin = sdk.Coin{}
+	var sent = make(map[string]sdk.Int)
+	var balances = make(map[string]sdk.Dec)
+	var cw20ContractAddress sdk.AccAddress
 
-	staked, err := rewardsController.getNativeStaked()
+	staked, err := rewardsController.getStaked(stakingChain, stakingValidator)
 
 	if err != nil {
 		return nil, err
@@ -115,9 +120,8 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 	if minEpochRewardsStartBH != types.UndefinedBlockHeight {
 		epochs = k.GetNextRewardsEpochsFromPrevEpochId(
 			ctx,
-			ctx.ChainID(),
-			params.StakingValidatorAddress,
-			params.StakingValidatorDenom,
+			stakingChain,
+			stakingValidator,
 			minEpochRewardsStartBH,
 		)
 	}
@@ -127,29 +131,81 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 		endAt = epochs[len(epochs)-1].EndAt
 		lastEpochWithdrawn = epochs[len(epochs)-1].BlockStart
 
-		rewards = rewardsController.calcNftBalance(epochs, staked, params.StakingValidatorDenom)
+		rewards = rewardsController.calcNftBalances(epochs, staked)
 	}
 
-	prevBalance := rewardsController.getBalanceCoinNative()
-	rewards.Amount = rewards.Amount.Add(prevBalance.Amount)
+	prevBalances := rewardsController.getBalancesCoin(stakingChain, stakingValidator)
+	rewards = append(rewards, prevBalances...)
 
-	if rewards.Amount.GTE(sdk.NewDec(params.MinRewardWithdrawAmount)) {
-		coins, remainder := rewards.TruncateDecimal()
-		err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(coins))
+	if params.RewardMinClaim != "" {
+		minTreshold, err = sdk.ParseCoinNormalized(params.RewardMinClaim)
 
 		if err != nil {
 			return nil, err
 		}
+	}
 
-		sent = coins
-		balance = remainder
+	if len(rewards) > 0 {
+		rewards = utils.SumCoins(rewards, minTreshold)
 
-		rewardsController.setBalanceNative(balance, lastEpochWithdrawn, ctx.BlockHeader().Time.Unix())
+		if isNativeReward {
+			chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, stakingChain, stakingValidator)
 
+			if !found {
+				return nil, sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
+			}
+
+			be := NewBridgeExecutor(ctx, k.bridgeKeeper)
+			bridge, found := be.GetBridge(creator, chainValidatorBridge.BridgeId)
+
+			if !found {
+				return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
+			}
+
+			cw20ContractAddress, err = sdk.AccAddressFromBech32(bridge.Cw20ContractAddress)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		for _, reward := range rewards {
+			intReward, remainder := reward.TruncateDecimal()
+
+			if isNativeReward {
+				err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(intReward))
+			} else {
+				we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
+				err = we.Mint(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
+			}
+
+			if err != nil {
+				return nil, err
+			}
+
+			sent[intReward.Denom] = sent[intReward.Denom].Add(intReward.Amount)
+			balances[remainder.Denom] = balances[remainder.Denom].Add(remainder.Amount)
+		}
+
+		for denom, amount := range sent {
+			intRewards = append(intRewards, &sdk.Coin{
+				Denom:  denom,
+				Amount: amount,
+			})
+		}
+
+		for denom, amount := range balances {
+			remainBalances = append(remainBalances, &sdk.DecCoin{
+				Denom:  denom,
+				Amount: amount,
+			})
+		}
+
+		rewardsController.setBalances(stakingChain, stakingValidator, remainBalances, lastEpochWithdrawn, ctx.BlockHeader().Time.Unix())
 		k.SetNftStake(ctx, *rewardsController.getNftStake())
 	}
 
-	return &types.MsgWithdrawNftRewardResponse{
+	return &types.MsgWithdrawNftRewardsResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
 		MarketplaceId:      msg.MarketplaceId,
 		CollectionCreator:  collectionCreator.String(),
@@ -157,8 +213,8 @@ func (k msgServer) WithdrawNftReward(goCtx context.Context, msg *types.MsgWithdr
 		NftId:              msg.NftId,
 		Owner:              owner.String(),
 		Receiver:           receiver.String(),
-		Balance:            &balance,
-		Reward:             &sent,
+		Balances:           remainBalances,
+		Rewards:            intRewards,
 		StartAt:            startAt,
 		EndAt:              endAt,
 	}, nil
