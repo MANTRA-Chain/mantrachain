@@ -27,7 +27,7 @@ service Query {
 	}
 
   rpc LastEpochs(QueryGetLastEpochsRequest) returns (QueryGetLastEpochsResponse) {
-		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epochs";
+		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epochs/{staking_chain}/{staking_validator}";
 	}
 
   // Queries a ChainValidatorBridge by index.
@@ -38,7 +38,10 @@ service Query {
 // this line is used by starport scaffolding # 2
 }
 
-message QueryGetLastEpochsRequest {}
+message QueryGetLastEpochsRequest {
+  string staking_chain = 1;
+  string staking_validator = 2;
+}
 
 message QueryGetEpochResponse {
   int64 prev_epoch_block = 1; 
@@ -49,6 +52,8 @@ message QueryGetEpochResponse {
   repeated cosmos.base.v1beta1.Coin rewards = 6; 
   int64 start_at = 7; 
   int64 end_at = 8; 
+  string staking_chain = 9;
+  string staking_validator = 10;
 }
 
 message QueryGetLastEpochsResponse {

@@ -101,6 +101,11 @@ cecho "GREEN" "import first nft collection"
 sleep 5
 
 cecho "GREEN" "import second nft collection"
-./build/mantrachaind tx marketplace import-nft-collection '{"initially_nft_collection_owner_nfts_for_sale":true,"initially_nft_collection_owner_nfts_min_price":"1000ustake","initially_nfts_vault_lock_percentage":"50"}' --chain-id mantrachain --from validator1 --keyring-backend test --collection-creator $VALIDATOR1 --collection-id id2 --marketplace-creator $VALIDATOR1 --marketplace-id id1 --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
+./build/mantrachaind tx marketplace import-nft-collection '{"initially_nft_collection_owner_nfts_for_sale":true,"initially_nft_collection_owner_nfts_min_price":"1000000ustake","initially_nfts_vault_lock_percentage":"50"}' --chain-id mantrachain --from validator1 --keyring-backend test --collection-creator $VALIDATOR1 --collection-id id2 --marketplace-creator $VALIDATOR1 --marketplace-id id1 --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
+
+sleep 5
+
+cecho "GREEN" "create chain validator bridge"
+./build/mantrachaind tx vault create-chain-validator-bridge polygon test id1 --chain-id mantrachain --from admin1 --keyring-backend test --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
 
 cecho "GREEN" "CW20 CONTRACT ADDRESS: $CW20_CONTRACT_ADDRESS"

@@ -8,20 +8,44 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 
 // Msg defines the Msg service.
 service Msg {
-    rpc WithdrawNftRewards(MsgWithdrawNftRewards) returns (MsgWithdrawNftRewardsResponse);
-    rpc StartEpoch(MsgStartEpoch) returns (MsgStartEpochResponse);
-    rpc CreateChainValidatorBridge(MsgCreateChainValidatorBridge) returns (MsgCreateChainValidatorBridgeResponse);
-    rpc UpdateChainValidatorBridge(MsgUpdateChainValidatorBridge) returns (MsgUpdateChainValidatorBridgeResponse);
-    rpc DeleteChainValidatorBridge(MsgDeleteChainValidatorBridge) returns (MsgDeleteChainValidatorBridgeResponse);
-// this line is used by starport scaffolding # proto/tx/rpc
+  rpc WithdrawNftRewards(MsgWithdrawNftRewards) returns (MsgWithdrawNftRewardsResponse);
+  rpc StartEpoch(MsgStartEpoch) returns (MsgStartEpochResponse);
+  rpc SetStaked(MsgSetStaked) returns (MsgSetStakedResponse);
+  rpc CreateChainValidatorBridge(MsgCreateChainValidatorBridge) returns (MsgCreateChainValidatorBridgeResponse);
+  rpc UpdateChainValidatorBridge(MsgUpdateChainValidatorBridge) returns (MsgUpdateChainValidatorBridgeResponse);
+  rpc DeleteChainValidatorBridge(MsgDeleteChainValidatorBridge) returns (MsgDeleteChainValidatorBridgeResponse);
+  // this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgSetStaked {
+  string creator = 1;
+  string marketplace_creator = 2;
+  string marketplace_id = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  string nft_id = 6;
+  string staking_chain = 7;
+  string staking_validator = 8;
+  int64 block_height = 9;
+}
+
+message MsgSetStakedResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  string staking_chain = 6;
+  string staking_validator = 7;
+  int64 block_height = 8;
 }
 
 message MsgStartEpoch {
-    string creator = 1;
-    int64 block_start = 2;
-    string reward = 3;
-    string chain = 4;
-    string validator = 5;
+  string creator = 1;
+  int64 block_start = 2;
+  string reward = 3;
+  string staking_chain = 4;
+  string staking_validator = 5;
 }
 
 message MsgStartEpochResponse {
@@ -31,36 +55,36 @@ message MsgStartEpochResponse {
   int64 block_end = 4;  
   string staked = 5; 
   repeated cosmos.base.v1beta1.Coin prev_epoch_rewards = 6; 
-  string chain = 7;
-  string validator = 8;
+  string staking_chain = 7;
+  string staking_validator = 8;
   string cw20_contract_address = 9;
 }
 
 message MsgWithdrawNftRewards {
-    string creator = 1;
-    string marketplace_creator = 2;
-    string marketplace_id = 3;
-    string collection_creator = 4;
-    string collection_id = 5;
-    string nft_id = 6;
-    string receiver = 7;
-    string staking_chain = 8;
-    string staking_validator = 9;
-  }
+  string creator = 1;
+  string marketplace_creator = 2;
+  string marketplace_id = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  string nft_id = 6;
+  string receiver = 7;
+  string staking_chain = 8;
+  string staking_validator = 9;
+}
   
-  message MsgWithdrawNftRewardsResponse {
-    string marketplace_creator = 1;
-    string marketplace_id = 2;
-    string collection_creator = 3;
-    string collection_id = 4;
-    string nft_id = 5;
-    string owner = 6;
-    string receiver = 7;
-    repeated cosmos.base.v1beta1.Coin rewards = 8;
-    repeated cosmos.base.v1beta1.DecCoin balances = 9;
-    int64 start_at = 10; 
-    int64 end_at = 11; 
-  }
+message MsgWithdrawNftRewardsResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  string owner = 6;
+  string receiver = 7;
+  repeated cosmos.base.v1beta1.Coin rewards = 8;
+  repeated cosmos.base.v1beta1.DecCoin balances = 9;
+  int64 start_at = 10; 
+  int64 end_at = 11; 
+}
 
 message MsgCreateChainValidatorBridge {
   string creator = 1;
@@ -68,6 +92,7 @@ message MsgCreateChainValidatorBridge {
   string validator = 3;
   string bridge_id = 4;
 }
+
 message MsgCreateChainValidatorBridgeResponse {
   string creator = 1;
   string chain = 2;
@@ -81,6 +106,7 @@ message MsgUpdateChainValidatorBridge {
   string validator = 3;
   string bridge_id = 4;
 }
+
 message MsgUpdateChainValidatorBridgeResponse {
   string creator = 1;
   string chain = 2;
@@ -93,6 +119,7 @@ message MsgDeleteChainValidatorBridge {
   string chain = 2;
   string validator = 3;
 }
+
 message MsgDeleteChainValidatorBridgeResponse {
   string creator = 1;
   string chain = 2;

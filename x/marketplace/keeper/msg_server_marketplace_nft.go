@@ -103,9 +103,6 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		}
 	}
 
-	// TODO: Validate msg.StakingChain and msg.StakingValidator if exists in vault ChainValidatorBridge
-	// and if not, return error
-
 	if !marketplaceNft.ForSale {
 		return nil, sdkerrors.Wrap(types.ErrNftNotForSale, "nft is not for sale")
 	}
@@ -131,22 +128,29 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	var staked bool
 
-	staked, err = k.CollectFeesAndDelegateStake(
+	lockCoin, err := k.CollectFees(
 		ctx,
 		marketplaceNft.MinPrice,
 		nftsEarningsOnSale,
 		nftsVaultLockPercentage,
 		creator,
-		nftCollection.Owner,
 		owner,
-		marketplaceIndex,
-		nftCollection.Index,
-		nft.Index,
 		initialSale,
 		collection.Cw20ContractAddress,
-		msg.StakingChain,
-		msg.StakingValidator,
 	)
+
+	if !lockCoin.IsZero() {
+		vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
+		staked, err = vaultExecutor.UpsertNftStakeAndDelegate(
+			marketplaceIndex,
+			nftCollection.Index,
+			nft.Index,
+			creator,
+			lockCoin,
+			msg.StakingChain,
+			msg.StakingValidator,
+		)
+	}
 
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "unable to collect fees and stake")
@@ -194,5 +198,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		Owner:              owner.String(),
 		Receiver:           creator.String(),
 		Staked:             staked,
+		StakingChain:       msg.StakingChain,
+		StakingValidator:   msg.StakingValidator,
 	}, nil
 }

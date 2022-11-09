@@ -191,7 +191,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 			params.StakingValidatorAddress,
 			ctx.BlockHeight(),
 			lastEpochBlock.BlockHeight,
-			params.EpochMinWithdraw,
 		)
 
 		if err != nil {

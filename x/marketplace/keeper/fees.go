@@ -5,28 +5,21 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO: Refactor
-func (k Keeper) CollectFeesAndDelegateStake(
+func (k Keeper) CollectFees(
 	ctx sdk.Context,
 	minPrice *sdk.Coin,
 	nftsEarningsOnSale []*types.MarketplaceEarning,
 	nftsVaultLockPercentage sdk.Int,
 	buyer sdk.AccAddress,
-	collectionOwner sdk.AccAddress,
 	nftOwner sdk.AccAddress,
-	marketplaceIndex []byte,
-	collectionIndex []byte,
-	nftIndex []byte,
 	initialSale bool,
 	cw20ContractAddress sdk.AccAddress,
-	stakingChain string,
-	stakingValidator string,
-) (bool, error) {
-	var isStaked bool = false
+) (sdk.Coin, error) {
+	var lockCoin sdk.Coin
 	var wasmExecutor *WasmExecutor = nil
 
 	if minPrice.IsNil() || minPrice.IsZero() {
-		return isStaked, nil
+		return lockCoin, nil
 	}
 
 	currAmount := sdk.NewInt(0)
@@ -54,7 +47,7 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				}
 
 				if err != nil {
-					return isStaked, err
+					return lockCoin, err
 				}
 
 				currAmount = currAmount.Add(earningCoin.Amount)
@@ -68,21 +61,10 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		var err error
 
 		if lockAmount.GT(sdk.NewDec(1)) {
-			lockCoin := sdk.NewCoin(minPrice.GetDenom(), lockAmount.TruncateInt())
-
-			vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
-			isStaked, err = vaultExecutor.UpsertNftStake(
-				marketplaceIndex,
-				collectionIndex,
-				nftIndex,
-				buyer,
-				lockCoin,
-				stakingChain,
-				stakingValidator,
-			)
+			lockCoin = sdk.NewCoin(minPrice.GetDenom(), lockAmount.TruncateInt())
 
 			if err != nil {
-				return isStaked, err
+				return lockCoin, err
 			}
 
 			if !cw20ContractAddress.Empty() {
@@ -93,7 +75,7 @@ func (k Keeper) CollectFeesAndDelegateStake(
 				err = wasmExecutor.Burn(cw20ContractAddress, buyer, lockCoin.Amount.Abs().Uint64())
 
 				if err != nil {
-					return isStaked, err
+					return lockCoin, err
 				}
 			}
 
@@ -117,9 +99,9 @@ func (k Keeper) CollectFeesAndDelegateStake(
 		}
 
 		if err != nil {
-			return isStaked, err
+			return lockCoin, err
 		}
 	}
 
-	return isStaked, nil
+	return lockCoin, nil
 }

@@ -12,6 +12,4 @@ message Params {
   string admin_account = 1;
   string staking_validator_address = 2;
   int64 epoch_block_height_offset = 3;
-  string epoch_min_withdraw = 4;
-  string reward_min_claim = 5;
 }

@@ -22,11 +22,11 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be positive")
 	}
 
-	if strings.TrimSpace(msg.Chain) == "" {
+	if strings.TrimSpace(msg.StakingChain) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
 	}
 
-	if strings.TrimSpace(msg.Validator) == "" {
+	if strings.TrimSpace(msg.StakingValidator) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
 	}
 
@@ -36,7 +36,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, err
 	}
 
-	chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, msg.Chain, msg.Validator)
+	chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, msg.StakingChain, msg.StakingValidator)
 
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
@@ -49,14 +49,14 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
 	}
 
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.Chain, msg.Validator)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
 	lastEpochBlockHeight := int64(0)
 
 	if !found {
-		k.InitEpoch(ctx, msg.Chain, msg.Validator, msg.BlockStart)
+		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
 	} else {
 		lastEpochBlockHeight = lastEpochBlock.BlockHeight
-		lastEpoch, found := k.GetEpoch(ctx, msg.Chain, msg.Validator, lastEpochBlockHeight)
+		lastEpoch, found := k.GetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight)
 
 		if !found {
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "last epoch not found %s", lastEpochBlock)
@@ -84,7 +84,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		lastEpoch.NextEpochBlock = msg.BlockStart
 		lastEpoch.EndAt = ctx.BlockHeader().Time.Unix()
 
-		k.SetEpoch(ctx, msg.Chain, msg.Validator, lastEpochBlockHeight, lastEpoch)
+		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight, lastEpoch)
 
 		newEpoch := types.Epoch{
 			PrevEpochBlock: lastEpochBlockHeight,
@@ -95,10 +95,10 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			Staked:         chainValidatorBridge.Staked,
 		}
 
-		k.SetEpoch(ctx, msg.Chain, msg.Validator, msg.BlockStart, newEpoch)
+		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart, newEpoch)
 	}
 
-	k.SetLastEpochBlock(ctx, msg.Chain, msg.Validator, types.LastEpochBlock{
+	k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
 		BlockHeight: msg.BlockStart,
 	})
 
@@ -107,8 +107,8 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		NextEpochBlock:      types.UndefinedBlockHeight,
 		BlockStart:          msg.BlockStart,
 		BlockEnd:            types.UndefinedBlockHeight,
-		Chain:               msg.Chain,
-		Validator:           msg.Validator,
+		StakingChain:        msg.StakingChain,
+		StakingValidator:    msg.StakingValidator,
 		PrevEpochRewards:    []*sdk.Coin{&reward},
 		Staked:              chainValidatorBridge.Staked.String(),
 		Cw20ContractAddress: bridge.Cw20ContractAddress,

@@ -160,7 +160,7 @@ func (k Keeper) NftBalances(c context.Context, req *types.QueryGetNftBalancesReq
 	prevBalances := rewardsController.getBalancesCoin(stakingChain, stakingValidator)
 	prevBalances = append(prevBalances, balances...)
 
-	balances = utils.SumCoins(prevBalances, sdk.Coin{})
+	balances = utils.SumCoins(prevBalances)
 
 	for _, v := range balances {
 		intBalances = append(intBalances, &sdk.Coin{

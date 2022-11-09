@@ -34,7 +34,6 @@ VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/
 
 echo "update vault genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR_ADDRESS > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
-cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["epoch_min_withdraw"]="1ustake"' >$HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["vault"]["params"]["admin_account"]='\"$ADMIN\" > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
 echo "update bridge genesis"

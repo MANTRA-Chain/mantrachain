@@ -24,16 +24,19 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgStartEpoch:
 			res, err := msgServer.StartEpoch(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgSetStaked:
+			res, err := msgServer.SetStaked(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgCreateChainValidatorBridge:
-					res, err := msgServer.CreateChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
-					return sdk.WrapServiceResult(ctx, res, err)
+			res, err := msgServer.CreateChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateChainValidatorBridge:
-					res, err := msgServer.UpdateChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
-					return sdk.WrapServiceResult(ctx, res, err)
+			res, err := msgServer.UpdateChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgDeleteChainValidatorBridge:
-					res, err := msgServer.DeleteChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
-					return sdk.WrapServiceResult(ctx, res, err)
-// this line is used by starport scaffolding # 1
+			res, err := msgServer.DeleteChainValidatorBridge(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+			// this line is used by starport scaffolding # 1
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)

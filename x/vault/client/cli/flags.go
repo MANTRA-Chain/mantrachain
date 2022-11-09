@@ -16,6 +16,7 @@ const (
 
 var (
 	FsWithdrawNftRewards = flag.NewFlagSet("", flag.ContinueOnError)
+	FsSetStaked          = flag.NewFlagSet("", flag.ContinueOnError)
 )
 
 func init() {
@@ -26,4 +27,11 @@ func init() {
 	FsWithdrawNftRewards.String(FlagReceiver, "", "The withdraw reward receiver")
 	FsWithdrawNftRewards.String(FlagStakingChain, "", "The staking chain")
 	FsWithdrawNftRewards.String(FlagStakingValidator, "", "The staking validator")
+
+	FsSetStaked.String(FlagMarketplaceCreator, "", "The marketplace creator address")
+	FsSetStaked.String(FlagMarketplaceId, "", "The marketplace id")
+	FsSetStaked.String(FlagCollectionCreator, "", "The collection creator address")
+	FsSetStaked.String(FlagCollectionId, "", "The collection id")
+	FsSetStaked.String(FlagStakingChain, "", "The staking chain")
+	FsSetStaked.String(FlagStakingValidator, "", "The staking validator")
 }

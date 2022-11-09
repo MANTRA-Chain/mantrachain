@@ -48,7 +48,6 @@ ADMIN1=$(./build/mantrachaind keys show admin1 -a --keyring-backend=test --home=
 
 echo "update vault genesis"
 cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["vault"]["params"]["staking_validator_address"]='$VALIDATOR1_ADDRESS > $HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
-cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["vault"]["params"]["epoch_min_withdraw"]="1ustake"' > $HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
 cat $HOME/.mantrachain/validator1/config/genesis.json | jq '.app_state["vault"]["params"]["admin_account"]='\"$ADMIN1\" >$HOME/.mantrachain/validator1/config/tmp_genesis.json && mv $HOME/.mantrachain/validator1/config/tmp_genesis.json $HOME/.mantrachain/validator1/config/genesis.json
 
 echo "update bridge genesis"

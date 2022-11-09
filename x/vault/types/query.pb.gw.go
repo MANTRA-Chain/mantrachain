@@ -357,6 +357,35 @@ func request_Query_LastEpochs_0(ctx context.Context, marshaler runtime.Marshaler
 	var protoReq QueryGetLastEpochsRequest
 	var metadata runtime.ServerMetadata
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["staking_chain"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staking_chain")
+	}
+
+	protoReq.StakingChain, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staking_chain", err)
+	}
+
+	val, ok = pathParams["staking_validator"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staking_validator")
+	}
+
+	protoReq.StakingValidator, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staking_validator", err)
+	}
+
 	msg, err := client.LastEpochs(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -365,6 +394,35 @@ func request_Query_LastEpochs_0(ctx context.Context, marshaler runtime.Marshaler
 func local_request_Query_LastEpochs_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryGetLastEpochsRequest
 	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["staking_chain"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staking_chain")
+	}
+
+	protoReq.StakingChain, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staking_chain", err)
+	}
+
+	val, ok = pathParams["staking_validator"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "staking_validator")
+	}
+
+	protoReq.StakingValidator, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "staking_validator", err)
+	}
 
 	msg, err := server.LastEpochs(ctx, &protoReq)
 	return msg, metadata, err
@@ -719,7 +777,7 @@ var (
 
 	pattern_Query_NftBalances_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9}, []string{"mantrachain", "vault", "v1", "nft", "balance", "marketplace_creator", "marketplace_id", "collection_creator", "collection_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LastEpochs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 2, 3}, []string{"mantrachain", "vault", "v1", "last-epochs"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LastEpochs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "vault", "v1", "last-epochs", "staking_chain", "staking_validator"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_ChainValidatorBridge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "vault", "v1", "chain_validator_bridge", "chain", "validator"}, "", runtime.AssumeColonVerbOpt(false)))
 )

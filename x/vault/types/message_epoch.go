@@ -12,13 +12,13 @@ const TypeMsgStartEpoch = "start_epoch"
 var _ sdk.Msg = &MsgStartEpoch{}
 
 func NewMsgStartEpoch(creator string, blockStart int64, reward string,
-	chain string, validator string) *MsgStartEpoch {
+	stakingChain string, stakingValidator string) *MsgStartEpoch {
 	return &MsgStartEpoch{
-		Creator:    creator,
-		BlockStart: blockStart,
-		Reward:     reward,
-		Chain:      chain,
-		Validator:  validator,
+		Creator:          creator,
+		BlockStart:       blockStart,
+		Reward:           reward,
+		StakingChain:     stakingChain,
+		StakingValidator: stakingValidator,
 	}
 }
 
@@ -51,11 +51,11 @@ func (msg *MsgStartEpoch) ValidateBasic() error {
 	if msg.BlockStart <= 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "block start should be positive")
 	}
-	if strings.TrimSpace(msg.Chain) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")
+	if strings.TrimSpace(msg.StakingChain) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staking chain should not be empty")
 	}
-	if strings.TrimSpace(msg.Validator) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator should not be empty")
+	if strings.TrimSpace(msg.StakingValidator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staking validator should not be empty")
 	}
 	if strings.TrimSpace(msg.Reward) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "reward should not be empty")

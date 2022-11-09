@@ -32,47 +32,23 @@ func (k Keeper) SetEpochEndNative(
 	validator string,
 	bh int64,
 	lastEpochBlockHeight int64,
-	minEpochWithdraw string,
 ) error {
-	var parsed *sdk.Coin = nil
 	lastEpoch, found := k.GetEpoch(ctx, chain, validator, lastEpochBlockHeight)
 
 	if !found {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "last epoch not found %s", lastEpochBlockHeight)
 	}
 
-	if minEpochWithdraw != "" {
-		minEpochWithdrawCoin, err := sdk.ParseCoinNormalized(minEpochWithdraw)
-
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "min epoch withdraw is invalid %s", minEpochWithdraw)
-		}
-
-		parsed = &minEpochWithdrawCoin
-	}
-
 	de := NewDistributionExecutor(ctx, k.ac, k.sk, k.dk)
-	rewards, err := de.GetDelegationRewards(validator)
+
+	// TODO: Add min threshold for withdraw delegation rewards
+	withdrawn, err := de.WithdrawDelegationRewards(validator)
 
 	if err != nil {
 		return err
 	}
 
-	// TODO: sum all rewards before comparison
-	for _, reward := range rewards {
-		if (parsed == nil && reward.Amount.GTE(sdk.NewDec(1))) ||
-			(reward.Denom == parsed.Denom && reward.Amount.GTE(sdk.NewDecFromInt(parsed.Amount))) {
-			withdrawn, err := de.WithdrawDelegationRewards(validator)
-
-			if err != nil {
-				return err
-			}
-
-			lastEpoch.Rewards = withdrawn
-
-			break
-		}
-	}
+	lastEpoch.Rewards = withdrawn
 
 	newEpoch := types.Epoch{
 		BlockStart:     bh,

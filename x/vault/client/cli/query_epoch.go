@@ -14,15 +14,21 @@ var _ = strconv.Itoa(0)
 
 func CmdGetLastEpochs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "last-epochs",
+		Use:   "last-epochs [stakingchain] [stakingvalidator]",
 		Short: "Query the current and previous epochs",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argStakingChain := args[0]
+			argStakingValidator := args[1]
+
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryGetLastEpochsRequest{}
+			params := &types.QueryGetLastEpochsRequest{
+				StakingChain:     argStakingChain,
+				StakingValidator: argStakingValidator,
+			}
 
 			res, err := queryClient.LastEpochs(context.Background(), params)
 			if err != nil {

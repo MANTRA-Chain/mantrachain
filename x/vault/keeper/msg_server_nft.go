@@ -10,6 +10,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// TODO: Add min threshold for withdraw yield rewards
 func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithdrawNftRewards) (*types.MsgWithdrawNftRewardsResponse, error) {
 	var stakingChain = ""
 	var stakingValidator = ""
@@ -104,7 +105,6 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 	var rewards []*sdk.DecCoin = nil
 	var intRewards []*sdk.Coin = nil
 	var remainBalances []*sdk.DecCoin = nil
-	var minTreshold sdk.Coin = sdk.Coin{}
 	var sent = make(map[string]sdk.Int)
 	var balances = make(map[string]sdk.Dec)
 	var cw20ContractAddress sdk.AccAddress
@@ -137,18 +137,10 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 	prevBalances := rewardsController.getBalancesCoin(stakingChain, stakingValidator)
 	rewards = append(rewards, prevBalances...)
 
-	if params.RewardMinClaim != "" {
-		minTreshold, err = sdk.ParseCoinNormalized(params.RewardMinClaim)
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	if len(rewards) > 0 {
-		rewards = utils.SumCoins(rewards, minTreshold)
+		rewards = utils.SumCoins(rewards)
 
-		if isNativeReward {
+		if !isNativeReward {
 			chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, stakingChain, stakingValidator)
 
 			if !found {
@@ -183,7 +175,14 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 				return nil, err
 			}
 
+			if sent[intReward.Denom].IsNil() {
+				sent[intReward.Denom] = sdk.NewInt(0)
+			}
 			sent[intReward.Denom] = sent[intReward.Denom].Add(intReward.Amount)
+
+			if balances[remainder.Denom].IsNil() {
+				balances[remainder.Denom] = sdk.NewDec(0)
+			}
 			balances[remainder.Denom] = balances[remainder.Denom].Add(remainder.Amount)
 		}
 
@@ -217,5 +216,118 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 		Rewards:            intRewards,
 		StartAt:            startAt,
 		EndAt:              endAt,
+	}, nil
+}
+
+func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*types.MsgSetStakedResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if strings.TrimSpace(msg.StakingChain) == "" {
+		return nil, sdkerrors.Wrap(types.ErrUnavailable, "staking chain should not be empty")
+	}
+
+	if strings.TrimSpace(msg.StakingValidator) == "" {
+		return nil, sdkerrors.Wrap(types.ErrUnavailable, "staking validator address should not be empty")
+	}
+
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	marketplaceCreator, err := sdk.AccAddressFromBech32(msg.MarketplaceCreator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(msg.MarketplaceId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidMarketplaceId, "marketplace id should not be empty")
+	}
+
+	collectionCreator, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "marketplace id should not be empty")
+	}
+
+	if strings.TrimSpace(msg.NftId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftId, "nft id should not be empty")
+	}
+
+	if msg.BlockHeight <= 0 {
+		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "block height should be positive")
+	}
+
+	rewardsController := NewRewardsController(ctx, marketplaceCreator, msg.MarketplaceId, collectionCreator, msg.CollectionId).
+		WithNftId(msg.NftId).
+		WithKeeper(k.Keeper)
+
+	err = rewardsController.
+		NftStakeMustExist().
+		Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
+	valFound, isFound := k.GetChainValidatorBridge(
+		ctx,
+		msg.StakingChain,
+		msg.StakingValidator,
+	)
+	if !isFound {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "missing bridge %s %s", msg.StakingChain, msg.StakingValidator)
+	}
+
+	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
+	bridge, found := be.GetBridge(creator, valFound.BridgeId)
+
+	if !found {
+		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
+	}
+
+	bridgeAccount, err := sdk.AccAddressFromBech32(bridge.BridgeAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !bridgeAccount.Equals(creator) {
+		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not authorized to set staked")
+	}
+
+	nftStake := rewardsController.getNftStake()
+
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
+
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
+	}
+
+	for _, staked := range nftStake.Staked {
+		if staked.Chain == msg.StakingChain && staked.Validator == msg.StakingValidator {
+			staked.StakedAt = ctx.BlockHeader().Time.Unix()
+			staked.StakedEpoch = lastEpochBlock.BlockHeight
+			staked.BlockHeight = msg.BlockHeight
+		}
+	}
+
+	k.SetNftStake(ctx, *rewardsController.getNftStake())
+
+	return &types.MsgSetStakedResponse{
+		MarketplaceCreator: marketplaceCreator.String(),
+		MarketplaceId:      msg.MarketplaceId,
+		CollectionCreator:  collectionCreator.String(),
+		CollectionId:       msg.CollectionId,
+		NftId:              msg.NftId,
+		StakingChain:       msg.StakingChain,
+		StakingValidator:   msg.StakingValidator,
+		BlockHeight:        msg.BlockHeight,
 	}, nil
 }

@@ -28,19 +28,227 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgSetStaked struct {
+	Creator            string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	MarketplaceCreator string `protobuf:"bytes,2,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string `protobuf:"bytes,3,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string `protobuf:"bytes,4,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string `protobuf:"bytes,5,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string `protobuf:"bytes,6,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	StakingChain       string `protobuf:"bytes,7,opt,name=staking_chain,json=stakingChain,proto3" json:"staking_chain,omitempty"`
+	StakingValidator   string `protobuf:"bytes,8,opt,name=staking_validator,json=stakingValidator,proto3" json:"staking_validator,omitempty"`
+	BlockHeight        int64  `protobuf:"varint,9,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty"`
+}
+
+func (m *MsgSetStaked) Reset()         { *m = MsgSetStaked{} }
+func (m *MsgSetStaked) String() string { return proto.CompactTextString(m) }
+func (*MsgSetStaked) ProtoMessage()    {}
+func (*MsgSetStaked) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{0}
+}
+func (m *MsgSetStaked) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetStaked) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetStaked.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetStaked) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetStaked.Merge(m, src)
+}
+func (m *MsgSetStaked) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetStaked) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetStaked.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetStaked proto.InternalMessageInfo
+
+func (m *MsgSetStaked) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetNftId() string {
+	if m != nil {
+		return m.NftId
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetStakingChain() string {
+	if m != nil {
+		return m.StakingChain
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetStakingValidator() string {
+	if m != nil {
+		return m.StakingValidator
+	}
+	return ""
+}
+
+func (m *MsgSetStaked) GetBlockHeight() int64 {
+	if m != nil {
+		return m.BlockHeight
+	}
+	return 0
+}
+
+type MsgSetStakedResponse struct {
+	MarketplaceCreator string `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	StakingChain       string `protobuf:"bytes,6,opt,name=staking_chain,json=stakingChain,proto3" json:"staking_chain,omitempty"`
+	StakingValidator   string `protobuf:"bytes,7,opt,name=staking_validator,json=stakingValidator,proto3" json:"staking_validator,omitempty"`
+	BlockHeight        int64  `protobuf:"varint,8,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty"`
+}
+
+func (m *MsgSetStakedResponse) Reset()         { *m = MsgSetStakedResponse{} }
+func (m *MsgSetStakedResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetStakedResponse) ProtoMessage()    {}
+func (*MsgSetStakedResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_311d0123a4881c5c, []int{1}
+}
+func (m *MsgSetStakedResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetStakedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetStakedResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetStakedResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetStakedResponse.Merge(m, src)
+}
+func (m *MsgSetStakedResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetStakedResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetStakedResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetStakedResponse proto.InternalMessageInfo
+
+func (m *MsgSetStakedResponse) GetMarketplaceCreator() string {
+	if m != nil {
+		return m.MarketplaceCreator
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetMarketplaceId() string {
+	if m != nil {
+		return m.MarketplaceId
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetCollectionCreator() string {
+	if m != nil {
+		return m.CollectionCreator
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetCollectionId() string {
+	if m != nil {
+		return m.CollectionId
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetNftId() string {
+	if m != nil {
+		return m.NftId
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetStakingChain() string {
+	if m != nil {
+		return m.StakingChain
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetStakingValidator() string {
+	if m != nil {
+		return m.StakingValidator
+	}
+	return ""
+}
+
+func (m *MsgSetStakedResponse) GetBlockHeight() int64 {
+	if m != nil {
+		return m.BlockHeight
+	}
+	return 0
+}
+
 type MsgStartEpoch struct {
-	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	BlockStart int64  `protobuf:"varint,2,opt,name=block_start,json=blockStart,proto3" json:"block_start,omitempty"`
-	Reward     string `protobuf:"bytes,3,opt,name=reward,proto3" json:"reward,omitempty"`
-	Chain      string `protobuf:"bytes,4,opt,name=chain,proto3" json:"chain,omitempty"`
-	Validator  string `protobuf:"bytes,5,opt,name=validator,proto3" json:"validator,omitempty"`
+	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	BlockStart       int64  `protobuf:"varint,2,opt,name=block_start,json=blockStart,proto3" json:"block_start,omitempty"`
+	Reward           string `protobuf:"bytes,3,opt,name=reward,proto3" json:"reward,omitempty"`
+	StakingChain     string `protobuf:"bytes,4,opt,name=staking_chain,json=stakingChain,proto3" json:"staking_chain,omitempty"`
+	StakingValidator string `protobuf:"bytes,5,opt,name=staking_validator,json=stakingValidator,proto3" json:"staking_validator,omitempty"`
 }
 
 func (m *MsgStartEpoch) Reset()         { *m = MsgStartEpoch{} }
 func (m *MsgStartEpoch) String() string { return proto.CompactTextString(m) }
 func (*MsgStartEpoch) ProtoMessage()    {}
 func (*MsgStartEpoch) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{0}
+	return fileDescriptor_311d0123a4881c5c, []int{2}
 }
 func (m *MsgStartEpoch) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -90,16 +298,16 @@ func (m *MsgStartEpoch) GetReward() string {
 	return ""
 }
 
-func (m *MsgStartEpoch) GetChain() string {
+func (m *MsgStartEpoch) GetStakingChain() string {
 	if m != nil {
-		return m.Chain
+		return m.StakingChain
 	}
 	return ""
 }
 
-func (m *MsgStartEpoch) GetValidator() string {
+func (m *MsgStartEpoch) GetStakingValidator() string {
 	if m != nil {
-		return m.Validator
+		return m.StakingValidator
 	}
 	return ""
 }
@@ -111,8 +319,8 @@ type MsgStartEpochResponse struct {
 	BlockEnd            int64         `protobuf:"varint,4,opt,name=block_end,json=blockEnd,proto3" json:"block_end,omitempty"`
 	Staked              string        `protobuf:"bytes,5,opt,name=staked,proto3" json:"staked,omitempty"`
 	PrevEpochRewards    []*types.Coin `protobuf:"bytes,6,rep,name=prev_epoch_rewards,json=prevEpochRewards,proto3" json:"prev_epoch_rewards,omitempty"`
-	Chain               string        `protobuf:"bytes,7,opt,name=chain,proto3" json:"chain,omitempty"`
-	Validator           string        `protobuf:"bytes,8,opt,name=validator,proto3" json:"validator,omitempty"`
+	StakingChain        string        `protobuf:"bytes,7,opt,name=staking_chain,json=stakingChain,proto3" json:"staking_chain,omitempty"`
+	StakingValidator    string        `protobuf:"bytes,8,opt,name=staking_validator,json=stakingValidator,proto3" json:"staking_validator,omitempty"`
 	Cw20ContractAddress string        `protobuf:"bytes,9,opt,name=cw20_contract_address,json=cw20ContractAddress,proto3" json:"cw20_contract_address,omitempty"`
 }
 
@@ -120,7 +328,7 @@ func (m *MsgStartEpochResponse) Reset()         { *m = MsgStartEpochResponse{} }
 func (m *MsgStartEpochResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgStartEpochResponse) ProtoMessage()    {}
 func (*MsgStartEpochResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{1}
+	return fileDescriptor_311d0123a4881c5c, []int{3}
 }
 func (m *MsgStartEpochResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -191,16 +399,16 @@ func (m *MsgStartEpochResponse) GetPrevEpochRewards() []*types.Coin {
 	return nil
 }
 
-func (m *MsgStartEpochResponse) GetChain() string {
+func (m *MsgStartEpochResponse) GetStakingChain() string {
 	if m != nil {
-		return m.Chain
+		return m.StakingChain
 	}
 	return ""
 }
 
-func (m *MsgStartEpochResponse) GetValidator() string {
+func (m *MsgStartEpochResponse) GetStakingValidator() string {
 	if m != nil {
-		return m.Validator
+		return m.StakingValidator
 	}
 	return ""
 }
@@ -228,7 +436,7 @@ func (m *MsgWithdrawNftRewards) Reset()         { *m = MsgWithdrawNftRewards{} }
 func (m *MsgWithdrawNftRewards) String() string { return proto.CompactTextString(m) }
 func (*MsgWithdrawNftRewards) ProtoMessage()    {}
 func (*MsgWithdrawNftRewards) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{2}
+	return fileDescriptor_311d0123a4881c5c, []int{4}
 }
 func (m *MsgWithdrawNftRewards) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -338,7 +546,7 @@ func (m *MsgWithdrawNftRewardsResponse) Reset()         { *m = MsgWithdrawNftRew
 func (m *MsgWithdrawNftRewardsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgWithdrawNftRewardsResponse) ProtoMessage()    {}
 func (*MsgWithdrawNftRewardsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{3}
+	return fileDescriptor_311d0123a4881c5c, []int{5}
 }
 func (m *MsgWithdrawNftRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -455,7 +663,7 @@ func (m *MsgCreateChainValidatorBridge) Reset()         { *m = MsgCreateChainVal
 func (m *MsgCreateChainValidatorBridge) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateChainValidatorBridge) ProtoMessage()    {}
 func (*MsgCreateChainValidatorBridge) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{4}
+	return fileDescriptor_311d0123a4881c5c, []int{6}
 }
 func (m *MsgCreateChainValidatorBridge) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -523,7 +731,7 @@ func (m *MsgCreateChainValidatorBridgeResponse) Reset()         { *m = MsgCreate
 func (m *MsgCreateChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateChainValidatorBridgeResponse) ProtoMessage()    {}
 func (*MsgCreateChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{5}
+	return fileDescriptor_311d0123a4881c5c, []int{7}
 }
 func (m *MsgCreateChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -591,7 +799,7 @@ func (m *MsgUpdateChainValidatorBridge) Reset()         { *m = MsgUpdateChainVal
 func (m *MsgUpdateChainValidatorBridge) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateChainValidatorBridge) ProtoMessage()    {}
 func (*MsgUpdateChainValidatorBridge) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{6}
+	return fileDescriptor_311d0123a4881c5c, []int{8}
 }
 func (m *MsgUpdateChainValidatorBridge) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -659,7 +867,7 @@ func (m *MsgUpdateChainValidatorBridgeResponse) Reset()         { *m = MsgUpdate
 func (m *MsgUpdateChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateChainValidatorBridgeResponse) ProtoMessage()    {}
 func (*MsgUpdateChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{7}
+	return fileDescriptor_311d0123a4881c5c, []int{9}
 }
 func (m *MsgUpdateChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -726,7 +934,7 @@ func (m *MsgDeleteChainValidatorBridge) Reset()         { *m = MsgDeleteChainVal
 func (m *MsgDeleteChainValidatorBridge) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteChainValidatorBridge) ProtoMessage()    {}
 func (*MsgDeleteChainValidatorBridge) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{8}
+	return fileDescriptor_311d0123a4881c5c, []int{10}
 }
 func (m *MsgDeleteChainValidatorBridge) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -787,7 +995,7 @@ func (m *MsgDeleteChainValidatorBridgeResponse) Reset()         { *m = MsgDelete
 func (m *MsgDeleteChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteChainValidatorBridgeResponse) ProtoMessage()    {}
 func (*MsgDeleteChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_311d0123a4881c5c, []int{9}
+	return fileDescriptor_311d0123a4881c5c, []int{11}
 }
 func (m *MsgDeleteChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -845,6 +1053,8 @@ func (m *MsgDeleteChainValidatorBridgeResponse) GetBridgeId() string {
 }
 
 func init() {
+	proto.RegisterType((*MsgSetStaked)(nil), "LimeChain.mantrachain.vault.v1.MsgSetStaked")
+	proto.RegisterType((*MsgSetStakedResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgSetStakedResponse")
 	proto.RegisterType((*MsgStartEpoch)(nil), "LimeChain.mantrachain.vault.v1.MsgStartEpoch")
 	proto.RegisterType((*MsgStartEpochResponse)(nil), "LimeChain.mantrachain.vault.v1.MsgStartEpochResponse")
 	proto.RegisterType((*MsgWithdrawNftRewards)(nil), "LimeChain.mantrachain.vault.v1.MsgWithdrawNftRewards")
@@ -860,61 +1070,65 @@ func init() {
 func init() { proto.RegisterFile("vault/v1/tx.proto", fileDescriptor_311d0123a4881c5c) }
 
 var fileDescriptor_311d0123a4881c5c = []byte{
-	// 853 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xdb, 0x46,
-	0x10, 0x36, 0xc5, 0xe8, 0x6f, 0x1c, 0x1b, 0xf6, 0x26, 0x2e, 0x18, 0x35, 0x65, 0x0d, 0x15, 0x01,
-	0x04, 0x14, 0x21, 0x2b, 0x05, 0x01, 0x7a, 0xe9, 0xc1, 0x56, 0x8c, 0x56, 0x40, 0xd3, 0x83, 0x8a,
-	0xb6, 0x40, 0x2f, 0xc4, 0x8a, 0xbb, 0x96, 0x08, 0x53, 0x4b, 0x61, 0xb9, 0x91, 0xdc, 0x57, 0xc8,
-	0xa9, 0xe8, 0xa1, 0x0f, 0xd0, 0x77, 0xe8, 0x3b, 0xf4, 0x98, 0x63, 0x8f, 0x85, 0xfc, 0x06, 0x05,
-	0x7a, 0x2f, 0x76, 0x97, 0xa4, 0x68, 0x57, 0x64, 0x98, 0x16, 0xb0, 0x7b, 0xd3, 0xcc, 0x7c, 0xb3,
-	0xfb, 0xcd, 0x37, 0x33, 0xd4, 0xc2, 0xe1, 0x12, 0xbf, 0x0a, 0x85, 0xbb, 0xec, 0xbb, 0xe2, 0xd2,
-	0x59, 0xf0, 0x48, 0x44, 0xc8, 0xfe, 0x32, 0x98, 0xd3, 0xe1, 0x0c, 0x07, 0xcc, 0x99, 0x63, 0x26,
-	0x38, 0xf6, 0xd5, 0x6f, 0x05, 0x74, 0x96, 0xfd, 0x8e, 0xed, 0x47, 0xf1, 0x3c, 0x8a, 0xdd, 0x09,
-	0x8e, 0xa9, 0xbb, 0xec, 0x4f, 0xa8, 0xc0, 0x7d, 0xd7, 0x8f, 0x02, 0xa6, 0xf3, 0xbb, 0x3f, 0x1b,
-	0xb0, 0xf7, 0x32, 0x9e, 0x7e, 0x2d, 0x30, 0x17, 0x67, 0x8b, 0xc8, 0x9f, 0x21, 0x0b, 0x9a, 0x3e,
-	0xa7, 0x58, 0x44, 0xdc, 0x32, 0x8e, 0x8d, 0x5e, 0x7b, 0x9c, 0x9a, 0xe8, 0x43, 0xd8, 0x9d, 0x84,
-	0x91, 0x7f, 0xe1, 0xc5, 0x12, 0x6d, 0xd5, 0x8e, 0x8d, 0x9e, 0x39, 0x06, 0xe5, 0x52, 0xf9, 0xe8,
-	0x3d, 0x68, 0x70, 0xba, 0xc2, 0x9c, 0x58, 0xa6, 0xca, 0x4c, 0x2c, 0xf4, 0x10, 0xea, 0x8a, 0x96,
-	0x75, 0x4f, 0xb9, 0xb5, 0x81, 0x1e, 0x43, 0x7b, 0x89, 0xc3, 0x80, 0xa8, 0xab, 0xea, 0x2a, 0xb2,
-	0x71, 0x74, 0xff, 0xac, 0xc1, 0xd1, 0x35, 0x62, 0x63, 0x1a, 0x2f, 0x22, 0x16, 0x53, 0xd4, 0x83,
-	0x83, 0x05, 0xa7, 0x4b, 0x8f, 0x4a, 0xaf, 0xa7, 0xae, 0x57, 0x4c, 0xcd, 0xf1, 0xbe, 0xf4, 0x2b,
-	0xf0, 0xa9, 0xf4, 0x4a, 0x24, 0xa3, 0x97, 0xe2, 0x1a, 0x52, 0xb3, 0xde, 0x97, 0xfe, 0x1c, 0xf2,
-	0x46, 0x69, 0xe6, 0x3f, 0x4a, 0x7b, 0x1f, 0xda, 0x1a, 0x40, 0x19, 0x51, 0x65, 0x98, 0xe3, 0x96,
-	0x72, 0x9c, 0x31, 0x22, 0xeb, 0x8e, 0x05, 0xbe, 0xa0, 0x24, 0x29, 0x23, 0xb1, 0xd0, 0xe7, 0x80,
-	0x72, 0x4c, 0xb5, 0x18, 0xb1, 0xd5, 0x38, 0x36, 0x7b, 0xbb, 0x83, 0x47, 0x8e, 0xee, 0x8c, 0x23,
-	0x3b, 0xe3, 0x24, 0x9d, 0x71, 0x86, 0x51, 0xc0, 0xc6, 0x07, 0x59, 0x19, 0x63, 0x9d, 0xb2, 0x11,
-	0xb0, 0x59, 0x28, 0x60, 0xeb, 0x86, 0x80, 0x68, 0x00, 0x47, 0xfe, 0x6a, 0xf0, 0x89, 0xe7, 0x47,
-	0x6a, 0x2c, 0x84, 0x87, 0x09, 0xe1, 0x34, 0x8e, 0xad, 0xb6, 0x42, 0x3e, 0x90, 0xc1, 0x61, 0x12,
-	0x3b, 0xd1, 0xa1, 0xee, 0x5a, 0x8b, 0xfe, 0x5d, 0x20, 0x66, 0x84, 0xe3, 0xd5, 0x57, 0xe7, 0x22,
-	0x65, 0x50, 0x3c, 0x15, 0x2e, 0x3c, 0x98, 0x63, 0x7e, 0x41, 0xc5, 0x22, 0xc4, 0x3e, 0xf5, 0x52,
-	0x54, 0x4d, 0xa1, 0x50, 0x2e, 0x34, 0x4c, 0x12, 0x9e, 0xc0, 0x7e, 0x3e, 0x21, 0x48, 0xa7, 0x65,
-	0x2f, 0xe7, 0x1d, 0x11, 0xf4, 0x14, 0x90, 0x1f, 0x85, 0x21, 0xf5, 0x45, 0x10, 0xb1, 0xec, 0x58,
-	0x3d, 0x41, 0x87, 0x9b, 0x48, 0x7a, 0xea, 0x47, 0xb0, 0x97, 0x83, 0x07, 0x69, 0x2b, 0xee, 0x6f,
-	0x9c, 0x23, 0x82, 0x8e, 0xa0, 0xc1, 0xce, 0x85, 0x8c, 0x36, 0xb4, 0x90, 0xec, 0x5c, 0x8c, 0x08,
-	0xea, 0x40, 0x8b, 0x53, 0x9f, 0x06, 0x4b, 0xca, 0x13, 0x85, 0x33, 0x5b, 0x9e, 0x2b, 0xbb, 0x19,
-	0xb0, 0xa9, 0xa7, 0x5b, 0xa0, 0x85, 0xbe, 0x9f, 0x38, 0xd5, 0xea, 0xa1, 0x8f, 0xe1, 0x30, 0x05,
-	0x6d, 0x3a, 0xa2, 0x75, 0x3e, 0x48, 0x02, 0xdf, 0x66, 0x93, 0xfd, 0xab, 0x09, 0x1f, 0x6c, 0x15,
-	0x39, 0x9b, 0xf0, 0x02, 0x49, 0x8d, 0x77, 0x90, 0xb4, 0x56, 0x5d, 0x52, 0xb3, 0xb2, 0xa4, 0xf7,
-	0x4a, 0x25, 0xad, 0xe7, 0x25, 0x7d, 0x08, 0xf5, 0x68, 0xc5, 0x28, 0x4f, 0x85, 0x56, 0x46, 0xa9,
-	0xd0, 0xcf, 0xa0, 0x99, 0x6e, 0x48, 0xeb, 0x6d, 0x1b, 0x92, 0x22, 0xd1, 0xa7, 0xd0, 0x9a, 0xe0,
-	0x10, 0x33, 0x9f, 0xca, 0xb9, 0x96, 0x59, 0x8f, 0xb7, 0x66, 0xbd, 0xa0, 0xbe, 0x4a, 0xcc, 0xd0,
-	0xe8, 0x11, 0xb4, 0xd4, 0xae, 0x7b, 0x58, 0x58, 0xa0, 0xf6, 0xb9, 0xa9, 0xec, 0x13, 0x21, 0x4b,
-	0xa2, 0x8c, 0xc8, 0xc0, 0xae, 0x0a, 0xd4, 0x29, 0x23, 0x27, 0xa2, 0xfb, 0xda, 0x50, 0x7d, 0x53,
-	0xea, 0xe8, 0x4f, 0x6e, 0xd6, 0xd3, 0x53, 0x1e, 0x90, 0x29, 0x2d, 0x59, 0x92, 0x6c, 0x81, 0x6b,
-	0x85, 0x0b, 0x6c, 0xde, 0x5c, 0x60, 0xf9, 0xc9, 0x51, 0xe7, 0x6e, 0xa4, 0x6f, 0x69, 0xc7, 0x88,
-	0x74, 0x7f, 0x32, 0xe0, 0x49, 0x29, 0x99, 0x6c, 0x98, 0x6e, 0x91, 0x54, 0xa2, 0xd0, 0x37, 0x0b,
-	0xf2, 0xff, 0x51, 0xa8, 0x98, 0xcc, 0x5d, 0x28, 0x34, 0x57, 0x02, 0xbd, 0xa0, 0x21, 0xbd, 0x0d,
-	0x81, 0x52, 0x0d, 0x8a, 0xef, 0xbb, 0x03, 0x0d, 0x06, 0x7f, 0xd5, 0xc1, 0x7c, 0x19, 0x4f, 0xd1,
-	0x6b, 0x03, 0xd0, 0x96, 0x7f, 0x9a, 0xe7, 0x4e, 0xf9, 0x93, 0xc6, 0xd9, 0xfa, 0xed, 0xec, 0x7c,
-	0xf6, 0xaf, 0xd2, 0xb2, 0xfa, 0x39, 0x40, 0xee, 0x0d, 0xf4, 0xb4, 0xc2, 0x61, 0x1b, 0x78, 0xe7,
-	0xf9, 0x3b, 0xc1, 0xb3, 0x3b, 0x7f, 0x31, 0xa0, 0x53, 0xf2, 0x35, 0xa9, 0x52, 0x51, 0x71, 0x7a,
-	0xe7, 0xec, 0x3f, 0xa5, 0x5f, 0x23, 0x59, 0xb2, 0xd0, 0x55, 0x48, 0x16, 0xa7, 0x57, 0x22, 0x59,
-	0x61, 0x83, 0x25, 0xc9, 0x92, 0xa5, 0xaa, 0x42, 0xb2, 0x38, 0xbd, 0x12, 0xc9, 0xb7, 0xaf, 0xd8,
-	0xe9, 0x17, 0xbf, 0xad, 0x6d, 0xe3, 0xcd, 0xda, 0x36, 0xfe, 0x58, 0xdb, 0xc6, 0x8f, 0x57, 0xf6,
-	0xce, 0x9b, 0x2b, 0x7b, 0xe7, 0xf7, 0x2b, 0x7b, 0xe7, 0x7b, 0x67, 0x1a, 0x88, 0xd9, 0xab, 0x89,
-	0xe3, 0x47, 0x73, 0x37, 0xbb, 0xca, 0xcd, 0x5d, 0xe5, 0x5e, 0xba, 0xfa, 0xe9, 0x2f, 0x7e, 0x58,
-	0xd0, 0x78, 0xd2, 0x50, 0x6f, 0xf7, 0x67, 0x7f, 0x07, 0x00, 0x00, 0xff, 0xff, 0x1a, 0x82, 0xa4,
-	0x09, 0x10, 0x0c, 0x00, 0x00,
+	// 926 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x57, 0xcd, 0x6e, 0xdb, 0x46,
+	0x10, 0x36, 0x45, 0x4b, 0xa2, 0xc6, 0x3f, 0xb0, 0x37, 0x76, 0xa1, 0xa8, 0xa9, 0xea, 0xaa, 0x08,
+	0x60, 0xa0, 0x0d, 0x59, 0x3b, 0x0d, 0xd0, 0x4b, 0x0f, 0xb6, 0x63, 0x34, 0x06, 0x9a, 0x1e, 0x18,
+	0xb4, 0x05, 0x7a, 0x21, 0x56, 0xe4, 0x5a, 0x22, 0x4c, 0xed, 0x0a, 0xe4, 0x46, 0x76, 0x5f, 0x21,
+	0xa7, 0xa0, 0x8f, 0xd0, 0x67, 0x68, 0xdf, 0xa1, 0xa7, 0x22, 0xc7, 0x1e, 0x03, 0x1b, 0xe8, 0x73,
+	0x14, 0x3b, 0x4b, 0x52, 0x74, 0x25, 0x31, 0x74, 0x8b, 0x26, 0x85, 0x6f, 0xde, 0x99, 0xef, 0xdb,
+	0x9d, 0xf9, 0xe6, 0xc7, 0x22, 0x6c, 0x4e, 0xe8, 0xf3, 0x48, 0x3a, 0x93, 0x3d, 0x47, 0x5e, 0xd8,
+	0xe3, 0x58, 0x48, 0x41, 0xba, 0x5f, 0x87, 0x23, 0x76, 0x34, 0xa4, 0x21, 0xb7, 0x47, 0x94, 0xcb,
+	0x98, 0xfa, 0xf8, 0x37, 0x02, 0xed, 0xc9, 0x5e, 0xa7, 0xeb, 0x8b, 0x64, 0x24, 0x12, 0xa7, 0x4f,
+	0x13, 0xe6, 0x4c, 0xf6, 0xfa, 0x4c, 0xd2, 0x3d, 0xc7, 0x17, 0x21, 0xd7, 0xfc, 0xde, 0xeb, 0x1a,
+	0xac, 0x3e, 0x4d, 0x06, 0xcf, 0x98, 0x7c, 0x26, 0xe9, 0x19, 0x0b, 0x48, 0x1b, 0x9a, 0x7e, 0xcc,
+	0xa8, 0x14, 0x71, 0xdb, 0xd8, 0x31, 0x76, 0x5b, 0x6e, 0x76, 0x24, 0x0e, 0xdc, 0x19, 0xd1, 0xf8,
+	0x8c, 0xc9, 0x71, 0x44, 0x7d, 0xe6, 0x65, 0xa8, 0x1a, 0xa2, 0x48, 0xc1, 0x75, 0x94, 0x12, 0xee,
+	0xc3, 0x7a, 0x91, 0x10, 0x06, 0x6d, 0x13, 0xb1, 0x6b, 0x05, 0xeb, 0x49, 0x40, 0x1e, 0x00, 0xf1,
+	0x45, 0x14, 0x31, 0x5f, 0x86, 0x82, 0xe7, 0xd7, 0x2e, 0x23, 0x74, 0x73, 0xea, 0xc9, 0x6e, 0xfd,
+	0x18, 0xd6, 0x0a, 0xf0, 0x30, 0x68, 0xd7, 0x11, 0xb9, 0x3a, 0x35, 0x9e, 0x04, 0x64, 0x1b, 0x1a,
+	0xfc, 0x54, 0x2a, 0x6f, 0x03, 0xbd, 0x75, 0x7e, 0x2a, 0x4f, 0x02, 0xc5, 0x4d, 0x24, 0x3d, 0x0b,
+	0xf9, 0xc0, 0x43, 0x9d, 0xda, 0x4d, 0xcd, 0x4d, 0x8d, 0xa8, 0x23, 0xf9, 0x04, 0x36, 0x33, 0xd0,
+	0x84, 0x46, 0x61, 0x80, 0xe1, 0x58, 0x08, 0xdc, 0x48, 0x1d, 0xdf, 0x65, 0x76, 0xf2, 0x11, 0xac,
+	0xf6, 0x23, 0xe1, 0x9f, 0x79, 0x43, 0x16, 0x0e, 0x86, 0xb2, 0xdd, 0xda, 0x31, 0x76, 0x4d, 0x77,
+	0x05, 0x6d, 0x4f, 0xd0, 0xd4, 0xfb, 0xbd, 0x06, 0x5b, 0x45, 0x89, 0x5d, 0x96, 0x8c, 0x05, 0x4f,
+	0xd8, 0x22, 0x41, 0x8d, 0x1b, 0x08, 0x5a, 0xab, 0x2e, 0xa8, 0x59, 0x59, 0xd0, 0xe5, 0x52, 0x41,
+	0xeb, 0xa5, 0x82, 0x36, 0xaa, 0x0a, 0xda, 0xac, 0x28, 0xa8, 0x35, 0x2b, 0xe8, 0x2f, 0x06, 0xac,
+	0x29, 0x41, 0x25, 0x8d, 0xe5, 0xf1, 0x58, 0xf8, 0xc3, 0x92, 0xa6, 0xfd, 0x10, 0x34, 0xd5, 0x4b,
+	0x14, 0x1a, 0xf5, 0x32, 0x5d, 0x40, 0x13, 0xf2, 0xc9, 0x7b, 0xd0, 0x88, 0xd9, 0x39, 0x8d, 0xb3,
+	0xe6, 0x4c, 0x4f, 0xb3, 0x99, 0x2d, 0x57, 0xcd, 0xac, 0x3e, 0x3f, 0xb3, 0xde, 0x4b, 0x13, 0xb6,
+	0xaf, 0x85, 0x9d, 0x37, 0xc2, 0x2e, 0x6c, 0x8c, 0x63, 0x36, 0xf1, 0x98, 0xb2, 0x7a, 0x18, 0x1c,
+	0xe6, 0x61, 0xba, 0xeb, 0xca, 0x8e, 0xe0, 0x43, 0x65, 0x55, 0x48, 0xce, 0x2e, 0xe4, 0x35, 0xa4,
+	0xce, 0x69, 0x5d, 0xd9, 0x0b, 0xc8, 0xbf, 0x25, 0x6e, 0xce, 0x24, 0xfe, 0x3e, 0xb4, 0x34, 0x80,
+	0x71, 0x5d, 0x72, 0xd3, 0xb5, 0xd0, 0x70, 0xcc, 0x03, 0xa5, 0x4a, 0x82, 0xcd, 0x9a, 0x66, 0x93,
+	0x9e, 0xc8, 0x57, 0x40, 0x0a, 0x91, 0x6a, 0xa9, 0x92, 0x76, 0x63, 0xc7, 0xdc, 0x5d, 0xd9, 0xbf,
+	0x6b, 0xeb, 0x5d, 0x63, 0xab, 0x5d, 0x63, 0xa7, 0xbb, 0xc6, 0x3e, 0x12, 0x21, 0x77, 0x37, 0xf2,
+	0x34, 0x5c, 0x4d, 0xf9, 0x0f, 0x26, 0x71, 0x1f, 0xb6, 0xfd, 0xf3, 0xfd, 0xcf, 0x3c, 0x5f, 0xe0,
+	0x1a, 0x94, 0x1e, 0x0d, 0x82, 0x98, 0x25, 0x09, 0x8e, 0x64, 0xcb, 0xbd, 0xa3, 0x9c, 0x47, 0xa9,
+	0xef, 0x40, 0xbb, 0x7a, 0x97, 0x35, 0x2c, 0xc9, 0xf7, 0xa1, 0x1c, 0x06, 0x31, 0x3d, 0xff, 0xe6,
+	0x54, 0x66, 0xf1, 0xdd, 0xea, 0x35, 0xd8, 0x01, 0x2b, 0x66, 0x3e, 0x0b, 0x27, 0x2c, 0x9b, 0xc3,
+	0xfc, 0x3c, 0x5b, 0x18, 0xab, 0x6a, 0x61, 0x5a, 0x0b, 0xfa, 0xfe, 0x57, 0x13, 0x3e, 0x98, 0x2b,
+	0xf2, 0x6d, 0x5a, 0x84, 0x5b, 0x50, 0x17, 0xe7, 0x9c, 0xc5, 0x99, 0xd0, 0x78, 0x28, 0x15, 0xfa,
+	0x21, 0x34, 0xb3, 0xf9, 0xb1, 0xde, 0x34, 0x3f, 0x19, 0x92, 0x7c, 0x01, 0x56, 0x9f, 0x46, 0x94,
+	0xfb, 0x4c, 0xf5, 0xb5, 0x62, 0xdd, 0x9b, 0xcb, 0x7a, 0xcc, 0x7c, 0x24, 0xe6, 0x68, 0x72, 0x17,
+	0x2c, 0xdc, 0x04, 0x1e, 0x95, 0x6d, 0xc0, 0x69, 0x6f, 0xe2, 0xf9, 0x40, 0xaa, 0x94, 0x18, 0x0f,
+	0x94, 0x63, 0x05, 0x1d, 0x75, 0xc6, 0x83, 0x03, 0xd9, 0x7b, 0x61, 0x60, 0xdd, 0x50, 0x1d, 0xfd,
+	0x13, 0x23, 0xaf, 0xe9, 0x61, 0x1c, 0x06, 0x03, 0x56, 0x32, 0x24, 0x5b, 0x50, 0xd7, 0xdd, 0xa3,
+	0xeb, 0xa2, 0x0f, 0xe4, 0x1e, 0xb4, 0xa6, 0xed, 0xa2, 0xcb, 0x30, 0x35, 0xe0, 0x42, 0xc2, 0x7b,
+	0xa7, 0xd2, 0x5b, 0xda, 0x70, 0x12, 0xf4, 0x7e, 0x32, 0xe0, 0x7e, 0x69, 0x30, 0x79, 0x33, 0xbd,
+	0xc5, 0xa0, 0x52, 0x85, 0xbe, 0x1d, 0x07, 0xff, 0x1f, 0x85, 0x16, 0x07, 0xf3, 0x2e, 0x14, 0x1a,
+	0xa1, 0x40, 0x8f, 0x59, 0xc4, 0xde, 0x86, 0x40, 0x99, 0x06, 0x8b, 0xdf, 0x7b, 0x07, 0x1a, 0xec,
+	0xff, 0xd9, 0x00, 0xf3, 0x69, 0x32, 0x20, 0x2f, 0x0c, 0x20, 0x73, 0xfe, 0xd3, 0x3c, 0xb2, 0xcb,
+	0x7f, 0xc2, 0xdb, 0x73, 0x77, 0x67, 0xe7, 0xcb, 0x7f, 0x44, 0xcb, 0xf3, 0x8f, 0x01, 0x0a, 0xbf,
+	0x9f, 0x1e, 0x54, 0xb8, 0x6c, 0x0a, 0xef, 0x3c, 0xba, 0x11, 0x3c, 0x7f, 0x53, 0x40, 0x6b, 0xfa,
+	0x9d, 0xf1, 0x69, 0x95, 0x3b, 0x32, 0x74, 0xe7, 0xf3, 0x9b, 0xa0, 0xf3, 0x07, 0x7f, 0x36, 0xa0,
+	0x53, 0xb2, 0xbe, 0xaa, 0x48, 0xb8, 0x98, 0xde, 0x39, 0xfe, 0x57, 0xf4, 0x6b, 0x41, 0x96, 0x6c,
+	0x90, 0x2a, 0x41, 0x2e, 0xa6, 0x57, 0x0a, 0xb2, 0xc2, 0xca, 0x50, 0x41, 0x96, 0x4c, 0x71, 0x95,
+	0x20, 0x17, 0xd3, 0x2b, 0x05, 0xf9, 0xe6, 0x99, 0x3e, 0x7c, 0xf2, 0xdb, 0x65, 0xd7, 0x78, 0x75,
+	0xd9, 0x35, 0x5e, 0x5f, 0x76, 0x8d, 0x97, 0x57, 0xdd, 0xa5, 0x57, 0x57, 0xdd, 0xa5, 0x3f, 0xae,
+	0xba, 0x4b, 0x3f, 0xd8, 0x83, 0x50, 0x0e, 0x9f, 0xf7, 0x6d, 0x5f, 0x8c, 0x9c, 0xfc, 0x29, 0xa7,
+	0xf0, 0x94, 0x73, 0xe1, 0xe8, 0x6f, 0x6b, 0xf9, 0xe3, 0x98, 0x25, 0xfd, 0x06, 0x7e, 0x1c, 0x3f,
+	0xfc, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x58, 0xa8, 0x94, 0xb8, 0x71, 0x0f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -931,6 +1145,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	WithdrawNftRewards(ctx context.Context, in *MsgWithdrawNftRewards, opts ...grpc.CallOption) (*MsgWithdrawNftRewardsResponse, error)
 	StartEpoch(ctx context.Context, in *MsgStartEpoch, opts ...grpc.CallOption) (*MsgStartEpochResponse, error)
+	SetStaked(ctx context.Context, in *MsgSetStaked, opts ...grpc.CallOption) (*MsgSetStakedResponse, error)
 	CreateChainValidatorBridge(ctx context.Context, in *MsgCreateChainValidatorBridge, opts ...grpc.CallOption) (*MsgCreateChainValidatorBridgeResponse, error)
 	UpdateChainValidatorBridge(ctx context.Context, in *MsgUpdateChainValidatorBridge, opts ...grpc.CallOption) (*MsgUpdateChainValidatorBridgeResponse, error)
 	DeleteChainValidatorBridge(ctx context.Context, in *MsgDeleteChainValidatorBridge, opts ...grpc.CallOption) (*MsgDeleteChainValidatorBridgeResponse, error)
@@ -956,6 +1171,15 @@ func (c *msgClient) WithdrawNftRewards(ctx context.Context, in *MsgWithdrawNftRe
 func (c *msgClient) StartEpoch(ctx context.Context, in *MsgStartEpoch, opts ...grpc.CallOption) (*MsgStartEpochResponse, error) {
 	out := new(MsgStartEpochResponse)
 	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/StartEpoch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetStaked(ctx context.Context, in *MsgSetStaked, opts ...grpc.CallOption) (*MsgSetStakedResponse, error) {
+	out := new(MsgSetStakedResponse)
+	err := c.cc.Invoke(ctx, "/LimeChain.mantrachain.vault.v1.Msg/SetStaked", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -993,6 +1217,7 @@ func (c *msgClient) DeleteChainValidatorBridge(ctx context.Context, in *MsgDelet
 type MsgServer interface {
 	WithdrawNftRewards(context.Context, *MsgWithdrawNftRewards) (*MsgWithdrawNftRewardsResponse, error)
 	StartEpoch(context.Context, *MsgStartEpoch) (*MsgStartEpochResponse, error)
+	SetStaked(context.Context, *MsgSetStaked) (*MsgSetStakedResponse, error)
 	CreateChainValidatorBridge(context.Context, *MsgCreateChainValidatorBridge) (*MsgCreateChainValidatorBridgeResponse, error)
 	UpdateChainValidatorBridge(context.Context, *MsgUpdateChainValidatorBridge) (*MsgUpdateChainValidatorBridgeResponse, error)
 	DeleteChainValidatorBridge(context.Context, *MsgDeleteChainValidatorBridge) (*MsgDeleteChainValidatorBridgeResponse, error)
@@ -1007,6 +1232,9 @@ func (*UnimplementedMsgServer) WithdrawNftRewards(ctx context.Context, req *MsgW
 }
 func (*UnimplementedMsgServer) StartEpoch(ctx context.Context, req *MsgStartEpoch) (*MsgStartEpochResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartEpoch not implemented")
+}
+func (*UnimplementedMsgServer) SetStaked(ctx context.Context, req *MsgSetStaked) (*MsgSetStakedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetStaked not implemented")
 }
 func (*UnimplementedMsgServer) CreateChainValidatorBridge(ctx context.Context, req *MsgCreateChainValidatorBridge) (*MsgCreateChainValidatorBridgeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateChainValidatorBridge not implemented")
@@ -1054,6 +1282,24 @@ func _Msg_StartEpoch_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).StartEpoch(ctx, req.(*MsgStartEpoch))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetStaked_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetStaked)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetStaked(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/LimeChain.mantrachain.vault.v1.Msg/SetStaked",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetStaked(ctx, req.(*MsgSetStaked))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1125,6 +1371,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_StartEpoch_Handler,
 		},
 		{
+			MethodName: "SetStaked",
+			Handler:    _Msg_SetStaked_Handler,
+		},
+		{
 			MethodName: "CreateChainValidatorBridge",
 			Handler:    _Msg_CreateChainValidatorBridge_Handler,
 		},
@@ -1139,6 +1389,167 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "vault/v1/tx.proto",
+}
+
+func (m *MsgSetStaked) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetStaked) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetStaked) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.BlockHeight))
+		i--
+		dAtA[i] = 0x48
+	}
+	if len(m.StakingValidator) > 0 {
+		i -= len(m.StakingValidator)
+		copy(dAtA[i:], m.StakingValidator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingValidator)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.StakingChain) > 0 {
+		i -= len(m.StakingChain)
+		copy(dAtA[i:], m.StakingChain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingChain)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.NftId) > 0 {
+		i -= len(m.NftId)
+		copy(dAtA[i:], m.NftId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NftId)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetStakedResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetStakedResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetStakedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BlockHeight != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.BlockHeight))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.StakingValidator) > 0 {
+		i -= len(m.StakingValidator)
+		copy(dAtA[i:], m.StakingValidator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingValidator)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.StakingChain) > 0 {
+		i -= len(m.StakingChain)
+		copy(dAtA[i:], m.StakingChain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingChain)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NftId) > 0 {
+		i -= len(m.NftId)
+		copy(dAtA[i:], m.NftId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NftId)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.CollectionId) > 0 {
+		i -= len(m.CollectionId)
+		copy(dAtA[i:], m.CollectionId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.CollectionCreator) > 0 {
+		i -= len(m.CollectionCreator)
+		copy(dAtA[i:], m.CollectionCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CollectionCreator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.MarketplaceId) > 0 {
+		i -= len(m.MarketplaceId)
+		copy(dAtA[i:], m.MarketplaceId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.MarketplaceCreator) > 0 {
+		i -= len(m.MarketplaceCreator)
+		copy(dAtA[i:], m.MarketplaceCreator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MarketplaceCreator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgStartEpoch) Marshal() (dAtA []byte, err error) {
@@ -1161,17 +1572,17 @@ func (m *MsgStartEpoch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Validator) > 0 {
-		i -= len(m.Validator)
-		copy(dAtA[i:], m.Validator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+	if len(m.StakingValidator) > 0 {
+		i -= len(m.StakingValidator)
+		copy(dAtA[i:], m.StakingValidator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingValidator)))
 		i--
 		dAtA[i] = 0x2a
 	}
-	if len(m.Chain) > 0 {
-		i -= len(m.Chain)
-		copy(dAtA[i:], m.Chain)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+	if len(m.StakingChain) > 0 {
+		i -= len(m.StakingChain)
+		copy(dAtA[i:], m.StakingChain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingChain)))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -1224,17 +1635,17 @@ func (m *MsgStartEpochResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x4a
 	}
-	if len(m.Validator) > 0 {
-		i -= len(m.Validator)
-		copy(dAtA[i:], m.Validator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Validator)))
+	if len(m.StakingValidator) > 0 {
+		i -= len(m.StakingValidator)
+		copy(dAtA[i:], m.StakingValidator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingValidator)))
 		i--
 		dAtA[i] = 0x42
 	}
-	if len(m.Chain) > 0 {
-		i -= len(m.Chain)
-		copy(dAtA[i:], m.Chain)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Chain)))
+	if len(m.StakingChain) > 0 {
+		i -= len(m.StakingChain)
+		copy(dAtA[i:], m.StakingChain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StakingChain)))
 		i--
 		dAtA[i] = 0x3a
 	}
@@ -1788,6 +2199,90 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgSetStaked) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NftId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StakingChain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StakingValidator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.BlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.BlockHeight))
+	}
+	return n
+}
+
+func (m *MsgSetStakedResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MarketplaceCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MarketplaceId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionCreator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CollectionId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NftId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StakingChain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StakingValidator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.BlockHeight != 0 {
+		n += 1 + sovTx(uint64(m.BlockHeight))
+	}
+	return n
+}
+
 func (m *MsgStartEpoch) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1805,11 +2300,11 @@ func (m *MsgStartEpoch) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Chain)
+	l = len(m.StakingChain)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Validator)
+	l = len(m.StakingValidator)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -1844,11 +2339,11 @@ func (m *MsgStartEpochResponse) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
-	l = len(m.Chain)
+	l = len(m.StakingChain)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Validator)
+	l = len(m.StakingValidator)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2111,6 +2606,624 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
+func (m *MsgSetStaked) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetStaked: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetStaked: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingChain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingChain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingValidator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingValidator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockHeight", wireType)
+			}
+			m.BlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetStakedResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetStakedResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetStakedResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketplaceId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MarketplaceId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionCreator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionCreator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollectionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollectionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingChain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingChain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingValidator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StakingValidator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockHeight", wireType)
+			}
+			m.BlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MsgStartEpoch) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2225,7 +3338,7 @@ func (m *MsgStartEpoch) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingChain", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2253,11 +3366,11 @@ func (m *MsgStartEpoch) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Chain = string(dAtA[iNdEx:postIndex])
+			m.StakingChain = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingValidator", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2285,7 +3398,7 @@ func (m *MsgStartEpoch) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Validator = string(dAtA[iNdEx:postIndex])
+			m.StakingValidator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2481,7 +3594,7 @@ func (m *MsgStartEpochResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingChain", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2509,11 +3622,11 @@ func (m *MsgStartEpochResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Chain = string(dAtA[iNdEx:postIndex])
+			m.StakingChain = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 8:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field StakingValidator", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2541,7 +3654,7 @@ func (m *MsgStartEpochResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Validator = string(dAtA[iNdEx:postIndex])
+			m.StakingValidator = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
