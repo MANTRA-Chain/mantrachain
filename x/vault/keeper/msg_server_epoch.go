@@ -18,10 +18,6 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, err
 	}
 
-	if msg.BlockStart <= 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be positive")
-	}
-
 	if strings.TrimSpace(msg.StakingChain) == "" {
 		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
 	}
@@ -30,10 +26,8 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
 	}
 
-	reward, err := sdk.ParseCoinNormalized(msg.Reward)
-
-	if err != nil {
-		return nil, err
+	if msg.BlockStart <= 0 {
+		return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be positive")
 	}
 
 	chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, msg.StakingChain, msg.StakingValidator)
@@ -49,12 +43,41 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
 	}
 
+	bridgeAccount, err := sdk.AccAddressFromBech32(bridge.BridgeAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !bridgeAccount.Equals(creator) {
+		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not authorized to start epoch")
+	}
+
 	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
 	lastEpochBlockHeight := int64(0)
 
 	if !found {
 		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
 	} else {
+		hasReward := false
+		if msg.Reward != "" {
+			hasReward = true
+		}
+
+		reward := sdk.Coin{}
+
+		if hasReward {
+			reward, err = sdk.ParseCoinNormalized(msg.Reward)
+
+			if err != nil {
+				return nil, err
+			}
+
+			if reward.IsNil() || reward.IsZero() {
+				hasReward = false
+			}
+		}
+
 		lastEpochBlockHeight = lastEpochBlock.BlockHeight
 		lastEpoch, found := k.GetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight)
 
@@ -73,13 +96,17 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		}
 
 		we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
-		err = we.Mint(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), reward.Amount.Uint64())
 
-		if err != nil {
-			return nil, err
+		if hasReward {
+			err = we.Mint(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), reward.Amount.Uint64())
+
+			if err != nil {
+				return nil, err
+			}
+
+			lastEpoch.Rewards = sdk.NewCoins(reward)
 		}
 
-		lastEpoch.Rewards = sdk.NewCoins(reward)
 		lastEpoch.BlockEnd = msg.BlockStart
 		lastEpoch.NextEpochBlock = msg.BlockStart
 		lastEpoch.EndAt = ctx.BlockHeader().Time.Unix()
@@ -109,7 +136,6 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		BlockEnd:            types.UndefinedBlockHeight,
 		StakingChain:        msg.StakingChain,
 		StakingValidator:    msg.StakingValidator,
-		PrevEpochRewards:    []*sdk.Coin{&reward},
 		Staked:              chainValidatorBridge.Staked.String(),
 		Cw20ContractAddress: bridge.Cw20ContractAddress,
 	}, nil

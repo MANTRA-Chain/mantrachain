@@ -7,8 +7,9 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 
 message ChainValidatorBridge {
   string bridge_id = 1 [(gogoproto.moretags) = "yaml:\"bridge_id\""]; 
-  string creator = 2 [(gogoproto.moretags) = "yaml:\"creator\""];
-  string staked = 3 [
+  string bridge_account = 2 [(gogoproto.moretags) = "yaml:\"bridge_account\""]; 
+  string creator = 3 [(gogoproto.moretags) = "yaml:\"creator\""];
+  string staked = 4 [
     (gogoproto.moretags) = "yaml:\"staked\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false

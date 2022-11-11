@@ -22,7 +22,7 @@ func CmdWithdrawNftRewards() *cobra.Command {
 		Long: "Withdraw NFT rewards. " +
 			"[nft-id] is the NFT id.",
 		Example: fmt.Sprintf(
-			"$ %s tx marketplace withdraw-nft-rewards <nft-id> "+
+			"$ %s tx vault withdraw-nft-rewards <nft-id> "+
 				"--from=<from> "+
 				"--receiver=<receiver> "+
 				"--marketplace-creator=<marketplace-creator> "+
@@ -118,7 +118,7 @@ func CmdSetStaked() *cobra.Command {
 			"[nft-id] is the NFT id." +
 			"[block-height] is the staking chain block height at the time of the delegate.",
 		Example: fmt.Sprintf(
-			"$ %s tx marketplace set-staked <nft-id> <block-height> "+
+			"$ %s tx vault set-staked <nft-id> <block-height> "+
 				"--from=<from> "+
 				"--marketplace-creator=<marketplace-creator> "+
 				"--marketplace-id=<marketplace-id> "+

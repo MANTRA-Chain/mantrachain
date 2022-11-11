@@ -20,12 +20,12 @@ func CmdStartEpoch() *cobra.Command {
 		Short: "Broadcast message start-epoch",
 		Long:  "Starts new epoch. ",
 		Example: fmt.Sprintf(
-			"$ %s tx marketplace start-epoch <block-start> <reward> <chain> <validator> "+
+			"$ %s tx vault start-epoch <block-start> <reward> <chain> <validator> "+
 				"--from=<from> "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
-		Args: cobra.ExactArgs(5),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argBlockStart := args[0]
 			argReward := args[1]

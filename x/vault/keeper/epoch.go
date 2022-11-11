@@ -40,12 +40,16 @@ func (k Keeper) SetEpochEndNative(
 	}
 
 	de := NewDistributionExecutor(ctx, k.ac, k.sk, k.dk)
-
 	// TODO: Add min threshold for withdraw delegation rewards
 	withdrawn, err := de.WithdrawDelegationRewards(validator)
 
 	if err != nil {
 		return err
+	}
+
+	if len(withdrawn) == 0 ||
+		(len(withdrawn) == 1 && withdrawn[0].Amount.IsZero()) {
+		return nil
 	}
 
 	lastEpoch.Rewards = withdrawn

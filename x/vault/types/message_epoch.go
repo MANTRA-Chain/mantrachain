@@ -57,8 +57,5 @@ func (msg *MsgStartEpoch) ValidateBasic() error {
 	if strings.TrimSpace(msg.StakingValidator) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staking validator should not be empty")
 	}
-	if strings.TrimSpace(msg.Reward) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "reward should not be empty")
-	}
 	return nil
 }

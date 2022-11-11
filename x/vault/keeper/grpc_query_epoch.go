@@ -70,14 +70,16 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 		}
 
 		epochsRes = append(epochsRes, &types.QueryGetEpochResponse{
-			BlockStart:     epoch.BlockStart,
-			BlockEnd:       epoch.BlockEnd,
-			Staked:         epoch.Staked.String(),
-			Rewards:        rewards,
-			PrevEpochBlock: epoch.PrevEpochBlock,
-			NextEpochBlock: epoch.NextEpochBlock,
-			StartAt:        epoch.StartAt,
-			EndAt:          epoch.EndAt,
+			BlockStart:       epoch.BlockStart,
+			BlockEnd:         epoch.BlockEnd,
+			Staked:           epoch.Staked.String(),
+			Rewards:          rewards,
+			PrevEpochBlock:   epoch.PrevEpochBlock,
+			NextEpochBlock:   epoch.NextEpochBlock,
+			StartAt:          epoch.StartAt,
+			EndAt:            epoch.EndAt,
+			StakingChain:     stakingChain,
+			StakingValidator: stakingValidator,
 		})
 	}
 

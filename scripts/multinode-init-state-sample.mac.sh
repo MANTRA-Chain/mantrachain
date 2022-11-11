@@ -106,6 +106,6 @@ cecho "GREEN" "import second nft collection"
 sleep 5
 
 cecho "GREEN" "create chain validator bridge"
-./build/mantrachaind tx vault create-chain-validator-bridge polygon test id1 --chain-id mantrachain --from admin1 --keyring-backend test --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
+./build/mantrachaind tx vault create-chain-validator-bridge polygon test $BRIDGE1 id1 --chain-id mantrachain --from admin1 --keyring-backend test --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
 
 cecho "GREEN" "CW20 CONTRACT ADDRESS: $CW20_CONTRACT_ADDRESS"

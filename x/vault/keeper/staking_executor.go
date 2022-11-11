@@ -14,7 +14,12 @@ type StakingExecutor struct {
 	sk  types.StakingKeeper
 }
 
-func NewStakingExecutor(ctx sdk.Context, ac types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper) *StakingExecutor {
+func NewStakingExecutor(
+	ctx sdk.Context,
+	ac types.AccountKeeper,
+	bk types.BankKeeper,
+	sk types.StakingKeeper,
+) *StakingExecutor {
 	return &StakingExecutor{
 		ctx: ctx,
 		ac:  ac,

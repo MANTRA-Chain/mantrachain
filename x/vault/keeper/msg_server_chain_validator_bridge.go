@@ -18,6 +18,12 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, err
 	}
 
+	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
 	adminAccount, err := sdk.AccAddressFromBech32(conf.AdminAccount)
 
 	if err != nil {
@@ -38,9 +44,17 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
+	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
+	_, found := be.GetBridge(bridgeAccount, msg.BridgeId)
+
+	if !found {
+		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
+	}
+
 	var chainValidatorBridge = types.ChainValidatorBridge{
-		Creator:  msg.Creator,
-		BridgeId: msg.BridgeId,
+		Creator:       msg.Creator,
+		BridgeId:      msg.BridgeId,
+		BridgeAccount: msg.BridgeAccount,
 	}
 
 	k.SetChainValidatorBridge(
@@ -50,15 +64,39 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		chainValidatorBridge,
 	)
 	return &types.MsgCreateChainValidatorBridgeResponse{
-		Chain:     msg.Chain,
-		Validator: msg.Validator,
-		BridgeId:  msg.BridgeId,
-		Creator:   msg.Creator,
+		Chain:         msg.Chain,
+		Validator:     msg.Validator,
+		BridgeId:      msg.BridgeId,
+		BridgeAccount: msg.BridgeAccount,
+		Creator:       msg.Creator,
 	}, nil
 }
 
 func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.MsgUpdateChainValidatorBridge) (*types.MsgUpdateChainValidatorBridgeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
+	adminAccount, err := sdk.AccAddressFromBech32(conf.AdminAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !creator.Equals(adminAccount) {
+		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+	}
 
 	// Check if the value exists
 	valFound, isFound := k.GetChainValidatorBridge(
@@ -75,10 +113,18 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
+	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
+	_, found := be.GetBridge(bridgeAccount, msg.BridgeId)
+
+	if !found {
+		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
+	}
+
 	var chainValidatorBridge = types.ChainValidatorBridge{
-		Creator:  msg.Creator,
-		BridgeId: msg.BridgeId,
-		Staked:   valFound.Staked,
+		Creator:       msg.Creator,
+		BridgeId:      msg.BridgeId,
+		Staked:        valFound.Staked,
+		BridgeAccount: msg.BridgeAccount,
 	}
 
 	k.SetChainValidatorBridge(
@@ -89,15 +135,33 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 	)
 
 	return &types.MsgUpdateChainValidatorBridgeResponse{
-		Chain:     msg.Chain,
-		Validator: msg.Validator,
-		BridgeId:  msg.BridgeId,
-		Creator:   msg.Creator,
+		Chain:         msg.Chain,
+		Validator:     msg.Validator,
+		BridgeId:      msg.BridgeId,
+		BridgeAccount: msg.BridgeAccount,
+		Creator:       msg.Creator,
 	}, nil
 }
 
 func (k msgServer) DeleteChainValidatorBridge(goCtx context.Context, msg *types.MsgDeleteChainValidatorBridge) (*types.MsgDeleteChainValidatorBridgeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	adminAccount, err := sdk.AccAddressFromBech32(conf.AdminAccount)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !creator.Equals(adminAccount) {
+		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+	}
 
 	// Check if the value exists
 	valFound, isFound := k.GetChainValidatorBridge(
@@ -121,9 +185,10 @@ func (k msgServer) DeleteChainValidatorBridge(goCtx context.Context, msg *types.
 	)
 
 	return &types.MsgDeleteChainValidatorBridgeResponse{
-		Chain:     msg.Chain,
-		Validator: msg.Validator,
-		BridgeId:  valFound.BridgeId,
-		Creator:   msg.Creator,
+		Chain:         msg.Chain,
+		Validator:     msg.Validator,
+		BridgeId:      valFound.BridgeId,
+		BridgeAccount: valFound.BridgeAccount,
+		Creator:       msg.Creator,
 	}, nil
 }

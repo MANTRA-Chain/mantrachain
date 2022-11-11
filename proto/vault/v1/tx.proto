@@ -53,11 +53,10 @@ message MsgStartEpochResponse {
   int64 next_epoch_block = 2; 
   int64 block_start = 3; 
   int64 block_end = 4;  
-  string staked = 5; 
-  repeated cosmos.base.v1beta1.Coin prev_epoch_rewards = 6; 
-  string staking_chain = 7;
-  string staking_validator = 8;
-  string cw20_contract_address = 9;
+  string staked = 5;
+  string staking_chain = 6;
+  string staking_validator = 7;
+  string cw20_contract_address = 8;
 }
 
 message MsgWithdrawNftRewards {
@@ -91,6 +90,7 @@ message MsgCreateChainValidatorBridge {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
+  string bridge_account = 5;
 }
 
 message MsgCreateChainValidatorBridgeResponse {
@@ -98,6 +98,7 @@ message MsgCreateChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
+  string bridge_account = 5;
 }
 
 message MsgUpdateChainValidatorBridge {
@@ -105,6 +106,7 @@ message MsgUpdateChainValidatorBridge {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
+  string bridge_account = 5;
 }
 
 message MsgUpdateChainValidatorBridgeResponse {
@@ -112,6 +114,7 @@ message MsgUpdateChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
+  string bridge_account = 5;
 }
 
 message MsgDeleteChainValidatorBridge {
@@ -125,6 +128,7 @@ message MsgDeleteChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
+  string bridge_account = 5;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

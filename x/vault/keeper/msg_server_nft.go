@@ -147,8 +147,14 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 				return nil, sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
 			}
 
+			bridgeAccount, err := sdk.AccAddressFromBech32(chainValidatorBridge.BridgeAccount)
+
+			if err != nil {
+				return nil, err
+			}
+
 			be := NewBridgeExecutor(ctx, k.bridgeKeeper)
-			bridge, found := be.GetBridge(creator, chainValidatorBridge.BridgeId)
+			bridge, found := be.GetBridge(bridgeAccount, chainValidatorBridge.BridgeId)
 
 			if !found {
 				return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
@@ -168,7 +174,13 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 				err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(intReward))
 			} else {
 				we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
-				err = we.Mint(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
+				err = we.IncreaseAllowance(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
+
+				if err != nil {
+					return nil, err
+				}
+
+				err = we.TransferFrom(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
 			}
 
 			if err != nil {
@@ -311,7 +323,9 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 	}
 
 	for _, staked := range nftStake.Staked {
-		if staked.Chain == msg.StakingChain && staked.Validator == msg.StakingValidator {
+		if staked.Chain == msg.StakingChain &&
+			staked.Validator == msg.StakingValidator &&
+			staked.StakedAt == 0 {
 			staked.StakedAt = ctx.BlockHeader().Time.Unix()
 			staked.StakedEpoch = lastEpochBlock.BlockHeight
 			staked.BlockHeight = msg.BlockHeight

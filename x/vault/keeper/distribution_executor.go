@@ -54,6 +54,17 @@ func (c *DistributionExecutor) WithdrawDelegationRewards(
 		return nil, sdkerrors.Wrap(err, "invalid validator address")
 	}
 
+	rewards, err := c.GetDelegationRewards(validator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(rewards) == 0 {
+		return nil, nil
+	}
+
+	// TODO: Add min threshold for withdraw delegation rewards
 	withdrawn, err := c.dk.WithdrawDelegationRewards(c.ctx, c.ac.GetModuleAddress(types.ModuleName), valAdr)
 
 	if err != nil {

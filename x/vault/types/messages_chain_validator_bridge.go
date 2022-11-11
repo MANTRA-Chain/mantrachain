@@ -17,14 +17,16 @@ func NewMsgCreateChainValidatorBridge(
 	creator string,
 	chain string,
 	validator string,
+	bridgeAccount string,
 	bridgeId string,
 
 ) *MsgCreateChainValidatorBridge {
 	return &MsgCreateChainValidatorBridge{
-		Creator:   creator,
-		Chain:     chain,
-		Validator: validator,
-		BridgeId:  bridgeId,
+		Creator:       creator,
+		Chain:         chain,
+		Validator:     validator,
+		BridgeAccount: bridgeAccount,
+		BridgeId:      bridgeId,
 	}
 }
 
@@ -54,6 +56,10 @@ func (msg *MsgCreateChainValidatorBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	_, err = sdk.AccAddressFromBech32(msg.BridgeAccount)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
+	}
 	return nil
 }
 
@@ -63,14 +69,16 @@ func NewMsgUpdateChainValidatorBridge(
 	creator string,
 	chain string,
 	validator string,
+	bridgeAccount string,
 	bridgeId string,
 
 ) *MsgUpdateChainValidatorBridge {
 	return &MsgUpdateChainValidatorBridge{
-		Creator:   creator,
-		Chain:     chain,
-		Validator: validator,
-		BridgeId:  bridgeId,
+		Creator:       creator,
+		Chain:         chain,
+		Validator:     validator,
+		BridgeAccount: bridgeAccount,
+		BridgeId:      bridgeId,
 	}
 }
 
@@ -99,6 +107,10 @@ func (msg *MsgUpdateChainValidatorBridge) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.BridgeAccount)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
 	}
 	return nil
 }
