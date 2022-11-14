@@ -12,7 +12,6 @@ type RewardsController struct {
 	validators         []RewardsControllerFunc
 	nftStake           *types.NftStake
 	keeper             Keeper
-	conf               *types.Params
 	ctx                sdk.Context
 	marketplaceCreator sdk.AccAddress
 	collectionCreator  sdk.AccAddress

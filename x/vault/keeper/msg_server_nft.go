@@ -325,6 +325,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 	for _, staked := range nftStake.Staked {
 		if staked.Chain == msg.StakingChain &&
 			staked.Validator == msg.StakingValidator &&
+			// Do not update if StakedAt is already set
 			staked.StakedAt == 0 {
 			staked.StakedAt = ctx.BlockHeader().Time.Unix()
 			staked.StakedEpoch = lastEpochBlock.BlockHeight
