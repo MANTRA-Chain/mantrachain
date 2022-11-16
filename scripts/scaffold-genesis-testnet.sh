@@ -74,9 +74,13 @@ cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["staking"]
 
 echo "udpate gov genesis"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
 echo "update denom metadata"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["bank"]["denom_metadata"]=''[{"description":"The native staking token of the Cosmos Hub.","denom_units":[{"denom":"ustake","exponent":0,"aliases":["microstake"]},{"denom":"mstake","exponent":3,"aliases":["millistake"]},{"denom":"stake","exponent":6}],"base":"ustake","display":"stake"}]' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
+
+echo "update mint genesis"
+cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["mint"]["params"]["mint_denom"]="ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json
 
 echo "update crisis variable to ustake"
 cat $CHAIN_DATA_PATH/validator-1/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="ustake"' > $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json && mv $CHAIN_DATA_PATH/validator-1/config/tmp_genesis.json $CHAIN_DATA_PATH/validator-1/config/genesis.json

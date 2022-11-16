@@ -42,6 +42,9 @@ cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["bridge"]["params"][
 echo "update denom metadata"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["bank"]["denom_metadata"]=''[{"description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"ustake","exponent":0,"aliases":["microstake"]},{"denom":"mstake","exponent":3,"aliases":["millistake"]},{"denom":"stake","exponent":6}],"base":"ustake","display":"stake"}]' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
+echo "update mint genesis"
+cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["mint"]["params"]["mint_denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
+
 echo "update crisis variable to ustake"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["crisis"]["constant_fee"]["denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
@@ -52,6 +55,7 @@ cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["staking"]["params"]
 
 echo "udpate gov genesis"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
+cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
 echo "port key (validator uses default ports)"
 echo "validator 1317, 9090, 9091, 26658, 26657, 26656, 6060"
