@@ -30,6 +30,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdGetLastEpochs(),
 		CmdGetNftBalances(),
 		CmdGetChainValidatorBridge(),
+		CmdGetLastEpochBlock(),
 	)
 	// this line is used by starport scaffolding # 1
 

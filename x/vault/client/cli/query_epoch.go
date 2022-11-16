@@ -43,3 +43,35 @@ func CmdGetLastEpochs() *cobra.Command {
 
 	return cmd
 }
+
+func CmdGetLastEpochBlock() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "last-epoch-block [stakingchain] [stakingvalidator]",
+		Short: "Query the last epoch block",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argStakingChain := args[0]
+			argStakingValidator := args[1]
+
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryGetLastEpochBlockRequest{
+				StakingChain:     argStakingChain,
+				StakingValidator: argStakingValidator,
+			}
+
+			res, err := queryClient.LastEpochBlock(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

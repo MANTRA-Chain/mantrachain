@@ -57,7 +57,7 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 		epochs = append(epochs, &prevEpoch)
 	}
 
-	var epochsRes []*types.QueryGetEpochResponse
+	var epochsRes []*types.QueryGetEpochsResponse
 
 	for _, epoch := range epochs {
 		var rewards []*sdk.Coin = nil
@@ -69,7 +69,7 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 			})
 		}
 
-		epochsRes = append(epochsRes, &types.QueryGetEpochResponse{
+		epochsRes = append(epochsRes, &types.QueryGetEpochsResponse{
 			BlockStart:       epoch.BlockStart,
 			BlockEnd:         epoch.BlockEnd,
 			Staked:           epoch.Staked.String(),
@@ -85,5 +85,42 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 
 	return &types.QueryGetLastEpochsResponse{
 		Epochs: epochsRes,
+	}, nil
+}
+
+func (k Keeper) LastEpochBlock(c context.Context, req *types.QueryGetLastEpochBlockRequest) (*types.QueryGetLastEpochBlockResponse, error) {
+	var stakingChain = ""
+	var stakingValidator = ""
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	params := k.GetParams(ctx)
+
+	if strings.TrimSpace(req.StakingChain) != "" {
+		stakingChain = req.StakingChain
+		stakingValidator = req.StakingValidator
+	} else {
+		stakingChain = ctx.ChainID()
+		stakingValidator = params.StakingValidatorAddress
+	}
+
+	if params.StakingValidatorAddress == "" {
+		return nil, status.Error(codes.Unavailable, "staking validator address param not set")
+	}
+
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, stakingChain, stakingValidator)
+
+	if !found {
+		return nil, status.Error(codes.NotFound, "last epoch block not found")
+	}
+
+	return &types.QueryGetLastEpochBlockResponse{
+		Creator:          lastEpochBlock.Creator,
+		BlockHeight:      lastEpochBlock.BlockHeight,
+		StakingChain:     stakingChain,
+		StakingValidator: stakingValidator,
 	}, nil
 }

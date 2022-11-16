@@ -30,6 +30,10 @@ service Query {
 		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epochs/{staking_chain}/{staking_validator}";
 	}
 
+  rpc LastEpochBlock(QueryGetLastEpochBlockRequest) returns (QueryGetLastEpochBlockResponse) {
+		option (google.api.http).get = "/mantrachain/vault/v1/vault/last-epoch-block/{staking_chain}/{staking_validator}";
+	}
+
   // Queries a ChainValidatorBridge by index.
 	rpc ChainValidatorBridge(QueryGetChainValidatorBridgeRequest) returns (QueryGetChainValidatorBridgeResponse) {
 		option (google.api.http).get = "/mantrachain/vault/v1/chain_validator_bridge/{chain}/{validator}";
@@ -38,12 +42,24 @@ service Query {
 // this line is used by starport scaffolding # 2
 }
 
+message QueryGetLastEpochBlockRequest {
+  string staking_chain = 1;
+  string staking_validator = 2;
+}
+
+message QueryGetLastEpochBlockResponse {
+  string creator = 1; 
+  int64 block_height = 2; 
+  string staking_chain = 3;
+  string staking_validator = 4;
+}
+
 message QueryGetLastEpochsRequest {
   string staking_chain = 1;
   string staking_validator = 2;
 }
 
-message QueryGetEpochResponse {
+message QueryGetEpochsResponse {
   int64 prev_epoch_block = 1; 
   int64 next_epoch_block = 2; 
   int64 block_start = 3; 
@@ -57,7 +73,7 @@ message QueryGetEpochResponse {
 }
 
 message QueryGetLastEpochsResponse {
-  repeated QueryGetEpochResponse epochs = 1;
+  repeated QueryGetEpochsResponse epochs = 1;
 }
 
 message QueryGetNftStakeRequest {
