@@ -112,11 +112,13 @@ func CmdWithdrawNftRewards() *cobra.Command {
 
 func CmdSetStaked() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-staked [nft-id] [block-height]",
+		Use:   "set-staked [nft-id] [block-height] [staked-index] [shares]",
 		Short: "Broadcast message set-staked",
 		Long: "Withdraw NFT rewards. " +
 			"[nft-id] is the NFT id." +
-			"[block-height] is the staking chain block height at the time of the delegate.",
+			"[block-height] is the staking chain block height at the time of the delegate." +
+			"[staked-index] is the staked element index in the array." +
+			"[shares] is the shares amount staked on the validator.",
 		Example: fmt.Sprintf(
 			"$ %s tx vault set-staked <nft-id> <block-height> "+
 				"--from=<from> "+
@@ -129,10 +131,12 @@ func CmdSetStaked() *cobra.Command {
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
-		Args: cobra.ExactArgs(2),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argNftId := args[0]
 			argBlockHeight := args[1]
+			argStakedIndex := args[2]
+			argShares := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -175,6 +179,12 @@ func CmdSetStaked() *cobra.Command {
 				return err
 			}
 
+			stakedIndex, err := strconv.ParseInt(argStakedIndex, 10, 64)
+
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgSetStaked(
 				clientCtx.GetFromAddress().String(),
 				marketplaceCreator,
@@ -185,6 +195,8 @@ func CmdSetStaked() *cobra.Command {
 				stakingChain,
 				stakingValidator,
 				blockHeight,
+				stakedIndex,
+				argShares,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

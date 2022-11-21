@@ -25,4 +25,5 @@ var (
 	ErrInvalidAdminAccount            = sdkerrors.Register(ModuleName, 1125, "admin account param is invalid")
 	ErrBridgeDoesNotExist             = sdkerrors.Register(ModuleName, 1126, "bridge does not exists")
 	ErrChainValidatorBridgeNotFound   = sdkerrors.Register(ModuleName, 1127, "chain validator bridge not found")
+	ErrNftStakeStakedNotFound         = sdkerrors.Register(ModuleName, 1128, "nft stake staked not found")
 )

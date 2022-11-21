@@ -322,15 +322,18 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 	}
 
-	for _, staked := range nftStake.Staked {
-		if staked.Chain == msg.StakingChain &&
-			staked.Validator == msg.StakingValidator &&
-			// Do not update if StakedAt is already set
-			staked.StakedAt == 0 {
-			staked.StakedAt = ctx.BlockHeader().Time.Unix()
-			staked.StakedEpoch = lastEpochBlock.BlockHeight
-			staked.BlockHeight = msg.BlockHeight
-		}
+	// TODO: Validate if msg.Shares is valid decimal
+
+	if nftStake.Staked[msg.StakedIndex].Chain == msg.StakingChain &&
+		nftStake.Staked[msg.StakedIndex].Validator == msg.StakingValidator &&
+		// Do not update if StakedAt is already set
+		nftStake.Staked[msg.StakedIndex].StakedAt == 0 {
+		nftStake.Staked[msg.StakedIndex].StakedAt = ctx.BlockHeader().Time.Unix()
+		nftStake.Staked[msg.StakedIndex].StakedEpoch = lastEpochBlock.BlockHeight
+		nftStake.Staked[msg.StakedIndex].BlockHeight = msg.BlockHeight
+		nftStake.Staked[msg.StakedIndex].Shares = msg.Shares
+	} else {
+		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedNotFound, "nft stake staked not found")
 	}
 
 	k.SetNftStake(ctx, *rewardsController.getNftStake())
@@ -344,5 +347,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 		StakingChain:       msg.StakingChain,
 		StakingValidator:   msg.StakingValidator,
 		BlockHeight:        msg.BlockHeight,
+		StakedIndex:        msg.StakedIndex,
+		Shares:             msg.Shares,
 	}, nil
 }

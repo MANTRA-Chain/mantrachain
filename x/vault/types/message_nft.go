@@ -86,7 +86,7 @@ func (msg *MsgWithdrawNftRewards) ValidateBasic() error {
 
 func NewMsgSetStaked(creator string, marketplaceCreator string, marketplaceId string,
 	collectionCreator string, collectionId string, nftId string,
-	stakingChain string, stakingValidator string, blockHeight int64,
+	stakingChain string, stakingValidator string, blockHeight int64, stakedIndex int64, shares string,
 ) *MsgSetStaked {
 	return &MsgSetStaked{
 		Creator:            creator,
@@ -98,6 +98,8 @@ func NewMsgSetStaked(creator string, marketplaceCreator string, marketplaceId st
 		StakingChain:       stakingChain,
 		StakingValidator:   stakingValidator,
 		BlockHeight:        blockHeight,
+		StakedIndex:        stakedIndex,
+		Shares:             shares,
 	}
 }
 
@@ -152,6 +154,13 @@ func (msg *MsgSetStaked) ValidateBasic() error {
 	}
 	if msg.BlockHeight <= 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "block height should be positive")
+	}
+	if msg.StakedIndex < 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staked index should not be negative")
+	}
+	// TODO: validate shares if it is a valid decimal
+	if strings.TrimSpace(msg.Shares) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "shares should not be empty")
 	}
 	return nil
 }

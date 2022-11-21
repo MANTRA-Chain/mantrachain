@@ -124,7 +124,7 @@ func (k Keeper) UpsertNftStake(
 	} else { // If the stake will be on a another chain
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
-		staked.Shares = amount.Amount.String()
+		staked.Shares = "0"
 
 		chainValidatorBridge, found := k.GetChainValidatorBridge(ctx, stakingChain, stakingValidator)
 

@@ -26,7 +26,9 @@ message MsgSetStaked {
   string nft_id = 6;
   string staking_chain = 7;
   string staking_validator = 8;
-  int64 block_height = 9;
+  int64 staked_index = 9;
+  int64 block_height = 10;
+  string shares = 11;
 }
 
 message MsgSetStakedResponse {
@@ -37,7 +39,9 @@ message MsgSetStakedResponse {
   string nft_id = 5;
   string staking_chain = 6;
   string staking_validator = 7;
-  int64 block_height = 8;
+  int64 staked_index = 8;
+  int64 block_height = 9;
+  string shares = 10;
 }
 
 message MsgStartEpoch {
