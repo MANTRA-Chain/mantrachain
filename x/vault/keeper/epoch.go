@@ -26,30 +26,19 @@ func (k Keeper) InitEpoch(ctx sdk.Context, chain string, validator string, bh in
 	})
 }
 
-func (k Keeper) SetEpochEndNative(
+func (k Keeper) SetEpochEnd(
 	ctx sdk.Context,
 	chain string,
 	validator string,
 	bh int64,
 	lastEpochBlockHeight int64,
+	withdrawn sdk.Coins,
+	staked sdk.Dec,
 ) error {
 	lastEpoch, found := k.GetEpoch(ctx, chain, validator, lastEpochBlockHeight)
 
 	if !found {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "last epoch not found %s", lastEpochBlockHeight)
-	}
-
-	de := NewDistributionExecutor(ctx, k.ac, k.sk, k.dk)
-	// TODO: Add min threshold for withdraw delegation rewards
-	withdrawn, err := de.WithdrawDelegationRewards(validator)
-
-	if err != nil {
-		return err
-	}
-
-	if len(withdrawn) == 0 ||
-		(len(withdrawn) == 1 && withdrawn[0].Amount.IsZero()) {
-		return nil
 	}
 
 	lastEpoch.Rewards = withdrawn
@@ -60,13 +49,6 @@ func (k Keeper) SetEpochEndNative(
 		PrevEpochBlock: lastEpochBlockHeight,
 		NextEpochBlock: types.UndefinedBlockHeight,
 		StartAt:        ctx.BlockHeader().Time.Unix(),
-	}
-
-	se := NewStakingExecutor(ctx, k.ac, k.bk, k.sk)
-	staked, err := se.GetDelegatorDelegation(validator)
-
-	if err != nil {
-		return err
 	}
 
 	newEpoch.Staked = staked

@@ -141,7 +141,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	if !lockCoin.IsZero() {
 		vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
-		staked, err = vaultExecutor.UpsertNftStakeAndDelegate(
+		staked, err = vaultExecutor.UpsertNftStake(
 			marketplaceIndex,
 			nftCollection.Index,
 			nft.Index,

@@ -61,7 +61,8 @@ func (k Keeper) GetAllNftStake(ctx sdk.Context, marketplaceIndex []byte, collect
 	return
 }
 
-func (k Keeper) UpsertNftStakeAndDelegate(
+// TODO: move out the staking logic
+func (k Keeper) UpsertNftStake(
 	ctx sdk.Context,
 	marketplaceIndex []byte,
 	collectionIndex []byte,

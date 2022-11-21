@@ -179,35 +179,61 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // EndBlock executes all ABCI EndBlock logic respective to the capability module. It
 // returns no validator updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	logger := am.keeper.Logger(ctx)
 	params := am.keeper.GetParams(ctx)
+
 	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 	if !found {
 		am.keeper.InitEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, ctx.BlockHeight())
+		// TODO: measure time in ms, not block height
 	} else if ctx.BlockHeight() >= lastEpochBlock.BlockHeight+params.EpochBlockHeightOffset {
-		err := am.keeper.SetEpochEndNative(
+		de := keeper.NewDistributionExecutor(ctx, am.accountKeeper, am.stakingKeeper, am.distrKeeper)
+		withdrawn, err := de.WithdrawDelegationRewards(params.StakingValidatorAddress)
+
+		if err != nil {
+			logger.Error("error while withdraw delegation rewards", err)
+			return []abci.ValidatorUpdate{}
+		}
+
+		if len(withdrawn) == 0 ||
+			(len(withdrawn) == 1 && withdrawn[0].Amount.IsZero()) {
+			return []abci.ValidatorUpdate{}
+		}
+
+		se := keeper.NewStakingExecutor(ctx, am.accountKeeper, am.bankKeeper, am.stakingKeeper)
+		staked, err := se.GetDelegatorDelegation(params.StakingValidatorAddress)
+
+		if err != nil {
+			logger.Error("error while get delegator delegation", err)
+			return []abci.ValidatorUpdate{}
+		}
+
+		err = am.keeper.SetEpochEnd(
 			ctx,
 			ctx.ChainID(),
 			params.StakingValidatorAddress,
 			ctx.BlockHeight(),
 			lastEpochBlock.BlockHeight,
+			withdrawn,
+			staked,
 		)
 
 		if err != nil {
-			logger := am.keeper.Logger(ctx)
 			logger.Error("error while set epoch end", err)
-		} else {
-			ctx.EventManager().EmitEvent(
-				sdk.NewEvent(
-					sdk.EventTypeMessage,
-					sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-					sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgEpochEnd),
-					sdk.NewAttribute(types.AttributeKeyChainId, ctx.ChainID()),
-					sdk.NewAttribute(types.AttributeKeyValidator, params.StakingValidatorAddress),
-					sdk.NewAttribute(types.AttributeBlockHeight, strconv.FormatInt(ctx.BlockHeight(), 10)),
-				),
-			)
+			return []abci.ValidatorUpdate{}
 		}
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+				sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgEpochEnd),
+				sdk.NewAttribute(types.AttributeKeyChainId, ctx.ChainID()),
+				sdk.NewAttribute(types.AttributeKeyValidator, params.StakingValidatorAddress),
+				sdk.NewAttribute(types.AttributeBlockHeight, strconv.FormatInt(ctx.BlockHeight(), 10)),
+			),
+		)
 	}
 
 	return []abci.ValidatorUpdate{}
