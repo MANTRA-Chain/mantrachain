@@ -180,6 +180,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			sdk.NewAttribute(types.AttributeKeyMarketplaceId, marketplaceId),
 			sdk.NewAttribute(types.AttributeKeyCollectionCreator, nftCollection.Owner.String()),
 			sdk.NewAttribute(types.AttributeKeyCollectionId, msg.CollectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, msg.NftId),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, creator.String()),

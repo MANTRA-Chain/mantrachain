@@ -11,6 +11,7 @@ const (
 	AttributeKeyMarketplaceCreator = "marketplace_creator"
 	AttributeKeyCollectionId       = "collection_id"
 	AttributeKeyCollectionCreator  = "collection_creator"
+	AttributeKeyNftId              = "nft_id"
 	AttributeKeySigner             = "signer"
 	AttributeKeyOwner              = "owner"
 	AttributeKeyReceiver           = "receiver"
