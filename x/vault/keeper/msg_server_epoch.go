@@ -56,9 +56,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
 	lastEpochBlockHeight := int64(0)
 
-	if !found {
-		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
-	} else {
+	if found {
 		hasReward := false
 		if msg.Reward != "" {
 			hasReward = true
@@ -105,6 +103,9 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			}
 
 			lastEpoch.Rewards = sdk.NewCoins(reward)
+		} else {
+			k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
+
 		}
 
 		lastEpoch.BlockEnd = msg.BlockStart

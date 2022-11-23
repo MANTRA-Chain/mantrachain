@@ -288,7 +288,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 		return nil, err
 	}
 
-	valFound, isFound := k.GetChainValidatorBridge(
+	chainValidatorBridge, isFound := k.GetChainValidatorBridge(
 		ctx,
 		msg.StakingChain,
 		msg.StakingValidator,
@@ -298,7 +298,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 	}
 
 	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
-	bridge, found := be.GetBridge(creator, valFound.BridgeId)
+	bridge, found := be.GetBridge(creator, chainValidatorBridge.BridgeId)
 
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
@@ -322,21 +322,31 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 	}
 
-	// TODO: Validate if msg.Shares is valid decimal
+	shares := sdk.MustNewDecFromStr(msg.Shares)
 
-	if nftStake.Staked[msg.StakedIndex].Chain == msg.StakingChain &&
-		nftStake.Staked[msg.StakedIndex].Validator == msg.StakingValidator &&
-		// Do not update if StakedAt is already set
-		nftStake.Staked[msg.StakedIndex].StakedAt == 0 {
-		nftStake.Staked[msg.StakedIndex].StakedAt = ctx.BlockHeader().Time.Unix()
-		nftStake.Staked[msg.StakedIndex].StakedEpoch = lastEpochBlock.BlockHeight
-		nftStake.Staked[msg.StakedIndex].BlockHeight = msg.BlockHeight
-		nftStake.Staked[msg.StakedIndex].Shares = msg.Shares
-	} else {
+	if nftStake.Staked[msg.StakedIndex] == nil {
 		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedNotFound, "nft stake staked not found")
 	}
 
+	if nftStake.Staked[msg.StakedIndex].Chain != msg.StakingChain ||
+		nftStake.Staked[msg.StakedIndex].Validator != msg.StakingValidator {
+		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedChainValidatorNotMatch, "nft stake staked chain validator not match")
+	}
+
+	if nftStake.Staked[msg.StakedIndex].StakedAt != 0 {
+		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedAlreadyBeingSet, "nft stake staked not zero")
+	}
+
+	nftStake.Staked[msg.StakedIndex].StakedAt = ctx.BlockHeader().Time.Unix()
+	nftStake.Staked[msg.StakedIndex].StakedEpoch = lastEpochBlock.BlockHeight
+	nftStake.Staked[msg.StakedIndex].BlockHeight = msg.BlockHeight
+	nftStake.Staked[msg.StakedIndex].Shares = msg.Shares
+
 	k.SetNftStake(ctx, *rewardsController.getNftStake())
+
+	chainValidatorBridge.Staked = chainValidatorBridge.Staked.Add(shares)
+
+	k.SetChainValidatorBridge(ctx, msg.StakingChain, msg.StakingValidator, chainValidatorBridge)
 
 	return &types.MsgSetStakedResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
