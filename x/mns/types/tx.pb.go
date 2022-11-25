@@ -104,6 +104,9 @@ func (m *MsgCreateDomain) GetPubKeyType() string {
 }
 
 type MsgCreateDomainResponse struct {
+	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Domain     string `protobuf:"bytes,2,opt,name=domain,proto3" json:"domain,omitempty"`
+	DomainType string `protobuf:"bytes,3,opt,name=domain_type,json=domainType,proto3" json:"domain_type,omitempty"`
 }
 
 func (m *MsgCreateDomainResponse) Reset()         { *m = MsgCreateDomainResponse{} }
@@ -138,6 +141,27 @@ func (m *MsgCreateDomainResponse) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgCreateDomainResponse proto.InternalMessageInfo
+
+func (m *MsgCreateDomainResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainResponse) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainResponse) GetDomainType() string {
+	if m != nil {
+		return m.DomainType
+	}
+	return ""
+}
 
 type MsgCreateDomainName struct {
 	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -216,6 +240,9 @@ func (m *MsgCreateDomainName) GetPubKeyType() string {
 }
 
 type MsgCreateDomainNameResponse struct {
+	Creator    string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Domain     string `protobuf:"bytes,2,opt,name=domain,proto3" json:"domain,omitempty"`
+	DomainName string `protobuf:"bytes,3,opt,name=domain_name,json=domainName,proto3" json:"domain_name,omitempty"`
 }
 
 func (m *MsgCreateDomainNameResponse) Reset()         { *m = MsgCreateDomainNameResponse{} }
@@ -251,6 +278,27 @@ func (m *MsgCreateDomainNameResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateDomainNameResponse proto.InternalMessageInfo
 
+func (m *MsgCreateDomainNameResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainNameResponse) GetDomain() string {
+	if m != nil {
+		return m.Domain
+	}
+	return ""
+}
+
+func (m *MsgCreateDomainNameResponse) GetDomainName() string {
+	if m != nil {
+		return m.DomainName
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgCreateDomain)(nil), "LimeChain.mantrachain.mns.v1.MsgCreateDomain")
 	proto.RegisterType((*MsgCreateDomainResponse)(nil), "LimeChain.mantrachain.mns.v1.MsgCreateDomainResponse")
@@ -261,7 +309,7 @@ func init() {
 func init() { proto.RegisterFile("mns/v1/tx.proto", fileDescriptor_3ec1264932308572) }
 
 var fileDescriptor_3ec1264932308572 = []byte{
-	// 338 bytes of a gzipped FileDescriptorProto
+	// 342 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcf, 0xcd, 0x2b, 0xd6,
 	0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0xf1, 0xc9, 0xcc,
 	0x4d, 0x75, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0xcb, 0x4d, 0xcc, 0x2b, 0x29, 0x4a, 0x4c, 0x86, 0xb0,
@@ -272,18 +320,18 @@ var fileDescriptor_3ec1264932308572 = []byte{
 	0x0b, 0x52, 0x25, 0x98, 0xc1, 0x92, 0x5c, 0x10, 0xa1, 0x90, 0xca, 0x82, 0x54, 0x21, 0x39, 0x2e,
 	0xee, 0x82, 0xd2, 0xa4, 0xf8, 0xec, 0xd4, 0xca, 0xf8, 0x8c, 0xd4, 0x0a, 0x09, 0x16, 0xb0, 0x02,
 	0xce, 0x82, 0xd2, 0x24, 0xef, 0xd4, 0x4a, 0x8f, 0xd4, 0x0a, 0x21, 0x05, 0x2e, 0x1e, 0x98, 0x3c,
-	0xd8, 0x04, 0x56, 0x88, 0x09, 0x10, 0x05, 0x20, 0x13, 0x94, 0x24, 0xb9, 0xc4, 0xd1, 0xdc, 0x19,
-	0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0xb4, 0x8a, 0x91, 0x4b, 0x18, 0x4d, 0xce, 0x2f,
-	0x31, 0x37, 0x95, 0x22, 0x7f, 0xe4, 0x25, 0xe6, 0xa2, 0xf9, 0x03, 0x6c, 0x24, 0xe5, 0xfe, 0x90,
-	0xe5, 0x92, 0xc6, 0xe2, 0x56, 0x98, 0x5f, 0x8c, 0xfe, 0x31, 0x72, 0x31, 0xfb, 0x16, 0xa7, 0x0b,
-	0x95, 0x70, 0xf1, 0xa0, 0xc4, 0x89, 0xae, 0x1e, 0xbe, 0x68, 0xd4, 0x43, 0x33, 0x52, 0xca, 0x94,
-	0x24, 0xe5, 0x30, 0xdb, 0x85, 0x1a, 0x18, 0xb9, 0x04, 0x30, 0x82, 0xd1, 0x90, 0x24, 0xb3, 0x40,
-	0x5a, 0xa4, 0x2c, 0x49, 0xd6, 0x02, 0x73, 0x82, 0x93, 0xdb, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e,
-	0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37,
-	0x1e, 0xcb, 0x31, 0x44, 0xe9, 0xa4, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea,
-	0xc3, 0x8d, 0xd7, 0x47, 0x32, 0x5e, 0xbf, 0x42, 0x1f, 0x94, 0xf8, 0x41, 0x01, 0x5f, 0x9c, 0xc4,
-	0x06, 0x4e, 0xfd, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x69, 0x03, 0x2d, 0xde, 0x10, 0x03,
-	0x00, 0x00,
+	0xd8, 0x04, 0x56, 0x88, 0x09, 0x10, 0x05, 0x20, 0x13, 0x94, 0x72, 0xb8, 0xc4, 0xd1, 0xdc, 0x19,
+	0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0x4a, 0x03, 0xf7, 0x2a, 0xad, 0x62, 0xe4, 0x12, 0x46,
+	0xb3, 0xce, 0x2f, 0x31, 0x97, 0x32, 0xab, 0xf2, 0x12, 0x73, 0xd1, 0xac, 0x02, 0x1b, 0x49, 0x79,
+	0xd0, 0x14, 0x70, 0x49, 0x63, 0x71, 0x2b, 0x55, 0x82, 0x07, 0xbb, 0x9b, 0x8d, 0xfe, 0x31, 0x72,
+	0x31, 0xfb, 0x16, 0xa7, 0x0b, 0x95, 0x70, 0xf1, 0xa0, 0xa4, 0x1c, 0x5d, 0x3d, 0x7c, 0x89, 0x4d,
+	0x0f, 0xcd, 0x95, 0x52, 0xa6, 0x24, 0x29, 0x87, 0x7b, 0xa8, 0x81, 0x91, 0x4b, 0x00, 0x23, 0x66,
+	0x0c, 0x49, 0x32, 0x0b, 0xa4, 0x45, 0xca, 0x92, 0x64, 0x2d, 0x30, 0x27, 0x38, 0xb9, 0x9d, 0x78,
+	0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c,
+	0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x4e, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92,
+	0x5e, 0x72, 0x7e, 0xae, 0x3e, 0xdc, 0x78, 0x7d, 0x24, 0xe3, 0xf5, 0x2b, 0xf4, 0x41, 0x59, 0x14,
+	0x14, 0x97, 0xc5, 0x49, 0x6c, 0xe0, 0x3c, 0x6a, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x2e, 0x2b,
+	0x2c, 0x53, 0xb6, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -480,6 +528,27 @@ func (m *MsgCreateDomainResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if len(m.DomainType) > 0 {
+		i -= len(m.DomainType)
+		copy(dAtA[i:], m.DomainType)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DomainType)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Domain) > 0 {
+		i -= len(m.Domain)
+		copy(dAtA[i:], m.Domain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Domain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -561,6 +630,27 @@ func (m *MsgCreateDomainNameResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	_ = i
 	var l int
 	_ = l
+	if len(m.DomainName) > 0 {
+		i -= len(m.DomainName)
+		copy(dAtA[i:], m.DomainName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DomainName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Domain) > 0 {
+		i -= len(m.Domain)
+		copy(dAtA[i:], m.Domain)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Domain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -610,6 +700,18 @@ func (m *MsgCreateDomainResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Domain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DomainType)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -648,6 +750,18 @@ func (m *MsgCreateDomainNameResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Domain)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DomainName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -896,6 +1010,102 @@ func (m *MsgCreateDomainResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgCreateDomainResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Domain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DomainType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DomainType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1156,6 +1366,102 @@ func (m *MsgCreateDomainNameResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgCreateDomainNameResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Domain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Domain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DomainName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DomainName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

@@ -158,7 +158,6 @@ func (msg *MsgSetStaked) ValidateBasic() error {
 	if msg.StakedIndex < 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staked index should not be negative")
 	}
-	// TODO: validate shares if it is a valid decimal
 	if strings.TrimSpace(msg.Shares) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "shares should not be empty")
 	}

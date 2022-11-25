@@ -72,6 +72,8 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, err
 	}
 
+	// TODO: Check is chainValidatorBridge exists for that msg.StakingChain and msg.StakingValidator
+
 	collection := marketplaceCollection.getMarketplaceCollection()
 
 	nft, found := tokenExecutor.GetNft(collectionCreator, msg.CollectionId, msg.NftId)
@@ -126,7 +128,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftBuyer, "nft is owned by the buyer")
 	}
 
-	var staked bool
+	var delegated bool
 
 	lockCoin, err := k.CollectFees(
 		ctx,
@@ -141,7 +143,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	if !lockCoin.IsZero() {
 		vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
-		staked, err = vaultExecutor.UpsertNftStake(
+		delegated, err = vaultExecutor.UpsertNftStake(
 			marketplaceIndex,
 			nftCollection.Index,
 			nft.Index,
@@ -149,6 +151,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			lockCoin,
 			msg.StakingChain,
 			msg.StakingValidator,
+			collection.Cw20ContractAddress,
 		)
 	}
 
@@ -186,7 +189,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			sdk.NewAttribute(types.AttributeKeyReceiver, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyStakingChain, msg.StakingChain),
 			sdk.NewAttribute(types.AttributeKeyStakingValidator, msg.StakingValidator),
-			sdk.NewAttribute(types.AttributeKeyStaked, strconv.FormatBool(staked)),
+			sdk.NewAttribute(types.AttributeKeyDelegated, strconv.FormatBool(delegated)),
 		),
 	)
 
@@ -198,7 +201,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		NftId:              msg.NftId,
 		Owner:              owner.String(),
 		Receiver:           creator.String(),
-		Staked:             staked,
+		Delegated:          delegated,
 		StakingChain:       msg.StakingChain,
 		StakingValidator:   msg.StakingValidator,
 	}, nil

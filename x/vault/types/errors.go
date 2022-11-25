@@ -28,4 +28,7 @@ var (
 	ErrNftStakeStakedNotFound               = sdkerrors.Register(ModuleName, 1128, "nft stake staked not found")
 	ErrNftStakeStakedAlreadyBeingSet        = sdkerrors.Register(ModuleName, 1129, "nft stake staked already being set")
 	ErrNftStakeStakedChainValidatorNotMatch = sdkerrors.Register(ModuleName, 1130, "nft stake staked chain validator not match")
+	ErrInvalidStakingChain                  = sdkerrors.Register(ModuleName, 1131, "invalid staking chain")
+	ErrInvalidStakingValidator              = sdkerrors.Register(ModuleName, 1132, "invalid staking validator")
+	ErrInvalidBridgeId                      = sdkerrors.Register(ModuleName, 1133, "invalid bridge id")
 )

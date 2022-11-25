@@ -25,6 +25,7 @@ func (c *VaultExecutor) UpsertNftStake(
 	amount sdk.Coin,
 	stakingChain string,
 	stakingValidator string,
+	cw20ContractAddress sdk.AccAddress,
 ) (bool, error) {
-	return c.vaultKeeper.UpsertNftStake(c.ctx, marketplaceIndex, collectionIndex, nftIndex, creator, amount, stakingChain, stakingValidator)
+	return c.vaultKeeper.UpsertNftStake(c.ctx, marketplaceIndex, collectionIndex, nftIndex, creator, amount, stakingChain, stakingValidator, cw20ContractAddress)
 }

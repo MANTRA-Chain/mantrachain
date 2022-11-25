@@ -53,33 +53,36 @@ message NftStakeListItem {
   ]; 
   string denom = 2 [
     (gogoproto.moretags) = "yaml:\"denom\""
+  ];
+  string cw20_contract_address = 3 [
+    (gogoproto.moretags) = "yaml:\"staked_epoch\""
   ]; 
-  string shares = 3 [
+  string shares = 4 [
     (gogoproto.moretags) = "yaml:\"shares\""
   ]; 
-  string validator = 4 [
+  string validator = 5 [
     (gogoproto.moretags) = "yaml:\"validator\""
   ]; 
-  string chain = 5 [
+  string chain = 6 [
     (gogoproto.moretags) = "yaml:\"chain\""
   ];
-  google.protobuf.Any data = 6 [
+  google.protobuf.Any data = 7 [
     (gogoproto.moretags) = "yaml:\"data\""
   ];  
-  bytes creator = 7 [
+  bytes creator = 8 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  int64 block_height = 8 [
+  int64 block_height = 9 [
     (gogoproto.moretags) = "yaml:\"block_height\""
   ];
-  int64 staked_at = 9 [
+  int64 staked_at = 10 [
       (gogoproto.moretags) = "yaml:\"staked_at\""
   ];
-  int64 unstaked_at = 10 [
+  int64 unstaked_at = 11 [
       (gogoproto.moretags) = "yaml:\"unstaked_at\""
   ];
-  int64 staked_epoch = 11 [
+  int64 staked_epoch = 12 [
     (gogoproto.moretags) = "yaml:\"staked_epoch\""
   ];
 }

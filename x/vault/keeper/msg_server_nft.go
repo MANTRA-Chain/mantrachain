@@ -65,7 +65,7 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 	}
 
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "marketplace id should not be empty")
+		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "collection id should not be empty")
 	}
 
 	if strings.TrimSpace(msg.NftId) == "" {
@@ -265,7 +265,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 	}
 
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "marketplace id should not be empty")
+		return nil, sdkerrors.Wrap(types.ErrInvalidCollectionId, "collection id should not be empty")
 	}
 
 	if strings.TrimSpace(msg.NftId) == "" {
@@ -322,6 +322,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 	}
 
+	// TODO: check if this halts the chain
 	shares := sdk.MustNewDecFromStr(msg.Shares)
 
 	if nftStake.Staked[msg.StakedIndex] == nil {
@@ -334,7 +335,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 	}
 
 	if nftStake.Staked[msg.StakedIndex].StakedAt != 0 {
-		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedAlreadyBeingSet, "nft stake staked not zero")
+		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedAlreadyBeingSet, "nft stake staked at not zero")
 	}
 
 	nftStake.Staked[msg.StakedIndex].StakedAt = ctx.BlockHeader().Time.Unix()

@@ -19,11 +19,11 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 	}
 
 	if strings.TrimSpace(msg.StakingChain) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
+		return nil, sdkerrors.Wrap(types.ErrInvalidStakingChain, "staking chain should not be empty")
 	}
 
 	if strings.TrimSpace(msg.StakingValidator) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
+		return nil, sdkerrors.Wrap(types.ErrInvalidStakingValidator, "staking validator should not be empty")
 	}
 
 	if msg.BlockStart <= 0 {
@@ -54,37 +54,27 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 	}
 
 	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
-	lastEpochBlockHeight := int64(0)
+	lastEpochBlockHeight := lastEpochBlock.BlockHeight
 
 	if found {
-		hasReward := false
-		if msg.Reward != "" {
-			hasReward = true
+		if lastEpochBlockHeight >= msg.BlockStart {
+			return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be greater than the last epoch block")
 		}
 
 		reward := sdk.Coin{}
 
-		if hasReward {
+		if msg.Reward != "" {
 			reward, err = sdk.ParseCoinNormalized(msg.Reward)
 
 			if err != nil {
 				return nil, err
 			}
-
-			if reward.IsNil() || reward.IsZero() {
-				hasReward = false
-			}
 		}
 
-		lastEpochBlockHeight = lastEpochBlock.BlockHeight
 		lastEpoch, found := k.GetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight)
 
 		if !found {
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "last epoch not found %s", lastEpochBlock)
-		}
-
-		if lastEpochBlockHeight >= msg.BlockStart {
-			return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be greater than the last epoch block")
 		}
 
 		cw20ContractAddress, err := sdk.AccAddressFromBech32(bridge.Cw20ContractAddress)
@@ -95,7 +85,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 
 		we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 
-		if hasReward {
+		if !reward.IsNil() && !reward.IsZero() {
 			err = we.Mint(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), reward.Amount.Uint64())
 
 			if err != nil {
@@ -103,9 +93,6 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			}
 
 			lastEpoch.Rewards = sdk.NewCoins(reward)
-		} else {
-			k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
-
 		}
 
 		lastEpoch.BlockEnd = msg.BlockStart
@@ -124,11 +111,13 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		}
 
 		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart, newEpoch)
-	}
 
-	k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
-		BlockHeight: msg.BlockStart,
-	})
+		k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
+			BlockHeight: msg.BlockStart,
+		})
+	} else {
+		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
+	}
 
 	return &types.MsgStartEpochResponse{
 		PrevEpochBlock:      lastEpochBlockHeight,

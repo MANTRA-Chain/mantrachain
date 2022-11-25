@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -60,6 +62,15 @@ func (msg *MsgCreateChainValidatorBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
 	}
+	if strings.TrimSpace(msg.Chain) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")
+	}
+	if strings.TrimSpace(msg.Validator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator should not be empty")
+	}
+	if strings.TrimSpace(msg.BridgeId) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty")
+	}
 	return nil
 }
 
@@ -112,6 +123,15 @@ func (msg *MsgUpdateChainValidatorBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
 	}
+	if strings.TrimSpace(msg.Chain) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")
+	}
+	if strings.TrimSpace(msg.Validator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator should not be empty")
+	}
+	if strings.TrimSpace(msg.BridgeId) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty")
+	}
 	return nil
 }
 
@@ -154,6 +174,12 @@ func (msg *MsgDeleteChainValidatorBridge) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if strings.TrimSpace(msg.Chain) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")
+	}
+	if strings.TrimSpace(msg.Validator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator should not be empty")
 	}
 	return nil
 }

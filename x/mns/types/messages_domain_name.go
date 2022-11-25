@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -53,6 +55,12 @@ func (msg *MsgCreateDomainName) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if strings.TrimSpace(msg.Domain) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "domain should not be empty")
+	}
+	if strings.TrimSpace(msg.DomainName) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "domain name should not be empty")
 	}
 	return nil
 }

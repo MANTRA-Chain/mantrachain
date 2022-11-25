@@ -2,14 +2,24 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/mns/types"
 	"github.com/LimeChain/mantrachain/x/mns/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreateDomainName(goCtx context.Context, msg *types.MsgCreateDomainName) (*types.MsgCreateDomainNameResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if strings.TrimSpace(msg.Domain) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidDomain, "domain should not be empty")
+	}
+
+	if strings.TrimSpace(msg.DomainName) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidDomainName, "domain name should not be empty")
+	}
 
 	domainCtrl := NewDomainController(ctx, msg.Domain).WithStore(k)
 
@@ -71,5 +81,9 @@ func (k msgServer) CreateDomainName(goCtx context.Context, msg *types.MsgCreateD
 			sdk.NewAttribute(types.AttributeKeyCreator, owner.String()),
 		),
 	)
-	return &types.MsgCreateDomainNameResponse{}, nil
+	return &types.MsgCreateDomainNameResponse{
+		Creator:    msg.Creator,
+		Domain:     msg.Domain,
+		DomainName: msg.DomainName,
+	}, nil
 }

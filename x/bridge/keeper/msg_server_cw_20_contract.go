@@ -68,7 +68,15 @@ func (k msgServer) CreateCw20Contract(goCtx context.Context, msg *types.MsgCreat
 		ctx,
 		cw20Contract,
 	)
-	return &types.MsgCreateCw20ContractResponse{}, nil
+
+	// TODO: Trigger event
+
+	return &types.MsgCreateCw20ContractResponse{
+		Creator: msg.Creator,
+		CodeId:  cw20Contract.CodeId,
+		Ver:     cw20Contract.Ver,
+		Path:    cw20Contract.Path,
+	}, nil
 }
 
 func (k msgServer) UpdateCw20Contract(goCtx context.Context, msg *types.MsgUpdateCw20Contract) (*types.MsgUpdateCw20ContractResponse, error) {
@@ -103,7 +111,7 @@ func (k msgServer) UpdateCw20Contract(goCtx context.Context, msg *types.MsgUpdat
 	}
 
 	var cw20Contract = types.Cw20Contract{
-		Creator: msg.Creator,
+		Creator: valFound.Creator,
 		CodeId:  msg.CodeId,
 		Ver:     msg.Ver,
 		Path:    msg.Path,
@@ -132,7 +140,14 @@ func (k msgServer) UpdateCw20Contract(goCtx context.Context, msg *types.MsgUpdat
 
 	k.SetCw20Contract(ctx, cw20Contract)
 
-	return &types.MsgUpdateCw20ContractResponse{}, nil
+	// TODO: Trigger event
+
+	return &types.MsgUpdateCw20ContractResponse{
+		Creator: msg.Creator,
+		CodeId:  cw20Contract.CodeId,
+		Ver:     cw20Contract.Ver,
+		Path:    cw20Contract.Path,
+	}, nil
 }
 
 func (k msgServer) DeleteCw20Contract(goCtx context.Context, msg *types.MsgDeleteCw20Contract) (*types.MsgDeleteCw20ContractResponse, error) {
@@ -151,6 +166,7 @@ func (k msgServer) DeleteCw20Contract(goCtx context.Context, msg *types.MsgDelet
 		return nil, err
 	}
 
+	// TODO: Check if can use roles instead of genesis state admin account
 	if !creator.Equals(adminAccount) {
 		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
@@ -168,5 +184,12 @@ func (k msgServer) DeleteCw20Contract(goCtx context.Context, msg *types.MsgDelet
 
 	k.RemoveCw20Contract(ctx)
 
-	return &types.MsgDeleteCw20ContractResponse{}, nil
+	// TODO: Trigger event
+
+	return &types.MsgDeleteCw20ContractResponse{
+		Creator: msg.Creator,
+		CodeId:  valFound.CodeId,
+		Ver:     valFound.Ver,
+		Path:    valFound.Path,
+	}, nil
 }

@@ -80,7 +80,12 @@ message MsgCreateCw20Contract {
   string ver = 3;
   string path = 4;
 }
-message MsgCreateCw20ContractResponse {}
+message MsgCreateCw20ContractResponse {
+  string creator = 1;
+  uint64 codeId = 2;
+  string ver = 3;
+  string path = 4;
+}
 
 message MsgUpdateCw20Contract {
   string creator = 1;
@@ -88,10 +93,20 @@ message MsgUpdateCw20Contract {
   string ver = 3;
   string path = 4;
 }
-message MsgUpdateCw20ContractResponse {}
+message MsgUpdateCw20ContractResponse {
+  string creator = 1;
+  uint64 codeId = 2;
+  string ver = 3;
+  string path = 4;
+}
 
 message MsgDeleteCw20Contract {
   string creator = 1;
 }
-message MsgDeleteCw20ContractResponse {}
+message MsgDeleteCw20ContractResponse {
+  string creator = 1;
+  uint64 codeId = 2;
+  string ver = 3;
+  string path = 4;
+}
 // this line is used by starport scaffolding # proto/tx/message

@@ -71,6 +71,7 @@ func (k Keeper) UpsertNftStake(
 	amount sdk.Coin,
 	stakingChain string,
 	stakingValidator string,
+	cw20ContractAddress sdk.AccAddress,
 ) (bool, error) {
 	var isStaked bool = false
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
@@ -127,6 +128,7 @@ func (k Keeper) UpsertNftStake(
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
 		staked.Shares = "0"
+		staked.Cw20ContractAddress = cw20ContractAddress.String()
 	}
 
 	nftStake.Staked = append(nftStake.Staked, &staked)

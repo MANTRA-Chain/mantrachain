@@ -15,7 +15,7 @@ const (
 	AttributeKeySigner             = "signer"
 	AttributeKeyOwner              = "owner"
 	AttributeKeyReceiver           = "receiver"
-	AttributeKeyStaked             = "staked"
+	AttributeKeyDelegated          = "delegated"
 	AttributeKeyStakingChain       = "staking_chain"
 	AttributeKeyStakingValidator   = "staking_validator"
 )

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,6 +17,18 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.TrimSpace(msg.Chain) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
+	}
+
+	if strings.TrimSpace(msg.Validator) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
+	}
+
+	if strings.TrimSpace(msg.BridgeId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidBridgeId, "bridge id should not be empty")
 	}
 
 	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
@@ -82,6 +95,18 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, err
 	}
 
+	if strings.TrimSpace(msg.Chain) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
+	}
+
+	if strings.TrimSpace(msg.Validator) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
+	}
+
+	if strings.TrimSpace(msg.BridgeId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidBridgeId, "bridge id should not be empty")
+	}
+
 	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
 
 	if err != nil {
@@ -121,10 +146,10 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 	}
 
 	var chainValidatorBridge = types.ChainValidatorBridge{
-		Creator:       msg.Creator,
+		Creator:       valFound.Creator,
 		BridgeId:      msg.BridgeId,
-		Staked:        valFound.Staked,
 		BridgeAccount: msg.BridgeAccount,
+		Staked:        valFound.Staked,
 	}
 
 	k.SetChainValidatorBridge(
@@ -151,6 +176,14 @@ func (k msgServer) DeleteChainValidatorBridge(goCtx context.Context, msg *types.
 
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.TrimSpace(msg.Chain) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidChain, "chain should not be empty")
+	}
+
+	if strings.TrimSpace(msg.Validator) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidValidator, "validator should not be empty")
 	}
 
 	adminAccount, err := sdk.AccAddressFromBech32(conf.AdminAccount)

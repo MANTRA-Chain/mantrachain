@@ -62,7 +62,7 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		CollectionId:       req.CollectionId,
 		NftId:              req.NftId,
 		Creator:            nftStake.Creator.String(),
-		Staked:             nftStake.Staked,
+		Staked:             nftStake.Staked, // TODO: Return staked[..].amount as string
 		Balances:           nftStake.Balances,
 	}, nil
 }

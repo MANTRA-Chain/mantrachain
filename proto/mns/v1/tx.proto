@@ -7,7 +7,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
 
 // Msg defines the Msg service.
 service Msg {
-      rpc CreateDomain(MsgCreateDomain) returns (MsgCreateDomainResponse);
+  rpc CreateDomain(MsgCreateDomain) returns (MsgCreateDomainResponse);
   rpc CreateDomainName(MsgCreateDomainName) returns (MsgCreateDomainNameResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
@@ -21,6 +21,9 @@ message MsgCreateDomain {
 }
 
 message MsgCreateDomainResponse {
+  string creator = 1;
+  string domain = 2;
+  string domain_type = 3;
 }
 
 message MsgCreateDomainName {
@@ -30,6 +33,11 @@ message MsgCreateDomainName {
   string pub_key_hex = 4;
   string pub_key_type = 5;
 }
-message MsgCreateDomainNameResponse {}
+
+message MsgCreateDomainNameResponse {
+  string creator = 1;
+  string domain = 2;
+  string domain_name = 3;
+}
 
 // this line is used by starport scaffolding # proto/tx/message

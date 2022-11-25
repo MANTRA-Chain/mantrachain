@@ -25,6 +25,10 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		return nil, sdkerrors.Wrap(types.ErrInvalidMint, "mint cannot be empty")
 	}
 
+	if strings.TrimSpace(msg.Mint.TxHash) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidTxHash, "tx hash should not be empty")
+	}
+
 	bridgeCreator, err := sdk.AccAddressFromBech32(msg.BridgeCreator)
 
 	if err != nil {
@@ -41,10 +45,6 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 
 	if err != nil {
 		return nil, err
-	}
-
-	if strings.TrimSpace(msg.Mint.TxHash) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidTxHash, "tx hash should not be empty")
 	}
 
 	receiver, err := sdk.AccAddressFromBech32(msg.Mint.Receiver)
@@ -102,7 +102,7 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgMint),
 			sdk.NewAttribute(types.AttributeKeyBridgeCreator, bridgeCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyBridgeId, msg.BridgeId),
-			sdk.NewAttribute(types.AttributeKeyCw20ContractAddress, cw20ContractAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractAddress, bridge.Cw20ContractAddress),
 			sdk.NewAttribute(types.AttributeKeyAmount, strconv.FormatUint(msg.Mint.Amount, 10)),
 			sdk.NewAttribute(types.AttributeKeyTxHash, msg.Mint.TxHash),
 			sdk.NewAttribute(types.AttributeKeyType, txHashType),
@@ -116,7 +116,7 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		Receiver:            receiver.String(),
 		BridgeCreator:       bridgeCreator.String(),
 		BridgeId:            msg.BridgeId,
-		Cw20ContractAddress: cw20ContractAddress.String(),
+		Cw20ContractAddress: bridge.Cw20ContractAddress,
 		Amount:              msg.Mint.Amount,
 		TxHash:              msg.Mint.TxHash,
 		Type:                txHashType,

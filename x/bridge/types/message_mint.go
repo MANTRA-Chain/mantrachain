@@ -53,10 +53,17 @@ func (msg *MsgMint) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.BridgeCreator) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge creator should not be empty with strict-bridge flag")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge creator should not be empty")
 	}
 	if strings.TrimSpace(msg.BridgeId) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty with strict-bridge flag")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty")
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Mint.Receiver)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid mint receiver address (%s)", err)
+	}
+	if strings.TrimSpace(msg.Mint.TxHash) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "mint tx hash should not be empty")
 	}
 	return nil
 }
