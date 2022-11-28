@@ -55,6 +55,38 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 
 	nftStake := rewardsController.getNftStake()
 
+	nftStaked := []*types.QueryGetNftStakeListItemResponse{}
+
+	for _, v := range nftStake.Staked {
+		nftStaked = append(nftStaked, &types.QueryGetNftStakeListItemResponse{
+			Amount:              v.Amount.String(),
+			Denom:               v.Denom,
+			Cw20ContractAddress: v.Cw20ContractAddress,
+			Shares:              v.Shares,
+			Validator:           v.Validator,
+			Chain:               v.Chain,
+			Data:                v.Data,
+			Creator:             v.Creator.String(),
+			BlockHeight:         v.BlockHeight,
+			StakedAt:            v.StakedAt,
+			UnstakedAt:          v.UnstakedAt,
+			StakedEpoch:         v.StakedEpoch,
+		})
+	}
+
+	nftBalances := []*types.QueryGetNftStakeBalanceResponse{}
+
+	for _, v := range nftStake.Balances {
+		nftBalances = append(nftBalances, &types.QueryGetNftStakeBalanceResponse{
+			Amount:             v.Amount.String(),
+			Denom:              v.Denom,
+			Validator:          v.Validator,
+			Chain:              v.Chain,
+			LastWithdrawnAt:    v.LastWithdrawnAt,
+			LastWithdrawnEpoch: v.LastWithdrawnEpoch,
+		})
+	}
+
 	return &types.QueryGetNftStakeResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
 		MarketplaceId:      req.MarketplaceId,
@@ -62,8 +94,8 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		CollectionId:       req.CollectionId,
 		NftId:              req.NftId,
 		Creator:            nftStake.Creator.String(),
-		Staked:             nftStake.Staked, // TODO: Return staked[..].amount as string
-		Balances:           nftStake.Balances,
+		Staked:             nftStaked,
+		Balances:           nftBalances,
 	}, nil
 }
 

@@ -6,6 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	types1 "github.com/cosmos/cosmos-sdk/codec/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -438,22 +439,238 @@ func (m *QueryGetNftStakeRequest) GetNftId() string {
 	return ""
 }
 
+type QueryGetNftStakeListItemResponse struct {
+	Amount              string      `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Denom               string      `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Cw20ContractAddress string      `protobuf:"bytes,3,opt,name=cw20_contract_address,json=cw20ContractAddress,proto3" json:"cw20_contract_address,omitempty"`
+	Shares              string      `protobuf:"bytes,4,opt,name=shares,proto3" json:"shares,omitempty"`
+	Validator           string      `protobuf:"bytes,5,opt,name=validator,proto3" json:"validator,omitempty"`
+	Chain               string      `protobuf:"bytes,6,opt,name=chain,proto3" json:"chain,omitempty"`
+	Data                *types1.Any `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
+	Creator             string      `protobuf:"bytes,8,opt,name=creator,proto3" json:"creator,omitempty"`
+	BlockHeight         int64       `protobuf:"varint,9,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty"`
+	StakedAt            int64       `protobuf:"varint,10,opt,name=staked_at,json=stakedAt,proto3" json:"staked_at,omitempty"`
+	UnstakedAt          int64       `protobuf:"varint,11,opt,name=unstaked_at,json=unstakedAt,proto3" json:"unstaked_at,omitempty"`
+	StakedEpoch         int64       `protobuf:"varint,12,opt,name=staked_epoch,json=stakedEpoch,proto3" json:"staked_epoch,omitempty"`
+}
+
+func (m *QueryGetNftStakeListItemResponse) Reset()         { *m = QueryGetNftStakeListItemResponse{} }
+func (m *QueryGetNftStakeListItemResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftStakeListItemResponse) ProtoMessage()    {}
+func (*QueryGetNftStakeListItemResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e6d49a2800ab3e4b, []int{6}
+}
+func (m *QueryGetNftStakeListItemResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftStakeListItemResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftStakeListItemResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftStakeListItemResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftStakeListItemResponse.Merge(m, src)
+}
+func (m *QueryGetNftStakeListItemResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftStakeListItemResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftStakeListItemResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftStakeListItemResponse proto.InternalMessageInfo
+
+func (m *QueryGetNftStakeListItemResponse) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetCw20ContractAddress() string {
+	if m != nil {
+		return m.Cw20ContractAddress
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetShares() string {
+	if m != nil {
+		return m.Shares
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetData() *types1.Any {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetBlockHeight() int64 {
+	if m != nil {
+		return m.BlockHeight
+	}
+	return 0
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetStakedAt() int64 {
+	if m != nil {
+		return m.StakedAt
+	}
+	return 0
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetUnstakedAt() int64 {
+	if m != nil {
+		return m.UnstakedAt
+	}
+	return 0
+}
+
+func (m *QueryGetNftStakeListItemResponse) GetStakedEpoch() int64 {
+	if m != nil {
+		return m.StakedEpoch
+	}
+	return 0
+}
+
+type QueryGetNftStakeBalanceResponse struct {
+	Amount             string `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Denom              string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Validator          string `protobuf:"bytes,3,opt,name=validator,proto3" json:"validator,omitempty"`
+	Chain              string `protobuf:"bytes,4,opt,name=chain,proto3" json:"chain,omitempty"`
+	LastWithdrawnAt    int64  `protobuf:"varint,5,opt,name=last_withdrawn_at,json=lastWithdrawnAt,proto3" json:"last_withdrawn_at,omitempty"`
+	LastWithdrawnEpoch int64  `protobuf:"varint,6,opt,name=last_withdrawn_epoch,json=lastWithdrawnEpoch,proto3" json:"last_withdrawn_epoch,omitempty"`
+}
+
+func (m *QueryGetNftStakeBalanceResponse) Reset()         { *m = QueryGetNftStakeBalanceResponse{} }
+func (m *QueryGetNftStakeBalanceResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNftStakeBalanceResponse) ProtoMessage()    {}
+func (*QueryGetNftStakeBalanceResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e6d49a2800ab3e4b, []int{7}
+}
+func (m *QueryGetNftStakeBalanceResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetNftStakeBalanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetNftStakeBalanceResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetNftStakeBalanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNftStakeBalanceResponse.Merge(m, src)
+}
+func (m *QueryGetNftStakeBalanceResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetNftStakeBalanceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNftStakeBalanceResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNftStakeBalanceResponse proto.InternalMessageInfo
+
+func (m *QueryGetNftStakeBalanceResponse) GetAmount() string {
+	if m != nil {
+		return m.Amount
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeBalanceResponse) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeBalanceResponse) GetValidator() string {
+	if m != nil {
+		return m.Validator
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeBalanceResponse) GetChain() string {
+	if m != nil {
+		return m.Chain
+	}
+	return ""
+}
+
+func (m *QueryGetNftStakeBalanceResponse) GetLastWithdrawnAt() int64 {
+	if m != nil {
+		return m.LastWithdrawnAt
+	}
+	return 0
+}
+
+func (m *QueryGetNftStakeBalanceResponse) GetLastWithdrawnEpoch() int64 {
+	if m != nil {
+		return m.LastWithdrawnEpoch
+	}
+	return 0
+}
+
 type QueryGetNftStakeResponse struct {
-	MarketplaceCreator string              `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
-	MarketplaceId      string              `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
-	CollectionCreator  string              `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
-	CollectionId       string              `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
-	NftId              string              `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-	Staked             []*NftStakeListItem `protobuf:"bytes,6,rep,name=staked,proto3" json:"staked,omitempty"`
-	Balances           []*NftStakeBalance  `protobuf:"bytes,7,rep,name=balances,proto3" json:"balances,omitempty"`
-	Creator            string              `protobuf:"bytes,8,opt,name=creator,proto3" json:"creator,omitempty"`
+	MarketplaceCreator string                              `protobuf:"bytes,1,opt,name=marketplace_creator,json=marketplaceCreator,proto3" json:"marketplace_creator,omitempty"`
+	MarketplaceId      string                              `protobuf:"bytes,2,opt,name=marketplace_id,json=marketplaceId,proto3" json:"marketplace_id,omitempty"`
+	CollectionCreator  string                              `protobuf:"bytes,3,opt,name=collection_creator,json=collectionCreator,proto3" json:"collection_creator,omitempty"`
+	CollectionId       string                              `protobuf:"bytes,4,opt,name=collection_id,json=collectionId,proto3" json:"collection_id,omitempty"`
+	NftId              string                              `protobuf:"bytes,5,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Staked             []*QueryGetNftStakeListItemResponse `protobuf:"bytes,6,rep,name=staked,proto3" json:"staked,omitempty"`
+	Balances           []*QueryGetNftStakeBalanceResponse  `protobuf:"bytes,7,rep,name=balances,proto3" json:"balances,omitempty"`
+	Creator            string                              `protobuf:"bytes,8,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
 func (m *QueryGetNftStakeResponse) Reset()         { *m = QueryGetNftStakeResponse{} }
 func (m *QueryGetNftStakeResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetNftStakeResponse) ProtoMessage()    {}
 func (*QueryGetNftStakeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{6}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{8}
 }
 func (m *QueryGetNftStakeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -517,14 +734,14 @@ func (m *QueryGetNftStakeResponse) GetNftId() string {
 	return ""
 }
 
-func (m *QueryGetNftStakeResponse) GetStaked() []*NftStakeListItem {
+func (m *QueryGetNftStakeResponse) GetStaked() []*QueryGetNftStakeListItemResponse {
 	if m != nil {
 		return m.Staked
 	}
 	return nil
 }
 
-func (m *QueryGetNftStakeResponse) GetBalances() []*NftStakeBalance {
+func (m *QueryGetNftStakeResponse) GetBalances() []*QueryGetNftStakeBalanceResponse {
 	if m != nil {
 		return m.Balances
 	}
@@ -552,7 +769,7 @@ func (m *QueryGetNftBalancesRequest) Reset()         { *m = QueryGetNftBalancesR
 func (m *QueryGetNftBalancesRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetNftBalancesRequest) ProtoMessage()    {}
 func (*QueryGetNftBalancesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{7}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{9}
 }
 func (m *QueryGetNftBalancesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -647,7 +864,7 @@ func (m *QueryGetNftBalancesResponse) Reset()         { *m = QueryGetNftBalances
 func (m *QueryGetNftBalancesResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetNftBalancesResponse) ProtoMessage()    {}
 func (*QueryGetNftBalancesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{8}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{10}
 }
 func (m *QueryGetNftBalancesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -754,7 +971,7 @@ func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
 func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsRequest) ProtoMessage()    {}
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{9}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{11}
 }
 func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -793,7 +1010,7 @@ func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
 func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryParamsResponse) ProtoMessage()    {}
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{10}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{12}
 }
 func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -838,7 +1055,7 @@ func (m *QueryGetChainValidatorBridgeRequest) Reset()         { *m = QueryGetCha
 func (m *QueryGetChainValidatorBridgeRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetChainValidatorBridgeRequest) ProtoMessage()    {}
 func (*QueryGetChainValidatorBridgeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{11}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{13}
 }
 func (m *QueryGetChainValidatorBridgeRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -889,7 +1106,7 @@ func (m *QueryGetChainValidatorBridgeResponse) Reset()         { *m = QueryGetCh
 func (m *QueryGetChainValidatorBridgeResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetChainValidatorBridgeResponse) ProtoMessage()    {}
 func (*QueryGetChainValidatorBridgeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{12}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{14}
 }
 func (m *QueryGetChainValidatorBridgeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -932,6 +1149,8 @@ func init() {
 	proto.RegisterType((*QueryGetEpochsResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetEpochsResponse")
 	proto.RegisterType((*QueryGetLastEpochsResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetLastEpochsResponse")
 	proto.RegisterType((*QueryGetNftStakeRequest)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftStakeRequest")
+	proto.RegisterType((*QueryGetNftStakeListItemResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftStakeListItemResponse")
+	proto.RegisterType((*QueryGetNftStakeBalanceResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftStakeBalanceResponse")
 	proto.RegisterType((*QueryGetNftStakeResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftStakeResponse")
 	proto.RegisterType((*QueryGetNftBalancesRequest)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftBalancesRequest")
 	proto.RegisterType((*QueryGetNftBalancesResponse)(nil), "LimeChain.mantrachain.vault.v1.QueryGetNftBalancesResponse")
@@ -944,78 +1163,92 @@ func init() {
 func init() { proto.RegisterFile("vault/v1/query.proto", fileDescriptor_e6d49a2800ab3e4b) }
 
 var fileDescriptor_e6d49a2800ab3e4b = []byte{
-	// 1131 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x57, 0x4b, 0x6f, 0xdc, 0xd4,
-	0x17, 0x8f, 0x33, 0xcd, 0xcc, 0xe4, 0xe4, 0xa1, 0xf6, 0x76, 0xda, 0xbf, 0x33, 0xcd, 0xdf, 0x2d,
-	0x93, 0x16, 0x45, 0x42, 0xb1, 0x49, 0xc2, 0xb3, 0x08, 0x44, 0x27, 0xad, 0x48, 0xd4, 0x10, 0x15,
-	0x47, 0x42, 0x3c, 0x16, 0xa3, 0x3b, 0xf6, 0xcd, 0xc4, 0x8a, 0xc7, 0x9e, 0xd8, 0x37, 0x43, 0xaa,
-	0x30, 0x2c, 0x58, 0xb0, 0x44, 0x48, 0x48, 0xb0, 0xe0, 0x43, 0x20, 0xbe, 0x45, 0x97, 0x95, 0xd8,
-	0x74, 0x01, 0x08, 0x25, 0x6c, 0x10, 0x1f, 0xa1, 0x1b, 0xe4, 0xe3, 0x6b, 0x8f, 0x9d, 0xf1, 0x24,
-	0x4e, 0x50, 0x25, 0xe8, 0xce, 0xf7, 0xdc, 0xf3, 0xfa, 0xfd, 0xee, 0x39, 0xc7, 0xf7, 0x42, 0xa5,
-	0x4b, 0xf7, 0x6c, 0xae, 0x75, 0x17, 0xb5, 0xdd, 0x3d, 0xe6, 0x3d, 0x54, 0x3b, 0x9e, 0xcb, 0x5d,
-	0xa2, 0xac, 0x5b, 0x6d, 0xb6, 0xb2, 0x4d, 0x2d, 0x47, 0x6d, 0x53, 0x87, 0x7b, 0xd4, 0xc0, 0x6f,
-	0xd4, 0x55, 0xbb, 0x8b, 0x55, 0xc5, 0x70, 0xfd, 0xb6, 0xeb, 0x6b, 0x4d, 0xea, 0x33, 0xad, 0xbb,
-	0xd8, 0x64, 0x9c, 0x2e, 0x6a, 0x86, 0x6b, 0x39, 0xa1, 0x7d, 0xb5, 0xd2, 0x72, 0x5b, 0x2e, 0x7e,
-	0x6a, 0xc1, 0x97, 0x90, 0xce, 0xb6, 0x5c, 0xb7, 0x65, 0x33, 0x8d, 0x76, 0x2c, 0x8d, 0x3a, 0x8e,
-	0xcb, 0x29, 0xb7, 0x5c, 0xc7, 0x17, 0xbb, 0x57, 0xe2, 0x4c, 0x3a, 0xd4, 0xa3, 0xed, 0x48, 0x2c,
-	0xc7, 0x62, 0x67, 0x8b, 0x37, 0x7c, 0x4e, 0x77, 0x98, 0xd8, 0xb9, 0x15, 0xef, 0x60, 0x76, 0x8d,
-	0x2e, 0xb5, 0x2d, 0x93, 0x72, 0xd7, 0x6b, 0x34, 0x3d, 0xcb, 0x6c, 0x09, 0xb5, 0xda, 0x2e, 0xfc,
-	0xff, 0x83, 0x00, 0xda, 0x7b, 0x8c, 0xaf, 0x53, 0x9f, 0xdf, 0xeb, 0xb8, 0xc6, 0x76, 0xdd, 0x76,
-	0x8d, 0x1d, 0x9d, 0xed, 0xee, 0x31, 0x9f, 0x93, 0x39, 0x98, 0x0a, 0xdc, 0x5a, 0x4e, 0xab, 0x81,
-	0x8e, 0x64, 0xe9, 0x86, 0x34, 0x3f, 0xae, 0x4f, 0x0a, 0x21, 0xd2, 0x40, 0x5e, 0x82, 0x4b, 0x91,
-	0x52, 0x1c, 0x47, 0x1e, 0x45, 0xc5, 0x8b, 0x62, 0xe3, 0xc3, 0x48, 0x5e, 0xfb, 0x51, 0x02, 0x65,
-	0x58, 0x4c, 0xbf, 0xe3, 0x3a, 0x3e, 0x23, 0x32, 0x94, 0x0c, 0x8f, 0xa1, 0x97, 0x30, 0x5c, 0xb4,
-	0x24, 0x2f, 0xc0, 0x64, 0x33, 0x50, 0x6d, 0x6c, 0x33, 0xab, 0xb5, 0xcd, 0x31, 0x48, 0x41, 0x9f,
-	0x40, 0xd9, 0x2a, 0x8a, 0x06, 0x33, 0x2e, 0xe4, 0xcd, 0xf8, 0xc2, 0x90, 0x8c, 0xdb, 0x30, 0x33,
-	0x90, 0xb0, 0xff, 0xec, 0x08, 0x7a, 0x3a, 0x0a, 0x57, 0xa3, 0x78, 0x51, 0x2c, 0x41, 0xcc, 0x3c,
-	0x5c, 0xec, 0x78, 0xac, 0xdb, 0x60, 0x81, 0xb8, 0x81, 0xa8, 0x31, 0x5e, 0x41, 0x9f, 0x0e, 0xe4,
-	0x7d, 0x2a, 0x03, 0x4d, 0x87, 0xed, 0xf3, 0x94, 0x66, 0x48, 0xd6, 0x74, 0x20, 0x4f, 0x68, 0x5e,
-	0x87, 0x90, 0xbe, 0xa0, 0x7c, 0x3c, 0x8e, 0x6c, 0x15, 0x74, 0x40, 0xd1, 0x66, 0x20, 0x21, 0xd7,
-	0x60, 0x3c, 0x54, 0x60, 0x8e, 0x89, 0x1c, 0x15, 0xf4, 0x32, 0x0a, 0xee, 0x39, 0x26, 0xb9, 0x0a,
-	0x45, 0x2c, 0x3b, 0x53, 0x1e, 0x43, 0x38, 0x62, 0x45, 0x96, 0xa1, 0xe4, 0xb1, 0xcf, 0xa8, 0x67,
-	0xfa, 0x72, 0xf1, 0x46, 0x61, 0x7e, 0x62, 0x69, 0x46, 0x0d, 0xdb, 0x42, 0x0d, 0xda, 0x42, 0x15,
-	0x6d, 0xa1, 0xae, 0xb8, 0x96, 0xa3, 0x47, 0x9a, 0x64, 0x06, 0xca, 0x98, 0x44, 0x83, 0x72, 0xb9,
-	0x84, 0x81, 0x4a, 0xb8, 0xbe, 0xc3, 0xc9, 0x15, 0x28, 0x32, 0xc7, 0x0c, 0x36, 0xca, 0xb8, 0x31,
-	0xc6, 0x1c, 0xf3, 0x4e, 0x06, 0xfb, 0xe3, 0x79, 0xd9, 0x87, 0x21, 0xec, 0xdb, 0x50, 0xcd, 0x3a,
-	0x6c, 0x71, 0x00, 0x1b, 0x50, 0x44, 0x46, 0x7d, 0x59, 0x42, 0x54, 0xaf, 0xa9, 0x27, 0x0f, 0x03,
-	0x35, 0xfb, 0x20, 0x75, 0xe1, 0xa5, 0xf6, 0x8b, 0x04, 0xff, 0x8b, 0x54, 0x36, 0xb6, 0xf8, 0x66,
-	0x40, 0x5e, 0x54, 0x59, 0x1a, 0x5c, 0x6e, 0x53, 0x6f, 0x87, 0xf1, 0x8e, 0x4d, 0x0d, 0xd6, 0x48,
-	0x77, 0x04, 0x49, 0x6c, 0xad, 0x88, 0xe6, 0xb8, 0x05, 0xd3, 0x49, 0x03, 0xcb, 0x14, 0x25, 0x36,
-	0x95, 0x90, 0xae, 0x99, 0x64, 0x01, 0x88, 0xe1, 0xda, 0x36, 0x33, 0x82, 0x01, 0x13, 0xbb, 0x0d,
-	0xbb, 0xe4, 0x52, 0x7f, 0x27, 0xf2, 0x3a, 0x07, 0x53, 0x09, 0x75, 0xcb, 0x14, 0x6d, 0x32, 0xd9,
-	0x17, 0xae, 0x99, 0xc1, 0xf1, 0x04, 0x13, 0xc8, 0x8a, 0xca, 0x60, 0xcc, 0xd9, 0xe2, 0x6b, 0x66,
-	0xed, 0xeb, 0x02, 0xc8, 0x83, 0xf0, 0x04, 0x97, 0xff, 0x7d, 0x7c, 0x64, 0x35, 0xae, 0xfe, 0xb0,
-	0xc8, 0x5f, 0x3e, 0xad, 0x1c, 0x22, 0x12, 0xd6, 0x2d, 0x9f, 0xaf, 0x71, 0xd6, 0x8e, 0xfb, 0xe5,
-	0x3e, 0x94, 0x9b, 0xd4, 0xa6, 0x8e, 0xc1, 0x7c, 0xb9, 0x84, 0xbe, 0xb4, 0xbc, 0xbe, 0xea, 0xa1,
-	0x9d, 0x1e, 0x3b, 0x48, 0xce, 0xcf, 0x72, 0x6a, 0x7e, 0xd6, 0x7e, 0x1a, 0xed, 0x97, 0xf7, 0xc6,
-	0x16, 0x17, 0xa6, 0xfe, 0xf3, 0x53, 0x72, 0x83, 0x13, 0xa1, 0x98, 0x77, 0x22, 0x94, 0x86, 0x4c,
-	0x84, 0x1f, 0x0a, 0x70, 0x2d, 0x93, 0xb3, 0xe7, 0xa7, 0x8e, 0x5f, 0x4d, 0x54, 0xdf, 0xa9, 0xe3,
-	0xba, 0x5f, 0x67, 0xff, 0x86, 0x79, 0x5d, 0x01, 0x82, 0x87, 0xf3, 0x00, 0xef, 0x45, 0xa2, 0x90,
-	0x6b, 0x9f, 0xc2, 0xe5, 0x94, 0x54, 0x1c, 0xd5, 0x5d, 0x28, 0x86, 0xf7, 0x27, 0x3c, 0x9d, 0x89,
-	0xa5, 0x17, 0x4f, 0xeb, 0xb1, 0xd0, 0xbe, 0x7e, 0xe1, 0xd1, 0x6f, 0xd7, 0x47, 0x74, 0x61, 0x5b,
-	0xfb, 0x18, 0xe6, 0xa2, 0x7a, 0x40, 0xd3, 0x38, 0x99, 0x3a, 0x5e, 0xad, 0xa2, 0x66, 0xaa, 0xc0,
-	0x58, 0xf2, 0x46, 0x10, 0x2e, 0xc8, 0x2c, 0x8c, 0x1f, 0xbf, 0x02, 0xf4, 0x05, 0xb5, 0xef, 0x24,
-	0xb8, 0x79, 0xb2, 0x6f, 0x81, 0xc4, 0x81, 0x8a, 0x91, 0xb1, 0x2f, 0x70, 0xbd, 0x72, 0x1a, 0xae,
-	0x2c, 0xdf, 0x02, 0x65, 0xa6, 0xdf, 0xa5, 0x5f, 0x01, 0xc6, 0x30, 0x31, 0xf2, 0xbd, 0x04, 0xc5,
-	0x90, 0x16, 0xb2, 0x94, 0xeb, 0xef, 0x97, 0x3a, 0x99, 0xea, 0xf2, 0x99, 0x6c, 0x42, 0xb4, 0xb5,
-	0x9b, 0x5f, 0xfe, 0xfc, 0xc7, 0xb7, 0xa3, 0x0a, 0x99, 0xd5, 0x12, 0x26, 0xda, 0xb1, 0x3b, 0x31,
-	0x79, 0x2a, 0x41, 0x39, 0x1a, 0x8a, 0xe4, 0xf5, 0xbc, 0x7f, 0xe6, 0x63, 0xbf, 0xdd, 0xea, 0x1b,
-	0x67, 0x37, 0x14, 0x59, 0x7e, 0x8e, 0x59, 0x76, 0x09, 0xcf, 0xce, 0xd2, 0xd9, 0xe2, 0x0b, 0x38,
-	0xed, 0xb5, 0x83, 0x8c, 0x79, 0xd1, 0x4b, 0x4b, 0x2d, 0xb3, 0xa7, 0x1d, 0x0c, 0xb6, 0x7f, 0x5a,
-	0x88, 0x4a, 0x61, 0x3f, 0xf7, 0xc8, 0x57, 0xa3, 0x30, 0x91, 0x18, 0x4f, 0xe4, 0xf6, 0x19, 0x70,
-	0x1c, 0xfb, 0x0f, 0x54, 0xdf, 0x3a, 0x97, 0xad, 0xa0, 0xe1, 0x0b, 0xa4, 0x61, 0x9f, 0x74, 0x87,
-	0xd2, 0xa0, 0x89, 0x09, 0xf2, 0x6c, 0x88, 0x78, 0x22, 0x01, 0xf4, 0xaf, 0x6e, 0xe4, 0xcd, 0xbc,
-	0x58, 0x06, 0xee, 0xf6, 0xd5, 0xdb, 0xe7, 0x31, 0x15, 0x2c, 0x6c, 0x22, 0x0b, 0xef, 0x93, 0xfb,
-	0xd9, 0x2c, 0x84, 0x1f, 0x36, 0xf5, 0xf9, 0x42, 0x78, 0x15, 0xd4, 0x0e, 0x52, 0x83, 0xb1, 0xd7,
-	0x5f, 0xc7, 0xd3, 0xa1, 0x47, 0xfe, 0x94, 0x60, 0x3a, 0xfd, 0x66, 0x22, 0x6f, 0x9f, 0x39, 0xc7,
-	0xe4, 0xfb, 0xae, 0xfa, 0xce, 0x79, 0xcd, 0x05, 0xcc, 0x8f, 0x10, 0xa6, 0x4e, 0x1e, 0xe4, 0x83,
-	0xb9, 0x80, 0x0f, 0x87, 0x5c, 0x58, 0xff, 0x92, 0xa0, 0x92, 0x35, 0xa6, 0xc8, 0x4a, 0xde, 0x94,
-	0x4f, 0x18, 0xce, 0xd5, 0xbb, 0xff, 0xcc, 0x89, 0x40, 0xbf, 0x8a, 0xe8, 0xeb, 0xe4, 0xdd, 0x6c,
-	0xf4, 0xd9, 0x4f, 0x6f, 0xed, 0x20, 0x42, 0xdd, 0x47, 0x5b, 0x5f, 0x7d, 0x74, 0xa8, 0x48, 0x8f,
-	0x0f, 0x15, 0xe9, 0xf7, 0x43, 0x45, 0xfa, 0xe6, 0x48, 0x19, 0x79, 0x7c, 0xa4, 0x8c, 0x3c, 0x39,
-	0x52, 0x46, 0x3e, 0x51, 0x5b, 0x16, 0xdf, 0xde, 0x6b, 0xaa, 0x86, 0xdb, 0xd6, 0xe2, 0x9c, 0x53,
-	0xf1, 0xf6, 0x45, 0x44, 0xfe, 0xb0, 0xc3, 0xfc, 0x66, 0x11, 0x5f, 0xf6, 0xcb, 0x7f, 0x07, 0x00,
-	0x00, 0xff, 0xff, 0x04, 0x41, 0x0d, 0xfa, 0xbd, 0x10, 0x00, 0x00,
+	// 1347 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x58, 0xcf, 0x6f, 0x1b, 0xc5,
+	0x17, 0xcf, 0xc6, 0x89, 0x93, 0xbc, 0xa4, 0xf9, 0xb6, 0x53, 0xb7, 0x5f, 0xc7, 0x2d, 0x6e, 0x71,
+	0x5b, 0x14, 0x81, 0xb2, 0xdb, 0xb8, 0xfc, 0x2c, 0x02, 0xea, 0xa4, 0x15, 0x8d, 0x28, 0x55, 0xd9,
+	0x4a, 0x50, 0xe8, 0x61, 0x35, 0xde, 0x9d, 0xd8, 0xab, 0xda, 0xb3, 0xee, 0xee, 0xd8, 0x69, 0x15,
+	0xc2, 0x81, 0x03, 0x67, 0x24, 0x24, 0x40, 0xe2, 0x7f, 0x00, 0xf1, 0x5f, 0xf4, 0x58, 0x89, 0x4b,
+	0x0f, 0x80, 0xa0, 0xe5, 0x82, 0xf8, 0x13, 0x7a, 0x41, 0xfb, 0x66, 0x76, 0xbd, 0x6b, 0xaf, 0x53,
+	0x27, 0xa8, 0x12, 0xf4, 0xe6, 0x79, 0xef, 0xcd, 0xbc, 0xf7, 0xf9, 0xcc, 0x7b, 0x9f, 0xdd, 0x35,
+	0x14, 0x7a, 0xb4, 0xdb, 0x12, 0x46, 0x6f, 0xd5, 0xb8, 0xdd, 0x65, 0xfe, 0x5d, 0xbd, 0xe3, 0x7b,
+	0xc2, 0x23, 0xe5, 0x2b, 0x6e, 0x9b, 0xad, 0x37, 0xa9, 0xcb, 0xf5, 0x36, 0xe5, 0xc2, 0xa7, 0x36,
+	0xfe, 0xc6, 0x58, 0xbd, 0xb7, 0x5a, 0x5a, 0x6a, 0x78, 0x5e, 0xa3, 0xc5, 0x0c, 0x8c, 0xae, 0x77,
+	0x37, 0x0d, 0xca, 0xd5, 0xd6, 0x52, 0xd9, 0xf6, 0x82, 0xb6, 0x17, 0x18, 0x75, 0x1a, 0x30, 0xa3,
+	0xb7, 0x5a, 0x67, 0x82, 0xae, 0x1a, 0xb6, 0xe7, 0x72, 0xe5, 0x2f, 0x34, 0xbc, 0x86, 0x87, 0x3f,
+	0x8d, 0xf0, 0x97, 0xb2, 0x1e, 0x57, 0x07, 0xd2, 0x8e, 0x6b, 0x50, 0xce, 0x3d, 0x41, 0x85, 0xeb,
+	0xf1, 0x40, 0x79, 0x8f, 0xc4, 0x45, 0x76, 0xa8, 0x4f, 0xdb, 0x91, 0xf9, 0x4c, 0x6c, 0xc6, 0xf2,
+	0xac, 0x1e, 0x6d, 0xb9, 0x0e, 0x15, 0x9e, 0x6f, 0xd5, 0x7d, 0xd7, 0x69, 0x30, 0x19, 0x56, 0xb9,
+	0x0d, 0xcf, 0x7d, 0x10, 0x62, 0x7b, 0x97, 0x89, 0x2b, 0x34, 0x10, 0x97, 0x3a, 0x9e, 0xdd, 0x5c,
+	0x6b, 0x79, 0xf6, 0x2d, 0x93, 0xdd, 0xee, 0xb2, 0x40, 0x90, 0x53, 0x70, 0x20, 0x10, 0xf4, 0x96,
+	0xcb, 0x1b, 0x16, 0x1e, 0x54, 0xd4, 0x4e, 0x6a, 0xcb, 0x73, 0xe6, 0x82, 0x32, 0x22, 0x0f, 0xe4,
+	0x25, 0x38, 0x14, 0x05, 0xc5, 0x79, 0x8a, 0x93, 0x18, 0x78, 0x50, 0x39, 0x3e, 0x8c, 0xec, 0x95,
+	0x1f, 0x34, 0x28, 0x8f, 0xca, 0x19, 0x74, 0x3c, 0x1e, 0x30, 0x52, 0x84, 0x19, 0xdb, 0x67, 0x78,
+	0x8a, 0x4c, 0x17, 0x2d, 0xc9, 0xf3, 0xb0, 0x50, 0x0f, 0x43, 0xad, 0x26, 0x73, 0x1b, 0x4d, 0x81,
+	0x49, 0x72, 0xe6, 0x3c, 0xda, 0x2e, 0xa3, 0x69, 0xb8, 0xe2, 0xdc, 0xb8, 0x15, 0x4f, 0x8d, 0xa8,
+	0xb8, 0x0d, 0x4b, 0x43, 0x05, 0x07, 0x4f, 0x8f, 0xa0, 0xc7, 0x93, 0x70, 0x34, 0xca, 0x17, 0xe5,
+	0x52, 0xc4, 0x2c, 0xc3, 0xc1, 0x8e, 0xcf, 0x7a, 0x16, 0x0b, 0xcd, 0x16, 0xa2, 0xc6, 0x7c, 0x39,
+	0x73, 0x31, 0xb4, 0xf7, 0xa9, 0x0c, 0x23, 0x39, 0xbb, 0x23, 0x52, 0x91, 0x92, 0xac, 0xc5, 0xd0,
+	0x9e, 0x88, 0x3c, 0x01, 0x92, 0x3e, 0x2b, 0x10, 0xd4, 0x17, 0xc8, 0x56, 0xce, 0x04, 0x34, 0x5d,
+	0x0f, 0x2d, 0xe4, 0x18, 0xcc, 0xc9, 0x00, 0xc6, 0x1d, 0xe4, 0x28, 0x67, 0xce, 0xa2, 0xe1, 0x12,
+	0x77, 0xc8, 0x51, 0xc8, 0x87, 0x00, 0x98, 0x53, 0x9c, 0x46, 0x38, 0x6a, 0x45, 0xce, 0xc1, 0x8c,
+	0xcf, 0xb6, 0xa8, 0xef, 0x04, 0xc5, 0xfc, 0xc9, 0xdc, 0xf2, 0x7c, 0x75, 0x49, 0x97, 0xcd, 0xaf,
+	0x87, 0xcd, 0xaf, 0xab, 0xe6, 0xd7, 0xd7, 0x3d, 0x97, 0x9b, 0x51, 0x24, 0x59, 0x82, 0x59, 0x2c,
+	0xc2, 0xa2, 0xa2, 0x38, 0x83, 0x89, 0x66, 0x70, 0x5d, 0x13, 0xe4, 0x08, 0xe4, 0x19, 0x77, 0x42,
+	0xc7, 0x2c, 0x3a, 0xa6, 0x19, 0x77, 0x6a, 0x19, 0xec, 0xcf, 0x8d, 0xcb, 0x3e, 0x8c, 0x60, 0xbf,
+	0x05, 0xa5, 0xac, 0xcb, 0x56, 0x17, 0x70, 0x15, 0xf2, 0xc8, 0x68, 0x50, 0xd4, 0x10, 0xd5, 0xab,
+	0xfa, 0xee, 0x6a, 0xa0, 0x67, 0x5f, 0xa4, 0xa9, 0x4e, 0xa9, 0xfc, 0xac, 0xc1, 0xff, 0xa3, 0x90,
+	0xab, 0x9b, 0xe2, 0x7a, 0x48, 0x5e, 0xd4, 0x59, 0x06, 0x1c, 0x6e, 0x53, 0xff, 0x16, 0x13, 0x9d,
+	0x16, 0xb5, 0x99, 0x95, 0x9e, 0x08, 0x92, 0x70, 0xad, 0xab, 0xe1, 0x38, 0x03, 0x8b, 0xc9, 0x0d,
+	0xae, 0xa3, 0x5a, 0xec, 0x40, 0xc2, 0xba, 0xe1, 0x90, 0x15, 0x20, 0xb6, 0xd7, 0x6a, 0x31, 0x3b,
+	0x94, 0x91, 0xf8, 0x58, 0x39, 0x25, 0x87, 0xfa, 0x9e, 0xe8, 0xd4, 0x53, 0x70, 0x20, 0x11, 0xee,
+	0x3a, 0x6a, 0x4c, 0x16, 0xfa, 0xc6, 0x0d, 0x27, 0xbc, 0x1e, 0xbe, 0x29, 0x42, 0xaf, 0x6c, 0x83,
+	0x69, 0xbe, 0x29, 0x36, 0x9c, 0xca, 0xb7, 0x39, 0x38, 0x39, 0x08, 0xef, 0x8a, 0x1b, 0x88, 0x0d,
+	0xc1, 0xda, 0x31, 0xa7, 0x47, 0x21, 0x4f, 0xdb, 0x5e, 0x97, 0x0b, 0x05, 0x4d, 0xad, 0x48, 0x01,
+	0xa6, 0x1d, 0xc6, 0xbd, 0xb6, 0x42, 0x21, 0x17, 0xa4, 0x0a, 0x47, 0xec, 0xad, 0xea, 0x59, 0xcb,
+	0xf6, 0x90, 0x6d, 0x61, 0x51, 0xc7, 0xf1, 0x59, 0x10, 0x28, 0x00, 0x87, 0x43, 0xe7, 0xba, 0xf2,
+	0xd5, 0xa4, 0x0b, 0x9b, 0xb4, 0x49, 0x7d, 0x16, 0xa8, 0xda, 0xd5, 0x8a, 0x1c, 0x87, 0xb9, 0x7e,
+	0x43, 0xc8, 0xc2, 0xfb, 0x86, 0x30, 0xbf, 0xec, 0xa9, 0xbc, 0xcc, 0x8f, 0x0b, 0xb2, 0x0c, 0x53,
+	0x0e, 0x15, 0x14, 0xfb, 0x73, 0xbe, 0x5a, 0xd0, 0xa5, 0x38, 0xeb, 0x91, 0xda, 0xeb, 0x35, 0x7e,
+	0xd7, 0xc4, 0x88, 0xa4, 0x8a, 0xcd, 0xee, 0xae, 0x62, 0x73, 0xc3, 0x2a, 0x76, 0x0c, 0xe6, 0xe4,
+	0x24, 0x85, 0x2d, 0x0f, 0x72, 0xe8, 0xa4, 0xa1, 0x26, 0xc2, 0x91, 0xed, 0xf2, 0xbe, 0x7b, 0x5e,
+	0x8e, 0x6c, 0x64, 0xaa, 0x89, 0x30, 0x81, 0x72, 0x63, 0x9f, 0x15, 0x17, 0x64, 0x02, 0x69, 0xc3,
+	0x56, 0xac, 0xfc, 0xae, 0xc1, 0x89, 0xc1, 0xab, 0x59, 0xa3, 0x2d, 0xca, 0x6d, 0xb6, 0xcf, 0x9b,
+	0x49, 0xb1, 0x99, 0x1b, 0xc9, 0xe6, 0x54, 0x92, 0xcd, 0x17, 0xe1, 0x50, 0x8b, 0x06, 0xc2, 0xda,
+	0x72, 0x45, 0xd3, 0xf1, 0xe9, 0x16, 0x0f, 0xf1, 0x4c, 0x63, 0xb5, 0xff, 0x0b, 0x1d, 0x1f, 0x45,
+	0xf6, 0x9a, 0x20, 0x67, 0xa1, 0x30, 0x10, 0x2b, 0xc1, 0xe5, 0x31, 0x9c, 0xa4, 0xc2, 0x25, 0xc6,
+	0xef, 0x73, 0x50, 0x1c, 0x9e, 0x2e, 0x05, 0xee, 0xbf, 0x3f, 0x5e, 0xe4, 0x46, 0x2c, 0xbe, 0x52,
+	0x63, 0x2f, 0x8c, 0xab, 0x46, 0xa3, 0x66, 0x31, 0x96, 0xef, 0x9b, 0x30, 0x5b, 0x97, 0xcd, 0x10,
+	0x14, 0x67, 0xf0, 0xec, 0x77, 0xf6, 0x7a, 0xf6, 0x40, 0x33, 0x99, 0xf1, 0x81, 0xa3, 0x07, 0xa3,
+	0xf2, 0xe3, 0x64, 0x5f, 0x7d, 0xaf, 0x6e, 0x0a, 0x75, 0x44, 0xf0, 0xec, 0x28, 0xe2, 0xf0, 0x03,
+	0x2b, 0x3f, 0xee, 0x03, 0x6b, 0x66, 0xc4, 0x03, 0xeb, 0xbb, 0x1c, 0x1c, 0xcb, 0xe4, 0xec, 0xd9,
+	0xe9, 0xf3, 0x57, 0x12, 0xdd, 0xf8, 0xc4, 0xb7, 0x89, 0x7e, 0x9f, 0xfd, 0x1b, 0x5e, 0x27, 0x0a,
+	0x40, 0xf0, 0x72, 0xae, 0xe1, 0xcb, 0xb9, 0x6a, 0xe4, 0xca, 0x4d, 0x38, 0x9c, 0xb2, 0xaa, 0xab,
+	0xba, 0x08, 0x79, 0xf9, 0x12, 0x8f, 0xb7, 0x33, 0x5f, 0x7d, 0xe1, 0x49, 0x33, 0x27, 0xf7, 0xaf,
+	0x4d, 0xdd, 0xfb, 0xf5, 0xc4, 0x84, 0xa9, 0xf6, 0x56, 0x3e, 0x86, 0x53, 0x51, 0x3f, 0xe0, 0xd6,
+	0xb8, 0x98, 0x35, 0x7c, 0xf3, 0x8f, 0x86, 0x29, 0x16, 0x64, 0x2d, 0x29, 0xc8, 0x29, 0x11, 0x9f,
+	0x1c, 0x10, 0xf1, 0xca, 0xd7, 0x1a, 0x9c, 0xde, 0xfd, 0x6c, 0x85, 0x84, 0x43, 0xc1, 0xce, 0xf0,
+	0x2b, 0x5c, 0x2f, 0x3f, 0x09, 0x57, 0xd6, 0xd9, 0x0a, 0x65, 0xe6, 0xb9, 0xd5, 0x5f, 0x00, 0xa6,
+	0xb1, 0x30, 0xf2, 0x8d, 0x06, 0x79, 0x49, 0x0b, 0xa9, 0x8e, 0x25, 0x59, 0xa9, 0x9b, 0x29, 0x9d,
+	0xdb, 0xd3, 0x1e, 0x89, 0xb6, 0x72, 0xfa, 0xf3, 0x9f, 0xfe, 0xf8, 0x6a, 0xb2, 0x4c, 0x8e, 0x1b,
+	0x89, 0x2d, 0xc6, 0xc0, 0x87, 0x19, 0x79, 0xac, 0xc1, 0x6c, 0x24, 0x8e, 0xe4, 0xb5, 0xbd, 0xca,
+	0x69, 0x54, 0xe0, 0xeb, 0x7b, 0xdf, 0xa8, 0xaa, 0xfc, 0x14, 0xab, 0xec, 0x11, 0x91, 0x5d, 0x25,
+	0xdf, 0x14, 0x2b, 0xa8, 0xfe, 0xc6, 0x76, 0x86, 0x5e, 0xec, 0xa4, 0xad, 0xae, 0xb3, 0x63, 0x6c,
+	0x0f, 0x8f, 0x7f, 0xda, 0x88, 0x41, 0x72, 0x9e, 0x77, 0xc8, 0x17, 0x93, 0x30, 0x9f, 0x90, 0x27,
+	0x72, 0x7e, 0x0f, 0x38, 0x06, 0x9e, 0x03, 0xa5, 0x37, 0xf7, 0xb5, 0x57, 0xd1, 0xf0, 0x19, 0xd2,
+	0x70, 0x87, 0xf4, 0x46, 0xd2, 0x60, 0x28, 0x05, 0x79, 0x3a, 0x44, 0x3c, 0xd0, 0x00, 0xfa, 0x5f,
+	0x16, 0xe4, 0x8d, 0x71, 0xb1, 0x0c, 0x7d, 0x7a, 0x96, 0xce, 0xef, 0x67, 0xab, 0x62, 0xe1, 0x3a,
+	0xb2, 0xf0, 0x3e, 0x79, 0x2f, 0x9b, 0x05, 0xf9, 0x23, 0x7c, 0xa5, 0x5a, 0x91, 0x5f, 0x2a, 0xc6,
+	0x76, 0x4a, 0x18, 0x77, 0xfa, 0xeb, 0x58, 0x1d, 0x76, 0xc8, 0x9f, 0x1a, 0x2c, 0xa6, 0x3f, 0xe9,
+	0xc9, 0x5b, 0x7b, 0xae, 0x31, 0xf9, 0xf7, 0x43, 0xe9, 0xed, 0xfd, 0x6e, 0x57, 0x30, 0x6f, 0x20,
+	0x4c, 0x93, 0x5c, 0x1b, 0x0f, 0xe6, 0x0a, 0xbe, 0x82, 0x8f, 0x85, 0xf5, 0x2f, 0x0d, 0x0a, 0x59,
+	0x32, 0x45, 0xd6, 0xc7, 0x2d, 0x79, 0x17, 0x71, 0x2e, 0x5d, 0xfc, 0x67, 0x87, 0x28, 0xf4, 0x97,
+	0x11, 0xfd, 0x1a, 0xb9, 0x90, 0x8d, 0x3e, 0xfb, 0x9f, 0x21, 0x63, 0x3b, 0x42, 0xdd, 0x47, 0xbb,
+	0x76, 0xf9, 0xde, 0xc3, 0xb2, 0x76, 0xff, 0x61, 0x59, 0xfb, 0xed, 0x61, 0x59, 0xfb, 0xf2, 0x51,
+	0x79, 0xe2, 0xfe, 0xa3, 0xf2, 0xc4, 0x83, 0x47, 0xe5, 0x89, 0x4f, 0xf4, 0x86, 0x2b, 0x9a, 0xdd,
+	0xba, 0x6e, 0x7b, 0x6d, 0x23, 0xae, 0x39, 0x95, 0xef, 0x8e, 0xca, 0x28, 0xee, 0x76, 0x58, 0x50,
+	0xcf, 0xe3, 0x97, 0xd2, 0xb9, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc7, 0x08, 0x26, 0xbd, 0x5d,
+	0x13, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1588,6 +1821,171 @@ func (m *QueryGetNftStakeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetNftStakeListItemResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftStakeListItemResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftStakeListItemResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.StakedEpoch != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.StakedEpoch))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.UnstakedAt != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.UnstakedAt))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.StakedAt != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.StakedAt))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.BlockHeight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BlockHeight))
+		i--
+		dAtA[i] = 0x48
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Shares) > 0 {
+		i -= len(m.Shares)
+		copy(dAtA[i:], m.Shares)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Shares)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Cw20ContractAddress) > 0 {
+		i -= len(m.Cw20ContractAddress)
+		copy(dAtA[i:], m.Cw20ContractAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Cw20ContractAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetNftStakeBalanceResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetNftStakeBalanceResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetNftStakeBalanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.LastWithdrawnEpoch != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.LastWithdrawnEpoch))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.LastWithdrawnAt != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.LastWithdrawnAt))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Chain) > 0 {
+		i -= len(m.Chain)
+		copy(dAtA[i:], m.Chain)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Chain)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Validator) > 0 {
+		i -= len(m.Validator)
+		copy(dAtA[i:], m.Validator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Validator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Amount) > 0 {
+		i -= len(m.Amount)
+		copy(dAtA[i:], m.Amount)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Amount)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *QueryGetNftStakeResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -2129,6 +2527,90 @@ func (m *QueryGetNftStakeRequest) Size() (n int) {
 	l = len(m.NftId)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetNftStakeListItemResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Cw20ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Shares)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.BlockHeight != 0 {
+		n += 1 + sovQuery(uint64(m.BlockHeight))
+	}
+	if m.StakedAt != 0 {
+		n += 1 + sovQuery(uint64(m.StakedAt))
+	}
+	if m.UnstakedAt != 0 {
+		n += 1 + sovQuery(uint64(m.UnstakedAt))
+	}
+	if m.StakedEpoch != 0 {
+		n += 1 + sovQuery(uint64(m.StakedEpoch))
+	}
+	return n
+}
+
+func (m *QueryGetNftStakeBalanceResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Amount)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Validator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Chain)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.LastWithdrawnAt != 0 {
+		n += 1 + sovQuery(uint64(m.LastWithdrawnAt))
+	}
+	if m.LastWithdrawnEpoch != 0 {
+		n += 1 + sovQuery(uint64(m.LastWithdrawnEpoch))
 	}
 	return n
 }
@@ -3299,6 +3781,608 @@ func (m *QueryGetNftStakeRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *QueryGetNftStakeListItemResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftStakeListItemResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftStakeListItemResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cw20ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cw20ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Shares", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Shares = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &types1.Any{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlockHeight", wireType)
+			}
+			m.BlockHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlockHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakedAt", wireType)
+			}
+			m.StakedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StakedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UnstakedAt", wireType)
+			}
+			m.UnstakedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UnstakedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StakedEpoch", wireType)
+			}
+			m.StakedEpoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StakedEpoch |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetNftStakeBalanceResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetNftStakeBalanceResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetNftStakeBalanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Amount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastWithdrawnAt", wireType)
+			}
+			m.LastWithdrawnAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastWithdrawnAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastWithdrawnEpoch", wireType)
+			}
+			m.LastWithdrawnEpoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastWithdrawnEpoch |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *QueryGetNftStakeResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3517,7 +4601,7 @@ func (m *QueryGetNftStakeResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Staked = append(m.Staked, &NftStakeListItem{})
+			m.Staked = append(m.Staked, &QueryGetNftStakeListItemResponse{})
 			if err := m.Staked[len(m.Staked)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3551,7 +4635,7 @@ func (m *QueryGetNftStakeResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Balances = append(m.Balances, &NftStakeBalance{})
+			m.Balances = append(m.Balances, &QueryGetNftStakeBalanceResponse{})
 			if err := m.Balances[len(m.Balances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

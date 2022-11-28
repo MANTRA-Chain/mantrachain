@@ -1,11 +1,11 @@
 syntax = "proto3";
 package LimeChain.mantrachain.vault.v1;
 
+import "google/protobuf/any.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "vault/v1/params.proto";
-import "vault/v1/nft_stake.proto";
 import "vault/v1/chain_validator_bridge.proto";
 // this line is used by starport scaffolding # 1
 
@@ -84,14 +84,38 @@ message QueryGetNftStakeRequest {
   string nft_id = 5;
 }
 
+message QueryGetNftStakeListItemResponse {
+  string amount = 1;
+  string denom = 2;
+  string cw20_contract_address = 3;
+  string shares = 4;
+  string validator = 5;
+  string chain = 6;
+  google.protobuf.Any data = 7;
+  string creator = 8;
+  int64 block_height = 9;
+  int64 staked_at = 10;
+  int64 unstaked_at = 11;
+  int64 staked_epoch = 12;
+}
+
+message QueryGetNftStakeBalanceResponse {
+  string amount = 1;
+  string denom = 2;
+  string validator = 3;
+  string chain = 4;
+  int64 last_withdrawn_at = 5; 
+  int64 last_withdrawn_epoch = 6; 
+}
+
 message QueryGetNftStakeResponse {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;
   string collection_id = 4;
   string nft_id = 5; 
-  repeated NftStakeListItem staked = 6;
-  repeated NftStakeBalance balances = 7;
+  repeated QueryGetNftStakeListItemResponse staked = 6;
+  repeated QueryGetNftStakeBalanceResponse balances = 7;
   string creator = 8;
 }
 
