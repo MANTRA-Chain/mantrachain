@@ -36,9 +36,8 @@ message MsgBuyNftResponse {
   string nft_id = 5;
   string owner = 6;
   string receiver = 7;
-  bool delegated = 8;
-  string staking_chain = 9;
-  string staking_validator = 10;
+  string staking_chain = 8;
+  string staking_validator = 9;
 }
 
 message MsgImportNftCollection {

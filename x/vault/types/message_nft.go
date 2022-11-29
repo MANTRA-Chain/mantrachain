@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	TypeMsgWithdrawNftRewards = "withdraw_nft_rewards"
-	TypeMsgSetStaked          = "set_staked"
+	TypeMsgWithdrawNftRewards   = "withdraw_nft_rewards"
+	TypeMsgUpdateNftStakeStaked = "update_nft_stake_staked"
 )
 
 var (
 	_ sdk.Msg = &MsgWithdrawNftRewards{}
-	_ sdk.Msg = &MsgSetStaked{}
+	_ sdk.Msg = &MsgUpdateNftStakeStaked{}
 )
 
 func NewMsgWithdrawNftRewards(creator string, marketplaceCreator string, marketplaceId string,
@@ -84,11 +84,11 @@ func (msg *MsgWithdrawNftRewards) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgSetStaked(creator string, marketplaceCreator string, marketplaceId string,
+func NewMsgUpdateNftStakeStaked(creator string, marketplaceCreator string, marketplaceId string,
 	collectionCreator string, collectionId string, nftId string,
 	stakingChain string, stakingValidator string, blockHeight int64, stakedIndex int64, shares string,
-) *MsgSetStaked {
-	return &MsgSetStaked{
+) *MsgUpdateNftStakeStaked {
+	return &MsgUpdateNftStakeStaked{
 		Creator:            creator,
 		MarketplaceCreator: marketplaceCreator,
 		MarketplaceId:      marketplaceId,
@@ -103,15 +103,15 @@ func NewMsgSetStaked(creator string, marketplaceCreator string, marketplaceId st
 	}
 }
 
-func (msg *MsgSetStaked) Route() string {
+func (msg *MsgUpdateNftStakeStaked) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgSetStaked) Type() string {
-	return TypeMsgSetStaked
+func (msg *MsgUpdateNftStakeStaked) Type() string {
+	return TypeMsgUpdateNftStakeStaked
 }
 
-func (msg *MsgSetStaked) GetSigners() []sdk.AccAddress {
+func (msg *MsgUpdateNftStakeStaked) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -119,12 +119,12 @@ func (msg *MsgSetStaked) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgSetStaked) GetSignBytes() []byte {
+func (msg *MsgUpdateNftStakeStaked) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgSetStaked) ValidateBasic() error {
+func (msg *MsgUpdateNftStakeStaked) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

@@ -229,7 +229,7 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 				sdk.EventTypeMessage,
 				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 				sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgEpochEnd),
-				sdk.NewAttribute(types.AttributeKeyChainId, ctx.ChainID()),
+				sdk.NewAttribute(types.AttributeKeyChain, ctx.ChainID()),
 				sdk.NewAttribute(types.AttributeKeyValidator, params.StakingValidatorAddress),
 				sdk.NewAttribute(types.AttributeBlockHeight, strconv.FormatInt(ctx.BlockHeight(), 10)),
 			),

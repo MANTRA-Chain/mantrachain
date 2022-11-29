@@ -47,42 +47,43 @@ message NftStakeBalance {
 }
 
 message NftStakeListItem {
-  string amount = 1 [
+  uint32 index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  string amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ]; 
-  string denom = 2 [
+  string denom = 3 [
     (gogoproto.moretags) = "yaml:\"denom\""
   ];
-  string cw20_contract_address = 3 [
+  string cw20_contract_address = 4 [
     (gogoproto.moretags) = "yaml:\"staked_epoch\""
   ]; 
-  string shares = 4 [
+  string shares = 5 [
     (gogoproto.moretags) = "yaml:\"shares\""
   ]; 
-  string validator = 5 [
+  string validator = 6 [
     (gogoproto.moretags) = "yaml:\"validator\""
   ]; 
-  string chain = 6 [
+  string chain = 7 [
     (gogoproto.moretags) = "yaml:\"chain\""
   ];
-  google.protobuf.Any data = 7 [
+  google.protobuf.Any data = 8 [
     (gogoproto.moretags) = "yaml:\"data\""
   ];  
-  bytes creator = 8 [
+  bytes creator = 9 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  int64 block_height = 9 [
+  int64 block_height = 10 [
     (gogoproto.moretags) = "yaml:\"block_height\""
   ];
-  int64 staked_at = 10 [
+  int64 staked_at = 11 [
       (gogoproto.moretags) = "yaml:\"staked_at\""
   ];
-  int64 unstaked_at = 11 [
+  int64 unstaked_at = 12 [
       (gogoproto.moretags) = "yaml:\"unstaked_at\""
   ];
-  int64 staked_epoch = 12 [
+  int64 staked_epoch = 13 [
     (gogoproto.moretags) = "yaml:\"staked_epoch\""
   ];
 }

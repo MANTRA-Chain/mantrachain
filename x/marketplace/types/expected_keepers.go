@@ -37,7 +37,22 @@ type BankKeeper interface {
 }
 
 type VaultKeeper interface {
-	UpsertNftStake(ctx sdk.Context, marketplaceIndex []byte, collectionIndex []byte, index []byte, creator sdk.AccAddress, amount sdk.Coin, stakingChain string, stakingValidator string, cw20ContractAddress sdk.AccAddress) (bool, error)
+	CreateNftStakeStaked(
+		ctx sdk.Context,
+		marketplaceCreator string,
+		marketplaceId string,
+		collectionCreator string,
+		collectionId string,
+		nftId string,
+		marketplaceIndex []byte,
+		collectionIndex []byte,
+		index []byte,
+		creator sdk.AccAddress,
+		amount sdk.Coin,
+		stakingChain string,
+		stakingValidator string,
+		cw20ContractAddress sdk.AccAddress,
+	) error
 }
 
 type WasmViewKeeper interface {

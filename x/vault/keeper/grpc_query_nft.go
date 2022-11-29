@@ -59,6 +59,7 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 
 	for _, v := range nftStake.Staked {
 		nftStaked = append(nftStaked, &types.QueryGetNftStakeListItemResponse{
+			Index:               v.Index,
 			Amount:              v.Amount.String(),
 			Denom:               v.Denom,
 			Cw20ContractAddress: v.Cw20ContractAddress,

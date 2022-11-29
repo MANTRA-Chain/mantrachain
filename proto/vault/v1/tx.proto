@@ -10,14 +10,14 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 service Msg {
   rpc WithdrawNftRewards(MsgWithdrawNftRewards) returns (MsgWithdrawNftRewardsResponse);
   rpc StartEpoch(MsgStartEpoch) returns (MsgStartEpochResponse);
-  rpc SetStaked(MsgSetStaked) returns (MsgSetStakedResponse);
+  rpc UpdateNftStakeStaked(MsgUpdateNftStakeStaked) returns (MsgUpdateNftStakeStakedResponse);
   rpc CreateChainValidatorBridge(MsgCreateChainValidatorBridge) returns (MsgCreateChainValidatorBridgeResponse);
   rpc UpdateChainValidatorBridge(MsgUpdateChainValidatorBridge) returns (MsgUpdateChainValidatorBridgeResponse);
   rpc DeleteChainValidatorBridge(MsgDeleteChainValidatorBridge) returns (MsgDeleteChainValidatorBridgeResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
 }
 
-message MsgSetStaked {
+message MsgUpdateNftStakeStaked {
   string creator = 1;
   string marketplace_creator = 2;
   string marketplace_id = 3;
@@ -31,7 +31,7 @@ message MsgSetStaked {
   string shares = 11;
 }
 
-message MsgSetStakedResponse {
+message MsgUpdateNftStakeStakedResponse {
   string marketplace_creator = 1;
   string marketplace_id = 2;
   string collection_creator = 3;

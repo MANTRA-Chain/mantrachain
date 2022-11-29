@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
@@ -61,9 +62,14 @@ func (k Keeper) GetAllNftStake(ctx sdk.Context, marketplaceIndex []byte, collect
 	return
 }
 
-// TODO: move out the staking logic
-func (k Keeper) UpsertNftStake(
+// TODO: move out the delegate mantrachain logic
+func (k Keeper) CreateNftStakeStaked(
 	ctx sdk.Context,
+	marketplaceCreator string,
+	marketplaceId string,
+	collectionCreator string,
+	collectionId string,
+	nftId string,
 	marketplaceIndex []byte,
 	collectionIndex []byte,
 	index []byte,
@@ -72,8 +78,8 @@ func (k Keeper) UpsertNftStake(
 	stakingChain string,
 	stakingValidator string,
 	cw20ContractAddress sdk.AccAddress,
-) (bool, error) {
-	var isStaked bool = false
+) error {
+	var delegated bool = false
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
 	delegate := strings.TrimSpace(stakingChain) == "" && strings.TrimSpace(stakingValidator) == ""
 
@@ -91,6 +97,7 @@ func (k Keeper) UpsertNftStake(
 	stakeAmount := sdk.NewDecFromInt(amount.Amount)
 
 	staked := types.NftStakeListItem{
+		Index:   uint32(len(nftStake.Staked)),
 		Amount:  &stakeAmount,
 		Denom:   amount.Denom,
 		Creator: creator,
@@ -104,7 +111,7 @@ func (k Keeper) UpsertNftStake(
 		shares, err := se.Delegate(creator, amount, params.StakingValidatorAddress)
 
 		if err != nil {
-			return isStaked, err
+			return err
 		}
 
 		staked.StakedAt = ctx.BlockHeader().Time.Unix()
@@ -118,12 +125,12 @@ func (k Keeper) UpsertNftStake(
 		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 		if !found {
-			return isStaked, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
+			return sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 		}
 
 		staked.StakedEpoch = lastEpochBlock.BlockHeight
 
-		isStaked = true
+		delegated = true
 	} else { // If the stake will be on a another chain
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
@@ -135,5 +142,22 @@ func (k Keeper) UpsertNftStake(
 
 	k.SetNftStake(ctx, nftStake)
 
-	return isStaked, nil
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeNftStakeStakedCreated),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceCreator, marketplaceCreator),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceId, marketplaceId),
+			sdk.NewAttribute(types.AttributeKeyCollectionCreator, collectionCreator),
+			sdk.NewAttribute(types.AttributeKeyCollectionId, collectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, nftId),
+			sdk.NewAttribute(types.AttributeKeyChain, staked.Chain),
+			sdk.NewAttribute(types.AttributeKeyValidator, staked.Validator),
+			sdk.NewAttribute(types.AttributeKeyDelegated, strconv.FormatBool(delegated)),
+			sdk.NewAttribute(types.AttributeNftStakeStakedIndex, strconv.Itoa(int(staked.Index))),
+		),
+	)
+
+	return nil
 }

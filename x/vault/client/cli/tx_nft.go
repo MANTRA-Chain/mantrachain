@@ -110,9 +110,9 @@ func CmdWithdrawNftRewards() *cobra.Command {
 	return cmd
 }
 
-func CmdSetStaked() *cobra.Command {
+func CmdUpdateNftStakeStaked() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-staked [nft-id] [block-height] [staked-index] [shares]",
+		Use:   "update-nft-stake-staked [nft-id] [block-height] [staked-index] [shares]",
 		Short: "Broadcast message set-staked",
 		Long: "Withdraw NFT rewards. " +
 			"[nft-id] is the NFT id." +
@@ -185,7 +185,7 @@ func CmdSetStaked() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgSetStaked(
+			msg := types.NewMsgUpdateNftStakeStaked(
 				clientCtx.GetFromAddress().String(),
 				marketplaceCreator,
 				marketplaceId,
@@ -205,7 +205,7 @@ func CmdSetStaked() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FsSetStaked)
+	cmd.Flags().AddFlagSet(FsUpdateNftStakeStaked)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

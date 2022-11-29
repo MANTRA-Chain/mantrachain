@@ -17,7 +17,12 @@ func NewVaultExecutor(ctx sdk.Context, vaultKeeper types.VaultKeeper) *VaultExec
 	}
 }
 
-func (c *VaultExecutor) UpsertNftStake(
+func (c *VaultExecutor) CreateNftStakeStaked(
+	marketplaceCreator string,
+	marketplaceId string,
+	collectionCreator string,
+	collectionId string,
+	nftId string,
 	marketplaceIndex []byte,
 	collectionIndex []byte,
 	nftIndex []byte,
@@ -26,6 +31,21 @@ func (c *VaultExecutor) UpsertNftStake(
 	stakingChain string,
 	stakingValidator string,
 	cw20ContractAddress sdk.AccAddress,
-) (bool, error) {
-	return c.vaultKeeper.UpsertNftStake(c.ctx, marketplaceIndex, collectionIndex, nftIndex, creator, amount, stakingChain, stakingValidator, cw20ContractAddress)
+) error {
+	return c.vaultKeeper.CreateNftStakeStaked(
+		c.ctx,
+		marketplaceCreator,
+		marketplaceId,
+		collectionCreator,
+		collectionId,
+		nftId,
+		marketplaceIndex,
+		collectionIndex,
+		nftIndex,
+		creator,
+		amount,
+		stakingChain,
+		stakingValidator,
+		cw20ContractAddress,
+	)
 }

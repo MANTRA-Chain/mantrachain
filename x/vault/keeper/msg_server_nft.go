@@ -231,7 +231,7 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 	}, nil
 }
 
-func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*types.MsgSetStakedResponse, error) {
+func (k msgServer) UpdateNftStakeStaked(goCtx context.Context, msg *types.MsgUpdateNftStakeStaked) (*types.MsgUpdateNftStakeStakedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if strings.TrimSpace(msg.StakingChain) == "" {
@@ -349,7 +349,7 @@ func (k msgServer) SetStaked(goCtx context.Context, msg *types.MsgSetStaked) (*t
 
 	k.SetChainValidatorBridge(ctx, msg.StakingChain, msg.StakingValidator, chainValidatorBridge)
 
-	return &types.MsgSetStakedResponse{
+	return &types.MsgUpdateNftStakeStakedResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
 		MarketplaceId:      msg.MarketplaceId,
 		CollectionCreator:  collectionCreator.String(),

@@ -36,7 +36,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateChainValidatorBridge(),
 		CmdUpdateChainValidatorBridge(),
 		CmdDeleteChainValidatorBridge(),
-		CmdSetStaked(),
+		CmdUpdateNftStakeStaked(),
 	)
 	// this line is used by starport scaffolding # 1
 

@@ -85,18 +85,19 @@ message QueryGetNftStakeRequest {
 }
 
 message QueryGetNftStakeListItemResponse {
-  string amount = 1;
-  string denom = 2;
-  string cw20_contract_address = 3;
-  string shares = 4;
-  string validator = 5;
-  string chain = 6;
-  google.protobuf.Any data = 7;
-  string creator = 8;
-  int64 block_height = 9;
-  int64 staked_at = 10;
-  int64 unstaked_at = 11;
-  int64 staked_epoch = 12;
+  uint32 index = 1;
+  string amount = 2;
+  string denom = 3;
+  string cw20_contract_address = 4;
+  string shares = 5;
+  string validator = 6;
+  string chain = 7;
+  google.protobuf.Any data = 8;
+  string creator = 9;
+  int64 block_height = 10;
+  int64 staked_at = 11;
+  int64 unstaked_at = 12;
+  int64 staked_epoch = 13;
 }
 
 message QueryGetNftStakeBalanceResponse {

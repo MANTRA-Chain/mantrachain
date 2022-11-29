@@ -15,6 +15,8 @@ cecho(){
 
 ./scripts/multinode-local-testnet.mac.sh
 
+set -e # exit on first error
+
 VALIDATOR1=$(./build/mantrachaind keys show validator1 -a --keyring-backend=test --home=$HOME/.mantrachain/validator1)
 
 sleep 5

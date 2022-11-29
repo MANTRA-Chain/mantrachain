@@ -37,10 +37,23 @@ var (
 const (
 	TypeMsgEpochEnd = "epoch_end"
 
-	AttributeKeyChainId   = "chain_id"
-	AttributeKeyValidator = "validator"
-	AttributeKeyDenom     = "denom"
-	AttributeBlockHeight  = "block_height"
+	AttributeKeyDenom    = "denom"
+	AttributeBlockHeight = "block_height"
+
+	AttributeKeyMarketplaceId       = "marketplace_id"
+	AttributeKeyMarketplaceCreator  = "marketplace_creator"
+	AttributeKeyCollectionId        = "collection_id"
+	AttributeKeyCollectionCreator   = "collection_creator"
+	AttributeKeyNftId               = "nft_id"
+	AttributeKeyChain               = "chain"
+	AttributeKeyValidator           = "validator"
+	AttributeKeyNftStakeStakedIndex = "nft_stake_staked_index"
+	AttributeNftStakeStakedIndex    = "nft_stake_staked_index"
+	AttributeKeyDelegated           = "delegated"
+)
+
+const (
+	TypeNftStakeStakedCreated = "nft_stake_staked_created"
 )
 
 func NftStakeStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
