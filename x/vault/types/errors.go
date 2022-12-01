@@ -31,4 +31,5 @@ var (
 	ErrInvalidStakingChain                  = sdkerrors.Register(ModuleName, 1131, "invalid staking chain")
 	ErrInvalidStakingValidator              = sdkerrors.Register(ModuleName, 1132, "invalid staking validator")
 	ErrInvalidBridgeId                      = sdkerrors.Register(ModuleName, 1133, "invalid bridge id")
+	ErrInitEpochNotFound                    = sdkerrors.Register(ModuleName, 1134, "init epoch not found")
 )

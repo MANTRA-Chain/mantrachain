@@ -53,22 +53,22 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not authorized to start epoch")
 	}
 
+	reward := sdk.Coin{}
+
+	if msg.Reward != "" {
+		reward, err = sdk.ParseCoinNormalized(msg.Reward)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
 	lastEpochBlockHeight := lastEpochBlock.BlockHeight
 
 	if found {
 		if lastEpochBlockHeight >= msg.BlockStart {
 			return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be greater than the last epoch block")
-		}
-
-		reward := sdk.Coin{}
-
-		if msg.Reward != "" {
-			reward, err = sdk.ParseCoinNormalized(msg.Reward)
-
-			if err != nil {
-				return nil, err
-			}
 		}
 
 		lastEpoch, found := k.GetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight)
@@ -114,8 +114,13 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 
 		k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
 			BlockHeight: msg.BlockStart,
+			Creator:     msg.Creator,
 		})
 	} else {
+		if !reward.IsNil() && !reward.IsZero() {
+			return nil, sdkerrors.Wrap(types.ErrInitEpochNotFound, "init epoch not found")
+		}
+
 		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
 	}
 
