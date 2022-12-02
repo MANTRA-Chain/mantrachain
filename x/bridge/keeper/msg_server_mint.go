@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/bridge/types"
@@ -103,7 +102,7 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 			sdk.NewAttribute(types.AttributeKeyBridgeCreator, bridgeCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyBridgeId, msg.BridgeId),
 			sdk.NewAttribute(types.AttributeKeyCw20ContractAddress, bridge.Cw20ContractAddress),
-			sdk.NewAttribute(types.AttributeKeyAmount, strconv.FormatUint(msg.Mint.Amount, 10)),
+			sdk.NewAttribute(types.AttributeKeyAmount, msg.Mint.Amount),
 			sdk.NewAttribute(types.AttributeKeyTxHash, msg.Mint.TxHash),
 			sdk.NewAttribute(types.AttributeKeyType, txHashType),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),

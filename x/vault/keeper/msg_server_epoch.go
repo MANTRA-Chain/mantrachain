@@ -86,7 +86,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 
 		if !reward.IsNil() && !reward.IsZero() {
-			err = we.Mint(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), reward.Amount.Uint64())
+			err = we.Mint(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), reward.Amount.String())
 
 			if err != nil {
 				return nil, err

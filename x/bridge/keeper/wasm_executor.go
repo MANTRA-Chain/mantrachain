@@ -83,8 +83,8 @@ func (c *WasmExecutor) Instantiate(
 	return
 }
 
-func (c *WasmExecutor) Mint(contractAddress sdk.AccAddress, creator sdk.AccAddress, receiver sdk.AccAddress, amount uint64) (err error) {
-	mintData := []byte("{\"mint\": {\"recipient\": \"" + receiver.String() + "\", \"amount\": \"" + strconv.FormatUint(amount, 10) + "\"}}")
+func (c *WasmExecutor) Mint(contractAddress sdk.AccAddress, creator sdk.AccAddress, receiver sdk.AccAddress, amount string) (err error) {
+	mintData := []byte("{\"mint\": {\"recipient\": \"" + receiver.String() + "\", \"amount\": \"" + amount + "\"}}")
 	_, err = c.wasmContractKeeper.Execute(c.ctx, contractAddress, creator, mintData, nil)
 	return
 }

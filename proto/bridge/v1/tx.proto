@@ -57,8 +57,7 @@ message MsgMint {
 
 message MsgMintMetadata {
   string receiver = 1;
-  // TODO: Should be uint128
-  uint64 amount = 2;
+  string amount = 2;
   string tx_hash = 3;
 }
 
@@ -68,34 +67,33 @@ message MsgMintResponse {
   string cw20_contract_address = 3;
   string bridge_creator = 4;
   string receiver = 5;
-  // TODO: Should be uint128
-  uint64 amount = 6;
+  string amount = 6;
   string tx_hash = 7;
   string type = 8;
 }
 
 message MsgCreateCw20Contract {
   string creator = 1;
-  uint64 codeId = 2;
+  uint64 code_id = 2;
   string ver = 3;
   string path = 4;
 }
 message MsgCreateCw20ContractResponse {
   string creator = 1;
-  uint64 codeId = 2;
+  uint64 code_id = 2;
   string ver = 3;
   string path = 4;
 }
 
 message MsgUpdateCw20Contract {
   string creator = 1;
-  uint64 codeId = 2;
+  uint64 code_id = 2;
   string ver = 3;
   string path = 4;
 }
 message MsgUpdateCw20ContractResponse {
   string creator = 1;
-  uint64 codeId = 2;
+  uint64 code_id = 2;
   string ver = 3;
   string path = 4;
 }
@@ -105,7 +103,7 @@ message MsgDeleteCw20Contract {
 }
 message MsgDeleteCw20ContractResponse {
   string creator = 1;
-  uint64 codeId = 2;
+  uint64 code_id = 2;
   string ver = 3;
   string path = 4;
 }

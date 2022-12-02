@@ -174,13 +174,13 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 				err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(intReward))
 			} else {
 				we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
-				err = we.IncreaseAllowance(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
+				err = we.IncreaseAllowance(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
 
 				if err != nil {
 					return nil, err
 				}
 
-				err = we.TransferFrom(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.Uint64())
+				err = we.TransferFrom(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
 			}
 
 			if err != nil {

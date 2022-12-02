@@ -43,7 +43,7 @@ func (k Keeper) CollectFees(
 					if wasmExecutor == nil {
 						wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 					}
-					err = wasmExecutor.Transfer(cw20ContractAddress, buyer, sdk.AccAddress(earning.Address), earningCoin.Amount.Abs().Uint64())
+					err = wasmExecutor.Transfer(cw20ContractAddress, buyer, sdk.AccAddress(earning.Address), earningCoin.Amount.String())
 				}
 
 				if err != nil {
@@ -72,7 +72,7 @@ func (k Keeper) CollectFees(
 					wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 				}
 				// Burn the cw20 staking amount which goes for anothe chain delegation
-				err = wasmExecutor.Burn(cw20ContractAddress, buyer, lockCoin.Amount.Abs().Uint64())
+				err = wasmExecutor.Burn(cw20ContractAddress, buyer, lockCoin.Amount.String())
 
 				if err != nil {
 					return lockCoin, err
@@ -95,7 +95,7 @@ func (k Keeper) CollectFees(
 			if wasmExecutor == nil {
 				wasmExecutor = NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 			}
-			err = wasmExecutor.Transfer(cw20ContractAddress, buyer, nftOwner, remainning.Uint64())
+			err = wasmExecutor.Transfer(cw20ContractAddress, buyer, nftOwner, remainning.String())
 		}
 
 		if err != nil {
