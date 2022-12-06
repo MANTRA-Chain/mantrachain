@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 
 func CmdGetLastEpochs() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "last-epochs [stakingchain] [stakingvalidator]",
+		Use:   "last-epochs [staking_chain] [staking_validator]",
 		Short: "Query the current and previous epochs",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

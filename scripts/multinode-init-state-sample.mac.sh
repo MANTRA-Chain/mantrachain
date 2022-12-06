@@ -86,7 +86,7 @@ cecho "GREEN" "register bridge"
 sleep 5
 
 RECIPIENT1=$(./build/mantrachaind keys show recipient1 -a --keyring-backend=test --home=$HOME/.mantrachain/validator1)
-MINT_JSON=$(echo '{"receiver":"{address}","amount":"100000000","tx_hash":"123"}' | sed -e "s/{address}/$RECIPIENT1/g")
+MINT_JSON=$(echo '{"receiver":"{address}","amount":"1000000000","tx_hash":"123"}' | sed -e "s/{address}/$RECIPIENT1/g")
 
 cecho "GREEN" "mint WUSDC for recipient1"
 ./build/mantrachaind tx bridge mint "$(echo $MINT_JSON)" --chain-id mantrachain --from bridge1 --keyring-backend test --gas auto --bridge-creator $BRIDGE1 --bridge-id id1 --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
@@ -95,7 +95,7 @@ CW20_CONTRACT_ADDRESS=$(echo $(./build/mantrachaind query bridge bridge $BRIDGE1
 
 sleep 5
 
-FIRST_NFT_COLLECTION=$(echo '{"initially_nft_collection_owner_nfts_for_sale":true,"initially_nft_collection_owner_nfts_min_price":"10000000wusdc","initially_nfts_vault_lock_percentage":"50","cw20_contract_address":{address}}' | sed -e "s/{address}/$CW20_CONTRACT_ADDRESS/g")
+FIRST_NFT_COLLECTION=$(echo '{"initially_nft_collection_owner_nfts_for_sale":true,"initially_nft_collection_owner_nfts_min_price":"100000000wusdc","initially_nfts_vault_lock_percentage":"50","cw20_contract_address":{address}}' | sed -e "s/{address}/$CW20_CONTRACT_ADDRESS/g")
 
 cecho "GREEN" "import first nft collection"
 ./build/mantrachaind tx marketplace import-nft-collection "$(echo $FIRST_NFT_COLLECTION)" --chain-id mantrachain --from validator1 --keyring-backend test --collection-creator $VALIDATOR1 --collection-id id1 --marketplace-creator $VALIDATOR1 --marketplace-id id1 --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes
