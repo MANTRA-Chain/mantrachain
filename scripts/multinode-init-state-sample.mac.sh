@@ -108,7 +108,6 @@ CW20_CONTRACT_ADDRESS=$(echo $(./build/mantrachaind query bridge bridge $BRIDGE1
 
 sleep 5
 
-
 if [[ $Op = "mint-sample" ]]
 then
   FIRST_NFT_COLLECTION=$(echo '{"initially_nft_collection_owner_nfts_for_sale":true,"initially_nft_collection_owner_nfts_min_price":"100000000wusdc","initially_nfts_vault_lock_percentage":"50","cw20_contract_address":{address}}' | sed -e "s/{address}/$CW20_CONTRACT_ADDRESS/g")
