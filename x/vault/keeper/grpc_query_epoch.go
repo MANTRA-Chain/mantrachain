@@ -78,8 +78,8 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 			NextEpochBlock:   epoch.NextEpochBlock,
 			StartAt:          epoch.StartAt,
 			EndAt:            epoch.EndAt,
-			StakingChain:     stakingChain,
-			StakingValidator: stakingValidator,
+			StakingChain:     epoch.StakingChain,
+			StakingValidator: epoch.StakingValidator,
 		})
 	}
 
@@ -120,7 +120,7 @@ func (k Keeper) LastEpochBlock(c context.Context, req *types.QueryGetLastEpochBl
 	return &types.QueryGetLastEpochBlockResponse{
 		Creator:          lastEpochBlock.Creator,
 		BlockHeight:      lastEpochBlock.BlockHeight,
-		StakingChain:     stakingChain,
-		StakingValidator: stakingValidator,
+		StakingChain:     lastEpochBlock.StakingChain,
+		StakingValidator: lastEpochBlock.StakingValidator,
 	}, nil
 }

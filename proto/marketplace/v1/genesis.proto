@@ -3,6 +3,9 @@ package LimeChain.mantrachain.marketplace.v1;
 
 import "gogoproto/gogo.proto";
 import "marketplace/v1/params.proto";
+import "marketplace/v1/marketplace.proto";
+import "marketplace/v1/marketplace_collection.proto";
+import "marketplace/v1/marketplace_nft.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
@@ -10,5 +13,8 @@ option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
 // GenesisState defines the marketplace module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated Marketplace marketplaceList = 2 [(gogoproto.nullable) = false];
+  repeated MarketplaceCollection marketplaceCollectionList = 3 [(gogoproto.nullable) = false];
+  repeated MarketplaceNft marketplaceNftList = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

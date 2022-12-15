@@ -11,18 +11,23 @@ import (
 
 func (k Keeper) InitEpoch(ctx sdk.Context, chain string, validator string, bh int64) {
 	newEpoch := types.Epoch{
-		BlockStart:     bh,
-		BlockEnd:       types.UndefinedBlockHeight,
-		Rewards:        nil,
-		Staked:         sdk.NewDec(0),
-		PrevEpochBlock: types.UndefinedBlockHeight,
-		NextEpochBlock: types.UndefinedBlockHeight,
-		StartAt:        ctx.BlockHeader().Time.Unix(),
+		Index:            types.GetEpochIndex(validator, []byte(strconv.FormatInt(bh, 10))),
+		BlockStart:       bh,
+		BlockEnd:         types.UndefinedBlockHeight,
+		Rewards:          nil,
+		Staked:           sdk.NewDec(0),
+		PrevEpochBlock:   types.UndefinedBlockHeight,
+		NextEpochBlock:   types.UndefinedBlockHeight,
+		StartAt:          ctx.BlockHeader().Time.Unix(),
+		StakingChain:     chain,
+		StakingValidator: validator,
 	}
 
 	k.SetEpoch(ctx, chain, validator, bh, newEpoch)
 	k.SetLastEpochBlock(ctx, chain, validator, types.LastEpochBlock{
-		BlockHeight: bh,
+		BlockHeight:      bh,
+		StakingChain:     chain,
+		StakingValidator: validator,
 	})
 }
 
@@ -44,11 +49,14 @@ func (k Keeper) SetEpochEnd(
 	lastEpoch.Rewards = withdrawn
 
 	newEpoch := types.Epoch{
-		BlockStart:     bh,
-		BlockEnd:       types.UndefinedBlockHeight,
-		PrevEpochBlock: lastEpochBlockHeight,
-		NextEpochBlock: types.UndefinedBlockHeight,
-		StartAt:        ctx.BlockHeader().Time.Unix(),
+		Index:            types.GetEpochIndex(validator, []byte(strconv.FormatInt(bh, 10))),
+		BlockStart:       bh,
+		BlockEnd:         types.UndefinedBlockHeight,
+		PrevEpochBlock:   lastEpochBlockHeight,
+		NextEpochBlock:   types.UndefinedBlockHeight,
+		StartAt:          ctx.BlockHeader().Time.Unix(),
+		StakingChain:     chain,
+		StakingValidator: validator,
 	}
 
 	newEpoch.Staked = staked
@@ -59,7 +67,9 @@ func (k Keeper) SetEpochEnd(
 	k.SetEpoch(ctx, chain, validator, lastEpochBlockHeight, lastEpoch)
 	k.SetEpoch(ctx, chain, validator, bh, newEpoch)
 	k.SetLastEpochBlock(ctx, chain, validator, types.LastEpochBlock{
-		BlockHeight: bh,
+		BlockHeight:      bh,
+		StakingChain:     chain,
+		StakingValidator: validator,
 	})
 
 	return nil
@@ -103,13 +113,13 @@ func (k Keeper) GetEpoch(
 }
 
 func (k Keeper) SetLastEpochBlock(ctx sdk.Context, chain string, validator string, lastEpochBlock types.LastEpochBlock) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 	b := k.cdc.MustMarshal(&lastEpochBlock)
 	store.Set(types.GetLastEpochBlockIndex(validator), b)
 }
 
 func (k Keeper) GetLastEpochBlock(ctx sdk.Context, chain string, validator string) (val types.LastEpochBlock, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 
 	if !k.HasLastEpochBlock(ctx, chain, validator) {
 		return val, false
@@ -125,7 +135,7 @@ func (k Keeper) GetLastEpochBlock(ctx sdk.Context, chain string, validator strin
 }
 
 func (k Keeper) HasLastEpochBlock(ctx sdk.Context, chain string, validator string) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 	return store.Has(types.GetLastEpochBlockIndex(validator))
 }
 

@@ -14,5 +14,7 @@ message ChainValidatorBridge {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ]; 
+  string chain = 5 [(gogoproto.moretags) = "yaml:\"chain\""];
+  string validator = 6 [(gogoproto.moretags) = "yaml:\"validator\""];
 }
 

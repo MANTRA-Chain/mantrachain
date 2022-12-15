@@ -4,6 +4,8 @@ package LimeChain.mantrachain.vault.v1;
 import "gogoproto/gogo.proto";
 import "vault/v1/params.proto";
 import "vault/v1/chain_validator_bridge.proto";
+import "vault/v1/epoch.proto";
+import "vault/v1/nft_stake.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
@@ -12,5 +14,8 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated ChainValidatorBridge chainValidatorBridgeList = 2 [(gogoproto.nullable) = false];
+  repeated Epoch epochList = 3 [(gogoproto.nullable) = false];
+  repeated LastEpochBlock lastEpochBlockList = 4 [(gogoproto.nullable) = false];
+  repeated NftStake nftStakeList = 5 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

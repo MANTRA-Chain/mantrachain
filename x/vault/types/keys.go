@@ -24,7 +24,7 @@ const (
 var (
 	nftStakeStoreKey             = "nft-stake-store"
 	epochStoreKey                = "epoch-store"
-	epochYieldStoreKey           = "epoch-yield-store"
+	lastEpochBlockStoreKey       = "last-epoch-block-store"
 	lastEpochBlockIndex          = "last-epoch-block-id"
 	stakedIndex                  = "staked-id"
 	epochIndex                   = "epoch-id"
@@ -94,6 +94,16 @@ func EpochStoreKey(chain string) []byte {
 	copy(key[len(epochStoreKey):], delimiter)
 	copy(key[len(epochStoreKey)+len(delimiter):], chainBz)
 	copy(key[len(epochStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+	return key
+}
+
+func LastEpochBlockStoreKey(chain string) []byte {
+	chainBz := conv.UnsafeStrToBytes(chain)
+	key := make([]byte, len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
+	copy(key, lastEpochBlockStoreKey)
+	copy(key[len(lastEpochBlockStoreKey):], delimiter)
+	copy(key[len(lastEpochBlockStoreKey)+len(delimiter):], chainBz)
+	copy(key[len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz):], delimiter)
 	return key
 }
 

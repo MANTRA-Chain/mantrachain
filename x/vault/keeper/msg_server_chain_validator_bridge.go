@@ -68,6 +68,8 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		Creator:       msg.Creator,
 		BridgeId:      msg.BridgeId,
 		BridgeAccount: msg.BridgeAccount,
+		Chain:         msg.Chain,
+		Validator:     msg.Validator,
 	}
 
 	k.SetChainValidatorBridge(
@@ -76,6 +78,7 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		msg.Validator,
 		chainValidatorBridge,
 	)
+
 	return &types.MsgCreateChainValidatorBridgeResponse{
 		Chain:         msg.Chain,
 		Validator:     msg.Validator,
@@ -150,6 +153,8 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 		BridgeId:      msg.BridgeId,
 		BridgeAccount: msg.BridgeAccount,
 		Staked:        valFound.Staked,
+		Chain:         valFound.Chain,
+		Validator:     valFound.Validator,
 	}
 
 	k.SetChainValidatorBridge(

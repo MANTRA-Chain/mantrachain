@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
@@ -102,6 +103,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight, lastEpoch)
 
 		newEpoch := types.Epoch{
+			Index:          types.GetEpochIndex(msg.StakingValidator, []byte(strconv.FormatInt(msg.BlockStart, 10))),
 			PrevEpochBlock: lastEpochBlockHeight,
 			NextEpochBlock: types.UndefinedBlockHeight,
 			BlockStart:     msg.BlockStart,
@@ -113,8 +115,10 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart, newEpoch)
 
 		k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
-			BlockHeight: msg.BlockStart,
-			Creator:     msg.Creator,
+			BlockHeight:      msg.BlockStart,
+			Creator:          msg.Creator,
+			StakingChain:     msg.StakingChain,
+			StakingValidator: msg.StakingValidator,
 		})
 	} else {
 		if !reward.IsNil() && !reward.IsZero() {

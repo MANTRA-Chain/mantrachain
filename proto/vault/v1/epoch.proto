@@ -28,9 +28,13 @@ message Epoch {
   int64 end_at = 9 [
       (gogoproto.moretags) = "yaml:\"end_at\""
   ];
+  string staking_chain = 10 [(gogoproto.moretags) = "yaml:\"staking_chain\""];
+  string staking_validator = 11 [(gogoproto.moretags) = "yaml:\"staking_validator\""];
 }
 
 message LastEpochBlock {
   int64 block_height = 1 [(gogoproto.moretags) = "yaml:\"block_height\""]; 
   string creator = 2 [(gogoproto.moretags) = "yaml:\"creator\""];
+  string staking_chain = 3 [(gogoproto.moretags) = "yaml:\"staking_chain\""];
+  string staking_validator = 4 [(gogoproto.moretags) = "yaml:\"staking_validator\""];
 }
