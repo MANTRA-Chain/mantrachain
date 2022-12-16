@@ -225,6 +225,25 @@ func (c *RewardsController) getBalancesCoin(chain string, validator string) (bal
 	return balances
 }
 
+func (c *RewardsController) getNftEarningsOnYieldReward() []*types.VaultEarning {
+	var filtered []*types.VaultEarning = nil
+	if len(c.nftStake.NftEarningsOnYieldReward) > 0 {
+		for _, v := range c.nftStake.NftEarningsOnYieldReward {
+			if v.Percentage.IsPositive() {
+				if (!c.nftStake.InitiallyRewardWithdrawn && types.VaultEarningType(v.Type) == types.Initially) ||
+					(c.nftStake.InitiallyRewardWithdrawn && types.VaultEarningType(v.Type) == types.Repetitive) {
+					filtered = append(filtered, v)
+				}
+			}
+		}
+	}
+	return filtered
+}
+
+func (c *RewardsController) setInitiallyRewardWithdrawn(chain string, validator string, initiallyRewardWithdrawn bool) {
+	c.nftStake.InitiallyRewardWithdrawn = initiallyRewardWithdrawn
+}
+
 func (c *RewardsController) setBalances(chain string, validator string, balancesCoins []*sdk.DecCoin, lastEpochWithdrawn int64, withdrawnAt int64) {
 	var filtered []*types.NftStakeBalance = nil
 	for _, v := range c.nftStake.Balances {

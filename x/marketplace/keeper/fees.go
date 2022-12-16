@@ -9,7 +9,7 @@ func (k Keeper) CollectFees(
 	ctx sdk.Context,
 	minPrice *sdk.Coin,
 	nftsEarningsOnSale []*types.MarketplaceEarning,
-	nftsVaultLockPercentage sdk.Int,
+	initiallyNftsVaultLockPercentage sdk.Int,
 	buyer sdk.AccAddress,
 	nftOwner sdk.AccAddress,
 	initialSale bool,
@@ -24,9 +24,10 @@ func (k Keeper) CollectFees(
 
 	currAmount := sdk.NewInt(0)
 
-	// The rooyalties amount is calculated based on the price of the NFT
+	// The royalties amount is calculated based on the price of the NFT
 	for _, earning := range nftsEarningsOnSale {
-		if !initialSale && types.MarketplaceEarningType(earning.Type) == types.Initially {
+		if (!initialSale && types.MarketplaceEarningType(earning.Type) == types.Initially) ||
+			(initialSale && types.MarketplaceEarningType(earning.Type) == types.Repetitive) {
 			continue
 		}
 
@@ -56,8 +57,10 @@ func (k Keeper) CollectFees(
 	}
 
 	// The amount supposed to be staked on a validator
-	if !nftsVaultLockPercentage.IsNil() && !nftsVaultLockPercentage.IsZero() {
-		lockAmount := nftsVaultLockPercentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
+	if initialSale &&
+		!initiallyNftsVaultLockPercentage.IsNil() &&
+		!initiallyNftsVaultLockPercentage.IsZero() {
+		lockAmount := initiallyNftsVaultLockPercentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
 		var err error
 
 		if lockAmount.GT(sdk.NewDec(1)) {

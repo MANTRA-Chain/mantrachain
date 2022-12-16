@@ -10,6 +10,28 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+func (k msgServer) TransferYieldReward(ctx sdk.Context, we *WasmExecutor, cw20ContractAddress sdk.AccAddress, creator sdk.AccAddress, isNativeReward bool, intReward sdk.Coin, receiver sdk.AccAddress) error {
+	var err error
+
+	if isNativeReward {
+		err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(intReward))
+	} else {
+		err = we.IncreaseAllowance(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
+
+		if err != nil {
+			return err
+		}
+
+		err = we.TransferFrom(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // TODO: Add min threshold for withdraw yield rewards
 func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithdrawNftRewards) (*types.MsgWithdrawNftRewardsResponse, error) {
 	var stakingChain = ""
@@ -167,24 +189,36 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 			}
 		}
 
-		for _, reward := range rewards {
+		we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
+
+		for _, v := range rewards {
+			nftEarningsOnYieldReward := rewardsController.getNftEarningsOnYieldReward()
+			reward := sdk.NewDecCoinFromDec(v.Denom, v.Amount)
+
+			if len(nftEarningsOnYieldReward) > 0 {
+				for _, j := range nftEarningsOnYieldReward {
+					earningAmount := j.Percentage.ToDec().Mul(reward.Amount).Quo(sdk.NewDec(100))
+					earningCoin := sdk.NewDecCoinFromDec(reward.Denom, earningAmount)
+					intReward, _ := earningCoin.TruncateDecimal()
+
+					err = k.TransferYieldReward(ctx, we, cw20ContractAddress, creator, isNativeReward, intReward, sdk.AccAddress(j.Address))
+
+					if err != nil {
+						return nil, err
+					}
+
+					reward = reward.Sub(sdk.NewDecCoin(reward.Denom, intReward.Amount))
+				}
+			}
+
 			intReward, remainder := reward.TruncateDecimal()
 
-			if isNativeReward {
-				err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiver, sdk.NewCoins(intReward))
-			} else {
-				we := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
-				err = we.IncreaseAllowance(cw20ContractAddress, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
+			if intReward.IsPositive() {
+				err = k.TransferYieldReward(ctx, we, cw20ContractAddress, creator, isNativeReward, intReward, sdk.AccAddress(receiver))
 
 				if err != nil {
 					return nil, err
 				}
-
-				err = we.TransferFrom(cw20ContractAddress, creator, k.ac.GetModuleAddress(types.ModuleName), receiver, intReward.Amount.String())
-			}
-
-			if err != nil {
-				return nil, err
 			}
 
 			if sent[intReward.Denom].IsNil() {
@@ -212,7 +246,15 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 			})
 		}
 
-		rewardsController.setBalances(stakingChain, stakingValidator, remainBalances, lastEpochWithdrawn, ctx.BlockHeader().Time.Unix())
+		rewardsController.setBalances(
+			stakingChain,
+			stakingValidator,
+			remainBalances,
+			lastEpochWithdrawn,
+			ctx.BlockHeader().Time.Unix(),
+		)
+		rewardsController.setInitiallyRewardWithdrawn(stakingChain, stakingValidator, true)
+
 		k.SetNftStake(ctx, *rewardsController.getNftStake())
 	}
 

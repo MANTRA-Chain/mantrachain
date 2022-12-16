@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/LimeChain/mantrachain/x/marketplace/types"
+	vaulttypes "github.com/LimeChain/mantrachain/x/vault/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -31,7 +32,18 @@ func (c *VaultExecutor) CreateNftStakeStaked(
 	stakingChain string,
 	stakingValidator string,
 	cw20ContractAddress sdk.AccAddress,
+	nftMarketplaceEarningsOnYieldReward []*types.MarketplaceEarning,
 ) error {
+	nftVaultEarningsOnYieldReward := []*vaulttypes.VaultEarning{}
+
+	for _, k := range nftMarketplaceEarningsOnYieldReward {
+		nftVaultEarningsOnYieldReward = append(nftVaultEarningsOnYieldReward, &vaulttypes.VaultEarning{
+			Type:       k.Type,
+			Address:    k.Address,
+			Percentage: k.Percentage,
+		})
+	}
+
 	return c.vaultKeeper.CreateNftStakeStaked(
 		c.ctx,
 		marketplaceCreator,
@@ -47,5 +59,6 @@ func (c *VaultExecutor) CreateNftStakeStaked(
 		stakingChain,
 		stakingValidator,
 		cw20ContractAddress,
+		nftVaultEarningsOnYieldReward,
 	)
 }

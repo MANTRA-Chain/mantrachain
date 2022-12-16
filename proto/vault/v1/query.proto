@@ -7,6 +7,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "vault/v1/params.proto";
 import "vault/v1/chain_validator_bridge.proto";
+import "vault/v1/common.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
@@ -117,7 +118,9 @@ message QueryGetNftStakeResponse {
   string nft_id = 5; 
   repeated QueryGetNftStakeListItemResponse staked = 6;
   repeated QueryGetNftStakeBalanceResponse balances = 7;
-  string creator = 8;
+  repeated VaultEarning nft_earnings_on_yield_reward = 8;
+  bool initially_reward_withdrawn = 9; 
+  string creator = 10;
 }
 
 message QueryGetNftBalancesRequest {

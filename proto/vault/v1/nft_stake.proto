@@ -3,6 +3,7 @@ package LimeChain.mantrachain.vault.v1;
 
 import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
+import "vault/v1/common.proto";
 
 option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 
@@ -10,15 +11,17 @@ message NftStake {
   bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
   bytes marketplace_index = 2 [(gogoproto.moretags) = "yaml:\"marketplace_index\""]; 
   bytes collection_index = 3 [(gogoproto.moretags) = "yaml:\"collection_index\""]; 
-  repeated NftStakeListItem staked = 4 [
+  repeated VaultEarning nft_earnings_on_yield_reward = 4 [(gogoproto.moretags) = "yaml:\"nft_earnings_on_yield_reward\""];
+  bool initially_reward_withdrawn = 5 [(gogoproto.moretags) = "yaml:\"initially_reward_withdrawn\""]; 
+  repeated NftStakeListItem staked = 6 [
     (gogoproto.moretags) = "yaml:\"staked\"",
     (gogoproto.nullable) = true
   ];
-  repeated NftStakeBalance balances = 5 [
+  repeated NftStakeBalance balances = 7 [
     (gogoproto.moretags) = "yaml:\"balances\"",
     (gogoproto.nullable) = true
   ]; 
-  bytes creator = 6 [
+  bytes creator = 8 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];

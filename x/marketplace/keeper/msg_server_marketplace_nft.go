@@ -84,12 +84,14 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 	marketplaceNft, found := k.GetMarketplaceNft(ctx, marketplaceIndex, collection.Index, nft.Index)
 
 	nftsEarningsOnSale := collection.NftsEarningsOnSale
-	var nftsVaultLockPercentage sdk.Int
+	nftEarningsOnYieldReward := collection.NftsEarningsOnYieldReward
+
+	var initiallyNftsVaultLockPercentage sdk.Int
 	initialSale := false
 
 	if !found || !marketplaceNft.InitiallySold {
 		initialSale = true
-		nftsVaultLockPercentage = *collection.InitiallyNftsVaultLockPercentage
+		initiallyNftsVaultLockPercentage = *collection.InitiallyNftsVaultLockPercentage
 	}
 
 	if !found {
@@ -131,7 +133,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		ctx,
 		marketplaceNft.MinPrice,
 		nftsEarningsOnSale,
-		nftsVaultLockPercentage,
+		initiallyNftsVaultLockPercentage,
 		creator,
 		owner,
 		initialSale,
@@ -154,6 +156,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 			msg.StakingChain,
 			msg.StakingValidator,
 			collection.Cw20ContractAddress,
+			nftEarningsOnYieldReward,
 		)
 	}
 

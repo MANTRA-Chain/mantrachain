@@ -39,4 +39,7 @@ var (
 	ErrNftsNotApproved                                        = sdkerrors.Register(ModuleName, 1139, "nfts not approved")
 	ErrInvalidCollection                                      = sdkerrors.Register(ModuleName, 1140, "collection provided is invalid")
 	ErrInvalidMarketplaceMetadata                             = sdkerrors.Register(ModuleName, 1141, "marketplace metadata provided is invalid")
+	ErrInvalidRepetitiveEarnSummaryPercentage                 = sdkerrors.Register(ModuleName, 1142, "repetitive earn summary percentage provided is invalid")
+	ErrInvalidRepetitiveEarnOnYieldRewardSummaryPercentage    = sdkerrors.Register(ModuleName, 1143, "repetitive earn on yield reward summary percentage provided is invalid")
+	ErrInvalidInitiallyEarnOnYieldRewardSummaryPercentage     = sdkerrors.Register(ModuleName, 1144, "initially earn on yield reward summary percentage provided is invalid")
 )

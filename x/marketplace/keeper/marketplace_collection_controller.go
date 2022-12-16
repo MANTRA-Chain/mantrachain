@@ -105,26 +105,80 @@ func (c *MarketplaceCollectionController) ValidCollection() *MarketplaceCollecti
 	}, func(controller *MarketplaceCollectionController) error {
 		return controller.validInitiallyNftsVaultLockPercentage()
 	}, func(controller *MarketplaceCollectionController) error {
-		return controller.validNftsEarningAndLockPercentage()
+		return controller.validInitiallyNftsEarningAndLockSummaryPercentage()
+	}, func(controller *MarketplaceCollectionController) error {
+		return controller.validRepetitiveNftsEarningSummaryPercentage()
+	}, func(controller *MarketplaceCollectionController) error {
+		return controller.validInitiallyNftsEarningsOnYieldRewardSummaryPercentage()
+	}, func(controller *MarketplaceCollectionController) error {
+		return controller.validRepetitiveNftsEarningsOnYieldRewardSummaryPercentage()
 	})
 	return c
 }
 
-func (c *MarketplaceCollectionController) validNftsEarningAndLockPercentage() error {
-	earnAndLockPercentage := sdk.NewInt(0)
+func (c *MarketplaceCollectionController) validInitiallyNftsEarningsOnYieldRewardSummaryPercentage() error {
+	initiallyEarnOnYieldRewardPercentage := sdk.NewInt(0)
 
-	if !c.collection.InitiallyNftsVaultLockPercentage.IsNil() {
-		earnAndLockPercentage = earnAndLockPercentage.Add(*c.collection.InitiallyNftsVaultLockPercentage)
-	}
-
-	for _, earning := range c.collection.NftsEarningsOnSale {
-		if !earning.Percentage.IsNil() {
-			earnAndLockPercentage = earnAndLockPercentage.Add(*earning.Percentage)
+	for _, earning := range c.collection.NftsEarningsOnYieldReward {
+		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() && types.MarketplaceEarningType(earning.Type) == types.Initially {
+			initiallyEarnOnYieldRewardPercentage = initiallyEarnOnYieldRewardPercentage.Add(*earning.Percentage)
 		}
 	}
 
-	if earnAndLockPercentage.GT(sdk.NewInt(100)) {
-		return sdkerrors.Wrapf(types.ErrInvalidInitiallyEarnAndLockSummaryPercentage, "the summary of initially vault lock percentage and nfts earnings on sale percentages should not be greater than 100%%, value %s%%", earnAndLockPercentage)
+	if initiallyEarnOnYieldRewardPercentage.GT(sdk.NewInt(100)) {
+		return sdkerrors.Wrapf(types.ErrInvalidInitiallyEarnOnYieldRewardSummaryPercentage, "the summary of initially nfts earnings on yield reward percentages should not be greater than 100%%, value %s%%", initiallyEarnOnYieldRewardPercentage)
+	}
+
+	return nil
+}
+
+func (c *MarketplaceCollectionController) validRepetitiveNftsEarningsOnYieldRewardSummaryPercentage() error {
+	repetitiveEarnOnYieldRewardPercentage := sdk.NewInt(0)
+
+	for _, earning := range c.collection.NftsEarningsOnYieldReward {
+		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() && types.MarketplaceEarningType(earning.Type) == types.Repetitive {
+			repetitiveEarnOnYieldRewardPercentage = repetitiveEarnOnYieldRewardPercentage.Add(*earning.Percentage)
+		}
+	}
+
+	if repetitiveEarnOnYieldRewardPercentage.GT(sdk.NewInt(100)) {
+		return sdkerrors.Wrapf(types.ErrInvalidRepetitiveEarnOnYieldRewardSummaryPercentage, "the summary of repetitive nfts earnings on yield reward percentages should not be greater than 100%%, value %s%%", repetitiveEarnOnYieldRewardPercentage)
+	}
+
+	return nil
+}
+
+func (c *MarketplaceCollectionController) validRepetitiveNftsEarningSummaryPercentage() error {
+	repetitiveEarnAndLockPercentage := sdk.NewInt(0)
+
+	for _, earning := range c.collection.NftsEarningsOnSale {
+		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() && types.MarketplaceEarningType(earning.Type) == types.Repetitive {
+			repetitiveEarnAndLockPercentage = repetitiveEarnAndLockPercentage.Add(*earning.Percentage)
+		}
+	}
+
+	if repetitiveEarnAndLockPercentage.GT(sdk.NewInt(100)) {
+		return sdkerrors.Wrapf(types.ErrInvalidRepetitiveEarnSummaryPercentage, "the summary of repetitive nfts earnings on sale percentages should not be greater than 100%%, value %s%%", repetitiveEarnAndLockPercentage)
+	}
+
+	return nil
+}
+
+func (c *MarketplaceCollectionController) validInitiallyNftsEarningAndLockSummaryPercentage() error {
+	initiallyEarnAndLockPercentage := sdk.NewInt(0)
+
+	if !c.collection.InitiallyNftsVaultLockPercentage.IsNil() && !c.collection.InitiallyNftsVaultLockPercentage.IsZero() {
+		initiallyEarnAndLockPercentage = initiallyEarnAndLockPercentage.Add(*c.collection.InitiallyNftsVaultLockPercentage)
+	}
+
+	for _, earning := range c.collection.NftsEarningsOnSale {
+		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() && types.MarketplaceEarningType(earning.Type) == types.Initially {
+			initiallyEarnAndLockPercentage = initiallyEarnAndLockPercentage.Add(*earning.Percentage)
+		}
+	}
+
+	if initiallyEarnAndLockPercentage.GT(sdk.NewInt(100)) {
+		return sdkerrors.Wrapf(types.ErrInvalidInitiallyEarnAndLockSummaryPercentage, "the summary of initially vault lock percentage and nfts earnings on sale percentages should not be greater than 100%%, value %s%%", initiallyEarnAndLockPercentage)
 	}
 
 	return nil
@@ -193,10 +247,6 @@ func (c *MarketplaceCollectionController) validNftsEarningsOnYieldReward() error
 	}
 
 	return nil
-}
-
-func (c *MarketplaceCollectionController) getCollection() *types.MsgMarketplaceCollection {
-	return c.collection
 }
 
 func (c *MarketplaceCollectionController) getMarketplaceCollection() *types.MarketplaceCollection {

@@ -88,15 +88,27 @@ func (k Keeper) NftStake(c context.Context, req *types.QueryGetNftStakeRequest) 
 		})
 	}
 
+	nftEarningsOnYieldReward := []*types.VaultEarning{}
+
+	for _, k := range nftStake.NftEarningsOnYieldReward {
+		nftEarningsOnYieldReward = append(nftEarningsOnYieldReward, &types.VaultEarning{
+			Type:       k.Type,
+			Address:    k.Address,
+			Percentage: k.Percentage,
+		})
+	}
+
 	return &types.QueryGetNftStakeResponse{
-		MarketplaceCreator: marketplaceCreator.String(),
-		MarketplaceId:      req.MarketplaceId,
-		CollectionCreator:  collectionCreator.String(),
-		CollectionId:       req.CollectionId,
-		NftId:              req.NftId,
-		Creator:            nftStake.Creator.String(),
-		Staked:             nftStaked,
-		Balances:           nftBalances,
+		MarketplaceCreator:       marketplaceCreator.String(),
+		MarketplaceId:            req.MarketplaceId,
+		CollectionCreator:        collectionCreator.String(),
+		CollectionId:             req.CollectionId,
+		NftId:                    req.NftId,
+		Creator:                  nftStake.Creator.String(),
+		Staked:                   nftStaked,
+		Balances:                 nftBalances,
+		NftEarningsOnYieldReward: nftEarningsOnYieldReward,
+		InitiallyRewardWithdrawn: nftStake.InitiallyRewardWithdrawn,
 	}, nil
 }
 

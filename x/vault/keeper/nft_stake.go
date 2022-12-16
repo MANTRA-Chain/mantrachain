@@ -78,6 +78,7 @@ func (k Keeper) CreateNftStakeStaked(
 	stakingChain string,
 	stakingValidator string,
 	cw20ContractAddress sdk.AccAddress,
+	nftEarningsOnYieldReward []*types.VaultEarning,
 ) error {
 	var delegated bool = false
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
@@ -85,12 +86,14 @@ func (k Keeper) CreateNftStakeStaked(
 
 	if !found {
 		nftStake = types.NftStake{
-			Index:            index,
-			MarketplaceIndex: marketplaceIndex,
-			CollectionIndex:  collectionIndex,
-			Staked:           []*types.NftStakeListItem{},
-			Balances:         []*types.NftStakeBalance{},
-			Creator:          creator,
+			Index:                    index,
+			MarketplaceIndex:         marketplaceIndex,
+			CollectionIndex:          collectionIndex,
+			Staked:                   []*types.NftStakeListItem{},
+			Balances:                 []*types.NftStakeBalance{},
+			Creator:                  creator,
+			NftEarningsOnYieldReward: nftEarningsOnYieldReward,
+			InitiallyRewardWithdrawn: false,
 		}
 	}
 

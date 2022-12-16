@@ -2,6 +2,7 @@ package types
 
 import (
 	tokentypes "github.com/LimeChain/mantrachain/x/token/types"
+	vaulttypes "github.com/LimeChain/mantrachain/x/vault/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -52,6 +53,7 @@ type VaultKeeper interface {
 		stakingChain string,
 		stakingValidator string,
 		cw20ContractAddress sdk.AccAddress,
+		nftEarningsOnYieldReward []*vaulttypes.VaultEarning,
 	) error
 }
 
