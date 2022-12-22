@@ -38,7 +38,7 @@ type BankKeeper interface {
 }
 
 type VaultKeeper interface {
-	CreateNftStakeStaked(
+	CreateAndDelegateNftStakeStaked(
 		ctx sdk.Context,
 		marketplaceCreator string,
 		marketplaceId string,

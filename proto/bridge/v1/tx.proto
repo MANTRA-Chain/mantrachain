@@ -1,7 +1,6 @@
 syntax = "proto3";
 package LimeChain.mantrachain.bridge.v1;
 
-import "bridge/v1/cw_20_contract.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
@@ -42,17 +41,20 @@ message MsgBridgeMetadata {
 }
 
 message MsgRegisterBridgeResponse {
-  string bridge_id = 1;
-  string cw20_contract_address = 2;
-  string bridge_creator = 3;
+  string bridge_creator = 1;
+  string bridge_id = 2;
+  string cw20_contract_address = 3;
 }
 
 message MsgMint {
   string creator = 1;
-  string bridge_id = 2;
-  string bridge_creator = 3;
-  // TODO: This should be an array, i.e. repeated
-  MsgMintMetadata mint = 4;
+  string bridge_creator = 2;
+  string bridge_id = 3;
+  MsgMintListMetadata mint = 4;
+}
+
+message MsgMintListMetadata {
+  repeated MsgMintMetadata mint_list = 1;
 }
 
 message MsgMintMetadata {
@@ -62,14 +64,11 @@ message MsgMintMetadata {
 }
 
 message MsgMintResponse {
-  string bridge_id = 1;
-  string creator = 2;
-  string cw20_contract_address = 3;
-  string bridge_creator = 4;
-  string receiver = 5;
-  string amount = 6;
-  string tx_hash = 7;
-  string type = 8;
+  string creator = 1;
+  string bridge_creator = 2;
+  string bridge_id = 3;
+  string cw20_contract_address = 4;
+  repeated string receivers = 5;
 }
 
 message MsgCreateCw20Contract {

@@ -80,26 +80,26 @@ func request_Query_Bridge_0(ctx context.Context, marshaler runtime.Marshaler, cl
 		_   = err
 	)
 
-	val, ok = pathParams["creator"]
+	val, ok = pathParams["bridge_creator"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "creator")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bridge_creator")
 	}
 
-	protoReq.Creator, err = runtime.String(val)
+	protoReq.BridgeCreator, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "creator", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bridge_creator", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["bridge_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bridge_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.BridgeId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bridge_id", err)
 	}
 
 	msg, err := client.Bridge(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -118,26 +118,26 @@ func local_request_Query_Bridge_0(ctx context.Context, marshaler runtime.Marshal
 		_   = err
 	)
 
-	val, ok = pathParams["creator"]
+	val, ok = pathParams["bridge_creator"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "creator")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bridge_creator")
 	}
 
-	protoReq.Creator, err = runtime.String(val)
+	protoReq.BridgeCreator, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "creator", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bridge_creator", err)
 	}
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["bridge_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bridge_id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	protoReq.BridgeId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bridge_id", err)
 	}
 
 	msg, err := server.Bridge(ctx, &protoReq)
@@ -329,7 +329,7 @@ var (
 
 	pattern_Query_Cw20Contract_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "bridge", "v1", "cw_20_contract"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Bridge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "bridge", "v1", "creator", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Bridge_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 1, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "bridge", "v1", "bridge_creator", "bridge_id"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

@@ -19,7 +19,7 @@ func NewMsgCreateChainValidatorBridge(
 	creator string,
 	chain string,
 	validator string,
-	bridgeAccount string,
+	bridgeCreator string,
 	bridgeId string,
 
 ) *MsgCreateChainValidatorBridge {
@@ -27,7 +27,7 @@ func NewMsgCreateChainValidatorBridge(
 		Creator:       creator,
 		Chain:         chain,
 		Validator:     validator,
-		BridgeAccount: bridgeAccount,
+		BridgeCreator: bridgeCreator,
 		BridgeId:      bridgeId,
 	}
 }
@@ -58,9 +58,9 @@ func (msg *MsgCreateChainValidatorBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	_, err = sdk.AccAddressFromBech32(msg.BridgeAccount)
+	_, err = sdk.AccAddressFromBech32(msg.BridgeCreator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Chain) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")
@@ -80,7 +80,7 @@ func NewMsgUpdateChainValidatorBridge(
 	creator string,
 	chain string,
 	validator string,
-	bridgeAccount string,
+	bridgeCreator string,
 	bridgeId string,
 
 ) *MsgUpdateChainValidatorBridge {
@@ -88,7 +88,7 @@ func NewMsgUpdateChainValidatorBridge(
 		Creator:       creator,
 		Chain:         chain,
 		Validator:     validator,
-		BridgeAccount: bridgeAccount,
+		BridgeCreator: bridgeCreator,
 		BridgeId:      bridgeId,
 	}
 }
@@ -119,9 +119,9 @@ func (msg *MsgUpdateChainValidatorBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	_, err = sdk.AccAddressFromBech32(msg.BridgeAccount)
+	_, err = sdk.AccAddressFromBech32(msg.BridgeCreator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge account address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bridge creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Chain) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "chain should not be empty")

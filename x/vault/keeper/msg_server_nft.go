@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
@@ -32,7 +33,7 @@ func (k msgServer) TransferYieldReward(ctx sdk.Context, we *WasmExecutor, cw20Co
 	return nil
 }
 
-// TODO: Add min threshold for withdraw yield rewards
+// TODO: May need min threshold for withdraw yield rewards
 func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithdrawNftRewards) (*types.MsgWithdrawNftRewardsResponse, error) {
 	var stakingChain = ""
 	var stakingValidator = ""
@@ -169,14 +170,14 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 				return nil, sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
 			}
 
-			bridgeAccount, err := sdk.AccAddressFromBech32(chainValidatorBridge.BridgeAccount)
+			bridgeCreator, err := sdk.AccAddressFromBech32(chainValidatorBridge.BridgeCreator)
 
 			if err != nil {
 				return nil, err
 			}
 
 			be := NewBridgeExecutor(ctx, k.bridgeKeeper)
-			bridge, found := be.GetBridge(bridgeAccount, chainValidatorBridge.BridgeId)
+			bridge, found := be.GetBridge(bridgeCreator, chainValidatorBridge.BridgeId)
 
 			if !found {
 				return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
@@ -257,6 +258,24 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 
 		k.SetNftStake(ctx, *rewardsController.getNftStake())
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgWithdrawNftRewards),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceCreator, marketplaceCreator.String()),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceId, msg.MarketplaceId),
+			sdk.NewAttribute(types.AttributeKeyCollectionCreator, collectionCreator.String()),
+			sdk.NewAttribute(types.AttributeKeyCollectionId, msg.CollectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, msg.NftId),
+			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
+			sdk.NewAttribute(types.AttributeKeyStartAt, strconv.FormatInt(startAt, 10)),
+			sdk.NewAttribute(types.AttributeKeyEndAt, strconv.FormatInt(endAt, 10)),
+			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, creator.String()),
+		),
+	)
 
 	return &types.MsgWithdrawNftRewardsResponse{
 		MarketplaceCreator: marketplaceCreator.String(),
@@ -364,8 +383,11 @@ func (k msgServer) UpdateNftStakeStaked(goCtx context.Context, msg *types.MsgUpd
 		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")
 	}
 
-	// TODO: check if this halts the chain
-	shares := sdk.MustNewDecFromStr(msg.Shares)
+	shares, err := sdk.NewDecFromStr(msg.Shares)
+
+	if err != nil {
+		return nil, err
+	}
 
 	if nftStake.Staked[msg.StakedIndex] == nil {
 		return nil, sdkerrors.Wrap(types.ErrNftStakeStakedNotFound, "nft stake staked not found")
@@ -390,6 +412,24 @@ func (k msgServer) UpdateNftStakeStaked(goCtx context.Context, msg *types.MsgUpd
 	chainValidatorBridge.Staked = chainValidatorBridge.Staked.Add(shares)
 
 	k.SetChainValidatorBridge(ctx, msg.StakingChain, msg.StakingValidator, chainValidatorBridge)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateNftStakeStaked),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceCreator, marketplaceCreator.String()),
+			sdk.NewAttribute(types.AttributeKeyMarketplaceId, msg.MarketplaceId),
+			sdk.NewAttribute(types.AttributeKeyCollectionCreator, collectionCreator.String()),
+			sdk.NewAttribute(types.AttributeKeyCollectionId, msg.CollectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, msg.NftId),
+			sdk.NewAttribute(types.AttributeKeyStakingChain, msg.StakingChain),
+			sdk.NewAttribute(types.AttributeKeyStakingValidator, msg.StakingValidator),
+			sdk.NewAttribute(types.AttributeKeyBlockHeight, strconv.FormatInt(msg.BlockHeight, 10)),
+			sdk.NewAttribute(types.AttributeKeyStakedIndex, strconv.FormatInt(msg.StakedIndex, 10)),
+			sdk.NewAttribute(types.AttributeKeyShares, msg.Shares),
+		),
+	)
 
 	return &types.MsgUpdateNftStakeStakedResponse{
 		MarketplaceCreator: marketplaceCreator.String(),

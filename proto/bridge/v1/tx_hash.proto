@@ -11,6 +11,9 @@ message TxHash {
   bytes bridge_index = 2 [(gogoproto.moretags) = "yaml:\"bridge_index\""]; 
   string tx_hash = 3 [(gogoproto.moretags) = "yaml:\"tx_hash\""]; 
   bool processed = 4 [(gogoproto.moretags) = "yaml:\"processed\""]; 
-  string type = 5 [(gogoproto.moretags) = "yaml:\"type\""]; 
+  string type = 5 [(gogoproto.moretags) = "yaml:\"type\""];  
+  string receiver = 6 [(gogoproto.moretags) = "yaml:\"receiver\""];  
+  string amount = 7 [(gogoproto.moretags) = "yaml:\"amount\""]; 
+  string cw20_contract_address = 8 [(gogoproto.moretags) = "yaml:\"cw20_contract_address\""]; 
 }
 

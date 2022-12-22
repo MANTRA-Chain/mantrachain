@@ -12,12 +12,12 @@ const (
 	AttributeKeyBridgeCreator       = "bridge_creator"
 	AttributeKeySigner              = "signer"
 	AttributeKeyOwner               = "owner"
-	AttributeKeyReceiver            = "receiver"
+	AttributeKeyReceivers           = "receivers"
 	AttributeKeyStaked              = "staked"
 	AttributeKeyCw20ContractAddress = "cw-20-contract-address"
-	AttributeKeyAmount              = "amount"
-	AttributeKeyTxHash              = "tx-hash"
-	AttributeKeyType                = "type"
+	AttributeKeyCw20ContractCreator = "cw-20-contract-creator"
+	AttributeKeyCw20ContractCodeId  = "cw-20-contract-code-id"
+	AttributeKeyCw20ContractVersion = "cw-20-contract-version"
 )
 
 var (

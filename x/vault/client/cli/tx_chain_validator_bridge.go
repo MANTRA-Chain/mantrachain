@@ -10,13 +10,13 @@ import (
 
 func CmdCreateChainValidatorBridge() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-chain-validator-bridge [chain] [validator] [bridge-account] [bridge-id]",
+		Use:   "create-chain-validator-bridge [chain] [validator] [bridge-creator] [bridge-id]",
 		Short: "Create a new chain_validator_bridge",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			ardChain := args[0]
 			ardValidator := args[1]
-			argBridgeAccount := args[2]
+			argBridgeCreator := args[2]
 			argBridgeId := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -28,7 +28,7 @@ func CmdCreateChainValidatorBridge() *cobra.Command {
 				clientCtx.GetFromAddress().String(),
 				ardChain,
 				ardValidator,
-				argBridgeAccount,
+				argBridgeCreator,
 				argBridgeId,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -45,13 +45,13 @@ func CmdCreateChainValidatorBridge() *cobra.Command {
 
 func CmdUpdateChainValidatorBridge() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-chain-validator-bridge [chain] [validator] [bridge-account] [bridge-id]",
+		Use:   "update-chain-validator-bridge [chain] [validator] [bridge-creator] [bridge-id]",
 		Short: "Update a chain_validator_bridge",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			ardChain := args[0]
 			ardValidator := args[1]
-			argBridgeAccount := args[2]
+			argBridgeCreator := args[2]
 			argBridgeId := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -63,7 +63,7 @@ func CmdUpdateChainValidatorBridge() *cobra.Command {
 				clientCtx.GetFromAddress().String(),
 				ardChain,
 				ardValidator,
-				argBridgeAccount,
+				argBridgeCreator,
 				argBridgeId,
 			)
 			if err := msg.ValidateBasic(); err != nil {

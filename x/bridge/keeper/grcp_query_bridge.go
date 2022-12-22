@@ -15,35 +15,36 @@ func (k Keeper) Bridge(c context.Context, req *types.QueryGetBridgeRequest) (*ty
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	creator, err := sdk.AccAddressFromBech32(req.Creator)
+	bridgeCreator, err := sdk.AccAddressFromBech32(req.BridgeCreator)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	conf := k.GetParams(ctx)
-	err = types.ValidateBridgeId(conf.ValidBridgeId, req.Id)
+	err = types.ValidateBridgeId(conf.ValidBridgeId, req.BridgeId)
 
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	index := types.GetBridgeIndex(creator, req.Id)
+	index := types.GetBridgeIndex(bridgeCreator, req.BridgeId)
 
 	bridge, found := k.GetBridge(
 		ctx,
-		sdk.AccAddress(creator),
+		sdk.AccAddress(bridgeCreator),
 		index,
 	)
+
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
 
 	return &types.QueryGetBridgeResponse{
-		Id:                  bridge.Id,
+		BridgeCreator:       bridge.Creator.String(),
+		BridgeId:            bridge.Id,
 		BridgeAccount:       bridge.BridgeAccount,
 		Cw20ContractAddress: bridge.Cw20ContractAddress,
-		Creator:             bridge.Creator.String(),
 		Owner:               bridge.Owner.String(),
 	}, nil
 }

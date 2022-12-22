@@ -18,7 +18,7 @@ func NewVaultExecutor(ctx sdk.Context, vaultKeeper types.VaultKeeper) *VaultExec
 	}
 }
 
-func (c *VaultExecutor) CreateNftStakeStaked(
+func (c *VaultExecutor) CreateAndDelegateNftStakeStaked(
 	marketplaceCreator string,
 	marketplaceId string,
 	collectionCreator string,
@@ -44,7 +44,7 @@ func (c *VaultExecutor) CreateNftStakeStaked(
 		})
 	}
 
-	return c.vaultKeeper.CreateNftStakeStaked(
+	return c.vaultKeeper.CreateAndDelegateNftStakeStaked(
 		c.ctx,
 		marketplaceCreator,
 		marketplaceId,

@@ -17,7 +17,7 @@ var _ = strconv.Itoa(0)
 
 func CmdGetBridge() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "bridge [creator] [id]",
+		Use:   "bridge [bridge_creator] [bridge_id]",
 		Short: "Query a bridge",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -25,21 +25,21 @@ func CmdGetBridge() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			reqCreator := args[0]
-			reqId := args[1]
+			reqBridgeCreator := args[0]
+			reqBridgeId := args[1]
 
-			if strings.TrimSpace(reqId) == "" {
+			if strings.TrimSpace(reqBridgeId) == "" {
 				return sdkerrors.Wrap(types.ErrInvalidBridgeId, "empty bridge id")
 			}
 
-			creator, err := sdk.AccAddressFromBech32(reqCreator)
+			bridgeCreator, err := sdk.AccAddressFromBech32(reqBridgeCreator)
 			if err != nil {
 				return err
 			}
 
 			params := &types.QueryGetBridgeRequest{
-				Creator: creator.String(),
-				Id:      reqId,
+				BridgeCreator: bridgeCreator.String(),
+				BridgeId:      reqBridgeId,
 			}
 
 			res, err := queryClient.Bridge(context.Background(), params)

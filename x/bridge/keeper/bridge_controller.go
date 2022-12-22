@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strings"
+
 	"github.com/LimeChain/mantrachain/x/bridge/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -9,19 +11,19 @@ import (
 type BridgeControllerFunc func(controller *BridgeController) error
 
 type BridgeController struct {
-	validators []BridgeControllerFunc
-	metadata   *types.MsgBridgeMetadata
-	bridge     *types.Bridge
-	store      msgServer
-	conf       *types.Params
-	ctx        sdk.Context
-	creator    sdk.AccAddress
+	validators    []BridgeControllerFunc
+	metadata      *types.MsgBridgeMetadata
+	bridge        *types.Bridge
+	store         msgServer
+	conf          *types.Params
+	ctx           sdk.Context
+	bridgeCreator sdk.AccAddress
 }
 
-func NewBridgeController(ctx sdk.Context, creator sdk.AccAddress) *BridgeController {
+func NewBridgeController(ctx sdk.Context, bridgeCreator sdk.AccAddress) *BridgeController {
 	return &BridgeController{
-		ctx:     ctx,
-		creator: creator,
+		ctx:           ctx,
+		bridgeCreator: bridgeCreator,
 	}
 }
 
@@ -77,7 +79,6 @@ func (c *BridgeController) MustExist() *BridgeController {
 }
 
 func (c *BridgeController) ValidMetadata() *BridgeController {
-	// TODO: Validate options, attrubute, images and links
 	c.validators = append(c.validators, func(controller *BridgeController) error {
 		return controller.bridgeMetadataNotNil()
 	}, func(controller *BridgeController) error {
@@ -115,7 +116,7 @@ func (c *BridgeController) requireBridge() error {
 	if c.bridge != nil {
 		return nil
 	}
-	bridge, isFound := c.store.GetBridge(c.ctx, c.creator, c.getIndex())
+	bridge, isFound := c.store.GetBridge(c.ctx, c.bridgeCreator, c.getIndex())
 	if !isFound {
 		return sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "not found: %s", c.getId())
 	}
@@ -132,7 +133,6 @@ func (c *BridgeController) mustNotExist() error {
 }
 
 func (c *BridgeController) bridgeMetadataNotNil() error {
-	// TODO: move to types -> validate basic
 	if c.metadata == nil {
 		return sdkerrors.Wrapf(types.ErrInvalidBridgeMetadata, "bridge metadata is invalid")
 	}
@@ -155,27 +155,64 @@ func (c *BridgeController) validBridgeMetadataBridgeAccount() error {
 }
 
 func (c *BridgeController) validBridgeMetadataCw20ContractInitParams() error {
-	// TODO: use strings.TrimSpace ... == "" for strings
-	if len(c.metadata.Cw20ContractAddress) == 0 {
-		if len(c.metadata.Cw20Name) == 0 {
+	if strings.TrimSpace(c.metadata.Cw20ContractAddress) == "" {
+		if strings.TrimSpace(c.metadata.Cw20Name) == "" {
 			return sdkerrors.Wrapf(types.ErrInvalidCw20Name, "cw20 name is invalid")
 		}
 
-		if len(c.metadata.Cw20Symbol) == 0 {
+		if int32(len(c.metadata.Cw20Name)) < c.conf.ValidBridgeCw20ContractNameMinLength {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20Name, "cw20 name length %d invalid, min %d", len(c.metadata.Cw20Name), c.conf.ValidBridgeCw20ContractNameMinLength)
+		}
+
+		if int32(len(c.metadata.Cw20Name)) > c.conf.ValidBridgeCw20ContractNameMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20Name, "cw20 name length %d invalid, max %d", len(c.metadata.Cw20Name), c.conf.ValidBridgeCw20ContractNameMaxLength)
+		}
+
+		if strings.TrimSpace(c.metadata.Cw20Symbol) == "" {
 			return sdkerrors.Wrapf(types.ErrInvalidCw20Symbol, "cw20 symbol is invalid")
+		}
+
+		if int32(len(c.metadata.Cw20Symbol)) < c.conf.ValidBridgeCw20ContractSymbolMinLength {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20Symbol, "cw20 symbol length %d invalid, min %d", len(c.metadata.Cw20Symbol), c.conf.ValidBridgeCw20ContractSymbolMinLength)
+		}
+
+		if int32(len(c.metadata.Cw20Symbol)) > c.conf.ValidBridgeCw20ContractSymbolMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20Symbol, "cw20 symbol length %d invalid, max %d", len(c.metadata.Cw20Symbol), c.conf.ValidBridgeCw20ContractSymbolMaxLength)
 		}
 
 		if c.metadata.Cw20InitialBalances == nil || len(c.metadata.Cw20InitialBalances) == 0 {
 			return sdkerrors.Wrapf(types.ErrInvalidCw20InitialBalances, "cw20 initial balances is invalid")
 		}
 
-		// TODO: check c.metadata.Cw20InitialBalances items are valid
+		for i, initialBalance := range c.metadata.Cw20InitialBalances {
+			if _, err := sdk.AccAddressFromBech32(initialBalance.Address); err != nil {
+				return sdkerrors.Wrapf(types.ErrInvalidCw20InitialBalancesAddress, "cw20 initial balances address %s is invalid, index %d", initialBalance.Address, i)
+			}
+
+			if strings.TrimSpace(initialBalance.Amount) == "" {
+				return sdkerrors.Wrapf(types.ErrInvalidCw20InitialBalancesAmount, "cw20 initial balances amount %s is invalid, index %d", initialBalance.Amount, i)
+			}
+		}
 
 		if c.metadata.Cw20Mint == nil {
 			return sdkerrors.Wrapf(types.ErrInvalidCw20Mint, "cw20 mint is invalid")
 		}
 
-		// TODO: check c.metadata.Cw20Mint object is valid and minter address equals to bridge account
+		minter, err := sdk.AccAddressFromBech32(c.metadata.Cw20Mint.Minter)
+
+		if err != nil {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20MintMinter, "cw20 mint minter address %s is invalid", c.metadata.Cw20Mint.Minter)
+		}
+
+		bridgeAccount, _ := sdk.AccAddressFromBech32(c.metadata.BridgeAccount)
+
+		if !minter.Equals(bridgeAccount) {
+			return sdkerrors.Wrapf(types.ErrBridgeAccountMismatch, "bridge account %s does not match the minter %s", bridgeAccount.String(), minter.String())
+		}
+	} else {
+		if _, err := sdk.AccAddressFromBech32(c.metadata.Cw20ContractAddress); err != nil {
+			return sdkerrors.Wrapf(types.ErrInvalidCw20ContractAddress, "cw20 contract address %s is invalid", c.metadata.Cw20ContractAddress)
+		}
 	}
 
 	return nil
@@ -190,5 +227,5 @@ func (c *BridgeController) getId() string {
 }
 
 func (c *BridgeController) getIndex() []byte {
-	return types.GetBridgeIndex(c.creator, c.getId())
+	return types.GetBridgeIndex(c.bridgeCreator, c.getId())
 }

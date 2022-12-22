@@ -38,7 +38,6 @@ func (k Keeper) MarketplaceCollection(c context.Context, req *types.QueryGetMark
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	// TODO: Add correct validation for collection id
 	if strings.TrimSpace(req.CollectionId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -58,6 +57,7 @@ func (k Keeper) MarketplaceCollection(c context.Context, req *types.QueryGetMark
 		marketplaceIndex,
 		index,
 	)
+
 	if !found {
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}

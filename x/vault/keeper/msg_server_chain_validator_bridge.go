@@ -31,7 +31,7 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, sdkerrors.Wrap(types.ErrInvalidBridgeId, "bridge id should not be empty")
 	}
 
-	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
+	bridgeCreator, err := sdk.AccAddressFromBech32(msg.BridgeCreator)
 
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 	}
 
 	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
-	_, found := be.GetBridge(bridgeAccount, msg.BridgeId)
+	_, found := be.GetBridge(bridgeCreator, msg.BridgeId)
 
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
@@ -67,7 +67,7 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 	var chainValidatorBridge = types.ChainValidatorBridge{
 		Creator:       msg.Creator,
 		BridgeId:      msg.BridgeId,
-		BridgeAccount: msg.BridgeAccount,
+		BridgeCreator: msg.BridgeCreator,
 		Chain:         msg.Chain,
 		Validator:     msg.Validator,
 	}
@@ -79,11 +79,25 @@ func (k msgServer) CreateChainValidatorBridge(goCtx context.Context, msg *types.
 		chainValidatorBridge,
 	)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgCreateChainValidatorBridge),
+			sdk.NewAttribute(types.AttributeKeyChain, msg.Chain),
+			sdk.NewAttribute(types.AttributeKeyValidator, msg.Validator),
+			sdk.NewAttribute(types.AttributeKeyBridgeCreator, msg.BridgeCreator),
+			sdk.NewAttribute(types.AttributeKeyBridgeId, msg.BridgeId),
+			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, creator.String()),
+		),
+	)
+
 	return &types.MsgCreateChainValidatorBridgeResponse{
 		Chain:         msg.Chain,
 		Validator:     msg.Validator,
 		BridgeId:      msg.BridgeId,
-		BridgeAccount: msg.BridgeAccount,
+		BridgeCreator: msg.BridgeCreator,
 		Creator:       msg.Creator,
 	}, nil
 }
@@ -110,7 +124,7 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 		return nil, sdkerrors.Wrap(types.ErrInvalidBridgeId, "bridge id should not be empty")
 	}
 
-	bridgeAccount, err := sdk.AccAddressFromBech32(msg.BridgeAccount)
+	bridgeCreator, err := sdk.AccAddressFromBech32(msg.BridgeCreator)
 
 	if err != nil {
 		return nil, err
@@ -142,7 +156,7 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 	}
 
 	be := NewBridgeExecutor(ctx, k.bridgeKeeper)
-	_, found := be.GetBridge(bridgeAccount, msg.BridgeId)
+	_, found := be.GetBridge(bridgeCreator, msg.BridgeId)
 
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrBridgeDoesNotExist, "bridge not exists")
@@ -151,7 +165,7 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 	var chainValidatorBridge = types.ChainValidatorBridge{
 		Creator:       valFound.Creator,
 		BridgeId:      msg.BridgeId,
-		BridgeAccount: msg.BridgeAccount,
+		BridgeCreator: msg.BridgeCreator,
 		Staked:        valFound.Staked,
 		Chain:         valFound.Chain,
 		Validator:     valFound.Validator,
@@ -164,11 +178,25 @@ func (k msgServer) UpdateChainValidatorBridge(goCtx context.Context, msg *types.
 		chainValidatorBridge,
 	)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateChainValidatorBridge),
+			sdk.NewAttribute(types.AttributeKeyChain, msg.Chain),
+			sdk.NewAttribute(types.AttributeKeyValidator, msg.Validator),
+			sdk.NewAttribute(types.AttributeKeyBridgeCreator, msg.BridgeCreator),
+			sdk.NewAttribute(types.AttributeKeyBridgeId, msg.BridgeId),
+			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, valFound.String()),
+		),
+	)
+
 	return &types.MsgUpdateChainValidatorBridgeResponse{
 		Chain:         msg.Chain,
 		Validator:     msg.Validator,
 		BridgeId:      msg.BridgeId,
-		BridgeAccount: msg.BridgeAccount,
+		BridgeCreator: msg.BridgeCreator,
 		Creator:       msg.Creator,
 	}, nil
 }
@@ -222,11 +250,25 @@ func (k msgServer) DeleteChainValidatorBridge(goCtx context.Context, msg *types.
 		msg.Validator,
 	)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgDeleteChainValidatorBridge),
+			sdk.NewAttribute(types.AttributeKeyChain, msg.Chain),
+			sdk.NewAttribute(types.AttributeKeyValidator, msg.Validator),
+			sdk.NewAttribute(types.AttributeKeyBridgeCreator, valFound.BridgeCreator),
+			sdk.NewAttribute(types.AttributeKeyBridgeId, valFound.BridgeId),
+			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyOwner, valFound.String()),
+		),
+	)
+
 	return &types.MsgDeleteChainValidatorBridgeResponse{
 		Chain:         msg.Chain,
 		Validator:     msg.Validator,
 		BridgeId:      valFound.BridgeId,
-		BridgeAccount: valFound.BridgeAccount,
+		BridgeCreator: valFound.BridgeCreator,
 		Creator:       msg.Creator,
 	}, nil
 }

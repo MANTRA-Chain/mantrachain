@@ -98,7 +98,7 @@ RECIPIENT1=$(./build/mantrachaind keys show recipient1 -a --keyring-backend=test
 
 if [[ $Op = "mint-sample" ]]
 then
-  MINT_JSON=$(echo '{"receiver":"{address}","amount":"1000000000","tx_hash":"123"}' | sed -e "s/{address}/$RECIPIENT1/g")
+  MINT_JSON=$(echo '{"mint_list": [{"receiver":"{address}","amount":"1000000000","tx_hash":"123"}]}' | sed -e "s/{address}/$RECIPIENT1/g")
 
   cecho "GREEN" "mint WUSDC for recipient1"
   ./build/mantrachaind tx bridge mint "$(echo $MINT_JSON)" --chain-id mantrachain --from bridge1 --keyring-backend test --gas auto --bridge-creator $BRIDGE1 --bridge-id id1 --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --home $HOME/.mantrachain/validator1 --yes

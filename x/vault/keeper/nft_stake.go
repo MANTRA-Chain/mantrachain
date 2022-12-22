@@ -62,8 +62,7 @@ func (k Keeper) GetAllNftStake(ctx sdk.Context, marketplaceIndex []byte, collect
 	return
 }
 
-// TODO: move out the delegate mantrachain logic
-func (k Keeper) CreateNftStakeStaked(
+func (k Keeper) CreateAndDelegateNftStakeStaked(
 	ctx sdk.Context,
 	marketplaceCreator string,
 	marketplaceId string,
@@ -81,6 +80,7 @@ func (k Keeper) CreateNftStakeStaked(
 	nftEarningsOnYieldReward []*types.VaultEarning,
 ) error {
 	var delegated bool = false
+
 	nftStake, found := k.GetNftStake(ctx, marketplaceIndex, collectionIndex, index)
 	delegate := strings.TrimSpace(stakingChain) == "" && strings.TrimSpace(stakingValidator) == ""
 
@@ -123,8 +123,6 @@ func (k Keeper) CreateNftStakeStaked(
 		staked.Validator = params.StakingValidatorAddress
 		staked.Shares = shares.String()
 
-		// TODO: Add shares to chainValidatorBridge instead of setting them on SetEpochEnd
-
 		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
 
 		if !found {
@@ -135,6 +133,10 @@ func (k Keeper) CreateNftStakeStaked(
 
 		delegated = true
 	} else { // If the stake will be on a another chain
+		if !k.HasChainValidatorBridge(ctx, stakingChain, stakingValidator) {
+			return sdkerrors.Wrap(types.ErrChainValidatorBridgeNotFound, "chain validator bridge not found")
+		}
+
 		staked.Chain = stakingChain
 		staked.Validator = stakingValidator
 		staked.Shares = "0"

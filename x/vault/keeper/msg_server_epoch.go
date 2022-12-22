@@ -128,6 +128,22 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
 	}
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgStartEpoch),
+			sdk.NewAttribute(types.AttributeKeyPrevEpochBlock, strconv.FormatInt(lastEpochBlockHeight, 10)),
+			sdk.NewAttribute(types.AttributeKeyNextEpochBlock, strconv.FormatInt(types.UndefinedBlockHeight, 10)),
+			sdk.NewAttribute(types.AttributeKeyBlockStart, strconv.FormatInt(msg.BlockStart, 10)),
+			sdk.NewAttribute(types.AttributeKeyBlockEnd, strconv.FormatInt(types.UndefinedBlockHeight, 10)),
+			sdk.NewAttribute(types.AttributeKeyStakingChain, msg.StakingChain),
+			sdk.NewAttribute(types.AttributeKeyStakingValidator, msg.StakingValidator),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractAddress, bridge.Cw20ContractAddress),
+			sdk.NewAttribute(types.AttributeKeyStaked, chainValidatorBridge.Staked.String()),
+		),
+	)
+
 	return &types.MsgStartEpochResponse{
 		PrevEpochBlock:      lastEpochBlockHeight,
 		NextEpochBlock:      types.UndefinedBlockHeight,

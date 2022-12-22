@@ -22,7 +22,7 @@ service Query {
 	}
 
   rpc Bridge(QueryGetBridgeRequest) returns (QueryGetBridgeResponse) {
-		option (google.api.http).get = "/mantrachain/bridge/v1/bridge/{creator}/{id}";
+		option (google.api.http).get = "/mantrachain/bridge/v1/bridge/{bridge_creator}/{bridge_id}";
 	}
 // this line is used by starport scaffolding # 2
 }
@@ -43,16 +43,16 @@ message QueryGetCw20ContractResponse {
 }
 
 message QueryGetBridgeRequest {
-  string creator = 1;
-  string id = 2;
+  string bridge_creator = 1;
+  string bridge_id = 2;
 }
 
 message QueryGetBridgeResponse {
-  string id = 1;
-  string bridge_account = 2;
-  string cw20_contract_address = 3;
-  string owner = 4;
-  string creator = 5;
+  string bridge_creator = 1;
+  string bridge_id = 2;
+  string bridge_account = 3;
+  string cw20_contract_address = 4;
+  string owner = 5;
 }
 
 // this line is used by starport scaffolding # 3

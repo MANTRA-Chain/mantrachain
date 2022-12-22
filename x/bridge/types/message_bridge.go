@@ -44,8 +44,11 @@ func (msg *MsgRegisterBridge) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
+	if msg.Bridge == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "bridge should not be empty")
+	}
 	if strings.TrimSpace(msg.Bridge.Id) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "id should not be empty")
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Bridge.BridgeAccount)
 	if err != nil {

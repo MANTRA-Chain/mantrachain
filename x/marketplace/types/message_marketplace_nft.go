@@ -48,7 +48,6 @@ func (msg *MsgBuyNft) GetSignBytes() []byte {
 }
 
 func (msg *MsgBuyNft) ValidateBasic() error {
-	// TODO: Validate stakingChain and stakingValidator if not empty
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

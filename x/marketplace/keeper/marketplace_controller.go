@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strings"
+
 	"github.com/LimeChain/mantrachain/x/marketplace/types"
 	"github.com/LimeChain/mantrachain/x/marketplace/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -85,7 +87,6 @@ func (c *MarketplaceController) MustExist() *MarketplaceController {
 }
 
 func (c *MarketplaceController) ValidMetadata() *MarketplaceController {
-	// TODO: Validate options, attrubute, images and links
 	c.validators = append(c.validators, func(controller *MarketplaceController) error {
 		return controller.marketplaceMetadataNotNil()
 	}, func(controller *MarketplaceController) error {
@@ -96,8 +97,91 @@ func (c *MarketplaceController) ValidMetadata() *MarketplaceController {
 		return controller.validMarketplaceMetadataUrl()
 	}, func(controller *MarketplaceController) error {
 		return controller.validMarketplaceMetadataDescription()
+	}, func(controller *MarketplaceController) error {
+		return controller.validMarketplaceMetadataOptions()
+	}, func(controller *MarketplaceController) error {
+		return controller.validMarketplaceMetadataImages()
+	}, func(controller *MarketplaceController) error {
+		return controller.validMarketplaceMetadataLinks()
+	}, func(controller *MarketplaceController) error {
+		return controller.validMarketplaceMetadataAttributes()
 	})
 	return c
+}
+
+func (c *MarketplaceController) validMarketplaceMetadataAttributes() error {
+	if len(c.metadata.Attributes) == 0 {
+		return nil
+	}
+
+	if int32(len(c.metadata.Attributes)) == c.conf.ValidMarketplaceMetadataAttributesMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceAttributesCount, "attributes count %d invalid, max %d", len(c.metadata.Attributes), c.conf.ValidMarketplaceMetadataAttributesMaxCount)
+	}
+
+	for k, attrubute := range c.metadata.Attributes {
+		if attrubute.Type == "" || int32(len(attrubute.Type)) > c.conf.ValidMarketplaceMetadataAttributesTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceAttribute, "attrubute index %d type empty or too long, max %d", k, c.conf.ValidMarketplaceMetadataAttributesTypeMaxLength)
+		}
+		if int32(len(attrubute.Value)) > c.conf.ValidMarketplaceMetadataAttributesValueMaxLength || int32(len(attrubute.SubValue)) > c.conf.ValidMarketplaceMetadataAttributesSubValueMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceAttribute, "attrubute index %d value/subvalue too long, max %d/%d symbols", k, c.conf.ValidMarketplaceMetadataAttributesValueMaxLength, c.conf.ValidMarketplaceMetadataAttributesSubValueMaxLength)
+		}
+	}
+
+	return nil
+}
+
+func (c *MarketplaceController) validMarketplaceMetadataImages() error {
+	if len(c.metadata.Images) == 0 {
+		return nil
+	}
+	if int32(len(c.metadata.Images)) > c.conf.ValidMarketplaceMetadataImagesMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceImagesCount, "images count %d invalid, max %d", len(c.metadata.Images), c.conf.ValidMarketplaceMetadataImagesMaxCount)
+	}
+	for i, image := range c.metadata.Images {
+		if image.Type == "" || int32(len(image.Type)) > c.conf.ValidMarketplaceMetadataImagesTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceImage, "image type empty or length invalid, index %d , max %d", i, c.conf.ValidMarketplaceMetadataImagesTypeMaxLength)
+		}
+		if !utils.IsUrl(image.Url) {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceImage, "image index %d invalid url", i)
+		}
+	}
+	return nil
+}
+
+func (c *MarketplaceController) validMarketplaceMetadataLinks() error {
+	if len(c.metadata.Links) == 0 {
+		return nil
+	}
+	if int32(len(c.metadata.Links)) > c.conf.ValidMarketplaceMetadataLinksMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceLinksCount, "links count %d invalid, max %d", len(c.metadata.Links), c.conf.ValidMarketplaceMetadataLinksMaxCount)
+	}
+	for i, link := range c.metadata.Links {
+		if link.Type == "" || int32(len(link.Type)) > c.conf.ValidMarketplaceMetadataLinksTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceLink, "link type empty or length invalid, index %d , max %d", i, c.conf.ValidMarketplaceMetadataLinksTypeMaxLength)
+		}
+		if !utils.IsUrl(link.Url) {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceLink, "link index %d invalid url", i)
+		}
+	}
+	return nil
+}
+
+func (c *MarketplaceController) validMarketplaceMetadataOptions() error {
+	if len(c.metadata.Options) == 0 {
+		return nil
+	}
+	if int32(len(c.metadata.Options)) > c.conf.ValidMarketplaceMetadataOptionsMaxCount {
+		return sdkerrors.Wrapf(types.ErrInvalidMarketplaceOptionsCount, "options count %d invalid, max %d", len(c.metadata.Options), c.conf.ValidMarketplaceMetadataOptionsMaxCount)
+	}
+	for i, option := range c.metadata.Options {
+		if option.Type == "" || int32(len(option.Type)) > c.conf.ValidMarketplaceMetadataOptionsTypeMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceOption, "option type empty or length invalid, index %d , max %d", i, c.conf.ValidMarketplaceMetadataOptionsTypeMaxLength)
+		}
+		if int32(len(option.Value)) > c.conf.ValidMarketplaceMetadataOptionsValueMaxLength || int32(len(option.SubValue)) > c.conf.ValidMarketplaceMetadataOptionsSubValueMaxLength {
+			return sdkerrors.Wrapf(types.ErrInvalidMarketplaceOption, "option index %d value/subvalue too long, max %d/%d symbols", i, c.conf.ValidMarketplaceMetadataOptionsValueMaxLength, c.conf.ValidMarketplaceMetadataOptionsSubValueMaxLength)
+		}
+	}
+	return nil
 }
 
 func (c *MarketplaceController) isOpenedOrHasOwner(owner sdk.AccAddress) error {
@@ -193,7 +277,7 @@ func (c *MarketplaceController) validMarketplaceMetadataId() error {
 }
 
 func (c *MarketplaceController) validMarketplaceMetadataName() error {
-	if len(c.metadata.Name) == 0 {
+	if strings.TrimSpace(c.metadata.Name) == "" {
 		return nil
 	}
 

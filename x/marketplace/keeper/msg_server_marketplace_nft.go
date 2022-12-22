@@ -71,8 +71,6 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 		return nil, err
 	}
 
-	// TODO: Check is chainValidatorBridge exists for that msg.StakingChain and msg.StakingValidator
-
 	collection := marketplaceCollection.getMarketplaceCollection()
 
 	nft, found := tokenExecutor.GetNft(collectionCreator, msg.CollectionId, msg.NftId)
@@ -142,7 +140,7 @@ func (k msgServer) BuyNft(goCtx context.Context, msg *types.MsgBuyNft) (*types.M
 
 	if !lockCoin.IsZero() {
 		vaultExecutor := NewVaultExecutor(ctx, k.vaultKeeper)
-		err = vaultExecutor.CreateNftStakeStaked(
+		err = vaultExecutor.CreateAndDelegateNftStakeStaked(
 			msg.MarketplaceCreator,
 			msg.MarketplaceId,
 			msg.CollectionCreator,

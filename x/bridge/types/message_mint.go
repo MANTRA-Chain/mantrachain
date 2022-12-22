@@ -16,7 +16,7 @@ var (
 )
 
 func NewMsgMint(creator string, bridgeCreator string, bridgeId string,
-	mint *MsgMintMetadata,
+	mint *MsgMintListMetadata,
 ) *MsgMint {
 	return &MsgMint{
 		Creator:       creator,
@@ -58,12 +58,20 @@ func (msg *MsgMint) ValidateBasic() error {
 	if strings.TrimSpace(msg.BridgeId) == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bridge id should not be empty")
 	}
-	_, err = sdk.AccAddressFromBech32(msg.Mint.Receiver)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid mint receiver address (%s)", err)
+	if msg.Mint == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "mint should not be empty")
 	}
-	if strings.TrimSpace(msg.Mint.TxHash) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "mint tx hash should not be empty")
+	if msg.Mint.MintList == nil || len(msg.Mint.MintList) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "mint list should not be empty")
+	}
+	for i, mint := range msg.Mint.MintList {
+		_, err = sdk.AccAddressFromBech32(mint.Receiver)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid mint mint list receiver address (%s), index %d", err, i)
+		}
+		if strings.TrimSpace(mint.TxHash) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "mint mint list tx hash should not be empty, index %d", i)
+		}
 	}
 	return nil
 }

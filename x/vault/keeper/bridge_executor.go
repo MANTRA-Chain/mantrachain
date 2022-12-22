@@ -18,12 +18,12 @@ func NewBridgeExecutor(ctx sdk.Context, bk types.BridgeKeeper) *BridgeExecutor {
 	}
 }
 
-func (c *BridgeExecutor) GetBridge(creator sdk.AccAddress, bridgeId string) (bridgetypes.Bridge, bool) {
-	index := bridgetypes.GetBridgeIndex(creator, bridgeId)
+func (c *BridgeExecutor) GetBridge(bridgeCreator sdk.AccAddress, bridgeId string) (bridgetypes.Bridge, bool) {
+	index := bridgetypes.GetBridgeIndex(bridgeCreator, bridgeId)
 
 	return c.bk.GetBridge(
 		c.ctx,
-		sdk.AccAddress(creator),
+		sdk.AccAddress(bridgeCreator),
 		index,
 	)
 }

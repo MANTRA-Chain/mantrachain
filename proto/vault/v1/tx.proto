@@ -94,7 +94,7 @@ message MsgCreateChainValidatorBridge {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
-  string bridge_account = 5;
+  string bridge_creator = 5;
 }
 
 message MsgCreateChainValidatorBridgeResponse {
@@ -102,7 +102,7 @@ message MsgCreateChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
-  string bridge_account = 5;
+  string bridge_creator = 5;
 }
 
 message MsgUpdateChainValidatorBridge {
@@ -110,7 +110,7 @@ message MsgUpdateChainValidatorBridge {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
-  string bridge_account = 5;
+  string bridge_creator = 5;
 }
 
 message MsgUpdateChainValidatorBridgeResponse {
@@ -118,7 +118,7 @@ message MsgUpdateChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
-  string bridge_account = 5;
+  string bridge_creator = 5;
 }
 
 message MsgDeleteChainValidatorBridge {
@@ -132,7 +132,7 @@ message MsgDeleteChainValidatorBridgeResponse {
   string chain = 2;
   string validator = 3;
   string bridge_id = 4;
-  string bridge_account = 5;
+  string bridge_creator = 5;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

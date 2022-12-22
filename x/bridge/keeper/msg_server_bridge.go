@@ -102,6 +102,7 @@ func (k msgServer) RegisterBridge(goCtx context.Context, msg *types.MsgRegisterB
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgRegisterBridge),
+			sdk.NewAttribute(types.AttributeKeyBridgeCreator, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyBridgeId, bridgeId),
 			sdk.NewAttribute(types.AttributeKeyBridgeAccount, bridgeAccount.String()),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
@@ -110,8 +111,8 @@ func (k msgServer) RegisterBridge(goCtx context.Context, msg *types.MsgRegisterB
 	)
 
 	return &types.MsgRegisterBridgeResponse{
+		BridgeCreator:       creator.String(),
 		BridgeId:            bridgeId,
 		Cw20ContractAddress: msg.Bridge.Cw20ContractAddress,
-		BridgeCreator:       creator.String(),
 	}, nil
 }

@@ -13,6 +13,7 @@ import (
 
 func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := k.GetParams(ctx)
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 
@@ -24,8 +25,8 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		return nil, sdkerrors.Wrap(types.ErrInvalidMint, "mint cannot be empty")
 	}
 
-	if strings.TrimSpace(msg.Mint.TxHash) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidTxHash, "tx hash should not be empty")
+	if msg.Mint.MintList == nil || int32(len(msg.Mint.MintList)) == 0 {
+		return nil, sdkerrors.Wrap(types.ErrInvalidMint, "mint mint list cannot be empty")
 	}
 
 	bridgeCreator, err := sdk.AccAddressFromBech32(msg.BridgeCreator)
@@ -46,12 +47,6 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		return nil, err
 	}
 
-	receiver, err := sdk.AccAddressFromBech32(msg.Mint.Receiver)
-
-	if err != nil {
-		return nil, err
-	}
-
 	bridge := bridgeController.getBridge()
 
 	bridgeAccount, err := sdk.AccAddressFromBech32(bridge.BridgeAccount)
@@ -64,35 +59,64 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 		return nil, sdkerrors.Wrapf(types.ErrBridgeAccountMismatch, "bridge account %s does not match the creator %s", bridgeAccount.String(), creator.String())
 	}
 
-	// TODO: export as constant
-	txHashType := "deposit_in"
-	txHashIndex := types.GetTxHashIndex(msg.Mint.TxHash)
-	txHash, found := k.GetTxHash(ctx, bridge.Index, txHashIndex)
-
-	if found && txHash.Processed {
-		return nil, sdkerrors.Wrapf(types.ErrTxAlreadyProcessed, "tx %s already processed", msg.Mint.TxHash)
-	}
-
 	cw20ContractAddress, err := sdk.AccAddressFromBech32(bridge.Cw20ContractAddress)
 
 	if err != nil {
 		return nil, err
 	}
 
-	wasmExecutor := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
-	err = wasmExecutor.Mint(cw20ContractAddress, creator, receiver, msg.Mint.Amount)
+	var receivers []string
 
-	if err != nil {
-		return nil, err
+	wasmExecutor := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
+
+	if int32(len(msg.Mint.MintList)) > params.ValidMintMintListMetadataMintListMaxCount {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidMint, "mint mint list  metadata mint list count invalid %d, max %d", len(msg.Mint.MintList), params.ValidMintMintListMetadataMintListMaxCount)
 	}
 
-	k.SetTxHash(ctx, types.TxHash{
-		Index:       txHashIndex,
-		BridgeIndex: bridge.Index,
-		TxHash:      msg.Mint.TxHash,
-		Type:        txHashType,
-		Processed:   true,
-	})
+	for i, mint := range msg.Mint.MintList {
+		if strings.TrimSpace(mint.TxHash) == "" {
+			return nil, sdkerrors.Wrapf(types.ErrInvalidTxHash, "tx hash should not be empty,d", i)
+		}
+
+		_, err = sdk.AccAddressFromBech32(mint.Receiver)
+
+		if err != nil {
+			return nil, err
+		}
+
+		receiver, err := sdk.AccAddressFromBech32(mint.Receiver)
+
+		if err != nil {
+			return nil, err
+		}
+
+		txHashType := types.DepositIn
+		txHashIndex := types.GetTxHashIndex(mint.TxHash)
+		txHash, found := k.GetTxHash(ctx, bridge.Index, txHashIndex)
+
+		if found && txHash.Processed {
+			return nil, sdkerrors.Wrapf(types.ErrTxAlreadyProcessed, "tx %s already processed, index %d", mint.TxHash, i)
+		}
+
+		err = wasmExecutor.Mint(cw20ContractAddress, creator, receiver, mint.Amount)
+
+		if err != nil {
+			return nil, err
+		}
+
+		k.SetTxHash(ctx, types.TxHash{
+			Index:               txHashIndex,
+			BridgeIndex:         bridge.Index,
+			TxHash:              mint.TxHash,
+			Type:                string(txHashType),
+			Processed:           true,
+			Receiver:            receiver.String(),
+			Amount:              mint.Amount,
+			Cw20ContractAddress: bridge.Cw20ContractAddress,
+		})
+
+		receivers = append(receivers, receiver.String())
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -102,22 +126,16 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 			sdk.NewAttribute(types.AttributeKeyBridgeCreator, bridgeCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyBridgeId, msg.BridgeId),
 			sdk.NewAttribute(types.AttributeKeyCw20ContractAddress, bridge.Cw20ContractAddress),
-			sdk.NewAttribute(types.AttributeKeyAmount, msg.Mint.Amount),
-			sdk.NewAttribute(types.AttributeKeyTxHash, msg.Mint.TxHash),
-			sdk.NewAttribute(types.AttributeKeyType, txHashType),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
-			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
+			sdk.NewAttribute(types.AttributeKeyReceivers, strings.Join(receivers[:], ",")),
 		),
 	)
 
 	return &types.MsgMintResponse{
 		Creator:             creator.String(),
-		Receiver:            receiver.String(),
+		Receivers:           receivers,
 		BridgeCreator:       bridgeCreator.String(),
 		BridgeId:            msg.BridgeId,
 		Cw20ContractAddress: bridge.Cw20ContractAddress,
-		Amount:              msg.Mint.Amount,
-		TxHash:              msg.Mint.TxHash,
-		Type:                txHashType,
 	}, nil
 }

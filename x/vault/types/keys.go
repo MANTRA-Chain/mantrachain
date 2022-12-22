@@ -40,6 +40,8 @@ const (
 	AttributeKeyDenom    = "denom"
 	AttributeBlockHeight = "block_height"
 
+	AttributeKeySigner              = "signer"
+	AttributeKeyOwner               = "owner"
 	AttributeKeyMarketplaceId       = "marketplace_id"
 	AttributeKeyMarketplaceCreator  = "marketplace_creator"
 	AttributeKeyCollectionId        = "collection_id"
@@ -50,6 +52,22 @@ const (
 	AttributeKeyNftStakeStakedIndex = "nft_stake_staked_index"
 	AttributeNftStakeStakedIndex    = "nft_stake_staked_index"
 	AttributeKeyDelegated           = "delegated"
+	AttributeKeyBridgeCreator       = "bridge_creator"
+	AttributeKeyBridgeId            = "bridge_id"
+	AttributeKeyReceiver            = "receiver"
+	AttributeKeyStartAt             = "start_at"
+	AttributeKeyEndAt               = "end_at"
+	AttributeKeyStakingChain        = "staking_chain"
+	AttributeKeyStakingValidator    = "staking_validator"
+	AttributeKeyBlockHeight         = "block_height"
+	AttributeKeyStakedIndex         = "staked_index"
+	AttributeKeyShares              = "shares"
+	AttributeKeyPrevEpochBlock      = "prev_epoch_block"
+	AttributeKeyNextEpochBlock      = "next_epoch_block"
+	AttributeKeyBlockStart          = "block_start"
+	AttributeKeyBlockEnd            = "block_end"
+	AttributeKeyCw20ContractAddress = "cw20_contract_address"
+	AttributeKeyStaked              = "staked"
 )
 
 const (

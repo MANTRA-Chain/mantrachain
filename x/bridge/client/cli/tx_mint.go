@@ -19,7 +19,7 @@ func CmdMint() *cobra.Command {
 		Use:   "mint [payload-json]",
 		Short: "Broadcast message mint",
 		Long: "Mints CR20 Coins. " +
-			"[payload-json] is JSON encoded MsgMintMetadata.",
+			"[payload-json] is JSON encoded MsgMintListMetadata.",
 		Example: fmt.Sprintf(
 			"$ %s tx bridge mint <payload-json> "+
 				"--from=<from> "+
@@ -47,8 +47,7 @@ func CmdMint() *cobra.Command {
 				return err
 			}
 
-			// Unmarshal payload
-			var mint types.MsgMintMetadata
+			var mint types.MsgMintListMetadata
 			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &mint)
 			if err != nil {
 				return err
@@ -60,6 +59,7 @@ func CmdMint() *cobra.Command {
 				bridgeId,
 				&mint,
 			)
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

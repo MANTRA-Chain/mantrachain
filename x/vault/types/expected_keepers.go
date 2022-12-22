@@ -48,7 +48,7 @@ type DistrKeeper interface {
 type BridgeKeeper interface {
 	GetBridge(
 		ctx sdk.Context,
-		creator sdk.AccAddress,
+		bridgeCreator sdk.AccAddress,
 		index []byte,
 	) (val bridgetypes.Bridge, found bool)
 }

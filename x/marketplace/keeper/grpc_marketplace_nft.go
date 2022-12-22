@@ -36,12 +36,10 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	// TODO: Add correct validation for collection id
 	if strings.TrimSpace(req.CollectionId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	// TODO: Add correct validation for nft id
 	if strings.TrimSpace(req.NftId) == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

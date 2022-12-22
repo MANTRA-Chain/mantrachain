@@ -64,7 +64,21 @@ func (c *DistributionExecutor) WithdrawDelegationRewards(
 		return nil, nil
 	}
 
-	// TODO: Add min threshold for withdraw delegation rewards
+	hasReachedMinTreshold := false
+
+	for _, v := range rewards {
+		// checks minimum threshold for withdrawal delegation rewards
+		// TODO: make this configurable
+		if v.Amount.GTE(sdk.NewDecFromInt(sdk.NewInt(1))) {
+			hasReachedMinTreshold = true
+			break
+		}
+	}
+
+	if !hasReachedMinTreshold {
+		return nil, nil
+	}
+
 	withdrawn, err := c.dk.WithdrawDelegationRewards(c.ctx, c.ac.GetModuleAddress(types.ModuleName), valAdr)
 
 	if err != nil {

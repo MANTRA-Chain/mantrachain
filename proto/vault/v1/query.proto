@@ -156,9 +156,8 @@ message QueryParamsResponse {
 }
 
 message QueryGetChainValidatorBridgeRequest {
-	  string chain = 1;
-	  string validator = 2;
-
+	string chain = 1;
+	string validator = 2;
 }
 
 message QueryGetChainValidatorBridgeResponse {

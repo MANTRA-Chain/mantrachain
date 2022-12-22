@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"io/ioutil"
+	"strconv"
 	"strings"
 
 	"github.com/LimeChain/mantrachain/x/bridge/types"
@@ -69,7 +70,17 @@ func (k msgServer) CreateCw20Contract(goCtx context.Context, msg *types.MsgCreat
 		cw20Contract,
 	)
 
-	// TODO: Trigger event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgCreateCw20Contract),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCreator, creator.String()),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCodeId, strconv.Itoa(int(cw20Contract.CodeId))),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractVersion, cw20Contract.Ver),
+			sdk.NewAttribute(types.AttributeKeyOwner, creator.String()),
+		),
+	)
 
 	return &types.MsgCreateCw20ContractResponse{
 		Creator: msg.Creator,
@@ -140,7 +151,17 @@ func (k msgServer) UpdateCw20Contract(goCtx context.Context, msg *types.MsgUpdat
 
 	k.SetCw20Contract(ctx, cw20Contract)
 
-	// TODO: Trigger event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateCw20Contract),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCreator, valFound.Creator),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCodeId, strconv.Itoa(int(cw20Contract.CodeId))),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractVersion, cw20Contract.Ver),
+			sdk.NewAttribute(types.AttributeKeyOwner, creator.String()),
+		),
+	)
 
 	return &types.MsgUpdateCw20ContractResponse{
 		Creator: msg.Creator,
@@ -166,7 +187,6 @@ func (k msgServer) DeleteCw20Contract(goCtx context.Context, msg *types.MsgDelet
 		return nil, err
 	}
 
-	// TODO: Check if can use roles instead of genesis state admin account
 	if !creator.Equals(adminAccount) {
 		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
@@ -184,7 +204,17 @@ func (k msgServer) DeleteCw20Contract(goCtx context.Context, msg *types.MsgDelet
 
 	k.RemoveCw20Contract(ctx)
 
-	// TODO: Trigger event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgDeleteCw20Contract),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCreator, valFound.Creator),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractCodeId, strconv.Itoa(int(valFound.CodeId))),
+			sdk.NewAttribute(types.AttributeKeyCw20ContractVersion, valFound.Ver),
+			sdk.NewAttribute(types.AttributeKeyOwner, valFound.Creator),
+		),
+	)
 
 	return &types.MsgDeleteCw20ContractResponse{
 		Creator: msg.Creator,
