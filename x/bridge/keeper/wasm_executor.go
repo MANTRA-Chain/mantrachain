@@ -48,7 +48,7 @@ func (c *WasmExecutor) GetMinter(
 }
 
 func (c *WasmExecutor) Create(creator sdk.AccAddress, wasmCode []byte) (codeId uint64, err error) {
-	codeId, err = c.wasmContractKeeper.Create(c.ctx, creator, wasmCode, &wasmtypes.AccessConfig{
+	codeId, _, err = c.wasmContractKeeper.Create(c.ctx, creator, wasmCode, &wasmtypes.AccessConfig{
 		Permission: wasmtypes.AccessTypeEverybody,
 		Address:    creator.String(),
 	})

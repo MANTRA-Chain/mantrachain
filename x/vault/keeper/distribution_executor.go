@@ -64,18 +64,16 @@ func (c *DistributionExecutor) WithdrawDelegationRewards(
 		return nil, nil
 	}
 
-	hasReachedMinTreshold := false
+	hasMinimumToWithdraw := false
 
 	for _, v := range rewards {
-		// checks minimum threshold for withdrawal delegation rewards
-		// TODO: make this configurable
 		if v.Amount.GTE(sdk.NewDecFromInt(sdk.NewInt(1))) {
-			hasReachedMinTreshold = true
+			hasMinimumToWithdraw = true
 			break
 		}
 	}
 
-	if !hasReachedMinTreshold {
+	if !hasMinimumToWithdraw {
 		return nil, nil
 	}
 

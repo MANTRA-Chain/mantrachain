@@ -7,7 +7,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/token/types";
 option (gogoproto.equal_all) = true;
 
 message TokenOption {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -16,7 +15,6 @@ message TokenOption {
 }
 
 message TokenAttribute {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -25,7 +23,6 @@ message TokenAttribute {
 }
 
 message TokenImage {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -33,7 +30,6 @@ message TokenImage {
 }
 
 message TokenLink {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
 
   string type = 1;

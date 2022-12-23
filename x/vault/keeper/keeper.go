@@ -7,6 +7,7 @@ import (
 
 	"github.com/LimeChain/mantrachain/x/vault/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
@@ -14,8 +15,8 @@ import (
 type (
 	Keeper struct {
 		cdc                codec.BinaryCodec
-		storeKey           sdk.StoreKey
-		memKey             sdk.StoreKey
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
 		paramstore         paramtypes.Subspace
 		ac                 types.AccountKeeper
 		bk                 types.BankKeeper
@@ -31,7 +32,7 @@ type (
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeKey,
-	memKey sdk.StoreKey,
+	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 
 	ac types.AccountKeeper,

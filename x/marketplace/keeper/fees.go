@@ -32,7 +32,7 @@ func (k Keeper) CollectFees(
 		}
 
 		if !earning.Percentage.IsNil() && !earning.Percentage.IsZero() {
-			earningAmount := earning.Percentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
+			earningAmount := sdk.NewDecFromInt(earning.Percentage.Mul(minPrice.Amount)).Quo(sdk.NewDec(100))
 
 			if earningAmount.GT(sdk.NewDec(1)) {
 				earningCoin := sdk.NewCoin(minPrice.GetDenom(), earningAmount.TruncateInt())
@@ -60,7 +60,7 @@ func (k Keeper) CollectFees(
 	if initialSale &&
 		!initiallyNftsVaultLockPercentage.IsNil() &&
 		!initiallyNftsVaultLockPercentage.IsZero() {
-		lockAmount := initiallyNftsVaultLockPercentage.Mul(minPrice.Amount).ToDec().Quo(sdk.NewDec(100))
+		lockAmount := sdk.NewDecFromInt(initiallyNftsVaultLockPercentage.Mul(minPrice.Amount)).Quo(sdk.NewDec(100))
 		var err error
 
 		if lockAmount.GT(sdk.NewDec(1)) {

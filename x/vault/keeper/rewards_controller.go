@@ -198,7 +198,7 @@ func (c *RewardsController) calcNftBalances(epochs []*types.Epoch, staked []*typ
 						balance = &coin
 						balances = append(balances, balance)
 					}
-					rewardPerShare := reward.Amount.ToDec().Quo(epoch.Staked)
+					rewardPerShare := sdk.NewDecFromInt(reward.Amount).Quo(epoch.Staked)
 					balance.Amount = balance.Amount.Add(rewardPerShare.Mul(sdk.MustNewDecFromStr(stake.Shares)))
 				}
 			}

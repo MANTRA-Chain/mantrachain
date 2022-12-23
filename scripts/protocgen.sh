@@ -2,7 +2,7 @@
 
 # --------------
 # Commands to run locally
-# docker run --network host --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen:v0.7 sh ./protocgen.sh
+# docker run --network host --rm -v $(pwd):/workspace --workdir /workspace tendermintdev/sdk-proto-gen:v0.7 sh ./scripts/protocgen.sh
 #
 set -eo pipefail
 

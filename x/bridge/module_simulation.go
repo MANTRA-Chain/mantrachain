@@ -24,7 +24,7 @@ var (
 )
 
 const (
-    opWeightMsgCreateCw20Contract = "op_weight_msg_cw_20_contract"
+	opWeightMsgCreateCw20Contract = "op_weight_msg_cw_20_contract"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreateCw20Contract int = 100
 
@@ -46,7 +46,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		accs[i] = acc.Address.String()
 	}
 	bridgeGenesis := types.GenesisState{
-		Params:	types.DefaultParams(),
+		Params: types.DefaultParams(),
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&bridgeGenesis)
@@ -55,13 +55,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 // ProposalContents doesn't return any content functions for governance proposals
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
-}
-
-// RandomizedParams creates randomized  param changes for the simulator
-func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-	
-	return []simtypes.ParamChange{
-	}
 }
 
 // RegisterStoreDecoder registers a decoder

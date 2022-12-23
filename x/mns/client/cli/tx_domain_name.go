@@ -32,7 +32,10 @@ func CmdCreateDomainName() *cobra.Command {
 				return err
 			}
 
-			pubKey := info.GetPubKey()
+			pubKey, err := info.GetPubKey()
+			if err != nil {
+				return err
+			}
 			pubKeyHex := utils.GetPubKeyHex(pubKey)
 			pubKeyType, err := utils.DerivePubKeyType(pubKey)
 			if err != nil {

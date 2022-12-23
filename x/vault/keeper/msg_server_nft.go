@@ -198,7 +198,7 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 
 			if len(nftEarningsOnYieldReward) > 0 {
 				for _, j := range nftEarningsOnYieldReward {
-					earningAmount := j.Percentage.ToDec().Mul(reward.Amount).Quo(sdk.NewDec(100))
+					earningAmount := sdk.NewDecFromInt(*j.Percentage).Mul(reward.Amount).Quo(sdk.NewDec(100))
 					earningCoin := sdk.NewDecCoinFromDec(reward.Denom, earningAmount)
 					intReward, _ := earningCoin.TruncateDecimal()
 

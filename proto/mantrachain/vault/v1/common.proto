@@ -7,7 +7,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/vault/types";
 option (gogoproto.equal_all) = true;
 
 message VaultEarning {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1 [(gogoproto.moretags) = "yaml:\"type\""];

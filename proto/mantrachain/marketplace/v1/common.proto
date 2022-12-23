@@ -7,7 +7,6 @@ option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
 option (gogoproto.equal_all) = true;
 
 message MarketplaceEarning {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1 [(gogoproto.moretags) = "yaml:\"type\""];
@@ -20,7 +19,6 @@ message MarketplaceEarning {
 }
 
 message MarketplaceOption {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -29,7 +27,6 @@ message MarketplaceOption {
 }
 
 message MarketplaceAttribute {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -38,7 +35,6 @@ message MarketplaceAttribute {
 }
 
 message MarketplaceImage {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
   
   string type = 1;
@@ -46,7 +42,6 @@ message MarketplaceImage {
 }
 
 message MarketplaceLink {
-  option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = false;
 
   string type = 1;

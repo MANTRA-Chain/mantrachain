@@ -75,7 +75,10 @@ func NewCreateDidDocumentCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			pubKey := info.GetPubKey()
+			pubKey, err := info.GetPubKey()
+			if err != nil {
+				return err
+			}
 			// verification method id
 			vmID := did.NewVerificationMethodID(signer.String())
 			// understand the vmType

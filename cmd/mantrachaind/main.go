@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	//"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	"github.com/LimeChain/mantrachain/app"
@@ -11,15 +11,15 @@ import (
 
 func main() {
 	rootCmd, _ := NewRootCmd(
-	//app.Name,
-	//app.AccountAddressPrefix,
-	//app.DefaultNodeHome,
-	//app.Name,
-	//app.ModuleBasics,
-	//app.New,
 	// this line is used by starport scaffolding # root/arguments
 	)
-	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
-		os.Exit(1)
+	if err := svrcmd.Execute(rootCmd, "mantrachaind", app.DefaultNodeHome); err != nil {
+		switch e := err.(type) {
+		case server.ErrorCode:
+			os.Exit(e.Code)
+
+		default:
+			os.Exit(1)
+		}
 	}
 }
