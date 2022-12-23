@@ -1,0 +1,22 @@
+syntax = "proto3";
+package mantrachain.bridge.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+option (gogoproto.equal_all) = true;
+
+message Bridge {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  string id = 2 [(gogoproto.moretags) = "yaml:\"id\""]; 
+  string bridge_account = 3 [(gogoproto.moretags) = "yaml:\"bridge_account\""]; 
+  string cw20_contract_address = 4 [(gogoproto.moretags) = "yaml:\"cw20_contract_address\""]; 
+  bytes owner = 5 [
+      (gogoproto.moretags) = "yaml:\"owner\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  bytes creator = 6 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}

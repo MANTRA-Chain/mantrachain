@@ -1,0 +1,121 @@
+syntax = "proto3";
+package mantrachain.bridge.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc RegisterBridge(MsgRegisterBridge) returns (MsgRegisterBridgeResponse);
+  rpc Mint(MsgMint) returns (MsgMintResponse);
+  rpc CreateCw20Contract(MsgCreateCw20Contract) returns (MsgCreateCw20ContractResponse);
+  rpc UpdateCw20Contract(MsgUpdateCw20Contract) returns (MsgUpdateCw20ContractResponse);
+  rpc DeleteCw20Contract(MsgDeleteCw20Contract) returns (MsgDeleteCw20ContractResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgRegisterBridge {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1;
+  MsgBridgeMetadata bridge = 2;
+}
+
+message MsgCw20InitialBalances {
+  string address = 1;
+  string amount = 2;
+}
+
+message MsgCw20Mint {
+  string minter = 1;
+}
+
+message MsgBridgeMetadata {
+  string id = 1;
+  string bridge_account = 2;
+  string cw20_contract_address = 3;
+  string cw20_name = 4;
+  string cw20_symbol = 5;
+  uint32 cw20_decimals = 6;
+  repeated MsgCw20InitialBalances cw20_initial_balances = 7;
+  MsgCw20Mint cw20_mint = 8;
+}
+
+message MsgRegisterBridgeResponse {
+  string bridge_creator = 1;
+  string bridge_id = 2;
+  string cw20_contract_address = 3;
+}
+
+message MsgMint {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1;
+  string bridge_creator = 2;
+  string bridge_id = 3;
+  MsgMintListMetadata mint = 4;
+}
+
+message MsgMintListMetadata {
+  repeated MsgMintMetadata mint_list = 1;
+}
+
+message MsgMintMetadata {
+  string receiver = 1;
+  string amount = 2;
+  string tx_hash = 3;
+}
+
+message MsgMintResponse {
+  string creator = 1;
+  string bridge_creator = 2;
+  string bridge_id = 3;
+  string cw20_contract_address = 4;
+  repeated string receivers = 5;
+}
+
+message MsgCreateCw20Contract {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1;
+  uint64 code_id = 2;
+  string ver = 3;
+  string path = 4;
+}
+message MsgCreateCw20ContractResponse {
+  string creator = 1;
+  uint64 code_id = 2;
+  string ver = 3;
+  string path = 4;
+}
+
+message MsgUpdateCw20Contract {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1;
+  uint64 code_id = 2;
+  string ver = 3;
+  string path = 4;
+}
+message MsgUpdateCw20ContractResponse {
+  string creator = 1;
+  uint64 code_id = 2;
+  string ver = 3;
+  string path = 4;
+}
+
+message MsgDeleteCw20Contract {
+  option (cosmos.msg.v1.signer) = "creator";
+  
+  string creator = 1;
+}
+message MsgDeleteCw20ContractResponse {
+  string creator = 1;
+  uint64 code_id = 2;
+  string ver = 3;
+  string path = 4;
+}
+// this line is used by starport scaffolding # proto/tx/message

@@ -1,0 +1,22 @@
+syntax = "proto3";
+package mantrachain.v1beta1;
+
+import "mantrachain/nft/v1beta1/nft.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/nft/types";
+
+// GenesisState defines the nft module's genesis state.
+message GenesisState {
+  // class defines the class of the nft type.
+  repeated Class classes = 1;
+  repeated Entry                    entries = 2;
+}
+
+// Entry Defines all nft owned by a person
+message Entry {
+  // owner is the owner address of the following nft
+  string owner = 1;
+
+  // nfts is a group of nfts of the same owner
+  repeated NFT nfts = 2;
+}

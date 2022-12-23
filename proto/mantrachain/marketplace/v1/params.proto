@@ -1,0 +1,25 @@
+syntax = "proto3";
+package mantrachain.marketplace.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
+
+// Params defines the parameters for the module.
+message Params {
+  string valid_marketplace_id = 1;
+  int32 valid_marketplace_metadata_description_max_length = 2;
+  int32 valid_marketplace_metadata_name_max_length = 3;
+  int32 valid_nfts_earnings_on_sale_max_count = 4;
+  int32 valid_nfts_earnings_on_yield_reward_max_count = 5;
+  int32 valid_marketplace_metadata_images_max_count = 6;
+  int32 valid_marketplace_metadata_images_type_max_length = 7;
+  int32 valid_marketplace_metadata_links_max_count = 8;
+  int32 valid_marketplace_metadata_links_type_max_length = 9;
+  int32 valid_marketplace_metadata_options_max_count = 10;
+  int32 valid_marketplace_metadata_options_type_max_length = 11;
+  int32 valid_marketplace_metadata_options_value_max_length = 12;
+  int32 valid_marketplace_metadata_options_sub_value_max_length = 13;
+  int32 valid_marketplace_metadata_attributes_max_count = 14;
+  int32 valid_marketplace_metadata_attributes_type_max_length = 15;
+  int32 valid_marketplace_metadata_attributes_value_max_length = 16;
+  int32 valid_marketplace_metadata_attributes_sub_value_max_length = 17;
+}

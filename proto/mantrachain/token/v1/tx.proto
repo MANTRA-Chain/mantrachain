@@ -1,0 +1,243 @@
+syntax = "proto3";
+package mantrachain.token.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
+import "google/protobuf/any.proto";
+import "mantrachain/token/v1/common.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/LimeChain/mantrachain/x/token/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateNftCollection(MsgCreateNftCollection) returns (MsgCreateNftCollectionResponse);
+  rpc MintNfts(MsgMintNfts) returns (MsgMintNftsResponse);
+  rpc BurnNfts(MsgBurnNfts) returns (MsgBurnNftsResponse);
+  rpc TransferNfts(MsgTransferNfts) returns (MsgTransferNftsResponse);
+  rpc ApproveNfts(MsgApproveNfts) returns (MsgApproveNftsResponse);
+  rpc ApproveAllNfts(MsgApproveAllNfts) returns (MsgApproveAllNftsResponse);
+  rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
+  rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
+  rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
+  rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgApproveNft {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string receiver = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  bool approved = 6;
+  bool strict_collection = 7;
+}
+
+message MsgApproveNftResponse {
+  string nft_id = 1;
+  string owner = 2;
+  string receiver = 3;
+  bool approved = 4;
+  string collection_creator = 5;
+  string collection_id = 6;
+}
+
+message MsgTransferNft {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string owner = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  string nft_id = 6;
+  bool strict_collection = 7;
+}
+
+message MsgTransferNftResponse {
+  string nft_id = 1;
+  string operator = 2;
+  string owner = 3;
+  string receiver = 4;
+  string collection_creator = 5;
+  string collection_id = 6;
+}
+
+message MsgBurnNft {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string collection_creator = 2;
+  string collection_id = 3;
+  string nft_id = 4;
+  bool strict_collection = 5;
+}
+
+message MsgBurnNftResponse {
+  string nft_id = 1;
+  string burner = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
+message MsgMintNft {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string receiver = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  MsgNftMetadata nft = 5;
+  bool strict_collection = 6;
+}
+
+message MsgMintNftResponse {
+  string nft_id = 1;
+  string creator = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+}
+
+message MsgApproveAllNfts {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string receiver = 2;
+  bool approved = 3;
+  bool strict_collection = 4;
+}
+
+message MsgApproveAllNftsResponse {
+  string owner = 1;
+  string receiver = 2;
+  bool approved = 3;
+}
+
+message MsgApproveNfts {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string receiver = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  MsgNftsIds nfts = 5;
+  bool approved = 6;
+  bool strict_collection = 7;
+}
+
+message MsgApproveNftsResponse {
+  repeated string nfts_ids = 1;
+  string owner = 2;
+  string receiver = 3;
+  bool approved = 4;
+  string collection_creator = 5;
+  string collection_id = 6;
+}
+
+message MsgTransferNfts {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string owner = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+  MsgNftsIds nfts = 6;
+  bool strict_collection = 7;
+}
+
+message MsgTransferNftsResponse {
+  repeated string nfts_ids = 1;
+  string operator = 2;
+  string owner = 3;
+  string receiver = 4;
+  string collection_creator = 5;
+  string collection_id = 6;
+}
+
+message MsgCreateNftCollection {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  MsgCreateNftCollectionMetadata collection = 2;
+}
+
+message MsgCreateNftCollectionMetadata {
+  string id = 1;
+  string name = 2;
+  repeated TokenImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated TokenLink links = 6;
+  repeated TokenOption options = 7;
+  string category = 8;
+  string symbol = 9;
+  bool opened = 10;
+  google.protobuf.Any data = 11;
+}
+
+message MsgCreateNftCollectionResponse {
+  string collection_id = 1;
+  string collection_creator = 2;
+}
+
+message MsgMintNfts {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string receiver = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  MsgNftsMetadata nfts = 5;
+  bool strict_collection = 6;
+}
+
+message MsgNftsMetadata {
+  repeated MsgNftMetadata nfts = 1;
+}
+
+message MsgNftMetadata {
+  string id = 1;
+  string title = 2;
+  repeated TokenImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated TokenLink links = 6;
+  repeated TokenAttribute attributes = 7;
+  google.protobuf.Any data = 8;
+}
+
+message MsgMintNftsResponse {
+  repeated string nfts_ids = 1;
+  string creator = 2;
+  string receiver = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
+}
+
+message MsgBurnNfts {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string collection_creator = 2;
+  string collection_id = 3;
+  MsgNftsIds nfts = 4;
+  bool strict_collection = 5;
+}
+
+message MsgNftsIds {
+  repeated string nfts_ids = 1;
+}
+
+message MsgBurnNftsResponse {
+  repeated string nfts_ids = 1;
+  string burner = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
+// this line is used by starport scaffolding # proto/tx/message

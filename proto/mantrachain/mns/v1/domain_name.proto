@@ -1,0 +1,24 @@
+syntax = "proto3";
+package mantrachain.mns.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
+option (gogoproto.equal_all) = true;
+
+message DomainName {
+  string index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
+  string domain = 2 [(gogoproto.moretags) = "yaml:\"domain\""];
+  string domain_name = 3 [(gogoproto.moretags) = "yaml:\"domain_name\""]; 
+  string did = 4 [(gogoproto.moretags) = "yaml:\"did\""]; 
+  bytes owner = 5 [
+      (gogoproto.moretags) = "yaml:\"owner\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  bytes creator = 6 [
+      (gogoproto.moretags) = "yaml:\"creator\"",
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  int64 expire_at = 7 [(gogoproto.moretags) = "yaml:\"expire_at\""];
+}
+

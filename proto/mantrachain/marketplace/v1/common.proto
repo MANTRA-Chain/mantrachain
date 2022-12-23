@@ -1,0 +1,54 @@
+syntax = "proto3";
+package mantrachain.marketplace.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
+option (gogoproto.equal_all) = true;
+
+message MarketplaceEarning {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+  
+  string type = 1 [(gogoproto.moretags) = "yaml:\"type\""];
+  string address = 2 [(gogoproto.moretags) = "yaml:\"address\""];
+  string percentage = 3 [
+    (gogoproto.moretags) = "yaml:\"percentage\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = true
+  ];
+}
+
+message MarketplaceOption {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+  
+  string type = 1;
+  string value = 2;
+  string sub_value = 3;
+}
+
+message MarketplaceAttribute {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+  
+  string type = 1;
+  string value = 2;
+  string sub_value = 3;
+}
+
+message MarketplaceImage {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+  
+  string type = 1;
+  string url = 2;
+}
+
+message MarketplaceLink {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = false;
+
+  string type = 1;
+  string url = 2;
+}

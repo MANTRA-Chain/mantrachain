@@ -1,0 +1,221 @@
+syntax = "proto3";
+package mantrachain.token.v1;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "mantrachain/token/v1/params.proto";
+import "mantrachain/token/v1/common.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/LimeChain/mantrachain/x/token/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/mantrachain/token/v1/params";
+  }
+	
+	rpc NftCollection(QueryGetNftCollectionRequest) returns (QueryGetNftCollectionResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}/{id}";
+	}
+	
+	rpc NftCollectionSupply(QueryGetNftCollectionSupplyRequest) returns (QueryGetNftCollectionSupplyResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/supply/{creator}/{id}";
+	}
+
+	rpc NftCollectionsByCreator(QueryGetNftCollectionsByCreatorRequest) returns (QueryGetNftCollectionsByCreatorResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}";
+	}
+
+  rpc AllNftCollections(QueryGetAllNftCollectionsRequest) returns (QueryGetAllNftCollectionsResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft-collection";
+	}
+	
+	rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{id}";
+	}
+
+	rpc NftOwner(QueryGetNftOwnerRequest) returns (QueryGetNftOwnerResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/owner/{collection_creator}/{collection_id}/{id}";
+	}
+
+	rpc NftBalance(QueryGetNftBalanceRequest) returns (QueryGetNftBalanceResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/balance/{collection_creator}/{collection_id}/{owner}";
+	}
+
+	rpc NftApproved(QueryGetNftApprovedRequest) returns (QueryGetNftApprovedResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{collection_creator}/{collection_id}/{id}";
+	}
+
+	rpc IsApprovedForAllNfts(QueryGetIsApprovedForAllNftsRequest) returns (QueryGetIsApprovedForAllNftsResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{owner}/{operator}";
+	}
+
+	rpc AllCollectionNfts(QueryGetAllCollectionNftsRequest) returns (QueryGetAllCollectionNftsResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}";
+	}
+
+	rpc CollectionNftsByOwner(QueryGetCollectionNftsByOwnerRequest) returns (QueryGetCollectionNftsByOwnerResponse) {
+		option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{owner}";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetNftCollectionRequest {
+  string creator = 1;
+  string id = 2;
+}
+
+message QueryGetNftCollectionResponse {
+  string id = 1;
+  string name = 2;
+  string symbol = 3;
+  string description = 4;
+  repeated TokenImage images = 5;
+  string url = 6;
+  repeated TokenLink links = 7;
+  repeated TokenOption options = 8;
+  string category = 9;
+  string owner = 10;
+  string creator = 11;
+  bool opened = 12;
+  google.protobuf.Any data = 13;
+}
+
+message QueryGetNftCollectionSupplyRequest {
+  string creator = 1;
+  string id = 2;
+}
+
+message QueryGetNftCollectionSupplyResponse {
+  uint64 supply = 1;
+  string creator = 2;
+  string id = 3;
+}
+
+message QueryGetNftBalanceRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string owner = 3;
+}
+
+message QueryGetNftBalanceResponse {
+  uint64 balance = 1;
+  string address = 2;
+}
+
+message QueryGetIsApprovedForAllNftsRequest {
+  string owner = 1;
+  string operator = 2;
+}
+
+message QueryGetIsApprovedForAllNftsResponse {
+  string operator = 1;
+  bool approved = 2;
+}
+
+message QueryGetNftApprovedRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+}
+
+message QueryGetNftApprovedResponse {
+  string id = 1;
+  repeated string approved = 2;
+}
+
+message QueryGetNftOwnerRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+}
+
+message QueryGetNftOwnerResponse {
+  string id = 1;
+  string address = 2;
+}
+
+message QueryGetNftRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+}
+
+message QueryGetNftResponse {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  repeated TokenImage images = 4;
+  string url = 5;
+  repeated TokenLink links = 6;
+  repeated TokenAttribute attributes = 7;
+  string owner = 8;
+  string creator = 9;
+  google.protobuf.Any data = 10;
+  string collection_id = 11;
+}
+
+message QueryGetNftCollectionsByCreatorRequest {
+  string creator = 1;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetNftCollectionsByCreatorResponse {
+  string creator = 1;
+  repeated QueryGetNftCollectionResponse nftCollections = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+message QueryGetAllNftCollectionsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetAllNftCollectionsResponse {
+  repeated QueryGetNftCollectionResponse nftCollections = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetAllCollectionNftsRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryGetAllCollectionNftsResponse {
+  string collection_creator = 1;
+  string collection_id = 2;
+
+  repeated QueryGetNftResponse nfts = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
+}
+
+message QueryGetCollectionNftsByOwnerRequest {
+  string collection_creator = 1;
+  string collection_id = 2;
+  string owner = 3;
+}
+
+message QueryGetCollectionNftsByOwnerResponse {
+  string address = 1;
+  repeated QueryGetNftResponse nfts = 2;
+}
+
+// this line is used by starport scaffolding # 3

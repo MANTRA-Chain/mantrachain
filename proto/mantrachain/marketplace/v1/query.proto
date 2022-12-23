@@ -1,0 +1,170 @@
+syntax = "proto3";
+package mantrachain.marketplace.v1;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "mantrachain/marketplace/v1/params.proto";
+import "mantrachain/marketplace/v1/common.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/mantrachain/marketplace/v1/params";
+  }
+
+  rpc Address(QueryAddressRequest) returns (QueryAddressResponse) {
+    option (google.api.http).get = "/mantrachain/marketplace/v1/address";
+  }
+	
+	rpc Marketplace(QueryGetMarketplaceRequest) returns (QueryGetMarketplaceResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace/{creator}/{id}";
+	}
+	
+	rpc MarketplaceCollection(QueryGetMarketplaceCollectionRequest) returns (QueryGetMarketplaceCollectionResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}";
+	}
+	
+	rpc MarketplaceNft(QueryGetMarketplaceNftRequest) returns (QueryGetMarketplaceNftResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace-nft/{marketplace_creator}/{marketplace_id}/{collection_creator}/{collection_id}/{nft_id}";
+	}
+
+  rpc MarketplacesByCreator(QueryGetMarketplacesByCreatorRequest) returns (QueryGetMarketplacesByCreatorResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace/{creator}";
+	}
+
+  rpc AllMarketplaces(QueryGetAllMarketplacesRequest) returns (QueryGetAllMarketplacesResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace";
+	}
+
+	rpc AllMarketplaceCollections(QueryGetAllMarketplaceCollectionsRequest) returns (QueryGetAllMarketplaceCollectionsResponse) {
+		option (google.api.http).get = "/mantrachain/marketplace/v1/marketplace-collection/{marketplace_creator}/{marketplace_id}";
+	}
+  // this line is used by starport scaffolding # 2
+}
+
+message QueryAddressRequest {}
+
+message QueryAddressResponse {
+  string address = 1;
+}
+
+message QueryGetAllMarketplaceCollectionsRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryGetAllMarketplaceCollectionsResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+
+  repeated QueryGetMarketplaceCollectionResponse collections = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
+}
+
+message QueryGetMarketplacesByCreatorRequest {
+  string creator = 1;
+
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetMarketplacesByCreatorResponse {
+  string creator = 1;
+  repeated QueryGetMarketplaceResponse marketplaces = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
+}
+
+
+
+message QueryGetAllMarketplacesRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryGetAllMarketplacesResponse {
+  repeated QueryGetMarketplaceResponse marketplaces = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetMarketplaceRequest {
+  string creator = 1;
+  string id = 2;
+}
+
+message QueryGetMarketplaceResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string url = 4;
+  string owner = 5;
+  string creator = 6;
+  bool opened = 7;
+  repeated MarketplaceOption options = 8;
+  repeated MarketplaceAttribute attributes = 9;
+  repeated MarketplaceImage images = 10;
+  repeated MarketplaceLink links = 11;
+  google.protobuf.Any data = 12;
+}
+
+message QueryGetMarketplaceCollectionRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
+message QueryGetMarketplaceCollectionResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  bool initially_nft_collection_owner_nfts_for_sale = 5;
+  cosmos.base.v1beta1.Coin initially_nft_collection_owner_nfts_min_price = 6;
+  string cw20_contract_address = 7;
+  repeated MarketplaceEarning nfts_earnings_on_sale = 8;
+  repeated MarketplaceEarning nfts_earnings_on_yield_reward = 9;
+  string initially_nfts_vault_lock_percentage = 10; 
+  string creator = 11;
+}
+
+message QueryGetMarketplaceNftRequest {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+}
+
+message QueryGetMarketplaceNftResponse {
+  string marketplace_creator = 1;
+  string marketplace_id = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  bool for_sale = 6;
+  bool initially_sold = 7;
+  cosmos.base.v1beta1.Coin min_price = 8;
+  string cw20_contract_address = 9;
+  string creator = 10;
+}
+
+// this line is used by starport scaffolding # 3
