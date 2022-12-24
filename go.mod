@@ -170,5 +170,6 @@ replace (
 	// provenance-patched wasmd, remove it once wasmd upgrades to cosmos-sdk v0.47
 	// issue: https://github.com/CosmWasm/wasmd/issues/1028
 	github.com/CosmWasm/wasmd => github.com/provenance-io/wasmd v0.29.0-pio-1
+	// remove it when upgrade to cosmos-sdk v0.47
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 )
