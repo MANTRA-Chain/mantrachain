@@ -9,19 +9,43 @@ import (
 )
 
 const (
-	DefaultValidMarketplaceId                           string = "^[a-zA-Z0-9_/:-]{0,100}$"
-	DefaultValidMarketplaceMetadataDescriptionMaxLength int32  = 1000
-	DefaultValidMarketplaceMetadataNameMaxLength        int32  = 100
-	DefaultValidNftsEarningsOnSaleMaxCount              int32  = 5
-	DefaultValidNftsEarningsOnYieldRewardMaxCount       int32  = 5
+	DefaultValidMarketplaceId                                  string = "^[a-zA-Z0-9_/:-]{0,100}$"
+	DefaultValidMarketplaceMetadataDescriptionMaxLength        int32  = 1000
+	DefaultValidMarketplaceMetadataNameMaxLength               int32  = 100
+	DefaultValidNftsEarningsOnSaleMaxCount                     int32  = 5
+	DefaultValidNftsEarningsOnYieldRewardMaxCount              int32  = 5
+	DefaultValidMarketplaceMetadataImagesMaxCount              int32  = 10
+	DefaultValidMarketplaceMetadataImagesTypeMaxLength         int32  = 25
+	DefaultValidMarketplaceMetadataLinksMaxCount               int32  = 10
+	DefaultValidMarketplaceMetadataLinksTypeMaxLength          int32  = 25
+	DefaultValidMarketplaceMetadataOptionsMaxCount             int32  = 15
+	DefaultValidMarketplaceMetadataOptionsTypeMaxLength        int32  = 25
+	DefaultValidMarketplaceMetadataOptionsValueMaxLength       int32  = 25
+	DefaultValidMarketplaceMetadataOptionsSubValueMaxLength    int32  = 50
+	DefaultValidMarketplaceMetadataAttributesMaxCount          int32  = 300
+	DefaultValidMarketplaceMetadataAttributesTypeMaxLength     int32  = 25
+	DefaultValidMarketplaceMetadataAttributesValueMaxLength    int32  = 25
+	DefaultValidMarketplaceMetadataAttributesSubValueMaxLength int32  = 50
 )
 
 var (
-	KeyValidMarketplaceId                           = []byte("ValidMarketplaceId")
-	KeyValidMarketplaceMetadataDescriptionMaxLength = []byte("ValidMarketplaceMetadataDescriptionMaxLength")
-	KeyValidMarketplaceMetadataNameMaxLength        = []byte("ValidMarketplaceMetadataNameMaxLength")
-	KeyValidNftsEarningsOnSaleMaxCount              = []byte("ValidNftsEarningsOnSaleMaxCount")
-	KeyValidNftsEarningsOnYieldRewardMaxCount       = []byte("ValidNftsEarningsOnYieldRewardMaxCount")
+	KeyValidMarketplaceId                                  = []byte("ValidMarketplaceId")
+	KeyValidMarketplaceMetadataDescriptionMaxLength        = []byte("ValidMarketplaceMetadataDescriptionMaxLength")
+	KeyValidMarketplaceMetadataNameMaxLength               = []byte("ValidMarketplaceMetadataNameMaxLength")
+	KeyValidNftsEarningsOnSaleMaxCount                     = []byte("ValidNftsEarningsOnSaleMaxCount")
+	KeyValidNftsEarningsOnYieldRewardMaxCount              = []byte("ValidNftsEarningsOnYieldRewardMaxCount")
+	KeyValidMarketplaceMetadataImagesMaxCount              = []byte("ValidMarketplaceMetadataImagesMaxCount")
+	KeyValidMarketplaceMetadataImagesTypeMaxLength         = []byte("ValidMarketplaceMetadataImagesTypeMaxLength")
+	KeyValidMarketplaceMetadataLinksMaxCount               = []byte("ValidMarketplaceMetadataLinksMaxCount")
+	KeyValidMarketplaceMetadataLinksTypeMaxLength          = []byte("ValidMarketplaceMetadataLinksTypeMaxLength")
+	KeyValidMarketplaceMetadataOptionsMaxCount             = []byte("ValidMarketplaceMetadataOptionsMaxCount")
+	KeyValidMarketplaceMetadataOptionsTypeMaxLength        = []byte("ValidMarketplaceMetadataOptionsTypeMaxLength")
+	KeyValidMarketplaceMetadataOptionsValueMaxLength       = []byte("ValidMarketplaceMetadataOptionsValueMaxLength")
+	KeyValidMarketplaceMetadataOptionsSubValueMaxLength    = []byte("ValidMarketplaceMetadataOptionsSubValueMaxLength")
+	KeyValidMarketplaceMetadataAttributesMaxCount          = []byte("ValidMarketplaceMetadataAttributesMaxCount")
+	KeyValidMarketplaceMetadataAttributesTypeMaxLength     = []byte("ValidMarketplaceMetadataAttributesTypeMaxLength")
+	KeyValidMarketplaceMetadataAttributesValueMaxLength    = []byte("ValidMarketplaceMetadataAttributesValueMaxLength")
+	KeyValidMarketplaceMetadataAttributesSubValueMaxLength = []byte("ValidMarketplaceMetadataAttributesSubValueMaxLength")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -38,13 +62,37 @@ func NewParams(
 	validMarketplaceMetadataNameMaxLength int32,
 	validNftsEarningsOnSaleMaxCount int32,
 	validNftsEarningsOnYieldRewardMaxCount int32,
+	validMarketplaceMetadataImagesMaxCount int32,
+	validMarketplaceMetadataImagesTypeMaxLength int32,
+	validMarketplaceMetadataLinksMaxCount int32,
+	validMarketplaceMetadataLinksTypeMaxLength int32,
+	validMarketplaceMetadataOptionsMaxCount int32,
+	validMarketplaceMetadataOptionsTypeMaxLength int32,
+	validMarketplaceMetadataOptionsValueMaxLength int32,
+	validMarketplaceMetadataOptionsSubValueMaxLength int32,
+	validMarketplaceMetadataAttributesMaxCount int32,
+	validMarketplaceMetadataAttributesTypeMaxLength int32,
+	validMarketplaceMetadataAttributesValueMaxLength int32,
+	validMarketplaceMetadataAttributesSubValueMaxLength int32,
 ) Params {
 	return Params{
-		ValidMarketplaceId:                           validMarketplaceId,
-		ValidMarketplaceMetadataDescriptionMaxLength: validMarketplaceMetadataDescriptionMaxLength,
-		ValidMarketplaceMetadataNameMaxLength:        validMarketplaceMetadataNameMaxLength,
-		ValidNftsEarningsOnSaleMaxCount:              validNftsEarningsOnSaleMaxCount,
-		ValidNftsEarningsOnYieldRewardMaxCount:       validNftsEarningsOnYieldRewardMaxCount,
+		ValidMarketplaceId:                                  validMarketplaceId,
+		ValidMarketplaceMetadataDescriptionMaxLength:        validMarketplaceMetadataDescriptionMaxLength,
+		ValidMarketplaceMetadataNameMaxLength:               validMarketplaceMetadataNameMaxLength,
+		ValidNftsEarningsOnSaleMaxCount:                     validNftsEarningsOnSaleMaxCount,
+		ValidNftsEarningsOnYieldRewardMaxCount:              validNftsEarningsOnYieldRewardMaxCount,
+		ValidMarketplaceMetadataImagesMaxCount:              validMarketplaceMetadataImagesMaxCount,
+		ValidMarketplaceMetadataImagesTypeMaxLength:         validMarketplaceMetadataImagesTypeMaxLength,
+		ValidMarketplaceMetadataLinksMaxCount:               validMarketplaceMetadataLinksMaxCount,
+		ValidMarketplaceMetadataLinksTypeMaxLength:          validMarketplaceMetadataLinksTypeMaxLength,
+		ValidMarketplaceMetadataOptionsMaxCount:             validMarketplaceMetadataOptionsMaxCount,
+		ValidMarketplaceMetadataOptionsTypeMaxLength:        validMarketplaceMetadataOptionsTypeMaxLength,
+		ValidMarketplaceMetadataOptionsValueMaxLength:       validMarketplaceMetadataOptionsValueMaxLength,
+		ValidMarketplaceMetadataOptionsSubValueMaxLength:    validMarketplaceMetadataOptionsSubValueMaxLength,
+		ValidMarketplaceMetadataAttributesMaxCount:          validMarketplaceMetadataAttributesMaxCount,
+		ValidMarketplaceMetadataAttributesTypeMaxLength:     validMarketplaceMetadataAttributesTypeMaxLength,
+		ValidMarketplaceMetadataAttributesValueMaxLength:    validMarketplaceMetadataAttributesValueMaxLength,
+		ValidMarketplaceMetadataAttributesSubValueMaxLength: validMarketplaceMetadataAttributesSubValueMaxLength,
 	}
 }
 
@@ -56,6 +104,18 @@ func DefaultParams() Params {
 		DefaultValidMarketplaceMetadataNameMaxLength,
 		DefaultValidNftsEarningsOnSaleMaxCount,
 		DefaultValidNftsEarningsOnYieldRewardMaxCount,
+		DefaultValidMarketplaceMetadataImagesMaxCount,
+		DefaultValidMarketplaceMetadataImagesTypeMaxLength,
+		DefaultValidMarketplaceMetadataLinksMaxCount,
+		DefaultValidMarketplaceMetadataLinksTypeMaxLength,
+		DefaultValidMarketplaceMetadataOptionsMaxCount,
+		DefaultValidMarketplaceMetadataOptionsTypeMaxLength,
+		DefaultValidMarketplaceMetadataOptionsValueMaxLength,
+		DefaultValidMarketplaceMetadataOptionsSubValueMaxLength,
+		DefaultValidMarketplaceMetadataAttributesMaxCount,
+		DefaultValidMarketplaceMetadataAttributesTypeMaxLength,
+		DefaultValidMarketplaceMetadataAttributesValueMaxLength,
+		DefaultValidMarketplaceMetadataAttributesSubValueMaxLength,
 	)
 }
 
@@ -67,6 +127,18 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataNameMaxLength, &p.ValidMarketplaceMetadataNameMaxLength, validateValidMarketplaceMetadataNameMaxLength),
 		paramtypes.NewParamSetPair(KeyValidNftsEarningsOnSaleMaxCount, &p.ValidNftsEarningsOnSaleMaxCount, validateValidNftsEarningsOnSaleMaxCount),
 		paramtypes.NewParamSetPair(KeyValidNftsEarningsOnYieldRewardMaxCount, &p.ValidNftsEarningsOnYieldRewardMaxCount, validateValidNftsEarningsOnYieldRewardMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataImagesMaxCount, &p.ValidMarketplaceMetadataImagesMaxCount, validateValidMarketplaceMetadataImagesMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataImagesTypeMaxLength, &p.ValidMarketplaceMetadataImagesTypeMaxLength, validateValidMarketplaceMetadataImagesTypeMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataLinksMaxCount, &p.ValidMarketplaceMetadataLinksMaxCount, validateValidMarketplaceMetadataLinksMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataLinksTypeMaxLength, &p.ValidMarketplaceMetadataLinksTypeMaxLength, validateValidMarketplaceMetadataLinksTypeMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataOptionsMaxCount, &p.ValidMarketplaceMetadataOptionsMaxCount, validateValidMarketplaceMetadataOptionsMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataOptionsTypeMaxLength, &p.ValidMarketplaceMetadataOptionsTypeMaxLength, validateValidMarketplaceMetadataOptionsTypeMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataOptionsValueMaxLength, &p.ValidMarketplaceMetadataOptionsValueMaxLength, validateValidMarketplaceMetadataOptionsValueMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataOptionsSubValueMaxLength, &p.ValidMarketplaceMetadataOptionsSubValueMaxLength, validateValidMarketplaceMetadataOptionsSubValueMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataAttributesMaxCount, &p.ValidMarketplaceMetadataAttributesMaxCount, validateValidMarketplaceMetadataAttributesMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataAttributesTypeMaxLength, &p.ValidMarketplaceMetadataAttributesTypeMaxLength, validateValidMarketplaceMetadataAttributesTypeMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataAttributesValueMaxLength, &p.ValidMarketplaceMetadataAttributesValueMaxLength, validateValidMarketplaceMetadataAttributesValueMaxLength),
+		paramtypes.NewParamSetPair(KeyValidMarketplaceMetadataAttributesSubValueMaxLength, &p.ValidMarketplaceMetadataAttributesSubValueMaxLength, validateValidMarketplaceMetadataAttributesSubValueMaxLength),
 	}
 }
 
@@ -109,6 +181,54 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateValidNftsEarningsOnYieldRewardMaxCount(p.ValidNftsEarningsOnYieldRewardMaxCount); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataImagesMaxCount(p.ValidMarketplaceMetadataImagesMaxCount); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataImagesTypeMaxLength(p.ValidMarketplaceMetadataImagesTypeMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataLinksMaxCount(p.ValidMarketplaceMetadataLinksMaxCount); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataLinksTypeMaxLength(p.ValidMarketplaceMetadataLinksTypeMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataOptionsMaxCount(p.ValidMarketplaceMetadataOptionsMaxCount); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataOptionsTypeMaxLength(p.ValidMarketplaceMetadataOptionsTypeMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataOptionsValueMaxLength(p.ValidMarketplaceMetadataOptionsValueMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataOptionsSubValueMaxLength(p.ValidMarketplaceMetadataOptionsSubValueMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataAttributesMaxCount(p.ValidMarketplaceMetadataAttributesMaxCount); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataAttributesTypeMaxLength(p.ValidMarketplaceMetadataAttributesTypeMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataAttributesValueMaxLength(p.ValidMarketplaceMetadataAttributesValueMaxLength); err != nil {
+		return err
+	}
+
+	if err := validateValidMarketplaceMetadataAttributesSubValueMaxLength(p.ValidMarketplaceMetadataAttributesSubValueMaxLength); err != nil {
 		return err
 	}
 
@@ -180,6 +300,162 @@ func validateValidNftsEarningsOnYieldRewardMaxCount(i interface{}) error {
 
 	if v <= 0 {
 		return fmt.Errorf("valid nfts earnings on yield reward max count param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataImagesMaxCount(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata images max count param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataImagesTypeMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata images type max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataLinksMaxCount(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata links max count param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataLinksTypeMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata links type max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataOptionsMaxCount(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata options max count param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataOptionsTypeMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata options type max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataOptionsValueMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata options value max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataOptionsSubValueMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata options sub value max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataAttributesMaxCount(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata attributes max count param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataAttributesTypeMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata attributes type max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataAttributesValueMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata attributes value max length param must be positive: %d", v)
+	}
+
+	return nil
+}
+
+func validateValidMarketplaceMetadataAttributesSubValueMaxLength(i interface{}) error {
+	v, ok := i.(int32)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("valid marketplace metadata attributes sub value max length param must be positive: %d", v)
 	}
 
 	return nil

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CHAINID="mantrachain"
+
 echo "stop the validators if any"
 tmux kill-session -t validator
 
@@ -21,14 +23,14 @@ RECIPIENT=$(./build/mantrachaind keys show recipient -a --keyring-backend test)
 ADMIN=$(./build/mantrachaind keys show admin -a --keyring-backend test)
 
 echo "init the validator"
-./build/mantrachaind init mantrachain --chain-id=mantrachain
+./build/mantrachaind init mantrachain --chain-id=$CHAINID
 
 echo "change staking denom to ustake"
 cat $HOME/.mantrachain/config/genesis.json | jq '.app_state["staking"]["params"]["bond_denom"]="ustake"' > $HOME/.mantrachain/config/tmp_genesis.json && mv $HOME/.mantrachain/config/tmp_genesis.json $HOME/.mantrachain/config/genesis.json
 
 echo "create validator node with tokens to transfer to the node"
 ./build/mantrachaind add-genesis-account $VALIDATOR 100000000000000000ustake
-./build/mantrachaind gentx validator 100000000000000ustake --keyring-backend=test --chain-id=mantrachain
+./build/mantrachaind gentx validator 100000000000000ustake --keyring-backend=test --chain-id=$CHAINID
 
 VALIDATOR_ADDRESS=$(cat $HOME/.mantrachain/config/gentx/$(ls $HOME/.mantrachain/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
 
@@ -83,7 +85,7 @@ tmux new -s validator -d ./build/mantrachaind start
 
 echo "send ustake from validator to recipient"
 sleep 7
-./build/mantrachaind tx bank send $VALIDATOR $RECIPIENT 100000000000000ustake --chain-id mantrachain --keyring-backend test --gas auto --gas-adjustment 1.3 --gas-prices 0.0001ustake --yes
+./build/mantrachaind tx bank send $VALIDATOR $RECIPIENT 100000000000000ustake --chain-id mantrachain --keyring-backend test --gas auto --gas-adjustment 1.4 --gas-prices 0.0001ustake --yes
 
 echo "track logs"
 tmux a -t validator
