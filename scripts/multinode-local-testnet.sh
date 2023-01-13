@@ -122,7 +122,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   for KEY in "${KEYS_VAL[@]}"; do
     sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $HOMEDIR/$KEY/config/app.toml
     sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $HOMEDIR/$KEY/config/app.toml
-    sed -i -E '1,/enable = false/s|enable = false|enable = true|g' $HOMEDIR/$KEY/config/app.toml
+    sed -i -E '117s/.*/enable = true/' $HOMEDIR/$KEY/config/app.toml
     sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $HOMEDIR/$KEY/config/app.toml
   done
   sed -i -E 's|tcp://0.0.0.0:1317|tcp://0.0.0.0:1316|g' $HOMEDIR/${KEYS_VAL[1]}/config/app.toml

@@ -101,7 +101,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   cecho "GREEN" "Change app.toml values"
   sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $APP_TOML
   sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $APP_TOML
-  sed -i -E '1,/enable = false/s|enable = false|enable = true|g' $APP_TOML
+  sed -i -E '117s/.*/enable = true/' $APP_TOML
   sed -i -E 's|minimum-gas-prices = \"0axom\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
 
   cecho "GREEN" "Change config.toml values"
