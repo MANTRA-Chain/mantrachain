@@ -13,8 +13,8 @@ option go_package = "github.com/LimeChain/mantrachain/x/marketplace/types";
 // GenesisState defines the marketplace module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated Marketplace marketplaceList = 2 [(gogoproto.nullable) = false];
-  repeated MarketplaceCollection marketplaceCollectionList = 3 [(gogoproto.nullable) = false];
-  repeated MarketplaceNft marketplaceNftList = 4 [(gogoproto.nullable) = false];
+  repeated Marketplace marketplace_list = 2 [(gogoproto.nullable) = false];
+  repeated MarketplaceCollection marketplace_collection_list = 3 [(gogoproto.nullable) = false];
+  repeated MarketplaceNft marketplace_nft_list = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

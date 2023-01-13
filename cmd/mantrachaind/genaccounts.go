@@ -1,3 +1,18 @@
+// Copyright 2021 Evmos Foundation
+// This file is part of Evmos' Ethermint library.
+//
+// The Ethermint library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The Ethermint library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the Ethermint library. If not, see https://github.com/evmos/ethermint/blob/main/LICENSE
 package main
 
 import (
@@ -6,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -18,6 +34,11 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+
+	ethermint "github.com/evmos/ethermint/types"
+	evmtypes "github.com/evmos/ethermint/x/evm/types"
+
+	mantrakr "github.com/LimeChain/mantrachain/crypto/keyring"
 )
 
 const (
@@ -29,7 +50,7 @@ const (
 // AddGenesisAccountCmd returns add-genesis-account cobra Command.
 func AddGenesisAccountCmd(defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-genesis-account [address_or_key_name] [coin][,[coin]]",
+		Use:   "add-genesis-account ADDRESS_OR_KEY_NAME COIN...",
 		Short: "Add a genesis account to genesis.json",
 		Long: `Add a genesis account to genesis.json. The provided account must specify
 the account address or key name and a list of initial coins. If a key name is given,
@@ -39,6 +60,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
+
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			config := serverCtx.Config
 
@@ -48,13 +70,18 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			addr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				inBuf := bufio.NewReader(cmd.InOrStdin())
-				keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
-				if err != nil {
-					return fmt.Errorf("failed to parse keyring backend: %w", err)
-				}
+				keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
+
 				if keyringBackend != "" && clientCtx.Keyring == nil {
 					var err error
-					kr, err = keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf, clientCtx.Codec)
+					kr, err = keyring.New(
+						sdk.KeyringServiceName(),
+						keyringBackend,
+						clientCtx.HomeDir,
+						inBuf,
+						clientCtx.Codec,
+						mantrakr.Option(),
+					)
 					if err != nil {
 						return err
 					}
@@ -66,6 +93,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 				if err != nil {
 					return fmt.Errorf("failed to get address from Keyring: %w", err)
 				}
+
 				addr, err = info.GetAddress()
 				if err != nil {
 					return fmt.Errorf("failed to get address from Keyring: %w", err)
@@ -79,15 +107,15 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 
 			vestingStart, err := cmd.Flags().GetInt64(flagVestingStart)
 			if err != nil {
-				return fmt.Errorf("failed to parse vesting start: %w", err)
+				return err
 			}
 			vestingEnd, err := cmd.Flags().GetInt64(flagVestingEnd)
 			if err != nil {
-				return fmt.Errorf("failed to parse vesting end: %w", err)
+				return err
 			}
 			vestingAmtStr, err := cmd.Flags().GetString(flagVestingAmt)
 			if err != nil {
-				return fmt.Errorf("failed to parse vesting amount: %w", err)
+				return err
 			}
 
 			vestingAmt, err := sdk.ParseCoinsNormalized(vestingAmtStr)
@@ -120,7 +148,10 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 					return errors.New("invalid vesting parameters; must supply start and end time or end time")
 				}
 			} else {
-				genAccount = baseAccount
+				genAccount = &ethermint.EthAccount{
+					BaseAccount: baseAccount,
+					CodeHash:    common.BytesToHash(evmtypes.EmptyCodeHash).Hex(),
+				}
 			}
 
 			if err := genAccount.Validate(); err != nil {

@@ -12,7 +12,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/mns/types";
 // GenesisState defines the mns module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated Domain domainList = 2 [(gogoproto.nullable) = false];
-  repeated DomainName domainNameList = 3 [(gogoproto.nullable) = false];
+  repeated Domain domain_list = 2 [(gogoproto.nullable) = false];
+  repeated DomainName domain_name_list = 3 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

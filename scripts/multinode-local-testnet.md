@@ -7,11 +7,10 @@ a minimum Validator1 and Validator2 must be running in order to keep
 greater than 66% power online.
 
 ## Prerequisites
- - gsed 
  - jq 
  - tmux
 
-`brew install gsed jq tmux`
+`brew install jq tmux`
 
 ## Instructions
 
@@ -21,9 +20,9 @@ Checkout the branch you are looking to test
 
 Make install / reload profile
 
-Give the script permission with `chmod +x multinode-local-testnet.mac.sh`
+Give the script permission with `chmod +x multinode-local-testnet.sh`
 
-Run with `./multinode-local-testnet.mac.sh` (allow \~45 seconds to run,
+Run with `./multinode-local-testnet.sh` (allow \~45 seconds to run,
 required sleep commands due to multiple transactions)
 
 Logs
@@ -59,14 +58,14 @@ particular node.
 Examples
 --------
 
-Validator2: `mantrachain status --node "tcp://localhost:26654"`
+Validator2: `./buildmantrachain status --node "tcp://localhost:26654"`
 
-Validator3: `mantrachain status --node "tcp://localhost:26651"`
+Validator3: `./buildmantrachain status --node "tcp://localhost:26651"`
 
 or
 
 Validator1:
-`mantrachain keys list --keyring-backend test --home $HOME/.mantrachain/validator1`
+`./build/mantrachaind keys list --keyring-backend test --home $HOME/.mantrachain/validator1`
 
 Validator2:
-`mantrachain keys list --keyring-backend test --home $HOME/.mantrachain/validator2`
+`./buildmantrachaind keys list --keyring-backend test --home $HOME/.mantrachain/validator2`

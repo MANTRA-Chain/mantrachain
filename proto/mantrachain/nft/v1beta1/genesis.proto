@@ -9,7 +9,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/nft/types";
 message GenesisState {
   // class defines the class of the nft type.
   repeated Class classes = 1;
-  repeated Entry                    entries = 2;
+  repeated Entry entries = 2;
 }
 
 // Entry Defines all nft owned by a person

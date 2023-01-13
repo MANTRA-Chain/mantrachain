@@ -13,8 +13,8 @@ option go_package = "github.com/LimeChain/mantrachain/x/bridge/types";
 // GenesisState defines the bridge module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated TxHash txHashList = 2 [(gogoproto.nullable) = false];
-  repeated Bridge bridgeList = 3 [(gogoproto.nullable) = false];
-  Cw20Contract cw20Contract = 4;
+  repeated TxHash tx_hash_list = 2 [(gogoproto.nullable) = false];
+  repeated Bridge bridge_list = 3 [(gogoproto.nullable) = false];
+  Cw20Contract cw20_contract = 4;
   // this line is used by starport scaffolding # genesis/proto/state
 }

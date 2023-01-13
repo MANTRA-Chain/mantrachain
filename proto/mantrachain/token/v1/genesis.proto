@@ -12,7 +12,7 @@ option go_package = "github.com/LimeChain/mantrachain/x/token/types";
 // GenesisState defines the token module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  repeated NftCollection nftCollectionList = 2 [(gogoproto.nullable) = false];
-  repeated Nft nftList = 3 [(gogoproto.nullable) = false];
+  repeated NftCollection nft_collection_list = 2 [(gogoproto.nullable) = false];
+  repeated Nft nft_list = 3 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

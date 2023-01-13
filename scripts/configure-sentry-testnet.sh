@@ -10,7 +10,7 @@ cp $GENESIS_FILE "$HOME"/.mantrachain/config
 
 # Configure app.toml
 ######################################################################
-sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001ustake\"|g' "$HOME"/.mantrachain/config/app.toml
+sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001axom\"|g' "$HOME"/.mantrachain/config/app.toml
 sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' "$HOME"/.mantrachain/config/app.toml
 sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' "$HOME"/.mantrachain/config/app.toml
 sed -i -E '108s/.*/enable = true/' "$HOME"/.mantrachain/config/app.toml

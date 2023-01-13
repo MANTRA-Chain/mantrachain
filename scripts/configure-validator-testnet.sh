@@ -4,13 +4,13 @@ set -e # exit on first error
 GENESIS_FILE="./data/genesis.json"
 PERSISTENT_PEERS="nodeId@ip:port,nodeId@ip:port"
 
-./build/mantrachaind keys add validator-1 --recover
+./build/mantrachaind keys add validator1 --recover
 
 cp $GENESIS_FILE "$HOME"/.mantrachain/config
 
 # Configure app.toml
 ######################################################################
-sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001ustake\"|g' "$HOME"/.mantrachain/config/app.toml
+sed -i -E 's|minimum-gas-prices = \"\"|minimum-gas-prices = \"0.0001axom\"|g' "$HOME"/.mantrachain/config/app.toml
 sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' "$HOME"/.mantrachain/config/app.toml
 
 # Configure config.toml
