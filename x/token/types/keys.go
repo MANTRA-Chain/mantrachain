@@ -97,11 +97,19 @@ func GetNftIndex(collectionIndex []byte, id string) []byte {
 }
 
 func NftStoreKey(collectionIndex []byte) []byte {
-	key := make([]byte, len(nftStoreKey)+len(delimiter)+len(collectionIndex)+len(delimiter))
-	copy(key, nftStoreKey)
-	copy(key[len(nftStoreKey):], delimiter)
-	copy(key[len(nftStoreKey)+len(delimiter):], collectionIndex)
-	copy(key[len(nftStoreKey)+len(delimiter)+len(collectionIndex):], delimiter)
+	var key []byte
+	if collectionIndex == nil {
+		key = make([]byte, len(nftStoreKey)+len(delimiter))
+		copy(key, nftStoreKey)
+		copy(key[len(nftStoreKey):], delimiter)
+	} else {
+		key = make([]byte, len(nftStoreKey)+len(delimiter)+len(collectionIndex)+len(delimiter))
+		copy(key, nftStoreKey)
+		copy(key[len(nftStoreKey):], delimiter)
+		copy(key[len(nftStoreKey)+len(delimiter):], collectionIndex)
+		copy(key[len(nftStoreKey)+len(delimiter)+len(collectionIndex):], delimiter)
+	}
+
 	return key
 }
 

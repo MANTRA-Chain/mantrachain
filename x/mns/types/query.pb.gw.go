@@ -163,15 +163,15 @@ func request_Query_DomainName_0(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domain", err)
 	}
 
-	val, ok = pathParams["domainName"]
+	val, ok = pathParams["domain_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "domainName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "domain_name")
 	}
 
 	protoReq.DomainName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domainName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domain_name", err)
 	}
 
 	msg, err := client.DomainName(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -201,15 +201,15 @@ func local_request_Query_DomainName_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domain", err)
 	}
 
-	val, ok = pathParams["domainName"]
+	val, ok = pathParams["domain_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "domainName")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "domain_name")
 	}
 
 	protoReq.DomainName, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domainName", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "domain_name", err)
 	}
 
 	msg, err := server.DomainName(ctx, &protoReq)
@@ -446,7 +446,7 @@ var (
 
 	pattern_Query_DomainAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "mns", "v1", "domain"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DomainName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "mns", "v1", "domain", "domain_name", "domainName"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_DomainName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "mns", "v1", "domain", "domain_name"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

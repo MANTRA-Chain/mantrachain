@@ -235,8 +235,8 @@ func ValidateVerification(v *Verification, allowedControllers ...string) (err er
 
 	// check the verification material
 	switch x := v.Method.VerificationMaterial.(type) {
-	case *VerificationMethod_BlockchainAccountID:
-		if IsEmpty(x.BlockchainAccountID) {
+	case *VerificationMethod_BlockchainAccountId:
+		if IsEmpty(x.BlockchainAccountId) {
 			err = sdkerrors.Wrapf(ErrInvalidInput, "verification material blockchain account id invalid for verification method %s", v.Method.Id)
 			return
 		}
@@ -282,7 +282,7 @@ func ValidateService(s *Service) (err error) {
 	}
 
 	if !IsValidRFC3986Uri(s.Id) {
-		err = sdkerrors.Wrapf(ErrInvalidRFC3986UriFormat, "service id %s is not a valid RFC3986 uri", s.Id)
+		err = sdkerrors.Wrapf(ErrInvalidRFC3986UriFormat, "service id: %s is not a valid RFC3986 uri", s.Id)
 		return
 	}
 
@@ -321,7 +321,7 @@ func WithVerifications(verifications ...*Verification) DidDocumentOption {
 	}
 }
 
-//WithServices add optional services
+// WithServices add optional services
 func WithServices(services ...*Service) DidDocumentOption {
 	return func(did *DidDocument) error {
 		return did.AddServices(services...)
@@ -339,7 +339,7 @@ func WithControllers(controllers ...string) DidDocumentOption {
 func NewDidDocument(id string, options ...DidDocumentOption) (did DidDocument, err error) {
 
 	if !IsValidDID(id) {
-		err = sdkerrors.Wrapf(ErrInvalidDIDFormat, "did %s", id)
+		err = sdkerrors.Wrapf(ErrInvalidDIDFormat, "did: %s", id)
 		return
 	}
 
@@ -412,7 +412,7 @@ func (didDoc *DidDocument) AddVerifications(verifications ...*Verification) (err
 
 		// verify that there are no duplicates in method ids
 		if _, found := index[v.Method.Id]; found {
-			err = sdkerrors.Wrapf(ErrInvalidInput, "duplicated verification method id %s", v.Method.Id)
+			err = sdkerrors.Wrapf(ErrInvalidInput, "duplicated verification method, id: %s", v.Method.Id)
 			return
 		}
 		index[v.Method.Id] = struct{}{}
@@ -530,8 +530,8 @@ func (didDoc DidDocument) GetVerificationMethodBlockchainAddress(methodID string
 	for _, vm := range didDoc.VerificationMethod {
 		if vm.Id == methodID {
 			switch k := vm.VerificationMaterial.(type) {
-			case *VerificationMethod_BlockchainAccountID:
-				address = BlockchainAccountID(k.BlockchainAccountID).GetAddress()
+			case *VerificationMethod_BlockchainAccountId:
+				address = BlockchainAccountID(k.BlockchainAccountId).GetAddress()
 			case *VerificationMethod_PublicKeyMultibase:
 				address, err = toAddress(k.PublicKeyMultibase[1:])
 			case *VerificationMethod_PublicKeyHex:
@@ -567,8 +567,8 @@ func (didDoc DidDocument) HasRelationship(
 	// first check if the controller exists
 	for _, vm := range didDoc.VerificationMethod {
 		switch k := vm.VerificationMaterial.(type) {
-		case *VerificationMethod_BlockchainAccountID:
-			if k.BlockchainAccountID != signer.EncodeToString() {
+		case *VerificationMethod_BlockchainAccountId:
+			if k.BlockchainAccountId != signer.EncodeToString() {
 				continue
 			}
 		case *VerificationMethod_PublicKeyMultibase:
@@ -594,12 +594,12 @@ func (didDoc DidDocument) HasRelationship(
 func (didDoc DidDocument) HasPublicKey(pubkey cryptotypes.PubKey) bool {
 	for _, vm := range didDoc.VerificationMethod {
 		switch key := vm.VerificationMaterial.(type) {
-		case *VerificationMethod_BlockchainAccountID:
+		case *VerificationMethod_BlockchainAccountId:
 			address := sdk.MustBech32ifyAddressBytes(
 				sdk.GetConfig().GetBech32AccountAddrPrefix(),
 				pubkey.Address().Bytes(),
 			)
-			if BlockchainAccountID(key.BlockchainAccountID).MatchAddress(address) {
+			if BlockchainAccountID(key.BlockchainAccountId).MatchAddress(address) {
 				return true
 			}
 		case *VerificationMethod_PublicKeyMultibase:
@@ -649,7 +649,7 @@ func (didDoc *DidDocument) AddServices(services ...*Service) (err error) {
 
 		// verify that there are no duplicates in method ids
 		if _, found := index[s.Id]; found {
-			err = sdkerrors.Wrapf(ErrInvalidInput, "duplicated verification method id %s", s.Id)
+			err = sdkerrors.Wrapf(ErrInvalidInput, "duplicated verification method, id: %s", s.Id)
 			return
 		}
 		index[s.Id] = struct{}{}
@@ -726,7 +726,7 @@ func NewVerificationMethod(id string, controller DID, vmr VerificationMaterial) 
 	}
 	switch vmr.(type) {
 	case BlockchainAccountID:
-		vm.VerificationMaterial = &VerificationMethod_BlockchainAccountID{vmr.EncodeToString()}
+		vm.VerificationMaterial = &VerificationMethod_BlockchainAccountId{vmr.EncodeToString()}
 	case PublicKeyMultibase:
 		vm.VerificationMaterial = &VerificationMethod_PublicKeyMultibase{vmr.EncodeToString()}
 	case PublicKeyHex:

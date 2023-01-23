@@ -123,7 +123,9 @@ func (k Keeper) CreateAndDelegateNftStakeStaked(
 		staked.Validator = params.StakingValidatorAddress
 		staked.Shares = shares.String()
 
-		lastEpochBlock, found := k.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
+		chainId := ctx.ChainID()
+
+		lastEpochBlock, found := k.GetLastEpochBlock(ctx, &chainId, &params.StakingValidatorAddress)
 
 		if !found {
 			return sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")

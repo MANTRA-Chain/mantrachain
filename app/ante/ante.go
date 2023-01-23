@@ -1,6 +1,7 @@
 package ante
 
 import (
+	guardante "github.com/LimeChain/mantrachain/x/guard/ante"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -19,6 +20,9 @@ type HandlerOptions struct {
 	IBCKeeper              *ibckeeper.Keeper
 	EvmKeeper              evmante.EVMKeeper
 	FeegrantKeeper         authante.FeegrantKeeper
+	TokenKeeper            guardante.TokenKeeper
+	NFTKeeper              guardante.NFTKeeper
+	GuardKeeper            guardante.GuardKeeper
 	SignModeHandler        authsigning.SignModeHandler
 	SigGasConsumer         authante.SignatureVerificationGasConsumer
 	FeeMarketKeeper        evmante.FeeMarketKeeper
@@ -110,6 +114,7 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		authante.NewSetUpContextDecorator(),
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
+		guardante.NewGuardTransferDecorator(options.GuardKeeper, options.TokenKeeper, options.NFTKeeper),
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
 		evmante.NewMinGasPriceDecorator(options.FeeMarketKeeper, options.EvmKeeper),
@@ -132,6 +137,7 @@ func newLegacyCosmosAnteHandlerEip712(options HandlerOptions) sdk.AnteHandler {
 		evmante.RejectMessagesDecorator{}, // reject MsgEthereumTxs
 		authante.NewSetUpContextDecorator(),
 		authante.NewValidateBasicDecorator(),
+		guardante.NewGuardTransferDecorator(options.GuardKeeper, options.TokenKeeper, options.NFTKeeper),
 		authante.NewTxTimeoutHeightDecorator(),
 		evmante.NewMinGasPriceDecorator(options.FeeMarketKeeper, options.EvmKeeper),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),

@@ -189,8 +189,8 @@ func (k Keeper) NftBalances(c context.Context, req *types.QueryGetNftBalancesReq
 	if minEpochRewardsStartBH != types.UndefinedBlockHeight {
 		epochs = k.GetNextRewardsEpochsFromPrevEpochId(
 			ctx,
-			stakingChain,
-			stakingValidator,
+			&stakingChain,
+			&stakingValidator,
 			minEpochRewardsStartBH,
 		)
 	}

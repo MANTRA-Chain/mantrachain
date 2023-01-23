@@ -96,11 +96,21 @@ func BridgeStoreKey(creator sdk.AccAddress) []byte {
 }
 
 func TxHashStoreKey(bridgeIndex []byte) []byte {
-	key := make([]byte, len(txHashStoreKey)+len(delimiter)+len(bridgeIndex)+len(delimiter))
-	copy(key, txHashStoreKey)
-	copy(key[len(txHashStoreKey):], delimiter)
-	copy(key[len(txHashStoreKey)+len(delimiter):], bridgeIndex)
-	copy(key[len(txHashStoreKey)+len(delimiter)+len(bridgeIndex):], delimiter)
+	var key []byte
+
+	if bridgeIndex == nil {
+		key = make([]byte, len(txHashStoreKey)+len(delimiter))
+		copy(key, txHashStoreKey)
+		copy(key[len(txHashStoreKey):], delimiter)
+		return key
+	} else {
+		key = make([]byte, len(txHashStoreKey)+len(delimiter)+len(bridgeIndex)+len(delimiter))
+		copy(key, txHashStoreKey)
+		copy(key[len(txHashStoreKey):], delimiter)
+		copy(key[len(txHashStoreKey)+len(delimiter):], bridgeIndex)
+		copy(key[len(txHashStoreKey)+len(delimiter)+len(bridgeIndex):], delimiter)
+	}
+
 	return key
 }
 

@@ -35,7 +35,7 @@ message QueryDidDocumentsRequest {
 // QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC method
 message QueryDidDocumentsResponse {
   // validators contains all the queried validators.
-  repeated DidDocument didDocuments = 1  [(gogoproto.nullable) = false];
+  repeated DidDocument did_documents = 1  [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
@@ -50,7 +50,7 @@ message QueryDidDocumentRequest {
 // QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC method
 message QueryDidDocumentResponse {
   // validators contains all the queried validators.
-  DidDocument didDocument = 1  [(gogoproto.nullable) = false];
-  DidMetadata didMetadata = 2  [(gogoproto.nullable) = false];
+  DidDocument did_document = 1  [(gogoproto.nullable) = false];
+  DidMetadata did_metadata = 2  [(gogoproto.nullable) = false];
 }
 // this line is used by starport scaffolding # 3

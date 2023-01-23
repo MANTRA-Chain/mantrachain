@@ -43,7 +43,7 @@ func (k msgServer) CreateDidDocument(
 	// check that the did is not already taken
 	_, found := k.Keeper.GetDidDocument(ctx, []byte(msg.Id))
 	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", msg.Id)
+		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did: %s already exists", msg.Id)
 		k.Logger(ctx).Error(err.Error())
 		return nil, err
 	}

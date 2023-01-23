@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/LimeChain/mantrachain/x/did/types"
@@ -18,16 +19,18 @@ type UnmarshalFn func(value []byte) (interface{}, bool)
 type MarshalFn func(value interface{}) []byte
 
 type Keeper struct {
-	cdc      codec.Codec
-	storeKey storetypes.StoreKey
-	memKey   storetypes.StoreKey
+	cdc        codec.Codec
+	storeKey   storetypes.StoreKey
+	memKey     storetypes.StoreKey
+	paramstore paramtypes.Subspace
 }
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey) *Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, ps paramtypes.Subspace) *Keeper {
 	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		memKey:     memKey,
+		paramstore: ps,
 	}
 }
 

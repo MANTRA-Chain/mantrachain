@@ -186,7 +186,7 @@ func (c *MarketplaceController) validMarketplaceMetadataOptions() error {
 
 func (c *MarketplaceController) isOpenedOrHasOwner(owner sdk.AccAddress) error {
 	if err := c.requireMarketplace(); err != nil {
-		panic("validation check is not allowed on a non existing marketplace")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing marketplace")
 	}
 
 	if c.marketplace.Opened {
@@ -208,7 +208,7 @@ func (c *MarketplaceController) HasOwner(owner sdk.AccAddress) *MarketplaceContr
 
 func (c *MarketplaceController) hasOwner(owner sdk.AccAddress) error {
 	if err := c.requireMarketplace(); err != nil {
-		panic("validation check is not allowed on a non existing marketplace")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing marketplace")
 	}
 	if owner.Equals(c.marketplace.Owner) {
 		return nil

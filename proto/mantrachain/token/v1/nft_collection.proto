@@ -9,19 +9,21 @@ option (gogoproto.equal_all) = true;
 
 message NftCollection {
   bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""]; 
-  repeated TokenImage images = 2 [(gogoproto.moretags) = "yaml:\"images\""];
-  string url = 3 [(gogoproto.moretags) = "yaml:\"url\""];
-  repeated TokenLink links = 4 [(gogoproto.moretags) = "yaml:\"links\""];
-  repeated TokenOption options = 5 [(gogoproto.moretags) = "yaml:\"options\""];
-  string category = 6 [(gogoproto.moretags) = "yaml:\"category\""];
-  bool opened = 7 [(gogoproto.moretags) = "yaml:\"opened\""];
-  bytes owner = 8 [
+  string id = 2 [(gogoproto.moretags) = "yaml:\"id\""]; 
+  repeated TokenImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
+  string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
+  repeated TokenLink links = 5 [(gogoproto.moretags) = "yaml:\"links\""];
+  repeated TokenOption options = 6 [(gogoproto.moretags) = "yaml:\"options\""];
+  string category = 7 [(gogoproto.moretags) = "yaml:\"category\""];
+  bool opened = 8 [(gogoproto.moretags) = "yaml:\"opened\""];
+  bytes owner = 9 [
       (gogoproto.moretags) = "yaml:\"owner\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  bytes creator = 9 [
+  bytes creator = 10 [
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  bool soul_bonded = 11 [(gogoproto.moretags) = "yaml:\"soul_bonded\""];
 }
 

@@ -135,6 +135,9 @@ import (
 	"github.com/LimeChain/mantrachain/x/did"
 	didkeeper "github.com/LimeChain/mantrachain/x/did/keeper"
 	didtypes "github.com/LimeChain/mantrachain/x/did/types"
+	"github.com/LimeChain/mantrachain/x/guard"
+	guardkeeper "github.com/LimeChain/mantrachain/x/guard/keeper"
+	guardtypes "github.com/LimeChain/mantrachain/x/guard/types"
 	"github.com/LimeChain/mantrachain/x/marketplace"
 	marketplacekeeper "github.com/LimeChain/mantrachain/x/marketplace/keeper"
 	marketplacetypes "github.com/LimeChain/mantrachain/x/marketplace/types"
@@ -235,6 +238,7 @@ var (
 		marketplace.AppModuleBasic{},
 		vault.AppModuleBasic{},
 		bridge.AppModuleBasic{},
+		guard.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -321,6 +325,7 @@ type App struct {
 	MarketplaceKeeper marketplacekeeper.Keeper
 	VaultKeeper       vaultkeeper.Keeper
 	BridgeKeeper      bridgekeeper.Keeper
+	GuardKeeper       guardkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -384,6 +389,7 @@ func New(
 		marketplacetypes.StoreKey,
 		vaulttypes.StoreKey,
 		bridgetypes.StoreKey,
+		guardtypes.StoreKey,
 	)
 
 	// Add the EVM transient store key
@@ -599,6 +605,7 @@ func New(
 		appCodec,
 		keys[didtypes.StoreKey],
 		keys[didtypes.MemStoreKey],
+		app.GetSubspace(didtypes.ModuleName),
 	)
 
 	app.MnsKeeper = *mnskeeper.NewKeeper(
@@ -647,6 +654,13 @@ func New(
 		app.VaultKeeper,
 		app.WasmKeeper,
 		wasmContractKeeper,
+	)
+
+	app.GuardKeeper = *guardkeeper.NewKeeper(
+		appCodec,
+		keys[guardtypes.StoreKey],
+		keys[guardtypes.MemStoreKey],
+		app.GetSubspace(guardtypes.ModuleName),
 	)
 
 	// register the staking hooks
@@ -703,6 +717,7 @@ func New(
 		marketplace.NewAppModule(appCodec, app.MarketplaceKeeper, app.AccountKeeper, app.BankKeeper),
 		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.DistrKeeper),
 		bridge.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper),
+		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.BankKeeper),
 
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 	)
@@ -736,6 +751,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 
+		guardtypes.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
 		nfttypes.ModuleName,
@@ -771,6 +787,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 
+		guardtypes.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
 		nfttypes.ModuleName,
@@ -813,6 +830,7 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 
+		guardtypes.ModuleName,
 		didtypes.ModuleName,
 		mnstypes.ModuleName,
 		nfttypes.ModuleName,
@@ -852,6 +870,9 @@ func New(
 		FeegrantKeeper:         app.FeeGrantKeeper,
 		IBCKeeper:              app.IBCKeeper,
 		FeeMarketKeeper:        app.FeeMarketKeeper,
+		TokenKeeper:            app.TokenKeeper,
+		NFTKeeper:              app.NFTKeeper,
+		GuardKeeper:            app.GuardKeeper,
 		SignModeHandler:        encodingConfig.TxConfig.SignModeHandler(),
 		SigGasConsumer:         SigVerificationGasConsumer,
 		MaxTxGasWanted:         maxGasWanted,
@@ -1171,5 +1192,6 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(marketplacetypes.ModuleName)
 	paramsKeeper.Subspace(vaulttypes.ModuleName)
 	paramsKeeper.Subspace(bridgetypes.ModuleName)
+	paramsKeeper.Subspace(guardtypes.ModuleName)
 	return paramsKeeper
 }

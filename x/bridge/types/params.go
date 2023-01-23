@@ -9,23 +9,23 @@ import (
 )
 
 const (
-	DefaultAdminAccount                              string = ""
-	DefaultValidBridgeId                             string = "^[a-zA-Z0-9_/:-]{0,100}$"
-	DefaultValidBridgeCw20ContractNameMinLength      int32  = 2
-	DefaultValidBridgeCw20ContractNameMaxLength      int32  = 100
-	DefaultValidBridgeCw20ContractSymbolMinLength    int32  = 2
-	DefaultValidBridgeCw20ContractSymbolMaxLength    int32  = 6
-	DefaultValidMintMintListMetadataMintListMaxCount int32  = 10
+	DefaultAdminAccount                           string = ""
+	DefaultValidBridgeId                          string = "^[a-zA-Z0-9_/:-]{0,100}$"
+	DefaultValidBridgeCw20ContractNameMinLength   int32  = 2
+	DefaultValidBridgeCw20ContractNameMaxLength   int32  = 100
+	DefaultValidBridgeCw20ContractSymbolMinLength int32  = 2
+	DefaultValidBridgeCw20ContractSymbolMaxLength int32  = 6
+	DefaultValidMintListMetadataMaxCount          int32  = 10
 )
 
 var (
-	KeyAdminAccount                              = []byte("AdminAccount")
-	KeyValidBridgeId                             = []byte("ValidBridgeId")
-	KeyValidBridgeCw20ContractNameMinLength      = []byte("ValidBridgeCw20ContractNameMinLength")
-	KeyValidBridgeCw20ContractNameMaxLength      = []byte("ValidBridgeCw20ContractNameMaxLength")
-	KeyValidBridgeCw20ContractSymbolMinLength    = []byte("ValidBridgeCw20ContractSymbolMinLength")
-	KeyValidBridgeCw20ContractSymbolMaxLength    = []byte("ValidBridgeCw20ContractSymbolMaxLength")
-	KeyValidMintMintListMetadataMintListMaxCount = []byte("ValidMintMintListMetadataMintListMaxCount")
+	KeyAdminAccount                           = []byte("AdminAccount")
+	KeyValidBridgeId                          = []byte("ValidBridgeId")
+	KeyValidBridgeCw20ContractNameMinLength   = []byte("ValidBridgeCw20ContractNameMinLength")
+	KeyValidBridgeCw20ContractNameMaxLength   = []byte("ValidBridgeCw20ContractNameMaxLength")
+	KeyValidBridgeCw20ContractSymbolMinLength = []byte("ValidBridgeCw20ContractSymbolMinLength")
+	KeyValidBridgeCw20ContractSymbolMaxLength = []byte("ValidBridgeCw20ContractSymbolMaxLength")
+	KeyValidMintListMetadataMaxCount          = []byte("ValidMintListMetadataMaxCount")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -43,16 +43,16 @@ func NewParams(
 	validBridgeCw20ContractNameMaxLength int32,
 	validBridgeCw20ContractSymbolMinLength int32,
 	validBridgeCw20ContractSymbolMaxLength int32,
-	validMintMintListMetadataMintListMaxCount int32,
+	validMintListMetadataMaxCount int32,
 ) Params {
 	return Params{
-		AdminAccount:                              adminAccount,
-		ValidBridgeId:                             validBridgeId,
-		ValidBridgeCw20ContractNameMinLength:      validBridgeCw20ContractNameMinLength,
-		ValidBridgeCw20ContractNameMaxLength:      validBridgeCw20ContractNameMaxLength,
-		ValidBridgeCw20ContractSymbolMinLength:    validBridgeCw20ContractSymbolMinLength,
-		ValidBridgeCw20ContractSymbolMaxLength:    validBridgeCw20ContractSymbolMaxLength,
-		ValidMintMintListMetadataMintListMaxCount: validMintMintListMetadataMintListMaxCount,
+		AdminAccount:                           adminAccount,
+		ValidBridgeId:                          validBridgeId,
+		ValidBridgeCw20ContractNameMinLength:   validBridgeCw20ContractNameMinLength,
+		ValidBridgeCw20ContractNameMaxLength:   validBridgeCw20ContractNameMaxLength,
+		ValidBridgeCw20ContractSymbolMinLength: validBridgeCw20ContractSymbolMinLength,
+		ValidBridgeCw20ContractSymbolMaxLength: validBridgeCw20ContractSymbolMaxLength,
+		ValidMintListMetadataMaxCount:          validMintListMetadataMaxCount,
 	}
 }
 
@@ -65,7 +65,7 @@ func DefaultParams() Params {
 		DefaultValidBridgeCw20ContractNameMaxLength,
 		DefaultValidBridgeCw20ContractSymbolMinLength,
 		DefaultValidBridgeCw20ContractSymbolMaxLength,
-		DefaultValidMintMintListMetadataMintListMaxCount,
+		DefaultValidMintListMetadataMaxCount,
 	)
 }
 
@@ -78,7 +78,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyValidBridgeCw20ContractNameMaxLength, &p.ValidBridgeCw20ContractNameMaxLength, validateValidBridgeCw20ContractNameMaxLength),
 		paramtypes.NewParamSetPair(KeyValidBridgeCw20ContractSymbolMinLength, &p.ValidBridgeCw20ContractSymbolMinLength, validateValidBridgeCw20ContractSymbolMinLength),
 		paramtypes.NewParamSetPair(KeyValidBridgeCw20ContractSymbolMaxLength, &p.ValidBridgeCw20ContractSymbolMaxLength, validateValidBridgeCw20ContractSymbolMaxLength),
-		paramtypes.NewParamSetPair(KeyValidMintMintListMetadataMintListMaxCount, &p.ValidMintMintListMetadataMintListMaxCount, validateValidMintMintListMetadataMintListMaxCount),
+		paramtypes.NewParamSetPair(KeyValidMintListMetadataMaxCount, &p.ValidMintListMetadataMaxCount, validateValidMintListMetadataMaxCount),
 	}
 }
 
@@ -128,7 +128,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateValidMintMintListMetadataMintListMaxCount(p.ValidMintMintListMetadataMintListMaxCount); err != nil {
+	if err := validateValidMintListMetadataMaxCount(p.ValidMintListMetadataMaxCount); err != nil {
 		return err
 	}
 
@@ -162,14 +162,14 @@ func validateValidBridgeId(i interface{}) error {
 	return nil
 }
 
-func validateValidMintMintListMetadataMintListMaxCount(i interface{}) error {
+func validateValidMintListMetadataMaxCount(i interface{}) error {
 	v, ok := i.(int32)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v <= 0 {
-		return fmt.Errorf("valid mint mint list metadata mint list max count param must be positive: %d", v)
+		return fmt.Errorf("valid mint list metadata max count param must be positive: %d", v)
 	}
 
 	return nil

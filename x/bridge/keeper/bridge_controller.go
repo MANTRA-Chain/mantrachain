@@ -100,7 +100,7 @@ func (c *BridgeController) HasOwner(owner sdk.AccAddress) *BridgeController {
 
 func (c *BridgeController) hasOwner(owner sdk.AccAddress) error {
 	if err := c.requireBridge(); err != nil {
-		panic("validation check is not allowed on a non existing bridge")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing bridge")
 	}
 	if owner.Equals(c.bridge.Owner) {
 		return nil

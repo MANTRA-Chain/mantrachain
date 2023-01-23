@@ -92,9 +92,9 @@ func (k Keeper) MarketplaceNft(c context.Context, req *types.QueryGetMarketplace
 	return &types.QueryGetMarketplaceNftResponse{
 		MarketplaceCreator:  marketplaceCreator.String(),
 		MarketplaceId:       req.MarketplaceId,
-		CollectionCreator:   req.CollectionCreator,
-		CollectionId:        req.CollectionId,
-		NftId:               req.NftId,
+		CollectionCreator:   nft.CollectionCreator.String(),
+		CollectionId:        nft.CollectionId,
+		NftId:               nft.Id,
 		ForSale:             forSale,
 		InitiallySold:       initiallySold,
 		MinPrice:            &minPrice,

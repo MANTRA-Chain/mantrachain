@@ -145,6 +145,13 @@ func (c *NftCollectionController) IsOpenedOrHasOwner(owner sdk.AccAddress) *NftC
 	return c
 }
 
+func (c *NftCollectionController) IsCreatorOrIsApprovedAllWhenSoulBonded(owner sdk.AccAddress) *NftCollectionController {
+	c.validators = append(c.validators, func(controller *NftCollectionController) error {
+		return controller.isCreatorOrIsApprovedAllWhenSoulBonded(owner)
+	})
+	return c
+}
+
 func (c *NftCollectionController) ValidMetadata() *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
 		return controller.validCollectionMetadataId()
@@ -166,6 +173,8 @@ func (c *NftCollectionController) ValidMetadata() *NftCollectionController {
 		return controller.validCollectionMetadataLinks()
 	}, func(controller *NftCollectionController) error {
 		return controller.validCollectionMetadataOpened()
+	}, func(controller *NftCollectionController) error {
+		return controller.validCollectionMetadataSoulBonded()
 	})
 	return c
 }
@@ -179,7 +188,7 @@ func (c *NftCollectionController) HasOwner(owner sdk.AccAddress) *NftCollectionC
 
 func (c *NftCollectionController) hasOwner(owner sdk.AccAddress) error {
 	if err := c.requireNftCollection(); err != nil {
-		panic("validation check is not allowed on a non existing nftCollection")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing nftCollection")
 	}
 	if owner.Equals(c.nftCollection.Owner) {
 		return nil
@@ -198,9 +207,29 @@ func (c *NftCollectionController) mustNotBeDefault() error {
 	return nil
 }
 
+func (c *NftCollectionController) isCreatorOrIsApprovedAllWhenSoulBonded(operator sdk.AccAddress) error {
+	if err := c.requireNftCollection(); err != nil {
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing nftCollection")
+	}
+
+	if !c.nftCollection.SoulBonded {
+		return nil
+	}
+
+	if operator.Equals(c.nftCollection.Creator) {
+		return nil
+	}
+
+	if c.store.GetIsApprovedForAllNfts(c.ctx, c.nftCollection.Creator, operator) {
+		return nil
+	}
+
+	return sdkerrors.Wrapf(types.ErrUnauthorized, "unauthorized")
+}
+
 func (c *NftCollectionController) isOpenedOrHasOwner(owner sdk.AccAddress) error {
 	if err := c.requireNftCollection(); err != nil {
-		panic("validation check is not allowed on a non existing nftCollection")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing nftCollection")
 	}
 
 	if c.nftCollection.Opened {
@@ -363,6 +392,13 @@ func (c *NftCollectionController) validCollectionMetadataOpened() error {
 	return nil
 }
 
+func (c *NftCollectionController) validCollectionMetadataSoulBonded() error {
+	if c.metadata.Opened && c.metadata.SoulBonded {
+		return sdkerrors.Wrapf(types.ErrInvalidNftCollectionSoulBonded, "collection %d can not be soul bonded if it is opened", len(c.metadata.Id))
+	}
+	return nil
+}
+
 func (c *NftCollectionController) getId() string {
 	if strings.TrimSpace(c.metadata.Id) == "" && !c.strict {
 		return c.conf.NftCollectionDefaultId
@@ -373,4 +409,14 @@ func (c *NftCollectionController) getId() string {
 func (c *NftCollectionController) getIndex() []byte {
 	id := c.getId()
 	return types.GetNftCollectionIndex(c.creator, id)
+}
+
+func (c *NftCollectionController) getIsSoulBonded() (bool, error) {
+	c.requireNftCollection()
+
+	if c.nftCollection == nil {
+		return false, sdkerrors.Wrapf(types.ErrNftCollectionDoesNotExist, "collection %d does not exist", c.metadata.Id)
+	}
+
+	return c.nftCollection.SoulBonded, nil
 }

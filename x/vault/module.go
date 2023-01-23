@@ -182,10 +182,12 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	logger := am.keeper.Logger(ctx)
 	params := am.keeper.GetParams(ctx)
 
-	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, ctx.ChainID(), params.StakingValidatorAddress)
+	chainId := ctx.ChainID()
+
+	lastEpochBlock, found := am.keeper.GetLastEpochBlock(ctx, &chainId, &params.StakingValidatorAddress)
 
 	if !found {
-		am.keeper.InitEpoch(ctx, ctx.ChainID(), params.StakingValidatorAddress, ctx.BlockHeight())
+		am.keeper.InitEpoch(ctx, &chainId, &params.StakingValidatorAddress, ctx.BlockHeight())
 		// TODO: measure time in ms, not block height
 	} else if ctx.BlockHeight() >= lastEpochBlock.BlockHeight+params.EpochBlockHeightOffset {
 		de := keeper.NewDistributionExecutor(ctx, am.accountKeeper, am.stakingKeeper, am.distrKeeper)
@@ -196,8 +198,15 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 			return []abci.ValidatorUpdate{}
 		}
 
-		if len(withdrawn) == 0 ||
-			(len(withdrawn) == 1 && withdrawn[0].Amount.IsZero()) {
+		noWithdrawnAmount := true
+
+		for _, v := range withdrawn {
+			if !v.Amount.IsZero() {
+				noWithdrawnAmount = false
+			}
+		}
+
+		if len(withdrawn) == 0 || noWithdrawnAmount {
 			return []abci.ValidatorUpdate{}
 		}
 
@@ -211,8 +220,8 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 
 		err = am.keeper.SetEpochEnd(
 			ctx,
-			ctx.ChainID(),
-			params.StakingValidatorAddress,
+			&chainId,
+			&params.StakingValidatorAddress,
 			ctx.BlockHeight(),
 			lastEpochBlock.BlockHeight,
 			withdrawn,

@@ -62,7 +62,7 @@ func (k Keeper) SetNewDidDocument(ctx sdk.Context, id string, signer sdk.Address
 	// check that the did is not already taken
 	_, found := k.GetDidDocument(ctx, []byte(id))
 	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", id)
+		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did: %s already exists", id)
 		k.Logger(ctx).Error(err.Error())
 		return "", err
 	}

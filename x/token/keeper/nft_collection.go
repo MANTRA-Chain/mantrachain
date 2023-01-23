@@ -41,8 +41,8 @@ func (k Keeper) HasNftCollection(
 	return store.Has(index)
 }
 
-func (k Keeper) GetAllNftCollection(ctx sdk.Context, creator sdk.AccAddress) (list []types.NftCollection) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(creator))
+func (k Keeper) GetAllNftCollection(ctx sdk.Context) (list []types.NftCollection) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(nil))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

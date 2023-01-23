@@ -76,7 +76,7 @@ func (c *MarketplaceCollectionController) mustExist() error {
 func (c *MarketplaceCollectionController) mustNotExist() error {
 	err := c.requireMarketplaceCollection()
 	if err == nil {
-		return sdkerrors.Wrapf(types.ErrMarketplaceCollectionAlreadyExists, "already exists: marketplace id %s, collection id %s", c.marketplaceId, c.collectionId)
+		return sdkerrors.Wrapf(types.ErrMarketplaceCollectionAlreadyExists, "already exists, marketplace id: %s, collection id: %s", c.marketplaceId, c.collectionId)
 	}
 	return nil
 }
@@ -87,7 +87,7 @@ func (c *MarketplaceCollectionController) requireMarketplaceCollection() error {
 	}
 	marketplaceCollection, isFound := c.store.GetMarketplaceCollection(c.ctx, c.marketplaceIndex, c.getIndex())
 	if !isFound {
-		return sdkerrors.Wrapf(types.ErrMarketplaceCollectionDoesNotExist, "not found: marketplace id %s, collection id %s", c.marketplaceId, c.collectionId)
+		return sdkerrors.Wrapf(types.ErrMarketplaceCollectionDoesNotExist, "not found, marketplace id: %s, collection id: %s", c.marketplaceId, c.collectionId)
 	}
 	c.marketplaceCollection = &marketplaceCollection
 	return nil

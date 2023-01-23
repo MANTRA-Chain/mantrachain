@@ -48,7 +48,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 	}
 
 	return &types.QueryGetNftCollectionResponse{
-		Id:          nftColl.UriHash,
+		Id:          meta.Id,
 		Name:        nftColl.Name,
 		Symbol:      nftColl.Symbol,
 		Description: nftColl.Description,
@@ -60,6 +60,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 		Creator:     meta.Creator.String(),
 		Owner:       meta.Owner.String(),
 		Opened:      meta.Opened,
+		SoulBonded:  meta.SoulBonded,
 		Data:        nftColl.Data,
 	}, nil
 }

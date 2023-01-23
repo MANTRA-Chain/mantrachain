@@ -232,8 +232,8 @@ func (k Keeper) DeleteNfts(ctx sdk.Context, collectionIndex []byte, nftsIndexes 
 	}
 }
 
-func (k Keeper) GetAllNft(ctx sdk.Context, collectionIndex []byte) (list []types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+func (k Keeper) GetAllNft(ctx sdk.Context) (list []types.Nft) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nil))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

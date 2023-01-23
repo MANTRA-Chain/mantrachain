@@ -98,7 +98,7 @@ func (c *DomainController) HasOwnerIfClosed(owner sdk.AccAddress) *DomainControl
 func (c *DomainController) hasOwnerIfClosed(owner sdk.AccAddress) error {
 	// assert domain exists
 	if err := c.requireDomain(); err != nil {
-		panic("validation check is not allowed on a non existing domain")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing domain")
 	}
 	if types.DomainType(c.domain.DomainType) == types.OpenDomain {
 		return nil
@@ -113,7 +113,7 @@ func (c *DomainController) hasOwnerIfClosed(owner sdk.AccAddress) error {
 func (c *DomainController) notExpired() error {
 	// assert domain exists
 	if err := c.requireDomain(); err != nil {
-		panic("validation check is not allowed on a non existing domain")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing domain")
 	}
 	// if domain has no expiration time
 	if c.domain.ExpireAt == 0 {
@@ -135,7 +135,7 @@ func (c *DomainController) mustExist() error {
 
 func (c *DomainController) dType(Type types.DomainType) error {
 	if err := c.requireDomain(); err != nil {
-		panic("validation check is not allowed on a non existing domain")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing domain")
 	}
 	if types.DomainType(c.domain.DomainType) != Type {
 		return sdkerrors.Wrapf(types.ErrInvalidDomainType, "operation not allowed on invalid domain type %s, expected %s", c.domain.DomainType, Type)

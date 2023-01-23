@@ -41,8 +41,8 @@ func (k Keeper) HasBridge(
 	return store.Has(index)
 }
 
-func (k Keeper) GetAllBridge(ctx sdk.Context, creator sdk.AccAddress) (list []types.Bridge) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.BridgeStoreKey(creator))
+func (k Keeper) GetAllBridge(ctx sdk.Context) (list []types.Bridge) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.BridgeStoreKey(nil))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

@@ -87,7 +87,7 @@ func (c *DomainNameController) NotExpired() *DomainNameController {
 func (c *DomainNameController) notExpired() error {
 	// assert domain exists
 	if err := c.requireDomainName(); err != nil {
-		panic("validation check is not allowed on a non existing domain")
+		return sdkerrors.Wrap(err, "validation check is not allowed on a non existing domain")
 	}
 	// if domain has no expiration time
 	if c.domainName.ExpireAt == 0 {

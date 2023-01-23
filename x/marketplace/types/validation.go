@@ -18,7 +18,7 @@ func ValidateMarketplaceEarningType(earningType MarketplaceEarningType) error {
 
 func ValidateMarketplaceId(validMarketplaceId string, marketplaceId string) error {
 	if strings.TrimSpace(marketplaceId) == "" {
-		return errors.Wrapf(ErrInvalidMarketplaceId, "invalid marketplace id %s", marketplaceId)
+		return errors.Wrapf(ErrInvalidMarketplaceId, "invalid marketplace, id: %s", marketplaceId)
 	}
 
 	if validMarketplaceId == "" {

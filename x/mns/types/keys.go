@@ -75,13 +75,21 @@ func GetDomainNameIndex(domain, domainName string) []byte {
 	return key
 }
 
-func DomainNameStoreKey(domain string) []byte {
-	domainBz := conv.UnsafeStrToBytes(domain)
+func DomainNameStoreKey(domain *string) []byte {
+	var key []byte
+	if domain == nil {
+		key = make([]byte, len(domainNameStoreKey)+len(delimiter))
+		copy(key, domainNameStoreKey)
+		copy(key[len(domainNameStoreKey):], delimiter)
+	} else {
+		domainBz := conv.UnsafeStrToBytes(*domain)
 
-	key := make([]byte, len(domainNameStoreKey)+len(delimiter)+len(domainBz)+len(delimiter))
-	copy(key, domainNameStoreKey)
-	copy(key[len(domainNameStoreKey):], delimiter)
-	copy(key[len(domainNameStoreKey)+len(delimiter):], domainBz)
-	copy(key[len(domainNameStoreKey)+len(delimiter)+len(domainBz):], delimiter)
+		key = make([]byte, len(domainNameStoreKey)+len(delimiter)+len(domainBz)+len(delimiter))
+		copy(key, domainNameStoreKey)
+		copy(key[len(domainNameStoreKey):], delimiter)
+		copy(key[len(domainNameStoreKey)+len(delimiter):], domainBz)
+		copy(key[len(domainNameStoreKey)+len(delimiter)+len(domainBz):], delimiter)
+	}
+
 	return key
 }

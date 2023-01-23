@@ -62,17 +62,18 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	}
 
 	return &types.QueryGetNftResponse{
-		Id:           nft.UriHash,
-		Title:        meta.Title,
-		Description:  meta.Description,
-		Images:       meta.Images,
-		Url:          meta.Url,
-		Links:        meta.Links,
-		Attributes:   meta.Attributes,
-		Creator:      meta.Creator.String(),
-		Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(index)).String(),
-		Data:         nft.Data,
-		CollectionId: meta.CollectionId,
+		Id:                meta.Id,
+		Title:             meta.Title,
+		Description:       meta.Description,
+		Images:            meta.Images,
+		Url:               meta.Url,
+		Links:             meta.Links,
+		Attributes:        meta.Attributes,
+		Creator:           meta.Creator.String(),
+		Owner:             nftExecutor.GetNftOwner(string(collectionIndex), string(index)).String(),
+		Data:              nft.Data,
+		CollectionId:      meta.CollectionId,
+		CollectionCreator: meta.CollectionCreator.String(),
 	}, nil
 }
 
@@ -138,17 +139,18 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 		}
 
 		nftsRes = append(nftsRes, &types.QueryGetNftResponse{
-			Id:           nft.UriHash,
-			Title:        meta.Title,
-			Description:  meta.Description,
-			Images:       meta.Images,
-			Url:          meta.Url,
-			Links:        meta.Links,
-			Attributes:   meta.Attributes,
-			Creator:      meta.Creator.String(),
-			Owner:        nftExecutor.GetNftOwner(string(collectionIndex), string(meta.Index)).String(),
-			Data:         nft.Data,
-			CollectionId: meta.CollectionId,
+			Id:                meta.Id,
+			Title:             meta.Title,
+			Description:       meta.Description,
+			Images:            meta.Images,
+			Url:               meta.Url,
+			Links:             meta.Links,
+			Attributes:        meta.Attributes,
+			Creator:           meta.Creator.String(),
+			Owner:             nftExecutor.GetNftOwner(string(collectionIndex), string(meta.Index)).String(),
+			Data:              nft.Data,
+			CollectionId:      meta.CollectionId,
+			CollectionCreator: collectionCreator.String(),
 		})
 	}
 
@@ -388,17 +390,18 @@ func (k Keeper) CollectionNftsByOwner(goCtx context.Context, req *types.QueryGet
 		}
 
 		nftsRes = append(nftsRes, &types.QueryGetNftResponse{
-			Id:           nft.UriHash,
-			Title:        meta.Title,
-			Description:  meta.Description,
-			Images:       meta.Images,
-			Url:          meta.Url,
-			Links:        meta.Links,
-			Attributes:   meta.Attributes,
-			Creator:      meta.Creator.String(),
-			Owner:        owner.String(),
-			Data:         nft.Data,
-			CollectionId: meta.CollectionId,
+			Id:                meta.Id,
+			Title:             meta.Title,
+			Description:       meta.Description,
+			Images:            meta.Images,
+			Url:               meta.Url,
+			Links:             meta.Links,
+			Attributes:        meta.Attributes,
+			Creator:           meta.Creator.String(),
+			Owner:             owner.String(),
+			Data:              nft.Data,
+			CollectionId:      meta.CollectionId,
+			CollectionCreator: meta.CollectionCreator.String(),
 		})
 	}
 

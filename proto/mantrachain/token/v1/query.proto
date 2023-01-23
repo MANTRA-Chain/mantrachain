@@ -91,7 +91,8 @@ message QueryGetNftCollectionResponse {
   string owner = 10;
   string creator = 11;
   bool opened = 12;
-  google.protobuf.Any data = 13;
+  bool soul_bonded = 13;
+  google.protobuf.Any data = 14;
 }
 
 message QueryGetNftCollectionSupplyRequest {
@@ -166,6 +167,7 @@ message QueryGetNftResponse {
   string creator = 9;
   google.protobuf.Any data = 10;
   string collection_id = 11;
+  string collection_creator = 12;
 }
 
 message QueryGetNftCollectionsByCreatorRequest {
@@ -177,7 +179,7 @@ message QueryGetNftCollectionsByCreatorRequest {
 
 message QueryGetNftCollectionsByCreatorResponse {
   string creator = 1;
-  repeated QueryGetNftCollectionResponse nftCollections = 2;
+  repeated QueryGetNftCollectionResponse nft_collections = 2;
   cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
@@ -187,7 +189,7 @@ message QueryGetAllNftCollectionsRequest {
 }
 
 message QueryGetAllNftCollectionsResponse {
-  repeated QueryGetNftCollectionResponse nftCollections = 1;
+  repeated QueryGetNftCollectionResponse nft_collections = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

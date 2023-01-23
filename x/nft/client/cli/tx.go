@@ -24,6 +24,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	// NFT Send is disabled since we don't want to allow users to transfer soul bounded NFTs
 	// nftTxCmd.AddCommand(
 	// 	NewCmdSend(),
 	// )

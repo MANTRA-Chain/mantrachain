@@ -148,7 +148,7 @@ func (k Keeper) NFT(goCtx context.Context, r *types.QueryNFTRequest) (*types.Que
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	n, has := k.GetNFT(ctx, r.ClassId, r.Id)
 	if !has {
-		return nil, types.ErrNFTNotExists.Wrapf("not found nft: class: %s, id: %s", r.ClassId, r.Id)
+		return nil, types.ErrNFTNotExists.Wrapf("not found nft, class: %s, id: %s", r.ClassId, r.Id)
 	}
 	return &types.QueryNFTResponse{Nft: &n}, nil
 }

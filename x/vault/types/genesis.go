@@ -47,7 +47,7 @@ func (gs GenesisState) ValidateEpoch() error {
 
 	for _, elem := range gs.EpochList {
 		var key []byte
-		indexBytes := []byte(EpochStoreKey(elem.StakingChain))
+		indexBytes := []byte(EpochStoreKey(&elem.StakingChain))
 		key = append(key, indexBytes...)
 		key = append(key, []byte("/")...)
 		key = append(key, elem.Index...)
@@ -69,10 +69,10 @@ func (gs GenesisState) ValidateLastEpochBlock() error {
 
 	for _, elem := range gs.LastEpochBlockList {
 		var key []byte
-		indexBytes := []byte(LastEpochBlockStoreKey(elem.StakingChain))
+		indexBytes := []byte(LastEpochBlockStoreKey(&elem.StakingChain))
 		key = append(key, indexBytes...)
 		key = append(key, []byte("/")...)
-		key = append(key, GetLastEpochBlockIndex(elem.StakingValidator)...)
+		key = append(key, GetLastEpochBlockIndex(&elem.StakingValidator)...)
 		key = append(key, []byte("/")...)
 
 		index := string(key)

@@ -57,15 +57,17 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	}
 
 	newNftCollection := types.NftCollection{
-		Index:    collectionIndex,
-		Images:   msg.Collection.Images,
-		Url:      msg.Collection.Url,
-		Links:    msg.Collection.Links,
-		Category: msg.Collection.Category,
-		Options:  msg.Collection.Options,
-		Opened:   msg.Collection.Opened,
-		Creator:  creator,
-		Owner:    creator,
+		Index:      collectionIndex,
+		Id:         collectionId,
+		Images:     msg.Collection.Images,
+		Url:        msg.Collection.Url,
+		Links:      msg.Collection.Links,
+		Category:   msg.Collection.Category,
+		Options:    msg.Collection.Options,
+		Opened:     msg.Collection.Opened,
+		SoulBonded: msg.Collection.SoulBonded,
+		Creator:    creator,
+		Owner:      creator,
 	}
 
 	k.SetNftCollection(ctx, newNftCollection)

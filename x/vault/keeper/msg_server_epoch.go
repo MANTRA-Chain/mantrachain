@@ -64,7 +64,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 		}
 	}
 
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, &msg.StakingChain, &msg.StakingValidator)
 	lastEpochBlockHeight := lastEpochBlock.BlockHeight
 
 	if found {
@@ -72,7 +72,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			return nil, sdkerrors.Wrap(types.ErrInvalidBlockStart, "block start should be greater than the last epoch block")
 		}
 
-		lastEpoch, found := k.GetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight)
+		lastEpoch, found := k.GetEpoch(ctx, &msg.StakingChain, &msg.StakingValidator, lastEpochBlockHeight)
 
 		if !found {
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "last epoch not found %s", lastEpochBlock)
@@ -96,14 +96,16 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			lastEpoch.Rewards = sdk.NewCoins(reward)
 		}
 
+		lastEpoch.Id = lastEpochBlockHeight
 		lastEpoch.BlockEnd = msg.BlockStart
 		lastEpoch.NextEpochBlock = msg.BlockStart
 		lastEpoch.EndAt = ctx.BlockHeader().Time.Unix()
 
-		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, lastEpochBlockHeight, lastEpoch)
+		k.SetEpoch(ctx, &msg.StakingChain, &msg.StakingValidator, lastEpoch.Id, lastEpoch)
 
 		newEpoch := types.Epoch{
-			Index:          types.GetEpochIndex(msg.StakingValidator, []byte(strconv.FormatInt(msg.BlockStart, 10))),
+			Index:          types.GetEpochIndex(&msg.StakingValidator, []byte(strconv.FormatInt(msg.BlockStart, 10))),
+			Id:             msg.BlockStart,
 			PrevEpochBlock: lastEpochBlockHeight,
 			NextEpochBlock: types.UndefinedBlockHeight,
 			BlockStart:     msg.BlockStart,
@@ -112,9 +114,9 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			Staked:         chainValidatorBridge.Staked,
 		}
 
-		k.SetEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart, newEpoch)
+		k.SetEpoch(ctx, &msg.StakingChain, &msg.StakingValidator, newEpoch.Id, newEpoch)
 
-		k.SetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator, types.LastEpochBlock{
+		k.SetLastEpochBlock(ctx, &msg.StakingChain, &msg.StakingValidator, types.LastEpochBlock{
 			BlockHeight:      msg.BlockStart,
 			Creator:          msg.Creator,
 			StakingChain:     msg.StakingChain,
@@ -125,7 +127,7 @@ func (k msgServer) StartEpoch(goCtx context.Context, msg *types.MsgStartEpoch) (
 			return nil, sdkerrors.Wrap(types.ErrInitEpochNotFound, "init epoch not found")
 		}
 
-		k.InitEpoch(ctx, msg.StakingChain, msg.StakingValidator, msg.BlockStart)
+		k.InitEpoch(ctx, &msg.StakingChain, &msg.StakingValidator, msg.BlockStart)
 	}
 
 	ctx.EventManager().EmitEvent(

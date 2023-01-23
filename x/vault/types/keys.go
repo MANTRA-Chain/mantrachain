@@ -75,23 +75,40 @@ const (
 )
 
 func NftStakeStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
-	key := make([]byte, len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
-	copy(key, nftStakeStoreKey)
-	copy(key[len(nftStakeStoreKey):], delimiter)
-	copy(key[len(nftStakeStoreKey)+len(delimiter):], marketplaceIndex)
-	copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
-	copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
-	copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
+	var key []byte
+	if marketplaceIndex == nil && collectionIndex == nil {
+		key = make([]byte, len(nftStakeStoreKey)+len(delimiter))
+		copy(key, nftStakeStoreKey)
+		copy(key[len(nftStakeStoreKey):], delimiter)
+	} else {
+		key = make([]byte, len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
+		copy(key, nftStakeStoreKey)
+		copy(key[len(nftStakeStoreKey):], delimiter)
+		copy(key[len(nftStakeStoreKey)+len(delimiter):], marketplaceIndex)
+		copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+		copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
+		copy(key[len(nftStakeStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
+	}
+
 	return key
 }
 
-func ChainValidatorBridgeStoreKey(chain string) []byte {
-	chainBz := conv.UnsafeStrToBytes(chain)
-	key := make([]byte, len(chainValidatorBridgeStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
-	copy(key, chainValidatorBridgeStoreKey)
-	copy(key[len(chainValidatorBridgeStoreKey):], delimiter)
-	copy(key[len(chainValidatorBridgeStoreKey)+len(delimiter):], chainBz)
-	copy(key[len(chainValidatorBridgeStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+func ChainValidatorBridgeStoreKey(chain *string) []byte {
+	var key []byte
+	if chain == nil {
+		key = make([]byte, len(chainValidatorBridgeStoreKey)+len(delimiter))
+		copy(key, chainValidatorBridgeStoreKey)
+		copy(key[len(chainValidatorBridgeStoreKey):], delimiter)
+	} else {
+		chainBz := conv.UnsafeStrToBytes(*chain)
+
+		key = make([]byte, len(chainValidatorBridgeStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
+		copy(key, chainValidatorBridgeStoreKey)
+		copy(key[len(chainValidatorBridgeStoreKey):], delimiter)
+		copy(key[len(chainValidatorBridgeStoreKey)+len(delimiter):], chainBz)
+		copy(key[len(chainValidatorBridgeStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+	}
+
 	return key
 }
 
@@ -105,33 +122,57 @@ func GetChainValidatorBridgeIndex(validator string) []byte {
 	return key
 }
 
-func EpochStoreKey(chain string) []byte {
-	chainBz := conv.UnsafeStrToBytes(chain)
-	key := make([]byte, len(epochStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
-	copy(key, epochStoreKey)
-	copy(key[len(epochStoreKey):], delimiter)
-	copy(key[len(epochStoreKey)+len(delimiter):], chainBz)
-	copy(key[len(epochStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+func EpochStoreKey(chain *string) []byte {
+	var key []byte
+	if chain == nil {
+		key := make([]byte, len(epochStoreKey)+len(delimiter))
+		copy(key, epochStoreKey)
+		copy(key[len(epochStoreKey):], delimiter)
+	} else {
+		chainBz := conv.UnsafeStrToBytes(*chain)
+		key := make([]byte, len(epochStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
+		copy(key, epochStoreKey)
+		copy(key[len(epochStoreKey):], delimiter)
+		copy(key[len(epochStoreKey)+len(delimiter):], chainBz)
+		copy(key[len(epochStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+	}
+
 	return key
 }
 
-func LastEpochBlockStoreKey(chain string) []byte {
-	chainBz := conv.UnsafeStrToBytes(chain)
-	key := make([]byte, len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
-	copy(key, lastEpochBlockStoreKey)
-	copy(key[len(lastEpochBlockStoreKey):], delimiter)
-	copy(key[len(lastEpochBlockStoreKey)+len(delimiter):], chainBz)
-	copy(key[len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+func LastEpochBlockStoreKey(chain *string) []byte {
+	var key []byte
+	if chain == nil {
+		key = make([]byte, len(lastEpochBlockStoreKey)+len(delimiter))
+		copy(key, lastEpochBlockStoreKey)
+		copy(key[len(lastEpochBlockStoreKey):], delimiter)
+	} else {
+		chainBz := conv.UnsafeStrToBytes(*chain)
+		key = make([]byte, len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz)+len(delimiter))
+		copy(key, lastEpochBlockStoreKey)
+		copy(key[len(lastEpochBlockStoreKey):], delimiter)
+		copy(key[len(lastEpochBlockStoreKey)+len(delimiter):], chainBz)
+		copy(key[len(lastEpochBlockStoreKey)+len(delimiter)+len(chainBz):], delimiter)
+	}
+
 	return key
 }
 
-func GetLastEpochBlockIndex(validator string) []byte {
-	validatorBz := conv.UnsafeStrToBytes(validator)
-	key := make([]byte, len(lastEpochBlockIndex)+len(delimiter)+len(validatorBz)+len(delimiter))
-	copy(key, lastEpochBlockIndex)
-	copy(key[len(lastEpochBlockIndex):], delimiter)
-	copy(key[len(lastEpochBlockIndex)+len(delimiter):], validatorBz)
-	copy(key[len(lastEpochBlockIndex)+len(delimiter)+len(validatorBz):], delimiter)
+func GetLastEpochBlockIndex(validator *string) []byte {
+	var key []byte
+	if validator == nil {
+		key = make([]byte, len(lastEpochBlockIndex)+len(delimiter))
+		copy(key, lastEpochBlockIndex)
+		copy(key[len(lastEpochBlockIndex):], delimiter)
+	} else {
+		validatorBz := conv.UnsafeStrToBytes(*validator)
+		key = make([]byte, len(lastEpochBlockIndex)+len(delimiter)+len(validatorBz)+len(delimiter))
+		copy(key, lastEpochBlockIndex)
+		copy(key[len(lastEpochBlockIndex):], delimiter)
+		copy(key[len(lastEpochBlockIndex)+len(delimiter):], validatorBz)
+		copy(key[len(lastEpochBlockIndex)+len(delimiter)+len(validatorBz):], delimiter)
+	}
+
 	return key
 }
 
@@ -145,17 +186,21 @@ func GetStakedIndex(denom string) []byte {
 	return key
 }
 
-func GetEpochIndex(validator string, index []byte) []byte {
+func GetEpochIndex(validator *string, index []byte) []byte {
 	var key []byte
-	validatorBz := conv.UnsafeStrToBytes(validator)
-	if index == nil {
+	if validator == nil && index == nil {
+		key = make([]byte, len(epochIndex)+len(delimiter))
+		copy(key, epochIndex)
+		copy(key[len(epochIndex):], delimiter)
+	} else if index == nil {
+		validatorBz := conv.UnsafeStrToBytes(*validator)
 		key = make([]byte, len(epochIndex)+len(delimiter)+len(validatorBz)+len(delimiter))
 		copy(key, epochIndex)
 		copy(key[len(epochIndex):], delimiter)
 		copy(key[len(epochIndex)+len(delimiter):], validatorBz)
 		copy(key[len(epochIndex)+len(delimiter)+len(validatorBz):], delimiter)
 	} else {
-		validatorBz := conv.UnsafeStrToBytes(validator)
+		validatorBz := conv.UnsafeStrToBytes(*validator)
 		key = make([]byte, len(epochIndex)+len(delimiter)+len(validatorBz)+len(delimiter)+len(index)+len(delimiter))
 		copy(key, epochIndex)
 		copy(key[len(epochIndex):], delimiter)

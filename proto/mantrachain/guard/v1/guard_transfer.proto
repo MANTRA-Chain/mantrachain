@@ -1,0 +1,9 @@
+syntax = "proto3";
+package mantrachain.guard.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
+
+message GuardTransfer {
+  bool enabled = 1; 
+  string creator = 2;
+}

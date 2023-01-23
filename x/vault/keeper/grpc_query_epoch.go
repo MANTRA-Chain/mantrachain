@@ -33,13 +33,13 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 		return nil, status.Error(codes.Unavailable, "staking validator address param not set")
 	}
 
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, stakingChain, stakingValidator)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, &stakingChain, &stakingValidator)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "last epoch block not found")
 	}
 
-	lastEpoch, found := k.GetEpoch(ctx, stakingChain, stakingValidator, lastEpochBlock.BlockHeight)
+	lastEpoch, found := k.GetEpoch(ctx, &stakingChain, &stakingValidator, lastEpochBlock.BlockHeight)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "last epoch not found")
@@ -48,7 +48,7 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 	var epochs []*types.Epoch = []*types.Epoch{&lastEpoch}
 
 	if lastEpoch.PrevEpochBlock != types.UndefinedBlockHeight {
-		prevEpoch, found := k.GetEpoch(ctx, stakingChain, stakingValidator, lastEpoch.PrevEpochBlock)
+		prevEpoch, found := k.GetEpoch(ctx, &stakingChain, &stakingValidator, lastEpoch.PrevEpochBlock)
 
 		if !found {
 			return nil, status.Error(codes.NotFound, "prev epoch not found")
@@ -70,6 +70,7 @@ func (k Keeper) LastEpochs(c context.Context, req *types.QueryGetLastEpochsReque
 		}
 
 		epochsRes = append(epochsRes, &types.QueryGetEpochsResponse{
+			Id:               epoch.Id,
 			BlockStart:       epoch.BlockStart,
 			BlockEnd:         epoch.BlockEnd,
 			Staked:           epoch.Staked.String(),
@@ -111,7 +112,7 @@ func (k Keeper) LastEpochBlock(c context.Context, req *types.QueryGetLastEpochBl
 		return nil, status.Error(codes.Unavailable, "staking validator address param not set")
 	}
 
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, stakingChain, stakingValidator)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, &stakingChain, &stakingValidator)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "last epoch block not found")

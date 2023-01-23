@@ -61,16 +61,17 @@ message QueryGetLastEpochsRequest {
 }
 
 message QueryGetEpochsResponse {
-  int64 prev_epoch_block = 1; 
-  int64 next_epoch_block = 2; 
-  int64 block_start = 3; 
-  int64 block_end = 4;  
-  string staked = 5; 
-  repeated cosmos.base.v1beta1.Coin rewards = 6; 
-  int64 start_at = 7; 
-  int64 end_at = 8; 
-  string staking_chain = 9;
-  string staking_validator = 10;
+  int64 id = 1;
+  int64 prev_epoch_block = 2; 
+  int64 next_epoch_block = 3; 
+  int64 block_start = 4; 
+  int64 block_end = 5;  
+  string staked = 6; 
+  repeated cosmos.base.v1beta1.Coin rewards = 7; 
+  int64 start_at = 8; 
+  int64 end_at = 9; 
+  string staking_chain = 10;
+  string staking_validator = 11;
 }
 
 message QueryGetLastEpochsResponse {
@@ -161,7 +162,7 @@ message QueryGetChainValidatorBridgeRequest {
 }
 
 message QueryGetChainValidatorBridgeResponse {
-	ChainValidatorBridge chainValidatorBridge = 1 [(gogoproto.nullable) = false];
+	ChainValidatorBridge chain_validator_bridge = 1 [(gogoproto.nullable) = false];
 }
 
 // this line is used by starport scaffolding # 3

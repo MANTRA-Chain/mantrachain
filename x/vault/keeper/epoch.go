@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k Keeper) InitEpoch(ctx sdk.Context, chain string, validator string, bh int64) {
+func (k Keeper) InitEpoch(ctx sdk.Context, chain *string, validator *string, bh int64) {
 	newEpoch := types.Epoch{
 		Index:            types.GetEpochIndex(validator, []byte(strconv.FormatInt(bh, 10))),
 		BlockStart:       bh,
@@ -19,22 +19,22 @@ func (k Keeper) InitEpoch(ctx sdk.Context, chain string, validator string, bh in
 		PrevEpochBlock:   types.UndefinedBlockHeight,
 		NextEpochBlock:   types.UndefinedBlockHeight,
 		StartAt:          ctx.BlockHeader().Time.Unix(),
-		StakingChain:     chain,
-		StakingValidator: validator,
+		StakingChain:     *chain,
+		StakingValidator: *validator,
 	}
 
 	k.SetEpoch(ctx, chain, validator, bh, newEpoch)
 	k.SetLastEpochBlock(ctx, chain, validator, types.LastEpochBlock{
 		BlockHeight:      bh,
-		StakingChain:     chain,
-		StakingValidator: validator,
+		StakingChain:     *chain,
+		StakingValidator: *validator,
 	})
 }
 
 func (k Keeper) SetEpochEnd(
 	ctx sdk.Context,
-	chain string,
-	validator string,
+	chain *string,
+	validator *string,
 	bh int64,
 	lastEpochBlockHeight int64,
 	withdrawn sdk.Coins,
@@ -50,33 +50,35 @@ func (k Keeper) SetEpochEnd(
 
 	newEpoch := types.Epoch{
 		Index:            types.GetEpochIndex(validator, []byte(strconv.FormatInt(bh, 10))),
+		Id:               bh,
 		BlockStart:       bh,
 		BlockEnd:         types.UndefinedBlockHeight,
 		PrevEpochBlock:   lastEpochBlockHeight,
 		NextEpochBlock:   types.UndefinedBlockHeight,
 		StartAt:          ctx.BlockHeader().Time.Unix(),
-		StakingChain:     chain,
-		StakingValidator: validator,
+		StakingChain:     *chain,
+		StakingValidator: *validator,
 	}
 
 	newEpoch.Staked = staked
+	lastEpoch.Id = lastEpochBlockHeight
 	lastEpoch.BlockEnd = bh
 	lastEpoch.NextEpochBlock = bh
 	lastEpoch.EndAt = ctx.BlockHeader().Time.Unix()
 
-	k.SetEpoch(ctx, chain, validator, lastEpochBlockHeight, lastEpoch)
-	k.SetEpoch(ctx, chain, validator, bh, newEpoch)
+	k.SetEpoch(ctx, chain, validator, lastEpoch.Id, lastEpoch)
+	k.SetEpoch(ctx, chain, validator, newEpoch.Id, newEpoch)
 	k.SetLastEpochBlock(ctx, chain, validator, types.LastEpochBlock{
 		BlockHeight:      bh,
-		StakingChain:     chain,
-		StakingValidator: validator,
+		StakingChain:     *chain,
+		StakingValidator: *validator,
 	})
 
 	return nil
 }
 
 func (k Keeper) HasEpoch(
-	ctx sdk.Context, chain string, validator string, epochId int64,
+	ctx sdk.Context, chain *string, validator *string, epochId int64,
 ) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
 	index := types.GetEpochIndex(validator, []byte(strconv.FormatInt(epochId, 10)))
@@ -84,7 +86,7 @@ func (k Keeper) HasEpoch(
 }
 
 func (k Keeper) SetEpoch(
-	ctx sdk.Context, chain string, validator string, epochId int64, epoch types.Epoch,
+	ctx sdk.Context, chain *string, validator *string, epochId int64, epoch types.Epoch,
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
 	index := types.GetEpochIndex(validator, []byte(strconv.FormatInt(epochId, 10)))
@@ -93,7 +95,7 @@ func (k Keeper) SetEpoch(
 }
 
 func (k Keeper) GetEpoch(
-	ctx sdk.Context, chain string, validator string, epochId int64,
+	ctx sdk.Context, chain *string, validator *string, epochId int64,
 ) (val types.Epoch, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
 
@@ -112,13 +114,13 @@ func (k Keeper) GetEpoch(
 	return val, true
 }
 
-func (k Keeper) SetLastEpochBlock(ctx sdk.Context, chain string, validator string, lastEpochBlock types.LastEpochBlock) {
+func (k Keeper) SetLastEpochBlock(ctx sdk.Context, chain *string, validator *string, lastEpochBlock types.LastEpochBlock) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 	b := k.cdc.MustMarshal(&lastEpochBlock)
 	store.Set(types.GetLastEpochBlockIndex(validator), b)
 }
 
-func (k Keeper) GetLastEpochBlock(ctx sdk.Context, chain string, validator string) (val types.LastEpochBlock, found bool) {
+func (k Keeper) GetLastEpochBlock(ctx sdk.Context, chain *string, validator *string) (val types.LastEpochBlock, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 
 	if !k.HasLastEpochBlock(ctx, chain, validator) {
@@ -134,12 +136,28 @@ func (k Keeper) GetLastEpochBlock(ctx sdk.Context, chain string, validator strin
 	return val, true
 }
 
-func (k Keeper) HasLastEpochBlock(ctx sdk.Context, chain string, validator string) bool {
+func (k Keeper) HasLastEpochBlock(ctx sdk.Context, chain *string, validator *string) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
 	return store.Has(types.GetLastEpochBlockIndex(validator))
 }
 
-func (k Keeper) GetAllEpoch(ctx sdk.Context, chain string, validator string) (list []types.Epoch) {
+func (k Keeper) GetAllLastEpochBlock(ctx sdk.Context, chain *string, validator *string) (list []types.LastEpochBlock) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LastEpochBlockStoreKey(chain))
+	iterator := sdk.KVStorePrefixIterator(store, types.GetLastEpochBlockIndex(validator))
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LastEpochBlock
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+
+}
+
+func (k Keeper) GetAllEpoch(ctx sdk.Context, chain *string, validator *string) (list []types.Epoch) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.EpochStoreKey(chain))
 	iterator := sdk.KVStorePrefixIterator(store, types.GetEpochIndex(validator, nil))
 
@@ -152,11 +170,10 @@ func (k Keeper) GetAllEpoch(ctx sdk.Context, chain string, validator string) (li
 	}
 
 	return
-
 }
 
 func (k Keeper) GetNextRewardsEpochsFromPrevEpochId(
-	ctx sdk.Context, chain string, validator string, epochId int64,
+	ctx sdk.Context, chain *string, validator *string, epochId int64,
 ) []*types.Epoch {
 	var epoch types.Epoch
 	var epochs []*types.Epoch = []*types.Epoch{}

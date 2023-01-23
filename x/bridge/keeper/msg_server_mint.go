@@ -69,8 +69,8 @@ func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMi
 
 	wasmExecutor := NewWasmExecutor(ctx, k.wasmViewKeeper, k.wasmContractKeeper)
 
-	if int32(len(msg.Mint.MintList)) > params.ValidMintMintListMetadataMintListMaxCount {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidMint, "mint mint list  metadata mint list count invalid %d, max %d", len(msg.Mint.MintList), params.ValidMintMintListMetadataMintListMaxCount)
+	if int32(len(msg.Mint.MintList)) > params.ValidMintListMetadataMaxCount {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidMint, "mint list  metadata max count invalid %d, max %d", len(msg.Mint.MintList), params.ValidMintListMetadataMaxCount)
 	}
 
 	for i, mint := range msg.Mint.MintList {

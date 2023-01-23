@@ -143,8 +143,8 @@ func (k msgServer) WithdrawNftRewards(goCtx context.Context, msg *types.MsgWithd
 	if minEpochRewardsStartBH != types.UndefinedBlockHeight {
 		epochs = k.GetNextRewardsEpochsFromPrevEpochId(
 			ctx,
-			stakingChain,
-			stakingValidator,
+			&stakingChain,
+			&stakingValidator,
 			minEpochRewardsStartBH,
 		)
 	}
@@ -377,7 +377,7 @@ func (k msgServer) UpdateNftStakeStaked(goCtx context.Context, msg *types.MsgUpd
 
 	nftStake := rewardsController.getNftStake()
 
-	lastEpochBlock, found := k.GetLastEpochBlock(ctx, msg.StakingChain, msg.StakingValidator)
+	lastEpochBlock, found := k.GetLastEpochBlock(ctx, &msg.StakingChain, &msg.StakingValidator)
 
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrLastEpochBlockNotFound, "last epoch block not found")

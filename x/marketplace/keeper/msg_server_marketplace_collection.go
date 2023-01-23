@@ -61,6 +61,10 @@ func (k msgServer) ImportNftCollection(goCtx context.Context, msg *types.MsgImpo
 		return nil, sdkerrors.Wrap(types.ErrCollectionDoesNotExist, "invalid or non-existent nft collection")
 	}
 
+	if nftCollection.SoulBonded {
+		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "soul bonded nft collection cannot be imported")
+	}
+
 	if !owner.Equals(nftCollection.Owner) {
 		return nil, sdkerrors.Wrap(types.ErrUnauthorized, "not a nft collection owner")
 	}

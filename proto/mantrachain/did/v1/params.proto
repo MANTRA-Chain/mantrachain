@@ -1,0 +1,8 @@
+syntax = "proto3";
+package mantrachain.did.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/did/types";
+
+// Params defines the parameters for the module.
+message Params {
+}

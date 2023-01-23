@@ -19,7 +19,7 @@ func ValidateNftCollectionCategory(cat NftCollectionCategory) error {
 
 func ValidateNftCollectionId(validNftCollectionId string, collectionId string) error {
 	if strings.TrimSpace(collectionId) == "" {
-		return errors.Wrapf(ErrInvalidNftCollectionId, "invalid nft collection id %s", collectionId)
+		return errors.Wrapf(ErrInvalidNftCollectionId, "invalid nft collection, id: %s", collectionId)
 	}
 
 	if validNftCollectionId == "" {
@@ -35,7 +35,7 @@ func ValidateNftCollectionId(validNftCollectionId string, collectionId string) e
 
 func ValidateNftId(validNftId string, nftId string) error {
 	if strings.TrimSpace(nftId) == "" {
-		return errors.Wrapf(ErrInvalidNftId, "invalid nft id %s", nftId)
+		return errors.Wrapf(ErrInvalidNftId, "invalid nft, id: %s", nftId)
 	}
 
 	if validNftId == "" {
@@ -43,7 +43,7 @@ func ValidateNftId(validNftId string, nftId string) error {
 	}
 
 	if !regexp.MustCompile(validNftId).MatchString(nftId) {
-		return errors.Wrapf(ErrInvalidNftId, "invalid nft id %s", nftId)
+		return errors.Wrapf(ErrInvalidNftId, "invalid nft, id: %s", nftId)
 	}
 
 	return nil

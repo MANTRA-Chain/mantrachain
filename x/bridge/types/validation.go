@@ -9,7 +9,7 @@ import (
 
 func ValidateBridgeId(validBridgeId string, bridgeId string) error {
 	if strings.TrimSpace(bridgeId) == "" {
-		return errors.Wrapf(ErrInvalidBridgeId, "invalid bridge id %s", bridgeId)
+		return errors.Wrapf(ErrInvalidBridgeId, "invalid bridge, id: %s", bridgeId)
 	}
 
 	if validBridgeId == "" {

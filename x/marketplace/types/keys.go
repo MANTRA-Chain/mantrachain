@@ -84,21 +84,37 @@ func MarketplaceStoreKey(creator sdk.AccAddress) []byte {
 }
 
 func MarketplaceCollectionStoreKey(marketplaceIndex []byte) []byte {
-	key := make([]byte, len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter))
-	copy(key, marketplaceCollectionStoreKey)
-	copy(key[len(marketplaceCollectionStoreKey):], delimiter)
-	copy(key[len(marketplaceCollectionStoreKey)+len(delimiter):], marketplaceIndex)
-	copy(key[len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+	var key []byte
+	if marketplaceIndex == nil {
+		key = make([]byte, len(marketplaceCollectionStoreKey)+len(delimiter))
+		copy(key, marketplaceCollectionStoreKey)
+		copy(key[len(marketplaceCollectionStoreKey):], delimiter)
+	} else {
+		key = make([]byte, len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter))
+		copy(key, marketplaceCollectionStoreKey)
+		copy(key[len(marketplaceCollectionStoreKey):], delimiter)
+		copy(key[len(marketplaceCollectionStoreKey)+len(delimiter):], marketplaceIndex)
+		copy(key[len(marketplaceCollectionStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+	}
+
 	return key
 }
 
 func MarketplaceNftStoreKey(marketplaceIndex []byte, collectionIndex []byte) []byte {
-	key := make([]byte, len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
-	copy(key, marketplaceNftStoreKey)
-	copy(key[len(marketplaceNftStoreKey):], delimiter)
-	copy(key[len(marketplaceNftStoreKey)+len(delimiter):], marketplaceIndex)
-	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
-	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
-	copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
+	var key []byte
+	if marketplaceIndex == nil && collectionIndex == nil {
+		key = make([]byte, len(marketplaceNftStoreKey)+len(delimiter))
+		copy(key, marketplaceNftStoreKey)
+		copy(key[len(marketplaceNftStoreKey):], delimiter)
+	} else {
+		key = make([]byte, len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex)+len(delimiter))
+		copy(key, marketplaceNftStoreKey)
+		copy(key[len(marketplaceNftStoreKey):], delimiter)
+		copy(key[len(marketplaceNftStoreKey)+len(delimiter):], marketplaceIndex)
+		copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex):], delimiter)
+		copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter):], collectionIndex)
+		copy(key[len(marketplaceNftStoreKey)+len(delimiter)+len(marketplaceIndex)+len(delimiter)+len(collectionIndex):], delimiter)
+	}
+
 	return key
 }

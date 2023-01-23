@@ -43,3 +43,18 @@ func (k Keeper) HasTxHash(
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.TxHashStoreKey(bridgeIndex))
 	return store.Has(index)
 }
+
+func (k Keeper) GetAllTxHash(ctx sdk.Context) (list []types.TxHash) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.TxHashStoreKey(nil))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.TxHash
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}

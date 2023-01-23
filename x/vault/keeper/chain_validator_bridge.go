@@ -44,3 +44,18 @@ func (k Keeper) HasChainValidatorBridge(ctx sdk.Context, chain string, validator
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ChainValidatorBridgeKey(chain))
 	return store.Has(types.GetChainValidatorBridgeIndex(validator))
 }
+
+func (k Keeper) GetAllChainValidatorBridge(ctx sdk.Context, chain *string) (list []types.ChainValidatorBridge) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ChainValidatorBridgeStoreKey(chain))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.ChainValidatorBridge
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
