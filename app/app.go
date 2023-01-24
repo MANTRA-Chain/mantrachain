@@ -733,7 +733,7 @@ func New(
 		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.DistrKeeper),
 		bridge.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper),
 		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.BankKeeper),
-		coinfactory.NewAppModule(app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
+		coinfactory.NewAppModule(appCodec, app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 	)

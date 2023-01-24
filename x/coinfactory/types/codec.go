@@ -11,11 +11,11 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateDenom{}, "mantrachain/coinfactory/create-denom", nil)
-	cdc.RegisterConcrete(&MsgMint{}, "mantrachain/coinfactory/mint", nil)
-	cdc.RegisterConcrete(&MsgBurn{}, "mantrachain/coinfactory/burn", nil)
-	// cdc.RegisterConcrete(&MsgForceTransfer{}, "mantrachain/coinfactory/force-transfer", nil)
-	cdc.RegisterConcrete(&MsgChangeAdmin{}, "mantrachain/coinfactory/change-admin", nil)
+	cdc.RegisterConcrete(&MsgCreateDenom{}, "coinfactory/create-denom", nil)
+	cdc.RegisterConcrete(&MsgMint{}, "coinfactory/mint", nil)
+	cdc.RegisterConcrete(&MsgBurn{}, "coinfactory/burn", nil)
+	// cdc.RegisterConcrete(&MsgForceTransfer{}, "coinfactory/force-transfer", nil)
+	cdc.RegisterConcrete(&MsgChangeAdmin{}, "coinfactory/change-admin", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
