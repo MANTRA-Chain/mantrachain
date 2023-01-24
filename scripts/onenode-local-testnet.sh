@@ -155,10 +155,10 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
   "$PWD"/build/mantrachaind tx token mint-nft "$(echo $GUARD_NFT_ADMIN_JSON)" --collection-creator $ADMIN_WALLET --collection-id $GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 
-  sleep 7
+  # sleep 7
 
-  cecho "GREEN" "Update guard transfer"
-  "$PWD"/build/mantrachaind tx guard update-guard-transfer true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+  # cecho "GREEN" "Update guard transfer"
+  # "$PWD"/build/mantrachaind tx guard update-guard-transfer true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 fi
 
 cecho "GREEN" "Track logs"

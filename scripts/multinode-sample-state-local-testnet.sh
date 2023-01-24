@@ -135,10 +135,10 @@ if [[ $mint == "y" || $mint == "Y" ]]; then
 
   sleep 7
 
-  cecho "GREEN" "Update guard transfer"
-  "$PWD"/build/mantrachaind tx guard update-guard-transfer true --chain-id $CHAINID --from $KEY_ADM_1 --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home $HOMEDIR/$KEY_VAL_1 --yes
+  # cecho "GREEN" "Update guard transfer"
+  # "$PWD"/build/mantrachaind tx guard update-guard-transfer true --chain-id $CHAINID --from $KEY_ADM_1 --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home $HOMEDIR/$KEY_VAL_1 --yes
 
-  sleep 7
+  # sleep 7
 fi
 
 cecho "GREEN" "create chain validator bridge"
