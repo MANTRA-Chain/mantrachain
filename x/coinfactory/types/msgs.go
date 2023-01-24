@@ -9,8 +9,8 @@ import (
 // constants
 const (
 	TypeMsgCreateDenom      = "create_denom"
-	TypeMsgMint             = "tf_mint"
-	TypeMsgBurn             = "tf_burn"
+	TypeMsgMint             = "cf_mint"
+	TypeMsgBurn             = "cf_burn"
 	TypeMsgForceTransfer    = "force_transfer"
 	TypeMsgChangeAdmin      = "change_admin"
 	TypeMsgSetDenomMetadata = "set_denom_metadata"
