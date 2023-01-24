@@ -1,5 +1,5 @@
 syntax = "proto3";
-package mantrachain.v1beta1;
+package mantrachain.nft.v1beta1;
 
 import "google/protobuf/any.proto";
 

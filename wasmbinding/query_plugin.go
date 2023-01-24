@@ -9,6 +9,6 @@ import (
 
 func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
 	return func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
-		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown osmosis query variant"}
+		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown mantrachain query variant"}
 	}
 }

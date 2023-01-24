@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/LimeChain/mantrachain/x/bridge/types"
+	"github.com/LimeChain/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 )
 
@@ -30,13 +30,11 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdRegisterBridge(),
+		CmdCreateDenom(),
 		CmdMint(),
+		CmdBurn(),
+		CmdChangeAdmin(),
 	)
-
-	cmd.AddCommand(CmdCreateCw20Contract())
-	cmd.AddCommand(CmdUpdateCw20Contract())
-	cmd.AddCommand(CmdDeleteCw20Contract())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

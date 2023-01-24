@@ -2,13 +2,10 @@ package cli
 
 import (
 	"fmt"
-	// "strings"
-
-	"github.com/spf13/cobra"
-
-	"github.com/cosmos/cosmos-sdk/client"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -23,9 +20,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdListAccPerm())
-	cmd.AddCommand(CmdShowAccPerm())
-	cmd.AddCommand(CmdShowGuardTransfer())
+	cmd.AddCommand(CmdQueryDenomAuthorityMetadata())
+	cmd.AddCommand(CmdQueryDenomsFromCreator())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

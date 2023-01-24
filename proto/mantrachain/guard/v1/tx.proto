@@ -1,7 +1,6 @@
 syntax = "proto3";
 package mantrachain.guard.v1;
 
-import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
 import "mantrachain/guard/v1/acc_perm.proto";
 import "mantrachain/guard/v1/guard_transfer.proto";
@@ -19,6 +18,8 @@ service Msg {
 }
 
 message MsgCreateAccPerm {
+  option (cosmos.msg.v1.signer) = "creator";
+
   string creator = 1;
   string cat = 2;
 
@@ -27,6 +28,8 @@ message MsgCreateAccPerm {
 message MsgCreateAccPermResponse {}
 
 message MsgUpdateAccPerm {
+  option (cosmos.msg.v1.signer) = "creator";
+
   string creator = 1;
   string cat = 2;
 
@@ -41,6 +44,8 @@ message MsgDeleteAccPerm {
 message MsgDeleteAccPermResponse {}
 
 message MsgUpdateGuardTransfer {
+  option (cosmos.msg.v1.signer) = "creator";
+
   string creator = 1;
   bool enabled = 3;
 }

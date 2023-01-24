@@ -132,6 +132,9 @@ import (
 	"github.com/LimeChain/mantrachain/x/bridge"
 	bridgekeeper "github.com/LimeChain/mantrachain/x/bridge/keeper"
 	bridgetypes "github.com/LimeChain/mantrachain/x/bridge/types"
+	"github.com/LimeChain/mantrachain/x/coinfactory"
+	coinfactorykeeper "github.com/LimeChain/mantrachain/x/coinfactory/keeper"
+	coinfactorytypes "github.com/LimeChain/mantrachain/x/coinfactory/types"
 	"github.com/LimeChain/mantrachain/x/did"
 	didkeeper "github.com/LimeChain/mantrachain/x/did/keeper"
 	didtypes "github.com/LimeChain/mantrachain/x/did/types"
@@ -239,6 +242,7 @@ var (
 		vault.AppModuleBasic{},
 		bridge.AppModuleBasic{},
 		guard.AppModuleBasic{},
+		coinfactory.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -255,6 +259,7 @@ var (
 		wasm.ModuleName:                {authtypes.Burner},
 		vaulttypes.ModuleName:          {authtypes.Staking},
 		marketplacetypes.ModuleName:    {authtypes.Minter},
+		coinfactorytypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -326,6 +331,7 @@ type App struct {
 	VaultKeeper       vaultkeeper.Keeper
 	BridgeKeeper      bridgekeeper.Keeper
 	GuardKeeper       guardkeeper.Keeper
+	CoinFactoryKeeper coinfactorykeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -390,6 +396,7 @@ func New(
 		vaulttypes.StoreKey,
 		bridgetypes.StoreKey,
 		guardtypes.StoreKey,
+		coinfactorytypes.StoreKey,
 	)
 
 	// Add the EVM transient store key
@@ -663,6 +670,14 @@ func New(
 		app.GetSubspace(guardtypes.ModuleName),
 	)
 
+	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
+		keys[coinfactorytypes.StoreKey],
+		app.GetSubspace(coinfactorytypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
+		app.DistrKeeper,
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	// NOTE: Distr and Slashing must be created before calling the Hooks method to avoid returning a Keeper without its table generated
@@ -718,6 +733,7 @@ func New(
 		vault.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.DistrKeeper),
 		bridge.NewAppModule(appCodec, app.BridgeKeeper, app.AccountKeeper, app.BankKeeper),
 		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.BankKeeper),
+		coinfactory.NewAppModule(app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 	)
@@ -759,6 +775,7 @@ func New(
 		vaulttypes.ModuleName,
 		bridgetypes.ModuleName,
 		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
 
 		wasm.ModuleName,
 	)
@@ -795,6 +812,7 @@ func New(
 		vaulttypes.ModuleName,
 		bridgetypes.ModuleName,
 		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
 
 		wasm.ModuleName,
 	)
@@ -838,6 +856,7 @@ func New(
 		vaulttypes.ModuleName,
 		bridgetypes.ModuleName,
 		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
 
 		wasm.ModuleName,
 		// NOTE: crisis module must go at the end to check for invariants on each module
@@ -1193,5 +1212,6 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(vaulttypes.ModuleName)
 	paramsKeeper.Subspace(bridgetypes.ModuleName)
 	paramsKeeper.Subspace(guardtypes.ModuleName)
+	paramsKeeper.Subspace(coinfactorytypes.ModuleName)
 	return paramsKeeper
 }
