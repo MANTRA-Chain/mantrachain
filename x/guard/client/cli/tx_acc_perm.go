@@ -1,37 +1,40 @@
 package cli
 
 import (
-	
-	 "strings"
-    "github.com/spf13/cobra"
+	"github.com/spf13/cast"
+
+	"github.com/LimeChain/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/spf13/cobra"
 )
 
 func CmdCreateAccPerm() *cobra.Command {
-    cmd := &cobra.Command{
-		Use:   "create-acc-perm [cat] [whl-curr]",
+	cmd := &cobra.Command{
+		Use:   "create-acc-perm [id] [priviliges]",
 		Short: "Create a new acc_perm",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-            // Get indexes
-         indexCat := args[0]
-        
-            // Get value arguments
-		 argWhlCurr := strings.Split(args[1], listSeparator)
-		
+			// Get indexes
+			indexId := args[0]
+
+			// Get value arguments
+			argPriviliges, err := cast.ToUint64E(args[1])
+			if err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgCreateAccPerm(
-			    clientCtx.GetFromAddress().String(),
-			    indexCat,
-                argWhlCurr,
-			    )
+				clientCtx.GetFromAddress().String(),
+				indexId,
+				argPriviliges,
+			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -41,31 +44,34 @@ func CmdCreateAccPerm() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-    return cmd
+	return cmd
 }
 
 func CmdUpdateAccPerm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-acc-perm [cat] [whl-curr]",
+		Use:   "update-acc-perm [id] [priviliges]",
 		Short: "Update a acc_perm",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-            // Get indexes
-         indexCat := args[0]
-        
-            // Get value arguments
-		 argWhlCurr := strings.Split(args[1], listSeparator)
-		
+			// Get indexes
+			indexId := args[0]
+
+			// Get value arguments
+			argPriviliges, err := cast.ToUint64E(args[1])
+			if err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgUpdateAccPerm(
-			    clientCtx.GetFromAddress().String(),
-			    indexCat,
-                argWhlCurr,
-                )
+				clientCtx.GetFromAddress().String(),
+				indexId,
+				argPriviliges,
+			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -75,26 +81,26 @@ func CmdUpdateAccPerm() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-    return cmd
+	return cmd
 }
 
 func CmdDeleteAccPerm() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-acc-perm [cat]",
+		Use:   "delete-acc-perm [id]",
 		Short: "Delete a acc_perm",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-             indexCat := args[0]
-            
+			indexId := args[0]
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgDeleteAccPerm(
-			    clientCtx.GetFromAddress().String(),
-			    indexCat,
-                )
+				clientCtx.GetFromAddress().String(),
+				indexId,
+			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -104,5 +110,5 @@ func CmdDeleteAccPerm() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-    return cmd
+	return cmd
 }

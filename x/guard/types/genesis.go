@@ -24,7 +24,7 @@ func (gs GenesisState) Validate() error {
 	accPermIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.AccPermList {
-		index := string(AccPermKey(elem.Cat))
+		index := string(AccPermKey(elem.Id))
 		if _, ok := accPermIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for accPerm")
 		}

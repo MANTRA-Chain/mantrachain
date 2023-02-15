@@ -31,16 +31,16 @@ func (k msgServer) CreateAccPerm(goCtx context.Context, msg *types.MsgCreateAccP
 	// Check if the value already exists
 	_, isFound := k.GetAccPerm(
 		ctx,
-		msg.Cat,
+		msg.Id,
 	)
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
 	var accPerm = types.AccPerm{
-		Creator: msg.Creator,
-		Cat:     msg.Cat,
-		WhlCurr: msg.WhlCurr,
+		Creator:    msg.Creator,
+		Id:         msg.Id,
+		Priviliges: msg.Priviliges,
 	}
 
 	k.SetAccPerm(
@@ -73,7 +73,7 @@ func (k msgServer) UpdateAccPerm(goCtx context.Context, msg *types.MsgUpdateAccP
 	// Check if the value exists
 	valFound, isFound := k.GetAccPerm(
 		ctx,
-		msg.Cat,
+		msg.Id,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
@@ -85,9 +85,9 @@ func (k msgServer) UpdateAccPerm(goCtx context.Context, msg *types.MsgUpdateAccP
 	}
 
 	var accPerm = types.AccPerm{
-		Creator: msg.Creator,
-		Cat:     msg.Cat,
-		WhlCurr: msg.WhlCurr,
+		Creator:    msg.Creator,
+		Id:         msg.Id,
+		Priviliges: msg.Priviliges,
 	}
 
 	k.SetAccPerm(ctx, accPerm)
@@ -118,7 +118,7 @@ func (k msgServer) DeleteAccPerm(goCtx context.Context, msg *types.MsgDeleteAccP
 	// Check if the value exists
 	valFound, isFound := k.GetAccPerm(
 		ctx,
-		msg.Cat,
+		msg.Id,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
@@ -131,7 +131,7 @@ func (k msgServer) DeleteAccPerm(goCtx context.Context, msg *types.MsgDeleteAccP
 
 	k.RemoveAccPerm(
 		ctx,
-		msg.Cat,
+		msg.Id,
 	)
 
 	return &types.MsgDeleteAccPermResponse{}, nil

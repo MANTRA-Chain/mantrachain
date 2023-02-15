@@ -5,19 +5,19 @@ import "encoding/binary"
 var _ binary.ByteOrder
 
 const (
-    // AccPermKeyPrefix is the prefix to retrieve all AccPerm
+	// AccPermKeyPrefix is the prefix to retrieve all AccPerm
 	AccPermKeyPrefix = "AccPerm/value/"
 )
 
 // AccPermKey returns the store key to retrieve a AccPerm from the index fields
 func AccPermKey(
-cat string,
+	id string,
 ) []byte {
 	var key []byte
-    
-    catBytes := []byte(cat)
-    key = append(key, catBytes...)
-    key = append(key, []byte("/")...)
-    
+
+	idBytes := []byte(id)
+	key = append(key, idBytes...)
+	key = append(key, []byte("/")...)
+
 	return key
 }

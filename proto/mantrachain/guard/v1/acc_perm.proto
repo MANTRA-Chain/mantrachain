@@ -4,7 +4,7 @@ package mantrachain.guard.v1;
 option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
 
 message AccPerm {
-  string cat = 1; 
-  repeated string whl_curr = 2; 
+  string id = 1; 
+  uint64 priviliges = 2; 
   string creator = 3;
 }

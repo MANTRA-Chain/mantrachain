@@ -8,4 +8,5 @@ message Params {
   string admin_account = 1;
   string token_collection_creator = 2;
   string token_collection_id = 3;  
+  uint64 default_priviliges = 4;
 }

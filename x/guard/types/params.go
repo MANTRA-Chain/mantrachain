@@ -11,12 +11,14 @@ const (
 	DefaultAdminAccount           = ""
 	DefaultTokenCollectionCreator = ""
 	DefaultTokenCollectionId      = ""
+	DefaultPriviliges             = 0x000000000000000000000000000000000000000000000000ffffffffffffffff
 )
 
 var (
 	KeyAdminAccount           = []byte("AdminAccount")
 	KeyTokenCollectionCreator = []byte("TokenCollectionCreator")
 	KeyTokenCollectionId      = []byte("TokenCollectionId")
+	KeyDefaultPriviliges      = []byte("DefaultPriviliges")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -31,11 +33,13 @@ func NewParams(
 	adminAccount string,
 	tokenCollectionCreator string,
 	tokenCollectionId string,
+	defaultPriviliges uint64,
 ) Params {
 	return Params{
 		AdminAccount:           adminAccount,
 		TokenCollectionCreator: tokenCollectionCreator,
 		TokenCollectionId:      tokenCollectionId,
+		DefaultPriviliges:      defaultPriviliges,
 	}
 }
 
@@ -45,6 +49,7 @@ func DefaultParams() Params {
 		DefaultAdminAccount,
 		DefaultTokenCollectionCreator,
 		DefaultTokenCollectionId,
+		DefaultPriviliges,
 	)
 }
 
@@ -54,6 +59,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyAdminAccount, &p.AdminAccount, validateAdminAccount),
 		paramtypes.NewParamSetPair(KeyTokenCollectionCreator, &p.TokenCollectionCreator, validateTokenCollectionCreator),
 		paramtypes.NewParamSetPair(KeyTokenCollectionId, &p.TokenCollectionId, validateTokenCollectionId),
+		paramtypes.NewParamSetPair(KeyDefaultPriviliges, &p.DefaultPriviliges, validateDefaultPriviliges),
 	}
 }
 
@@ -113,6 +119,15 @@ func validateTokenCollectionCreator(i interface{}) error {
 
 func validateTokenCollectionId(i interface{}) error {
 	_, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	return nil
+}
+
+func validateDefaultPriviliges(i interface{}) error {
+	_, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -3,14 +3,13 @@ package keeper
 import (
 	"strings"
 
-	"golang.org/x/exp/slices"
-
 	ante "github.com/LimeChain/mantrachain/x/guard/ante"
 	tokentypes "github.com/LimeChain/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	utils "github.com/LimeChain/mantrachain/x/guard/utils"
 )
 
 func (k Keeper) CheckCanTransfer(ctx sdk.Context, tokenKeeper ante.TokenKeeper, nftKeeper ante.NFTKeeper, addresses []sdk.AccAddress, amount sdk.Coins) (bool, error) {
@@ -45,41 +44,21 @@ func (k Keeper) CheckCanTransfer(ctx sdk.Context, tokenKeeper ante.TokenKeeper, 
 	for _, address := range addresses {
 		index := tokentypes.GetNftIndex(collectionIndex, address.String())
 
-		meta, found := tokenKeeper.GetNft(ctx, collectionIndex, index)
-
-		if !found {
-			return false, sdkerrors.Wrapf(types.ErrTokenNftNotFound, "token nft not found, address %s", address.String())
-		}
-
 		owner := nftKeeper.GetOwner(ctx, string(collectionIndex), string(index))
 
-		if !address.Equals(owner) {
+		if owner.Empty() || !address.Equals(owner) {
 			return false, sdkerrors.Wrapf(types.ErrIncorrectNftOwner, "incorrect nft owner, address %s", address.String())
 		}
 
-		if len(meta.Attributes) == 0 || meta.Attributes[0].Type != "AccPerm" {
-			return false, sdkerrors.Wrapf(types.ErrTokenNftAttributesIncorrectOrNotFound, "incorrect nft attributes or not found, address %s", address.String())
+		priviliges := conf.DefaultPriviliges
+
+		accPerm, found := k.GetAccPerm(ctx, address.String())
+		if found {
+			priviliges = accPerm.Priviliges
 		}
 
-		accPermCat := meta.Attributes[0].Value
-
-		accPerm, found := k.GetAccPerm(ctx, accPermCat)
-		if !found {
-			return false, sdkerrors.Wrapf(types.ErrAccPermNotFound, "acc perm not found, address %s", address.String())
-		}
-
-		if len(accPerm.WhlCurr) == 0 {
-			return false, sdkerrors.Wrapf(types.ErrAccPermCatIncorrectOrNotFound, "incorrect acc perm cat or not found, address %s", address.String())
-		}
-
-		if accPerm.WhlCurr[0] == "*" {
-			continue
-		}
-
-		for _, coin := range amount {
-			if !slices.Contains(accPerm.WhlCurr, coin.Denom) {
-				return false, sdkerrors.Wrapf(types.ErrAccPermCatIncorrectOrNotFound, "incorrect acc perm cat or not found, address %s", address.String())
-			}
+		if !utils.CheckPriviliges(priviliges, types.PRIVILIGE_TRANSFER) {
+			return false, sdkerrors.Wrapf(types.ErrInsufficientPriviliges, "insufficient priviliges, address %s", address.String())
 		}
 	}
 

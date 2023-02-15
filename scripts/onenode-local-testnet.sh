@@ -81,8 +81,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
   VALIDATOR_ADDRESS=$(cat $HOMEDIR/config/gentx/$(ls $HOMEDIR/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
 
-  GUARD_ACC_PERM_LIST_JSON=$(echo '[{"cat":"0","creator":"{admin}","whl_curr":["*"]}]' | sed -e "s/{validator}/$VALIDATOR_WALLET/g" | sed -e "s/{admin}/$ADMIN_WALLET/g")
-
   GUARD_TRANSFER_JSON=$(echo '{"enabled":false,"creator":"{admin}"}' | sed -e "s/{admin}/$ADMIN_WALLET/g")
 
   cecho "GREEN" "Update genesis"
@@ -96,7 +94,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["params"]["token_collection_creator"]='\"$ADMIN_WALLET\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["params"]["token_collection_id"]='\"$GUARD_NFT_COLLECTION_ID\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["guard"]["acc_perm_list"]='$GUARD_ACC_PERM_LIST_JSON "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["guard_transfer"]='$GUARD_TRANSFER_JSON "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "GREEN" "Collect genesis tx"
@@ -144,9 +141,9 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
   sleep 7
 
-  GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft","attributes":[{"type":"AccPerm","value":"0"}]}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")
+  GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft"}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")
 
-  GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft","attributes":[{"type":"AccPerm","value":"0"}]}' | sed -e "s/{id}/$ADMIN_WALLET/g")
+  GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft"}' | sed -e "s/{id}/$ADMIN_WALLET/g")
 
   cecho "GREEN" "Mint guard nfts"
   "$PWD"/build/mantrachaind tx token mint-nft "$(echo $GUARD_NFT_VALIDATOR_JSON)" --collection-creator $ADMIN_WALLET --collection-id $GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --receiver $VALIDATOR_WALLET --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes

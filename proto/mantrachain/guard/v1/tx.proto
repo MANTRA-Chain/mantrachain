@@ -21,9 +21,9 @@ message MsgCreateAccPerm {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string cat = 2;
+  string id = 2;
 
-  repeated string whl_curr = 3;
+  uint64 priviliges = 3;
 }
 message MsgCreateAccPermResponse {}
 
@@ -31,15 +31,15 @@ message MsgUpdateAccPerm {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string cat = 2;
+  string id = 2;
 
-  repeated string whl_curr = 3;
+  uint64 priviliges = 3;
 }
 message MsgUpdateAccPermResponse {}
 
 message MsgDeleteAccPerm {
   string creator = 1;
-  string cat = 2;
+  string id = 2;
 }
 message MsgDeleteAccPermResponse {}
 

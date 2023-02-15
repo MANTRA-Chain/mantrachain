@@ -14,131 +14,128 @@ const (
 var _ sdk.Msg = &MsgCreateAccPerm{}
 
 func NewMsgCreateAccPerm(
-    creator string,
-    cat string,
-    whlCurr []string,
-    
+	creator string,
+	id string,
+	priviliges uint64,
+
 ) *MsgCreateAccPerm {
-  return &MsgCreateAccPerm{
-		Creator : creator,
-		Cat: cat,
-		WhlCurr: whlCurr,
-        
+	return &MsgCreateAccPerm{
+		Creator:    creator,
+		Id:         id,
+		Priviliges: priviliges,
 	}
 }
 
 func (msg *MsgCreateAccPerm) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgCreateAccPerm) Type() string {
-  return TypeMsgCreateAccPerm
+	return TypeMsgCreateAccPerm
 }
 
 func (msg *MsgCreateAccPerm) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
 }
 
 func (msg *MsgCreateAccPerm) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateAccPerm) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  	if err != nil {
-  		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  	}
-  return nil
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
 }
 
 var _ sdk.Msg = &MsgUpdateAccPerm{}
 
 func NewMsgUpdateAccPerm(
-    creator string,
-    cat string,
-    whlCurr []string,
-    
+	creator string,
+	id string,
+	priviliges uint64,
+
 ) *MsgUpdateAccPerm {
-  return &MsgUpdateAccPerm{
-		Creator: creator,
-        Cat: cat,
-        WhlCurr: whlCurr,
-        
+	return &MsgUpdateAccPerm{
+		Creator:    creator,
+		Id:         id,
+		Priviliges: priviliges,
 	}
 }
 
 func (msg *MsgUpdateAccPerm) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgUpdateAccPerm) Type() string {
-  return TypeMsgUpdateAccPerm
+	return TypeMsgUpdateAccPerm
 }
 
 func (msg *MsgUpdateAccPerm) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
 }
 
 func (msg *MsgUpdateAccPerm) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateAccPerm) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  }
-   return nil
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
 }
 
 var _ sdk.Msg = &MsgDeleteAccPerm{}
 
 func NewMsgDeleteAccPerm(
-    creator string,
-    cat string,
-    
+	creator string,
+	id string,
+
 ) *MsgDeleteAccPerm {
-  return &MsgDeleteAccPerm{
+	return &MsgDeleteAccPerm{
 		Creator: creator,
-		Cat: cat,
-        
+		Id:      id,
 	}
 }
 func (msg *MsgDeleteAccPerm) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgDeleteAccPerm) Type() string {
-  return TypeMsgDeleteAccPerm
+	return TypeMsgDeleteAccPerm
 }
 
 func (msg *MsgDeleteAccPerm) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
 }
 
 func (msg *MsgDeleteAccPerm) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDeleteAccPerm) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  }
-  return nil
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
 }

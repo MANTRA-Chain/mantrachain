@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 
+	"github.com/LimeChain/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/LimeChain/mantrachain/x/guard/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -46,11 +46,11 @@ func (k Keeper) AccPerm(c context.Context, req *types.QueryGetAccPermRequest) (*
 	ctx := sdk.UnwrapSDKContext(c)
 
 	val, found := k.GetAccPerm(
-	    ctx,
-	    req.Cat,
-        )
+		ctx,
+		req.Id,
+	)
 	if !found {
-	    return nil, status.Error(codes.NotFound, "not found")
+		return nil, status.Error(codes.NotFound, "not found")
 	}
 
 	return &types.QueryGetAccPermResponse{AccPerm: val}, nil

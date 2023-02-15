@@ -97,8 +97,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
   VALIDATOR1_ADDRESS=$(cat $HOMEDIR/${KEYS_VAL[0]}/config/gentx/$(ls $HOMEDIR/${KEYS_VAL[0]}/config/gentx -AU | head -1) | jq '.body["messages"][0].validator_address')
 
-  GUARD_ACC_PERM_LIST_JSON=$(echo '[{"cat":"0","creator":"{admin}","whl_curr":["*"]}]' | sed -e "s/{validator}/$VALIDATOR_1_WALLET/g" | sed -e "s/{admin}/$ADMIN_1_WALLET/g")
-
   GUARD_TRANSFER_JSON=$(echo '{"enabled":false,"creator":"{admin}"}' | sed -e "s/{admin}/$ADMIN_1_WALLET/g")
 
   cecho "GREEN" "Update genesis"
@@ -112,7 +110,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' "$GENESIS_1" > "$TMP_GENESIS_1" && mv "$TMP_GENESIS_1" "$GENESIS_1"
   jq '.app_state["guard"]["params"]["token_collection_creator"]='\"$ADMIN_1_WALLET\" "$GENESIS_1" > "$TMP_GENESIS_1" && mv "$TMP_GENESIS_1" "$GENESIS_1"
   jq '.app_state["guard"]["params"]["token_collection_id"]='\"$GUARD_NFT_COLLECTION_ID\" "$GENESIS_1" > "$TMP_GENESIS_1" && mv "$TMP_GENESIS_1" "$GENESIS_1"
-  jq '.app_state["guard"]["acc_perm_list"]='$GUARD_ACC_PERM_LIST_JSON "$GENESIS_1" > "$TMP_GENESIS_1" && mv "$TMP_GENESIS_1" "$GENESIS_1"
   jq '.app_state["guard"]["guard_transfer"]='$GUARD_TRANSFER_JSON "$GENESIS_1" > "$TMP_GENESIS_1" && mv "$TMP_GENESIS_1" "$GENESIS_1"
 
   cecho "GREEN" "Validate genesis and collect genesis tx"

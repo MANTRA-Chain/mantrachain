@@ -19,7 +19,7 @@ service Query {
   }
   // Queries a AccPerm by index.
 	rpc AccPerm(QueryGetAccPermRequest) returns (QueryGetAccPermResponse) {
-		option (google.api.http).get = "/mantrachain/guard/v1/acc_perm/{cat}";
+		option (google.api.http).get = "/mantrachain/guard/v1/acc_perm/{id}";
 	}
 
 	// Queries a list of AccPerm items.
@@ -44,7 +44,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetAccPermRequest {
-	  string cat = 1;
+	  string id = 1;
 
 }
 

@@ -122,9 +122,9 @@ if [[ $mint == "y" || $mint == "Y" ]]; then
 
   sleep 7
 
-  GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft","attributes":[{"type":"AccPerm","value":"0"}]}' | sed -e "s/{id}/$VALIDATOR_1_WALLET/g")
+  GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft",}' | sed -e "s/{id}/$VALIDATOR_1_WALLET/g")
 
-  GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft","attributes":[{"type":"AccPerm","value":"0"}]}' | sed -e "s/{id}/$ADMIN_1_WALLET/g")
+  GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft",}' | sed -e "s/{id}/$ADMIN_1_WALLET/g")
 
   cecho "GREEN" "Mint guard nfts"
   "$PWD"/build/mantrachaind tx token mint-nft "$(echo $GUARD_NFT_VALIDATOR_JSON)" --collection-creator $ADMIN_1_WALLET --collection-id $GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from $KEY_ADM_1 --receiver $VALIDATOR_1_WALLET --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home $HOMEDIR/$KEY_VAL_1 --yes

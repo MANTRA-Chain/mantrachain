@@ -11,20 +11,20 @@ func (k Keeper) SetAccPerm(ctx sdk.Context, accPerm types.AccPerm) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccPermKeyPrefix))
 	b := k.cdc.MustMarshal(&accPerm)
 	store.Set(types.AccPermKey(
-		accPerm.Cat,
+		accPerm.Id,
 	), b)
 }
 
 // GetAccPerm returns a accPerm from its index
 func (k Keeper) GetAccPerm(
 	ctx sdk.Context,
-	cat string,
+	id string,
 
 ) (val types.AccPerm, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccPermKeyPrefix))
 
 	b := store.Get(types.AccPermKey(
-		cat,
+		id,
 	))
 	if b == nil {
 		return val, false
@@ -37,12 +37,12 @@ func (k Keeper) GetAccPerm(
 // RemoveAccPerm removes a accPerm from the store
 func (k Keeper) RemoveAccPerm(
 	ctx sdk.Context,
-	cat string,
+	id string,
 
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccPermKeyPrefix))
 	store.Delete(types.AccPermKey(
-		cat,
+		id,
 	))
 }
 
