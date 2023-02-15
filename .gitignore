@@ -9,6 +9,6 @@ release/
 *.json
 *.csr
 *.txt
-accounts.txt
+account*.txt
 build
 data
