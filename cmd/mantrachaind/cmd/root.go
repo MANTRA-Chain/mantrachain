@@ -33,10 +33,11 @@ import (
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
+
 	// this line is used by starport scaffolding # root/moduleImport
 
-	"mantrachain/app"
-	appparams "mantrachain/app/params"
+	"github.com/LimeChain/mantrachain/app"
+	appparams "github.com/LimeChain/mantrachain/app/params"
 )
 
 // NewRootCmd creates a new root command for a Cosmos SDK application

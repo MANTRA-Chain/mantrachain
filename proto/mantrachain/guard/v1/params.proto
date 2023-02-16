@@ -1,0 +1,12 @@
+syntax = "proto3";
+package mantrachain.guard.v1;
+
+option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
+
+// Params defines the parameters for the module.
+message Params {
+  string admin_account = 1;
+  string token_collection_creator = 2;
+  string token_collection_id = 3;  
+  uint64 default_priviliges = 4;
+}

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"mantrachain/app"
+	"github.com/LimeChain/mantrachain/app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"

@@ -3,10 +3,34 @@ package cmd
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/app"
+	"github.com/LimeChain/mantrachain/app"
+)
+
+const (
+	DisplayDenom = "xom"
+	BaseDenom    = "uxom"
+	XomExponent  = 6
 )
 
 func initSDKConfig() {
+	SetAddressPrefixes()
+	RegisterDenoms()
+}
+
+// RegisterDenoms registers token denoms.
+func RegisterDenoms() {
+	err := sdk.RegisterDenom(DisplayDenom, sdk.OneDec())
+	if err != nil {
+		panic(err)
+	}
+	err = sdk.RegisterDenom(BaseDenom, sdk.NewDecWithPrec(1, XomExponent))
+	if err != nil {
+		panic(err)
+	}
+}
+
+// SetAddressPrefixes builds the Config with Bech32 addressPrefix and publKeyPrefix for accounts, validators, and consensus nodes and verifies that addreeses have correct format.
+func SetAddressPrefixes() {
 	// Set prefixes
 	accountPubKeyPrefix := app.AccountAddressPrefix + "pub"
 	validatorAddressPrefix := app.AccountAddressPrefix + "valoper"

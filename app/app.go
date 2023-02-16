@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/LimeChain/mantrachain/app/ante"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
@@ -21,8 +22,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -103,10 +105,23 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/LimeChain/mantrachain/x/coinfactory"
+	coinfactorykeeper "github.com/LimeChain/mantrachain/x/coinfactory/keeper"
+	coinfactorytypes "github.com/LimeChain/mantrachain/x/coinfactory/types"
+	"github.com/LimeChain/mantrachain/x/guard"
+	guardkeeper "github.com/LimeChain/mantrachain/x/guard/keeper"
+	guardtypes "github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/LimeChain/mantrachain/x/nft"
+	nftkeeper "github.com/LimeChain/mantrachain/x/nft/keeper"
+	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
+	"github.com/LimeChain/mantrachain/x/token"
+	tokenkeeper "github.com/LimeChain/mantrachain/x/token/keeper"
+	tokentypes "github.com/LimeChain/mantrachain/x/token/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	appparams "mantrachain/app/params"
-	"mantrachain/docs"
+	appparams "github.com/LimeChain/mantrachain/app/params"
+	"github.com/LimeChain/mantrachain/docs"
 )
 
 const (
@@ -161,6 +176,10 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		token.AppModuleBasic{},
+		nft.AppModuleBasic{},
+		guard.AppModuleBasic{},
+		coinfactory.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -174,6 +193,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		coinfactorytypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -234,6 +254,11 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
+	TokenKeeper       tokenkeeper.Keeper
+	NFTKeeper         nftkeeper.Keeper
+	GuardKeeper       guardkeeper.Keeper
+	CoinFactoryKeeper coinfactorykeeper.Keeper
+
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -278,6 +303,10 @@ func New(
 		paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey, evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
+		tokentypes.StoreKey,
+		nftkeeper.StoreKey,
+		guardtypes.StoreKey,
+		coinfactorytypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -489,6 +518,27 @@ func New(
 		govConfig,
 	)
 
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
+
+	app.TokenKeeper = *tokenkeeper.NewKeeper(
+		appCodec, keys[tokentypes.StoreKey], keys[tokentypes.MemStoreKey], app.GetSubspace(tokentypes.ModuleName), app.NFTKeeper,
+	)
+
+	app.GuardKeeper = *guardkeeper.NewKeeper(
+		appCodec,
+		keys[guardtypes.StoreKey],
+		keys[guardtypes.MemStoreKey],
+		app.GetSubspace(guardtypes.ModuleName),
+	)
+
+	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
+		keys[coinfactorytypes.StoreKey],
+		app.GetSubspace(coinfactorytypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
+		app.DistrKeeper,
+	)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -554,6 +604,10 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
+		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
+		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.BankKeeper),
+		coinfactory.NewAppModule(appCodec, app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -583,6 +637,10 @@ func New(
 		group.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		guardtypes.ModuleName,
+		nfttypes.ModuleName,
+		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -607,6 +665,10 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		guardtypes.ModuleName,
+		nfttypes.ModuleName,
+		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -624,7 +686,6 @@ func New(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
-		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibchost.ModuleName,
@@ -636,6 +697,12 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		guardtypes.ModuleName,
+		nfttypes.ModuleName,
+		tokentypes.ModuleName,
+		coinfactorytypes.ModuleName,
+		// NOTE: crisis module must go at the end to check for invariants on each module
+		crisistypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -684,7 +751,10 @@ func New(
 			BankKeeper:      app.BankKeeper,
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
+			TokenKeeper:     app.TokenKeeper,
+			NFTKeeper:       app.NFTKeeper,
+			GuardKeeper:     app.GuardKeeper,
 		},
 	)
 	if err != nil {
@@ -695,6 +765,21 @@ func New(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+
+	// In v0.46, the SDK introduces _postHandlers_. PostHandlers are like
+	// antehandlers, but are run _after_ the `runMsgs` execution. They are also
+	// defined as a chain, and have the same signature as antehandlers.
+	//
+	// In baseapp, postHandlers are run in the same store branch as `runMsgs`,
+	// meaning that both `runMsgs` and `postHandler` state will be committed if
+	// both are successful, and both will be reverted if any of the two fails.
+	//
+	// The SDK exposes a default empty postHandlers chain.
+	//
+	// Please note that changing any of the anteHandler or postHandler chain is
+	// likely to be a state-machine breaking change, which needs a coordinated
+	// upgrade.
+	app.setPostHandler()
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -711,6 +796,17 @@ func New(
 
 // Name returns the name of the App
 func (app *App) Name() string { return app.BaseApp.Name() }
+
+func (app *App) setPostHandler() {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetPostHandler(postHandler)
+}
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
@@ -752,6 +848,7 @@ func (app *App) ModuleAccountAddrs() map[string]bool {
 func (app *App) BlockedModuleAccountAddrs() map[string]bool {
 	modAccAddrs := app.ModuleAccountAddrs()
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	delete(modAccAddrs, authtypes.NewModuleAddress(distrtypes.ModuleName).String())
 
 	return modAccAddrs
 }
@@ -869,6 +966,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(tokentypes.ModuleName)
+	paramsKeeper.Subspace(nfttypes.ModuleName)
+	paramsKeeper.Subspace(guardtypes.ModuleName)
+	paramsKeeper.Subspace(coinfactorytypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

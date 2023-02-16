@@ -1,0 +1,4 @@
+version: 1
+client:
+  openapi:
+    path: docs/static/openapi.yml
