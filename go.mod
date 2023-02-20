@@ -178,6 +178,8 @@ replace (
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
 	github.com/cosmos/cosmos-sdk => github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230217082928-067f2fcd407c
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.19.5-rc.1
+	// GoLevelDB version has been pinned to `v1.0.1-0.20210819022825-2ae1ddf74ef7`, following versions might cause unexpected behavior.
+	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/tendermint => github.com/informalsystems/tendermint v0.37.0-rc2
 	github.com/tidwall/btree => github.com/tidwall/btree v1.5.2
 )

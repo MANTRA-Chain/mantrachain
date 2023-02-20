@@ -21,6 +21,8 @@ func (k Keeper) CreateDenom(ctx sdk.Context, creatorAddr string, subdenom string
 		return "", err
 	}
 
+	// TODO: add event
+
 	err = k.createDenomAfterValidation(ctx, creatorAddr, denom)
 	return denom, err
 }

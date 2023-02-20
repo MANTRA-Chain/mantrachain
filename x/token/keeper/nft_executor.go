@@ -39,21 +39,28 @@ func (c *NftExecutor) GetClassSupply(classId string) uint64 {
 	return c.nftKeeper.GetTotalSupply(c.ctx, classId)
 }
 
-// TODO: fix ASAP
 func (c *NftExecutor) GetClasses(classesIds []string) []nft.Class {
-	return []nft.Class{}
-	// return c.nftKeeper.GetClassesByIds(c.ctx, classesIds)
+	classes := []nft.Class{}
+
+	for _, classId := range classesIds {
+		class, found := c.nftKeeper.GetClass(c.ctx, classId)
+		if found {
+			classes = append(classes, class)
+		}
+	}
+
+	return classes
 }
 
 func (c *NftExecutor) MintNft(nft nft.NFT, receiver sdk.AccAddress) error {
 	return c.nftKeeper.Mint(c.ctx, nft, receiver)
 }
 
-func (c *NftExecutor) MintNftBatch(nfts []nft.NFT, receiver sdk.AccAddress) error {
+func (c *NftExecutor) BatchMintNft(nfts []nft.NFT, receiver sdk.AccAddress) error {
 	return c.nftKeeper.BatchMint(c.ctx, nfts, receiver)
 }
 
-func (c *NftExecutor) BurnNftBatch(classId string, nftsIds []string) error {
+func (c *NftExecutor) BatchBurnNft(classId string, nftsIds []string) error {
 	return c.nftKeeper.BatchBurn(c.ctx, classId, nftsIds)
 }
 
@@ -65,10 +72,17 @@ func (c *NftExecutor) GetNft(classId string, nftId string) (nft.NFT, bool) {
 	return c.nftKeeper.GetNFT(c.ctx, classId, nftId)
 }
 
-// TODO: fix ASAP
 func (c *NftExecutor) GetNfts(classId string, nftsIds []string) []nft.NFT {
-	return []nft.NFT{}
-	// return c.nftKeeper.GetNFTsByIds(c.ctx, classId, nftsIds)
+	nfts := []nft.NFT{}
+
+	for _, nftId := range nftsIds {
+		nft, found := c.nftKeeper.GetNFT(c.ctx, classId, nftId)
+		if found {
+			nfts = append(nfts, nft)
+		}
+	}
+
+	return nfts
 }
 
 func (c *NftExecutor) GetNftOwner(classId string, nftId string) sdk.AccAddress {
@@ -83,7 +97,7 @@ func (c *NftExecutor) TransferNft(classId string, nftId string, receiver sdk.Acc
 	return c.nftKeeper.Transfer(c.ctx, classId, nftId, receiver)
 }
 
-func (c *NftExecutor) TransferNftBatch(classId string, nftsIds []string, receiver sdk.AccAddress) error {
+func (c *NftExecutor) BatchTransferNft(classId string, nftsIds []string, receiver sdk.AccAddress) error {
 	return c.nftKeeper.BatchTransfer(c.ctx, classId, nftsIds, receiver)
 }
 

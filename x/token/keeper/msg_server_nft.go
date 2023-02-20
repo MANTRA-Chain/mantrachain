@@ -147,7 +147,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	err = nftExecutor.MintNftBatch(newNfts, receiver)
+	err = nftExecutor.BatchMintNft(newNfts, receiver)
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +257,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	nftsIndexes := nftController.getIndexes()
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	err = nftExecutor.BurnNftBatch(string(collectionIndex), nftsIds)
+	err = nftExecutor.BatchBurnNft(string(collectionIndex), nftsIds)
 	if err != nil {
 		return nil, err
 	}
@@ -1008,7 +1008,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	nftsIndexes := nftController.getIndexes()
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	err = nftExecutor.TransferNftBatch(string(collectionIndex), nftsIds, receiver)
+	err = nftExecutor.BatchTransferNft(string(collectionIndex), nftsIds, receiver)
 	if err != nil {
 		return nil, err
 	}

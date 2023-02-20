@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	DisplayDenom = "xom"
-	BaseDenom    = "uxom"
-	XomExponent  = 6
+	DisplayDenom = "aum"
+	BaseDenom    = "uaum"
+	AumExponent  = 6
 )
 
 func initSDKConfig() {
@@ -23,7 +23,7 @@ func RegisterDenoms() {
 	if err != nil {
 		panic(err)
 	}
-	err = sdk.RegisterDenom(BaseDenom, sdk.NewDecWithPrec(1, XomExponent))
+	err = sdk.RegisterDenom(BaseDenom, sdk.NewDecWithPrec(1, AumExponent))
 	if err != nil {
 		panic(err)
 	}

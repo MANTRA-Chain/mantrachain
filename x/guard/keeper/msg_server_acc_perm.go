@@ -43,6 +43,7 @@ func (k msgServer) CreateAccPerm(goCtx context.Context, msg *types.MsgCreateAccP
 		Priviliges: msg.Priviliges,
 	}
 
+	// TODO: add event
 	k.SetAccPerm(
 		ctx,
 		accPerm,
@@ -90,6 +91,7 @@ func (k msgServer) UpdateAccPerm(goCtx context.Context, msg *types.MsgUpdateAccP
 		Priviliges: msg.Priviliges,
 	}
 
+	// TODO: add event
 	k.SetAccPerm(ctx, accPerm)
 
 	return &types.MsgUpdateAccPermResponse{}, nil
@@ -129,6 +131,7 @@ func (k msgServer) DeleteAccPerm(goCtx context.Context, msg *types.MsgDeleteAccP
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
+	// TODO: add event
 	k.RemoveAccPerm(
 		ctx,
 		msg.Id,

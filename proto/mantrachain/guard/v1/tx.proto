@@ -2,6 +2,7 @@ syntax = "proto3";
 package mantrachain.guard.v1;
 
 import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "mantrachain/guard/v1/acc_perm.proto";
 import "mantrachain/guard/v1/guard_transfer.proto";
 // this line is used by starport scaffolding # proto/tx/import
@@ -20,7 +21,7 @@ service Msg {
 message MsgCreateAccPerm {
   option (cosmos.msg.v1.signer) = "creator";
 
-  string creator = 1;
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string id = 2;
 
   uint64 priviliges = 3;
@@ -30,7 +31,7 @@ message MsgCreateAccPermResponse {}
 message MsgUpdateAccPerm {
   option (cosmos.msg.v1.signer) = "creator";
 
-  string creator = 1;
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string id = 2;
 
   uint64 priviliges = 3;
@@ -38,7 +39,7 @@ message MsgUpdateAccPerm {
 message MsgUpdateAccPermResponse {}
 
 message MsgDeleteAccPerm {
-  string creator = 1;
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string id = 2;
 }
 message MsgDeleteAccPermResponse {}
@@ -46,7 +47,7 @@ message MsgDeleteAccPermResponse {}
 message MsgUpdateGuardTransfer {
   option (cosmos.msg.v1.signer) = "creator";
 
-  string creator = 1;
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bool enabled = 3;
 }
 message MsgUpdateGuardTransferResponse {}

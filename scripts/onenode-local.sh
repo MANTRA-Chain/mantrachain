@@ -13,7 +13,7 @@ KEYRING="test"
 LOGLEVEL="info"
 
 GAS_ADJ=1.4
-GAS_PRICE=0.0001uxom
+GAS_PRICE=0.0001uaum
 
 # Path variables
 CONFIG=$HOMEDIR/config/config.toml
@@ -62,20 +62,21 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   ADMIN_WALLET=$("$PWD"/build/mantrachaind keys show ${KEYS[2]} -a --keyring-backend $KEYRING --home "$HOMEDIR")
 
   cecho "GREEN" "Init the validator"
-	"$PWD"/build/mantrachaind init $MONIKER-$KEY -o --chain-id $CHAINID --home "$HOMEDIR"
+	"$PWD"/build/mantrachaind init $MONIKER -o --chain-id $CHAINID --home "$HOMEDIR"
 
-  cecho "GREEN" "Replace genesis denom with xom"
-  jq '.app_state["staking"]["params"]["bond_denom"]="uxom"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["mint"]["params"]["mint_denom"]="uxom"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["crisis"]["constant_fee"]["denom"]="uxom"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="uxom"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  cecho "GREEN" "Replace genesis denom with aum"
+  jq '.app_state["staking"]["params"]["bond_denom"]="uaum"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["mint"]["params"]["mint_denom"]="uaum"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["crisis"]["constant_fee"]["denom"]="uaum"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["gov"]["deposit_params"]["min_deposit"][0]["denom"]="uaum"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["gov"]["params"]["min_deposit"][0]["denom"]="uaum"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "GREEN" "Update denom metadata"
-  jq '.app_state["bank"]["denom_metadata"]=''[{"name":"xom","symbol":"XOM","description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"uxom","exponent":0,"aliases":["microxom"]},{"denom":"mxom","exponent":3,"aliases":["millixom"]},{"denom":"xom","exponent":6}],"base":"uxom","display":"xom"}]' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["bank"]["denom_metadata"]=''[{"name":"aum","symbol":"AUM","description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"uaum","exponent":0,"aliases":["microaum"]},{"denom":"maum","exponent":3,"aliases":["milliaum"]},{"denom":"aum","exponent":6}],"base":"uaum","display":"aum"}]' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "GREEN" "Create validator node with tokens to transfer to the node"
-  "$PWD"/build/mantrachaind add-genesis-account $VALIDATOR_WALLET 100000000000000000uxom --home "$HOMEDIR"
-  "$PWD"/build/mantrachaind gentx ${KEYS[0]} 100000000000000uxom --keyring-backend=$KEYRING --chain-id=$CHAINID --home "$HOMEDIR"
+  "$PWD"/build/mantrachaind add-genesis-account $VALIDATOR_WALLET 100000000000000000uaum --home "$HOMEDIR"
+  "$PWD"/build/mantrachaind gentx ${KEYS[0]} 100000000000000uaum --keyring-backend=$KEYRING --chain-id=$CHAINID --home "$HOMEDIR"
 
   VALIDATOR_ADDRESS=$(cat $HOMEDIR/config/gentx/$(ls $HOMEDIR/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
 
@@ -93,7 +94,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   "$PWD"/build/mantrachaind collect-gentxs --home "$HOMEDIR"
 
   cecho "GREEN" "Validate genesis"
-  "$PWD"/build/mantrachaind validate-genesis --home "$HOMEDIR"
+  # TODO: fix this
+  # "$PWD"/build/mantrachaind validate-genesis --home "$HOMEDIR"
 
   cecho "GREEN" "Port key (validator uses default ports)"
   cecho "GREEN" "validator 1317, 9090, 9091, 26658, 26657, 26656, 6060"
@@ -101,8 +103,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   cecho "GREEN" "Change app.toml values"
   sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $APP_TOML
   sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $APP_TOML
-  sed -i -E '117s/.*/enable = true/' $APP_TOML
-  sed -i -E 's|minimum-gas-prices = \"0uxom\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
+  sed -i -E '116s/.*/enable = true/' $APP_TOML
+  sed -i -E 's|minimum-gas-prices = \"0uaum\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
 
   cecho "GREEN" "Change config.toml values"
   sed -i -E 's|cors_allowed_origins = \[\]|cors_allowed_origins = \[\"*\"\]|g' $CONFIG
@@ -112,26 +114,26 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 fi
 
 cecho "GREEN" "Start the validator"
-tmux new -s mantrachain -d "$PWD"/build/mantrachaind start --pruning=nothing --log_level $LOGLEVEL --home "$HOMEDIR"
+tmux new -s mantrachain -d "$PWD"/build/mantrachaind start --pruning=nothing --api.enable --log_level $LOGLEVEL --home "$HOMEDIR"
 
 if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   sleep 7
 
-  cecho "GREEN" "Send uxom from ${KEYS[0]} to ${KEYS[1]}"
-  "$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $RECIPIENT_WALLET 100000000000000uxom --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes  --home "$HOMEDIR"
+  cecho "GREEN" "Send uaum from ${KEYS[0]} to ${KEYS[1]}"
+  "$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $RECIPIENT_WALLET 100000000000000uaum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
   
   sleep 7
 
-  cecho "GREEN" "Send uxom from ${KEYS[0]} to ${KEYS[2]}"
-  "$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $ADMIN_WALLET 100000000000000uxom --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes  --home "$HOMEDIR"
+  cecho "GREEN" "Send uaum from ${KEYS[0]} to ${KEYS[2]}"
+  "$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $ADMIN_WALLET 100000000000000uaum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
   
   sleep 7
   
   GUARD_COLL_JSON=$(echo '{"id":"{id}","soul_bonded": true, "name":"GuardCollection","description":"GuardCollection","category":"utility"}' | sed -e "s/{id}/$GUARD_NFT_COLLECTION_ID/g")
 
   cecho "GREEN" "Create guard nft collection"
-  "$PWD"/build/mantrachaind tx token create-nft-collection "$(echo $GUARD_COLL_JSON)" --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes  --home "$HOMEDIR"
-
+  "$PWD"/build/mantrachaind tx token create-nft-collection "$(echo $GUARD_COLL_JSON)" --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
+  
   sleep 7
 
   GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft"}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")

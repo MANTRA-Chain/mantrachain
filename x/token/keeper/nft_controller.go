@@ -200,22 +200,16 @@ func (c *NftController) filterNotExist() error {
 }
 
 func (c *NftController) filterNotOwnOfClass(owner sdk.AccAddress) error {
-	byNftId := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
-	nftsIds := []string{}
+	classId := string(c.collectionIndex)
 
 	for _, nftMetadata := range c.metadata {
 		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
-		nftsIds = append(nftsIds, string(index))
-		byNftId[string(index)] = nftMetadata
-	}
 
-	// TODO: fix this ASAP
-	// nftsIds = c.store.nftKeeper.FilterNotOwnNFTsIdsOfClass(c.ctx, string(c.collectionIndex), nftsIds, owner)
-	// for _, nftId := range nftsIds {
-	// 	nftMetadata := byNftId[nftId]
-	// 	filtered = append(filtered, nftMetadata)
-	// }
+		if owner.Equals(c.store.nftKeeper.GetOwner(c.ctx, classId, string(index))) {
+			filtered = append(filtered, nftMetadata)
+		}
+	}
 
 	c.metadata = filtered
 

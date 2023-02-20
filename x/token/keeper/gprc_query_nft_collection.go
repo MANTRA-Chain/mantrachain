@@ -120,6 +120,7 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 			Creator:     meta.Creator.String(),
 			Owner:       meta.Owner.String(),
 			Opened:      meta.Opened,
+			SoulBonded:  meta.SoulBonded,
 			Data:        nftColl.Data,
 		})
 	}
@@ -179,6 +180,7 @@ func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCo
 			Creator:     meta.Creator.String(),
 			Owner:       meta.Owner.String(),
 			Opened:      meta.Opened,
+			SoulBonded:  meta.SoulBonded,
 			Data:        nftColl.Data,
 		})
 	}

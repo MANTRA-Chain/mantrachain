@@ -11,14 +11,9 @@ type NFTKeeper interface {
 	Mint(ctx sdk.Context, token nft.NFT, receiver sdk.AccAddress) error
 	BatchMint(ctx sdk.Context, tokens []nft.NFT, receiver sdk.AccAddress) error
 	GetNFT(ctx sdk.Context, classID, nftID string) (nft.NFT, bool)
-	// TODO: Add more methods
-	// GetNFTsByIds(ctx sdk.Context, classID string, nftIDs []string) (nfts []nft.NFT)
 	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
 	Burn(ctx sdk.Context, classID string, nftID string) error
 	BatchBurn(ctx sdk.Context, classID string, nftIDs []string) error
-	// TODO: Add more methods
-	// FilterNotOwnNFTsIdsOfClass(ctx sdk.Context, classID string, nftIDs []string, owner sdk.AccAddress) (list []string)
-	// GetClassesByIds(ctx sdk.Context, classesIds []string) (classes []nft.Class)
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 	BatchTransfer(ctx sdk.Context, classID string, nftIDs []string, receiver sdk.AccAddress) error
 	GetBalance(ctx sdk.Context, classID string, owner sdk.AccAddress) uint64
