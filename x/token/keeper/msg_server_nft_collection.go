@@ -4,10 +4,10 @@ import (
 	"context"
 	"strings"
 
-	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
@@ -42,7 +42,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	collectionId := collectionController.getId()
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	err = nftExecutor.SetClass(nfttypes.Class{
+	err = nftExecutor.SetClass(nft.Class{
 		Id:          string(collectionIndex),
 		Name:        msg.Collection.Name,
 		Symbol:      msg.Collection.Symbol,
@@ -75,7 +75,6 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgCreateNftCollection),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),

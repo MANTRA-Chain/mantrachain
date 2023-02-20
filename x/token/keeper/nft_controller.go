@@ -210,11 +210,12 @@ func (c *NftController) filterNotOwnOfClass(owner sdk.AccAddress) error {
 		byNftId[string(index)] = nftMetadata
 	}
 
-	nftsIds = c.store.nftKeeper.FilterNotOwnNFTsIdsOfClass(c.ctx, string(c.collectionIndex), nftsIds, owner)
-	for _, nftId := range nftsIds {
-		nftMetadata := byNftId[nftId]
-		filtered = append(filtered, nftMetadata)
-	}
+	// TODO: fix this ASAP
+	// nftsIds = c.store.nftKeeper.FilterNotOwnNFTsIdsOfClass(c.ctx, string(c.collectionIndex), nftsIds, owner)
+	// for _, nftId := range nftsIds {
+	// 	nftMetadata := byNftId[nftId]
+	// 	filtered = append(filtered, nftMetadata)
+	// }
 
 	c.metadata = filtered
 

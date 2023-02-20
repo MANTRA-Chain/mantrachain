@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	nfttypes "github.com/LimeChain/mantrachain/x/nft/types"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nft "github.com/cosmos/cosmos-sdk/x/nft"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -113,14 +113,14 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
 	}
 
-	var newNfts []nfttypes.NFT
+	var newNfts []nft.NFT
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
-		newNfts = append(newNfts, nfttypes.NFT{
+		newNfts = append(newNfts, nft.NFT{
 			ClassId: string(collectionIndex),
 			Id:      string(nftIndex),
 			Uri:     types.ModuleName,
@@ -157,7 +157,6 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgMintNfts),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -269,7 +268,6 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgBurnNfts),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -379,7 +377,6 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveNfts),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -420,7 +417,6 @@ func (k msgServer) ApproveAllNfts(goCtx context.Context, msg *types.MsgApproveAl
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveAllNfts),
 			sdk.NewAttribute(types.AttributeKeyApproved, strconv.FormatBool(msg.Approved)),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
@@ -538,7 +534,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	nftMetadata := nftsMetadata[0]
 	nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
-	newNft := nfttypes.NFT{
+	newNft := nft.NFT{
 		ClassId: string(collectionIndex),
 		Id:      string(nftIndex),
 		Uri:     types.ModuleName,
@@ -573,7 +569,6 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgMintNft),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -677,7 +672,6 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgBurnNft),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -779,7 +773,6 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgApproveNft),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -899,7 +892,6 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgTransferNft),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
@@ -1026,7 +1018,6 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgTransferNfts),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
