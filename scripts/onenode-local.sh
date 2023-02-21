@@ -94,8 +94,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   "$PWD"/build/mantrachaind collect-gentxs --home "$HOMEDIR"
 
   cecho "GREEN" "Validate genesis"
-  # TODO: fix this
-  # "$PWD"/build/mantrachaind validate-genesis --home "$HOMEDIR"
+  "$PWD"/build/mantrachaind validate-genesis --home "$HOMEDIR"
 
   cecho "GREEN" "Port key (validator uses default ports)"
   cecho "GREEN" "validator 1317, 9090, 9091, 26658, 26657, 26656, 6060"
