@@ -13,7 +13,8 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		NftCollectionList: []NftCollection{},
 		NftList:           []Nft{},
-		// this line is used by starport scaffolding # genesis/types/default
+		SoulBondedNftsCollectionList: []SoulBondedNftsCollection{},
+// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
 }
@@ -75,7 +76,17 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	// this line is used by starport scaffolding # genesis/types/validate
+	// Check for duplicated index in soulBondedNftsCollection
+soulBondedNftsCollectionIndexMap := make(map[string]struct{})
+
+for _, elem := range gs.SoulBondedNftsCollectionList {
+	index := string(SoulBondedNftsCollectionKey(elem.Index))
+	if _, ok := soulBondedNftsCollectionIndexMap[index]; ok {
+		return fmt.Errorf("duplicated index for soulBondedNftsCollection")
+	}
+	soulBondedNftsCollectionIndexMap[index] = struct{}{}
+}
+// this line is used by starport scaffolding # genesis/types/validate
 
 	return gs.Params.Validate()
 }

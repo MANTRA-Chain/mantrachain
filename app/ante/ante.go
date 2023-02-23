@@ -1,12 +1,14 @@
 package ante
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	guardante "github.com/LimeChain/mantrachain/x/guard/ante"
+	tokenante "github.com/LimeChain/mantrachain/x/token/ante"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 )
 
@@ -19,7 +21,7 @@ type HandlerOptions struct {
 	SignModeHandler        authsigning.SignModeHandler
 	SigGasConsumer         authante.SignatureVerificationGasConsumer
 	TxFeeChecker           authante.TxFeeChecker
-	TokenKeeper            guardante.TokenKeeper
+	TokenKeeper            tokenante.TokenKeeper
 	NFTKeeper              guardante.NFTKeeper
 	GuardKeeper            guardante.GuardKeeper
 }
@@ -29,22 +31,23 @@ type HandlerOptions struct {
 // signer.
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.AccountKeeper == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
+		return nil, errors.Wrap(sdkerrors.ErrLogic, "account keeper is required for ante builder")
 	}
 
 	if options.BankKeeper == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "bank keeper is required for ante builder")
+		return nil, errors.Wrap(sdkerrors.ErrLogic, "bank keeper is required for ante builder")
 	}
 
 	if options.SignModeHandler == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
+		return nil, errors.Wrap(sdkerrors.ErrLogic, "sign mode handler is required for ante builder")
 	}
 
 	anteDecorators := []sdk.AnteDecorator{
 		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
-		guardante.NewGuardTransferDecorator(options.GuardKeeper, options.TokenKeeper, options.NFTKeeper),
+		guardante.NewGuardTransferDecorator(options.GuardKeeper, options.NFTKeeper),
+		tokenante.NewTokenTransferDecorator(options.TokenKeeper),
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
 		authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),

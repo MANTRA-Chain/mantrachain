@@ -24,6 +24,5 @@ message NftCollection {
       (gogoproto.moretags) = "yaml:\"creator\"",
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  bool soul_bonded = 11 [(gogoproto.moretags) = "yaml:\"soul_bonded\""];
 }
 

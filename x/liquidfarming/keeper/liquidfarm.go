@@ -3,6 +3,7 @@ package keeper
 import (
 	"strconv"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -14,16 +15,16 @@ import (
 func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress, farmingCoin sdk.Coin) error {
 	pool, found := k.liquidityKeeper.GetPool(ctx, poolId)
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pool %d not found", poolId)
+		return errors.Wrapf(sdkerrors.ErrNotFound, "pool %d not found", poolId)
 	}
 
 	liquidFarm, found := k.GetLiquidFarm(ctx, pool.Id)
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "liquid farm by pool %d not found", pool.Id)
+		return errors.Wrapf(sdkerrors.ErrNotFound, "liquid farm by pool %d not found", pool.Id)
 	}
 
 	if farmingCoin.Amount.LT(liquidFarm.MinFarmAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "must be greater than the minimum amount %s", liquidFarm.MinFarmAmount)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "must be greater than the minimum amount %s", liquidFarm.MinFarmAmount)
 	}
 
 	reserveAddr := types.LiquidFarmReserveAddress(pool.Id)
@@ -88,7 +89,7 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress, unfarmingCoin sdk.Coin) (unfarmedCoin sdk.Coin, err error) {
 	pool, found := k.liquidityKeeper.GetPool(ctx, poolId)
 	if !found {
-		return sdk.Coin{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pool %d not found", poolId)
+		return sdk.Coin{}, errors.Wrapf(sdkerrors.ErrNotFound, "pool %d not found", poolId)
 	}
 
 	reserveAddr := types.LiquidFarmReserveAddress(pool.Id)

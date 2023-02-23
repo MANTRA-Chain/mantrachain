@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -24,7 +25,7 @@ func (k Keeper) placeOrder(
 	orderLifespan time.Duration) (order types.Order, err error) {
 	spendable := k.bankKeeper.SpendableCoins(ctx, ordererAddr)
 	if spendableAmt := spendable.AmountOf(offerCoin.Denom); spendableAmt.LT(offerCoin.Amount) {
-		return types.Order{}, sdkerrors.Wrapf(
+		return types.Order{}, errors.Wrapf(
 			sdkerrors.ErrInsufficientFunds, "%s is smaller than %s",
 			sdk.NewCoin(offerCoin.Denom, spendableAmt), offerCoin)
 	}
@@ -32,12 +33,12 @@ func (k Keeper) placeOrder(
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
 	if orderLifespan > maxOrderLifespan {
 		return types.Order{},
-			sdkerrors.Wrapf(types.ErrTooLongOrderLifespan, "%s is longer than %s", orderLifespan, maxOrderLifespan)
+			errors.Wrapf(types.ErrTooLongOrderLifespan, "%s is longer than %s", orderLifespan, maxOrderLifespan)
 	}
 
 	pair, found := k.GetPair(ctx, pairId)
 	if !found {
-		return types.Order{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
+		return types.Order{}, errors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
 	}
 
 	tickPrec := k.GetTickPrecision(ctx)
@@ -52,9 +53,9 @@ func (k Keeper) placeOrder(
 		}
 		switch {
 		case price.GT(upperPriceLimit):
-			return types.Order{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is higher than %s", *price, upperPriceLimit)
+			return types.Order{}, errors.Wrapf(types.ErrPriceOutOfRange, "%s is higher than %s", *price, upperPriceLimit)
 		case price.LT(lowerPriceLimit):
-			return types.Order{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is lower than %s", *price, lowerPriceLimit)
+			return types.Order{}, errors.Wrapf(types.ErrPriceOutOfRange, "%s is lower than %s", *price, lowerPriceLimit)
 		}
 	case types.OrderTypeMarket:
 		if pair.LastPrice == nil {
@@ -72,7 +73,7 @@ func (k Keeper) placeOrder(
 	case types.OrderDirectionBuy:
 		if offerCoin.Denom != pair.QuoteCoinDenom || demandCoinDenom != pair.BaseCoinDenom {
 			return types.Order{},
-				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
+				errors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					demandCoinDenom, offerCoin.Denom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		switch typ {
@@ -86,13 +87,13 @@ func (k Keeper) placeOrder(
 		}
 		resultOfferCoin = sdk.NewCoin(offerCoin.Denom, amm.OfferCoinAmount(amm.Buy, resultPrice, amount))
 		if offerCoin.IsLT(resultOfferCoin) {
-			return types.Order{}, sdkerrors.Wrapf(
+			return types.Order{}, errors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s", offerCoin, resultOfferCoin)
 		}
 	case types.OrderDirectionSell:
 		if offerCoin.Denom != pair.BaseCoinDenom || demandCoinDenom != pair.QuoteCoinDenom {
 			return types.Order{},
-				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
+				errors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					offerCoin.Denom, demandCoinDenom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		switch typ {
@@ -106,7 +107,7 @@ func (k Keeper) placeOrder(
 		}
 		resultOfferCoin = sdk.NewCoin(offerCoin.Denom, amount)
 		if offerCoin.Amount.LT(amount) {
-			return types.Order{}, sdkerrors.Wrapf(
+			return types.Order{}, errors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s",
 				offerCoin, sdk.NewCoin(offerCoin.Denom, amount))
 		}
@@ -197,10 +198,10 @@ func (k Keeper) ValidateMsgCancelOrder(ctx sdk.Context, msg *types.MsgCancelOrde
 	order, found = k.GetOrder(ctx, msg.PairId, msg.OrderId)
 	if !found {
 		return types.Order{},
-			sdkerrors.Wrapf(sdkerrors.ErrNotFound, "order %d not found in pair %d", msg.OrderId, msg.PairId)
+			errors.Wrapf(sdkerrors.ErrNotFound, "order %d not found in pair %d", msg.OrderId, msg.PairId)
 	}
 	if msg.Orderer != order.Orderer {
-		return types.Order{}, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "mismatching orderer")
+		return types.Order{}, errors.Wrap(sdkerrors.ErrUnauthorized, "mismatching orderer")
 	}
 	if order.Status == types.OrderStatusCanceled {
 		return types.Order{}, types.ErrAlreadyCanceled
@@ -243,7 +244,7 @@ func (k Keeper) CancelAllOrders(ctx sdk.Context, msg *types.MsgCancelAllOrders) 
 	for _, pairId := range msg.PairIds {
 		pair, found := k.GetPair(ctx, pairId)
 		if !found { // check if the pair exists
-			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
+			return errors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
 		}
 		pairIdSet[pairId] = struct{}{} // add pair id to the set
 		pairIds = append(pairIds, strconv.FormatUint(pairId, 10))

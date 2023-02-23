@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -33,15 +34,15 @@ func (msg MsgApplyMarketMaker) Type() string { return TypeMsgApplyMarketMaker }
 
 func (msg MsgApplyMarketMaker) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %q: %v", msg.Address, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %q: %v", msg.Address, err)
 	}
 	if len(msg.PairIds) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair ids must not be empty")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair ids must not be empty")
 	}
 	pairMap := make(map[uint64]struct{})
 	for _, pair := range msg.PairIds {
 		if _, ok := pairMap[pair]; ok {
-			return sdkerrors.Wrapf(ErrInvalidPairId, "duplicated pair id %d", pair)
+			return errors.Wrapf(ErrInvalidPairId, "duplicated pair id %d", pair)
 		}
 		pairMap[pair] = struct{}{}
 	}
@@ -83,7 +84,7 @@ func (msg MsgClaimIncentives) Type() string { return TypeMsgClaimIncentives }
 
 func (msg MsgClaimIncentives) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %q: %v", msg.Address, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address %q: %v", msg.Address, err)
 	}
 	return nil
 }

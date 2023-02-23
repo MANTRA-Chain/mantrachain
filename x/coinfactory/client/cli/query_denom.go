@@ -4,10 +4,11 @@ import (
 	"context"
 	"strings"
 
+	"cosmossdk.io/errors"
+
 	"github.com/LimeChain/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +25,7 @@ func CmdQueryDenomAuthorityMetadata() *cobra.Command {
 			reqDenom := args[0]
 
 			if strings.TrimSpace(reqDenom) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidDenom, "empty denom")
+				return errors.Wrap(types.ErrInvalidDenom, "empty denom")
 			}
 
 			params := &types.QueryDenomAuthorityMetadataRequest{
@@ -58,7 +59,7 @@ func CmdQueryDenomsFromCreator() *cobra.Command {
 			reqCreator := args[0]
 
 			if strings.TrimSpace(reqCreator) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidCreator, "empty creator")
+				return errors.Wrap(types.ErrInvalidCreator, "empty creator")
 			}
 
 			params := &types.QueryDenomsFromCreatorRequest{

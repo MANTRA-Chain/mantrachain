@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -30,11 +30,11 @@ func CmdGetNft() *cobra.Command {
 			reqId := args[2]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			if strings.TrimSpace(reqId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
@@ -78,7 +78,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 			reqCollectionId := args[1]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
@@ -129,11 +129,11 @@ func CmdGetNftOwner() *cobra.Command {
 			reqId := args[2]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			if strings.TrimSpace(reqId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
@@ -218,11 +218,11 @@ func CmdGetNftApproved() *cobra.Command {
 			reqId := args[2]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			if strings.TrimSpace(reqId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
@@ -265,7 +265,7 @@ func CmdGetNftBalance() *cobra.Command {
 			reqOwner := args[2]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)
@@ -313,7 +313,7 @@ func CmdGetCollectionNftsByOwner() *cobra.Command {
 			reqOwner := args[2]
 
 			if strings.TrimSpace(reqCollectionId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			collectionCreator, err := sdk.AccAddressFromBech32(reqCollectionCreator)

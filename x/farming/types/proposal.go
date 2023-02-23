@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
@@ -49,7 +50,7 @@ func (p *PublicPlanProposal) ProposalType() string { return ProposalTypePublicPl
 
 func (p *PublicPlanProposal) ValidateBasic() error {
 	if len(p.AddPlanRequests) == 0 && len(p.ModifyPlanRequests) == 0 && len(p.DeletePlanRequests) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "proposal request must not be empty")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "proposal request must not be empty")
 	}
 
 	for _, ap := range p.AddPlanRequests {
@@ -124,17 +125,17 @@ func (p *AddPlanRequest) Validate() error {
 	// farmingPoolAddr is used as an arbitrary creator address in msg validation below.
 	farmingPoolAddr, err := sdk.AccAddressFromBech32(p.FarmingPoolAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", p.FarmingPoolAddress, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", p.FarmingPoolAddress, err)
 	}
 	if _, err := sdk.AccAddressFromBech32(p.TerminationAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", p.TerminationAddress, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", p.TerminationAddress, err)
 	}
 
 	isForFixedAmountPlan := p.IsForFixedAmountPlan()
 	isForRatioPlan := p.IsForRatioPlan()
 	switch {
 	case isForFixedAmountPlan == isForRatioPlan:
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "exactly one of epoch amount or epoch ratio must be provided")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "exactly one of epoch amount or epoch ratio must be provided")
 	case isForFixedAmountPlan:
 		if err := NewMsgCreateFixedAmountPlan(
 			p.Name, farmingPoolAddr, p.StakingCoinWeights, p.StartTime, p.EndTime, p.EpochAmount,
@@ -193,21 +194,21 @@ func (p *ModifyPlanRequest) IsForRatioPlan() bool {
 // Validate validates ModifyPlanRequest.
 func (p *ModifyPlanRequest) Validate() error {
 	if p.PlanId == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid plan id: %d", p.PlanId)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid plan id: %d", p.PlanId)
 	}
 	if p.Name != "" {
 		if err := ValidatePlanName(p.Name); err != nil {
-			return sdkerrors.Wrap(ErrInvalidPlanName, err.Error())
+			return errors.Wrap(ErrInvalidPlanName, err.Error())
 		}
 	}
 	if p.FarmingPoolAddress != "" {
 		if _, err := sdk.AccAddressFromBech32(p.FarmingPoolAddress); err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", p.FarmingPoolAddress, err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", p.FarmingPoolAddress, err)
 		}
 	}
 	if p.TerminationAddress != "" {
 		if _, err := sdk.AccAddressFromBech32(p.TerminationAddress); err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", p.TerminationAddress, err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", p.TerminationAddress, err)
 		}
 	}
 	if p.StakingCoinWeights != nil {
@@ -217,14 +218,14 @@ func (p *ModifyPlanRequest) Validate() error {
 	}
 	if p.StartTime != nil && p.EndTime != nil {
 		if !p.EndTime.After(*p.StartTime) {
-			return sdkerrors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", p.EndTime, p.StartTime)
+			return errors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", p.EndTime, p.StartTime)
 		}
 	}
 	isForFixedAmountPlan := p.IsForFixedAmountPlan()
 	isForRatioPlan := p.IsForRatioPlan()
 	switch {
 	case isForFixedAmountPlan && isForRatioPlan:
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "at most one of epoch amount or epoch ratio must be provided")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "at most one of epoch amount or epoch ratio must be provided")
 	case isForFixedAmountPlan:
 		if err := ValidateEpochAmount(p.EpochAmount); err != nil {
 			return err
@@ -247,7 +248,7 @@ func NewDeletePlanRequest(id uint64) DeletePlanRequest {
 // Validate validates DeletePlanRequest.
 func (p *DeletePlanRequest) Validate() error {
 	if p.PlanId == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid plan id: %d", p.PlanId)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid plan id: %d", p.PlanId)
 	}
 	return nil
 }

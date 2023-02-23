@@ -60,8 +60,8 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 		Creator:     meta.Creator.String(),
 		Owner:       meta.Owner.String(),
 		Opened:      meta.Opened,
-		SoulBonded:  meta.SoulBonded,
 		Data:        nftColl.Data,
+		// TODO: add is collection for soul bonded nfts field here
 	}, nil
 }
 
@@ -120,8 +120,8 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 			Creator:     meta.Creator.String(),
 			Owner:       meta.Owner.String(),
 			Opened:      meta.Opened,
-			SoulBonded:  meta.SoulBonded,
 			Data:        nftColl.Data,
+			// TODO: add is collection for soul bonded nfts field here
 		})
 	}
 
@@ -180,8 +180,8 @@ func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCo
 			Creator:     meta.Creator.String(),
 			Owner:       meta.Owner.String(),
 			Opened:      meta.Opened,
-			SoulBonded:  meta.SoulBonded,
 			Data:        nftColl.Data,
+			// TODO: add is collection for soul bonded nfts field here
 		})
 	}
 

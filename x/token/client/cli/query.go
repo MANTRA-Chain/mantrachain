@@ -36,7 +36,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdGetAllNftCollections())
 	cmd.AddCommand(CmdGetCollectionNftsByOwner())
 
-	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(CmdListSoulBondedNftsCollection())
+	cmd.AddCommand(CmdShowSoulBondedNftsCollection())
+// this line is used by starport scaffolding # 1
 
 	return cmd
 }

@@ -177,7 +177,7 @@ message MsgCreateNftCollectionMetadata {
   string category = 8;
   string symbol = 9;
   bool opened = 10;
-  bool soul_bonded = 11;
+  bool soul_bonded_nfts = 11;
   google.protobuf.Any data = 12;
 }
 

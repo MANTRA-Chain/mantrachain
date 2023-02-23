@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -25,18 +26,18 @@ func (k msgServer) UpdateGuardTransfer(goCtx context.Context, msg *types.MsgUpda
 	}
 
 	if !creator.Equals(adminAccount) {
-		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+		return nil, errors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
 
 	// Check if the value exists
 	valFound, isFound := k.GetGuardTransfer(ctx)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "not set")
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
 	if msg.Creator != valFound.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	var guardTransfer = types.GuardTransfer{

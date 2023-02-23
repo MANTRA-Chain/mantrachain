@@ -1,6 +1,7 @@
 package lpfarm
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -30,7 +31,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			res, err := msgServer.Harvest(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
-			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
+			return nil, errors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
 }
@@ -41,7 +42,7 @@ func NewFarmingPlanProposalHandler(k keeper.Keeper) govv1beta1.Handler {
 		case *types.FarmingPlanProposal:
 			return keeper.HandleFarmingPlanProposal(ctx, k, c)
 		default:
-			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized lpfarm proposal content type: %T", c)
+			return errors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized lpfarm proposal content type: %T", c)
 		}
 	}
 }

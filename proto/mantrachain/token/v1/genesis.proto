@@ -1,18 +1,24 @@
 syntax = "proto3";
+
 package mantrachain.token.v1;
 
 import "gogoproto/gogo.proto";
 import "mantrachain/token/v1/params.proto";
 import "mantrachain/token/v1/nft_collection.proto";
 import "mantrachain/token/v1/nft.proto";
+import "mantrachain/token/v1/soul_bonded_nfts_collection.proto";
+
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/LimeChain/mantrachain/x/token/types";
 
 // GenesisState defines the token module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
+           Params        params              = 1 [(gogoproto.nullable) = false];
   repeated NftCollection nft_collection_list = 2 [(gogoproto.nullable) = false];
-  repeated Nft nft_list = 3 [(gogoproto.nullable) = false];
+  repeated Nft           nft_list            = 3 [(gogoproto.nullable) = false];
+
   // this line is used by starport scaffolding # genesis/proto/state
+  repeated SoulBondedNftsCollection soulBondedNftsCollectionList = 4 [(gogoproto.nullable) = false];
 }
+

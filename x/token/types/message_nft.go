@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -70,26 +71,26 @@ func (msg *MsgMintNfts) GetSignBytes() []byte {
 func (msg *MsgMintNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Receiver) != "" {
 		_, err = sdk.AccAddressFromBech32(msg.Receiver)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -132,20 +133,20 @@ func (msg *MsgBurnNfts) GetSignBytes() []byte {
 func (msg *MsgBurnNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -192,28 +193,28 @@ func (msg *MsgTransferNfts) GetSignBytes() []byte {
 func (msg *MsgTransferNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver owner (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver owner (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -259,24 +260,24 @@ func (msg *MsgApproveNfts) GetSignBytes() []byte {
 func (msg *MsgApproveNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -315,11 +316,11 @@ func (msg *MsgApproveAllNfts) GetSignBytes() []byte {
 func (msg *MsgApproveAllNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	return nil
 }
@@ -363,26 +364,26 @@ func (msg *MsgMintNft) GetSignBytes() []byte {
 func (msg *MsgMintNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Receiver) != "" {
 		_, err = sdk.AccAddressFromBech32(msg.Receiver)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -425,20 +426,20 @@ func (msg *MsgBurnNft) GetSignBytes() []byte {
 func (msg *MsgBurnNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -485,24 +486,24 @@ func (msg *MsgTransferNft) GetSignBytes() []byte {
 func (msg *MsgTransferNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil
@@ -548,24 +549,24 @@ func (msg *MsgApproveNft) GetSignBytes() []byte {
 func (msg *MsgApproveNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.StrictCollection {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	return nil

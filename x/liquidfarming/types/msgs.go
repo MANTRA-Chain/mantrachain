@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -41,20 +42,20 @@ func (msg MsgLiquidFarm) Type() string { return TypeMsgLiquidFarm }
 
 func (msg MsgLiquidFarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
 	}
 	if err := msg.FarmingCoin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid farming coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid farming coin: %v", err)
 	}
 	if !msg.FarmingCoin.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "farming coin must be positive")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "farming coin must be positive")
 	}
 	poolCoinDenom := liquiditytypes.PoolCoinDenom(msg.PoolId)
 	if poolCoinDenom != msg.FarmingCoin.Denom {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", poolCoinDenom, msg.FarmingCoin.Denom)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", poolCoinDenom, msg.FarmingCoin.Denom)
 	}
 	return nil
 }
@@ -94,20 +95,20 @@ func (msg MsgLiquidUnfarm) Type() string { return TypeMsgLiquidUnfarm }
 
 func (msg MsgLiquidUnfarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
 	}
 	if err := msg.UnfarmingCoin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid unfarming coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid unfarming coin: %v", err)
 	}
 	if !msg.UnfarmingCoin.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unfarming coin must be positive")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "unfarming coin must be positive")
 	}
 	expCoinDenom := LiquidFarmCoinDenom(msg.PoolId)
 	if msg.UnfarmingCoin.Denom != expCoinDenom {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", expCoinDenom, msg.UnfarmingCoin.Denom)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", expCoinDenom, msg.UnfarmingCoin.Denom)
 	}
 	return nil
 }
@@ -147,20 +148,20 @@ func (msg MsgLiquidUnfarmAndWithdraw) Type() string { return TypeMsgLiquidUnfarm
 
 func (msg MsgLiquidUnfarmAndWithdraw) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
 	}
 	if err := msg.UnfarmingCoin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid unfarming coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid unfarming coin: %v", err)
 	}
 	if !msg.UnfarmingCoin.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unfarming coin must be positive")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "unfarming coin must be positive")
 	}
 	expCoinDenom := LiquidFarmCoinDenom(msg.PoolId)
 	if msg.UnfarmingCoin.Denom != expCoinDenom {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", expCoinDenom, msg.UnfarmingCoin.Denom)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", expCoinDenom, msg.UnfarmingCoin.Denom)
 	}
 	return nil
 }
@@ -201,23 +202,23 @@ func (msg MsgPlaceBid) Type() string { return TypeMsgPlaceBid }
 
 func (msg MsgPlaceBid) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Bidder); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bidder address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bidder address: %v", err)
 	}
 	if msg.AuctionId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid auction id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid auction id")
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
 	}
 	if err := msg.BiddingCoin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid bidding coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid bidding coin: %v", err)
 	}
 	if !msg.BiddingCoin.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "bidding amount must be positive")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "bidding amount must be positive")
 	}
 	poolCoinDenom := liquiditytypes.PoolCoinDenom(msg.PoolId)
 	if poolCoinDenom != msg.BiddingCoin.Denom {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", poolCoinDenom, msg.BiddingCoin.Denom)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", poolCoinDenom, msg.BiddingCoin.Denom)
 	}
 	return nil
 }
@@ -257,13 +258,13 @@ func (msg MsgRefundBid) Type() string { return TypeMsgRefundBid }
 
 func (msg MsgRefundBid) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Bidder); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bidder address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid bidder address: %v", err)
 	}
 	if msg.AuctionId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid auction id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid auction id")
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid pool id")
 	}
 	return nil
 }
@@ -301,7 +302,7 @@ func (msg MsgAdvanceAuction) Type() string { return TypeMsgAdvanceAuction }
 
 func (msg MsgAdvanceAuction) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Requester); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid requester address %q: %v", msg.Requester, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid requester address %q: %v", msg.Requester, err)
 	}
 	return nil
 }

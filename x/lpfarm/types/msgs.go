@@ -3,6 +3,7 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -52,7 +53,7 @@ func (msg MsgCreatePrivatePlan) GetSigners() []sdk.AccAddress {
 
 func (msg MsgCreatePrivatePlan) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	// Create a dummy plan with valid fields and utilize Validate() method
 	// for user-provided data.
@@ -61,7 +62,7 @@ func (msg MsgCreatePrivatePlan) ValidateBasic() error {
 		1, msg.Description, validAddr, validAddr,
 		msg.RewardAllocations, msg.StartTime, msg.EndTime, true)
 	if err := dummyPlan.Validate(); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	return nil
 }
@@ -99,13 +100,13 @@ func (msg MsgFarm) GetSigners() []sdk.AccAddress {
 
 func (msg MsgFarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := msg.Coin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
 	}
 	if !msg.Coin.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
 	}
 	return nil
 }
@@ -143,13 +144,13 @@ func (msg MsgUnfarm) GetSigners() []sdk.AccAddress {
 
 func (msg MsgUnfarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := msg.Coin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
 	}
 	if !msg.Coin.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
 	}
 	return nil
 }
@@ -187,10 +188,10 @@ func (msg MsgHarvest) GetSigners() []sdk.AccAddress {
 
 func (msg MsgHarvest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := sdk.ValidateDenom(msg.Denom); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid denom: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid denom: %v", err)
 	}
 	return nil
 }

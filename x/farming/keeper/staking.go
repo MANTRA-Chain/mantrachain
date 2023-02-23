@@ -4,6 +4,7 @@ import (
 	"sort"
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -456,7 +457,7 @@ func (k Keeper) Unstake(ctx sdk.Context, farmerAcc sdk.AccAddress, amount sdk.Co
 				staking.Amount = sdk.ZeroInt()
 			}
 			if staking.Amount.LT(amtToUnstake) {
-				return sdkerrors.Wrapf(
+				return errors.Wrapf(
 					sdkerrors.ErrInsufficientFunds, "not enough staked coins, %s%s is less than %s%s",
 					unstaked.Add(staking.Amount), coin.Denom, unstaked.Add(amtToUnstake), coin.Denom)
 			}

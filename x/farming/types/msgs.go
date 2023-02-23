@@ -3,6 +3,7 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -53,19 +54,19 @@ func (msg MsgCreateFixedAmountPlan) Type() string { return TypeMsgCreateFixedAmo
 
 func (msg MsgCreateFixedAmountPlan) ValidateBasic() error {
 	if err := ValidatePlanName(msg.Name); err != nil {
-		return sdkerrors.Wrap(ErrInvalidPlanName, err.Error())
+		return errors.Wrap(ErrInvalidPlanName, err.Error())
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
 	}
 	if !msg.EndTime.After(msg.StartTime) {
-		return sdkerrors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", msg.EndTime.Format(time.RFC3339), msg.StartTime.Format(time.RFC3339))
+		return errors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", msg.EndTime.Format(time.RFC3339), msg.StartTime.Format(time.RFC3339))
 	}
 	if err := ValidateStakingCoinTotalWeights(msg.StakingCoinWeights); err != nil {
 		return err
 	}
 	if msg.EpochAmount.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "epoch amount must not be empty")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "epoch amount must not be empty")
 	}
 	if err := ValidateEpochAmount(msg.EpochAmount); err != nil {
 		return err
@@ -118,13 +119,13 @@ func (msg MsgCreateRatioPlan) Type() string { return TypeMsgCreateRatioPlan }
 
 func (msg MsgCreateRatioPlan) ValidateBasic() error {
 	if err := ValidatePlanName(msg.Name); err != nil {
-		return sdkerrors.Wrap(ErrInvalidPlanName, err.Error())
+		return errors.Wrap(ErrInvalidPlanName, err.Error())
 	}
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
 	}
 	if !msg.EndTime.After(msg.StartTime) {
-		return sdkerrors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", msg.EndTime.Format(time.RFC3339), msg.StartTime.Format(time.RFC3339))
+		return errors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", msg.EndTime.Format(time.RFC3339), msg.StartTime.Format(time.RFC3339))
 	}
 	if err := ValidateStakingCoinTotalWeights(msg.StakingCoinWeights); err != nil {
 		return err
@@ -172,10 +173,10 @@ func (msg MsgStake) Type() string { return TypeMsgStake }
 
 func (msg MsgStake) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
 	}
 	if ok := msg.StakingCoins.IsZero(); ok {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staking coins must not be zero")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "staking coins must not be zero")
 	}
 	if err := msg.StakingCoins.Validate(); err != nil {
 		return err
@@ -220,10 +221,10 @@ func (msg MsgUnstake) Type() string { return TypeMsgUnstake }
 
 func (msg MsgUnstake) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
 	}
 	if ok := msg.UnstakingCoins.IsZero(); ok {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unstaking coins must not be zero")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "unstaking coins must not be zero")
 	}
 	if err := msg.UnstakingCoins.Validate(); err != nil {
 		return err
@@ -268,10 +269,10 @@ func (msg MsgHarvest) Type() string { return TypeMsgHarvest }
 
 func (msg MsgHarvest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address %q: %v", msg.Farmer, err)
 	}
 	if len(msg.StakingCoinDenoms) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "staking coin denoms must be provided at least one")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "staking coin denoms must be provided at least one")
 	}
 	for _, denom := range msg.StakingCoinDenoms {
 		if err := sdk.ValidateDenom(denom); err != nil {
@@ -318,10 +319,10 @@ func (msg MsgRemovePlan) Type() string { return TypeMsgRemovePlan }
 
 func (msg MsgRemovePlan) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address %q: %v", msg.Creator, err)
 	}
 	if msg.PlanId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "plan id must not be 0")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "plan id must not be 0")
 	}
 	return nil
 }
@@ -359,7 +360,7 @@ func (msg MsgAdvanceEpoch) Type() string { return TypeMsgAdvanceEpoch }
 
 func (msg MsgAdvanceEpoch) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Requester); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid requester address %q: %v", msg.Requester, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid requester address %q: %v", msg.Requester, err)
 	}
 	return nil
 }

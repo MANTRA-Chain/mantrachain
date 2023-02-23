@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
@@ -20,7 +20,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	}
 
 	if strings.TrimSpace(msg.Collection.Id) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
+		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
 	}
 
 	collectionController := NewNftCollectionController(ctx, creator, false).
@@ -57,20 +57,25 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	}
 
 	newNftCollection := types.NftCollection{
-		Index:      collectionIndex,
-		Id:         collectionId,
-		Images:     msg.Collection.Images,
-		Url:        msg.Collection.Url,
-		Links:      msg.Collection.Links,
-		Category:   msg.Collection.Category,
-		Options:    msg.Collection.Options,
-		Opened:     msg.Collection.Opened,
-		SoulBonded: msg.Collection.SoulBonded,
-		Creator:    creator,
-		Owner:      creator,
+		Index:    collectionIndex,
+		Id:       collectionId,
+		Images:   msg.Collection.Images,
+		Url:      msg.Collection.Url,
+		Links:    msg.Collection.Links,
+		Category: msg.Collection.Category,
+		Options:  msg.Collection.Options,
+		Opened:   msg.Collection.Opened,
+		Creator:  creator,
+		Owner:    creator,
 	}
 
 	k.SetNftCollection(ctx, newNftCollection)
+
+	if msg.Collection.SoulBondedNfts {
+		k.SetSoulBondedNftsCollection(ctx, types.SoulBondedNftsCollection{
+			Index: collectionId,
+		})
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

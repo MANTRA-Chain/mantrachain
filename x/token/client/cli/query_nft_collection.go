@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func CmdGetNftCollection() *cobra.Command {
 			reqId := args[1]
 
 			if strings.TrimSpace(reqId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			creator, err := sdk.AccAddressFromBech32(reqCreator)
@@ -70,7 +70,7 @@ func CmdGetNftCollectionSupply() *cobra.Command {
 			reqId := args[1]
 
 			if strings.TrimSpace(reqId) == "" {
-				return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
+				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
 			}
 
 			creator, err := sdk.AccAddressFromBech32(reqCreator)

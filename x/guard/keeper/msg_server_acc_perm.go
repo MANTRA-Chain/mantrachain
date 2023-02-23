@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -25,7 +26,7 @@ func (k msgServer) CreateAccPerm(goCtx context.Context, msg *types.MsgCreateAccP
 	}
 
 	if !creator.Equals(adminAccount) {
-		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+		return nil, errors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
 
 	// Check if the value already exists
@@ -34,7 +35,7 @@ func (k msgServer) CreateAccPerm(goCtx context.Context, msg *types.MsgCreateAccP
 		msg.Id,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
 	var accPerm = types.AccPerm{
@@ -68,7 +69,7 @@ func (k msgServer) UpdateAccPerm(goCtx context.Context, msg *types.MsgUpdateAccP
 	}
 
 	if !creator.Equals(adminAccount) {
-		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+		return nil, errors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
 
 	// Check if the value exists
@@ -77,12 +78,12 @@ func (k msgServer) UpdateAccPerm(goCtx context.Context, msg *types.MsgUpdateAccP
 		msg.Id,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
 	if msg.Creator != valFound.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	var accPerm = types.AccPerm{
@@ -114,7 +115,7 @@ func (k msgServer) DeleteAccPerm(goCtx context.Context, msg *types.MsgDeleteAccP
 	}
 
 	if !creator.Equals(adminAccount) {
-		return nil, sdkerrors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
+		return nil, errors.Wrapf(types.ErrAdminAccountParamMismatch, "admin account param %s does not match the creator %s", adminAccount.String(), creator.String())
 	}
 
 	// Check if the value exists
@@ -123,12 +124,12 @@ func (k msgServer) DeleteAccPerm(goCtx context.Context, msg *types.MsgDeleteAccP
 		msg.Id,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
 	if msg.Creator != valFound.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, errors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	// TODO: add event

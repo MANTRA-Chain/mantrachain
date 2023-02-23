@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -202,7 +203,7 @@ $ %s query %s rewards-auctions 1
 					status == types.AuctionStatusSkipped.String() {
 					req.Status = status
 				} else {
-					return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest,
+					return errors.Wrap(sdkerrors.ErrInvalidRequest,
 						"auction status type must be AUCTION_STATUS_STARTED, AUCTION_STATUS_FINISHED, or AUCTION_STATUS_SKIPPED")
 				}
 			}

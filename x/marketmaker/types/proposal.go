@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -49,7 +50,7 @@ func (p *MarketMakerProposal) ProposalType() string { return ProposalTypeMarketM
 
 func (p *MarketMakerProposal) ValidateBasic() error {
 	if len(p.Inclusions) == 0 && len(p.Exclusions) == 0 && len(p.Rejections) == 0 && len(p.Distributions) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "proposal request must not be empty")
+		return errors.Wrap(sdkerrors.ErrInvalidRequest, "proposal request must not be empty")
 	}
 
 	// checking duplicated market maker for inclusion, exclusion, rejection
@@ -57,7 +58,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Inclusions {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {
@@ -67,7 +68,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Exclusions {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {
@@ -77,7 +78,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Rejections {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {

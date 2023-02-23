@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -102,7 +103,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateFixedPlan(args[0])
 			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateFixedAmountPlan(
@@ -170,7 +171,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateRatioPlan(args[0])
 			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateRatioPlan(

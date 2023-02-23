@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/errors"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -27,6 +28,7 @@ var (
 )
 
 // NewBasePlan creates a new BasePlan object
+//
 //nolint:interfacer
 func NewBasePlan(id uint64, name string, typ PlanType, farmingPoolAddr, terminationAddr string, coinWeights sdk.DecCoins, startTime, endTime time.Time) *BasePlan {
 	basePlan := &BasePlan{
@@ -171,25 +173,25 @@ func (plan BasePlan) GetBasePlan() *BasePlan {
 // Validate checks for errors on the Plan fields
 func (plan BasePlan) Validate() error {
 	if plan.Type != PlanTypePrivate && plan.Type != PlanTypePublic {
-		return sdkerrors.Wrapf(ErrInvalidPlanType, "unknown plan type: %s", plan.Type)
+		return errors.Wrapf(ErrInvalidPlanType, "unknown plan type: %s", plan.Type)
 	}
 	if _, err := sdk.AccAddressFromBech32(plan.FarmingPoolAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", plan.FarmingPoolAddress, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farming pool address %q: %v", plan.FarmingPoolAddress, err)
 	}
 	if _, err := sdk.AccAddressFromBech32(plan.TerminationAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", plan.TerminationAddress, err)
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid termination address %q: %v", plan.TerminationAddress, err)
 	}
 	if err := ValidatePlanName(plan.Name); err != nil {
-		return sdkerrors.Wrap(ErrInvalidPlanName, err.Error())
+		return errors.Wrap(ErrInvalidPlanName, err.Error())
 	}
 	if err := ValidateStakingCoinTotalWeights(plan.StakingCoinWeights); err != nil {
 		return err
 	}
 	if !plan.EndTime.After(plan.StartTime) {
-		return sdkerrors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", plan.EndTime, plan.StartTime)
+		return errors.Wrapf(ErrInvalidPlanEndTime, "end time %s must be greater than start time %s", plan.EndTime, plan.StartTime)
 	}
 	if err := plan.DistributedCoins.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid distributed coins: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "invalid distributed coins: %v", err)
 	}
 	return nil
 }
@@ -276,7 +278,7 @@ func ValidateTotalEpochRatio(plans []PlanI) error {
 			}
 		}
 		if totalRatio.GT(sdk.OneDec()) {
-			return sdkerrors.Wrap(ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1")
+			return errors.Wrap(ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1")
 		}
 	}
 
@@ -286,10 +288,10 @@ func ValidateTotalEpochRatio(plans []PlanI) error {
 // ValidateEpochRatio validate a epoch ratio that must be positive and less than 1.
 func ValidateEpochRatio(epochRatio sdk.Dec) error {
 	if !epochRatio.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "epoch ratio must be positive: %s", epochRatio)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "epoch ratio must be positive: %s", epochRatio)
 	}
 	if epochRatio.GT(sdk.OneDec()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "epoch ratio must be less than 1: %s", epochRatio)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "epoch ratio must be less than 1: %s", epochRatio)
 	}
 	return nil
 }
@@ -297,7 +299,7 @@ func ValidateEpochRatio(epochRatio sdk.Dec) error {
 // ValidateEpochAmount validate a epoch amount that must be valid coins.
 func ValidateEpochAmount(epochAmount sdk.Coins) error {
 	if err := epochAmount.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid epoch amount: %v", err)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid epoch amount: %v", err)
 	}
 	return nil
 }
@@ -314,10 +316,10 @@ func PackPlan(plan PlanI) (*codectypes.Any, error) {
 // UnpackPlan converts Any to PlanI.
 func UnpackPlan(any *codectypes.Any) (PlanI, error) {
 	if any == nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot unpack nil")
+		return nil, errors.Wrapf(sdkerrors.ErrInvalidType, "cannot unpack nil")
 	}
 	if any.TypeUrl == "" {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "empty type url")
+		return nil, errors.Wrap(sdkerrors.ErrInvalidType, "empty type url")
 	}
 	var plan PlanI
 	v := any.GetCachedValue()
@@ -331,7 +333,7 @@ func UnpackPlan(any *codectypes.Any) (PlanI, error) {
 	}
 	plan, ok := v.(PlanI)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot unpack Plan from %T", v)
+		return nil, errors.Wrapf(sdkerrors.ErrInvalidType, "cannot unpack Plan from %T", v)
 	}
 	return plan, nil
 }
@@ -352,17 +354,17 @@ func UnpackPlans(plansAny []*codectypes.Any) ([]PlanI, error) {
 // ValidateStakingCoinTotalWeights validates the total staking coin weights must be equal to 1.
 func ValidateStakingCoinTotalWeights(weights sdk.DecCoins) error {
 	if weights.Empty() {
-		return sdkerrors.Wrap(ErrInvalidStakingCoinWeights, "staking coin weights must not be empty")
+		return errors.Wrap(ErrInvalidStakingCoinWeights, "staking coin weights must not be empty")
 	}
 	if err := weights.Validate(); err != nil {
-		return sdkerrors.Wrapf(ErrInvalidStakingCoinWeights, "invalid staking coin weights: %v", err)
+		return errors.Wrapf(ErrInvalidStakingCoinWeights, "invalid staking coin weights: %v", err)
 	}
 	totalWeight := sdk.ZeroDec()
 	for _, w := range weights {
 		totalWeight = totalWeight.Add(w.Amount)
 	}
 	if !totalWeight.Equal(sdk.OneDec()) {
-		return sdkerrors.Wrap(ErrInvalidStakingCoinWeights, "total weight must be 1")
+		return errors.Wrap(ErrInvalidStakingCoinWeights, "total weight must be 1")
 	}
 	return nil
 }
