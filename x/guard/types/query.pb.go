@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	query "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -113,22 +113,22 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryGetAccPermRequest struct {
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+type QueryGetAccountPrivilegesRequest struct {
+	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 }
 
-func (m *QueryGetAccPermRequest) Reset()         { *m = QueryGetAccPermRequest{} }
-func (m *QueryGetAccPermRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetAccPermRequest) ProtoMessage()    {}
-func (*QueryGetAccPermRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetAccountPrivilegesRequest) Reset()         { *m = QueryGetAccountPrivilegesRequest{} }
+func (m *QueryGetAccountPrivilegesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAccountPrivilegesRequest) ProtoMessage()    {}
+func (*QueryGetAccountPrivilegesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{2}
 }
-func (m *QueryGetAccPermRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAccountPrivilegesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetAccPermRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAccountPrivilegesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetAccPermRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAccountPrivilegesRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -138,41 +138,42 @@ func (m *QueryGetAccPermRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryGetAccPermRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetAccPermRequest.Merge(m, src)
+func (m *QueryGetAccountPrivilegesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAccountPrivilegesRequest.Merge(m, src)
 }
-func (m *QueryGetAccPermRequest) XXX_Size() int {
+func (m *QueryGetAccountPrivilegesRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetAccPermRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetAccPermRequest.DiscardUnknown(m)
+func (m *QueryGetAccountPrivilegesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAccountPrivilegesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetAccPermRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAccountPrivilegesRequest proto.InternalMessageInfo
 
-func (m *QueryGetAccPermRequest) GetId() string {
+func (m *QueryGetAccountPrivilegesRequest) GetAccount() string {
 	if m != nil {
-		return m.Id
+		return m.Account
 	}
 	return ""
 }
 
-type QueryGetAccPermResponse struct {
-	AccPerm AccPerm `protobuf:"bytes,1,opt,name=acc_perm,json=accPerm,proto3" json:"acc_perm"`
+type QueryGetAccountPrivilegesResponse struct {
+	Account    string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Privileges []byte `protobuf:"bytes,2,opt,name=privileges,proto3" json:"privileges,omitempty"`
 }
 
-func (m *QueryGetAccPermResponse) Reset()         { *m = QueryGetAccPermResponse{} }
-func (m *QueryGetAccPermResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetAccPermResponse) ProtoMessage()    {}
-func (*QueryGetAccPermResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetAccountPrivilegesResponse) Reset()         { *m = QueryGetAccountPrivilegesResponse{} }
+func (m *QueryGetAccountPrivilegesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAccountPrivilegesResponse) ProtoMessage()    {}
+func (*QueryGetAccountPrivilegesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{3}
 }
-func (m *QueryGetAccPermResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAccountPrivilegesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetAccPermResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAccountPrivilegesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetAccPermResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAccountPrivilegesResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -182,41 +183,48 @@ func (m *QueryGetAccPermResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryGetAccPermResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetAccPermResponse.Merge(m, src)
+func (m *QueryGetAccountPrivilegesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAccountPrivilegesResponse.Merge(m, src)
 }
-func (m *QueryGetAccPermResponse) XXX_Size() int {
+func (m *QueryGetAccountPrivilegesResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetAccPermResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetAccPermResponse.DiscardUnknown(m)
+func (m *QueryGetAccountPrivilegesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAccountPrivilegesResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetAccPermResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAccountPrivilegesResponse proto.InternalMessageInfo
 
-func (m *QueryGetAccPermResponse) GetAccPerm() AccPerm {
+func (m *QueryGetAccountPrivilegesResponse) GetAccount() string {
 	if m != nil {
-		return m.AccPerm
+		return m.Account
 	}
-	return AccPerm{}
+	return ""
 }
 
-type QueryAllAccPermRequest struct {
-	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+func (m *QueryGetAccountPrivilegesResponse) GetPrivileges() []byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
 }
 
-func (m *QueryAllAccPermRequest) Reset()         { *m = QueryAllAccPermRequest{} }
-func (m *QueryAllAccPermRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllAccPermRequest) ProtoMessage()    {}
-func (*QueryAllAccPermRequest) Descriptor() ([]byte, []int) {
+type QueryGetAccountPrivilegesManyRequest struct {
+	Accounts []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
+}
+
+func (m *QueryGetAccountPrivilegesManyRequest) Reset()         { *m = QueryGetAccountPrivilegesManyRequest{} }
+func (m *QueryGetAccountPrivilegesManyRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAccountPrivilegesManyRequest) ProtoMessage()    {}
+func (*QueryGetAccountPrivilegesManyRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{4}
 }
-func (m *QueryAllAccPermRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAccountPrivilegesManyRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllAccPermRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAccountPrivilegesManyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllAccPermRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAccountPrivilegesManyRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -226,42 +234,42 @@ func (m *QueryAllAccPermRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryAllAccPermRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllAccPermRequest.Merge(m, src)
+func (m *QueryGetAccountPrivilegesManyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAccountPrivilegesManyRequest.Merge(m, src)
 }
-func (m *QueryAllAccPermRequest) XXX_Size() int {
+func (m *QueryGetAccountPrivilegesManyRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllAccPermRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllAccPermRequest.DiscardUnknown(m)
+func (m *QueryGetAccountPrivilegesManyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAccountPrivilegesManyRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllAccPermRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAccountPrivilegesManyRequest proto.InternalMessageInfo
 
-func (m *QueryAllAccPermRequest) GetPagination() *query.PageRequest {
+func (m *QueryGetAccountPrivilegesManyRequest) GetAccounts() []string {
 	if m != nil {
-		return m.Pagination
+		return m.Accounts
 	}
 	return nil
 }
 
-type QueryAllAccPermResponse struct {
-	AccPerm    []AccPerm           `protobuf:"bytes,1,rep,name=acc_perm,json=accPerm,proto3" json:"acc_perm"`
-	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+type QueryGetAccountPrivilegesManyResponse struct {
+	Accounts   []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Privileges [][]byte `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
 }
 
-func (m *QueryAllAccPermResponse) Reset()         { *m = QueryAllAccPermResponse{} }
-func (m *QueryAllAccPermResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllAccPermResponse) ProtoMessage()    {}
-func (*QueryAllAccPermResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetAccountPrivilegesManyResponse) Reset()         { *m = QueryGetAccountPrivilegesManyResponse{} }
+func (m *QueryGetAccountPrivilegesManyResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetAccountPrivilegesManyResponse) ProtoMessage()    {}
+func (*QueryGetAccountPrivilegesManyResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{5}
 }
-func (m *QueryAllAccPermResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetAccountPrivilegesManyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllAccPermResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetAccountPrivilegesManyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllAccPermResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetAccountPrivilegesManyResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -271,47 +279,47 @@ func (m *QueryAllAccPermResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryAllAccPermResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllAccPermResponse.Merge(m, src)
+func (m *QueryGetAccountPrivilegesManyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetAccountPrivilegesManyResponse.Merge(m, src)
 }
-func (m *QueryAllAccPermResponse) XXX_Size() int {
+func (m *QueryGetAccountPrivilegesManyResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllAccPermResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllAccPermResponse.DiscardUnknown(m)
+func (m *QueryGetAccountPrivilegesManyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetAccountPrivilegesManyResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllAccPermResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetAccountPrivilegesManyResponse proto.InternalMessageInfo
 
-func (m *QueryAllAccPermResponse) GetAccPerm() []AccPerm {
+func (m *QueryGetAccountPrivilegesManyResponse) GetAccounts() []string {
 	if m != nil {
-		return m.AccPerm
+		return m.Accounts
 	}
 	return nil
 }
 
-func (m *QueryAllAccPermResponse) GetPagination() *query.PageResponse {
+func (m *QueryGetAccountPrivilegesManyResponse) GetPrivileges() [][]byte {
 	if m != nil {
-		return m.Pagination
+		return m.Privileges
 	}
 	return nil
 }
 
-type QueryGetGuardTransferRequest struct {
+type QueryGetGuardTransferCoinsRequest struct {
 }
 
-func (m *QueryGetGuardTransferRequest) Reset()         { *m = QueryGetGuardTransferRequest{} }
-func (m *QueryGetGuardTransferRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetGuardTransferRequest) ProtoMessage()    {}
-func (*QueryGetGuardTransferRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetGuardTransferCoinsRequest) Reset()         { *m = QueryGetGuardTransferCoinsRequest{} }
+func (m *QueryGetGuardTransferCoinsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetGuardTransferCoinsRequest) ProtoMessage()    {}
+func (*QueryGetGuardTransferCoinsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{6}
 }
-func (m *QueryGetGuardTransferRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetGuardTransferCoinsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetGuardTransferRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetGuardTransferCoinsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetGuardTransferRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetGuardTransferCoinsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -321,34 +329,34 @@ func (m *QueryGetGuardTransferRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryGetGuardTransferRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetGuardTransferRequest.Merge(m, src)
+func (m *QueryGetGuardTransferCoinsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetGuardTransferCoinsRequest.Merge(m, src)
 }
-func (m *QueryGetGuardTransferRequest) XXX_Size() int {
+func (m *QueryGetGuardTransferCoinsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetGuardTransferRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetGuardTransferRequest.DiscardUnknown(m)
+func (m *QueryGetGuardTransferCoinsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetGuardTransferCoinsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetGuardTransferRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetGuardTransferCoinsRequest proto.InternalMessageInfo
 
-type QueryGetGuardTransferResponse struct {
-	GuardTransfer GuardTransfer `protobuf:"bytes,1,opt,name=GuardTransfer,proto3" json:"GuardTransfer"`
+type QueryGetGuardTransferCoinsResponse struct {
+	GuardTransferCoins bool `protobuf:"varint,1,opt,name=guard_transfer_coins,json=guardTransferCoins,proto3" json:"guard_transfer_coins,omitempty"`
 }
 
-func (m *QueryGetGuardTransferResponse) Reset()         { *m = QueryGetGuardTransferResponse{} }
-func (m *QueryGetGuardTransferResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetGuardTransferResponse) ProtoMessage()    {}
-func (*QueryGetGuardTransferResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetGuardTransferCoinsResponse) Reset()         { *m = QueryGetGuardTransferCoinsResponse{} }
+func (m *QueryGetGuardTransferCoinsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetGuardTransferCoinsResponse) ProtoMessage()    {}
+func (*QueryGetGuardTransferCoinsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e99a17d82cee92cf, []int{7}
 }
-func (m *QueryGetGuardTransferResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetGuardTransferCoinsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetGuardTransferResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetGuardTransferCoinsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetGuardTransferResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetGuardTransferCoinsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -358,77 +366,76 @@ func (m *QueryGetGuardTransferResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryGetGuardTransferResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetGuardTransferResponse.Merge(m, src)
+func (m *QueryGetGuardTransferCoinsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetGuardTransferCoinsResponse.Merge(m, src)
 }
-func (m *QueryGetGuardTransferResponse) XXX_Size() int {
+func (m *QueryGetGuardTransferCoinsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetGuardTransferResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetGuardTransferResponse.DiscardUnknown(m)
+func (m *QueryGetGuardTransferCoinsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetGuardTransferCoinsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetGuardTransferResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetGuardTransferCoinsResponse proto.InternalMessageInfo
 
-func (m *QueryGetGuardTransferResponse) GetGuardTransfer() GuardTransfer {
+func (m *QueryGetGuardTransferCoinsResponse) GetGuardTransferCoins() bool {
 	if m != nil {
-		return m.GuardTransfer
+		return m.GuardTransferCoins
 	}
-	return GuardTransfer{}
+	return false
 }
 
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "mantrachain.guard.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "mantrachain.guard.v1.QueryParamsResponse")
-	proto.RegisterType((*QueryGetAccPermRequest)(nil), "mantrachain.guard.v1.QueryGetAccPermRequest")
-	proto.RegisterType((*QueryGetAccPermResponse)(nil), "mantrachain.guard.v1.QueryGetAccPermResponse")
-	proto.RegisterType((*QueryAllAccPermRequest)(nil), "mantrachain.guard.v1.QueryAllAccPermRequest")
-	proto.RegisterType((*QueryAllAccPermResponse)(nil), "mantrachain.guard.v1.QueryAllAccPermResponse")
-	proto.RegisterType((*QueryGetGuardTransferRequest)(nil), "mantrachain.guard.v1.QueryGetGuardTransferRequest")
-	proto.RegisterType((*QueryGetGuardTransferResponse)(nil), "mantrachain.guard.v1.QueryGetGuardTransferResponse")
+	proto.RegisterType((*QueryGetAccountPrivilegesRequest)(nil), "mantrachain.guard.v1.QueryGetAccountPrivilegesRequest")
+	proto.RegisterType((*QueryGetAccountPrivilegesResponse)(nil), "mantrachain.guard.v1.QueryGetAccountPrivilegesResponse")
+	proto.RegisterType((*QueryGetAccountPrivilegesManyRequest)(nil), "mantrachain.guard.v1.QueryGetAccountPrivilegesManyRequest")
+	proto.RegisterType((*QueryGetAccountPrivilegesManyResponse)(nil), "mantrachain.guard.v1.QueryGetAccountPrivilegesManyResponse")
+	proto.RegisterType((*QueryGetGuardTransferCoinsRequest)(nil), "mantrachain.guard.v1.QueryGetGuardTransferCoinsRequest")
+	proto.RegisterType((*QueryGetGuardTransferCoinsResponse)(nil), "mantrachain.guard.v1.QueryGetGuardTransferCoinsResponse")
 }
 
 func init() { proto.RegisterFile("mantrachain/guard/v1/query.proto", fileDescriptor_e99a17d82cee92cf) }
 
 var fileDescriptor_e99a17d82cee92cf = []byte{
-	// 582 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0xc1, 0x6e, 0xd3, 0x4c,
-	0x14, 0x85, 0x33, 0xf9, 0xfb, 0xa7, 0x30, 0x08, 0x16, 0x43, 0x04, 0x28, 0x4a, 0x4d, 0x70, 0x4a,
-	0x48, 0xa1, 0xcc, 0x28, 0xe9, 0x8e, 0x05, 0x52, 0x8a, 0x44, 0x58, 0x20, 0x91, 0x46, 0x6c, 0x60,
-	0x53, 0x26, 0xce, 0xe0, 0x5a, 0x8a, 0x3d, 0xae, 0x3d, 0x89, 0xa8, 0x10, 0x1b, 0x78, 0x01, 0x50,
-	0xdf, 0x80, 0x05, 0xcf, 0xd2, 0x65, 0x25, 0x36, 0xac, 0x50, 0x95, 0xf0, 0x20, 0x28, 0x33, 0x37,
-	0x22, 0xae, 0x8d, 0x49, 0x77, 0x4e, 0xe6, 0xdc, 0x73, 0xbf, 0xb9, 0xf7, 0xd8, 0xb8, 0xe6, 0xf3,
-	0x40, 0x45, 0xdc, 0x39, 0xe0, 0x5e, 0xc0, 0xdc, 0x31, 0x8f, 0x86, 0x6c, 0xd2, 0x62, 0x87, 0x63,
-	0x11, 0x1d, 0xd1, 0x30, 0x92, 0x4a, 0x92, 0xf2, 0x92, 0x82, 0x6a, 0x05, 0x9d, 0xb4, 0x2a, 0x65,
-	0x57, 0xba, 0x52, 0x0b, 0xd8, 0xfc, 0xc9, 0x68, 0x2b, 0x55, 0x57, 0x4a, 0x77, 0x24, 0x18, 0x0f,
-	0x3d, 0xc6, 0x83, 0x40, 0x2a, 0xae, 0x3c, 0x19, 0xc4, 0x70, 0x7a, 0xdf, 0x91, 0xb1, 0x2f, 0x63,
-	0x36, 0xe0, 0xb1, 0x30, 0x2d, 0xd8, 0xa4, 0x35, 0x10, 0x8a, 0xb7, 0x58, 0xc8, 0x5d, 0x2f, 0xd0,
-	0x62, 0xd0, 0xde, 0xc9, 0xe4, 0x0a, 0x79, 0xc4, 0xfd, 0x85, 0x5d, 0x3d, 0x53, 0xc2, 0x1d, 0x67,
-	0x3f, 0x14, 0x91, 0x0f, 0xa2, 0xad, 0x4c, 0x91, 0x7e, 0xd8, 0x57, 0x11, 0x0f, 0xe2, 0xb7, 0x22,
-	0x32, 0x52, 0xbb, 0x8c, 0xc9, 0xde, 0x1c, 0xaa, 0xa7, 0x9b, 0xf4, 0xc5, 0xe1, 0x58, 0xc4, 0xca,
-	0xde, 0xc3, 0xd7, 0x13, 0xff, 0xc6, 0xa1, 0x0c, 0x62, 0x41, 0x1e, 0xe1, 0x92, 0x81, 0xb9, 0x85,
-	0x6a, 0xa8, 0x79, 0xa5, 0x5d, 0xa5, 0x59, 0x63, 0xa2, 0xa6, 0x6a, 0x77, 0xed, 0xe4, 0xe7, 0xed,
-	0x42, 0x1f, 0x2a, 0xec, 0x26, 0xbe, 0xa1, 0x2d, 0xbb, 0x42, 0x75, 0x1c, 0xa7, 0x27, 0x22, 0x1f,
-	0x9a, 0x91, 0x6b, 0xb8, 0xe8, 0x0d, 0xb5, 0xe3, 0xe5, 0x7e, 0xd1, 0x1b, 0xda, 0xaf, 0xf0, 0xcd,
-	0x94, 0x12, 0x00, 0x1e, 0xe3, 0x4b, 0x8b, 0xab, 0x02, 0xc2, 0x46, 0x36, 0x02, 0x14, 0x02, 0xc3,
-	0x3a, 0x37, 0x3f, 0xed, 0x37, 0x00, 0xd1, 0x19, 0x8d, 0xce, 0x41, 0x3c, 0xc5, 0xf8, 0xcf, 0x3a,
-	0xc0, 0xbb, 0x41, 0xcd, 0xee, 0xe8, 0x7c, 0x77, 0xd4, 0xc4, 0x03, 0x76, 0x47, 0x7b, 0xdc, 0x15,
-	0x50, 0xdb, 0x5f, 0xaa, 0xb4, 0xbf, 0x22, 0xa0, 0x5f, 0x6e, 0x91, 0x49, 0xff, 0xdf, 0x45, 0xe9,
-	0x49, 0x37, 0xc1, 0x58, 0xd4, 0x8c, 0xf7, 0xfe, 0xc9, 0x68, 0x9a, 0x27, 0x20, 0x2d, 0x5c, 0x5d,
-	0x4c, 0xb8, 0x3b, 0xef, 0xf9, 0x12, 0x32, 0xb1, 0x58, 0x7f, 0x88, 0x37, 0xfe, 0x72, 0x0e, 0x37,
-	0x79, 0x81, 0xaf, 0x26, 0x0e, 0x60, 0x60, 0xf5, 0xec, 0xeb, 0x24, 0xa4, 0x70, 0xa9, 0x64, 0x7d,
-	0xfb, 0x6c, 0x0d, 0xff, 0xaf, 0x5b, 0x92, 0x4f, 0x08, 0x97, 0x4c, 0x80, 0x48, 0x33, 0xdb, 0x2e,
-	0x9d, 0xd7, 0xca, 0xd6, 0x0a, 0x4a, 0x83, 0x6e, 0x6f, 0x7e, 0xfc, 0xfe, 0xeb, 0xb8, 0x68, 0x91,
-	0x2a, 0xcb, 0x79, 0xd9, 0xc8, 0x31, 0xc2, 0xeb, 0xb0, 0x05, 0xb2, 0x9d, 0x63, 0x9e, 0x4a, 0x73,
-	0xe5, 0xe1, 0x8a, 0x6a, 0xc0, 0x79, 0xa0, 0x71, 0xee, 0x92, 0x3a, 0xcb, 0x7d, 0xb1, 0xd9, 0x7b,
-	0x6f, 0xf8, 0x81, 0x7c, 0x41, 0x18, 0x83, 0x41, 0x67, 0x34, 0xca, 0x05, 0x4b, 0x25, 0x3c, 0x17,
-	0x2c, 0x1d, 0x56, 0xbb, 0xa1, 0xc1, 0x6a, 0xc4, 0xca, 0x07, 0x23, 0xdf, 0xd0, 0xb9, 0x2c, 0x90,
-	0x76, 0xfe, 0x04, 0xb2, 0x12, 0x57, 0xd9, 0xb9, 0x50, 0x0d, 0x20, 0x6e, 0x6b, 0xc4, 0x06, 0xd9,
-	0x64, 0x2b, 0x7c, 0xef, 0x76, 0x9f, 0x9d, 0x4c, 0x2d, 0x74, 0x3a, 0xb5, 0xd0, 0xd9, 0xd4, 0x42,
-	0x9f, 0x67, 0x56, 0xe1, 0x74, 0x66, 0x15, 0x7e, 0xcc, 0xac, 0xc2, 0x6b, 0xea, 0x7a, 0xea, 0x60,
-	0x3c, 0xa0, 0x8e, 0xf4, 0xd9, 0x73, 0xcf, 0x17, 0x4f, 0xb4, 0xcf, 0xb2, 0xe7, 0x3b, 0x70, 0x55,
-	0x47, 0xa1, 0x88, 0x07, 0x25, 0xfd, 0xe9, 0xdc, 0xf9, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x5c, 0xd8,
-	0x9a, 0xb2, 0x47, 0x06, 0x00, 0x00,
+	// 561 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xcd, 0xb6, 0x34, 0xb4, 0x03, 0x17, 0x96, 0x20, 0x45, 0x56, 0x64, 0x52, 0x53, 0xa4, 0x50,
+	0x81, 0x97, 0x84, 0x4f, 0x05, 0x2e, 0xa4, 0x87, 0x72, 0x00, 0xa9, 0xb5, 0x10, 0x07, 0x24, 0x14,
+	0x6d, 0xcc, 0xe2, 0x5a, 0xaa, 0x77, 0x5d, 0x7b, 0x13, 0x11, 0x21, 0x2e, 0xf0, 0x07, 0x90, 0xf8,
+	0x39, 0x5c, 0xb8, 0xd1, 0x63, 0x25, 0x2e, 0x3d, 0x21, 0x94, 0xf0, 0x43, 0x90, 0xd7, 0x9b, 0x34,
+	0x60, 0xc7, 0x6d, 0xb8, 0x79, 0x67, 0xe6, 0xbd, 0x79, 0x33, 0xf3, 0x64, 0xa8, 0x07, 0x94, 0xcb,
+	0x88, 0xba, 0x7b, 0xd4, 0xe7, 0xc4, 0xeb, 0xd3, 0xe8, 0x0d, 0x19, 0x34, 0xc9, 0x41, 0x9f, 0x45,
+	0x43, 0x3b, 0x8c, 0x84, 0x14, 0xb8, 0x32, 0x53, 0x61, 0xab, 0x0a, 0x7b, 0xd0, 0x34, 0x36, 0x5d,
+	0x11, 0x07, 0x22, 0x26, 0x3d, 0x1a, 0xb3, 0xb4, 0x9c, 0x0c, 0x9a, 0x3d, 0x26, 0x69, 0x93, 0x84,
+	0xd4, 0xf3, 0x39, 0x95, 0xbe, 0xe0, 0x29, 0x83, 0x51, 0xf1, 0x84, 0x27, 0xd4, 0x27, 0x49, 0xbe,
+	0x74, 0xb4, 0xe6, 0x09, 0xe1, 0xed, 0x33, 0x42, 0x43, 0x9f, 0x50, 0xce, 0x85, 0x54, 0x90, 0x58,
+	0x67, 0xd7, 0x73, 0x75, 0x85, 0x34, 0xa2, 0x81, 0x2e, 0xb1, 0x2a, 0x80, 0x77, 0x93, 0xc6, 0x3b,
+	0x2a, 0xe8, 0xb0, 0x83, 0x3e, 0x8b, 0xa5, 0xb5, 0x0b, 0x97, 0xff, 0x8a, 0xc6, 0xa1, 0xe0, 0x31,
+	0xc3, 0x6d, 0x28, 0xa7, 0xe0, 0x2a, 0xaa, 0xa3, 0xc6, 0x85, 0x56, 0xcd, 0xce, 0x1b, 0xcb, 0x4e,
+	0x51, 0x9d, 0x73, 0x87, 0x3f, 0xaf, 0x96, 0x1c, 0x8d, 0xb0, 0x1e, 0x43, 0x5d, 0x51, 0x6e, 0x33,
+	0xf9, 0xc4, 0x75, 0x45, 0x9f, 0xcb, 0x9d, 0xc8, 0x1f, 0xf8, 0xfb, 0xcc, 0x63, 0x93, 0xb6, 0xb8,
+	0x0a, 0xe7, 0x69, 0x9a, 0x53, 0x0d, 0xd6, 0x9c, 0xc9, 0xd3, 0x7a, 0x0d, 0xeb, 0x05, 0x68, 0x2d,
+	0x6f, 0x2e, 0x1c, 0x9b, 0x00, 0xe1, 0xb4, 0xbe, 0xba, 0x54, 0x47, 0x8d, 0x8b, 0xce, 0x4c, 0xc4,
+	0xea, 0xc0, 0xc6, 0x5c, 0xfa, 0xe7, 0x94, 0x0f, 0x27, 0x02, 0x0d, 0x58, 0xd5, 0x94, 0xc9, 0x0a,
+	0x96, 0x1b, 0x6b, 0xce, 0xf4, 0x6d, 0xb9, 0x70, 0xfd, 0x14, 0x0e, 0x2d, 0xb3, 0x80, 0x24, 0x23,
+	0x74, 0xf9, 0x1f, 0xa1, 0xd7, 0x4e, 0xf6, 0xb0, 0x9d, 0xac, 0xfb, 0x45, 0x44, 0x79, 0xfc, 0x96,
+	0x45, 0x5b, 0xc2, 0xe7, 0xd3, 0xeb, 0xbd, 0x04, 0xab, 0xa8, 0x48, 0xcb, 0xb8, 0x0d, 0x15, 0x75,
+	0xb1, 0xae, 0xd4, 0xe9, 0xae, 0x9b, 0xe4, 0xd5, 0xea, 0x56, 0x1d, 0xec, 0x65, 0x90, 0xad, 0xe3,
+	0x15, 0x58, 0x51, 0xc4, 0xf8, 0x13, 0x82, 0x72, 0x7a, 0x65, 0xdc, 0xc8, 0xf7, 0x40, 0xd6, 0x54,
+	0xc6, 0x8d, 0x33, 0x54, 0xa6, 0xda, 0xac, 0x8d, 0x8f, 0x3f, 0x7e, 0x7f, 0x59, 0x32, 0x71, 0x8d,
+	0x14, 0x38, 0x18, 0x7f, 0x43, 0x70, 0x29, 0xb3, 0x6a, 0x7c, 0xbf, 0xa0, 0x4d, 0x81, 0xf9, 0x8c,
+	0x07, 0x0b, 0xe3, 0xb4, 0xd8, 0xb6, 0x12, 0x7b, 0x17, 0xb7, 0xf2, 0xc5, 0xea, 0xdb, 0x76, 0x4f,
+	0xae, 0x48, 0xde, 0xeb, 0xd8, 0x07, 0xfc, 0x1d, 0xc1, 0x95, 0x5c, 0xb7, 0xe0, 0xf6, 0x82, 0x72,
+	0x66, 0x6c, 0x6a, 0x3c, 0xfa, 0x2f, 0xac, 0x1e, 0xe7, 0x9e, 0x1a, 0x87, 0xe0, 0x5b, 0x67, 0x1d,
+	0xa7, 0x1b, 0x24, 0x7a, 0xbf, 0x22, 0xc0, 0x59, 0xb7, 0xe1, 0x53, 0xb6, 0x3a, 0xd7, 0xc4, 0xc6,
+	0xc3, 0xc5, 0x81, 0x7a, 0x80, 0x96, 0x1a, 0xe0, 0x26, 0xde, 0xcc, 0x1f, 0x20, 0xcf, 0xf4, 0x9d,
+	0xa7, 0x87, 0x23, 0x13, 0x1d, 0x8d, 0x4c, 0xf4, 0x6b, 0x64, 0xa2, 0xcf, 0x63, 0xb3, 0x74, 0x34,
+	0x36, 0x4b, 0xc7, 0x63, 0xb3, 0xf4, 0xca, 0xf6, 0x7c, 0xb9, 0xd7, 0xef, 0xd9, 0xae, 0x08, 0xc8,
+	0x33, 0x3f, 0x60, 0x5b, 0x8a, 0x6d, 0x96, 0xf9, 0x9d, 0xe6, 0x96, 0xc3, 0x90, 0xc5, 0xbd, 0xb2,
+	0xfa, 0xaf, 0xde, 0xf9, 0x13, 0x00, 0x00, 0xff, 0xff, 0x79, 0x7b, 0x24, 0x87, 0x14, 0x06, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -445,12 +452,12 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a AccPerm by index.
-	AccPerm(ctx context.Context, in *QueryGetAccPermRequest, opts ...grpc.CallOption) (*QueryGetAccPermResponse, error)
-	// Queries a list of AccPerm items.
-	AccPermAll(ctx context.Context, in *QueryAllAccPermRequest, opts ...grpc.CallOption) (*QueryAllAccPermResponse, error)
-	// Queries a GuardTransfer by index.
-	GuardTransfer(ctx context.Context, in *QueryGetGuardTransferRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferResponse, error)
+	// Queries a AccountPrivileges by index.
+	AccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error)
+	// Queries a list of AccountPrivileges items.
+	AccountPrivilegesMany(ctx context.Context, in *QueryGetAccountPrivilegesManyRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesManyResponse, error)
+	// Queries a GuardTransferCoins by index.
+	GuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error)
 }
 
 type queryClient struct {
@@ -470,27 +477,27 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) AccPerm(ctx context.Context, in *QueryGetAccPermRequest, opts ...grpc.CallOption) (*QueryGetAccPermResponse, error) {
-	out := new(QueryGetAccPermResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/AccPerm", in, out, opts...)
+func (c *queryClient) AccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error) {
+	out := new(QueryGetAccountPrivilegesResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/AccountPrivileges", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) AccPermAll(ctx context.Context, in *QueryAllAccPermRequest, opts ...grpc.CallOption) (*QueryAllAccPermResponse, error) {
-	out := new(QueryAllAccPermResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/AccPermAll", in, out, opts...)
+func (c *queryClient) AccountPrivilegesMany(ctx context.Context, in *QueryGetAccountPrivilegesManyRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesManyResponse, error) {
+	out := new(QueryGetAccountPrivilegesManyResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/AccountPrivilegesMany", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GuardTransfer(ctx context.Context, in *QueryGetGuardTransferRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferResponse, error) {
-	out := new(QueryGetGuardTransferResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/GuardTransfer", in, out, opts...)
+func (c *queryClient) GuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error) {
+	out := new(QueryGetGuardTransferCoinsResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.guard.v1.Query/GuardTransferCoins", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -501,12 +508,12 @@ func (c *queryClient) GuardTransfer(ctx context.Context, in *QueryGetGuardTransf
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a AccPerm by index.
-	AccPerm(context.Context, *QueryGetAccPermRequest) (*QueryGetAccPermResponse, error)
-	// Queries a list of AccPerm items.
-	AccPermAll(context.Context, *QueryAllAccPermRequest) (*QueryAllAccPermResponse, error)
-	// Queries a GuardTransfer by index.
-	GuardTransfer(context.Context, *QueryGetGuardTransferRequest) (*QueryGetGuardTransferResponse, error)
+	// Queries a AccountPrivileges by index.
+	AccountPrivileges(context.Context, *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error)
+	// Queries a list of AccountPrivileges items.
+	AccountPrivilegesMany(context.Context, *QueryGetAccountPrivilegesManyRequest) (*QueryGetAccountPrivilegesManyResponse, error)
+	// Queries a GuardTransferCoins by index.
+	GuardTransferCoins(context.Context, *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -516,14 +523,14 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) AccPerm(ctx context.Context, req *QueryGetAccPermRequest) (*QueryGetAccPermResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccPerm not implemented")
+func (*UnimplementedQueryServer) AccountPrivileges(ctx context.Context, req *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountPrivileges not implemented")
 }
-func (*UnimplementedQueryServer) AccPermAll(ctx context.Context, req *QueryAllAccPermRequest) (*QueryAllAccPermResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccPermAll not implemented")
+func (*UnimplementedQueryServer) AccountPrivilegesMany(ctx context.Context, req *QueryGetAccountPrivilegesManyRequest) (*QueryGetAccountPrivilegesManyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountPrivilegesMany not implemented")
 }
-func (*UnimplementedQueryServer) GuardTransfer(ctx context.Context, req *QueryGetGuardTransferRequest) (*QueryGetGuardTransferResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GuardTransfer not implemented")
+func (*UnimplementedQueryServer) GuardTransferCoins(ctx context.Context, req *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GuardTransferCoins not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -548,56 +555,56 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_AccPerm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetAccPermRequest)
+func _Query_AccountPrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAccountPrivilegesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).AccPerm(ctx, in)
+		return srv.(QueryServer).AccountPrivileges(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.guard.v1.Query/AccPerm",
+		FullMethod: "/mantrachain.guard.v1.Query/AccountPrivileges",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AccPerm(ctx, req.(*QueryGetAccPermRequest))
+		return srv.(QueryServer).AccountPrivileges(ctx, req.(*QueryGetAccountPrivilegesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_AccPermAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllAccPermRequest)
+func _Query_AccountPrivilegesMany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetAccountPrivilegesManyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).AccPermAll(ctx, in)
+		return srv.(QueryServer).AccountPrivilegesMany(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.guard.v1.Query/AccPermAll",
+		FullMethod: "/mantrachain.guard.v1.Query/AccountPrivilegesMany",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AccPermAll(ctx, req.(*QueryAllAccPermRequest))
+		return srv.(QueryServer).AccountPrivilegesMany(ctx, req.(*QueryGetAccountPrivilegesManyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GuardTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetGuardTransferRequest)
+func _Query_GuardTransferCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetGuardTransferCoinsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GuardTransfer(ctx, in)
+		return srv.(QueryServer).GuardTransferCoins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.guard.v1.Query/GuardTransfer",
+		FullMethod: "/mantrachain.guard.v1.Query/GuardTransferCoins",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GuardTransfer(ctx, req.(*QueryGetGuardTransferRequest))
+		return srv.(QueryServer).GuardTransferCoins(ctx, req.(*QueryGetGuardTransferCoinsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -611,16 +618,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "AccPerm",
-			Handler:    _Query_AccPerm_Handler,
+			MethodName: "AccountPrivileges",
+			Handler:    _Query_AccountPrivileges_Handler,
 		},
 		{
-			MethodName: "AccPermAll",
-			Handler:    _Query_AccPermAll_Handler,
+			MethodName: "AccountPrivilegesMany",
+			Handler:    _Query_AccountPrivilegesMany_Handler,
 		},
 		{
-			MethodName: "GuardTransfer",
-			Handler:    _Query_GuardTransfer_Handler,
+			MethodName: "GuardTransferCoins",
+			Handler:    _Query_GuardTransferCoins_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -683,7 +690,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetAccPermRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetAccountPrivilegesRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -693,27 +700,27 @@ func (m *QueryGetAccPermRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetAccPermRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetAccPermRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+	if len(m.Account) > 0 {
+		i -= len(m.Account)
+		copy(dAtA[i:], m.Account)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Account)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetAccPermResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetAccountPrivilegesResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -723,106 +730,58 @@ func (m *QueryGetAccPermResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetAccPermResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetAccPermResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.AccPerm.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAllAccPermRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAllAccPermRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAllAccPermRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAllAccPermResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAllAccPermResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAllAccPermResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
+	if len(m.Privileges) > 0 {
+		i -= len(m.Privileges)
+		copy(dAtA[i:], m.Privileges)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Privileges)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.AccPerm) > 0 {
-		for iNdEx := len(m.AccPerm) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.AccPerm[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
+	if len(m.Account) > 0 {
+		i -= len(m.Account)
+		copy(dAtA[i:], m.Account)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetAccountPrivilegesManyRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetAccountPrivilegesManyRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetAccountPrivilegesManyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Accounts[iNdEx])
+			copy(dAtA[i:], m.Accounts[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Accounts[iNdEx])))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -830,7 +789,7 @@ func (m *QueryAllAccPermResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetGuardTransferRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetAccountPrivilegesManyResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -840,12 +799,53 @@ func (m *QueryGetGuardTransferRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetGuardTransferRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesManyResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetGuardTransferRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetAccountPrivilegesManyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		for iNdEx := len(m.Privileges) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Privileges[iNdEx])
+			copy(dAtA[i:], m.Privileges[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Privileges[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Accounts[iNdEx])
+			copy(dAtA[i:], m.Accounts[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Accounts[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetGuardTransferCoinsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetGuardTransferCoinsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetGuardTransferCoinsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -853,7 +853,7 @@ func (m *QueryGetGuardTransferRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetGuardTransferResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetGuardTransferCoinsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -863,26 +863,26 @@ func (m *QueryGetGuardTransferResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetGuardTransferResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetGuardTransferCoinsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetGuardTransferResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetGuardTransferCoinsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.GuardTransfer.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if m.GuardTransferCoins {
+		i--
+		if m.GuardTransferCoins {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
 		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x8
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -917,63 +917,73 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetAccPermRequest) Size() (n int) {
+func (m *QueryGetAccountPrivilegesRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Id)
+	l = len(m.Account)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryGetAccPermResponse) Size() (n int) {
+func (m *QueryGetAccountPrivilegesResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.AccPerm.Size()
-	n += 1 + l + sovQuery(uint64(l))
-	return n
-}
-
-func (m *QueryAllAccPermRequest) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Account)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
+	l = len(m.Privileges)
+	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryAllAccPermResponse) Size() (n int) {
+func (m *QueryGetAccountPrivilegesManyRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.AccPerm) > 0 {
-		for _, e := range m.AccPerm {
-			l = e.Size()
+	if len(m.Accounts) > 0 {
+		for _, s := range m.Accounts {
+			l = len(s)
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryGetAccountPrivilegesManyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for _, s := range m.Accounts {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.Privileges) > 0 {
+		for _, b := range m.Privileges {
+			l = len(b)
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
 
-func (m *QueryGetGuardTransferRequest) Size() (n int) {
+func (m *QueryGetGuardTransferCoinsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -982,14 +992,15 @@ func (m *QueryGetGuardTransferRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetGuardTransferResponse) Size() (n int) {
+func (m *QueryGetGuardTransferCoinsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.GuardTransfer.Size()
-	n += 1 + l + sovQuery(uint64(l))
+	if m.GuardTransferCoins {
+		n += 2
+	}
 	return n
 }
 
@@ -1132,7 +1143,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetAccPermRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetAccountPrivilegesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1155,15 +1166,15 @@ func (m *QueryGetAccPermRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetAccPermRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetAccPermRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1191,7 +1202,7 @@ func (m *QueryGetAccPermRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Id = string(dAtA[iNdEx:postIndex])
+			m.Account = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1214,7 +1225,7 @@ func (m *QueryGetAccPermRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetAccPermResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetAccountPrivilegesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1237,17 +1248,17 @@ func (m *QueryGetAccPermResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetAccPermResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetAccPermResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccPerm", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1257,200 +1268,29 @@ func (m *QueryGetAccPermResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.AccPerm.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAllAccPermRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllAccPermRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllAccPermRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAllAccPermResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllAccPermResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllAccPermResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccPerm", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccPerm = append(m.AccPerm, AccPerm{})
-			if err := m.AccPerm[len(m.AccPerm)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Account = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
 			}
-			var msglen int
+			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1460,26 +1300,24 @@ func (m *QueryAllAccPermResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			if byteLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + byteLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageResponse{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
+			m.Privileges = append(m.Privileges[:0], dAtA[iNdEx:postIndex]...)
+			if m.Privileges == nil {
+				m.Privileges = []byte{}
 			}
 			iNdEx = postIndex
 		default:
@@ -1503,7 +1341,7 @@ func (m *QueryAllAccPermResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetGuardTransferRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetAccountPrivilegesManyRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1526,67 +1364,17 @@ func (m *QueryGetGuardTransferRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetGuardTransferRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesManyRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetGuardTransferRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryGetGuardTransferResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetGuardTransferResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetGuardTransferResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesManyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field GuardTransfer", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1596,25 +1384,258 @@ func (m *QueryGetGuardTransferResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.GuardTransfer.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Accounts = append(m.Accounts, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
 				return err
 			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetAccountPrivilegesManyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesManyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetAccountPrivilegesManyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accounts = append(m.Accounts, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges, make([]byte, postIndex-iNdEx))
+			copy(m.Privileges[len(m.Privileges)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetGuardTransferCoinsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetGuardTransferCoinsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetGuardTransferCoinsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetGuardTransferCoinsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetGuardTransferCoinsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetGuardTransferCoinsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GuardTransferCoins", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.GuardTransferCoins = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package mantrachain.token.v1;
 
-import "google/protobuf/any.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "mantrachain/token/v1/params.proto";
 import "mantrachain/token/v1/common.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "mantrachain/token/v1/soul_bonded_nfts_collection.proto";
+import "mantrachain/token/v1/nft.proto";
+import "mantrachain/token/v1/nft_collection.proto";
+import "mantrachain/token/v1/params.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -16,239 +16,174 @@ option go_package = "github.com/LimeChain/mantrachain/x/token/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  rpc Params                  (QueryParamsRequest                    ) returns (QueryParamsResponse                    ) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/params";
-  
   }
-  rpc NftCollection           (QueryGetNftCollectionRequest          ) returns (QueryGetNftCollectionResponse          ) {
+  rpc NftCollection(QueryGetNftCollectionRequest) returns (QueryGetNftCollectionResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}/{id}";
-  
   }
-  rpc NftCollectionSupply     (QueryGetNftCollectionSupplyRequest    ) returns (QueryGetNftCollectionSupplyResponse    ) {
-    option (google.api.http).get = "/mantrachain/token/v1/nft-collection/supply/{creator}/{id}";
-  
-  }
-  rpc NftCollectionsByCreator (QueryGetNftCollectionsByCreatorRequest) returns (QueryGetNftCollectionsByCreatorResponse) {
+  rpc NftCollectionsByCreator(QueryGetNftCollectionsByCreatorRequest) returns (QueryGetNftCollectionsByCreatorResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft-collection/{creator}";
-  
   }
-  rpc AllNftCollections       (QueryGetAllNftCollectionsRequest      ) returns (QueryGetAllNftCollectionsResponse      ) {
+  rpc AllNftCollections(QueryGetAllNftCollectionsRequest) returns (QueryGetAllNftCollectionsResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft-collection";
-  
   }
-  rpc Nft                     (QueryGetNftRequest                    ) returns (QueryGetNftResponse                    ) {
+  rpc Nft(QueryGetNftRequest) returns (QueryGetNftResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{id}";
-  
   }
-  rpc NftOwner                (QueryGetNftOwnerRequest               ) returns (QueryGetNftOwnerResponse               ) {
-    option (google.api.http).get = "/mantrachain/token/v1/nft/owner/{collection_creator}/{collection_id}/{id}";
-  
-  }
-  rpc NftBalance              (QueryGetNftBalanceRequest             ) returns (QueryGetNftBalanceResponse             ) {
-    option (google.api.http).get = "/mantrachain/token/v1/nft/balance/{collection_creator}/{collection_id}/{owner}";
-  
-  }
-  rpc NftApproved             (QueryGetNftApprovedRequest            ) returns (QueryGetNftApprovedResponse            ) {
+  rpc NftApproved(QueryGetNftApprovedRequest) returns (QueryGetNftApprovedResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{collection_creator}/{collection_id}/{id}";
-  
   }
-  rpc IsApprovedForAllNfts    (QueryGetIsApprovedForAllNftsRequest   ) returns (QueryGetIsApprovedForAllNftsResponse   ) {
+  rpc IsApprovedForAllNfts(QueryGetIsApprovedForAllNftsRequest) returns (QueryGetIsApprovedForAllNftsResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{owner}/{operator}";
-  
   }
-  rpc AllCollectionNfts       (QueryGetAllCollectionNftsRequest      ) returns (QueryGetAllCollectionNftsResponse      ) {
+  rpc AllCollectionNfts(QueryGetAllCollectionNftsRequest) returns (QueryGetAllCollectionNftsResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}";
-  
-  }
-  rpc CollectionNftsByOwner   (QueryGetCollectionNftsByOwnerRequest  ) returns (QueryGetCollectionNftsByOwnerResponse  ) {
-    option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}/{owner}";
-  
   }
 
   // this line is used by starport scaffolding # 2
-  
+
   // Queries a list of SoulBondedNftsCollection items.
-  rpc SoulBondedNftsCollection    (QueryGetSoulBondedNftsCollectionRequest) returns (QueryGetSoulBondedNftsCollectionResponse) {
+  rpc SoulBondedNftsCollection(QueryGetSoulBondedNftsCollectionRequest) returns (QueryGetSoulBondedNftsCollectionResponse) {
     option (google.api.http).get = "/LimeChain/mantrachain/token/soul_bonded_nfts_collection/{index}";
-  
   }
-  rpc SoulBondedNftsCollectionAll (QueryAllSoulBondedNftsCollectionRequest) returns (QueryAllSoulBondedNftsCollectionResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/token/soul_bonded_nfts_collection";
-  
+
+  // Queries a list of RestrictedNftsCollection items.
+  rpc RestrictedNftsCollection(QueryGetRestrictedNftsCollectionRequest) returns (QueryGetRestrictedNftsCollectionResponse) {
+    option (google.api.http).get = "/LimeChain/mantrachain/token/restricted_nfts_collection/{index}";
+  }
+
+  // Queries a list of OpenedNftsCollection items.
+  rpc OpenedNftsCollection(QueryGetOpenedNftsCollectionRequest) returns (QueryGetOpenedNftsCollectionResponse) {
+    option (google.api.http).get = "/LimeChain/mantrachain/token/opened_nfts_collection/{index}";
+  }
+
+  // Queries a list of NftCollectionOwner items.
+  rpc NftCollectionOwner(QueryGetNftCollectionOwnerRequest) returns (QueryGetNftCollectionOwnerResponse) {
+    option (google.api.http).get = "/LimeChain/mantrachain/token/nft_collection_owner/{index}";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetNftCollectionRequest {
   string creator = 1;
-  string id      = 2;
+  string id = 2;
 }
 
 message QueryGetNftCollectionResponse {
-           string              id               =  1;
-           string              name             =  2;
-           string              symbol           =  3;
-           string              description      =  4;
-  repeated TokenImage          images           =  5;
-           string              url              =  6;
-  repeated TokenLink           links            =  7;
-  repeated TokenOption         options          =  8;
-           string              category         =  9;
-           string              owner            = 10;
-           string              creator          = 11;
-           bool                opened           = 12;
-           google.protobuf.Any data             = 13;
-}
-
-message QueryGetNftCollectionSupplyRequest {
-  string creator = 1;
-  string id      = 2;
-}
-
-message QueryGetNftCollectionSupplyResponse {
-  uint64 supply  = 1;
-  string creator = 2;
-  string id      = 3;
-}
-
-message QueryGetNftBalanceRequest {
-  string collection_creator = 1;
-  string collection_id      = 2;
-  string owner              = 3;
-}
-
-message QueryGetNftBalanceResponse {
-  uint64 balance = 1;
-  string address = 2;
+  NftCollection nft_collection = 1;
 }
 
 message QueryGetIsApprovedForAllNftsRequest {
-  string owner    = 1;
+  string owner = 1;
   string operator = 2;
 }
 
 message QueryGetIsApprovedForAllNftsResponse {
   string operator = 1;
-  bool   approved = 2;
+  bool approved = 2;
 }
 
 message QueryGetNftApprovedRequest {
   string collection_creator = 1;
-  string collection_id      = 2;
-  string id                 = 3;
+  string collection_id = 2;
+  string id = 3;
 }
 
 message QueryGetNftApprovedResponse {
-           string id       = 1;
+  string id = 1;
   repeated string approved = 2;
-}
-
-message QueryGetNftOwnerRequest {
-  string collection_creator = 1;
-  string collection_id      = 2;
-  string id                 = 3;
-}
-
-message QueryGetNftOwnerResponse {
-  string id      = 1;
-  string address = 2;
 }
 
 message QueryGetNftRequest {
   string collection_creator = 1;
-  string collection_id      = 2;
-  string id                 = 3;
+  string collection_id = 2;
+  string id = 3;
 }
 
 message QueryGetNftResponse {
-           string              id                 =  1;
-           string              title              =  2;
-           string              description        =  3;
-  repeated TokenImage          images             =  4;
-           string              url                =  5;
-  repeated TokenLink           links              =  6;
-  repeated TokenAttribute      attributes         =  7;
-           string              owner              =  8;
-           string              creator            =  9;
-           google.protobuf.Any data               = 10;
-           string              collection_id      = 11;
-           string              collection_creator = 12;
+  Nft nft = 1;
 }
 
 message QueryGetNftCollectionsByCreatorRequest {
   string creator = 1;
-  
+
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryGetNftCollectionsByCreatorResponse {
-           string                                 creator         = 1;
-  repeated QueryGetNftCollectionResponse          nft_collections = 2;
-           cosmos.base.query.v1beta1.PageResponse pagination      = 3;
+  string creator = 1;
+  repeated NftCollection nft_collections = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 message QueryGetAllNftCollectionsRequest {
-  
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 message QueryGetAllNftCollectionsResponse {
-  repeated QueryGetNftCollectionResponse          nft_collections = 1;
-           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+  repeated NftCollection nft_collections = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetAllCollectionNftsRequest {
   string collection_creator = 1;
-  string collection_id      = 2;
-  
+  string collection_id = 2;
+
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 message QueryGetAllCollectionNftsResponse {
-           string                                 collection_creator = 1;
-           string                                 collection_id      = 2;
-  repeated QueryGetNftResponse                    nfts               = 3;
-           cosmos.base.query.v1beta1.PageResponse pagination         = 4;
-}
-
-message QueryGetCollectionNftsByOwnerRequest {
   string collection_creator = 1;
-  string collection_id      = 2;
-  string owner              = 3;
+  string collection_id = 2;
+  repeated Nft nfts = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
-
-message QueryGetCollectionNftsByOwnerResponse {
-           string              address = 1;
-  repeated QueryGetNftResponse nfts    = 2;
-}
-
 
 // this line is used by starport scaffolding # 3
 message QueryGetSoulBondedNftsCollectionRequest {
-  string index = 1;
+  bytes index = 1;
 }
 
 message QueryGetSoulBondedNftsCollectionResponse {
-  SoulBondedNftsCollection soulBondedNftsCollection = 1 [(gogoproto.nullable) = false];
+  bytes index = 1;
+  bool soulBondedNftsCollection = 2;
 }
 
-message QueryAllSoulBondedNftsCollectionRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+message QueryGetRestrictedNftsCollectionRequest {
+  bytes index = 1;
 }
 
-message QueryAllSoulBondedNftsCollectionResponse {
-  repeated SoulBondedNftsCollection               soulBondedNftsCollection = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination               = 2;
+message QueryGetRestrictedNftsCollectionResponse {
+  bytes index = 1;
+  bool restrictedNftsCollection = 2;
 }
 
+message QueryGetOpenedNftsCollectionRequest {
+  bytes index = 1;
+}
+
+message QueryGetOpenedNftsCollectionResponse {
+  bytes index = 1;
+  bool openedNftsCollection = 2;
+}
+
+message QueryGetNftCollectionOwnerRequest {
+  bytes index = 1;
+}
+
+message QueryGetNftCollectionOwnerResponse {
+  bytes index = 1;
+  string nftCollectionOwner = 2;
+}

@@ -1,8 +1,8 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
-import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "google/protobuf/any.proto";
 import "mantrachain/token/v1/common.proto";
 // this line is used by starport scaffolding # proto/tx/import
@@ -21,7 +21,7 @@ service Msg {
   rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
   rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
   rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
-// this line is used by starport scaffolding # proto/tx/rpc
+  // this line is used by starport scaffolding # proto/tx/rpc
 }
 
 message MsgApproveNft {
@@ -33,7 +33,7 @@ message MsgApproveNft {
   string collection_id = 4;
   string nft_id = 5;
   bool approved = 6;
-  bool strict_collection = 7;
+  bool strict = 7;
 }
 
 message MsgApproveNftResponse {
@@ -54,7 +54,7 @@ message MsgTransferNft {
   string collection_creator = 4;
   string collection_id = 5;
   string nft_id = 6;
-  bool strict_collection = 7;
+  bool strict = 7;
 }
 
 message MsgTransferNftResponse {
@@ -73,7 +73,7 @@ message MsgBurnNft {
   string collection_creator = 2;
   string collection_id = 3;
   string nft_id = 4;
-  bool strict_collection = 5;
+  bool strict = 5;
 }
 
 message MsgBurnNftResponse {
@@ -91,7 +91,7 @@ message MsgMintNft {
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftMetadata nft = 5;
-  bool strict_collection = 6;
+  bool strict = 6;
 }
 
 message MsgMintNftResponse {
@@ -108,7 +108,7 @@ message MsgApproveAllNfts {
   string creator = 1;
   string receiver = 2;
   bool approved = 3;
-  bool strict_collection = 4;
+  bool strict = 4;
 }
 
 message MsgApproveAllNftsResponse {
@@ -126,7 +126,7 @@ message MsgApproveNfts {
   string collection_id = 4;
   MsgNftsIds nfts = 5;
   bool approved = 6;
-  bool strict_collection = 7;
+  bool strict = 7;
 }
 
 message MsgApproveNftsResponse {
@@ -147,7 +147,7 @@ message MsgTransferNfts {
   string collection_creator = 4;
   string collection_id = 5;
   MsgNftsIds nfts = 6;
-  bool strict_collection = 7;
+  bool strict = 7;
 }
 
 message MsgTransferNftsResponse {
@@ -178,7 +178,8 @@ message MsgCreateNftCollectionMetadata {
   string symbol = 9;
   bool opened = 10;
   bool soul_bonded_nfts = 11;
-  google.protobuf.Any data = 12;
+  bool restricted_nfts = 12;
+  google.protobuf.Any data = 13;
 }
 
 message MsgCreateNftCollectionResponse {
@@ -194,7 +195,7 @@ message MsgMintNfts {
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftsMetadata nfts = 5;
-  bool strict_collection = 6;
+  bool strict = 6;
 }
 
 message MsgNftsMetadata {
@@ -227,7 +228,7 @@ message MsgBurnNfts {
   string collection_creator = 2;
   string collection_id = 3;
   MsgNftsIds nfts = 4;
-  bool strict_collection = 5;
+  bool strict = 5;
 }
 
 message MsgNftsIds {

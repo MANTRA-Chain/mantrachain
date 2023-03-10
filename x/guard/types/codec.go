@@ -8,19 +8,25 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateAccPerm{}, "guard/CreateAccPerm", nil)
-	cdc.RegisterConcrete(&MsgUpdateAccPerm{}, "guard/UpdateAccPerm", nil)
-	cdc.RegisterConcrete(&MsgDeleteAccPerm{}, "guard/DeleteAccPerm", nil)
-	cdc.RegisterConcrete(&MsgUpdateGuardTransfer{}, "guard/UpdateGuardTransfer", nil)
+	cdc.RegisterConcrete(&MsgUpdateAccountPrivileges{}, "guard/UpdateAccountPrivileges", nil)
+	cdc.RegisterConcrete(&MsgUpdateAccountPrivilegesBatch{}, "guard/UpdateAccountPrivilegesBatch", nil)
+	cdc.RegisterConcrete(&MsgUpdateAccountPrivilegesGroupedBatch{}, "guard/UpdateAccountPrivilegesGroupedBatch", nil)
+	cdc.RegisterConcrete(&MsgUpdateGuardTransferCoins{}, "guard/UpdateGuardTransferCoins", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateAccPerm{},
+		&MsgUpdateAccountPrivileges{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateGuardTransfer{},
+		&MsgUpdateAccountPrivilegesBatch{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateAccountPrivilegesGroupedBatch{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateGuardTransferCoins{},
 	)
 	// this line is used by starport scaffolding # 3
 

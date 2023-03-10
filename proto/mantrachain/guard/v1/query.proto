@@ -1,12 +1,10 @@
 syntax = "proto3";
 package mantrachain.guard.v1;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/guard/v1/params.proto";
-import "mantrachain/guard/v1/acc_perm.proto";
-import "mantrachain/guard/v1/guard_transfer.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
@@ -17,21 +15,21 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/params";
   }
-  // Queries a AccPerm by index.
-	rpc AccPerm(QueryGetAccPermRequest) returns (QueryGetAccPermResponse) {
-		option (google.api.http).get = "/mantrachain/guard/v1/acc_perm/{id}";
-	}
+  // Queries a AccountPrivileges by index.
+  rpc AccountPrivileges(QueryGetAccountPrivilegesRequest) returns (QueryGetAccountPrivilegesResponse) {
+    option (google.api.http).get = "/mantrachain/guard/v1/account_privileges/{account}";
+  }
 
-	// Queries a list of AccPerm items.
-	rpc AccPermAll(QueryAllAccPermRequest) returns (QueryAllAccPermResponse) {
-		option (google.api.http).get = "/mantrachain/guard/v1/acc_perm";
-	}
+  // Queries a list of AccountPrivileges items.
+  rpc AccountPrivilegesMany(QueryGetAccountPrivilegesManyRequest) returns (QueryGetAccountPrivilegesManyResponse) {
+    option (google.api.http).get = "/mantrachain/guard/v1/account_privileges_many";
+  }
 
-// Queries a GuardTransfer by index.
-	rpc GuardTransfer(QueryGetGuardTransferRequest) returns (QueryGetGuardTransferResponse) {
-		option (google.api.http).get = "/mantrachain/guard/v1/guard_transfer";
-	}
-// this line is used by starport scaffolding # 2
+  // Queries a GuardTransferCoins by index.
+  rpc GuardTransferCoins(QueryGetGuardTransferCoinsRequest) returns (QueryGetGuardTransferCoinsResponse) {
+    option (google.api.http).get = "/mantrachain/guard/v1/guard_transfer_coins";
+  }
+  // this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -43,27 +41,27 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetAccPermRequest {
-	  string id = 1;
-
+message QueryGetAccountPrivilegesRequest {
+  string account = 1;
 }
 
-message QueryGetAccPermResponse {
-	AccPerm acc_perm = 1 [(gogoproto.nullable) = false];
+message QueryGetAccountPrivilegesResponse {
+  string account = 1;
+  bytes privileges = 2;
 }
 
-message QueryAllAccPermRequest {
-	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+message QueryGetAccountPrivilegesManyRequest {
+  repeated string accounts = 1;
 }
 
-message QueryAllAccPermResponse {
-	repeated AccPerm acc_perm = 1 [(gogoproto.nullable) = false];
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryGetAccountPrivilegesManyResponse {
+  repeated string accounts = 1;
+  repeated bytes privileges = 2;
 }
 
-message QueryGetGuardTransferRequest {}
+message QueryGetGuardTransferCoinsRequest {}
 
-message QueryGetGuardTransferResponse {
-	GuardTransfer GuardTransfer = 1 [(gogoproto.nullable) = false];
+message QueryGetGuardTransferCoinsResponse {
+  bool guard_transfer_coins = 1;
 }
 // this line is used by starport scaffolding # 3

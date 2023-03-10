@@ -7,7 +7,7 @@ HOMEDIR="$HOME/.mantrachain"
 KEYS[0]="validator"
 KEYS[1]="recipient"
 KEYS[2]="admin"
-GUARD_NFT_COLLECTION_ID="guardnft"
+ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID="account_privileges_guard_nft_collection"
 
 KEYRING="test"
 LOGLEVEL="info"
@@ -78,17 +78,12 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   "$PWD"/build/mantrachaind add-genesis-account $VALIDATOR_WALLET 100000000000000000uaum --home "$HOMEDIR"
   "$PWD"/build/mantrachaind gentx ${KEYS[0]} 100000000000000uaum --keyring-backend=$KEYRING --chain-id=$CHAINID --home "$HOMEDIR"
 
-  VALIDATOR_ADDRESS=$(cat $HOMEDIR/config/gentx/$(ls $HOMEDIR/config/gentx | head -1) | jq '.body["messages"][0].validator_address')
-
-  GUARD_TRANSFER_JSON=$(echo '{"enabled":false,"creator":"{admin}"}' | sed -e "s/{admin}/$ADMIN_WALLET/g")
-
   cecho "GREEN" "Update genesis"
   jq '.app_state["guard"]["params"]["admin_account"]='\"$ADMIN_WALLET\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["staking"]["params"]["unbonding_time"]="240s"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["gov"]["voting_params"]["voting_period"]="60s"' "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["guard"]["params"]["token_collection_creator"]='\"$ADMIN_WALLET\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["guard"]["params"]["token_collection_id"]='\"$GUARD_NFT_COLLECTION_ID\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["guard"]["guard_transfer"]='$GUARD_TRANSFER_JSON "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["guard"]["params"]["account_privileges_token_collection_creator"]='\"$ADMIN_WALLET\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["guard"]["params"]["account_privileges_token_collection_id"]='\"$ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID\" "$GENESIS" > "$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "GREEN" "Collect genesis tx"
   "$PWD"/build/mantrachaind collect-gentxs --home "$HOMEDIR"
@@ -128,28 +123,28 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   
   sleep 7
   
-  GUARD_COLL_JSON=$(echo '{"id":"{id}","soul_bonded_nfts": true,"opened":false,"name":"GuardCollection","description":"GuardCollection","category":"utility"}' | sed -e "s/{id}/$GUARD_NFT_COLLECTION_ID/g")
+  ACCOUNT_PRIVILEGES_GUARD_COLL_JSON=$(echo '{"id":"{id}","soul_bonded_nfts": true,"restricted_nfts":true,"name":"AccountPrivilegesCollection","description":"AccountPrivilegesCollection","category":"utility"}' | sed -e "s/{id}/$ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID/g")
 
-  cecho "GREEN" "Create guard nft collection"
-  "$PWD"/build/mantrachaind tx token create-nft-collection "$(echo $GUARD_COLL_JSON)" --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
+  cecho "GREEN" "Create account privileges guard nft collection"
+  "$PWD"/build/mantrachaind tx token create-nft-collection "$(echo $ACCOUNT_PRIVILEGES_GUARD_COLL_JSON)" --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
   
   sleep 7
 
-  GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft"}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")
+  ACCOUNT_PRIVILEGES_GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"AccountPrivileges","description":"AccountPrivileges"}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")
 
-  GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"GuardNft","description":"GuardNft"}' | sed -e "s/{id}/$ADMIN_WALLET/g")
+  ACCOUNT_PRIVILEGES_GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"AccountPrivileges","description":"AccountPrivileges"}' | sed -e "s/{id}/$ADMIN_WALLET/g")
 
-  cecho "GREEN" "Mint guard nfts"
-  "$PWD"/build/mantrachaind tx token mint-nft "$(echo $GUARD_NFT_VALIDATOR_JSON)" --collection-creator $ADMIN_WALLET --collection-id $GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --receiver $VALIDATOR_WALLET --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
-
-  sleep 7
-
-  "$PWD"/build/mantrachaind tx token mint-nft "$(echo $GUARD_NFT_ADMIN_JSON)" --collection-creator $ADMIN_WALLET --collection-id $GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+  cecho "GREEN" "Mint account privileges guard nfts"
+  "$PWD"/build/mantrachaind tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_VALIDATOR_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --receiver $VALIDATOR_WALLET --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 
   sleep 7
 
-  cecho "GREEN" "Update guard transfer"
-  "$PWD"/build/mantrachaind tx guard update-guard-transfer true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+  "$PWD"/build/mantrachaind tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_ADMIN_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+
+  sleep 7
+
+  cecho "GREEN" "Update guard transfer coins"
+  "$PWD"/build/mantrachaind tx guard update-guard-transfer-coins true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 fi
 
 cecho "GREEN" "Track logs"

@@ -5,7 +5,7 @@ import (
 )
 
 type GuardKeeper interface {
-	CheckCanTransfer(ctx sdk.Context, nftKeeper NFTKeeper, addresses []sdk.AccAddress, amount sdk.Coins) (bool, error)
+	CheckCanTransferCoins(ctx sdk.Context, nftKeeper NFTKeeper, addresses []sdk.AccAddress, amount sdk.Coins) (bool, error)
 }
 
 type NFTKeeper interface {

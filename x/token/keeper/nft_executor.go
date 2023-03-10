@@ -31,27 +31,6 @@ func (c *NftExecutor) SetDefaultClass(collIndex []byte) error {
 	})
 }
 
-func (c *NftExecutor) GetClass(classId string) (nft.Class, bool) {
-	return c.nftKeeper.GetClass(c.ctx, classId)
-}
-
-func (c *NftExecutor) GetClassSupply(classId string) uint64 {
-	return c.nftKeeper.GetTotalSupply(c.ctx, classId)
-}
-
-func (c *NftExecutor) GetClasses(classesIds []string) []nft.Class {
-	classes := []nft.Class{}
-
-	for _, classId := range classesIds {
-		class, found := c.nftKeeper.GetClass(c.ctx, classId)
-		if found {
-			classes = append(classes, class)
-		}
-	}
-
-	return classes
-}
-
 func (c *NftExecutor) MintNft(nft nft.NFT, receiver sdk.AccAddress) error {
 	return c.nftKeeper.Mint(c.ctx, nft, receiver)
 }
@@ -68,29 +47,8 @@ func (c *NftExecutor) BurnNft(classId string, nftId string) error {
 	return c.nftKeeper.Burn(c.ctx, classId, nftId)
 }
 
-func (c *NftExecutor) GetNft(classId string, nftId string) (nft.NFT, bool) {
-	return c.nftKeeper.GetNFT(c.ctx, classId, nftId)
-}
-
-func (c *NftExecutor) GetNfts(classId string, nftsIds []string) []nft.NFT {
-	nfts := []nft.NFT{}
-
-	for _, nftId := range nftsIds {
-		nft, found := c.nftKeeper.GetNFT(c.ctx, classId, nftId)
-		if found {
-			nfts = append(nfts, nft)
-		}
-	}
-
-	return nfts
-}
-
 func (c *NftExecutor) GetNftOwner(classId string, nftId string) sdk.AccAddress {
 	return c.nftKeeper.GetOwner(c.ctx, classId, nftId)
-}
-
-func (c *NftExecutor) GetNftBalance(classId string, owner sdk.AccAddress) uint64 {
-	return c.nftKeeper.GetBalance(c.ctx, classId, owner)
 }
 
 func (c *NftExecutor) TransferNft(classId string, nftId string, receiver sdk.AccAddress) error {
@@ -99,8 +57,4 @@ func (c *NftExecutor) TransferNft(classId string, nftId string, receiver sdk.Acc
 
 func (c *NftExecutor) BatchTransferNft(classId string, nftsIds []string, receiver sdk.AccAddress) error {
 	return c.nftKeeper.BatchTransfer(c.ctx, classId, nftsIds, receiver)
-}
-
-func (c *NftExecutor) GetNftsOfClassByOwner(classId string, owner sdk.AccAddress) []nft.NFT {
-	return c.nftKeeper.GetNFTsOfClassByOwner(c.ctx, classId, owner)
 }

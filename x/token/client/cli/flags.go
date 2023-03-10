@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	FlagStrictCollection  = "strict-collection"
+	FlagStrict            = "strict"
 	FlagCollectionCreator = "collection-creator"
 	FlagCollectionId      = "collection-id"
 	FlagReceiver          = "receiver"
@@ -19,20 +19,20 @@ var (
 )
 
 func init() {
-	FsMintNFT.Bool(FlagStrictCollection, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
+	FsMintNFT.Bool(FlagStrict, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
 	FsMintNFT.String(FlagCollectionCreator, "", "The collection creator address, if not filled, the default is the sender of the transaction")
 	FsMintNFT.String(FlagCollectionId, "", "The collection id, if not filled, the default is the creator's 'default' collection")
 	FsMintNFT.String(FlagReceiver, "", "NFT receiver's address on mint")
 
-	FsBurnNFT.Bool(FlagStrictCollection, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
+	FsBurnNFT.Bool(FlagStrict, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
 	FsBurnNFT.String(FlagCollectionCreator, "", "The collection creator address, if not filled, the default is the sender of the transaction")
 	FsBurnNFT.String(FlagCollectionId, "", "The collection id, if not filled, the default is the creator's 'default' collection")
 
-	FsTransferNFT.Bool(FlagStrictCollection, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
+	FsTransferNFT.Bool(FlagStrict, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
 	FsTransferNFT.String(FlagCollectionCreator, "", "The collection creator address, if not filled, the default is the sender of the transaction")
 	FsTransferNFT.String(FlagCollectionId, "", "The collection id, if not filled, the default is the creator's 'default' collection")
 
-	FsApproveNFT.Bool(FlagStrictCollection, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
+	FsApproveNFT.Bool(FlagStrict, false, "If true, throws an error when collection-creator/collection-id is empty or collection does not exist")
 	FsApproveNFT.String(FlagCollectionCreator, "", "The collection creator address, if not filled, the default is the sender of the transaction")
 	FsApproveNFT.String(FlagCollectionId, "", "The collection id, if not filled, the default is the creator's 'default' collection")
 

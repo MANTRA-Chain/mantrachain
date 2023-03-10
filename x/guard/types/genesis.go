@@ -10,8 +10,8 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		AccPermList:   []AccPerm{},
-		GuardTransfer: nil,
+		AccountPrivilegesList: []*AccountPrivileges{},
+		GuardTransferCoins:    nil,
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -20,15 +20,15 @@ func DefaultGenesis() *GenesisState {
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-	// Check for duplicated index in accPerm
-	accPermIndexMap := make(map[string]struct{})
+	// Check for duplicated index in accountPrivileges
+	accountPrivilegesIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.AccPermList {
-		index := string(AccPermKey(elem.Id))
-		if _, ok := accPermIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for accPerm")
+	for _, elem := range gs.AccountPrivilegesList {
+		index := string(elem.Account)
+		if _, ok := accountPrivilegesIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for accountPrivileges")
 		}
-		accPermIndexMap[index] = struct{}{}
+		accountPrivilegesIndexMap[index] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

@@ -7,16 +7,16 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-type GuardTransferDecorator struct {
+type GuardTransferCoinsDecorator struct {
 	guardKeeper GuardKeeper
 	nftKeeper   NFTKeeper
 }
 
-func NewGuardTransferDecorator(gk GuardKeeper, nk NFTKeeper) GuardTransferDecorator {
-	return GuardTransferDecorator{guardKeeper: gk, nftKeeper: nk}
+func NewGuardTransferCoinsDecorator(gk GuardKeeper, nk NFTKeeper) GuardTransferCoinsDecorator {
+	return GuardTransferCoinsDecorator{guardKeeper: gk, nftKeeper: nk}
 }
 
-func (gtd GuardTransferDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (gtd GuardTransferCoinsDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	switch tx.(type) {
 	case sdk.Tx:
 		for _, msg := range tx.GetMsgs() {
@@ -34,14 +34,14 @@ func (gtd GuardTransferDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulat
 					return ctx, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", err)
 				}
 
-				ok, err := gtd.guardKeeper.CheckCanTransfer(ctx, gtd.nftKeeper, []sdk.AccAddress{from, to}, msg.Amount)
+				ok, err := gtd.guardKeeper.CheckCanTransferCoins(ctx, gtd.nftKeeper, []sdk.AccAddress{from, to}, msg.Amount)
 
 				if err != nil {
-					return ctx, errors.Wrap(err, "send guard: fail")
+					return ctx, errors.Wrap(err, "guard send coins: fail")
 				}
 
 				if !ok {
-					return ctx, errors.Wrap(err, "send guard: cannot transfer")
+					return ctx, errors.Wrap(err, "guard send coins: cannot transfer")
 				}
 			}
 		}

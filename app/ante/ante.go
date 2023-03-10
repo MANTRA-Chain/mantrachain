@@ -46,8 +46,9 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
-		guardante.NewGuardTransferDecorator(options.GuardKeeper, options.NFTKeeper),
-		tokenante.NewTokenTransferDecorator(options.TokenKeeper),
+		guardante.NewGuardTransferCoinsDecorator(options.GuardKeeper, options.NFTKeeper),
+		tokenante.NewTokenTransferNftDecorator(options.TokenKeeper),
+		tokenante.NewTokenSoulBondedCollectionDecorator(options.TokenKeeper),
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
 		authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),

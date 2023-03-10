@@ -18,17 +18,17 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgCreateAccPerm:
-			res, err := msgServer.CreateAccPerm(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUpdateAccountPrivileges:
+			res, err := msgServer.UpdateAccountPrivileges(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateAccPerm:
-			res, err := msgServer.UpdateAccPerm(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUpdateAccountPrivilegesBatch:
+			res, err := msgServer.UpdateAccountPrivilegesBatch(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgDeleteAccPerm:
-			res, err := msgServer.DeleteAccPerm(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUpdateAccountPrivilegesGroupedBatch:
+			res, err := msgServer.UpdateAccountPrivilegesGroupedBatch(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateGuardTransfer:
-			res, err := msgServer.UpdateGuardTransfer(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUpdateGuardTransferCoins:
+			res, err := msgServer.UpdateGuardTransferCoins(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

@@ -56,47 +56,6 @@ func CmdGetNftCollection() *cobra.Command {
 	return cmd
 }
 
-func CmdGetNftCollectionSupply() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "nft-collection-supply [creator] [id]",
-		Short: "Query a nft collection supply",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			reqCreator := args[0]
-			reqId := args[1]
-
-			if strings.TrimSpace(reqId) == "" {
-				return errors.Wrap(types.ErrInvalidNftCollectionId, "empty nft collection id")
-			}
-
-			creator, err := sdk.AccAddressFromBech32(reqCreator)
-			if err != nil {
-				return err
-			}
-
-			params := &types.QueryGetNftCollectionSupplyRequest{
-				Creator: creator.String(),
-				Id:      reqId,
-			}
-
-			res, err := queryClient.NftCollectionSupply(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
 func CmdGetNftCollectionsByCreator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "nft-collections [creator]",
@@ -175,6 +134,126 @@ func CmdGetAllNftCollections() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "all-nft-collections")
+
+	return cmd
+}
+
+func CmdShowNftCollectionOwner() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-nft-collection-owner [index]",
+		Short: "shows a nft_collection_owner",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			argIndex := []byte(args[0])
+
+			params := &types.QueryGetNftCollectionOwnerRequest{
+				Index: argIndex,
+			}
+
+			res, err := queryClient.NftCollectionOwner(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowOpenedNftsCollection() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-opened-nfts-collection [index]",
+		Short: "shows a opened_nfts_collection",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			argIndex := []byte(args[0])
+
+			params := &types.QueryGetOpenedNftsCollectionRequest{
+				Index: argIndex,
+			}
+
+			res, err := queryClient.OpenedNftsCollection(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowRestrictedNftsCollection() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-restricted-nfts-collection [index]",
+		Short: "shows a restricted_nfts_collection",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			argIndex := []byte(args[0])
+
+			params := &types.QueryGetRestrictedNftsCollectionRequest{
+				Index: argIndex,
+			}
+
+			res, err := queryClient.RestrictedNftsCollection(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdShowSoulBondedNftsCollection() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "show-soul-bonded-nfts-collection [index]",
+		Short: "shows a soul_bonded_nfts_collection",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			argIndex := []byte(args[0])
+
+			params := &types.QueryGetSoulBondedNftsCollectionRequest{
+				Index: argIndex,
+			}
+
+			res, err := queryClient.SoulBondedNftsCollection(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

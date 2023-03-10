@@ -98,9 +98,9 @@ func (c *NftController) FilterNotExist() *NftController {
 	return c
 }
 
-func (c *NftController) FilterNotOwnOfClass(owner sdk.AccAddress) *NftController {
+func (c *NftController) FilterNotOwn(owner sdk.AccAddress) *NftController {
 	c.actions = append(c.actions, func(controller *NftController) error {
-		return controller.filterNotOwnOfClass(owner)
+		return controller.filterNotOwn(owner)
 	})
 	return c
 }
@@ -199,7 +199,7 @@ func (c *NftController) filterNotExist() error {
 	return nil
 }
 
-func (c *NftController) filterNotOwnOfClass(owner sdk.AccAddress) error {
+func (c *NftController) filterNotOwn(owner sdk.AccAddress) error {
 	filtered := []*types.MsgNftMetadata{}
 	classId := string(c.collectionIndex)
 
