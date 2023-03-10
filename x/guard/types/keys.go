@@ -17,10 +17,16 @@ const (
 	MemStoreKey = "mem_guard"
 )
 
+var (
+	AccountPrivilegesKeyPrefix = "AccountPrivileges/value/"
+
+	Placeholder = []byte{0x01}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
 const (
-	GuardTransferKey = "GuardTransfer-value-"
+	GuardTransferCoinsKey = "guard-transfer-coins-value"
 )

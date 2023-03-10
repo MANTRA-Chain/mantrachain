@@ -27,7 +27,7 @@ func CmdMintNfts() *cobra.Command {
 				"--receiver=<receiver> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -63,7 +63,7 @@ func CmdMintNfts() *cobra.Command {
 				receiver = signer.String()
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -81,7 +81,7 @@ func CmdMintNfts() *cobra.Command {
 				collectionId,
 				&nfts,
 				receiver,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -108,7 +108,7 @@ func CmdBurnNfts() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -131,7 +131,7 @@ func CmdBurnNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -148,7 +148,7 @@ func CmdBurnNfts() *cobra.Command {
 				collectionCreator,
 				collectionId,
 				&nfts,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -177,7 +177,7 @@ func CmdTransferNfts() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -202,7 +202,7 @@ func CmdTransferNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -221,7 +221,7 @@ func CmdTransferNfts() *cobra.Command {
 				&nftsIds,
 				argOwner,
 				argReceiver,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -250,7 +250,7 @@ func CmdApproveNfts() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -280,7 +280,7 @@ func CmdApproveNfts() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -299,7 +299,7 @@ func CmdApproveNfts() *cobra.Command {
 				collectionId,
 				&nftsIds,
 				approved,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -374,7 +374,7 @@ func CmdMintNft() *cobra.Command {
 				"--receiver=<receiver> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -410,7 +410,7 @@ func CmdMintNft() *cobra.Command {
 				receiver = signer.String()
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -428,7 +428,7 @@ func CmdMintNft() *cobra.Command {
 				collectionId,
 				&nft,
 				receiver,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -455,7 +455,7 @@ func CmdBurnNft() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -478,7 +478,7 @@ func CmdBurnNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -488,7 +488,7 @@ func CmdBurnNft() *cobra.Command {
 				collectionCreator,
 				collectionId,
 				argNftId,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -517,7 +517,7 @@ func CmdTransferNft() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -542,7 +542,7 @@ func CmdTransferNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -554,7 +554,7 @@ func CmdTransferNft() *cobra.Command {
 				argNftId,
 				argOwner,
 				argReceiver,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -583,7 +583,7 @@ func CmdApproveNft() *cobra.Command {
 				"--from=<from> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
-				"--strict-collection "+
+				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -613,7 +613,7 @@ func CmdApproveNft() *cobra.Command {
 				return err
 			}
 
-			strictCollectionFlag, err := cmd.Flags().GetBool(FlagStrictCollection)
+			strict, err := cmd.Flags().GetBool(FlagStrict)
 			if err != nil {
 				return err
 			}
@@ -625,7 +625,7 @@ func CmdApproveNft() *cobra.Command {
 				collectionId,
 				argNftId,
 				approved,
-				strictCollectionFlag,
+				strict,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

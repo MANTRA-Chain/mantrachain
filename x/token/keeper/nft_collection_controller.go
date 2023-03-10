@@ -70,7 +70,6 @@ func (c *NftCollectionController) CreateDefaultIfEmptyId() *NftCollectionControl
 
 func (c *NftCollectionController) CreateDefault() error {
 	c.metadata.Id = c.conf.NftCollectionDefaultId
-	c.metadata.Opened = true
 	c.metadata.Category = string(types.GeneralNftCollectionCat)
 	collectionIndex := c.getIndex()
 
@@ -85,13 +84,13 @@ func (c *NftCollectionController) CreateDefault() error {
 
 		newNftCollection := types.NftCollection{
 			Index:    collectionIndex,
-			Opened:   c.metadata.Opened,
 			Category: c.metadata.Category,
 			Creator:  c.creator,
-			Owner:    c.creator,
 		}
 
 		c.store.SetNftCollection(c.ctx, newNftCollection)
+		c.store.SetOpenedNftsCollection(c.ctx, collectionIndex)
+		c.store.SetNftCollectionOwner(c.ctx, collectionIndex, c.creator)
 
 		c.nftCollection = &newNftCollection
 	}
@@ -138,9 +137,9 @@ func (c *NftCollectionController) MustNotBeDefault() *NftCollectionController {
 	return c
 }
 
-func (c *NftCollectionController) IsOpenedOrHasOwner(owner sdk.AccAddress) *NftCollectionController {
+func (c *NftCollectionController) OpenedOrOwner(owner sdk.AccAddress) *NftCollectionController {
 	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.isOpenedOrHasOwner(owner)
+		return controller.openedOrOwner(owner)
 	})
 	return c
 }
@@ -170,23 +169,6 @@ func (c *NftCollectionController) ValidMetadata() *NftCollectionController {
 	return c
 }
 
-func (c *NftCollectionController) HasOwner(owner sdk.AccAddress) *NftCollectionController {
-	c.validators = append(c.validators, func(controller *NftCollectionController) error {
-		return controller.hasOwner(owner)
-	})
-	return c
-}
-
-func (c *NftCollectionController) hasOwner(owner sdk.AccAddress) error {
-	if err := c.requireNftCollection(); err != nil {
-		return errors.Wrap(err, "validation check is not allowed on a non existing nftCollection")
-	}
-	if owner.Equals(c.nftCollection.Owner) {
-		return nil
-	}
-	return errors.Wrapf(types.ErrUnauthorized, "unauthorized")
-}
-
 func (c *NftCollectionController) mustExist() error {
 	return c.requireNftCollection()
 }
@@ -198,18 +180,31 @@ func (c *NftCollectionController) mustNotBeDefault() error {
 	return nil
 }
 
-func (c *NftCollectionController) isOpenedOrHasOwner(owner sdk.AccAddress) error {
+func (c *NftCollectionController) openedOrOwner(owner sdk.AccAddress) error {
 	if err := c.requireNftCollection(); err != nil {
 		return errors.Wrap(err, "validation check is not allowed on a non existing nftCollection")
 	}
 
-	if c.nftCollection.Opened {
+	if c.store.HasOpenedNftsCollection(
+		c.ctx,
+		c.nftCollection.Index,
+	) {
 		return nil
 	}
 
-	if owner.Equals(c.nftCollection.Owner) {
+	collOwner, found := c.store.GetNftCollectionOwner(
+		c.ctx,
+		c.nftCollection.Index,
+	)
+
+	if !found {
+		return errors.Wrapf(types.ErrUnauthorized, "unauthorized")
+	}
+
+	if owner.Equals(sdk.AccAddress(collOwner)) {
 		return nil
 	}
+
 	return errors.Wrapf(types.ErrUnauthorized, "unauthorized")
 }
 

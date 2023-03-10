@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdUpdateGuardTransfer() *cobra.Command {
+func CmdUpdateGuardTransferCoins() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-guard-transfer [enabled]",
-		Short: "Update guard_transfer",
+		Use:   "update-guard-transfer-coins [enabled]",
+		Short: "Update guard_transfer_coins",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argEnabled, err := cast.ToBoolE(args[0])
@@ -25,7 +25,7 @@ func CmdUpdateGuardTransfer() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateGuardTransfer(clientCtx.GetFromAddress().String(), argEnabled)
+			msg := types.NewMsgUpdateGuardTransferCoins(clientCtx.GetFromAddress().String(), argEnabled)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

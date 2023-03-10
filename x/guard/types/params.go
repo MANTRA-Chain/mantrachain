@@ -2,23 +2,24 @@ package types
 
 import (
 	"fmt"
+	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-const (
-	DefaultAdminAccount           = ""
-	DefaultTokenCollectionCreator = ""
-	DefaultTokenCollectionId      = ""
-	DefaultPriviliges             = 0x000000000000000000000000000000000000000000000000ffffffffffffffff
+var (
+	DefaultAdminAccount                            = ""
+	DefaultAccountPrivilegesTokenCollectionCreator = ""
+	DefaultAccountPrivilegesTokenCollectionId      = ""
+	DefaultAccountPrivileges                       = big.NewInt(0).Sub(big.NewInt(0).Exp(big.NewInt(2), big.NewInt(64), nil), big.NewInt(1)).Bytes()
 )
 
 var (
-	KeyAdminAccount           = []byte("AdminAccount")
-	KeyTokenCollectionCreator = []byte("TokenCollectionCreator")
-	KeyTokenCollectionId      = []byte("TokenCollectionId")
-	KeyDefaultPriviliges      = []byte("DefaultPriviliges")
+	KeyAdminAccount                            = []byte("AdminAccount")
+	KeyAccountPrivilegesTokenCollectionCreator = []byte("AccountPrivilegesTokenCollectionCreator")
+	KeyAccountPrivilegesTokenCollectionId      = []byte("AccountPrivilegesTokenCollectionId")
+	KeyDefaultAccountPrivileges                = []byte("DefaultAccountPrivileges")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -31,15 +32,15 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams(
 	adminAccount string,
-	tokenCollectionCreator string,
-	tokenCollectionId string,
-	defaultPriviliges uint64,
+	accountPrivilegesTokenCollectionCreator string,
+	accountPrivilegesTokenCollectionId string,
+	defaultAccountPrivileges []byte,
 ) Params {
 	return Params{
-		AdminAccount:           adminAccount,
-		TokenCollectionCreator: tokenCollectionCreator,
-		TokenCollectionId:      tokenCollectionId,
-		DefaultPriviliges:      defaultPriviliges,
+		AdminAccount:                            adminAccount,
+		AccountPrivilegesTokenCollectionCreator: accountPrivilegesTokenCollectionCreator,
+		AccountPrivilegesTokenCollectionId:      accountPrivilegesTokenCollectionId,
+		DefaultAccountPrivileges:                defaultAccountPrivileges,
 	}
 }
 
@@ -47,9 +48,9 @@ func NewParams(
 func DefaultParams() Params {
 	return NewParams(
 		DefaultAdminAccount,
-		DefaultTokenCollectionCreator,
-		DefaultTokenCollectionId,
-		DefaultPriviliges,
+		DefaultAccountPrivilegesTokenCollectionCreator,
+		DefaultAccountPrivilegesTokenCollectionId,
+		DefaultAccountPrivileges,
 	)
 }
 
@@ -57,9 +58,9 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyAdminAccount, &p.AdminAccount, validateAdminAccount),
-		paramtypes.NewParamSetPair(KeyTokenCollectionCreator, &p.TokenCollectionCreator, validateTokenCollectionCreator),
-		paramtypes.NewParamSetPair(KeyTokenCollectionId, &p.TokenCollectionId, validateTokenCollectionId),
-		paramtypes.NewParamSetPair(KeyDefaultPriviliges, &p.DefaultPriviliges, validateDefaultPriviliges),
+		paramtypes.NewParamSetPair(KeyAccountPrivilegesTokenCollectionCreator, &p.AccountPrivilegesTokenCollectionCreator, validateAccountPrivilegesTokenCollectionCreator),
+		paramtypes.NewParamSetPair(KeyAccountPrivilegesTokenCollectionId, &p.AccountPrivilegesTokenCollectionId, validateAccountPrivilegesTokenCollectionId),
+		paramtypes.NewParamSetPair(KeyDefaultAccountPrivileges, &p.DefaultAccountPrivileges, validateDefaultAccountPrivileges),
 	}
 }
 
@@ -89,10 +90,15 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateTokenCollectionCreator(p.TokenCollectionCreator); err != nil {
+	if err := validateAccountPrivilegesTokenCollectionCreator(p.AccountPrivilegesTokenCollectionCreator); err != nil {
 		return err
 	}
-	if err := validateTokenCollectionId(p.TokenCollectionId); err != nil {
+
+	if err := validateAccountPrivilegesTokenCollectionId(p.AccountPrivilegesTokenCollectionId); err != nil {
+		return err
+	}
+
+	if err := validateDefaultAccountPrivileges(p.DefaultAccountPrivileges); err != nil {
 		return err
 	}
 
@@ -108,7 +114,7 @@ func validateAdminAccount(i interface{}) error {
 	return nil
 }
 
-func validateTokenCollectionCreator(i interface{}) error {
+func validateAccountPrivilegesTokenCollectionCreator(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
@@ -117,7 +123,7 @@ func validateTokenCollectionCreator(i interface{}) error {
 	return nil
 }
 
-func validateTokenCollectionId(i interface{}) error {
+func validateAccountPrivilegesTokenCollectionId(i interface{}) error {
 	_, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
@@ -126,8 +132,8 @@ func validateTokenCollectionId(i interface{}) error {
 	return nil
 }
 
-func validateDefaultPriviliges(i interface{}) error {
-	_, ok := i.(uint64)
+func validateDefaultAccountPrivileges(i interface{}) error {
+	_, ok := i.([]byte)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

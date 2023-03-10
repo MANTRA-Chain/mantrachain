@@ -39,7 +39,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -50,11 +50,11 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
-	if !msg.StrictCollection {
+	if !msg.Strict {
 		err = collectionController.
 			CreateDefaultIfEmptyId().
 			Execute()
@@ -64,11 +64,17 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		}
 	}
 
-	// TODO: add operators auth when they are implemented and when the collection is with soul bond nfts
-	err = collectionController.
-		MustExist().
-		IsOpenedOrHasOwner(creator).
-		Validate()
+	collectionController.MustExist()
+
+	// The restricted nft collections have role based authentication in an ante handler
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		collectionController.OpenedOrOwner(creator)
+	}
+
+	err = collectionController.Validate()
 
 	if err != nil {
 		return nil, err
@@ -182,7 +188,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = owner
 	} else {
@@ -193,7 +199,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -221,12 +227,17 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
-	// TODO: add operators auth when they are implemented and when the collection is with soul bond nfts
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err
@@ -289,7 +300,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = owner
 	} else {
@@ -300,7 +311,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -315,14 +326,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	_, areSoulBondedNfts := k.GetSoulBondedNftsCollection(
-		ctx,
-		collectionController.getId(),
-	)
-
-	if areSoulBondedNfts {
-		return nil, errors.Wrapf(types.ErrApproveSoulBondedNftsNotSupported, "cannot approve soul bonded nfts")
-	}
+	// Check if collection is with soul bond nfts in an ante handler
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -337,11 +341,17 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		return nil, err
 	}
 
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err
@@ -439,7 +449,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = creator
 	} else {
@@ -450,11 +460,11 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
-	if !msg.StrictCollection {
+	if !msg.Strict {
 		err = collectionController.
 			CreateDefaultIfEmptyId().
 			Execute()
@@ -464,11 +474,17 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		}
 	}
 
-	// TODO: add operators auth when they are implemented and when the collection is with soul bond nfts
-	err = collectionController.
-		MustExist().
-		IsOpenedOrHasOwner(creator).
-		Validate()
+	collectionController.MustExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		collectionController.OpenedOrOwner(creator)
+	}
+
+	err = collectionController.Validate()
 
 	if err != nil {
 		return nil, err
@@ -576,7 +592,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = owner
 	} else {
@@ -587,7 +603,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -607,12 +623,17 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	// TODO: add operators auth when they are implemented and when the collection is with soul bond nfts
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err
@@ -675,7 +696,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = owner
 	} else {
@@ -686,7 +707,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -701,25 +722,24 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	_, areSoulBondedNfts := k.GetSoulBondedNftsCollection(
-		ctx,
-		collectionController.getId(),
-	)
-
-	if areSoulBondedNfts {
-		return nil, errors.Wrapf(types.ErrApproveSoulBondedNftNotSupported, "cannot approve soul bonded nft")
-	}
+	// Check if collection is with soul bond nfts in an ante handler
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err
@@ -786,7 +806,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = operator
 	} else {
@@ -797,7 +817,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -812,26 +832,24 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	_, areSoulBondedNfts := k.GetSoulBondedNftsCollection(
-		ctx,
-		collectionController.getId(),
-	)
-
-	if areSoulBondedNfts {
-		return nil, errors.Wrapf(types.ErrTransferSoulBondedNftNotSupported, "cannot transfer soul bonded nft")
-	}
+	// Check if collection is with soul bond nfts in an ante handler
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		FilterCannotTransfer(operator).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner).FilterCannotTransfer(operator)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err
@@ -903,7 +921,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 
 	var collectionCreator sdk.AccAddress
 
-	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.StrictCollection {
+	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
 		msg.CollectionCreator = msg.Creator
 		collectionCreator = operator
 	} else {
@@ -914,7 +932,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		}
 	}
 
-	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.StrictCollection).
+	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
 		WithStore(k)
 
@@ -929,14 +947,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	_, areSoulBondedNfts := k.GetSoulBondedNftsCollection(
-		ctx,
-		collectionController.getId(),
-	)
-
-	if areSoulBondedNfts {
-		return nil, errors.Wrapf(types.ErrTransferSoulBondedNftsNotSupported, "cannot transfer soul bonded nfts")
-	}
+	// Check if collection is with soul bond nfts in an ante handler
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -951,12 +962,17 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		return nil, err
 	}
 
-	err = nftController.
-		FilterEmptyIds().
-		FilterNotExist().
-		FilterNotOwnOfClass(owner).
-		FilterCannotTransfer(operator).
-		Execute()
+	nftController.FilterEmptyIds().FilterNotExist()
+
+	// The restricted nft collectveons has role based authenticatan ion in ante
+	if !k.HasRestrictedNftsCollection(
+		ctx,
+		collectionController.getIndex(),
+	) {
+		nftController.FilterNotOwn(owner).FilterCannotTransfer(operator)
+	}
+
+	err = nftController.Execute()
 
 	if err != nil {
 		return nil, err

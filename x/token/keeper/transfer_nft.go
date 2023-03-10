@@ -8,7 +8,6 @@ import (
 	"github.com/LimeChain/mantrachain/x/token/types"
 )
 
-func (k Keeper) CheckCanTransfer(ctx sdk.Context, _ ante.TokenKeeper, classId string) (bool, error) {
-	// TODO: disable transfer only for soul bond nfts
+func (k Keeper) CheckCanTransferNft(ctx sdk.Context, _ ante.TokenKeeper, classId string) (bool, error) {
 	return false, errors.Wrapf(types.ErrNftModuleTransferNftDisabled, "nft module transfer nft disabled")
 }

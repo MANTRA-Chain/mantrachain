@@ -9,19 +9,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdShowGuardTransfer() *cobra.Command {
+func CmdShowGuardTransferCoins() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-guard-transfer",
-		Short: "shows guard_transfer",
+		Use:   "show-guard-transfer-coins",
+		Short: "shows guard_transfer_coins",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryGetGuardTransferRequest{}
+			params := &types.QueryGetGuardTransferCoinsRequest{}
 
-			res, err := queryClient.GuardTransfer(context.Background(), params)
+			res, err := queryClient.GuardTransferCoins(context.Background(), params)
 			if err != nil {
 				return err
 			}

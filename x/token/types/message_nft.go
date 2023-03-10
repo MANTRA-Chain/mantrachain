@@ -35,7 +35,7 @@ var (
 func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
 	nfts *MsgNftsMetadata,
 	receiver string,
-	strictCollection bool,
+	strict bool,
 ) *MsgMintNfts {
 	return &MsgMintNfts{
 		Creator:           creator,
@@ -43,7 +43,7 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 		CollectionId:      collectionId,
 		Nfts:              nfts,
 		Receiver:          receiver,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -79,12 +79,12 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -98,14 +98,14 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 
 func NewMsgBurnNfts(creator string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
-	strictCollection bool,
+	strict bool,
 ) *MsgBurnNfts {
 	return &MsgBurnNfts{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -135,12 +135,12 @@ func (msg *MsgBurnNfts) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -156,7 +156,7 @@ func NewMsgTransferNfts(creator string, collectionCreator string, collectionId s
 	nftsIds *MsgNftsIds,
 	owner string,
 	receiver string,
-	strictCollection bool,
+	strict bool,
 ) *MsgTransferNfts {
 	return &MsgTransferNfts{
 		Creator:           creator,
@@ -165,7 +165,7 @@ func NewMsgTransferNfts(creator string, collectionCreator string, collectionId s
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -203,12 +203,12 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -223,7 +223,7 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 func NewMsgApproveNfts(creator string, receiver string, collectionCreator string, collectionId string,
 	nftsIds *MsgNftsIds,
 	approved bool,
-	strictCollection bool,
+	strict bool,
 ) *MsgApproveNfts {
 	return &MsgApproveNfts{
 		Creator:           creator,
@@ -232,7 +232,7 @@ func NewMsgApproveNfts(creator string, receiver string, collectionCreator string
 		CollectionId:      collectionId,
 		Nfts:              nftsIds,
 		Approved:          approved,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -266,12 +266,12 @@ func (msg *MsgApproveNfts) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -328,7 +328,7 @@ func (msg *MsgApproveAllNfts) ValidateBasic() error {
 func NewMsgMintNft(creator string, collectionCreator string, collectionId string,
 	nft *MsgNftMetadata,
 	receiver string,
-	strictCollection bool,
+	strict bool,
 ) *MsgMintNft {
 	return &MsgMintNft{
 		Creator:           creator,
@@ -336,7 +336,7 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 		CollectionId:      collectionId,
 		Nft:               nft,
 		Receiver:          receiver,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -372,12 +372,12 @@ func (msg *MsgMintNft) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -391,14 +391,14 @@ func (msg *MsgMintNft) ValidateBasic() error {
 
 func NewMsgBurnNft(creator string, collectionCreator string, collectionId string,
 	nftId string,
-	strictCollection bool,
+	strict bool,
 ) *MsgBurnNft {
 	return &MsgBurnNft{
 		Creator:           creator,
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -428,12 +428,12 @@ func (msg *MsgBurnNft) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -449,7 +449,7 @@ func NewMsgTransferNft(creator string, collectionCreator string, collectionId st
 	nftId string,
 	owner string,
 	receiver string,
-	strictCollection bool,
+	strict bool,
 ) *MsgTransferNft {
 	return &MsgTransferNft{
 		Creator:           creator,
@@ -458,7 +458,7 @@ func NewMsgTransferNft(creator string, collectionCreator string, collectionId st
 		CollectionCreator: collectionCreator,
 		CollectionId:      collectionId,
 		NftId:             nftId,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -492,12 +492,12 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
@@ -512,7 +512,7 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 func NewMsgApproveNft(creator string, receiver string, collectionCreator string, collectionId string,
 	nftId string,
 	approved bool,
-	strictCollection bool,
+	strict bool,
 ) *MsgApproveNft {
 	return &MsgApproveNft{
 		Creator:           creator,
@@ -521,7 +521,7 @@ func NewMsgApproveNft(creator string, receiver string, collectionCreator string,
 		CollectionId:      collectionId,
 		NftId:             nftId,
 		Approved:          approved,
-		StrictCollection:  strictCollection,
+		Strict:            strict,
 	}
 }
 
@@ -555,12 +555,12 @@ func (msg *MsgApproveNft) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
-	if msg.StrictCollection {
+	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict-collection flag")
+			return errors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {

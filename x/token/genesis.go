@@ -16,10 +16,22 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetNft(ctx, elem)
 	}
 	// Set all the soulBondedNftsCollection
-for _, elem := range genState.SoulBondedNftsCollectionList {
-	k.SetSoulBondedNftsCollection(ctx, elem)
-}
-// this line is used by starport scaffolding # genesis/module/init
+	for _, elem := range genState.SoulBondedNftsCollectionList {
+		k.SetSoulBondedNftsCollection(ctx, elem)
+	}
+	// Set all the restrictedNftsCollection
+	for _, elem := range genState.RestrictedNftsCollectionList {
+		k.SetRestrictedNftsCollection(ctx, elem)
+	}
+	// Set all the openedNftsCollection
+	for _, elem := range genState.OpenedNftsCollectionList {
+		k.SetOpenedNftsCollection(ctx, elem)
+	}
+	// Set all the nftCollectionOwner
+	for _, elem := range genState.NftCollectionOwnerList {
+		k.SetNftCollectionOwner(ctx, elem.Index, elem.Owner)
+	}
+	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
 
@@ -32,7 +44,10 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.NftList = k.GetAllNft(ctx)
 
 	genesis.SoulBondedNftsCollectionList = k.GetAllSoulBondedNftsCollection(ctx)
-// this line is used by starport scaffolding # genesis/module/export
+	genesis.RestrictedNftsCollectionList = k.GetAllRestrictedNftsCollection(ctx)
+	genesis.OpenedNftsCollectionList = k.GetAllOpenedNftsCollection(ctx)
+	genesis.NftCollectionOwnerList = k.GetAllNftCollectionOwner(ctx)
+	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis
 }

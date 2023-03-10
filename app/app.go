@@ -571,7 +571,6 @@ func New(
 		app.GetSubspace(coinfactorytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
-		app.DistrKeeper,
 	)
 
 	app.FarmingKeeper = farmingkeeper.NewKeeper(

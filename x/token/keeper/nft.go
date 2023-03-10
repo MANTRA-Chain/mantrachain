@@ -31,20 +31,43 @@ func (k Keeper) SetApprovedNft(
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
 	bz := store.Get(nftIndex)
-	var approvedAddresses types.ApprovedAddresses
-	if bz == nil {
-		approvedAddresses = types.ApprovedAddresses{ApprovedAddresses: map[string]*types.ApprovedAddressesData{owner.String(): {ApprovedAddressesData: map[string]bool{receiver.String(): approved}}}}
-	} else {
-		k.cdc.MustUnmarshal(bz, &approvedAddresses)
-		approvedAddressesData := approvedAddresses.ApprovedAddresses[owner.String()]
-		if approvedAddressesData == nil {
-			approvedAddresses.ApprovedAddresses[owner.String()] = &types.ApprovedAddressesData{ApprovedAddressesData: map[string]bool{receiver.String(): approved}}
-		} else {
-			approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
+	var approvedAddressesList types.ApprovedAddressesList
+	noOp := true
+
+	if bz == nil && approved {
+		approvedAddressesList = types.ApprovedAddressesList{List: map[string]*types.ApprovedAddresses{owner.String(): {Addresses: map[string][]byte{receiver.String(): types.Placeholder}}}}
+
+		noOp = false
+	} else if bz != nil {
+		k.cdc.MustUnmarshal(bz, &approvedAddressesList)
+		approvedAddresses := approvedAddressesList.List[owner.String()]
+
+		if approvedAddresses == nil && approved {
+			approvedAddressesList.List[owner.String()] = &types.ApprovedAddresses{Addresses: map[string][]byte{receiver.String(): types.Placeholder}}
+
+			noOp = false
+		} else if approved && approvedAddresses.Addresses[receiver.String()] == nil {
+			approvedAddresses.Addresses[receiver.String()] = types.Placeholder
+
+			noOp = false
+		} else if !approved && approvedAddresses.Addresses[receiver.String()] != nil {
+			delete(approvedAddresses.Addresses, receiver.String())
+
+			if len(approvedAddressesList.List[owner.String()].Addresses) == 0 {
+				delete(approvedAddressesList.List, owner.String())
+			}
+
+			noOp = false
 		}
 	}
-	bz = k.cdc.MustMarshal(&approvedAddresses)
-	store.Set(nftIndex, bz)
+
+	if !noOp {
+		if len(approvedAddressesList.List) == 0 {
+			store.Delete(nftIndex)
+		} else {
+			store.Set(nftIndex, k.cdc.MustMarshal(&approvedAddressesList))
+		}
+	}
 }
 
 func (k Keeper) IsApproved(
@@ -56,20 +79,23 @@ func (k Keeper) IsApproved(
 ) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
-	bz := store.Get(index)
-	var approvedAddressesData types.ApprovedAddressesData
-	k.cdc.MustUnmarshal(bz, &approvedAddressesData)
 
-	if approvedAddressesData.ApprovedAddressesData[operator.String()] {
+	bz := store.Get(index)
+	var approvedAddresses types.ApprovedAddresses
+	k.cdc.MustUnmarshal(bz, &approvedAddresses)
+
+	if approvedAddresses.Addresses[operator.String()] != nil {
 		return true
 	}
 
 	store = prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
 	bz = store.Get(nftIndex)
-	var approvedAddresses types.ApprovedAddresses
-	k.cdc.MustUnmarshal(bz, &approvedAddresses)
-	return approvedAddresses.ApprovedAddresses[owner.String()] != nil &&
-		approvedAddresses.ApprovedAddresses[owner.String()].ApprovedAddressesData[operator.String()]
+
+	var approvedAddressesList types.ApprovedAddressesList
+	k.cdc.MustUnmarshal(bz, &approvedAddressesList)
+
+	return approvedAddressesList.List[owner.String()] != nil &&
+		approvedAddressesList.List[owner.String()].Addresses[operator.String()] != nil
 }
 
 func (k Keeper) GetNftApproved(
@@ -77,13 +103,13 @@ func (k Keeper) GetNftApproved(
 	collectionIndex []byte,
 	nftIndex []byte,
 	owner sdk.AccAddress,
-) map[string]bool {
+) map[string][]byte {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
 	bz := store.Get(nftIndex)
-	var approvedAddresses types.ApprovedAddresses
-	k.cdc.MustUnmarshal(bz, &approvedAddresses)
-	if approvedAddresses.ApprovedAddresses[owner.String()] != nil {
-		return approvedAddresses.ApprovedAddresses[owner.String()].ApprovedAddressesData
+	var approvedAddressesList types.ApprovedAddressesList
+	k.cdc.MustUnmarshal(bz, &approvedAddressesList)
+	if approvedAddressesList.List[owner.String()] != nil {
+		return approvedAddressesList.List[owner.String()].Addresses
 	}
 	return nil
 }
@@ -96,10 +122,10 @@ func (k Keeper) GetIsApprovedForAllNfts(
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
 	bz := store.Get(index)
-	var approvedAddressesData types.ApprovedAddressesData
-	k.cdc.MustUnmarshal(bz, &approvedAddressesData)
+	var approvedAddresses types.ApprovedAddresses
+	k.cdc.MustUnmarshal(bz, &approvedAddresses)
 
-	return approvedAddressesData.ApprovedAddressesData[operator.String()]
+	return approvedAddresses.Addresses[operator.String()] != nil
 }
 
 func (k Keeper) DeleteApprovedNft(
@@ -130,23 +156,8 @@ func (k Keeper) SetApprovedNfts(
 	receiver sdk.AccAddress,
 	approved bool,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
-		bz := store.Get(nftIndex)
-		var approvedAddresses types.ApprovedAddresses
-		if bz == nil {
-			approvedAddresses = types.ApprovedAddresses{ApprovedAddresses: map[string]*types.ApprovedAddressesData{owner.String(): {ApprovedAddressesData: map[string]bool{receiver.String(): approved}}}}
-		} else {
-			k.cdc.MustUnmarshal(bz, &approvedAddresses)
-			approvedAddressesData := approvedAddresses.ApprovedAddresses[owner.String()]
-			if approvedAddressesData == nil {
-				approvedAddresses.ApprovedAddresses[owner.String()] = &types.ApprovedAddressesData{ApprovedAddressesData: map[string]bool{receiver.String(): approved}}
-			} else {
-				approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
-			}
-		}
-		bz = k.cdc.MustMarshal(&approvedAddresses)
-		store.Set(nftIndex, bz)
+		k.SetApprovedNft(ctx, collectionIndex, nftIndex, owner, receiver, approved)
 	}
 }
 
@@ -159,13 +170,33 @@ func (k Keeper) SetApprovedAllNfts(
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
 	bz := store.Get(index)
-	if bz == nil {
-		store.Set(index, k.cdc.MustMarshal(&types.ApprovedAddressesData{ApprovedAddressesData: map[string]bool{receiver.String(): approved}}))
-	} else {
-		var approvedAddressesData types.ApprovedAddressesData
-		k.cdc.MustUnmarshal(bz, &approvedAddressesData)
-		approvedAddressesData.ApprovedAddressesData[receiver.String()] = approved
-		store.Set(index, k.cdc.MustMarshal(&approvedAddressesData))
+	var approvedAddresses types.ApprovedAddresses
+	noOp := true
+
+	if bz == nil && approved {
+		approvedAddresses = types.ApprovedAddresses{Addresses: map[string][]byte{receiver.String(): types.Placeholder}}
+
+		noOp = false
+	} else if bz != nil {
+		k.cdc.MustUnmarshal(bz, &approvedAddresses)
+
+		if approvedAddresses.Addresses[receiver.String()] == nil && approved {
+			approvedAddresses.Addresses[receiver.String()] = types.Placeholder
+
+			noOp = false
+		} else if !approved && approvedAddresses.Addresses[receiver.String()] != nil {
+			delete(approvedAddresses.Addresses, receiver.String())
+
+			noOp = false
+		}
+	}
+
+	if !noOp {
+		if len(approvedAddresses.Addresses) == 0 {
+			store.Delete(index)
+		} else {
+			store.Set(index, k.cdc.MustMarshal(&approvedAddresses))
+		}
 	}
 }
 

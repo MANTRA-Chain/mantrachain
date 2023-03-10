@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"github.com/spf13/cast"
-
 	"github.com/LimeChain/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -10,30 +8,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdCreateAccPerm() *cobra.Command {
+func CmdUpdateAccountPrivileges() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-acc-perm [id] [priviliges]",
-		Short: "Create a new acc_perm",
+		Use:   "update-account-privileges [account] [privileges]",
+		Short: "Update a account_privileges",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
-			indexId := args[0]
+			indexAcc := args[0]
 
 			// Get value arguments
-			argPriviliges, err := cast.ToUint64E(args[1])
-			if err != nil {
-				return err
-			}
+			argPrivileges := []byte(args[1])
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateAccPerm(
+			msg := types.NewMsgUpdateAccountPrivileges(
 				clientCtx.GetFromAddress().String(),
-				indexId,
-				argPriviliges,
+				indexAcc,
+				argPrivileges,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -47,59 +42,65 @@ func CmdCreateAccPerm() *cobra.Command {
 	return cmd
 }
 
-func CmdUpdateAccPerm() *cobra.Command {
+func CmdUpdateAccountPrivilegesBatch() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-acc-perm [id] [priviliges]",
-		Short: "Update a acc_perm",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexId := args[0]
-
-			// Get value arguments
-			argPriviliges, err := cast.ToUint64E(args[1])
-			if err != nil {
-				return err
-			}
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgUpdateAccPerm(
-				clientCtx.GetFromAddress().String(),
-				indexId,
-				argPriviliges,
-			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdDeleteAccPerm() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "delete-acc-perm [id]",
-		Short: "Delete a acc_perm",
+		Use:   "update-account-privileges-batch [payload-json]",
+		Short: "Update account_privileges in a batch",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			indexId := args[0]
+			argAccountsPrivileges := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgDeleteAccPerm(
+			// Unmarshal payload
+			var accountsPrivileges types.MsgAccountsPrivileges
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argAccountsPrivileges), &accountsPrivileges)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgUpdateAccountPrivilegesBatch(
 				clientCtx.GetFromAddress().String(),
-				indexId,
+				accountsPrivileges,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdUpdateAccountPrivilegesGroupedBatch() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-account-privileges-grouped-batch [payload-json]",
+		Short: "Update account_privileges_grouped in a batch",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argAccountsPrivilegesGrouped := args[0]
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			// Unmarshal payload
+			var accountsPrivilegesGrouped types.MsgAccountsPrivilegesGrouped
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argAccountsPrivilegesGrouped), &accountsPrivilegesGrouped)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgUpdateAccountPrivilegesGroupedBatch(
+				clientCtx.GetFromAddress().String(),
+				accountsPrivilegesGrouped,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

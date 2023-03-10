@@ -11,10 +11,13 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		NftCollectionList: []NftCollection{},
-		NftList:           []Nft{},
-		SoulBondedNftsCollectionList: []SoulBondedNftsCollection{},
-// this line is used by starport scaffolding # genesis/types/default
+		NftCollectionList:            []NftCollection{},
+		NftList:                      []Nft{},
+		SoulBondedNftsCollectionList: [][]byte{},
+		RestrictedNftsCollectionList: [][]byte{},
+		OpenedNftsCollectionList:     [][]byte{},
+		NftCollectionOwnerList:       []*NftCollectionOwner{},
+		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
 }
@@ -27,9 +30,9 @@ func (gs GenesisState) ValidateNftCollection() error {
 		var key []byte
 		indexBytes := []byte(NftCollectionStoreKey(elem.Creator))
 		key = append(key, indexBytes...)
-		key = append(key, []byte("/")...)
+		key = append(key, Placeholder...)
 		key = append(key, elem.Index...)
-		key = append(key, []byte("/")...)
+		key = append(key, Placeholder...)
 
 		index := string(key)
 		if _, ok := nftCollectionIndexMap[index]; ok {
@@ -49,9 +52,9 @@ func (gs GenesisState) ValidateNft() error {
 		var key []byte
 		indexBytes := []byte(NftStoreKey(elem.CollectionIndex))
 		key = append(key, indexBytes...)
-		key = append(key, []byte("/")...)
+		key = append(key, Placeholder...)
 		key = append(key, elem.Index...)
-		key = append(key, []byte("/")...)
+		key = append(key, Placeholder...)
 
 		index := string(key)
 		if _, ok := nftIndexMap[index]; ok {
@@ -77,16 +80,46 @@ func (gs GenesisState) Validate() error {
 	}
 
 	// Check for duplicated index in soulBondedNftsCollection
-soulBondedNftsCollectionIndexMap := make(map[string]struct{})
+	soulBondedNftsCollectionIndexMap := make(map[string]struct{})
 
-for _, elem := range gs.SoulBondedNftsCollectionList {
-	index := string(SoulBondedNftsCollectionKey(elem.Index))
-	if _, ok := soulBondedNftsCollectionIndexMap[index]; ok {
-		return fmt.Errorf("duplicated index for soulBondedNftsCollection")
+	for _, elem := range gs.SoulBondedNftsCollectionList {
+		index := string(elem)
+		if _, ok := soulBondedNftsCollectionIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for soulBondedNftsCollection")
+		}
+		soulBondedNftsCollectionIndexMap[index] = struct{}{}
 	}
-	soulBondedNftsCollectionIndexMap[index] = struct{}{}
-}
-// this line is used by starport scaffolding # genesis/types/validate
+	// Check for duplicated index in restrictedNftsCollection
+	restrictedNftsCollectionIndexMap := make(map[string]struct{})
+
+	for _, elem := range gs.RestrictedNftsCollectionList {
+		index := string(elem)
+		if _, ok := restrictedNftsCollectionIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for restrictedNftsCollection")
+		}
+		restrictedNftsCollectionIndexMap[index] = struct{}{}
+	}
+	// Check for duplicated index in openedNftsCollection
+	openedNftsCollectionIndexMap := make(map[string]struct{})
+
+	for _, elem := range gs.OpenedNftsCollectionList {
+		index := string(elem)
+		if _, ok := openedNftsCollectionIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for openedNftsCollection")
+		}
+		openedNftsCollectionIndexMap[index] = struct{}{}
+	}
+	// Check for duplicated index in nftCollectionOwner
+	nftCollectionOwnerIndexMap := make(map[string]struct{})
+
+	for _, elem := range gs.NftCollectionOwnerList {
+		index := string(elem.Index)
+		if _, ok := nftCollectionOwnerIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for nftCollectionOwner")
+		}
+		nftCollectionOwnerIndexMap[index] = struct{}{}
+	}
+	// this line is used by starport scaffolding # genesis/types/validate
 
 	return gs.Params.Validate()
 }

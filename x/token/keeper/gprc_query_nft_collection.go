@@ -41,27 +41,8 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 		return nil, status.Error(codes.InvalidArgument, "not found")
 	}
 
-	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nftColl, found := nftExecutor.GetClass(string(index))
-	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
-	}
-
 	return &types.QueryGetNftCollectionResponse{
-		Id:          meta.Id,
-		Name:        nftColl.Name,
-		Symbol:      nftColl.Symbol,
-		Description: nftColl.Description,
-		Images:      meta.Images,
-		Url:         meta.Url,
-		Links:       meta.Links,
-		Category:    meta.Category,
-		Options:     meta.Options,
-		Creator:     meta.Creator.String(),
-		Owner:       meta.Owner.String(),
-		Opened:      meta.Opened,
-		Data:        nftColl.Data,
-		// TODO: add is collection for soul bonded nfts field here
+		NftCollection: &meta,
 	}, nil
 }
 
@@ -94,40 +75,9 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 		return nil, err
 	}
 
-	var collectionsIndexes []string
-
-	for _, collection := range collections {
-		collectionsIndexes = append(collectionsIndexes, string(collection.Index))
-	}
-
-	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nftColls := nftExecutor.GetClasses(collectionsIndexes)
-
-	var nftCollections []*types.QueryGetNftCollectionResponse
-
-	for i, nftColl := range nftColls {
-		meta := collections[i]
-		nftCollections = append(nftCollections, &types.QueryGetNftCollectionResponse{
-			Id:          nftColl.UriHash,
-			Name:        nftColl.Name,
-			Symbol:      nftColl.Symbol,
-			Description: nftColl.Description,
-			Images:      meta.Images,
-			Url:         meta.Url,
-			Links:       meta.Links,
-			Category:    meta.Category,
-			Options:     meta.Options,
-			Creator:     meta.Creator.String(),
-			Owner:       meta.Owner.String(),
-			Opened:      meta.Opened,
-			Data:        nftColl.Data,
-			// TODO: add is collection for soul bonded nfts field here
-		})
-	}
-
 	return &types.QueryGetNftCollectionsByCreatorResponse{
 		Creator:        creator.String(),
-		NftCollections: nftCollections,
+		NftCollections: collections,
 		Pagination:     pageRes,
 	}, nil
 }
@@ -154,77 +104,61 @@ func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCo
 		return nil, err
 	}
 
-	var collectionsIndexes []string
-
-	for _, collection := range collections {
-		collectionsIndexes = append(collectionsIndexes, string(collection.Index))
-	}
-
-	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	nftColls := nftExecutor.GetClasses(collectionsIndexes)
-
-	var nftCollections []*types.QueryGetNftCollectionResponse
-
-	for i, nftColl := range nftColls {
-		meta := collections[i]
-		nftCollections = append(nftCollections, &types.QueryGetNftCollectionResponse{
-			Id:          nftColl.UriHash,
-			Name:        nftColl.Name,
-			Symbol:      nftColl.Symbol,
-			Description: nftColl.Description,
-			Images:      meta.Images,
-			Url:         meta.Url,
-			Links:       meta.Links,
-			Category:    meta.Category,
-			Options:     meta.Options,
-			Creator:     meta.Creator.String(),
-			Owner:       meta.Owner.String(),
-			Opened:      meta.Opened,
-			Data:        nftColl.Data,
-			// TODO: add is collection for soul bonded nfts field here
-		})
-	}
-
 	return &types.QueryGetAllNftCollectionsResponse{
-		NftCollections: nftCollections,
+		NftCollections: collections,
 		Pagination:     pageRes,
 	}, nil
 }
 
-func (k Keeper) NftCollectionSupply(c context.Context, req *types.QueryGetNftCollectionSupplyRequest) (*types.QueryGetNftCollectionSupplyResponse, error) {
+func (k Keeper) NftCollectionOwner(goCtx context.Context, req *types.QueryGetNftCollectionOwnerRequest) (*types.QueryGetNftCollectionOwnerResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-	ctx := sdk.UnwrapSDKContext(c)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	creator, err := sdk.AccAddressFromBech32(req.Creator)
-
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	conf := k.GetParams(ctx)
-	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id)
-
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	index := types.GetNftCollectionIndex(creator, req.Id)
-
-	if !k.HasNftCollection(
+	val, found := k.GetNftCollectionOwner(
 		ctx,
-		sdk.AccAddress(creator),
-		index,
-	) {
-		return nil, status.Error(codes.InvalidArgument, "not found")
+		req.Index,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
+	return &types.QueryGetNftCollectionOwnerResponse{NftCollectionOwner: string(val)}, nil
+}
 
-	return &types.QueryGetNftCollectionSupplyResponse{
-		Supply:  nftExecutor.GetClassSupply(string(index)),
-		Creator: creator.String(),
-		Id:      req.Id,
-	}, nil
+func (k Keeper) OpenedNftsCollection(goCtx context.Context, req *types.QueryGetOpenedNftsCollectionRequest) (*types.QueryGetOpenedNftsCollectionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryGetOpenedNftsCollectionResponse{OpenedNftsCollection: k.HasOpenedNftsCollection(
+		ctx,
+		req.Index,
+	)}, nil
+}
+
+func (k Keeper) RestrictedNftsCollection(goCtx context.Context, req *types.QueryGetRestrictedNftsCollectionRequest) (*types.QueryGetRestrictedNftsCollectionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryGetRestrictedNftsCollectionResponse{RestrictedNftsCollection: k.HasRestrictedNftsCollection(
+		ctx,
+		req.Index,
+	)}, nil
+}
+
+func (k Keeper) SoulBondedNftsCollection(goCtx context.Context, req *types.QueryGetSoulBondedNftsCollectionRequest) (*types.QueryGetSoulBondedNftsCollectionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryGetSoulBondedNftsCollectionResponse{SoulBondedNftsCollection: k.HasSoulBondedNftsCollection(
+		ctx,
+		req.Index,
+	)}, nil
 }

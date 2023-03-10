@@ -30,10 +30,10 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdCreateAccPerm())
-	cmd.AddCommand(CmdUpdateAccPerm())
-	cmd.AddCommand(CmdDeleteAccPerm())
-	cmd.AddCommand(CmdUpdateGuardTransfer())
+	cmd.AddCommand(CmdUpdateAccountPrivileges())
+	cmd.AddCommand(CmdUpdateAccountPrivilegesBatch())
+	cmd.AddCommand(CmdUpdateAccountPrivilegesGroupedBatch())
+	cmd.AddCommand(CmdUpdateGuardTransferCoins())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

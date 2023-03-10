@@ -8,7 +8,7 @@ option (gogoproto.equal_all) = true;
 
 message TokenOption {
   option (gogoproto.goproto_getters) = false;
-  
+
   string type = 1;
   string value = 2;
   string sub_value = 3;
@@ -16,7 +16,7 @@ message TokenOption {
 
 message TokenAttribute {
   option (gogoproto.goproto_getters) = false;
-  
+
   string type = 1;
   string value = 2;
   string sub_value = 3;
@@ -24,7 +24,7 @@ message TokenAttribute {
 
 message TokenImage {
   option (gogoproto.goproto_getters) = false;
-  
+
   string type = 1;
   string url = 2;
 }

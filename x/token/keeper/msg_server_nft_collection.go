@@ -64,18 +64,24 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		Links:    msg.Collection.Links,
 		Category: msg.Collection.Category,
 		Options:  msg.Collection.Options,
-		Opened:   msg.Collection.Opened,
 		Creator:  creator,
-		Owner:    creator,
 	}
 
 	k.SetNftCollection(ctx, newNftCollection)
 
 	if msg.Collection.SoulBondedNfts {
-		k.SetSoulBondedNftsCollection(ctx, types.SoulBondedNftsCollection{
-			Index: collectionId,
-		})
+		k.SetSoulBondedNftsCollection(ctx, collectionIndex)
 	}
+
+	if msg.Collection.Opened {
+		k.SetOpenedNftsCollection(ctx, collectionIndex)
+	}
+
+	if msg.Collection.RestrictedNfts {
+		k.SetRestrictedNftsCollection(ctx, collectionIndex)
+	}
+
+	k.SetNftCollectionOwner(ctx, collectionIndex, creator)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

@@ -9,25 +9,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdListAccPerm() *cobra.Command {
+func CmdShowAccountPrivileges() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-acc-perm",
-		Short: "list all acc_perm",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Use:   "show-account-privileges [account]",
+		Short: "shows a account_privileges",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllAccPermRequest{
-				Pagination: pageReq,
+			argAccount := args[0]
+
+			params := &types.QueryGetAccountPrivilegesRequest{
+				Account: argAccount,
 			}
 
-			res, err := queryClient.AccPermAll(context.Background(), params)
+			res, err := queryClient.AccountPrivileges(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -36,29 +34,25 @@ func CmdListAccPerm() *cobra.Command {
 		},
 	}
 
-	flags.AddPaginationFlagsToCmd(cmd, cmd.Use)
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
 
-func CmdShowAccPerm() *cobra.Command {
+func CmdShowAccountPrivilegesMany() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-acc-perm [id]",
-		Short: "shows a acc_perm",
-		Args:  cobra.ExactArgs(1),
+		Use:   "show-account-privileges-many [account ...]",
+		Short: "shows many account_privileges",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argId := args[0]
-
-			params := &types.QueryGetAccPermRequest{
-				Id: argId,
+			params := &types.QueryGetAccountPrivilegesManyRequest{
+				Accounts: args,
 			}
 
-			res, err := queryClient.AccPerm(context.Background(), params)
+			res, err := queryClient.AccountPrivilegesMany(context.Background(), params)
 			if err != nil {
 				return err
 			}
