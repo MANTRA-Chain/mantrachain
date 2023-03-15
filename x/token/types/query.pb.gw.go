@@ -1400,13 +1400,13 @@ var (
 
 	pattern_Query_AllCollectionNfts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "token", "v1", "nft", "collection_creator", "collection_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_SoulBondedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"LimeChain", "mantrachain", "token", "soul_bonded_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SoulBondedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "token", "v1", "soul_bonded_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_RestrictedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"LimeChain", "mantrachain", "token", "restricted_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RestrictedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "token", "v1", "restricted_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_OpenedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"LimeChain", "mantrachain", "token", "opened_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_OpenedNftsCollection_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "token", "v1", "opened_nfts_collection", "index"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NftCollectionOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"LimeChain", "mantrachain", "token", "nft_collection_owner", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NftCollectionOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "token", "v1", "nft_collection_owner", "index"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

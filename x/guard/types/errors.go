@@ -16,4 +16,5 @@ var (
 	ErrInvalidPrivileges                                   = errors.Register(ModuleName, 1118, "invalid privileges")
 	ErrRequiredPrivilegesNotFound                          = errors.Register(ModuleName, 1119, "required privileges not found")
 	ErrCoinRequiredPrivilegesNotFound                      = errors.Register(ModuleName, 1120, "coin required privileges not found")
+	ErrCoinLocked                                          = errors.Register(ModuleName, 1121, "coin locked")
 )

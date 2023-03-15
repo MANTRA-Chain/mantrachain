@@ -13,6 +13,7 @@ func DefaultGenesis() *GenesisState {
 		AccountPrivilegesList:  []*AccountPrivileges{},
 		GuardTransferCoins:     nil,
 		RequiredPrivilegesList: []*RequiredPrivileges{},
+		LockedList:             []*Locked{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -31,6 +32,7 @@ func (gs GenesisState) Validate() error {
 		}
 		accountPrivilegesIndexMap[index] = struct{}{}
 	}
+
 	// Check for duplicated index in requiredPrivileges
 	requiredPrivilegesIndexMap := make(map[string]struct{})
 
@@ -47,6 +49,23 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicated index for requiredPrivileges")
 		}
 		requiredPrivilegesIndexMap[index] = struct{}{}
+	}
+	// Check for duplicated index in locked
+	lockedIndexMap := make(map[string]struct{})
+
+	for _, elem := range gs.LockedList {
+		var key []byte
+		indexBytes := []byte(LockedStoreKey([]byte(elem.Kind)))
+		key = append(key, indexBytes...)
+		key = append(key, Placeholder...)
+		key = append(key, elem.Index...)
+		key = append(key, Placeholder...)
+
+		index := string(key)
+		if _, ok := lockedIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for locked")
+		}
+		lockedIndexMap[index] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

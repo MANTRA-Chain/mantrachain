@@ -34,6 +34,14 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState)
 		}
 		k.SetRequiredPrivileges(ctx, elem.Index, kind, elem.Privileges)
 	}
+	// Set all the locked
+	for _, elem := range genState.LockedList {
+		kind, err := types.ParseLockedKind(elem.Kind)
+		if err != nil {
+			panic("kind is invalid")
+		}
+		k.SetLocked(ctx, elem.Index, kind)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -49,6 +57,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 		genesis.GuardTransferCoins = types.Placeholder
 	}
 	genesis.RequiredPrivilegesList = k.GetAllRequiredPrivileges(ctx, nil)
+	genesis.LockedList = k.GetAllLocked(ctx, nil)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -6,9 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/cosmos/cosmos-sdk/client"
 )
 
 var (
@@ -37,6 +36,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateRequiredPrivileges())
 	cmd.AddCommand(CmdUpdateRequiredPrivilegesBatch())
 	cmd.AddCommand(CmdUpdateRequiredPrivilegesGroupedBatch())
+	cmd.AddCommand(CmdUpdateLocked())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

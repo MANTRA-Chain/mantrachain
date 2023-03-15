@@ -113,31 +113,212 @@ func (m *MsgIndexes) GetIndexes() [][]byte {
 	return nil
 }
 
+type AccountPrivileges struct {
+	Account    []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Privileges []byte `protobuf:"bytes,2,opt,name=privileges,proto3" json:"privileges,omitempty"`
+}
+
+func (m *AccountPrivileges) Reset()         { *m = AccountPrivileges{} }
+func (m *AccountPrivileges) String() string { return proto.CompactTextString(m) }
+func (*AccountPrivileges) ProtoMessage()    {}
+func (*AccountPrivileges) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{2}
+}
+func (m *AccountPrivileges) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AccountPrivileges) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AccountPrivileges.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AccountPrivileges) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPrivileges.Merge(m, src)
+}
+func (m *AccountPrivileges) XXX_Size() int {
+	return m.Size()
+}
+func (m *AccountPrivileges) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPrivileges.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AccountPrivileges proto.InternalMessageInfo
+
+func (m *AccountPrivileges) GetAccount() []byte {
+	if m != nil {
+		return m.Account
+	}
+	return nil
+}
+
+func (m *AccountPrivileges) GetPrivileges() []byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
+type RequiredPrivileges struct {
+	Index      []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
+	Privileges []byte `protobuf:"bytes,2,opt,name=privileges,proto3" json:"privileges,omitempty"`
+	Kind       string `protobuf:"bytes,3,opt,name=kind,proto3" json:"kind,omitempty"`
+}
+
+func (m *RequiredPrivileges) Reset()         { *m = RequiredPrivileges{} }
+func (m *RequiredPrivileges) String() string { return proto.CompactTextString(m) }
+func (*RequiredPrivileges) ProtoMessage()    {}
+func (*RequiredPrivileges) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{3}
+}
+func (m *RequiredPrivileges) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RequiredPrivileges) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RequiredPrivileges.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RequiredPrivileges) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RequiredPrivileges.Merge(m, src)
+}
+func (m *RequiredPrivileges) XXX_Size() int {
+	return m.Size()
+}
+func (m *RequiredPrivileges) XXX_DiscardUnknown() {
+	xxx_messageInfo_RequiredPrivileges.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RequiredPrivileges proto.InternalMessageInfo
+
+func (m *RequiredPrivileges) GetIndex() []byte {
+	if m != nil {
+		return m.Index
+	}
+	return nil
+}
+
+func (m *RequiredPrivileges) GetPrivileges() []byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
+func (m *RequiredPrivileges) GetKind() string {
+	if m != nil {
+		return m.Kind
+	}
+	return ""
+}
+
+type Locked struct {
+	Index  []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
+	Locked []byte `protobuf:"bytes,2,opt,name=locked,proto3" json:"locked,omitempty"`
+	Kind   string `protobuf:"bytes,3,opt,name=kind,proto3" json:"kind,omitempty"`
+}
+
+func (m *Locked) Reset()         { *m = Locked{} }
+func (m *Locked) String() string { return proto.CompactTextString(m) }
+func (*Locked) ProtoMessage()    {}
+func (*Locked) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{4}
+}
+func (m *Locked) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Locked) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Locked.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Locked) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Locked.Merge(m, src)
+}
+func (m *Locked) XXX_Size() int {
+	return m.Size()
+}
+func (m *Locked) XXX_DiscardUnknown() {
+	xxx_messageInfo_Locked.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Locked proto.InternalMessageInfo
+
+func (m *Locked) GetIndex() []byte {
+	if m != nil {
+		return m.Index
+	}
+	return nil
+}
+
+func (m *Locked) GetLocked() []byte {
+	if m != nil {
+		return m.Locked
+	}
+	return nil
+}
+
+func (m *Locked) GetKind() string {
+	if m != nil {
+		return m.Kind
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgAccounts)(nil), "mantrachain.guard.v1.MsgAccounts")
 	proto.RegisterType((*MsgIndexes)(nil), "mantrachain.guard.v1.MsgIndexes")
+	proto.RegisterType((*AccountPrivileges)(nil), "mantrachain.guard.v1.AccountPrivileges")
+	proto.RegisterType((*RequiredPrivileges)(nil), "mantrachain.guard.v1.RequiredPrivileges")
+	proto.RegisterType((*Locked)(nil), "mantrachain.guard.v1.Locked")
 }
 
 func init() { proto.RegisterFile("mantrachain/guard/v1/common.proto", fileDescriptor_ce2ac908ba79d3e1) }
 
 var fileDescriptor_ce2ac908ba79d3e1 = []byte{
-	// 243 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xcc, 0x4d, 0xcc, 0x2b,
-	0x29, 0x4a, 0x4c, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x4f, 0x2f, 0x4d, 0x2c, 0x4a, 0xd1, 0x2f, 0x33,
-	0xd4, 0x4f, 0xce, 0xcf, 0xcd, 0xcd, 0xcf, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x41,
-	0x52, 0xa2, 0x07, 0x56, 0xa2, 0x57, 0x66, 0x28, 0x25, 0x99, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f, 0x1c,
-	0x0f, 0x56, 0xa3, 0x0f, 0xe1, 0x40, 0x34, 0x48, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x43, 0xc4, 0x41,
-	0x2c, 0x88, 0xa8, 0x92, 0x33, 0x17, 0xb7, 0x6f, 0x71, 0xba, 0x63, 0x72, 0x72, 0x7e, 0x69, 0x5e,
-	0x49, 0xb1, 0x90, 0x09, 0x17, 0x47, 0x22, 0x94, 0x2d, 0xc1, 0xa8, 0xc0, 0xac, 0xc1, 0xe9, 0x24,
-	0x71, 0x69, 0x8b, 0xae, 0x08, 0xd4, 0x20, 0xc7, 0x94, 0x94, 0xa2, 0xd4, 0xe2, 0xe2, 0xe0, 0x92,
-	0xa2, 0xcc, 0xbc, 0xf4, 0x20, 0xb8, 0x4a, 0x25, 0x35, 0x2e, 0x2e, 0xdf, 0xe2, 0x74, 0xcf, 0xbc,
-	0x94, 0xd4, 0x8a, 0xd4, 0x62, 0x21, 0x09, 0x2e, 0xf6, 0x4c, 0x08, 0x13, 0x6c, 0x04, 0x4f, 0x10,
-	0x8c, 0xeb, 0xe4, 0xb3, 0xe2, 0x91, 0x1c, 0xe3, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31,
-	0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb,
-	0x31, 0x44, 0xe9, 0xa5, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea, 0xfb, 0x64,
-	0xe6, 0xa6, 0x3a, 0x83, 0x7d, 0x8f, 0x1c, 0x12, 0x15, 0xd0, 0xb0, 0x28, 0xa9, 0x2c, 0x48, 0x2d,
-	0x4e, 0x62, 0x03, 0xfb, 0xc0, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x8a, 0xde, 0x44, 0xdf, 0x2d,
-	0x01, 0x00, 0x00,
+	// 340 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x31, 0x4e, 0xc3, 0x30,
+	0x14, 0x86, 0x6b, 0x0a, 0x85, 0x3e, 0x58, 0x88, 0x22, 0x14, 0x3a, 0x58, 0x25, 0x03, 0xea, 0x42,
+	0xa2, 0x0a, 0x2e, 0xd0, 0x76, 0x02, 0xb5, 0x12, 0x0a, 0x1b, 0x03, 0x28, 0x4d, 0x2c, 0xd7, 0x6a,
+	0x63, 0x17, 0x3b, 0xa9, 0xca, 0x2d, 0x38, 0x06, 0x07, 0xe0, 0x10, 0x8c, 0x15, 0x13, 0x23, 0x4a,
+	0x2f, 0x82, 0x6a, 0x9b, 0x2a, 0x03, 0x88, 0xed, 0xff, 0x9f, 0x3f, 0x7f, 0x1e, 0xfc, 0xe0, 0x2c,
+	0x8b, 0x79, 0x2e, 0xe3, 0x64, 0x12, 0x33, 0x1e, 0xd2, 0x22, 0x96, 0x69, 0xb8, 0xe8, 0x86, 0x89,
+	0xc8, 0x32, 0xc1, 0x83, 0xb9, 0x14, 0xb9, 0x70, 0xdc, 0x0a, 0x12, 0x68, 0x24, 0x58, 0x74, 0x5b,
+	0xa7, 0x89, 0x50, 0x99, 0x50, 0x8f, 0x9a, 0x09, 0x4d, 0x31, 0x17, 0x5a, 0x2e, 0x15, 0x54, 0x98,
+	0xf9, 0x26, 0x99, 0xa9, 0x3f, 0x80, 0xc3, 0x91, 0xa2, 0xbd, 0x24, 0x11, 0x05, 0xcf, 0x95, 0x73,
+	0x05, 0x07, 0xb1, 0xcd, 0x1e, 0x6a, 0xd7, 0x3b, 0xcd, 0xbe, 0xf7, 0xf1, 0x76, 0xe1, 0x5a, 0x51,
+	0x2f, 0x4d, 0x25, 0x51, 0xea, 0x2e, 0x97, 0x8c, 0xd3, 0x68, 0x4b, 0xfa, 0xe7, 0x00, 0x23, 0x45,
+	0xaf, 0x79, 0x4a, 0x96, 0x44, 0x39, 0x1e, 0xec, 0x33, 0x13, 0xb5, 0xe2, 0x28, 0xfa, 0xa9, 0xfe,
+	0x08, 0x8e, 0xed, 0x4b, 0xb7, 0x92, 0x2d, 0xd8, 0x8c, 0x50, 0x83, 0x5b, 0x91, 0x87, 0xda, 0x68,
+	0x83, 0xdb, 0xea, 0x60, 0x80, 0xf9, 0x96, 0xf3, 0x76, 0xf4, 0x61, 0x65, 0xe2, 0x3f, 0x80, 0x13,
+	0x91, 0xa7, 0x82, 0x49, 0x92, 0x56, 0x7c, 0x2e, 0xec, 0xe9, 0xf7, 0xac, 0xcd, 0x94, 0xff, 0x5c,
+	0x8e, 0x03, 0xbb, 0x53, 0xc6, 0x53, 0xaf, 0xde, 0x46, 0x9d, 0x66, 0xa4, 0xb3, 0x7f, 0x03, 0x8d,
+	0xa1, 0x48, 0xa6, 0x24, 0xfd, 0xc3, 0x79, 0x02, 0x8d, 0x99, 0x3e, 0xb7, 0x3e, 0xdb, 0x7e, 0x73,
+	0xf5, 0x87, 0xaf, 0x25, 0x46, 0xef, 0x25, 0x46, 0xab, 0x12, 0xa3, 0xaf, 0x12, 0xa3, 0x97, 0x35,
+	0xae, 0xad, 0xd6, 0xb8, 0xf6, 0xb9, 0xc6, 0xb5, 0xfb, 0x80, 0xb2, 0x7c, 0x52, 0x8c, 0x83, 0x44,
+	0x64, 0xe1, 0x90, 0x65, 0x64, 0xa0, 0x3f, 0xbe, 0xba, 0x04, 0x4b, 0xbb, 0x06, 0xf9, 0xf3, 0x9c,
+	0xa8, 0x71, 0x43, 0x7f, 0xde, 0xe5, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0xa7, 0x66, 0x51, 0x94,
+	0x28, 0x02, 0x00, 0x00,
 }
 
 func (this *MsgAccounts) Equal(that interface{}) bool {
@@ -195,6 +376,93 @@ func (this *MsgIndexes) Equal(that interface{}) bool {
 		if !bytes.Equal(this.Indexes[i], that1.Indexes[i]) {
 			return false
 		}
+	}
+	return true
+}
+func (this *AccountPrivileges) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AccountPrivileges)
+	if !ok {
+		that2, ok := that.(AccountPrivileges)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.Account, that1.Account) {
+		return false
+	}
+	if !bytes.Equal(this.Privileges, that1.Privileges) {
+		return false
+	}
+	return true
+}
+func (this *RequiredPrivileges) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*RequiredPrivileges)
+	if !ok {
+		that2, ok := that.(RequiredPrivileges)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.Index, that1.Index) {
+		return false
+	}
+	if !bytes.Equal(this.Privileges, that1.Privileges) {
+		return false
+	}
+	if this.Kind != that1.Kind {
+		return false
+	}
+	return true
+}
+func (this *Locked) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Locked)
+	if !ok {
+		that2, ok := that.(Locked)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.Index, that1.Index) {
+		return false
+	}
+	if !bytes.Equal(this.Locked, that1.Locked) {
+		return false
+	}
+	if this.Kind != that1.Kind {
+		return false
 	}
 	return true
 }
@@ -262,6 +530,131 @@ func (m *MsgIndexes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *AccountPrivileges) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AccountPrivileges) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AccountPrivileges) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		i -= len(m.Privileges)
+		copy(dAtA[i:], m.Privileges)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Account) > 0 {
+		i -= len(m.Account)
+		copy(dAtA[i:], m.Account)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RequiredPrivileges) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RequiredPrivileges) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RequiredPrivileges) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Kind) > 0 {
+		i -= len(m.Kind)
+		copy(dAtA[i:], m.Kind)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Kind)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Privileges) > 0 {
+		i -= len(m.Privileges)
+		copy(dAtA[i:], m.Privileges)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Locked) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Locked) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Locked) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Kind) > 0 {
+		i -= len(m.Kind)
+		copy(dAtA[i:], m.Kind)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Kind)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Locked) > 0 {
+		i -= len(m.Locked)
+		copy(dAtA[i:], m.Locked)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Locked)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Index) > 0 {
+		i -= len(m.Index)
+		copy(dAtA[i:], m.Index)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Index)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintCommon(dAtA []byte, offset int, v uint64) int {
 	offset -= sovCommon(v)
 	base := offset
@@ -299,6 +692,65 @@ func (m *MsgIndexes) Size() (n int) {
 			l = len(b)
 			n += 1 + l + sovCommon(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *AccountPrivileges) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Account)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Privileges)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	return n
+}
+
+func (m *RequiredPrivileges) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Privileges)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Kind)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	return n
+}
+
+func (m *Locked) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Index)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Locked)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Kind)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
 	}
 	return n
 }
@@ -451,6 +903,424 @@ func (m *MsgIndexes) Unmarshal(dAtA []byte) error {
 			}
 			m.Indexes = append(m.Indexes, make([]byte, postIndex-iNdEx))
 			copy(m.Indexes[len(m.Indexes)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AccountPrivileges) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AccountPrivileges: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AccountPrivileges: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Account = append(m.Account[:0], dAtA[iNdEx:postIndex]...)
+			if m.Account == nil {
+				m.Account = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges[:0], dAtA[iNdEx:postIndex]...)
+			if m.Privileges == nil {
+				m.Privileges = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RequiredPrivileges) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RequiredPrivileges: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RequiredPrivileges: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = append(m.Index[:0], dAtA[iNdEx:postIndex]...)
+			if m.Index == nil {
+				m.Index = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges[:0], dAtA[iNdEx:postIndex]...)
+			if m.Privileges == nil {
+				m.Privileges = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kind = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Locked) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Locked: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Locked: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Index = append(m.Index[:0], dAtA[iNdEx:postIndex]...)
+			if m.Index == nil {
+				m.Index = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Locked", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Locked = append(m.Locked[:0], dAtA[iNdEx:postIndex]...)
+			if m.Locked == nil {
+				m.Locked = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Kind = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -70,8 +70,8 @@ github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQ
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230314145447-2b10a1394adf h1:lKA+U+AQt8t21qJh0rL29oND/0lIQ5+ouy3HpkW0ELE=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230314145447-2b10a1394adf/go.mod h1:e0ZEpY/nhVoXAkijdHPdFOJNOXCddfvyFrFLp2QmCCY=
+github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230315145231-9cb86e87dd0a h1:U7An/e4RE1NN00zy6rCIt0cbTDXGfEQ7yWQuKcF8P30=
+github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230315145231-9cb86e87dd0a/go.mod h1:e0ZEpY/nhVoXAkijdHPdFOJNOXCddfvyFrFLp2QmCCY=
 github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230217125757-7cae4b87a8d1 h1:aQAg4mGIHdDfFl6U4Sg9btxNefgHei4JRScsEdTjkLI=
 github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230217125757-7cae4b87a8d1/go.mod h1:WUrvJt/tT8xAjM+uMOS3UWxqfiJg7zC8yDHplT+Dq90=
 github.com/Microsoft/go-winio v0.5.2 h1:a9IhgEQBCUEk6QCdml9CiJGhAws+YwffDHEMp1VMrpA=

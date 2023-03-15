@@ -20,11 +20,6 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address string, coins sdk
 
 	conf := k.GetParams(ctx)
 
-	// Check if it is a module address or it is an admin wallet address
-	if k.modAccAddrs[address] || sdk.MustAccAddressFromBech32(conf.AdminAccount).Equals(accAddress) {
-		return nil
-	}
-
 	collectionCreator := conf.AccountPrivilegesTokenCollectionCreator
 	collectionId := conf.AccountPrivilegesTokenCollectionId
 
@@ -70,7 +65,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address string, coins sdk
 	}
 
 	if len(indexes) > 0 {
-		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.Coin)
+		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
 
 		if len(requiredPrivilegesList) == 0 {
 			return errors.Wrap(types.ErrRequiredPrivilegesNotFound, "required privileges not found")
@@ -97,6 +92,26 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address string, coins sdk
 func (k Keeper) ValidateCanTransferCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error {
 	if !k.HasGuardTransferCoins(ctx) {
 		return nil
+	}
+
+	if len(inputs) == 0 && len(outputs) == 0 {
+		return errors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
+	}
+
+	conf := k.GetParams(ctx)
+	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
+
+	for i, in := range inputs {
+		out := outputs[i]
+
+		// Check if it is a module address or it is an admin wallet address
+		// TODO: change `admin.Equals(...` to update to `k.hasRole(...` when implemented
+		if k.modAccAddrs[in.Address] ||
+			k.modAccAddrs[out.Address] ||
+			admin.Equals(sdk.MustAccAddressFromBech32(in.Address)) ||
+			admin.Equals(sdk.MustAccAddressFromBech32(out.Address)) {
+			return nil
+		}
 	}
 
 	for _, in := range inputs {
