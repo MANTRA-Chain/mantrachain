@@ -14,3 +14,20 @@ message MsgAccounts {
 message MsgIndexes {
   repeated bytes indexes = 1;
 }
+
+message AccountPrivileges {
+  bytes account = 1;
+  bytes privileges = 2;
+}
+
+message RequiredPrivileges {
+  bytes index = 1;
+  bytes privileges = 2;
+  string kind = 3;
+}
+
+message Locked {
+  bytes index = 1;
+  bytes locked = 2;
+  string kind = 3;
+}

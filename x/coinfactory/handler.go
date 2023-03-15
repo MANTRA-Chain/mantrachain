@@ -28,9 +28,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgBurn:
 			res, err := msgServer.Burn(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		// case *types.MsgForceTransfer:
-		// 	res, err := msgServer.ForceTransfer(sdk.WrapSDKContext(ctx), msg)
-		// 	return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgForceTransfer:
+			res, err := msgServer.ForceTransfer(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgChangeAdmin:
 			res, err := msgServer.ChangeAdmin(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)

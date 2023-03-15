@@ -45,22 +45,22 @@ service Query {
 
   // Queries a list of SoulBondedNftsCollection items.
   rpc SoulBondedNftsCollection(QueryGetSoulBondedNftsCollectionRequest) returns (QueryGetSoulBondedNftsCollectionResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/token/soul_bonded_nfts_collection/{index}";
+    option (google.api.http).get = "/mantrachain/token/v1/soul_bonded_nfts_collection/{index}";
   }
 
   // Queries a list of RestrictedNftsCollection items.
   rpc RestrictedNftsCollection(QueryGetRestrictedNftsCollectionRequest) returns (QueryGetRestrictedNftsCollectionResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/token/restricted_nfts_collection/{index}";
+    option (google.api.http).get = "/mantrachain/token/v1/restricted_nfts_collection/{index}";
   }
 
   // Queries a list of OpenedNftsCollection items.
   rpc OpenedNftsCollection(QueryGetOpenedNftsCollectionRequest) returns (QueryGetOpenedNftsCollectionResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/token/opened_nfts_collection/{index}";
+    option (google.api.http).get = "/mantrachain/token/v1/opened_nfts_collection/{index}";
   }
 
   // Queries a list of NftCollectionOwner items.
   rpc NftCollectionOwner(QueryGetNftCollectionOwnerRequest) returns (QueryGetNftCollectionOwnerResponse) {
-    option (google.api.http).get = "/LimeChain/mantrachain/token/nft_collection_owner/{index}";
+    option (google.api.http).get = "/mantrachain/token/v1/nft_collection_owner/{index}";
   }
 }
 

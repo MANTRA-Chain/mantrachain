@@ -14,12 +14,8 @@ func CmdUpdateRequiredPrivileges() *cobra.Command {
 		Short: "Update a required_privileges",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
 			index := []byte(args[0])
-
-			// Get value arguments
 			argPrivileges := []byte(args[1])
-
 			argKind := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -52,7 +48,6 @@ func CmdUpdateRequiredPrivilegesBatch() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRequiredPrivilegesList := args[0]
-
 			argKind := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -91,7 +86,6 @@ func CmdUpdateRequiredPrivilegesGroupedBatch() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRequiredPrivilegesListGrouped := args[0]
-
 			argKind := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)

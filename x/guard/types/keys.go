@@ -20,6 +20,7 @@ const (
 var (
 	accountPrivilegesStoreKey  = "account-privileges-store"
 	requiredPrivilegesStoreKey = "required-privileges-store"
+	lockedStoreKey             = "locked-store"
 
 	Delimiter   = []byte{0x00}
 	Placeholder = []byte{0x01}
@@ -31,6 +32,23 @@ const (
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+func LockedStoreKey(kind []byte) []byte {
+	var key []byte
+	if kind == nil {
+		key = make([]byte, len(lockedStoreKey)+len(Delimiter))
+		copy(key, lockedStoreKey)
+		copy(key[len(lockedStoreKey):], Delimiter)
+	} else {
+		key = make([]byte, len(lockedStoreKey)+len(Delimiter)+len(kind)+len(Delimiter))
+		copy(key, lockedStoreKey)
+		copy(key[len(lockedStoreKey):], Delimiter)
+		copy(key[len(lockedStoreKey)+len(Delimiter):], kind)
+		copy(key[len(lockedStoreKey)+len(Delimiter)+len(kind):], Delimiter)
+	}
+
+	return key
 }
 
 func RequiredPrivilegesStoreKey(kind []byte) []byte {

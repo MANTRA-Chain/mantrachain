@@ -3,6 +3,7 @@ syntax = "proto3";
 package mantrachain.guard.v1;
 
 import "gogoproto/gogo.proto";
+import "mantrachain/guard/v1/common.proto";
 import "mantrachain/guard/v1/params.proto";
 
 // this line is used by starport scaffolding # genesis/proto/import
@@ -17,15 +18,5 @@ message GenesisState {
   repeated RequiredPrivileges required_privileges_list = 4;
 
   // this line is used by starport scaffolding # genesis/proto/state
-}
-
-message AccountPrivileges {
-  bytes account = 1;
-  bytes privileges = 2;
-}
-
-message RequiredPrivileges {
-  bytes index = 1;
-  bytes privileges = 2;
-  string kind = 3;
+  repeated Locked lockedList = 5;
 }
