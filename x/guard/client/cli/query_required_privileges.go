@@ -9,10 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdListAccountPrivileges() *cobra.Command {
+func CmdListRequiredPrivileges() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-account-privileges",
-		Short: "list all account_privileges",
+		Use:   "list-required-privileges [kind]",
+		Short: "list all required_privileges",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -23,11 +24,17 @@ func CmdListAccountPrivileges() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllAccountPrivilegesRequest{
-				Pagination: pageReq,
+			argKind, err := types.ParseRequiredPrivilegesKind(args[0])
+			if err != nil {
+				return err
 			}
 
-			res, err := queryClient.AccountPrivilegesAll(context.Background(), params)
+			params := &types.QueryAllRequiredPrivilegesRequest{
+				Pagination: pageReq,
+				Kind:       argKind.String(),
+			}
+
+			res, err := queryClient.RequiredPrivilegesAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -42,23 +49,28 @@ func CmdListAccountPrivileges() *cobra.Command {
 	return cmd
 }
 
-func CmdShowAccountPrivileges() *cobra.Command {
+func CmdShowRequiredPrivileges() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-account-privileges [account]",
-		Short: "shows a account_privileges",
-		Args:  cobra.ExactArgs(1),
+		Use:   "show-required-privileges [index] [kind]",
+		Short: "shows a required_privileges",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argAccount := args[0]
-
-			params := &types.QueryGetAccountPrivilegesRequest{
-				Account: argAccount,
+			argIndex := []byte(args[0])
+			argKind, err := types.ParseRequiredPrivilegesKind(args[1])
+			if err != nil {
+				return err
 			}
 
-			res, err := queryClient.AccountPrivileges(context.Background(), params)
+			params := &types.QueryGetRequiredPrivilegesRequest{
+				Index: argIndex,
+				Kind:  argKind.String(),
+			}
+
+			res, err := queryClient.RequiredPrivileges(context.Background(), params)
 			if err != nil {
 				return err
 			}

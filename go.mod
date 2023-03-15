@@ -168,7 +168,7 @@ replace (
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
-	github.com/cosmos/cosmos-sdk => github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230217082928-067f2fcd407c
+	github.com/cosmos/cosmos-sdk => github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230314145447-2b10a1394adf
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.19.5-rc.1
 	github.com/cosmos/ibc-go/v7 => github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230217125757-7cae4b87a8d1
 	// GoLevelDB version has been pinned to `v1.0.1-0.20210819022825-2ae1ddf74ef7`, following versions might cause unexpected behavior.

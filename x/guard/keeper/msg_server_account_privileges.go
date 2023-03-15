@@ -23,8 +23,8 @@ func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.Msg
 		account,
 	)
 
-	accPr := types.AccPrivilegesFromBytes(msg.Privileges)
-	areDefaultAccountPrivileges := accPr.Equal(conf.DefaultAccountPrivileges)
+	accPr := types.PrivilegesFromBytes(msg.Privileges)
+	areDefaultAccountPrivileges := accPr.Equal(conf.DefaultPrivileges)
 
 	if isFound && (accPr.Empty() || areDefaultAccountPrivileges) {
 		k.RemoveAccountPrivileges(ctx, account)
@@ -60,8 +60,8 @@ func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *type
 			account,
 		)
 
-		accPr := types.AccPrivilegesFromBytes(msg.AccountsPrivileges.Privileges[i])
-		areDefaultAccountPrivileges := accPr.Equal(conf.DefaultAccountPrivileges)
+		accPr := types.PrivilegesFromBytes(msg.AccountsPrivileges.Privileges[i])
+		areDefaultAccountPrivileges := accPr.Equal(conf.DefaultPrivileges)
 
 		if isFound && (accPr.Empty() || areDefaultAccountPrivileges) {
 			k.RemoveAccountPrivileges(ctx, account)
@@ -79,17 +79,20 @@ func (k msgServer) UpdateAccountPrivilegesGroupedBatch(goCtx context.Context, ms
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if msg.AccountsPrivilegesGrouped == nil || msg.AccountsPrivilegesGrouped.Accounts == nil || len(msg.AccountsPrivilegesGrouped.Accounts) == 0 {
+	if msg.AccountsPrivilegesGrouped == nil ||
+		msg.AccountsPrivilegesGrouped.Accounts == nil ||
+		len(msg.AccountsPrivilegesGrouped.Accounts) == 0 {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "grouped accounts and/or privileges are empty")
 	}
 
-	if msg.AccountsPrivilegesGrouped.Privileges == nil || len(msg.AccountsPrivilegesGrouped.Accounts) != len(msg.AccountsPrivilegesGrouped.Privileges) {
+	if msg.AccountsPrivilegesGrouped.Privileges == nil ||
+		len(msg.AccountsPrivilegesGrouped.Accounts) != len(msg.AccountsPrivilegesGrouped.Privileges) {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "grouped accounts and privileges length is not equal")
 	}
 
 	for i := range msg.AccountsPrivilegesGrouped.Accounts {
-		accPr := types.AccPrivilegesFromBytes(msg.AccountsPrivilegesGrouped.Privileges[i])
-		areDefaultAccountPrivileges := accPr.Equal(conf.DefaultAccountPrivileges)
+		accPr := types.PrivilegesFromBytes(msg.AccountsPrivilegesGrouped.Privileges[i])
+		areDefaultAccountPrivileges := accPr.Equal(conf.DefaultPrivileges)
 
 		for _, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
 			account, err := sdk.AccAddressFromBech32(acc)

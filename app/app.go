@@ -374,6 +374,8 @@ func New(
 		memKeys:           memKeys,
 	}
 
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
 	app.ParamsKeeper = initParamsKeeper(
 		appCodec,
 		cdc,
@@ -382,7 +384,7 @@ func New(
 	)
 
 	// set the BaseApp's parameter store
-	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, keys[consensusparamtypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, keys[consensusparamtypes.StoreKey], authority)
 	bApp.SetParamStore(&app.ConsensusParamsKeeper)
 
 	// add capability keeper and ScopeToModule for ibc module
@@ -406,7 +408,7 @@ func New(
 		authtypes.ProtoBaseAccount,
 		maccPerms,
 		sdk.Bech32PrefixAccAddr,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(
@@ -421,7 +423,8 @@ func New(
 		keys[banktypes.StoreKey],
 		app.AccountKeeper,
 		app.BlockedModuleAccountAddrs(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
+		&app.GuardKeeper,
 	)
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
@@ -429,7 +432,7 @@ func New(
 		keys[stakingtypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	app.MintKeeper = mintkeeper.NewKeeper(
@@ -439,7 +442,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	app.DistrKeeper = distrkeeper.NewKeeper(
@@ -449,7 +452,7 @@ func New(
 		app.BankKeeper,
 		app.StakingKeeper,
 		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
@@ -457,7 +460,7 @@ func New(
 		cdc,
 		keys[slashingtypes.StoreKey],
 		app.StakingKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
@@ -466,7 +469,7 @@ func New(
 		invCheckPeriod,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	groupConfig := group.DefaultConfig()
@@ -494,7 +497,7 @@ func New(
 		appCodec,
 		homePath,
 		app.BaseApp,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	// ... other modules keepers
@@ -559,18 +562,23 @@ func New(
 		appCodec, keys[tokentypes.StoreKey], keys[tokentypes.MemStoreKey], app.GetSubspace(tokentypes.ModuleName), app.NFTKeeper,
 	)
 
-	app.GuardKeeper = *guardkeeper.NewKeeper(
-		appCodec,
-		keys[guardtypes.StoreKey],
-		keys[guardtypes.MemStoreKey],
-		app.GetSubspace(guardtypes.ModuleName),
-	)
-
 	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
+		appCodec,
 		keys[coinfactorytypes.StoreKey],
 		app.GetSubspace(coinfactorytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
+	)
+
+	app.GuardKeeper = guardkeeper.NewKeeper(
+		appCodec,
+		keys[guardtypes.StoreKey],
+		keys[guardtypes.MemStoreKey],
+		app.GetSubspace(guardtypes.ModuleName),
+		app.ModuleAccountAddrs(),
+		app.AccountKeeper,
+		app.NFTKeeper,
+		app.CoinFactoryKeeper,
 	)
 
 	app.FarmingKeeper = farmingkeeper.NewKeeper(
@@ -630,7 +638,7 @@ func New(
 		app.StakingKeeper,
 		app.MsgServiceRouter(),
 		govConfig,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authority,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
@@ -700,7 +708,7 @@ func New(
 		icaModule,
 		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.BankKeeper),
+		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.NFTKeeper, app.CoinFactoryKeeper),
 		coinfactory.NewAppModule(appCodec, app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper),
 		farming.NewAppModule(appCodec, app.FarmingKeeper, app.AccountKeeper, app.BankKeeper),
@@ -790,14 +798,15 @@ func New(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	// NOTE: crisis module must go at the end to check for invariants on each module
+	// NOTE: guard module must occur before the bank module
 	genesisModuleOrder := []string{
-		capabilitytypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName,
+		capabilitytypes.ModuleName, authtypes.ModuleName,
+		guardtypes.ModuleName, banktypes.ModuleName,
 		distrtypes.ModuleName, stakingtypes.ModuleName, slashingtypes.ModuleName, govtypes.ModuleName,
 		ibcexported.ModuleName, ibctransfertypes.ModuleName, icatypes.ModuleName,
 		minttypes.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, authz.ModuleName,
 		feegrant.ModuleName, nft.ModuleName, group.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		guardtypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
 		consensusparamtypes.ModuleName,
@@ -858,7 +867,6 @@ func New(
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
 			TokenKeeper:     app.TokenKeeper,
-			NFTKeeper:       app.NFTKeeper,
 			GuardKeeper:     app.GuardKeeper,
 		},
 	)

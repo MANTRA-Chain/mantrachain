@@ -12,20 +12,20 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateAccountPrivilegesBatch{}, "guard/UpdateAccountPrivilegesBatch", nil)
 	cdc.RegisterConcrete(&MsgUpdateAccountPrivilegesGroupedBatch{}, "guard/UpdateAccountPrivilegesGroupedBatch", nil)
 	cdc.RegisterConcrete(&MsgUpdateGuardTransferCoins{}, "guard/UpdateGuardTransferCoins", nil)
+	cdc.RegisterConcrete(&MsgUpdateRequiredPrivileges{}, "guard/UpdateRequiredPrivileges", nil)
+	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesBatch{}, "guard/UpdateRequiredPrivilegesBatch", nil)
+	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesGroupedBatch{}, "guard/UpdateRequiredPrivilegesGroupedBatch", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateAccountPrivileges{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateAccountPrivilegesBatch{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateAccountPrivilegesGroupedBatch{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateRequiredPrivileges{},
+		&MsgUpdateRequiredPrivilegesBatch{},
+		&MsgUpdateRequiredPrivilegesGroupedBatch{},
 		&MsgUpdateGuardTransferCoins{},
 	)
 	// this line is used by starport scaffolding # 3

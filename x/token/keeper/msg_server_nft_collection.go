@@ -77,6 +77,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		k.SetOpenedNftsCollection(ctx, collectionIndex)
 	}
 
+	// TODO: make to could be done only by admin
 	if msg.Collection.RestrictedNfts {
 		k.SetRestrictedNftsCollection(ctx, collectionIndex)
 	}

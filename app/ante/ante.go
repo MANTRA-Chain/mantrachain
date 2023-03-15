@@ -22,7 +22,6 @@ type HandlerOptions struct {
 	SigGasConsumer         authante.SignatureVerificationGasConsumer
 	TxFeeChecker           authante.TxFeeChecker
 	TokenKeeper            tokenante.TokenKeeper
-	NFTKeeper              guardante.NFTKeeper
 	GuardKeeper            guardante.GuardKeeper
 }
 
@@ -46,7 +45,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
-		guardante.NewGuardTransferCoinsDecorator(options.GuardKeeper, options.NFTKeeper),
+		guardante.NewGuardAuthzDecorator(options.GuardKeeper),
 		tokenante.NewTokenTransferNftDecorator(options.TokenKeeper),
 		tokenante.NewTokenSoulBondedCollectionDecorator(options.TokenKeeper),
 		authante.NewTxTimeoutHeightDecorator(),

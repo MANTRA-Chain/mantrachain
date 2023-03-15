@@ -4,10 +4,37 @@ import (
 	"context"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+func (k Keeper) AccountPrivilegesAll(goCtx context.Context, req *types.QueryAllAccountPrivilegesRequest) (*types.QueryAllAccountPrivilegesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var accounts []string
+	var privileges [][]byte
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := ctx.KVStore(k.storeKey)
+	accountPrivilegesStore := prefix.NewStore(store, types.AccountPrivilegesStoreKey())
+
+	pageRes, err := query.Paginate(accountPrivilegesStore, req.Pagination, func(key []byte, value []byte) error {
+		accounts = append(accounts, string(key))
+		privileges = append(privileges, value)
+		return nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryAllAccountPrivilegesResponse{Accounts: accounts, Privileges: privileges, Pagination: pageRes}, nil
+}
 
 func (k Keeper) AccountPrivileges(c context.Context, req *types.QueryGetAccountPrivilegesRequest) (*types.QueryGetAccountPrivilegesResponse, error) {
 	if req == nil {
@@ -25,7 +52,7 @@ func (k Keeper) AccountPrivileges(c context.Context, req *types.QueryGetAccountP
 	val, found := k.GetAccountPrivileges(
 		ctx,
 		account,
-		conf.DefaultAccountPrivileges,
+		conf.DefaultPrivileges,
 	)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
@@ -34,39 +61,5 @@ func (k Keeper) AccountPrivileges(c context.Context, req *types.QueryGetAccountP
 	return &types.QueryGetAccountPrivilegesResponse{
 		Account:    req.Account,
 		Privileges: val,
-	}, nil
-}
-
-func (k Keeper) AccountPrivilegesMany(c context.Context, req *types.QueryGetAccountPrivilegesManyRequest) (*types.QueryGetAccountPrivilegesManyResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	conf := k.GetParams(ctx)
-
-	if req.Accounts == nil || len(req.Accounts) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	var accounts []sdk.AccAddress
-
-	for _, account := range req.Accounts {
-		acc, err := sdk.AccAddressFromBech32(account)
-		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, "invalid account address")
-		}
-		accounts = append(accounts, acc)
-	}
-
-	values := k.GetAccountPrivilegesMany(
-		ctx,
-		accounts,
-		conf.DefaultAccountPrivileges,
-	)
-
-	return &types.QueryGetAccountPrivilegesManyResponse{
-		Accounts:   req.Accounts,
-		Privileges: values,
 	}, nil
 }
