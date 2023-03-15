@@ -1,0 +1,16 @@
+syntax = "proto3";
+package mantrachain.guard.v1;
+
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
+option (gogoproto.equal_all) = true;
+
+message MsgAccounts {
+  repeated string accounts = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+}
+
+message MsgIndexes {
+  repeated bytes indexes = 1;
+}

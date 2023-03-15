@@ -7,6 +7,34 @@ import (
 	"github.com/LimeChain/mantrachain/x/coinfactory/types"
 )
 
+func (k Keeper) HasAdmin(ctx sdk.Context, denom string) bool {
+	store := k.GetDenomPrefixStore(ctx, denom)
+	return store.Has([]byte(types.DenomAuthorityMetadataKey))
+}
+
+// GetAuthorityMetadata returns the authority metadata for a specific denom
+func (k Keeper) GetAdmin(ctx sdk.Context, denom string) (val sdk.AccAddress, found bool) {
+	store := k.GetDenomPrefixStore(ctx, denom)
+
+	if !k.HasAdmin(ctx, denom) {
+		return []byte{}, false
+	}
+
+	b := store.Get([]byte(types.DenomAuthorityMetadataKey))
+
+	if b == nil {
+		return val, false
+	}
+
+	metadata := types.DenomAuthorityMetadata{}
+
+	k.cdc.MustUnmarshal(b, &metadata)
+
+	admin := sdk.MustAccAddressFromBech32(metadata.Admin)
+
+	return admin, true
+}
+
 // GetAuthorityMetadata returns the authority metadata for a specific denom
 func (k Keeper) GetAuthorityMetadata(ctx sdk.Context, denom string) (types.DenomAuthorityMetadata, error) {
 	bz := k.GetDenomPrefixStore(ctx, denom).Get([]byte(types.DenomAuthorityMetadataKey))

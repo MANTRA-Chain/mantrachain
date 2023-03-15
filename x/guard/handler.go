@@ -11,7 +11,7 @@ import (
 )
 
 // NewHandler ...
-func NewHandler(k keeper.Keeper) sdk.Handler {
+func NewHandler(k *keeper.Keeper) sdk.Handler {
 	msgServer := keeper.NewMsgServerImpl(k)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
@@ -26,6 +26,15 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateAccountPrivilegesGroupedBatch:
 			res, err := msgServer.UpdateAccountPrivilegesGroupedBatch(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUpdateRequiredPrivileges:
+			res, err := msgServer.UpdateRequiredPrivileges(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUpdateRequiredPrivilegesBatch:
+			res, err := msgServer.UpdateRequiredPrivilegesBatch(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgUpdateRequiredPrivilegesGroupedBatch:
+			res, err := msgServer.UpdateRequiredPrivilegesGroupedBatch(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateGuardTransferCoins:
 			res, err := msgServer.UpdateGuardTransferCoins(sdk.WrapSDKContext(ctx), msg)

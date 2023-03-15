@@ -14,10 +14,14 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
+		cdc         codec.BinaryCodec
+		storeKey    storetypes.StoreKey
+		memKey      storetypes.StoreKey
+		paramstore  paramtypes.Subspace
+		modAccAddrs map[string]bool
+		ak          types.AccountKeeper
+		nk          types.NFTKeeper
+		ck          types.CoinFactoryKeeper
 	}
 )
 
@@ -26,19 +30,25 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
-
-) *Keeper {
+	modAccAddrs map[string]bool,
+	ak types.AccountKeeper,
+	nk types.NFTKeeper,
+	ck types.CoinFactoryKeeper,
+) Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
-	return &Keeper{
-
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+	return Keeper{
+		cdc:         cdc,
+		storeKey:    storeKey,
+		memKey:      memKey,
+		paramstore:  ps,
+		modAccAddrs: modAccAddrs,
+		ak:          ak,
+		nk:          nk,
+		ck:          ck,
 	}
 }
 

@@ -13,4 +13,7 @@ var (
 	ErrInvalidAccountPrivilegesTokenCollectionCreatorParam = errors.Register(ModuleName, 1115, "invalid account privileges token collection creator param")
 	ErrInvalidAccountPrivilegesTokenCollectionIdParam      = errors.Register(ModuleName, 1116, "invalid account privileges token collection id param")
 	ErrInsufficientPrivileges                              = errors.Register(ModuleName, 1117, "insufficient privileges")
+	ErrInvalidPrivileges                                   = errors.Register(ModuleName, 1118, "invalid privileges")
+	ErrRequiredPrivilegesNotFound                          = errors.Register(ModuleName, 1119, "required privileges not found")
+	ErrCoinRequiredPrivilegesNotFound                      = errors.Register(ModuleName, 1120, "coin required privileges not found")
 )

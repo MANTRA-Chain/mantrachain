@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) SetAccountPrivileges(ctx sdk.Context, account sdk.AccAddress, accountPrivileges []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 	store.Set(account, accountPrivileges)
 }
 
@@ -15,7 +15,7 @@ func (k Keeper) HasAccountPrivileges(
 	ctx sdk.Context,
 	account sdk.AccAddress,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 	return store.Has(account)
 }
 
@@ -24,7 +24,7 @@ func (k Keeper) GetAccountPrivileges(
 	account sdk.AccAddress,
 	defaultAccountPrivileges []byte,
 ) (val []byte, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 
 	if !k.HasAccountPrivileges(ctx, account) {
 		if defaultAccountPrivileges != nil {
@@ -52,7 +52,7 @@ func (k Keeper) GetAccountPrivilegesMany(
 	accounts []sdk.AccAddress,
 	defaultAccountPrivileges []byte,
 ) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 
 	for _, acc := range accounts {
 		bz := store.Get(acc)
@@ -71,12 +71,12 @@ func (k Keeper) RemoveAccountPrivileges(
 	ctx sdk.Context,
 	account []byte,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 	store.Delete(account)
 }
 
 func (k Keeper) GetAllAccountPrivileges(ctx sdk.Context) (list []*types.AccountPrivileges) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AccountPrivilegesKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

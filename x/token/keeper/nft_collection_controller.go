@@ -165,6 +165,8 @@ func (c *NftCollectionController) ValidMetadata() *NftCollectionController {
 		return controller.validCollectionMetadataLinks()
 	}, func(controller *NftCollectionController) error {
 		return controller.validCollectionMetadataOpened()
+	}, func(controller *NftCollectionController) error {
+		return controller.validCollectionMetadataRestricted()
 	})
 	return c
 }
@@ -353,7 +355,20 @@ func (c *NftCollectionController) validCollectionMetadataOpened() error {
 		return nil
 	}
 	if !c.metadata.Opened {
-		return errors.Wrapf(types.ErrInvalidNftCollectionOpened, "collection %d can not be opened", len(c.metadata.Id))
+		return errors.Wrapf(types.ErrInvalidNftCollectionOpened, "collection %d must be opened", len(c.metadata.Id))
+	}
+	return nil
+}
+
+func (c *NftCollectionController) validCollectionMetadataRestricted() error {
+	if !c.metadata.RestrictedNfts {
+		return nil
+	}
+	if c.metadata.Opened {
+		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "opened collection %d cannot be restricted", len(c.metadata.Id))
+	}
+	if c.metadata.Id == c.conf.NftCollectionDefaultId {
+		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "collection %d cannot be restricted", len(c.metadata.Id))
 	}
 	return nil
 }

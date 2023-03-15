@@ -18,10 +18,10 @@ message GenesisState {
   repeated Nft nft_list = 3 [(gogoproto.nullable) = false];
 
   // this line is used by starport scaffolding # genesis/proto/state
-  repeated bytes soulBondedNftsCollectionList = 4;
-  repeated bytes restrictedNftsCollectionList = 5;
-  repeated bytes openedNftsCollectionList = 6;
-  repeated NftCollectionOwner nftCollectionOwnerList = 7;
+  repeated bytes soul_bonded_nfts_collection_list = 4;
+  repeated bytes restricted_nfts_collection_list = 5;
+  repeated bytes opened_nfts_collection_list = 6;
+  repeated NftCollectionOwner nft_collection_owner_list = 7;
 }
 
 message NftCollectionOwner {

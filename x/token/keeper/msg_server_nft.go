@@ -88,6 +88,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
+	// TODO: optimize this
 	err = nftController.
 		FilterEmptyIds().
 		FilterExist().
@@ -227,6 +228,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante
@@ -341,6 +343,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		return nil, err
 	}
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante
@@ -498,6 +501,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
+	// TODO: optimize this
 	err = nftController.
 		FilterEmptyIds().
 		FilterExist().
@@ -623,6 +627,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante
@@ -729,6 +734,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante
@@ -839,6 +845,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		WithStore(k).
 		WithConfiguration(k.GetParams(ctx))
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante
@@ -962,6 +969,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		return nil, err
 	}
 
+	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
 	// The restricted nft collectveons has role based authenticatan ion in ante

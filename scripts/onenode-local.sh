@@ -12,7 +12,7 @@ ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID="account_privileges_guard_nft_collect
 KEYRING="test"
 LOGLEVEL="info"
 
-GAS_ADJ=1.4
+GAS_ADJ=1.6
 GAS_PRICE=0.0001uaum
 
 # Path variables
