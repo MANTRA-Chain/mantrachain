@@ -15,6 +15,8 @@ func (k Keeper) ValidateAreCoinsLocked(ctx sdk.Context, address sdk.Address, coi
 	conf := k.GetParams(ctx)
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
+	// Check if it is a module address or it is an admin wallet address
+	// TODO: change `admin.Equals(...` to update to `k.hasRole(...` when implemented
 	if k.modAccAddrs[address.String()] ||
 		admin.Equals(address) {
 		return nil

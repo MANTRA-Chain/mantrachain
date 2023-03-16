@@ -47,6 +47,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address string, coins sdk
 
 	for _, coin := range coins {
 		denom := coin.GetDenom()
+		denomBytes := []byte(denom)
 		hasAdmin := k.ck.HasAdmin(ctx, denom)
 
 		if hasAdmin {
@@ -60,7 +61,13 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address string, coins sdk
 				continue
 			}
 
-			indexes = append(indexes, []byte(denom))
+			exists := k.HasLocked(ctx, denomBytes, types.LockedCoin)
+
+			if exists {
+				return errors.Wrapf(types.ErrCoinLocked, "coin %s locked", denom)
+			}
+
+			indexes = append(indexes, denomBytes)
 		}
 	}
 

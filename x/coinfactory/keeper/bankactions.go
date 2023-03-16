@@ -52,12 +52,7 @@ func (k Keeper) burnFrom(ctx sdk.Context, amount sdk.Coin, burnFrom string) erro
 }
 
 func (k Keeper) forceTransfer(ctx sdk.Context, amount sdk.Coin, fromAddr string, toAddr string) error {
-	// verify that denom is an x/coinfactory denom
-	_, _, err := types.DeconstructDenom(amount.Denom)
-	if err != nil {
-		return err
-	}
-
+	// Seize any native coins
 	fromSdkAddr, err := sdk.AccAddressFromBech32(fromAddr)
 	if err != nil {
 		return err

@@ -424,7 +424,6 @@ func New(
 		app.AccountKeeper,
 		app.BlockedModuleAccountAddrs(),
 		authority,
-		&app.GuardKeeper,
 	)
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
