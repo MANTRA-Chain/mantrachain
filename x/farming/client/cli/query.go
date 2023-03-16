@@ -32,17 +32,17 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	farmingQueryCmd.AddCommand(
-		GetCmdQueryParams(),
-		GetCmdQueryPlans(),
-		GetCmdQueryPlan(),
-		GetCmdQueryPosition(),
-		GetCmdQueryStakings(),
-		GetCmdQueryQueuedStakings(),
-		GetCmdQueryTotalStakings(),
-		GetCmdQueryRewards(),
-		GetCmdQueryUnharvestedRewards(),
-		GetCmdQueryCurrentEpochDays(),
-		GetCmdQueryHistoricalRewards(),
+	// GetCmdQueryParams(),
+	// GetCmdQueryPlans(),
+	// GetCmdQueryPlan(),
+	// GetCmdQueryPosition(),
+	// GetCmdQueryStakings(),
+	// GetCmdQueryQueuedStakings(),
+	// GetCmdQueryTotalStakings(),
+	// GetCmdQueryRewards(),
+	// GetCmdQueryUnharvestedRewards(),
+	// GetCmdQueryCurrentEpochDays(),
+	// GetCmdQueryHistoricalRewards(),
 	)
 	return farmingQueryCmd
 }
