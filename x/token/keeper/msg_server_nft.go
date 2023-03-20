@@ -231,7 +231,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -346,7 +346,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -479,7 +479,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	collectionController.MustExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -630,7 +630,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -737,7 +737,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -848,7 +848,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -972,7 +972,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	// TODO: optimize this
 	nftController.FilterEmptyIds().FilterNotExist()
 
-	// The restricted nft collectveons has role based authenticatan ion in ante
+	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),

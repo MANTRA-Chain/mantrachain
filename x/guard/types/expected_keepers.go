@@ -13,6 +13,10 @@ type NFTKeeper interface {
 	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
 }
 
+type TokenKeeper interface {
+	HasRestrictedNftsCollection(ctx sdk.Context, index []byte) bool
+}
+
 type CoinFactoryKeeper interface {
 	HasAdmin(ctx sdk.Context, denom string) bool
 	GetAdmin(ctx sdk.Context, denom string) (sdk.AccAddress, bool)

@@ -6,7 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k Keeper) CheckHasPerm(ctx sdk.Context, address string) error {
+func (k Keeper) CheckIsAdmin(ctx sdk.Context, address string) error {
 	conf := k.GetParams(ctx)
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 

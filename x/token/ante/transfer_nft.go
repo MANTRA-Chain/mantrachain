@@ -10,8 +10,8 @@ type TokenTransferNftDecorator struct {
 	tokenKeeper TokenKeeper
 }
 
-func NewTokenTransferNftDecorator(gk TokenKeeper) TokenTransferNftDecorator {
-	return TokenTransferNftDecorator{tokenKeeper: gk}
+func NewTokenTransferNftDecorator(tk TokenKeeper) TokenTransferNftDecorator {
+	return TokenTransferNftDecorator{tokenKeeper: tk}
 }
 
 func (ttd TokenTransferNftDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
@@ -20,7 +20,7 @@ func (ttd TokenTransferNftDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		for _, msg := range tx.GetMsgs() {
 			switch msg := msg.(type) {
 			case *nft.MsgSend:
-				ok, err := ttd.tokenKeeper.CheckCanTransferNft(ctx, ttd.tokenKeeper, msg.ClassId)
+				ok, err := ttd.tokenKeeper.CheckCanTransferNft(ctx, msg.ClassId)
 
 				if err != nil {
 					return ctx, errors.Wrap(err, "token send nft: fail")

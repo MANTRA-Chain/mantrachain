@@ -20,6 +20,7 @@ type (
 		paramstore  paramtypes.Subspace
 		modAccAddrs map[string]bool
 		ak          types.AccountKeeper
+		tk          types.TokenKeeper
 		nk          types.NFTKeeper
 		ck          types.CoinFactoryKeeper
 	}
@@ -32,6 +33,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	modAccAddrs map[string]bool,
 	ak types.AccountKeeper,
+	tk types.TokenKeeper,
 	nk types.NFTKeeper,
 	ck types.CoinFactoryKeeper,
 ) Keeper {
@@ -47,6 +49,7 @@ func NewKeeper(
 		paramstore:  ps,
 		modAccAddrs: modAccAddrs,
 		ak:          ak,
+		tk:          tk,
 		nk:          nk,
 		ck:          ck,
 	}
