@@ -45,9 +45,6 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
-		guardante.NewGuardAuthzDecorator(options.GuardKeeper),
-		tokenante.NewTokenTransferNftDecorator(options.TokenKeeper),
-		tokenante.NewTokenSoulBondedCollectionDecorator(options.TokenKeeper),
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
 		authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
@@ -57,6 +54,10 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 		authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		authante.NewIncrementSequenceDecorator(options.AccountKeeper),
+		tokenante.NewTokenTransferNftDecorator(options.TokenKeeper),
+		tokenante.NewTokenSoulBondedNftsCollectionDecorator(options.TokenKeeper),
+		guardante.NewGuardTokenAuthzDecorator(options.GuardKeeper),
+		guardante.NewGuardAdminAuthzDecorator(options.GuardKeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil

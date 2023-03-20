@@ -4,48 +4,113 @@ import (
 	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/LimeChain/mantrachain/x/coinfactory/types"
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	liquiditytypes "github.com/LimeChain/mantrachain/x/liquidity/types"
+	lpfarmtypes "github.com/LimeChain/mantrachain/x/lpfarm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type GuardAuthzDecorator struct {
+type GuardAdminAuthzDecorator struct {
 	guardKeeper GuardKeeper
 }
 
-func NewGuardAuthzDecorator(gk GuardKeeper) GuardAuthzDecorator {
-	return GuardAuthzDecorator{guardKeeper: gk}
+func NewGuardAdminAuthzDecorator(gk GuardKeeper) GuardAdminAuthzDecorator {
+	return GuardAdminAuthzDecorator{guardKeeper: gk}
 }
 
-func (gtd GuardAuthzDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (gtd GuardAdminAuthzDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	switch tx.(type) {
 	case sdk.Tx:
 		for _, msg := range tx.GetMsgs() {
 			switch msg := msg.(type) {
+			// Guard module
 			case *types.MsgUpdateAccountPrivileges:
-			case *types.MsgUpdateAccountPrivilegesBatch:
-			case *types.MsgUpdateAccountPrivilegesGroupedBatch:
-			case *types.MsgUpdateGuardTransferCoins:
-			case *types.MsgUpdateLocked:
-			case *types.MsgUpdateRequiredPrivileges:
-			case *types.MsgUpdateRequiredPrivilegesBatch:
-			case *types.MsgUpdateRequiredPrivilegesGroupedBatch:
-				err := gtd.guardKeeper.CheckHasPerm(ctx, msg.GetCreator())
-
-				if err != nil {
-					return ctx, errors.Wrap(err, "fail")
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
 				}
+			case *types.MsgUpdateAccountPrivilegesBatch:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateAccountPrivilegesGroupedBatch:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateGuardTransferCoins:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateLocked:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateRequiredPrivileges:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateRequiredPrivilegesBatch:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *types.MsgUpdateRequiredPrivilegesGroupedBatch:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			// Coin factory module
 			case *coinfactorytypes.MsgCreateDenom:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			case *coinfactorytypes.MsgMint:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			case *coinfactorytypes.MsgBurn:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			case *coinfactorytypes.MsgChangeAdmin:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			case *coinfactorytypes.MsgForceTransfer:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			case *coinfactorytypes.MsgSetDenomMetadata:
-				err := gtd.guardKeeper.CheckHasPerm(ctx, msg.Sender)
-
-				if err != nil {
-					return ctx, errors.Wrap(err, "fail")
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			// Liquidity module
+			case *liquiditytypes.MsgCreatePair:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *liquiditytypes.MsgCreatePool:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			case *liquiditytypes.MsgCreateRangedPool:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
+			// case *liquiditytypes.MsgDeposit:
+			// 	if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Depositor); err != nil {
+			// 		return ctx, errors.Wrap(err, "unauthorized")
+			// 	}
+			// case *liquiditytypes.MsgWithdraw:
+			// 	if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Withdrawer); err != nil {
+			// 		return ctx, errors.Wrap(err, "unauthorized")
+			// 	}
+			// case *liquiditytypes.MsgCancelAllOrders:
+			// 	if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Orderer); err != nil {
+			// 		return ctx, errors.Wrap(err, "unauthorized")
+			// 	}
+			// Lpfarm module
+			case *lpfarmtypes.MsgCreatePrivatePlan:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
 				}
 			}
-			// TODO: add rest of the modules relevant messages
 		}
 	}
 

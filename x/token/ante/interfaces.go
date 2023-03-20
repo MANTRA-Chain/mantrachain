@@ -5,6 +5,6 @@ import (
 )
 
 type TokenKeeper interface {
-	CheckCanTransferNft(ctx sdk.Context, tokenKeeper TokenKeeper, classId string) (bool, error)
-	CheckIsSoulBondedCollection(ctx sdk.Context, tokenKeeper TokenKeeper, collectionCreator string, collectionId string) (bool, error)
+	CheckCanTransferNft(ctx sdk.Context, classId string) (bool, error)
+	CheckSoulBondedNftsCollection(ctx sdk.Context, collectionCreator string, collectionId string) error
 }

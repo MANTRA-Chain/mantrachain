@@ -6,31 +6,30 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type TokenSoulBondedCollectionDecorator struct {
+type TokenSoulBondedNftsCollectionDecorator struct {
 	tokenKeeper TokenKeeper
 }
 
-func NewTokenSoulBondedCollectionDecorator(gk TokenKeeper) TokenSoulBondedCollectionDecorator {
-	return TokenSoulBondedCollectionDecorator{tokenKeeper: gk}
+func NewTokenSoulBondedNftsCollectionDecorator(tk TokenKeeper) TokenSoulBondedNftsCollectionDecorator {
+	return TokenSoulBondedNftsCollectionDecorator{tokenKeeper: tk}
 }
 
-func (ttd TokenSoulBondedCollectionDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (ttd TokenSoulBondedNftsCollectionDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	switch tx.(type) {
 	case sdk.Tx:
 		for _, msg := range tx.GetMsgs() {
 			switch msg := msg.(type) {
 			case *types.MsgApproveNft:
-			case *types.MsgApproveAllNfts:
-			case *types.MsgTransferNft:
-			case *types.MsgTransferNfts:
-				isSoulBonded, err := ttd.tokenKeeper.CheckIsSoulBondedCollection(ctx, ttd.tokenKeeper, msg.CollectionCreator, msg.CollectionId)
-
-				if err != nil {
+				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
 					return ctx, errors.Wrap(err, "token soul bonded collection: fail")
 				}
-
-				if isSoulBonded {
-					return ctx, errors.Wrap(err, "token soul bonded collection: disabled operation")
+			case *types.MsgTransferNft:
+				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+					return ctx, errors.Wrap(err, "token soul bonded collection: fail")
+				}
+			case *types.MsgTransferNfts:
+				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+					return ctx, errors.Wrap(err, "token soul bonded collection: fail")
 				}
 			}
 		}
