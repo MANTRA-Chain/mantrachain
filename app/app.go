@@ -424,6 +424,7 @@ func New(
 		app.AccountKeeper,
 		app.BlockedModuleAccountAddrs(),
 		authority,
+		&app.GuardKeeper,
 	)
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
@@ -575,7 +576,9 @@ func New(
 		keys[guardtypes.MemStoreKey],
 		app.GetSubspace(guardtypes.ModuleName),
 		app.ModuleAccountAddrs(),
+		app.MsgServiceRouter(),
 		app.AccountKeeper,
+		app.AuthzKeeper,
 		app.TokenKeeper,
 		app.NFTKeeper,
 		app.CoinFactoryKeeper,
@@ -854,10 +857,6 @@ func New(
 	app.MountKVStores(keys)
 	app.MountTransientStores(tkeys)
 	app.MountMemoryStores(memKeys)
-
-	// initialize BaseApp
-	app.SetInitChainer(app.InitChainer)
-	app.SetBeginBlocker(app.BeginBlocker)
 
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{

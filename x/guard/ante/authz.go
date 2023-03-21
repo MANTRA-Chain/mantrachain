@@ -55,6 +55,10 @@ func (gtd GuardAdminAuthzDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
 					return ctx, errors.Wrap(err, "unauthorized")
 				}
+			case *types.MsgUpdateAuthzGenericGrantRevokeBatch:
+				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+					return ctx, errors.Wrap(err, "unauthorized")
+				}
 			// Coin factory module
 			case *coinfactorytypes.MsgCreateDenom:
 				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {

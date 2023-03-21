@@ -1,12 +1,20 @@
 package types
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
 	HasAccount(ctx sdk.Context, addr sdk.AccAddress) bool
+}
+
+type AuthzKeeper interface {
+	SaveGrant(ctx sdk.Context, grantee, granter sdk.AccAddress, authorization authz.Authorization, expiration *time.Time) error
+	DeleteGrant(ctx sdk.Context, grantee sdk.AccAddress, granter sdk.AccAddress, msgType string) error
 }
 
 type NFTKeeper interface {
