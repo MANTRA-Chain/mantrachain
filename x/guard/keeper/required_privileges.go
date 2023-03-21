@@ -70,7 +70,7 @@ func (k Keeper) RemoveRequiredPrivileges(
 	store.Delete(index)
 }
 
-func (k Keeper) GetAllRequiredPrivileges(ctx sdk.Context, kind *types.RequiredPrivilegesKind) (list []*types.RequiredPrivileges) {
+func (k Keeper) GetAllRequiredPrivileges(ctx sdk.Context, kind types.RequiredPrivilegesKind) (list []*types.RequiredPrivileges) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 

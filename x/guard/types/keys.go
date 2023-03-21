@@ -35,35 +35,21 @@ func KeyPrefix(p string) []byte {
 }
 
 func LockedStoreKey(kind []byte) []byte {
-	var key []byte
-	if kind == nil {
-		key = make([]byte, len(lockedStoreKey)+len(Delimiter))
-		copy(key, lockedStoreKey)
-		copy(key[len(lockedStoreKey):], Delimiter)
-	} else {
-		key = make([]byte, len(lockedStoreKey)+len(Delimiter)+len(kind)+len(Delimiter))
-		copy(key, lockedStoreKey)
-		copy(key[len(lockedStoreKey):], Delimiter)
-		copy(key[len(lockedStoreKey)+len(Delimiter):], kind)
-		copy(key[len(lockedStoreKey)+len(Delimiter)+len(kind):], Delimiter)
-	}
+	key := make([]byte, len(lockedStoreKey)+len(Delimiter)+len(kind)+len(Delimiter))
+	copy(key, lockedStoreKey)
+	copy(key[len(lockedStoreKey):], Delimiter)
+	copy(key[len(lockedStoreKey)+len(Delimiter):], kind)
+	copy(key[len(lockedStoreKey)+len(Delimiter)+len(kind):], Delimiter)
 
 	return key
 }
 
 func RequiredPrivilegesStoreKey(kind []byte) []byte {
-	var key []byte
-	if kind == nil {
-		key = make([]byte, len(requiredPrivilegesStoreKey)+len(Delimiter))
-		copy(key, requiredPrivilegesStoreKey)
-		copy(key[len(requiredPrivilegesStoreKey):], Delimiter)
-	} else {
-		key = make([]byte, len(requiredPrivilegesStoreKey)+len(Delimiter)+len(kind)+len(Delimiter))
-		copy(key, requiredPrivilegesStoreKey)
-		copy(key[len(requiredPrivilegesStoreKey):], Delimiter)
-		copy(key[len(requiredPrivilegesStoreKey)+len(Delimiter):], kind)
-		copy(key[len(requiredPrivilegesStoreKey)+len(Delimiter)+len(kind):], Delimiter)
-	}
+	key := make([]byte, len(requiredPrivilegesStoreKey)+len(Delimiter)+len(kind)+len(Delimiter))
+	copy(key, requiredPrivilegesStoreKey)
+	copy(key[len(requiredPrivilegesStoreKey):], Delimiter)
+	copy(key[len(requiredPrivilegesStoreKey)+len(Delimiter):], kind)
+	copy(key[len(requiredPrivilegesStoreKey)+len(Delimiter)+len(kind):], Delimiter)
 
 	return key
 }
@@ -72,5 +58,6 @@ func AccountPrivilegesStoreKey() []byte {
 	key := make([]byte, len(accountPrivilegesStoreKey)+len(Delimiter))
 	copy(key, accountPrivilegesStoreKey)
 	copy(key[len(accountPrivilegesStoreKey):], Delimiter)
+
 	return key
 }
