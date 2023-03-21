@@ -57,7 +57,7 @@ func (k Keeper) RemoveLocked(
 }
 
 // GetAllLocked returns all locked
-func (k Keeper) GetAllLocked(ctx sdk.Context, kind *types.LockedKind) (list []*types.Locked) {
+func (k Keeper) GetAllLocked(ctx sdk.Context, kind types.LockedKind) (list []*types.Locked) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.LockedStoreKey(kind.Bytes()))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
