@@ -6,6 +6,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,7 +20,9 @@ type (
 		memKey      storetypes.StoreKey
 		paramstore  paramtypes.Subspace
 		modAccAddrs map[string]bool
+		router      *baseapp.MsgServiceRouter
 		ak          types.AccountKeeper
+		azk         types.AuthzKeeper
 		tk          types.TokenKeeper
 		nk          types.NFTKeeper
 		ck          types.CoinFactoryKeeper
@@ -32,7 +35,9 @@ func NewKeeper(
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	modAccAddrs map[string]bool,
+	router *baseapp.MsgServiceRouter,
 	ak types.AccountKeeper,
+	azk types.AuthzKeeper,
 	tk types.TokenKeeper,
 	nk types.NFTKeeper,
 	ck types.CoinFactoryKeeper,
@@ -48,7 +53,9 @@ func NewKeeper(
 		memKey:      memKey,
 		paramstore:  ps,
 		modAccAddrs: modAccAddrs,
+		router:      router,
 		ak:          ak,
+		azk:         azk,
 		tk:          tk,
 		nk:          nk,
 		ck:          ck,

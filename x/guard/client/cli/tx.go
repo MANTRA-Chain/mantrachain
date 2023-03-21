@@ -37,7 +37,8 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateRequiredPrivilegesBatch())
 	cmd.AddCommand(CmdUpdateRequiredPrivilegesGroupedBatch())
 	cmd.AddCommand(CmdUpdateLocked())
-	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(CmdUpdateAuthzGenericGrantRevokeBatch())
+// this line is used by starport scaffolding # 1
 
 	return cmd
 }
