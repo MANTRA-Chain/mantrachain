@@ -13,21 +13,26 @@ func (k msgServer) UpdateGuardTransferCoins(goCtx context.Context, msg *types.Ms
 
 	// Check if the value exists
 	exists := k.HasGuardTransferCoins(ctx)
+	updated := false
 
 	if exists && !msg.Enabled {
 		k.RemoveGuardTransferCoins(ctx)
+		updated = true
 	} else if !exists && msg.Enabled {
 		k.SetGuardTransferCoins(ctx)
+		updated = true
 	}
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateGuardTransferCoins),
-			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
-			sdk.NewAttribute(types.AttributeKeyGuardTransferCoinsEnabled, strconv.FormatBool(msg.Enabled)),
-		),
-	)
+	if updated {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateGuardTransferCoins),
+				sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+				sdk.NewAttribute(types.AttributeKeyGuardTransferCoins, strconv.FormatBool(msg.Enabled)),
+			),
+		)
+	}
 
 	return &types.MsgUpdateGuardTransferCoinsResponse{}, nil
 }

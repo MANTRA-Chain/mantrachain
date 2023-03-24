@@ -59,17 +59,17 @@ func (c *NftCollectionController) WithConfiguration(cfg types.Params) *NftCollec
 	return c
 }
 
-func (c *NftCollectionController) CreateDefaultIfEmptyId() *NftCollectionController {
-	if strings.TrimSpace(c.metadata.Id) == "" {
+func (c *NftCollectionController) CreateDefaultIfNotExists() *NftCollectionController {
+	if !c.strict && strings.TrimSpace(c.metadata.Id) == "" {
 		c.actions = append(c.actions, func(controller *NftCollectionController) error {
-			return controller.CreateDefault()
+			return controller.CreateDefaultNftCollection()
 		})
 	}
 	return c
 }
 
-func (c *NftCollectionController) CreateDefault() error {
-	c.metadata.Id = c.conf.NftCollectionDefaultId
+func (c *NftCollectionController) CreateDefaultNftCollection() error {
+	c.metadata.Id = ""
 	c.metadata.Category = string(types.GeneralNftCollectionCat)
 	collectionIndex := c.getIndex()
 
@@ -84,6 +84,7 @@ func (c *NftCollectionController) CreateDefault() error {
 
 		newNftCollection := types.NftCollection{
 			Index:    collectionIndex,
+			Id:       c.getId(),
 			Category: c.metadata.Category,
 			Creator:  c.creator,
 		}
@@ -166,6 +167,8 @@ func (c *NftCollectionController) ValidMetadata() *NftCollectionController {
 	}, func(controller *NftCollectionController) error {
 		return controller.validCollectionMetadataOpened()
 	}, func(controller *NftCollectionController) error {
+		return controller.validCollectionMetadataSoulBondedNfts()
+	}, func(controller *NftCollectionController) error {
 		return controller.validCollectionMetadataRestricted()
 	})
 	return c
@@ -176,8 +179,8 @@ func (c *NftCollectionController) mustExist() error {
 }
 
 func (c *NftCollectionController) mustNotBeDefault() error {
-	if c.metadata.Id == c.conf.NftCollectionDefaultId {
-		return errors.Wrap(types.ErrInvalidNftCollectionId, c.metadata.Id)
+	if c.isDefault() {
+		return errors.Wrap(types.ErrInvalidNftCollectionId, c.getId())
 	}
 	return nil
 }
@@ -189,14 +192,14 @@ func (c *NftCollectionController) openedOrOwner(owner sdk.AccAddress) error {
 
 	if c.store.HasOpenedNftsCollection(
 		c.ctx,
-		c.nftCollection.Index,
+		c.getIndex(),
 	) {
 		return nil
 	}
 
 	collOwner, found := c.store.GetNftCollectionOwner(
 		c.ctx,
-		c.nftCollection.Index,
+		c.getIndex(),
 	)
 
 	if !found {
@@ -234,7 +237,7 @@ func (c *NftCollectionController) validCollectionMetadataCategory() error {
 	if c.metadata.Category == "" {
 		return nil
 	}
-	if types.ValidateNftCollectionCategory(types.NftCollectionCategory(c.metadata.Category)) != nil {
+	if _, err := types.ParseNftCollectionCategory(c.metadata.Category); err != nil {
 		return errors.Wrapf(types.ErrInvalidNftCollectionCategory, c.metadata.Category)
 	}
 	return nil
@@ -281,7 +284,7 @@ func (c *NftCollectionController) validCollectionMetadataDescription() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataId() error {
-	return types.ValidateNftCollectionId(c.conf.ValidNftCollectionId, c.metadata.Id)
+	return types.ValidateNftCollectionId(c.conf.ValidNftCollectionId, c.getId())
 }
 
 func (c *NftCollectionController) validCollectionMetadataName() error {
@@ -351,11 +354,21 @@ func (c *NftCollectionController) validCollectionMetadataOptions() error {
 }
 
 func (c *NftCollectionController) validCollectionMetadataOpened() error {
-	if c.metadata.Id != c.conf.NftCollectionDefaultId {
+	if !c.isDefault() {
 		return nil
 	}
 	if !c.metadata.Opened {
-		return errors.Wrapf(types.ErrInvalidNftCollectionOpened, "collection %d must be opened", len(c.metadata.Id))
+		return errors.Wrapf(types.ErrInvalidNftCollectionOpened, "collection %d must be opened", len(c.getId()))
+	}
+	return nil
+}
+
+func (c *NftCollectionController) validCollectionMetadataSoulBondedNfts() error {
+	if !c.isDefault() {
+		return nil
+	}
+	if c.metadata.SoulBondedNfts {
+		return errors.Wrapf(types.ErrInvalidNftCollectionSoulBondedNfts, "collection %d cannot be with soul bonded nfts", len(c.getId()))
 	}
 	return nil
 }
@@ -365,12 +378,16 @@ func (c *NftCollectionController) validCollectionMetadataRestricted() error {
 		return nil
 	}
 	if c.metadata.Opened {
-		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "opened collection %d cannot be restricted", len(c.metadata.Id))
+		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "opened collection %d cannot be restricted", len(c.getId()))
 	}
-	if c.metadata.Id == c.conf.NftCollectionDefaultId {
-		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "collection %d cannot be restricted", len(c.metadata.Id))
+	if c.isDefault() {
+		return errors.Wrapf(types.ErrInvalidNftCollectionRestricted, "collection %d cannot be restricted", len(c.getId()))
 	}
 	return nil
+}
+
+func (c *NftCollectionController) isDefault() bool {
+	return c.getId() == c.conf.NftCollectionDefaultId
 }
 
 func (c *NftCollectionController) getId() string {

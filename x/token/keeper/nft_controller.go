@@ -77,13 +77,6 @@ func (c *NftController) Execute() error {
 	return nil
 }
 
-func (c *NftController) FilterEmptyIds() *NftController {
-	c.actions = append(c.actions, func(controller *NftController) error {
-		return controller.filterEmptyIds()
-	})
-	return c
-}
-
 func (c *NftController) FilterExist() *NftController {
 	c.actions = append(c.actions, func(controller *NftController) error {
 		return controller.filterExist()
@@ -140,27 +133,15 @@ func (c *NftController) ValidMetadataMaxCount() *NftController {
 	return c
 }
 
-func (c *NftController) filterEmptyIds() error {
-	filtered := []*types.MsgNftMetadata{}
-
-	for _, nftMetadata := range c.metadata {
-		if strings.TrimSpace(nftMetadata.Id) == "" {
-			continue
-		}
-		filtered = append(filtered, nftMetadata)
-	}
-
-	c.metadata = filtered
-
-	return nil
-}
-
 func (c *NftController) filterExist() error {
 	byIndex := make(map[string]*types.MsgNftMetadata, 0)
 	filtered := []*types.MsgNftMetadata{}
 	indexes := [][]byte{}
 
 	for _, nftMetadata := range c.metadata {
+		if strings.TrimSpace(nftMetadata.Id) == "" {
+			continue
+		}
 		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
 		indexes = append(indexes, index)
 		byIndex[string(index)] = nftMetadata
@@ -183,6 +164,9 @@ func (c *NftController) filterNotExist() error {
 	indexes := [][]byte{}
 
 	for _, nftMetadata := range c.metadata {
+		if strings.TrimSpace(nftMetadata.Id) == "" {
+			continue
+		}
 		index := types.GetNftIndex(c.collectionIndex, nftMetadata.Id)
 		indexes = append(indexes, index)
 		byIndex[string(index)] = nftMetadata
