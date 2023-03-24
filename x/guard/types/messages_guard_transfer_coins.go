@@ -8,6 +8,9 @@ import (
 
 const (
 	TypeMsgUpdateGuardTransferCoins = "update_guard_transfer_coins"
+
+	AttributeKeyCreator                   = "creator"
+	AttributeKeyGuardTransferCoinsEnabled = "guard_transfer_coins_enabled"
 )
 
 var _ sdk.Msg = &MsgUpdateGuardTransferCoins{}

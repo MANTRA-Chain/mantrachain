@@ -132,6 +132,11 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	k.SetPoolByReserveIndex(ctx, pool)
 	k.SetPoolsByPairIndex(ctx, pool)
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		pool.GetReserveAddress().String(),
+		k.GetFeeCollector(ctx).String(),
+	}, true)
+
 	// Send deposit coins to the pool's reserve account.
 	creator := msg.GetCreator()
 	if err := k.bankKeeper.SendCoins(ctx, creator, pool.GetReserveAddress(), msg.DepositCoins); err != nil {
@@ -142,6 +147,11 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	if err := k.bankKeeper.SendCoins(ctx, creator, k.GetFeeCollector(ctx), k.GetPoolCreationFee(ctx)); err != nil {
 		return types.Pool{}, errors.Wrap(err, "insufficient pool creation fee")
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		pool.GetReserveAddress().String(),
+		k.GetFeeCollector(ctx).String(),
+	}, false)
 
 	// Mint and send pool coin to the creator.
 	// Minting pool coin amount is calculated based on two coins' amount.
@@ -240,6 +250,11 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	k.SetPoolByReserveIndex(ctx, pool)
 	k.SetPoolsByPairIndex(ctx, pool)
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		pool.GetReserveAddress().String(),
+		k.GetFeeCollector(ctx).String(),
+	}, true)
+
 	// Send deposit coins to the pool's reserve account.
 	creator := msg.GetCreator()
 	depositCoins := sdk.NewCoins(
@@ -254,6 +269,11 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	if err := k.bankKeeper.SendCoins(ctx, creator, feeCollector, poolCreationFee); err != nil {
 		return types.Pool{}, errors.Wrap(err, "insufficient pool creation fee")
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		pool.GetReserveAddress().String(),
+		k.GetFeeCollector(ctx).String(),
+	}, false)
 
 	// Mint and send pool coin to the creator.
 	// Minimum minting amount is params.MinInitialPoolCoinSupply.
@@ -319,9 +339,13 @@ func (k Keeper) Deposit(ctx sdk.Context, msg *types.MsgDeposit) (types.DepositRe
 		return types.DepositRequest{}, err
 	}
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetDepositor(), types.GlobalEscrowAddress, msg.DepositCoins); err != nil {
 		return types.DepositRequest{}, err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
 
 	pool, _ := k.GetPool(ctx, msg.PoolId)
 	requestId := k.getNextDepositRequestIdWithUpdate(ctx, pool)
@@ -367,10 +391,14 @@ func (k Keeper) Withdraw(ctx sdk.Context, msg *types.MsgWithdraw) (types.Withdra
 		return types.WithdrawRequest{}, err
 	}
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 	pool, _ := k.GetPool(ctx, msg.PoolId)
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetWithdrawer(), types.GlobalEscrowAddress, sdk.NewCoins(msg.PoolCoin)); err != nil {
 		return types.WithdrawRequest{}, err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
 
 	requestId := k.getNextWithdrawRequestIdWithUpdate(ctx, pool)
 	req := types.NewWithdrawRequest(msg, requestId, ctx.BlockHeight())
@@ -430,6 +458,8 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 		return err
 	}
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 	acceptedCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, pool.GetReserveAddress(), acceptedCoins)
@@ -438,11 +468,14 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 		return err
 	}
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
+
 	req.AcceptedCoins = acceptedCoins
 	req.MintedPoolCoin = mintedPoolCoin
 	if err := k.FinishDepositRequest(ctx, req, types.RequestStatusSucceeded); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -454,10 +487,15 @@ func (k Keeper) FinishDepositRequest(ctx sdk.Context, req types.DepositRequest, 
 
 	refundingCoins := req.DepositCoins.Sub(req.AcceptedCoins...)
 	if !refundingCoins.IsZero() {
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 		if err := k.bankKeeper.SendCoins(ctx, types.GlobalEscrowAddress, req.GetDepositor(), refundingCoins); err != nil {
 			return err
 		}
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
 	}
+
 	req.SetStatus(status)
 	k.SetDepositRequest(ctx, req)
 
@@ -511,12 +549,16 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	withdrawnCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, x), sdk.NewCoin(pair.BaseCoinDenom, y))
 	burningCoins := sdk.NewCoins(req.PoolCoin)
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, k.accountKeeper.GetModuleAddress(types.ModuleName), burningCoins)
 	bulkOp.QueueSendCoins(pool.GetReserveAddress(), req.GetWithdrawer(), withdrawnCoins)
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
 
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burningCoins); err != nil {
 		return err
@@ -531,6 +573,7 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	if err := k.FinishWithdrawRequest(ctx, req, types.RequestStatusSucceeded); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -543,9 +586,14 @@ func (k Keeper) FinishWithdrawRequest(ctx sdk.Context, req types.WithdrawRequest
 	var refundingCoins sdk.Coins
 	if status == types.RequestStatusFailed {
 		refundingCoins = sdk.NewCoins(req.PoolCoin)
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+
 		if err := k.bankKeeper.SendCoins(ctx, types.GlobalEscrowAddress, req.GetWithdrawer(), refundingCoins); err != nil {
 			return err
 		}
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, false)
 	}
 	req.SetStatus(status)
 	k.SetWithdrawRequest(ctx, req)

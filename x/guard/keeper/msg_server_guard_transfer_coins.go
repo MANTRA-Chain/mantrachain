@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,7 +20,14 @@ func (k msgServer) UpdateGuardTransferCoins(goCtx context.Context, msg *types.Ms
 		k.SetGuardTransferCoins(ctx)
 	}
 
-	// TODO: add event
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateGuardTransferCoins),
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyGuardTransferCoinsEnabled, strconv.FormatBool(msg.Enabled)),
+		),
+	)
 
 	return &types.MsgUpdateGuardTransferCoinsResponse{}, nil
 }

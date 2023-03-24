@@ -12,3 +12,4 @@ release/
 account*.txt
 build
 data
+out

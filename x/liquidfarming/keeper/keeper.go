@@ -39,6 +39,7 @@ type Keeper struct {
 	bankKeeper      types.BankKeeper
 	lpfarmKeeper    types.LPFarmKeeper
 	liquidityKeeper types.LiquidityKeeper
+	gk              types.GuardKeeper
 }
 
 func NewKeeper(
@@ -49,6 +50,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	lpfarmKeeper types.LPFarmKeeper,
 	liquidityKeeper types.LiquidityKeeper,
+	gk types.GuardKeeper,
 ) Keeper {
 	// Ensure the module account is set
 	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
@@ -68,6 +70,7 @@ func NewKeeper(
 		bankKeeper:      bankKeeper,
 		lpfarmKeeper:    lpfarmKeeper,
 		liquidityKeeper: liquidityKeeper,
+		gk:              gk,
 	}
 }
 

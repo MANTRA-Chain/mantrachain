@@ -219,21 +219,23 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		icatypes.ModuleName:            nil,
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		coinfactorytypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		liquidfarmingtypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
+		authtypes.FeeCollectorName:     nil,
+		distrtypes.ModuleName:          nil,
+		icatypes.ModuleName:            nil,
+		marketmakertypes.ModuleName:    nil,
+		lpfarmtypes.ModuleName:         nil,
+		tokentypes.ModuleName:          nil,
+		guardtypes.ModuleName:          nil,
 		nft.ModuleName:                 nil,
 		// farmingtypes.ModuleName:        nil,
-		liquiditytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
-		liquidfarmingtypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		marketmakertypes.ModuleName:   nil,
-		lpfarmtypes.ModuleName:        nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -597,6 +599,7 @@ func New(
 		app.GetSubspace(liquiditytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
 		appCodec,
@@ -621,6 +624,7 @@ func New(
 		app.BankKeeper,
 		app.LPFarmKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	govRouter := govv1beta1.NewRouter()

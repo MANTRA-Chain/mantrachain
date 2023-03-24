@@ -25,3 +25,7 @@ type BankKeeper interface {
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error
 }
+
+type GuardKeeper interface {
+	WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool)
+}

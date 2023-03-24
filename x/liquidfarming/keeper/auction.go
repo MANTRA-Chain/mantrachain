@@ -115,12 +115,16 @@ func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidd
 
 // CreateRewardsAuction creates new rewards auction and store it.
 func (k Keeper) CreateRewardsAuction(ctx sdk.Context, poolId uint64, endTime time.Time) {
+	auctionId := k.getNextAuctionIdWithUpdate(ctx, poolId)
 	k.SetRewardsAuction(ctx, types.NewRewardsAuction(
-		k.getNextAuctionIdWithUpdate(ctx, poolId),
+		auctionId,
 		poolId,
 		ctx.BlockTime(),
 		endTime,
 	))
+
+	auction, _ := k.GetRewardsAuction(ctx, auctionId, poolId)
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{auction.GetPayingReserveAddress().String()}, true)
 }
 
 // FinishRewardsAuction finishes ongoing rewards auction by looking up the existence of winning bid.
@@ -134,6 +138,11 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 	withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(auction.PoolId)
 	withdrawnRewardsReserves := k.bankKeeper.SpendableCoins(ctx, withdrawnRewardsReserveAddr)
 	totalRewards := truncatedRewards.Add(withdrawnRewardsReserves...)
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		liquidFarmReserveAddr.String(),
+		withdrawnRewardsReserveAddr.String(),
+	}, true)
 
 	winningBid, found := k.GetWinningBid(ctx, auction.Id, auction.PoolId)
 	if !found {
@@ -170,6 +179,12 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 			Amount: winningBid.Amount.Amount,
 		})
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		auction.GetPayingReserveAddress().String(),
+		liquidFarmReserveAddr.String(),
+		withdrawnRewardsReserveAddr.String(),
+	}, false)
 
 	return nil
 }
