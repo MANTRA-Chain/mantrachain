@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -46,6 +48,11 @@ func (msg *MsgUpdateAuthzGenericGrantRevokeBatch) ValidateBasic() error {
 	}
 	if msg.AuthzGrantRevokeMsgsTypes == nil || len(msg.AuthzGrantRevokeMsgsTypes.Msgs) == 0 {
 		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "authz grant revoke msgs types are empty")
+	}
+	for _, msg := range msg.AuthzGrantRevokeMsgsTypes.Msgs {
+		if strings.TrimSpace(msg.TypeUrl) == "" {
+			return errors.Wrap(sdkerrors.ErrNotFound, "empty type url")
+		}
 	}
 	return nil
 }

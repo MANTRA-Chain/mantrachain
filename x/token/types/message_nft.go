@@ -93,6 +93,9 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
+	if msg.Nfts == nil || len(msg.Nfts.Nfts) == 0 {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts are empty")
+	}
 	return nil
 }
 
@@ -148,6 +151,9 @@ func (msg *MsgBurnNfts) ValidateBasic() error {
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
+	}
+	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
 	}
 	return nil
 }
@@ -217,6 +223,9 @@ func (msg *MsgTransferNfts) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
+	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
+	}
 	return nil
 }
 
@@ -279,6 +288,9 @@ func (msg *MsgApproveNfts) ValidateBasic() error {
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
+	}
+	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
 	}
 	return nil
 }
@@ -386,6 +398,9 @@ func (msg *MsgMintNft) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
+	if msg.Nft == nil {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts is empty")
+	}
 	return nil
 }
 
@@ -441,6 +456,9 @@ func (msg *MsgBurnNft) ValidateBasic() error {
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
+	}
+	if strings.TrimSpace(msg.NftId) == "" {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }
@@ -506,6 +524,9 @@ func (msg *MsgTransferNft) ValidateBasic() error {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
+	if strings.TrimSpace(msg.NftId) == "" {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+	}
 	return nil
 }
 
@@ -568,6 +589,9 @@ func (msg *MsgApproveNft) ValidateBasic() error {
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
+	}
+	if strings.TrimSpace(msg.NftId) == "" {
+		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }

@@ -2,9 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
-
-	"cosmossdk.io/errors"
 
 	"github.com/LimeChain/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,15 +22,7 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 		return nil, err
 	}
 
-	if msg.AuthzGrantRevokeMsgsTypes == nil || len(msg.AuthzGrantRevokeMsgsTypes.Msgs) == 0 {
-		return nil, errors.Wrapf(sdkerrors.ErrKeyNotFound, "authz grant revoke msgs types are empty")
-	}
-
 	for _, msg := range msg.AuthzGrantRevokeMsgsTypes.Msgs {
-		if strings.TrimSpace(msg.TypeUrl) == "" {
-			return nil, sdkerrors.ErrInvalidType.Wrap("type url is empty doesn't exist")
-		}
-
 		if k.router.HandlerByTypeURL(msg.TypeUrl) == nil {
 			return nil, sdkerrors.ErrInvalidType.Wrapf("%s doesn't exist", msg.TypeUrl)
 		}

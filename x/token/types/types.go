@@ -1,8 +1,8 @@
 package types
 
-type NftCollectionCategory string
+import fmt "fmt"
 
-// TODO: make it works the same way as guard module required privileges kind enum
+type NftCollectionCategory string
 
 const (
 	GeneralNftCollectionCat      NftCollectionCategory = "general"
@@ -14,3 +14,31 @@ const (
 	TradingCardsNftCollectionCat                       = "tradingCards"
 	UtilityNftCollectionCat                            = "utility"
 )
+
+func ParseNftCollectionCategory(s string) (c NftCollectionCategory, err error) {
+	requiredPrivilegesKind := map[NftCollectionCategory]struct{}{
+		GeneralNftCollectionCat:      {},
+		ArtNftCollectionCat:          {},
+		CollectiblesNftCollectionCat: {},
+		MusicNftCollectionCat:        {},
+		PhotographyNftCollectionCat:  {},
+		SportsNftCollectionCat:       {},
+		TradingCardsNftCollectionCat: {},
+		UtilityNftCollectionCat:      {},
+	}
+
+	cap := NftCollectionCategory(s)
+	_, ok := requiredPrivilegesKind[cap]
+	if !ok {
+		return c, fmt.Errorf(`cannot parse:[%s] as nft collection category`, s)
+	}
+	return cap, nil
+}
+
+func (c NftCollectionCategory) String() string {
+	return string(c)
+}
+
+func (c NftCollectionCategory) Bytes() []byte {
+	return []byte(c)
+}

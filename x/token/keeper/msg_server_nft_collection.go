@@ -2,9 +2,7 @@ package keeper
 
 import (
 	"context"
-	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/LimeChain/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nft "github.com/cosmos/cosmos-sdk/x/nft"
@@ -14,13 +12,8 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-
 	if err != nil {
 		return nil, err
-	}
-
-	if strings.TrimSpace(msg.Collection.Id) == "" {
-		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "collection id should not be empty")
 	}
 
 	collectionController := NewNftCollectionController(ctx, creator, false).
@@ -33,7 +26,6 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		MustNotBeDefault().
 		ValidMetadata().
 		Validate()
-
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +43,6 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		UriHash:     collectionId,
 		Data:        msg.Collection.Data,
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -68,20 +59,18 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	}
 
 	k.SetNftCollection(ctx, newNftCollection)
+	k.SetNftCollectionOwner(ctx, collectionIndex, creator)
 
 	if msg.Collection.SoulBondedNfts {
 		k.SetSoulBondedNftsCollection(ctx, collectionIndex)
 	}
-
 	if msg.Collection.Opened {
 		k.SetOpenedNftsCollection(ctx, collectionIndex)
 	}
-
+	// It can be only set by an admin or another authorized address
 	if msg.Collection.RestrictedNfts {
 		k.SetRestrictedNftsCollection(ctx, collectionIndex)
 	}
-
-	k.SetNftCollectionOwner(ctx, collectionIndex, creator)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
