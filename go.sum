@@ -212,10 +212,10 @@ github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQ
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230321132613-ad7c42d6aaa6 h1:ZjIvm7TcPK7OZf0OB4td+YLEHBxnDaiGHJCjgXaD4D8=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230321132613-ad7c42d6aaa6/go.mod h1:FTtZbqiHCZ2vun9WrPq6qLQafNKkAuIhLAxzLjr2TiI=
-github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230321133237-abe625ed6de2 h1:2G8sCcvYnc9B/dfYY6Q5XUx/Zw+tq2kyMqQbYSBA5Js=
-github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230321133237-abe625ed6de2/go.mod h1:asgRMpCOKb/DdE4h3Cj/dYd/qoELIKO61x4aqHJhDHY=
+github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951 h1:MQnFv7CNxlmkUlINLY5H5Gx13rqnywJaGfN6l/7Ke7I=
+github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951/go.mod h1:FTtZbqiHCZ2vun9WrPq6qLQafNKkAuIhLAxzLjr2TiI=
+github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939 h1:K8BKOoSis4uc7QdLDFNzxTQOfu5hOkKqhuaI+7BqMn0=
+github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939/go.mod h1:kJ9/kt7SIrJiaFgYU2iPHS08iDyZd67Tz5tV1nxc7gs=
 github.com/Microsoft/go-winio v0.6.0 h1:slsWYD/zyx7lCXoZVlvQrj0hPTM1HI4+v1sIda2yDvg=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=
 github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=
@@ -307,8 +307,6 @@ github.com/cometbft/cometbft v0.37.0 h1:M005vBaSaugvYYmNZwJOopynQSjwLoDTwflnQ/I/
 github.com/cometbft/cometbft v0.37.0/go.mod h1:Y2MMMN//O5K4YKd8ze4r9jmk4Y7h0ajqILXbH5JQFVs=
 github.com/cometbft/cometbft-db v0.7.0 h1:uBjbrBx4QzU0zOEnU8KxoDl18dMNgDh+zZRUE0ucsbo=
 github.com/cometbft/cometbft-db v0.7.0/go.mod h1:yiKJIm2WKrt6x8Cyxtq9YTEcIMPcEe4XPxhgX59Fzf0=
-github.com/confio/ics23/go v0.9.0 h1:cWs+wdbS2KRPZezoaaj+qBleXgUk5WOQFMP3CQFGTr4=
-github.com/confio/ics23/go v0.9.0/go.mod h1:4LPZ2NYqnYIVRklaozjNR1FScgDJ2s5Xrp+e/mYVRak=
 github.com/containerd/continuity v0.3.0 h1:nisirsYROK15TAMVukJOUyGJjz4BNQJBVsNvAXZJ/eg=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-etcd v2.0.0+incompatible/go.mod h1:Jez6KQU2B/sWsbdaef3ED8NzMklzPG4d5KIOhIy30Tk=
@@ -329,6 +327,8 @@ github.com/cosmos/gogoproto v1.4.6 h1:Ee7z15dWJaGlgM2rWrK8N2IX7PQcuccu8oG68jp5RL
 github.com/cosmos/gogoproto v1.4.6/go.mod h1:VS/ASYmPgv6zkPKLjR9EB91lwbLHOzaGCirmKKhncfI=
 github.com/cosmos/iavl v0.20.0 h1:fTVznVlepH0KK8NyKq8w+U7c2L6jofa27aFX6YGlm38=
 github.com/cosmos/iavl v0.20.0/go.mod h1:WO7FyvaZJoH65+HFOsDir7xU9FWk2w9cHXNW1XHcl7A=
+github.com/cosmos/ics23/go v0.9.0 h1:R2RMODY7KbRnE7NNhKzT/nVsx2TeeRRzZoMk7q2Ee4o=
+github.com/cosmos/ics23/go v0.9.0/go.mod h1:4LPZ2NYqnYIVRklaozjNR1FScgDJ2s5Xrp+e/mYVRak=
 github.com/cosmos/ics23/go v0.9.1-0.20221207100636-b1abd8678aab h1:I9ialKTQo7248V827Bba4OuKPmk+FPzmTVHsLXaIJWw=
 github.com/cosmos/ics23/go v0.9.1-0.20221207100636-b1abd8678aab/go.mod h1:2CwqasX5dSD7Hbp/9b6lhK6BwoBDCBldx7gPKRukR60=
 github.com/cosmos/keyring v1.2.0 h1:8C1lBP9xhImmIabyXW4c3vFjjLiBdGCmfLUfeZlV1Yo=

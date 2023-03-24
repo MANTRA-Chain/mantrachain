@@ -7,6 +7,8 @@ import (
 type RequiredPrivilegesKind string
 type LockedKind string
 
+// Important: Update ExportGenesis when adding new constants,
+// otherwise the data related to them will be lost on chain upgrade.
 const (
 	RequiredPrivilegesCoin RequiredPrivilegesKind = "coin"
 	LockedCoin             LockedKind             = "coin"

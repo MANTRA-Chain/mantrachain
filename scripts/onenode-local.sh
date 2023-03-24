@@ -97,8 +97,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   cecho "GREEN" "Change app.toml values"
   sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $APP_TOML
   sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $APP_TOML
-  sed -i -E '116s/.*/enable = true/' $APP_TOML
-  sed -i -E 's|minimum-gas-prices = \"0uaum\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
+  sed -i -E '120s/.*/enable = true/' $APP_TOML
+  # sed -i -E 's|minimum-gas-prices = \"0uaum\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
 
   cecho "GREEN" "Change config.toml values"
   sed -i -E 's|cors_allowed_origins = \[\]|cors_allowed_origins = \[\"*\"\]|g' $CONFIG
@@ -144,7 +144,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   sleep 7
 
   cecho "GREEN" "Update guard transfer coins"
-  "$PWD"/build/mantrachaind tx guard update-guard-transfer-coins true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+  # "$PWD"/build/mantrachaind tx guard update-guard-transfer-coins true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 fi
 
 cecho "GREEN" "Track logs"

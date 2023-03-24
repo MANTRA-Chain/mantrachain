@@ -15,17 +15,17 @@ import (
 
 type (
 	Keeper struct {
-		cdc         codec.BinaryCodec
-		storeKey    storetypes.StoreKey
-		memKey      storetypes.StoreKey
-		paramstore  paramtypes.Subspace
-		modAccAddrs map[string]bool
-		router      *baseapp.MsgServiceRouter
-		ak          types.AccountKeeper
-		azk         types.AuthzKeeper
-		tk          types.TokenKeeper
-		nk          types.NFTKeeper
-		ck          types.CoinFactoryKeeper
+		cdc                           codec.BinaryCodec
+		storeKey                      storetypes.StoreKey
+		memKey                        storetypes.StoreKey
+		paramstore                    paramtypes.Subspace
+		whlstTransfersSendersAccAddrs map[string]bool
+		router                        *baseapp.MsgServiceRouter
+		ak                            types.AccountKeeper
+		azk                           types.AuthzKeeper
+		tk                            types.TokenKeeper
+		nk                            types.NFTKeeper
+		ck                            types.CoinFactoryKeeper
 	}
 )
 
@@ -47,18 +47,23 @@ func NewKeeper(
 		ps = ps.WithKeyTable(types.ParamKeyTable())
 	}
 
+	modAccAddrsCopy := make(map[string]bool)
+	for k, v := range modAccAddrs {
+		modAccAddrsCopy[k] = v
+	}
+
 	return Keeper{
-		cdc:         cdc,
-		storeKey:    storeKey,
-		memKey:      memKey,
-		paramstore:  ps,
-		modAccAddrs: modAccAddrs,
-		router:      router,
-		ak:          ak,
-		azk:         azk,
-		tk:          tk,
-		nk:          nk,
-		ck:          ck,
+		cdc:                           cdc,
+		storeKey:                      storeKey,
+		memKey:                        memKey,
+		paramstore:                    ps,
+		whlstTransfersSendersAccAddrs: modAccAddrsCopy,
+		router:                        router,
+		ak:                            ak,
+		azk:                           azk,
+		tk:                            tk,
+		nk:                            nk,
+		ck:                            ck,
 	}
 }
 
