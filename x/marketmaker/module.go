@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/LimeChain/mantrachain/x/marketmaker/client/cli"
-	"github.com/LimeChain/mantrachain/x/marketmaker/keeper"
-	"github.com/LimeChain/mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 var (

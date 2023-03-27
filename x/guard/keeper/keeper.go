@@ -5,7 +5,7 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"

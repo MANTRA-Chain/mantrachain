@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	coinfactorytypes "github.com/LimeChain/mantrachain/x/coinfactory/types"
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func (k Keeper) ValidateCoinsLocked(ctx sdk.Context, address sdk.Address, coins sdk.Coins) error {

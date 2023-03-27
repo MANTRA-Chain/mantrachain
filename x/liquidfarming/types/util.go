@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	farmingtypes "github.com/LimeChain/mantrachain/x/farming/types"
+	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 const (

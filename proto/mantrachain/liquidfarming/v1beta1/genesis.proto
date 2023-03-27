@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "mantrachain/liquidfarming/v1beta1/liquidfarming.proto";
 import "mantrachain/liquidfarming/v1beta1/params.proto";
 
-option go_package = "github.com/LimeChain/mantrachain/x/liquidfarming/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types";
 
 // GenesisState defines the liquidfarming module's genesis state.
 message GenesisState {

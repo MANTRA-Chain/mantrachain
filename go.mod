@@ -1,4 +1,4 @@
-module github.com/LimeChain/mantrachain
+module github.com/MANTRA-Finance/mantrachain
 
 go 1.20
 
@@ -170,8 +170,8 @@ replace (
 	// use cosmos fork of keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/confio/ics23/go => github.com/cosmos/ics23/go v0.9.0
-	github.com/cosmos/cosmos-sdk => github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951
-	github.com/cosmos/ibc-go/v7 => github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951
+	github.com/cosmos/ibc-go/v7 => github.com/MANTRA-Finance/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939
 	// GoLevelDB version has been pinned to `v1.0.1-0.20210819022825-2ae1ddf74ef7`, following versions might cause unexpected behavior.
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )

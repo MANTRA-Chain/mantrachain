@@ -1,7 +1,7 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
-option go_package = "github.com/LimeChain/mantrachain/x/token/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 
 // Params defines the parameters for the module.
 message Params {

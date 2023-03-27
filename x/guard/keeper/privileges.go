@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func (k Keeper) CheckAccountFulfillsRequiredPrivileges(ctx sdk.Context, address sdk.AccAddress, requiredPrivilegesList [][]byte) (bool, error) {

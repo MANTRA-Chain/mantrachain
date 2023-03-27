@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/LimeChain/mantrachain/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

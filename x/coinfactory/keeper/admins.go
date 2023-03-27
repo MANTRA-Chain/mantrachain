@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/LimeChain/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 func (k Keeper) HasAdmin(ctx sdk.Context, denom string) bool {

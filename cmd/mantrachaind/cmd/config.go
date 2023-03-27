@@ -3,7 +3,7 @@ package cmd
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/LimeChain/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/app"
 )
 
 const (

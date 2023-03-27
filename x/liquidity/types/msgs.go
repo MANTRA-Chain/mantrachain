@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/LimeChain/mantrachain/x/liquidity/amm"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 var (

@@ -2,10 +2,10 @@ package ante
 
 import (
 	"cosmossdk.io/errors"
-	coinfactorytypes "github.com/LimeChain/mantrachain/x/coinfactory/types"
-	"github.com/LimeChain/mantrachain/x/guard/types"
-	liquiditytypes "github.com/LimeChain/mantrachain/x/liquidity/types"
-	lpfarmtypes "github.com/LimeChain/mantrachain/x/lpfarm/types"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

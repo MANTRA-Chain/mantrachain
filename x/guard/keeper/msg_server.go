@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 type msgServer struct {

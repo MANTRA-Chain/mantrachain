@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/LimeChain/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"

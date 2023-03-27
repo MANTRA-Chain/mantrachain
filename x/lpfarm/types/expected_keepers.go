@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	liquiditytypes "github.com/LimeChain/mantrachain/x/liquidity/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // AccountKeeper defines the expected keeper interface of the auth module.

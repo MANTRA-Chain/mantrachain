@@ -9,8 +9,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/LimeChain/mantrachain/x/liquidfarming/types"
-	liquiditytypes "github.com/LimeChain/mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // PlaceBid handles types.MsgPlaceBid and stores bid object.

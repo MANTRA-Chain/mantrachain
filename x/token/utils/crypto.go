@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	types "github.com/LimeChain/mantrachain/x/token/types"
+	types "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"

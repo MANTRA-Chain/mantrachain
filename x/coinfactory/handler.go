@@ -5,8 +5,8 @@ import (
 
 	"cosmossdk.io/errors"
 
-	"github.com/LimeChain/mantrachain/x/coinfactory/keeper"
-	"github.com/LimeChain/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

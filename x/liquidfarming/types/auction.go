@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	liquiditytypes "github.com/LimeChain/mantrachain/x/liquidity/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // NewRewardsAuction creates a new RewardsAuction.

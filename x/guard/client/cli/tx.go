@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/LimeChain/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/client"
 )
 
@@ -38,7 +38,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateRequiredPrivilegesGroupedBatch())
 	cmd.AddCommand(CmdUpdateLocked())
 	cmd.AddCommand(CmdUpdateAuthzGenericGrantRevokeBatch())
-// this line is used by starport scaffolding # 1
+	// this line is used by starport scaffolding # 1
 
 	return cmd
 }

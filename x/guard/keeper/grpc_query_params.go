@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/LimeChain/mantrachain/x/guard/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
