@@ -7,8 +7,8 @@ import (
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	guardante "github.com/LimeChain/mantrachain/x/guard/ante"
-	tokenante "github.com/LimeChain/mantrachain/x/token/ante"
+	guardante "github.com/MANTRA-Finance/mantrachain/x/guard/ante"
+	tokenante "github.com/MANTRA-Finance/mantrachain/x/token/ante"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 )
 

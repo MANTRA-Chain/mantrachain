@@ -20,5 +20,5 @@ for dir in $proto_dirs; do
   done
 done
 
-cp -r github.com/LimeChain/mantrachain/x/* ./x
+cp -r github.com/MANTRA-Finance/mantrachain/x/* ./x
 rm -rf github.com

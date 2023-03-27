@@ -12,7 +12,7 @@ import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
 
-option go_package            = "github.com/LimeChain/mantrachain/x/farming/types";
+option go_package            = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
 
 // Query defines the gRPC query service for the farming module.
 service Query {

@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"cosmossdk.io/errors"
-	"github.com/LimeChain/mantrachain/x/token/types"
-	"github.com/LimeChain/mantrachain/x/token/utils"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

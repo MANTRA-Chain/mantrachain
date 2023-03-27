@@ -8,7 +8,7 @@ import "mantrachain/guard/v1/common.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
-option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
 
 // Msg defines the Msg service.
 service Msg {

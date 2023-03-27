@@ -9,7 +9,7 @@ import "mantrachain/guard/v1/params.proto";
 
 // this line is used by starport scaffolding # 1
 
-option go_package = "github.com/LimeChain/mantrachain/x/guard/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
 
 // Query defines the gRPC querier service.
 service Query {

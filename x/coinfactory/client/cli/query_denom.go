@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/errors"
 
-	"github.com/LimeChain/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"

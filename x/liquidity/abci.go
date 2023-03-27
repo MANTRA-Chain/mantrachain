@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/LimeChain/mantrachain/x/liquidity/keeper"
-	"github.com/LimeChain/mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {

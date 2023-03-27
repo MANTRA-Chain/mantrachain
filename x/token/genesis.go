@@ -1,8 +1,8 @@
 package token
 
 import (
-	"github.com/LimeChain/mantrachain/x/token/keeper"
-	"github.com/LimeChain/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

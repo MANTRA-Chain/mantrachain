@@ -212,10 +212,10 @@ github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQ
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951 h1:MQnFv7CNxlmkUlINLY5H5Gx13rqnywJaGfN6l/7Ke7I=
-github.com/LimeChain/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951/go.mod h1:FTtZbqiHCZ2vun9WrPq6qLQafNKkAuIhLAxzLjr2TiI=
-github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939 h1:K8BKOoSis4uc7QdLDFNzxTQOfu5hOkKqhuaI+7BqMn0=
-github.com/LimeChain/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939/go.mod h1:kJ9/kt7SIrJiaFgYU2iPHS08iDyZd67Tz5tV1nxc7gs=
+github.com/MANTRA-Finance/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951 h1:xOVVFTcY/5UWjw5cNhR/qvHMZiQexAlm5kT74YhQn9g=
+github.com/MANTRA-Finance/mantra-cosmos-sdk v0.47.0-rc2.0.20230322093658-1f141530a951/go.mod h1:FTtZbqiHCZ2vun9WrPq6qLQafNKkAuIhLAxzLjr2TiI=
+github.com/MANTRA-Finance/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939 h1:jPY/sREh9n26ojzEejXKsy0XU6v5ZyuYcg4X/u6Fmto=
+github.com/MANTRA-Finance/mantra-ibc-go/v7 v7.0.0-rc0.0.20230322093847-585f957a0939/go.mod h1:kJ9/kt7SIrJiaFgYU2iPHS08iDyZd67Tz5tV1nxc7gs=
 github.com/Microsoft/go-winio v0.6.0 h1:slsWYD/zyx7lCXoZVlvQrj0hPTM1HI4+v1sIda2yDvg=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=
 github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=

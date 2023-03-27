@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/LimeChain/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"

@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/LimeChain/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 // GetStaking returns a staking for given staking denom and farmer.
@@ -305,7 +305,7 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			return err
 		}
 		// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
-		// Ref: https://github.com/LimeChain/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
+		// Ref: https://github.com/MANTRA-Finance/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
 		//
 		// if !k.bankKeeper.BlockedAddr(ctx, reserveAcc) {
 		// 	k.bankKeeper.AddBlockedAddr(ctx, reserveAcc)
@@ -318,7 +318,7 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			inputs = append(inputs, banktypes.NewInput(farmerAcc, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(reserveAcc, sdk.Coins{coin}))
 			// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
-			// Ref: https://github.com/LimeChain/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
+			// Ref: https://github.com/MANTRA-Finance/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
 			//
 			// if !k.bankKeeper.BlockedAddr(ctx, reserveAcc) {
 			// 	k.bankKeeper.AddBlockedAddr(ctx, reserveAcc)

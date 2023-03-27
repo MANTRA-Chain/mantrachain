@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 import "mantrachain/coinfactory/v1beta1/authorityMetadata.proto";
 import "mantrachain/coinfactory/v1beta1/params.proto";
 
-option go_package = "github.com/LimeChain/mantrachain/x/coinfactory/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types";
 
 // Query defines the gRPC querier service.
 service Query {
