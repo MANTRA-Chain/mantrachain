@@ -63,13 +63,10 @@ func (k Keeper) Locked(goCtx context.Context, req *types.QueryGetLockedRequest) 
 		req.Index,
 		kind,
 	)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
 
 	return &types.QueryGetLockedResponse{
 		Index:  req.Index,
-		Locked: true,
+		Locked: found,
 		Kind:   req.Kind,
 	}, nil
 }
