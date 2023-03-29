@@ -24,7 +24,7 @@ func (k Keeper) AccountPrivilegesAll(goCtx context.Context, req *types.QueryAllA
 	accountPrivilegesStore := prefix.NewStore(store, types.AccountPrivilegesStoreKey())
 
 	pageRes, err := query.Paginate(accountPrivilegesStore, req.Pagination, func(key []byte, value []byte) error {
-		accounts = append(accounts, string(key))
+		accounts = append(accounts, sdk.AccAddress(key).String())
 		privileges = append(privileges, value)
 		return nil
 	})

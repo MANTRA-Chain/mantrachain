@@ -16,7 +16,7 @@ func CmdUpdateRequiredPrivileges() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			index := []byte(args[0])
 			argPrivileges := []byte(args[1])
-			argKind := args[1]
+			argKind := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

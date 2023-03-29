@@ -7,24 +7,7 @@
 - **[Installation](#installation)**
 - **[State](#state)**
 - **[Messages](#messages)**
-  - **[MsgUpdateAccountPrivileges](#MsgUpdateAccountPrivileges)**
-  - **[MsgUpdateAccountPrivilegesBatch](#MsgUpdateAccountPrivilegesBatch)**
-  - **[MsgUpdateAccountPrivilegesGroupedBatch](#MsgUpdateAccountPrivilegesGroupedBatch)**
-  - **[MsgUpdateGuardTransferCoins](#MsgUpdateGuardTransferCoins)**
-  - **[MsgUpdateRequiredPrivileges](#MsgUpdateRequiredPrivileges)**
-  - **[MsgUpdateRequiredPrivilegesBatch](#MsgUpdateRequiredPrivilegesBatch)**
-  - **[MsgUpdateRequiredPrivilegesGroupedBatch](#MsgUpdateRequiredPrivilegesGroupedBatch)**
-  - **[MsgUpdateLocked](#MsgUpdateLocked)**
-  - **[MsgUpdateAuthzGenericGrantRevokeBatch](#MsgUpdateAuthzGenericGrantRevokeBatch)**
 - **[Queries](#queries)**
-  - **[Params](#params)**
-  - **[AccountPrivileges](#AccountPrivileges)**
-  - **[AccountPrivilegesAll](#AccountPrivilegesAll)**
-  - **[GuardTransferCoins](#GuardTransferCoins)**
-  - **[RequiredPrivileges](#RequiredPrivileges)**
-  - **[RequiredPrivilegesAll](#RequiredPrivilegesAll)**
-  - **[Locked](#Locked)**
-  - **[LockedAll](#LockedAll)**
 - **[Events](#events)**
 - **[Params](#params)**
 - **[Dependencies](#dependencies)**
@@ -535,9 +518,10 @@ The same applies for the `required_privileges` for the `CoinFactory` issued coin
   await client.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
     value: {
       creator,
-      index: new Uint8Array([...]), // denom of the coin from the `CoinFactory` module represented in bytes
-      privileges: new Uint8Array([1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
-    }
+      index: Buffer.from("testcoin"), // denom of the coin from the `CoinFactory` module represented in bytes
+      privileges: Buffer.from([1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
+      kind: 'coin'
+    },
   })
 ```
 
@@ -548,7 +532,7 @@ The same applies for the `required_privileges` for the `CoinFactory` issued coin
     value: {
       creator,
       account: 'mantrachain...',
-      privileges: new Uint8Array([1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
+      privileges: Buffer.from([1, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
     }
   })
 ```
@@ -581,8 +565,8 @@ If the coin is locked or the coin doesn't have required privileges set by a oper
   await client.MantrachainGuardV1.tx.sendMsgUpdateLocked({
     value: {
       creator,
-      index: new Uint8Array([...]), // denom of the coin from the `CoinFactory` module represented in bytes
-      locked: true
+      index: Buffer.from("testcoin"), // denom of the coin from the `CoinFactory` module represented in bytes
+      locked: true,
       kind: 'coin'
     }
   })
@@ -616,58 +600,254 @@ Once some operator has been granted the `MsgUpdateAccountPrivileges` permission,
 <span style="text-decoration: underline">PARAMS</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryParams()
+  const res = await client.MantrachainGuardV1.query.queryParams()
+  console.log(res.data.params);
+```
+
+Output:
+
+```javascript
+{
+  admin_account: 'mantrachain...',
+  account_privileges_token_collection_creator: 'mantrachain...',
+  account_privileges_token_collection_id: 'account_privileges_guard_nft_collection',
+  default_privileges: '//////////8='
+}
+```
+
+The `default_privileges` is the default privileges that will be used for the accounts that don't have account privileges set. The default privileges have 8 bytes set to 0xff, but that doesn't means that the user has permissions to transfer coins. They are base64 stringified representation of 8 bytes set to 0xff.
+
+To get the default privileges in bytes:
+
+```javascript
+  const defaultPrivileges = Buffer.from(res.data.params.default_privileges, "base64")
+  console.log(defaultPrivileges)
+```
+
+Output:
+
+```shell
+<Buffer ff ff ff ff ff ff ff ff>
 ```
 
 <span style="text-decoration: underline">ACCOUNT PRIVILEGES</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryAccountPrivileges("mantrachain...")
+  const res = await client.MantrachainGuardV1.query.queryAccountPrivileges("mantrachain...")
+  console.log(res.data);
+```
+
+Output:
+
+```shell
+{
+  account: 'mantrachain...',
+  privileges: 'Af//////////'
+}
+```
+
+To get the account privileges in bytes:
+
+```javascript
+  const privileges = Buffer.from(res.data.privileges, "base64")
+  console.log(privileges)
+```
+
+Output:
+
+```shell
+<Buffer 01 ff ff ff ff ff ff ff ff>
 ```
 
 <span style="text-decoration: underline">ACCOUNT PRIVILEGES ALL</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryAccountPrivilegesAll()
+  const res = await client.MantrachainGuardV1.query.queryAccountPrivilegesAll()
+  console.log(res.data)
+```
+
+Output:
+
+```shell
+{
+  accounts: [ 'mantrachain...' ],
+  privileges: [ 'Af//////////' ],
+  pagination: { next_key: null, total: '1' }
+}
+```
+
+To get the account privileges in bytes:
+  
+```javascript
+  const privileges = Buffer.from(res.data.privileges[0], "base64")
+  console.log(privileges)
+```
+
+Output:
+
+```shell
+<Buffer 01 ff ff ff ff ff ff ff ff>
 ```
 
 <span style="text-decoration: underline">GUARD TRANSFER COINS</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryGuardTransferCoind()
+  const res = await client.MantrachainGuardV1.query.queryGuardTransferCoins()
+  console.log(res.data)
+```
+
+Output:
+
+```shell
+{ guard_transfer_coins: true }
 ```
 
 <span style="text-decoration: underline">REQUIRED PRIVILEGES</span>
 
 ```javascript
-  const coinDenom = "{coin_denom}"
-  const result = await client.MantrachainGuardV1.query.queryRequiredPrivileges(coinDenom, {
+  const res = await client.MantrachainGuardV1.query.queryRequiredPrivileges(Buffer.from("testcoin").toString("base64"), {
     kind: 'coin'
   })
+  console.log(res.data)
+```
+
+Output:
+
+```shell
+{ index: 'bXljb2lu', privileges: 'Af//////////', kind: 'coin' }
+```
+
+To get the required privileges in bytes:
+  
+```javascript
+  const privileges = Buffer.from(res.data.privileges, "base64")
+  console.log(privileges)
+```
+
+Output:
+
+```shell
+<Buffer 01 ff ff ff ff ff ff ff ff>
+```
+
+To get the index in string:
+  
+```javascript
+  const index = Buffer.from(res.data.index, "base64").toString('utf8')
+  console.log(index)
+```
+
+Output:
+
+```shell
+testcoin
 ```
 
 <span style="text-decoration: underline">REQUIRED PRIVILEGES ALL</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryRequiredPrivilegesAll({
+  const res = await client.MantrachainGuardV1.query.queryRequiredPrivilegesAll({
     kind: 'coin'
   })
+  console.log(res)
+```
+
+Output:
+
+```shell
+{
+  indexes: [ 'bXljb2lu' ],
+  privileges: [ 'Af//////////' ],
+  kind: 'coin',
+  pagination: { next_key: null, total: '1' }
+}
+```
+
+To get the required privileges in bytes:
+  
+```javascript
+  const privileges = Buffer.from(res.data.privileges[0], "base64")
+  console.log(privileges)
+```
+
+Output:
+
+```shell
+<Buffer 01 ff ff ff ff ff ff ff ff>
+```
+
+To get the index in string:
+  
+```javascript
+  const index = Buffer.from(res.data.indexes[0], "base64").toString('utf8')
+  console.log(index)
+```
+
+Output:
+
+```shell
+testcoin
 ```
 
 <span style="text-decoration: underline">LOCKED</span>
 
-
 ```javascript
-  const coinDenom = "{coin_denom}"
-  const result = await client.MantrachainGuardV1.query.queryLocked(coinDenom, {
+  const res = await client.MantrachainGuardV1.query.queryLocked(Buffer.from("testcoin").toString("base64"), {
     kind: 'coin'
   })
+  console.log(res.data)
 ```
+
+Output:
+
+```shell
+{ index: 'dGVzdGNvaW4=', locked: true, kind: 'coin' }
+```
+
+To get the index in string:
+  
+```javascript
+  const index = Buffer.from(res.data.index, "base64").toString('utf8')
+  console.log(index)
+```
+
+Output:
+
+```shell
+testcoin
+```
+
+Note: If the coin doesn't exist on the chain, the `locked` field will be `false`.
 
 <span style="text-decoration: underline">LOCKED ALL</span>
 
 ```javascript
-  const result = await client.MantrachainGuardV1.query.queryLockedAll({
+  const res = await client.MantrachainGuardV1.query.queryLockedAll({
     kind: 'coin'
   })
+  console.log(res.data)
+```
+
+Output:
+
+```shell
+{
+  indexes: [ 'dGVzdGNvaW4=' ],
+  locked: [ true ],
+  kind: 'coin',
+  pagination: { next_key: null, total: '1' }
+}
+```
+
+To get the index in string:
+  
+```javascript
+  const index = Buffer.from(res.data.indexes[0], "base64").toString('utf8')
+  console.log(index)
+```
+
+Output:
+
+```shell
+testcoin
 ```
