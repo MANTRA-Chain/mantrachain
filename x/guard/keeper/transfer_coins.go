@@ -25,11 +25,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		if err == nil {
 			coinAdmin, found := k.ck.GetAdmin(ctx, denom)
 
-			if !found {
-				return errors.Wrapf(sdkerrors.ErrInvalidCoins, "coin %s admin not found", denom)
-			}
-
-			if coinAdmin.Equals(address) {
+			if found && coinAdmin.Equals(address) {
 				continue
 			}
 
