@@ -64,26 +64,6 @@ func (gtd GuardAdminAuthzDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
 					return ctx, errors.Wrap(err, "unauthorized")
 				}
-			case *coinfactorytypes.MsgMint:
-				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
-					return ctx, errors.Wrap(err, "unauthorized")
-				}
-			case *coinfactorytypes.MsgBurn:
-				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
-					return ctx, errors.Wrap(err, "unauthorized")
-				}
-			case *coinfactorytypes.MsgChangeAdmin:
-				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
-					return ctx, errors.Wrap(err, "unauthorized")
-				}
-			case *coinfactorytypes.MsgForceTransfer:
-				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
-					return ctx, errors.Wrap(err, "unauthorized")
-				}
-			case *coinfactorytypes.MsgSetDenomMetadata:
-				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
-					return ctx, errors.Wrap(err, "unauthorized")
-				}
 			// Liquidity module
 			case *liquiditytypes.MsgCreatePair:
 				if err := gtd.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {

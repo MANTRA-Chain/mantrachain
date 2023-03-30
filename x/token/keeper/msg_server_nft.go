@@ -441,6 +441,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	newNftMetadata := types.Nft{
 		Index:             nftIndex,
+		Id:                nftMetadata.Id,
 		Images:            nftMetadata.Images,
 		Url:               nftMetadata.Url,
 		Links:             nftMetadata.Links,
