@@ -1396,7 +1396,7 @@ var (
 
 	pattern_Query_NftApproved_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7}, []string{"mantrachain", "token", "v1", "nft", "approvals", "collection_creator", "collection_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_IsApprovedForAllNfts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"mantrachain", "token", "v1", "nft", "approvals", "owner", "operator"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_IsApprovedForAllNfts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"mantrachain", "token", "v1", "nft", "approvals-all", "owner", "operator"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_AllCollectionNfts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "token", "v1", "nft", "collection_creator", "collection_id"}, "", runtime.AssumeColonVerbOpt(false)))
 

@@ -35,7 +35,7 @@ service Query {
     option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{collection_creator}/{collection_id}/{id}";
   }
   rpc IsApprovedForAllNfts(QueryGetIsApprovedForAllNftsRequest) returns (QueryGetIsApprovedForAllNftsResponse) {
-    option (google.api.http).get = "/mantrachain/token/v1/nft/approvals/{owner}/{operator}";
+    option (google.api.http).get = "/mantrachain/token/v1/nft/approvals-all/{owner}/{operator}";
   }
   rpc AllCollectionNfts(QueryGetAllCollectionNftsRequest) returns (QueryGetAllCollectionNftsResponse) {
     option (google.api.http).get = "/mantrachain/token/v1/nft/{collection_creator}/{collection_id}";
@@ -99,14 +99,16 @@ message QueryGetNftApprovedRequest {
 }
 
 message QueryGetNftApprovedResponse {
-  string id = 1;
-  repeated string approved = 2;
+  string collection_creator = 1;
+  string collection_id = 2;
+  string id = 3;
+  repeated string approved = 4;
 }
 
 message QueryGetNftRequest {
   string collection_creator = 1;
   string collection_id = 2;
-  string id = 3;
+  string id = 4;
 }
 
 message QueryGetNftResponse {

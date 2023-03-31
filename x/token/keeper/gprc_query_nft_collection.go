@@ -133,10 +133,15 @@ func (k Keeper) OpenedNftsCollection(goCtx context.Context, req *types.QueryGetO
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryGetOpenedNftsCollectionResponse{OpenedNftsCollection: k.HasOpenedNftsCollection(
+	isOpened := k.HasOpenedNftsCollection(
 		ctx,
 		req.Index,
-	)}, nil
+	)
+
+	return &types.QueryGetOpenedNftsCollectionResponse{
+		Index:                req.Index,
+		OpenedNftsCollection: isOpened,
+	}, nil
 }
 
 func (k Keeper) RestrictedNftsCollection(goCtx context.Context, req *types.QueryGetRestrictedNftsCollectionRequest) (*types.QueryGetRestrictedNftsCollectionResponse, error) {
@@ -145,10 +150,15 @@ func (k Keeper) RestrictedNftsCollection(goCtx context.Context, req *types.Query
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryGetRestrictedNftsCollectionResponse{RestrictedNftsCollection: k.HasRestrictedNftsCollection(
+	isRestricted := k.HasRestrictedNftsCollection(
 		ctx,
 		req.Index,
-	)}, nil
+	)
+
+	return &types.QueryGetRestrictedNftsCollectionResponse{
+		Index:                    req.Index,
+		RestrictedNftsCollection: isRestricted,
+	}, nil
 }
 
 func (k Keeper) SoulBondedNftsCollection(goCtx context.Context, req *types.QueryGetSoulBondedNftsCollectionRequest) (*types.QueryGetSoulBondedNftsCollectionResponse, error) {
@@ -157,8 +167,13 @@ func (k Keeper) SoulBondedNftsCollection(goCtx context.Context, req *types.Query
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	return &types.QueryGetSoulBondedNftsCollectionResponse{SoulBondedNftsCollection: k.HasSoulBondedNftsCollection(
+	isSoulBonded := k.HasSoulBondedNftsCollection(
 		ctx,
 		req.Index,
-	)}, nil
+	)
+
+	return &types.QueryGetSoulBondedNftsCollectionResponse{
+		Index:                    req.Index,
+		SoulBondedNftsCollection: isSoulBonded,
+	}, nil
 }

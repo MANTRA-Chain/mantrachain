@@ -164,8 +164,10 @@ func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedReq
 	}
 
 	return &types.QueryGetNftApprovedResponse{
-		Id:       req.Id,
-		Approved: approved,
+		CollectionCreator: collectionCreator.String(),
+		CollectionId:      req.CollectionId,
+		Id:                req.Id,
+		Approved:          approved,
 	}, nil
 }
 
