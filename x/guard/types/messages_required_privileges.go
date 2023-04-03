@@ -67,6 +67,9 @@ func (msg *MsgUpdateRequiredPrivileges) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrap(sdkerrors.ErrInvalidRequest, "kind is invalid")
 	}
+	if msg.Privileges != nil && len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
+	}
 	return nil
 }
 
@@ -123,9 +126,12 @@ func (msg *MsgUpdateRequiredPrivilegesBatch) ValidateBasic() error {
 	if msg.RequiredPrivilegesList.Privileges == nil || len(msg.RequiredPrivilegesList.Indexes) != len(msg.RequiredPrivilegesList.Privileges) {
 		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "indexes and privileges length is not equal")
 	}
-	for _, index := range msg.RequiredPrivilegesList.Indexes {
+	for i, index := range msg.RequiredPrivilegesList.Indexes {
 		if len(index) == 0 {
 			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid index (%s)", index)
+		}
+		if msg.RequiredPrivilegesList.Privileges[i] != nil && len(msg.RequiredPrivilegesList.Privileges[i]) > 0 && len(msg.RequiredPrivilegesList.Privileges[i]) != 32 {
+			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivilegesList.Privileges[i]))
 		}
 	}
 	return nil
@@ -185,9 +191,12 @@ func (msg *MsgUpdateRequiredPrivilegesGroupedBatch) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "indexes and privileges length is not equal")
 	}
 	for i := range msg.RequiredPrivilegesListGrouped.Indexes {
-		for _, index := range msg.RequiredPrivilegesListGrouped.Indexes[i].Indexes {
+		for k, index := range msg.RequiredPrivilegesListGrouped.Indexes[i].Indexes {
 			if len(index) == 0 {
 				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid index (%s)", index)
+			}
+			if msg.RequiredPrivilegesListGrouped.Privileges[k] != nil && len(msg.RequiredPrivilegesListGrouped.Privileges[k]) > 0 && len(msg.RequiredPrivilegesListGrouped.Privileges[k]) != 32 {
+				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivilegesListGrouped.Privileges[k]))
 			}
 		}
 	}

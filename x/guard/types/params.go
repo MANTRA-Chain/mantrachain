@@ -12,7 +12,15 @@ var (
 	DefaultAdminAccount                            = ""
 	DefaultAccountPrivilegesTokenCollectionCreator = ""
 	DefaultAccountPrivilegesTokenCollectionId      = ""
-	DefaultPrivileges                              = big.NewInt(0).Sub(big.NewInt(0).Exp(big.NewInt(2), big.NewInt(64), nil), big.NewInt(1)).Bytes()
+	DefaultPrivileges                              = append(make([]byte, 24), big.NewInt(0).Sub(
+		big.NewInt(0).
+			Exp(
+				big.NewInt(2),
+				big.NewInt(64),
+				nil,
+			),
+		big.NewInt(1),
+	).Bytes()[:]...)
 )
 
 var (

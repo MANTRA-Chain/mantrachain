@@ -580,6 +580,7 @@ func New(
 		app.ModuleAccountAddrs(),
 		app.MsgServiceRouter(),
 		app.AccountKeeper,
+		app.BankKeeper,
 		app.AuthzKeeper,
 		app.TokenKeeper,
 		app.NFTKeeper,

@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -56,6 +57,20 @@ func (k Keeper) Locked(goCtx context.Context, req *types.QueryGetLockedRequest) 
 	kind, err := types.ParseLockedKind(req.Kind)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "kind is invalid")
+	}
+
+	denom := string(req.Index)
+
+	if kind == types.LockedCoin {
+		_, _, err := coinfactorytypes.DeconstructDenom(denom)
+		if err != nil {
+			return nil, err
+		}
+
+		_, found := k.bk.GetDenomMetaData(ctx, denom)
+		if !found {
+			return nil, status.Error(codes.InvalidArgument, "invalid denom")
+		}
 	}
 
 	_, found := k.GetLocked(
