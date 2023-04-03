@@ -57,6 +57,9 @@ func (msg *MsgUpdateAccountPrivileges) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
 	}
+	if msg.Privileges != nil && len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
+	}
 	return nil
 }
 
@@ -104,10 +107,13 @@ func (msg *MsgUpdateAccountPrivilegesBatch) ValidateBasic() error {
 	if msg.AccountsPrivileges.Privileges == nil || len(msg.AccountsPrivileges.Accounts) != len(msg.AccountsPrivileges.Privileges) {
 		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
 	}
-	for _, acc := range msg.AccountsPrivileges.Accounts {
+	for i, acc := range msg.AccountsPrivileges.Accounts {
 		_, err = sdk.AccAddressFromBech32(acc)
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
+		}
+		if msg.AccountsPrivileges.Privileges[i] != nil && len(msg.AccountsPrivileges.Privileges[i]) > 0 && len(msg.AccountsPrivileges.Privileges[i]) != 32 {
+			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivileges.Privileges[i]))
 		}
 	}
 	return nil
@@ -158,10 +164,13 @@ func (msg *MsgUpdateAccountPrivilegesGroupedBatch) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
 	}
 	for i := range msg.AccountsPrivilegesGrouped.Accounts {
-		for _, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
+		for k, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
 			_, err = sdk.AccAddressFromBech32(acc)
 			if err != nil {
 				return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
+			}
+			if msg.AccountsPrivilegesGrouped.Privileges[k] != nil && len(msg.AccountsPrivilegesGrouped.Privileges[k]) > 0 && len(msg.AccountsPrivilegesGrouped.Privileges[k]) != 32 {
+				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivilegesGrouped.Privileges[k]))
 			}
 		}
 	}

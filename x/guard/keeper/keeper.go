@@ -22,6 +22,7 @@ type (
 		whlstTransfersSendersAccAddrs map[string]bool
 		router                        *baseapp.MsgServiceRouter
 		ak                            types.AccountKeeper
+		bk                            types.BankKeeper
 		azk                           types.AuthzKeeper
 		tk                            types.TokenKeeper
 		nk                            types.NFTKeeper
@@ -37,6 +38,7 @@ func NewKeeper(
 	modAccAddrs map[string]bool,
 	router *baseapp.MsgServiceRouter,
 	ak types.AccountKeeper,
+	bk types.BankKeeper,
 	azk types.AuthzKeeper,
 	tk types.TokenKeeper,
 	nk types.NFTKeeper,
@@ -60,6 +62,7 @@ func NewKeeper(
 		whlstTransfersSendersAccAddrs: modAccAddrsCopy,
 		router:                        router,
 		ak:                            ak,
+		bk:                            bk,
 		azk:                           azk,
 		tk:                            tk,
 		nk:                            nk,

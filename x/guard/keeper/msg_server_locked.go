@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"cosmossdk.io/errors"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -20,6 +21,20 @@ func (k msgServer) UpdateLocked(goCtx context.Context, msg *types.MsgUpdateLocke
 	kind, err := types.ParseLockedKind(msg.Kind)
 	if err != nil {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+	}
+
+	denom := string(msg.Index)
+
+	if kind == types.LockedCoin {
+		_, _, err := coinfactorytypes.DeconstructDenom(denom)
+		if err != nil {
+			return nil, err
+		}
+
+		_, found := k.bk.GetDenomMetaData(ctx, denom)
+		if !found {
+			return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "denom not found")
+		}
 	}
 
 	exists := k.HasLocked(ctx, msg.Index, kind)
