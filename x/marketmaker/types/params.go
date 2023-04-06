@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/crypto"
+	"github.com/tendermint/tendermint/crypto"
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

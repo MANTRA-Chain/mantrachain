@@ -9,7 +9,6 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
 
-
 // Params defines the set of params for the farming module.
 message Params {
   option (gogoproto.goproto_getters)  = false;

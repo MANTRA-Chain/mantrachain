@@ -122,10 +122,10 @@ func CalculateLiquidUnfarmAmount(
 func DeductFees(rewards sdk.Coins, feeRate sdk.Dec) (deducted sdk.Coins, fees sdk.Coins) {
 	deducted = make(sdk.Coins, len(rewards))
 	for i, reward := range rewards {
-		multiplier := sdk.OneDec().Sub(feeRate)                                                                 // 1 - feeRate
-		deducted[i] = sdk.NewCoin(reward.Denom, sdk.NewDecFromInt(reward.Amount).Mul(multiplier).TruncateInt()) // RewardAmt * Multiplier
+		multiplier := sdk.OneDec().Sub(feeRate)                                                      // 1 - feeRate
+		deducted[i] = sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(multiplier).TruncateInt()) // RewardAmt * Multiplier
 	}
-	fees = rewards.Sub(deducted...)
+	fees = rewards.Sub(deducted)
 	if fees.IsZero() {
 		fees = sdk.Coins{}
 	}

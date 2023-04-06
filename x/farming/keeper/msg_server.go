@@ -7,8 +7,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -108,22 +106,4 @@ func (k msgServer) RemovePlan(goCtx context.Context, msg *types.MsgRemovePlan) (
 	}
 
 	return &types.MsgRemovePlanResponse{}, nil
-}
-
-// AdvanceEpoch defines a method for advancing epoch by one, just for testing purpose
-// and shouldn't be used in real world.
-func (k msgServer) AdvanceEpoch(goCtx context.Context, msg *types.MsgAdvanceEpoch) (*types.MsgAdvanceEpochResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	if EnableAdvanceEpoch {
-		currentEpochDays := k.GetCurrentEpochDays(ctx)
-		ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Duration(currentEpochDays) * types.Day))
-		if err := k.Keeper.AdvanceEpoch(ctx); err != nil {
-			return nil, err
-		}
-	} else {
-		return nil, fmt.Errorf("AdvanceEpoch is disabled")
-	}
-
-	return &types.MsgAdvanceEpochResponse{}, nil
 }

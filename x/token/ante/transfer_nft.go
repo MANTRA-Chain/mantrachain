@@ -1,9 +1,9 @@
 package ante
 
 import (
-	"cosmossdk.io/errors"
+	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type TokenTransferNftDecorator struct {
@@ -19,7 +19,7 @@ func (ttd TokenTransferNftDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	case sdk.Tx:
 		for _, msg := range tx.GetMsgs() {
 			switch msg := msg.(type) {
-			case *nft.MsgSend:
+			case *nfttypes.MsgSend:
 				ok, err := ttd.tokenKeeper.CheckCanTransferNft(ctx, msg.ClassId)
 
 				if err != nil {

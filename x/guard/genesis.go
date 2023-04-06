@@ -3,10 +3,10 @@ package guard
 import (
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

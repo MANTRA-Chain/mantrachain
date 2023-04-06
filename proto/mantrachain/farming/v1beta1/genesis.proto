@@ -10,7 +10,6 @@ import "mantrachain/farming/v1beta1/farming.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package            = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
-
 option (gogoproto.equal_all) = true;
 
 // GenesisState defines the farming module's genesis state.

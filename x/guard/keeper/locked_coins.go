@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"

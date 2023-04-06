@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/codec"

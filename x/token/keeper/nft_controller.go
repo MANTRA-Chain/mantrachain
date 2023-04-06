@@ -3,10 +3,10 @@ package keeper
 import (
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type NftControllerFunc func(controller *NftController) error

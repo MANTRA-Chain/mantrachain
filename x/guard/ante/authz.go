@@ -1,12 +1,12 @@
 package ante
 
 import (
-	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type GuardAdminAuthzDecorator struct {

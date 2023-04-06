@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) SetNft(ctx sdk.Context, nft types.Nft) {

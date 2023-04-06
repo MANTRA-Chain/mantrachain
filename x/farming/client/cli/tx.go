@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -18,7 +17,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
@@ -35,17 +34,14 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	farmingTxCmd.AddCommand(
-	// NewCreateFixedAmountPlanCmd(),
-	// NewStakeCmd(),
-	// NewUnstakeCmd(),
-	// NewHarvestCmd(),
-	// NewRemovePlanCmd(),
+		NewCreateFixedAmountPlanCmd(),
+		NewStakeCmd(),
+		NewUnstakeCmd(),
+		NewHarvestCmd(),
+		NewRemovePlanCmd(),
 	)
 	if keeper.EnableRatioPlan {
 		farmingTxCmd.AddCommand(NewCreateRatioPlanCmd())
-	}
-	if keeper.EnableAdvanceEpoch {
-		farmingTxCmd.AddCommand(NewAdvanceEpochCmd())
 	}
 
 	return farmingTxCmd
@@ -103,7 +99,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateFixedPlan(args[0])
 			if err != nil {
-				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateFixedAmountPlan(
@@ -171,7 +167,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateRatioPlan(args[0])
 			if err != nil {
-				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateRatioPlan(
@@ -384,41 +380,6 @@ $ %s tx %s remove-plan 1 --from mykey`,
 	return cmd
 }
 
-// NewAdvanceEpochCmd implements the advance epoch by 1 command handler.
-func NewAdvanceEpochCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "advance-epoch",
-		Args:  cobra.NoArgs,
-		Short: "Advance epoch by 1 to simulate reward distribution",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Advance epoch by 1 to simulate reward distribution.
-This message is available for testing purpose and it can only be enabled when you build the binary with "make install-testing" command. 
-
-Example:
-$ %s tx %s advance-epoch --from mykey
-`,
-				version.AppName, types.ModuleName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			requesterAcc := clientCtx.GetFromAddress()
-
-			msg := types.NewMsgAdvanceEpoch(requesterAcc)
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
 // GetCmdSubmitPublicPlanProposal implements the create/update/delete public farming plan command handler.
 func GetCmdSubmitPublicPlanProposal() *cobra.Command {
 	cmd := &cobra.Command{
@@ -503,7 +464,7 @@ Where proposal.json contains:
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := govv1beta1.NewMsgSubmitProposal(content, deposit, from)
+			msg, err := gov.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
 			}

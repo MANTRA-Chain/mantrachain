@@ -9,12 +9,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/client/cli"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
@@ -121,10 +121,22 @@ func (am AppModule) Name() string {
 	return am.AppModuleBasic.Name()
 }
 
+// Route returns the module's message routing key.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
+}
+
+// QuerierRoute returns the module's query routing key.
+func (AppModule) QuerierRoute() string { return types.QuerierRoute }
+
+// LegacyQuerierHandler returns the module's Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return nil
+}
+
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), keeper.Querier{Keeper: am.keeper})
 }
 

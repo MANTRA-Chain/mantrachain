@@ -3,11 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
@@ -15,7 +14,7 @@ import (
 // Keeper of the module's store.
 type Keeper struct {
 	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
+	storeKey   sdk.StoreKey
 	paramSpace paramstypes.Subspace
 
 	accountKeeper   types.AccountKeeper
@@ -26,7 +25,7 @@ type Keeper struct {
 // NewKeeper creates a new Keeper instance.
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
+	storeKey sdk.StoreKey,
 	paramSpace paramstypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,

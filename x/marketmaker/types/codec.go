@@ -6,7 +6,7 @@ import (
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/marketmaker interfaces and concrete types
@@ -26,7 +26,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	registry.RegisterImplementations(
-		(*govv1beta1.Content)(nil),
+		(*govtypes.Content)(nil),
 		&MarketMakerProposal{},
 	)
 

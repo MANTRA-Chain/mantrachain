@@ -255,7 +255,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stak
 		panic("historical rewards for ending epoch not found")
 	}
 	diff := ending.CumulativeUnitRewards.Sub(starting.CumulativeUnitRewards)
-	rewards = diff.MulDecTruncate(sdk.NewDecFromInt(staking.Amount))
+	rewards = diff.MulDecTruncate(staking.Amount.ToDec())
 	return
 }
 
@@ -555,7 +555,7 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 
 			// Multiple plans can have same denom in their staking coin weights,
 			// so we accumulate all unit rewards for this denom in the table.
-			unitRewardsByDenom[weight.Denom] = unitRewardsByDenom[weight.Denom].Add(allocCoinsDec.QuoDecTruncate(sdk.NewDecFromInt(totalStakings.Amount))...)
+			unitRewardsByDenom[weight.Denom] = unitRewardsByDenom[weight.Denom].Add(allocCoinsDec.QuoDecTruncate(totalStakings.Amount.ToDec())...)
 
 			k.IncreaseOutstandingRewards(ctx, weight.Denom, allocCoinsDec)
 
@@ -659,7 +659,7 @@ func (k Keeper) ValidateUnharvestedRewardsAmount(ctx sdk.Context) error {
 	})
 
 	reserveBalances := k.bankKeeper.SpendableCoins(ctx, types.UnharvestedRewardsReserveAcc)
-	_, hasNeg := reserveBalances.SafeSub(totalUnharvestedRewards...)
+	_, hasNeg := reserveBalances.SafeSub(totalUnharvestedRewards)
 	if hasNeg {
 		return types.ErrInvalidUnharvestedRewardsAmount
 	}

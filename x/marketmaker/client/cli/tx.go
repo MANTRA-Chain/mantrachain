@@ -16,7 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
@@ -198,7 +198,7 @@ Where proposal.json contains:
 
 			from := clientCtx.GetFromAddress()
 
-			msg, err := govv1beta1.NewMsgSubmitProposal(content, deposit, from)
+			msg, err := gov.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
 			}

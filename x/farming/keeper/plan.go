@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"cosmossdk.io/errors"
-
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -145,17 +143,17 @@ func (k Keeper) UnmarshalPlan(bz []byte) (plan types.PlanI, err error) {
 // CreateFixedAmountPlan sets fixed amount plan.
 func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixedAmountPlan, farmingPoolAcc, terminationAcc sdk.AccAddress, typ types.PlanType) (types.PlanI, error) {
 	if !ctx.BlockTime().Before(msg.EndTime) { // EndTime <= BlockTime
-		return nil, errors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
+		return nil, sdkerrors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
 	}
 
 	for _, coin := range msg.StakingCoinWeights {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, errors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
+			return nil, sdkerrors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
 		}
 	}
 	for _, coin := range msg.EpochAmount {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, errors.Wrapf(types.ErrInvalidEpochAmount, "denom %s has no supply", coin.Denom)
+			return nil, sdkerrors.Wrapf(types.ErrInvalidEpochAmount, "denom %s has no supply", coin.Denom)
 		}
 	}
 
@@ -167,13 +165,13 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 		maxNumDenoms = types.PublicPlanMaxNumDenoms
 	}
 	if len(msg.StakingCoinWeights) > maxNumDenoms {
-		return nil, errors.Wrapf(
+		return nil, sdkerrors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in staking coin weights is %d, which exceeds the limit %d",
 			len(msg.StakingCoinWeights), maxNumDenoms)
 	}
 	if len(msg.EpochAmount) > maxNumDenoms {
-		return nil, errors.Wrapf(
+		return nil, sdkerrors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in epoch amount is %d, which exceeds the limit %d",
 			len(msg.EpochAmount), maxNumDenoms)
@@ -188,7 +186,7 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 		if err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee); err != nil {
-			return nil, errors.Wrap(err, "failed to pay private plan creation fee")
+			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
 		}
 	}
 
@@ -226,12 +224,12 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 // CreateRatioPlan sets ratio plan.
 func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, farmingPoolAcc, terminationAcc sdk.AccAddress, typ types.PlanType) (types.PlanI, error) {
 	if !ctx.BlockTime().Before(msg.EndTime) { // EndTime <= BlockTime
-		return nil, errors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
+		return nil, sdkerrors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
 	}
 
 	for _, coin := range msg.StakingCoinWeights {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, errors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
+			return nil, sdkerrors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
 		}
 	}
 
@@ -243,7 +241,7 @@ func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, 
 		maxNumDenoms = types.PublicPlanMaxNumDenoms
 	}
 	if len(msg.StakingCoinWeights) > maxNumDenoms {
-		return nil, errors.Wrapf(
+		return nil, sdkerrors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in staking coin weights is %d, which exceeds the limit %d",
 			len(msg.StakingCoinWeights), maxNumDenoms)
@@ -258,7 +256,7 @@ func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, 
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 		if err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee); err != nil {
-			return nil, errors.Wrap(err, "failed to pay private plan creation fee")
+			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
 		}
 	}
 
@@ -343,26 +341,26 @@ func (k Keeper) TerminateEndedPlans(ctx sdk.Context) error {
 func (k Keeper) RemovePlan(ctx sdk.Context, creator sdk.AccAddress, planId uint64) error {
 	plan, found := k.GetPlan(ctx, planId)
 	if !found {
-		return errors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", planId)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", planId)
 	}
 
 	if !plan.IsTerminated() {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not terminated yet", planId)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not terminated yet", planId)
 	}
 
 	if plan.GetType() != types.PlanTypePrivate {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not a private plan", planId)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not a private plan", planId)
 	}
 
 	if !plan.GetTerminationAddress().Equals(creator) {
-		return errors.Wrap(sdkerrors.ErrUnauthorized, "only the plan creator can remove the plan")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "only the plan creator can remove the plan")
 	}
 
 	// Refund private plan creation fee.
 	params := k.GetParams(ctx)
 	feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 	if err := k.bankKeeper.SendCoins(ctx, feeCollectorAcc, creator, params.PrivatePlanCreationFee); err != nil {
-		return errors.Wrap(err, "failed to refund private plan creation fee")
+		return sdkerrors.Wrap(err, "failed to refund private plan creation fee")
 	}
 
 	k.DeletePlan(ctx, plan)

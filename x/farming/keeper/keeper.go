@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -15,12 +14,8 @@ import (
 )
 
 var (
-	enableAdvanceEpoch = "false" // Set this to "true" using build flags to enable AdvanceEpoch msg handling.
-	enableRatioPlan    = "false" // Set this to "true" using build flags to enable creation of RatioPlans.
+	enableRatioPlan = "false" // Set this to "true" using build flags to enable creation of RatioPlans.
 
-	// EnableAdvanceEpoch indicates whether msgServer accepts MsgAdvanceEpoch or not.
-	// Never set this to true in production mode. Doing that will expose serious attack vector.
-	EnableAdvanceEpoch = false
 	// EnableRatioPlan indicates whether msgServer and proposal handler accept
 	// creation of RatioPlans.
 	// Default is false, which means that RatioPlans can't be created through a
@@ -30,10 +25,6 @@ var (
 
 func init() {
 	var err error
-	EnableAdvanceEpoch, err = strconv.ParseBool(enableAdvanceEpoch)
-	if err != nil {
-		panic(err)
-	}
 	EnableRatioPlan, err = strconv.ParseBool(enableRatioPlan)
 	if err != nil {
 		panic(err)
@@ -42,7 +33,7 @@ func init() {
 
 // Keeper of the farming store
 type Keeper struct {
-	storeKey   storetypes.StoreKey
+	storeKey   sdk.StoreKey
 	cdc        codec.BinaryCodec
 	paramSpace paramtypes.Subspace
 
@@ -54,7 +45,7 @@ type Keeper struct {
 // - creating new ModuleAccounts for each pool ReserveAccount
 // - sending to and from ModuleAccounts
 // - minting, burning PoolCoins
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramtypes.Subspace,
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
 ) Keeper {
 	// ensure farming module account is set

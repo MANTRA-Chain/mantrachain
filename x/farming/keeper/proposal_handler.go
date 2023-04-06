@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -98,11 +97,11 @@ func (k Keeper) ModifyPublicPlanProposal(ctx sdk.Context, proposals []types.Modi
 	for _, p := range proposals {
 		plan, found := k.GetPlan(ctx, p.GetPlanId())
 		if !found {
-			return errors.Wrapf(sdkerrors.ErrNotFound, "plan %d is not found", p.GetPlanId())
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "plan %d is not found", p.GetPlanId())
 		}
 
 		if plan.GetType() != types.PlanTypePublic {
-			return errors.Wrapf(types.ErrInvalidPlanType, "plan %d is not a public plan", p.GetPlanId())
+			return sdkerrors.Wrapf(types.ErrInvalidPlanType, "plan %d is not a public plan", p.GetPlanId())
 		}
 
 		if p.GetName() != "" {
@@ -179,11 +178,11 @@ func (k Keeper) DeletePublicPlanProposal(ctx sdk.Context, proposals []types.Dele
 	for _, p := range proposals {
 		plan, found := k.GetPlan(ctx, p.GetPlanId())
 		if !found {
-			return errors.Wrapf(sdkerrors.ErrNotFound, "plan %d is not found", p.GetPlanId())
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "plan %d is not found", p.GetPlanId())
 		}
 
 		if plan.GetType() != types.PlanTypePublic {
-			return errors.Wrapf(types.ErrInvalidPlanType, "plan %d is not a public plan", p.GetPlanId())
+			return sdkerrors.Wrapf(types.ErrInvalidPlanType, "plan %d is not a public plan", p.GetPlanId())
 		}
 
 		if err := k.TerminatePlan(ctx, plan); err != nil {

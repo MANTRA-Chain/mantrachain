@@ -3,10 +3,10 @@ package keeper
 import (
 	"strings"
 
-	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 

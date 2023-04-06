@@ -9,12 +9,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/client/cli"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
@@ -117,6 +117,21 @@ func NewAppModule(cdc codec.Codec, keeper keeper.Keeper,
 // Name returns the module's name.
 func (am AppModule) Name() string {
 	return am.AppModuleBasic.Name()
+}
+
+// Route returns the module's message routing key.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
+}
+
+// QuerierRoute returns the module's query routing key.
+func (AppModule) QuerierRoute() string {
+	return types.QuerierRoute
+}
+
+// LegacyQuerierHandler returns the module's Querier.
+func (am AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier {
+	return nil
 }
 
 // RegisterServices registers a GRPC query service to respond to the

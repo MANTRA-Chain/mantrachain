@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
+	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
@@ -34,7 +34,7 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 	collectionId := collectionController.getId()
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
-	err = nftExecutor.SetClass(nft.Class{
+	err = nftExecutor.SetClass(nfttypes.Class{
 		Id:          string(collectionIndex),
 		Name:        msg.Collection.Name,
 		Symbol:      msg.Collection.Symbol,

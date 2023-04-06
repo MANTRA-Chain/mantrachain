@@ -3,7 +3,7 @@ package coinfactory
 import (
 	"fmt"
 
-	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"

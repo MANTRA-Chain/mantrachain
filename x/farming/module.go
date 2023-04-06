@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdkclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -112,6 +112,21 @@ func (AppModule) Name() string {
 // RegisterInvariants registers the farming module invariants.
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 	keeper.RegisterInvariants(ir, am.keeper)
+}
+
+// Route returns the message routing key for the farming module.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
+}
+
+// QuerierRoute returns the farming module's querier route name.
+func (AppModule) QuerierRoute() string {
+	return types.QuerierRoute
+}
+
+// LegacyQuerierHandler returns the farming module sdk.Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return nil
 }
 
 // RegisterServices registers module services.

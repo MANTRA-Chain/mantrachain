@@ -5,11 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
@@ -33,24 +32,22 @@ func init() {
 
 type Keeper struct {
 	cdc             codec.BinaryCodec
-	storeKey        storetypes.StoreKey
+	storeKey        sdk.StoreKey
 	paramSpace      paramtypes.Subspace
 	accountKeeper   types.AccountKeeper
 	bankKeeper      types.BankKeeper
 	lpfarmKeeper    types.LPFarmKeeper
 	liquidityKeeper types.LiquidityKeeper
-	gk              types.GuardKeeper
 }
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
+	storeKey sdk.StoreKey,
 	paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	lpfarmKeeper types.LPFarmKeeper,
 	liquidityKeeper types.LiquidityKeeper,
-	gk types.GuardKeeper,
 ) Keeper {
 	// Ensure the module account is set
 	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
@@ -70,7 +67,6 @@ func NewKeeper(
 		bankKeeper:      bankKeeper,
 		lpfarmKeeper:    lpfarmKeeper,
 		liquidityKeeper: liquidityKeeper,
-		gk:              gk,
 	}
 }
 

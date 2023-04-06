@@ -1,9 +1,9 @@
 package ante
 
 import (
-	"cosmossdk.io/errors"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type GuardTokenAuthzDecorator struct {

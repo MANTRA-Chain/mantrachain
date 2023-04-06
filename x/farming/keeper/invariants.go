@@ -170,7 +170,7 @@ func UnharvestedRewardsAmountInvariant(k Keeper) sdk.Invariant {
 			return false
 		})
 		balances := k.bankKeeper.SpendableCoins(ctx, types.UnharvestedRewardsReserveAcc)
-		_, hasNeg := balances.SafeSub(totalRewards...)
+		_, hasNeg := balances.SafeSub(totalRewards)
 		broken := hasNeg
 		return sdk.FormatInvariant(
 			types.ModuleName, "wrong unharvested rewards amount",

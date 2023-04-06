@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"time"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -17,32 +16,32 @@ import (
 func (k Keeper) PlaceBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidder sdk.AccAddress, biddingCoin sdk.Coin) (types.Bid, error) {
 	liquidFarm, found := k.GetLiquidFarm(ctx, poolId)
 	if !found {
-		return types.Bid{}, errors.Wrapf(sdkerrors.ErrNotFound, "liquid farm by pool %d not found", poolId)
+		return types.Bid{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "liquid farm by pool %d not found", poolId)
 	}
 
 	auction, found := k.GetRewardsAuction(ctx, auctionId, poolId)
 	if !found {
-		return types.Bid{}, errors.Wrapf(sdkerrors.ErrNotFound, "auction by pool %d not found", poolId)
+		return types.Bid{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "auction by pool %d not found", poolId)
 	}
 
 	if auction.Status != types.AuctionStatusStarted {
-		return types.Bid{}, errors.Wrapf(
+		return types.Bid{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInvalidRequest, "auction status must be %s", types.AuctionStatusStarted.String())
 	}
 
 	if auction.BiddingCoinDenom != biddingCoin.Denom {
-		return types.Bid{}, errors.Wrapf(
+		return types.Bid{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInvalidRequest, "expected denom %s, but got %s", auction.BiddingCoinDenom, biddingCoin.Denom)
 	}
 
 	if biddingCoin.Amount.LT(liquidFarm.MinBidAmount) {
-		return types.Bid{}, errors.Wrapf(
+		return types.Bid{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInvalidRequest, "must be greater than the minimum bid amount %s", liquidFarm.MinBidAmount)
 	}
 
 	if winningBid, found := k.GetWinningBid(ctx, auctionId, poolId); found {
 		if biddingCoin.Amount.LTE(winningBid.Amount.Amount) {
-			return types.Bid{}, errors.Wrapf(
+			return types.Bid{}, sdkerrors.Wrapf(
 				sdkerrors.ErrInvalidRequest, "must be greater than the winning bid amount %s", winningBid.Amount.Amount)
 		}
 	}
@@ -82,17 +81,17 @@ func (k Keeper) PlaceBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidde
 func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidder sdk.AccAddress) error {
 	auction, found := k.GetRewardsAuction(ctx, auctionId, poolId)
 	if !found {
-		return errors.Wrapf(sdkerrors.ErrNotFound, "auction by pool %d not found", poolId)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "auction by pool %d not found", poolId)
 	}
 
 	winningBid, found := k.GetWinningBid(ctx, auctionId, poolId)
 	if found && winningBid.Bidder == bidder.String() {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "not allowed to refund the winning bid")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "not allowed to refund the winning bid")
 	}
 
 	bid, found := k.GetBid(ctx, poolId, bidder)
 	if !found {
-		return errors.Wrapf(sdkerrors.ErrNotFound, "bid by pool %d not found", poolId)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "bid by pool %d not found", poolId)
 	}
 
 	if err := k.bankKeeper.SendCoins(ctx, auction.GetPayingReserveAddress(), bidder, sdk.NewCoins(bid.Amount)); err != nil {
@@ -115,16 +114,12 @@ func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidd
 
 // CreateRewardsAuction creates new rewards auction and store it.
 func (k Keeper) CreateRewardsAuction(ctx sdk.Context, poolId uint64, endTime time.Time) {
-	auctionId := k.getNextAuctionIdWithUpdate(ctx, poolId)
 	k.SetRewardsAuction(ctx, types.NewRewardsAuction(
-		auctionId,
+		k.getNextAuctionIdWithUpdate(ctx, poolId),
 		poolId,
 		ctx.BlockTime(),
 		endTime,
 	))
-
-	auction, _ := k.GetRewardsAuction(ctx, auctionId, poolId)
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{auction.GetPayingReserveAddress().String()}, true)
 }
 
 // FinishRewardsAuction finishes ongoing rewards auction by looking up the existence of winning bid.
@@ -138,11 +133,6 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 	withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(auction.PoolId)
 	withdrawnRewardsReserves := k.bankKeeper.SpendableCoins(ctx, withdrawnRewardsReserveAddr)
 	totalRewards := truncatedRewards.Add(withdrawnRewardsReserves...)
-
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
-		liquidFarmReserveAddr.String(),
-		withdrawnRewardsReserveAddr.String(),
-	}, true)
 
 	winningBid, found := k.GetWinningBid(ctx, auction.Id, auction.PoolId)
 	if !found {
@@ -179,12 +169,6 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 			Amount: winningBid.Amount.Amount,
 		})
 	}
-
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
-		auction.GetPayingReserveAddress().String(),
-		liquidFarmReserveAddr.String(),
-		withdrawnRewardsReserveAddr.String(),
-	}, false)
 
 	return nil
 }

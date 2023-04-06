@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

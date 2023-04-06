@@ -3,7 +3,6 @@ package keeper
 import (
 	"time"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -16,7 +15,7 @@ func (k Keeper) CreatePrivatePlan(
 	rewardAllocs []types.RewardAllocation, startTime, endTime time.Time,
 ) (types.Plan, error) {
 	if !k.CanCreatePrivatePlan(ctx) {
-		return types.Plan{}, errors.Wrapf(
+		return types.Plan{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInvalidRequest,
 			"maximum number of active private plans reached")
 	}
@@ -68,7 +67,7 @@ func (k Keeper) createPlan(
 ) (types.Plan, error) {
 	// Check if end time > block time
 	if !endTime.After(ctx.BlockTime()) {
-		return types.Plan{}, errors.Wrap(
+		return types.Plan{}, sdkerrors.Wrap(
 			sdkerrors.ErrInvalidRequest, "end time is past")
 	}
 
@@ -76,12 +75,12 @@ func (k Keeper) createPlan(
 		if rewardAlloc.PairId > 0 {
 			_, found := k.liquidityKeeper.GetPair(ctx, rewardAlloc.PairId)
 			if !found {
-				return types.Plan{}, errors.Wrapf(
+				return types.Plan{}, sdkerrors.Wrapf(
 					sdkerrors.ErrNotFound, "pair %d not found", rewardAlloc.PairId)
 			}
 		} else {
 			if !k.bankKeeper.HasSupply(ctx, rewardAlloc.Denom) {
-				return types.Plan{}, errors.Wrapf(
+				return types.Plan{}, sdkerrors.Wrapf(
 					sdkerrors.ErrInvalidRequest, "denom %s has no supply", rewardAlloc.Denom)
 			}
 		}

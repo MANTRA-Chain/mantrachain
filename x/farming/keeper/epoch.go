@@ -44,26 +44,6 @@ func (k Keeper) DeleteLastEpochTime(ctx sdk.Context) {
 	store.Delete(types.LastEpochTimeKey)
 }
 
-// AdvanceEpoch allocates rewards and advances epoch by one.
-// AdvanceEpoch also forcefully makes queued stakings to be staked.
-// Use this only for simulation and testing purpose.
-func (k Keeper) AdvanceEpoch(ctx sdk.Context) error {
-	currentEpochDays := k.GetCurrentEpochDays(ctx)
-	k.ProcessQueuedCoins(ctx, ctx.BlockTime()) // Caller must adjust the ctx's BlockTime to simulate the advance.
-	if err := k.TerminateEndedPlans(ctx); err != nil {
-		return err
-	}
-	if err := k.AllocateRewards(ctx); err != nil {
-		return err
-	}
-	k.SetLastEpochTime(ctx, ctx.BlockTime())
-	if params := k.GetParams(ctx); params.NextEpochDays != currentEpochDays {
-		k.SetCurrentEpochDays(ctx, params.NextEpochDays)
-	}
-
-	return nil
-}
-
 // GetCurrentEpochDays returns the current epoch days(period).
 func (k Keeper) GetCurrentEpochDays(ctx sdk.Context) uint32 {
 	var epochDays uint32

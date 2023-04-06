@@ -8,8 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/errors"
-
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -32,17 +30,17 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	farmingQueryCmd.AddCommand(
-	// GetCmdQueryParams(),
-	// GetCmdQueryPlans(),
-	// GetCmdQueryPlan(),
-	// GetCmdQueryPosition(),
-	// GetCmdQueryStakings(),
-	// GetCmdQueryQueuedStakings(),
-	// GetCmdQueryTotalStakings(),
-	// GetCmdQueryRewards(),
-	// GetCmdQueryUnharvestedRewards(),
-	// GetCmdQueryCurrentEpochDays(),
-	// GetCmdQueryHistoricalRewards(),
+		GetCmdQueryParams(),
+		GetCmdQueryPlans(),
+		GetCmdQueryPlan(),
+		GetCmdQueryPosition(),
+		GetCmdQueryStakings(),
+		GetCmdQueryQueuedStakings(),
+		GetCmdQueryTotalStakings(),
+		GetCmdQueryRewards(),
+		GetCmdQueryUnharvestedRewards(),
+		GetCmdQueryCurrentEpochDays(),
+		GetCmdQueryHistoricalRewards(),
 	)
 	return farmingQueryCmd
 }
@@ -136,7 +134,7 @@ $ %s query %s plans --staking-coin-denom pool1
 				if planType == types.PlanTypePublic.String() || planType == types.PlanTypePrivate.String() {
 					req.Type = planType
 				} else {
-					return errors.Wrap(sdkerrors.ErrInvalidRequest, "plan type must be either public or private")
+					return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "plan type must be either public or private")
 				}
 			}
 
@@ -178,7 +176,7 @@ $ %s query %s plan
 
 			planId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
-				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "plan-id %s is not valid", args[0])
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan-id %s is not valid", args[0])
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)

@@ -4,7 +4,6 @@ import (
 	"sort"
 	"time"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -304,12 +303,6 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 		if err := k.bankKeeper.SendCoins(ctx, farmerAcc, reserveAcc, stakingCoins); err != nil {
 			return err
 		}
-		// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
-		// Ref: https://github.com/MANTRA-Finance/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
-		//
-		// if !k.bankKeeper.BlockedAddr(ctx, reserveAcc) {
-		// 	k.bankKeeper.AddBlockedAddr(ctx, reserveAcc)
-		// }
 	} else {
 		var inputs []banktypes.Input
 		var outputs []banktypes.Output
@@ -317,12 +310,6 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			reserveAcc := types.StakingReserveAcc(coin.Denom)
 			inputs = append(inputs, banktypes.NewInput(farmerAcc, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(reserveAcc, sdk.Coins{coin}))
-			// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
-			// Ref: https://github.com/MANTRA-Finance/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
-			//
-			// if !k.bankKeeper.BlockedAddr(ctx, reserveAcc) {
-			// 	k.bankKeeper.AddBlockedAddr(ctx, reserveAcc)
-			// }
 		}
 		if err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs); err != nil {
 			return err
@@ -457,7 +444,7 @@ func (k Keeper) Unstake(ctx sdk.Context, farmerAcc sdk.AccAddress, amount sdk.Co
 				staking.Amount = sdk.ZeroInt()
 			}
 			if staking.Amount.LT(amtToUnstake) {
-				return errors.Wrapf(
+				return sdkerrors.Wrapf(
 					sdkerrors.ErrInsufficientFunds, "not enough staked coins, %s%s is less than %s%s",
 					unstaked.Add(staking.Amount), coin.Denom, unstaked.Add(amtToUnstake), coin.Denom)
 			}

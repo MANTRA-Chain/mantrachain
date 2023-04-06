@@ -2,7 +2,7 @@ package farming
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
@@ -16,8 +16,8 @@ func NewHandler(_ keeper.Keeper) sdk.Handler {
 
 // NewPublicPlanProposalHandler creates a governance handler to manage new proposal types.
 // It enables PublicPlanProposal to propose a plan creation / modification / deletion.
-func NewPublicPlanProposalHandler(_ keeper.Keeper) govv1beta1.Handler {
-	return func(_ sdk.Context, _ govv1beta1.Content) error {
+func NewPublicPlanProposalHandler(_ keeper.Keeper) govtypes.Handler {
+	return func(_ sdk.Context, _ govtypes.Content) error {
 		return types.ErrModuleDisabled
 	}
 }

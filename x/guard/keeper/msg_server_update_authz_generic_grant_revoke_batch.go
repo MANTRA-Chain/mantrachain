@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"time"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,7 +34,7 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 				return nil, err
 			}
 
-			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, nil)
+			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, time.Time{})
 			if err != nil {
 				return nil, err
 			}

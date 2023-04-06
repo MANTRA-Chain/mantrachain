@@ -1,8 +1,11 @@
 package types
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"math/big"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -11,7 +14,7 @@ import (
 
 // GetShareValue multiplies with truncation by receiving int amount and decimal ratio and returns int result.
 func GetShareValue(amount sdk.Int, ratio sdk.Dec) sdk.Int {
-	return sdk.NewDecFromInt(amount).MulTruncate(ratio).TruncateInt()
+	return amount.ToDec().MulTruncate(ratio).TruncateInt()
 }
 
 type StrIntMap map[string]sdk.Int
@@ -120,6 +123,24 @@ func DecApproxSqrt(x sdk.Dec) (r sdk.Dec) {
 		panic(err)
 	}
 	return
+}
+
+// RandomInt returns a random integer in the half-open interval [min, max).
+func RandomInt(r *rand.Rand, min, max sdk.Int) sdk.Int {
+	return min.Add(sdk.NewIntFromBigInt(new(big.Int).Rand(r, max.Sub(min).BigInt())))
+}
+
+// RandomDec returns a random decimal in the half-open interval [min, max).
+func RandomDec(r *rand.Rand, min, max sdk.Dec) sdk.Dec {
+	return min.Add(sdk.NewDecFromBigIntWithPrec(new(big.Int).Rand(r, max.Sub(min).BigInt()), sdk.Precision))
+}
+
+// TestAddress returns an address for testing purpose.
+// TestAddress returns same address when addrNum is same.
+func TestAddress(addrNum int) sdk.AccAddress {
+	addr := make(sdk.AccAddress, 20)
+	binary.PutVarint(addr, int64(addrNum))
+	return addr
 }
 
 // SafeMath runs f in safe mode, which means that any panics occurred inside f

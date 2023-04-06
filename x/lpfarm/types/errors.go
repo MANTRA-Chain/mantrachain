@@ -1,7 +1,9 @@
 package types
 
-import "cosmossdk.io/errors"
+import (
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+)
 
 var (
-	ErrPlanAlreadyTerminated = errors.Register(ModuleName, 2, "plan is already terminated")
+	ErrPlanAlreadyTerminated = sdkerrors.Register(ModuleName, 2, "plan is already terminated")
 )

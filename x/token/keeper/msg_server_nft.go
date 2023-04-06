@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
+	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -84,14 +84,14 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		return nil, errors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
 	}
 
-	var newNfts []nft.NFT
+	var newNfts []nfttypes.NFT
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
-		newNfts = append(newNfts, nft.NFT{
+		newNfts = append(newNfts, nfttypes.NFT{
 			ClassId: string(collectionIndex),
 			Id:      string(nftIndex),
 			Uri:     types.ModuleName,
@@ -431,7 +431,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	nftMetadata := nftsMetadata[0]
 	nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
-	newNft := nft.NFT{
+	newNft := nfttypes.NFT{
 		ClassId: string(collectionIndex),
 		Id:      string(nftIndex),
 		Uri:     types.ModuleName,

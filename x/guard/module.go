@@ -9,7 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/client/cli"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
@@ -42,6 +42,21 @@ func NewAppModuleBasic(cdc codec.BinaryCodec) AppModuleBasic {
 // Name returns the capability module's name.
 func (AppModuleBasic) Name() string {
 	return types.ModuleName
+}
+
+// Route returns the message routing key for the farming module.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(types.RouterKey, NewHandler(&am.keeper))
+}
+
+// QuerierRoute returns the farming module's querier route name.
+func (AppModule) QuerierRoute() string {
+	return types.QuerierRoute
+}
+
+// LegacyQuerierHandler returns the farming module sdk.Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
+	return nil
 }
 
 func (AppModuleBasic) RegisterCodec(cdc *codec.LegacyAmino) {

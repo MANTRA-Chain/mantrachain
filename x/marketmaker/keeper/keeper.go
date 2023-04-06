@@ -3,10 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -15,7 +14,7 @@ import (
 
 // Keeper of the marketmaker store
 type Keeper struct {
-	storeKey   storetypes.StoreKey
+	storeKey   sdk.StoreKey
 	cdc        codec.BinaryCodec
 	paramSpace paramtypes.Subspace
 
@@ -27,7 +26,7 @@ type Keeper struct {
 // - creating new ModuleAccounts for each pool ReserveAccount
 // - sending to and from ModuleAccounts
 // - minting, burning PoolCoins
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramtypes.Subspace,
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
 ) Keeper {
 	// ensure marketmaker module account is set
