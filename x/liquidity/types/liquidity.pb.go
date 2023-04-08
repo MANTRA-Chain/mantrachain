@@ -8,8 +8,8 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
@@ -740,7 +740,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x6a
-	n1, err1 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.MaxOrderLifespan, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MaxOrderLifespan):])
+	n1, err1 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.MaxOrderLifespan, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxOrderLifespan):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -1204,7 +1204,7 @@ func (m *Order) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x78
 	}
-	n4, err4 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.ExpireAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.ExpireAt):])
+	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.ExpireAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.ExpireAt):])
 	if err4 != nil {
 		return 0, err4
 	}
@@ -1367,7 +1367,7 @@ func (m *Params) Size() (n int) {
 	if m.MaxNumMarketMakingOrdersPerPair != 0 {
 		n += 1 + sovLiquidity(uint64(m.MaxNumMarketMakingOrdersPerPair))
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MaxOrderLifespan)
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxOrderLifespan)
 	n += 1 + l + sovLiquidity(uint64(l))
 	l = m.SwapFeeRate.Size()
 	n += 1 + l + sovLiquidity(uint64(l))
@@ -1581,7 +1581,7 @@ func (m *Order) Size() (n int) {
 	if m.BatchId != 0 {
 		n += 1 + sovLiquidity(uint64(m.BatchId))
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.ExpireAt)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.ExpireAt)
 	n += 1 + l + sovLiquidity(uint64(l))
 	if m.Status != 0 {
 		n += 1 + sovLiquidity(uint64(m.Status))
@@ -1963,7 +1963,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(&m.MaxOrderLifespan, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.MaxOrderLifespan, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3593,7 +3593,7 @@ func (m *Order) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.ExpireAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.ExpireAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

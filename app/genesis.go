@@ -1,7 +1,5 @@
 package app
 
-// DONTCOVER
-
 import (
 	"encoding/json"
 

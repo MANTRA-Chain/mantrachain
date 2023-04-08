@@ -7,7 +7,7 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	chain "github.com/MANTRA-Finance/mantrachain/app"
-	"github.com/MANTRA-Finance/mantrachain/cmd/mantrachain/cmd"
+	"github.com/MANTRA-Finance/mantrachain/cmd/mantrachaind/cmd"
 )
 
 func main() {

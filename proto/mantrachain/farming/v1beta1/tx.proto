@@ -29,6 +29,10 @@ service Msg {
 
   // RemovePlan defines a method for removing a terminated plan.
   rpc RemovePlan(MsgRemovePlan) returns (MsgRemovePlanResponse);
+
+  // AdvanceEpoch defines a method for advancing epoch by one, just for testing purpose
+  // and shouldn't be used in real world
+  rpc AdvanceEpoch(MsgAdvanceEpoch) returns (MsgAdvanceEpochResponse);
 }
 
 // MsgCreateFixedAmountPlan defines a SDK message for creating a new fixed
@@ -171,3 +175,14 @@ message MsgRemovePlan {
 
 // MsgRemovePlanResponse defines the Msg/RemovePlan response type.
 message MsgRemovePlanResponse {}
+
+// MsgAdvanceEpoch defines a message to advance epoch by one.
+message MsgAdvanceEpoch {
+  option (gogoproto.goproto_getters) = false;
+
+  // requester defines the bech32-encoded address of the requester
+  string requester = 1;
+}
+
+// MsgAdvanceEpochResponse defines the Msg/AdvanceEpoch response type.
+message MsgAdvanceEpochResponse {}

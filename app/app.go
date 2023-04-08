@@ -3,7 +3,6 @@ package app
 // DONTCOVER
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -46,57 +45,40 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	feegrantkeeper "github.com/cosmos/cosmos-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
-	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
 	// IBC modules
-	ica "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts"
-	icahost "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host"
-	icahostkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/keeper"
-	icahosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
-	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v3/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	ica "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts"
+	icahost "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/host"
+	icahostkeeper "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/host/types"
+	icatypes "github.com/cosmos/ibc-go/v4/modules/apps/27-interchain-accounts/types"
+	"github.com/cosmos/ibc-go/v4/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v4/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v4/modules/core"
+	porttypes "github.com/cosmos/ibc-go/v4/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v4/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
 
 	// budget module
 	"github.com/tendermint/budget/x/budget"
@@ -105,10 +87,6 @@ import (
 
 	// core modules
 	farmingparams "github.com/MANTRA-Finance/mantrachain/app/params"
-	"github.com/MANTRA-Finance/mantrachain/x/farming"
-	farmingclient "github.com/MANTRA-Finance/mantrachain/x/farming/client"
-	farmingkeeper "github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming"
 	liquidfarmingkeeper "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
 	liquidfarmingtypes "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
@@ -116,16 +94,11 @@ import (
 	liquiditykeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm"
-	lpfarmclient "github.com/MANTRA-Finance/mantrachain/x/lpfarm/client"
 	lpfarmkeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker"
-	marketmakerclient "github.com/MANTRA-Finance/mantrachain/x/marketmaker/client"
 	marketmakerkeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
-	"github.com/cosmos/cosmos-sdk/x/mint"
-	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory"
 	coinfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
@@ -139,6 +112,13 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/token"
 	tokenkeeper "github.com/MANTRA-Finance/mantrachain/x/token/keeper"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
+
+	ibcconsumer "github.com/cosmos/interchain-security/x/ccv/consumer"
+	ibcconsumerkeeper "github.com/cosmos/interchain-security/x/ccv/consumer/keeper"
+	ibcconsumertypes "github.com/cosmos/interchain-security/x/ccv/consumer/types"
+
+	// unnamed import of statik for swagger UI support
+	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
 )
 
 var (
@@ -150,23 +130,8 @@ var (
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
-		genutil.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
-		staking.AppModuleBasic{},
-		mint.AppModuleBasic{},
-		distr.AppModuleBasic{},
-		gov.NewAppModuleBasic(
-			paramsclient.ProposalHandler,
-			distrclient.ProposalHandler,
-			upgradeclient.ProposalHandler,
-			upgradeclient.CancelProposalHandler,
-			ibcclientclient.UpdateClientProposalHandler,
-			ibcclientclient.UpgradeProposalHandler,
-			farmingclient.ProposalHandler,
-			marketmakerclient.ProposalHandler,
-			lpfarmclient.ProposalHandler,
-		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
@@ -178,7 +143,6 @@ var (
 		evidence.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		budget.AppModuleBasic{},
-		farming.AppModuleBasic{},
 		liquidity.AppModuleBasic{},
 		liquidfarming.AppModuleBasic{},
 		marketmaker.AppModuleBasic{},
@@ -188,28 +152,25 @@ var (
 		token.AppModuleBasic{},
 		guard.AppModuleBasic{},
 		coinfactory.AppModuleBasic{},
+		ibcconsumer.AppModuleBasic{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		minttypes.ModuleName:           {authtypes.Minter},
-		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:            {authtypes.Burner},
-		budgettypes.ModuleName:         nil,
-		farmingtypes.ModuleName:        nil,
-		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		liquidfarmingtypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
-		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		marketmakertypes.ModuleName:    nil,
-		lpfarmtypes.ModuleName:         nil,
-		icatypes.ModuleName:            nil,
-		nfttypes.ModuleName:            nil,
-		coinfactorytypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		tokentypes.ModuleName:          nil,
-		guardtypes.ModuleName:          nil,
+		authtypes.FeeCollectorName:                    nil,
+		budgettypes.ModuleName:                        nil,
+		liquiditytypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
+		liquidfarmingtypes.ModuleName:                 {authtypes.Minter, authtypes.Burner},
+		ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
+		marketmakertypes.ModuleName:                   nil,
+		lpfarmtypes.ModuleName:                        nil,
+		icatypes.ModuleName:                           nil,
+		nfttypes.ModuleName:                           nil,
+		coinfactorytypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
+		tokentypes.ModuleName:                         nil,
+		guardtypes.ModuleName:                         nil,
+		ibcconsumertypes.ConsumerRedistributeName:     nil,
+		ibcconsumertypes.ConsumerToSendToProviderName: nil,
 	}
 )
 
@@ -240,11 +201,7 @@ type App struct {
 	AccountKeeper       authkeeper.AccountKeeper
 	BankKeeper          bankkeeper.Keeper
 	CapabilityKeeper    *capabilitykeeper.Keeper
-	StakingKeeper       *stakingkeeper.Keeper
 	SlashingKeeper      slashingkeeper.Keeper
-	MintKeeper          mintkeeper.Keeper
-	DistrKeeper         distrkeeper.Keeper
-	GovKeeper           govkeeper.Keeper
 	CrisisKeeper        crisiskeeper.Keeper
 	UpgradeKeeper       upgradekeeper.Keeper
 	ParamsKeeper        paramskeeper.Keeper
@@ -254,7 +211,6 @@ type App struct {
 	FeeGrantKeeper      feegrantkeeper.Keeper
 	AuthzKeeper         authzkeeper.Keeper
 	BudgetKeeper        budgetkeeper.Keeper
-	FarmingKeeper       farmingkeeper.Keeper
 	LiquidityKeeper     liquiditykeeper.Keeper
 	LiquidFarmingKeeper liquidfarmingkeeper.Keeper
 	MarketMakerKeeper   marketmakerkeeper.Keeper
@@ -265,11 +221,13 @@ type App struct {
 	GuardKeeper       guardkeeper.Keeper
 	CoinFactoryKeeper coinfactorykeeper.Keeper
 	NFTKeeper         nftkeeper.Keeper
+	ConsumerKeeper    ibcconsumerkeeper.Keeper
 
 	// scoped keepers
-	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
-	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
-	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper         capabilitykeeper.ScopedKeeper
+	ScopedTransferKeeper    capabilitykeeper.ScopedKeeper
+	ScopedICAHostKeeper     capabilitykeeper.ScopedKeeper
+	ScopedIBCConsumerKeeper capabilitykeeper.ScopedKeeper
 
 	// IBC app modules
 	transferModule transfer.AppModule
@@ -316,11 +274,7 @@ func NewApp(
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey,
 		banktypes.StoreKey,
-		stakingtypes.StoreKey,
-		minttypes.StoreKey,
-		distrtypes.StoreKey,
 		slashingtypes.StoreKey,
-		govtypes.StoreKey,
 		paramstypes.StoreKey,
 		ibchost.StoreKey,
 		upgradetypes.StoreKey,
@@ -330,7 +284,6 @@ func NewApp(
 		feegrant.StoreKey,
 		authzkeeper.StoreKey,
 		budgettypes.StoreKey,
-		farmingtypes.StoreKey,
 		liquiditytypes.StoreKey,
 		liquidfarmingtypes.StoreKey,
 		marketmakertypes.StoreKey,
@@ -340,6 +293,7 @@ func NewApp(
 		guardtypes.StoreKey,
 		coinfactorytypes.StoreKey,
 		nftkeeper.StoreKey,
+		ibcconsumertypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -371,6 +325,7 @@ func NewApp(
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
+	scopedIBCConsumerKeeper := app.CapabilityKeeper.ScopeToModule(ibcconsumertypes.ModuleName)
 	app.CapabilityKeeper.Seal()
 
 	// add keepers
@@ -387,8 +342,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.GetSubspace(banktypes.ModuleName),
 		app.BlockedModuleAccountAddrs(),
-		// TODO:
-		// &app.GuardKeeper,
+		&app.GuardKeeper,
 	)
 	app.AuthzKeeper = authzkeeper.NewKeeper(
 		keys[authzkeeper.StoreKey],
@@ -400,38 +354,10 @@ func NewApp(
 		keys[feegrant.StoreKey],
 		app.AccountKeeper,
 	)
-	stakingKeeper := stakingkeeper.NewKeeper(
-		appCodec,
-		keys[stakingtypes.StoreKey],
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.GetSubspace(stakingtypes.ModuleName),
-	)
-	app.StakingKeeper = &stakingKeeper
-
-	app.MintKeeper = mintkeeper.NewKeeper(
-		appCodec,
-		keys[minttypes.StoreKey],
-		app.GetSubspace(minttypes.ModuleName),
-		app.StakingKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		authtypes.FeeCollectorName,
-	)
-	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec,
-		keys[distrtypes.StoreKey],
-		app.GetSubspace(distrtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.StakingKeeper,
-		authtypes.FeeCollectorName,
-		app.ModuleAccountAddrs(),
-	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec,
 		keys[slashingtypes.StoreKey],
-		app.StakingKeeper,
+		&app.ConsumerKeeper,
 		app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
@@ -448,19 +374,37 @@ func NewApp(
 		app.BaseApp,
 	)
 
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	app.StakingKeeper = app.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
-	)
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
 		keys[ibchost.StoreKey],
 		app.GetSubspace(ibchost.ModuleName),
-		app.StakingKeeper,
+		&app.ConsumerKeeper,
 		app.UpgradeKeeper,
 		scopedIBCKeeper,
 	)
+
+	// Create CCV consumer and modules
+	app.ConsumerKeeper = ibcconsumerkeeper.NewKeeper(
+		appCodec,
+		keys[ibcconsumertypes.StoreKey],
+		app.GetSubspace(ibcconsumertypes.ModuleName),
+		scopedIBCConsumerKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		app.IBCKeeper.ConnectionKeeper,
+		app.IBCKeeper.ClientKeeper,
+		app.SlashingKeeper,
+		app.BankKeeper,
+		app.AccountKeeper,
+		&app.TransferKeeper,
+		app.IBCKeeper,
+		authtypes.FeeCollectorName,
+	)
+
+	// register slashing module Slashing hooks to the consumer keeper
+	app.ConsumerKeeper = *app.ConsumerKeeper.SetHooks(app.SlashingKeeper.Hooks())
+	consumerModule := ibcconsumer.NewAppModule(app.ConsumerKeeper)
+
 	app.BudgetKeeper = budgetkeeper.NewKeeper(
 		appCodec,
 		keys[budgettypes.StoreKey],
@@ -469,19 +413,13 @@ func NewApp(
 		app.BankKeeper,
 		app.ModuleAccountAddrs(),
 	)
-	app.FarmingKeeper = farmingkeeper.NewKeeper(
-		appCodec,
-		keys[farmingtypes.StoreKey],
-		app.GetSubspace(farmingtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-	)
 	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 		appCodec,
 		keys[liquiditytypes.StoreKey],
 		app.GetSubspace(liquiditytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
 		appCodec,
@@ -506,6 +444,7 @@ func NewApp(
 		app.BankKeeper,
 		app.LPFarmKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
@@ -515,9 +454,7 @@ func NewApp(
 		keys[tokentypes.StoreKey],
 		keys[tokentypes.MemStoreKey],
 		app.GetSubspace(tokentypes.ModuleName),
-		// TODO:
-		// app.NFTKeeper,
-		nil,
+		app.NFTKeeper,
 	)
 
 	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
@@ -525,9 +462,7 @@ func NewApp(
 		keys[coinfactorytypes.StoreKey],
 		app.GetSubspace(coinfactorytypes.ModuleName),
 		app.AccountKeeper,
-		// TODO:
-		nil,
-		// app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
+		app.BankKeeper,
 	)
 
 	app.GuardKeeper = guardkeeper.NewKeeper(
@@ -545,27 +480,6 @@ func NewApp(
 		app.CoinFactoryKeeper,
 	)
 
-	// register the proposal types
-	govRouter := govtypes.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(farmingtypes.RouterKey, farming.NewPublicPlanProposalHandler(app.FarmingKeeper)).
-		AddRoute(marketmakertypes.RouterKey, marketmaker.NewMarketMakerProposalHandler(app.MarketMakerKeeper)).
-		AddRoute(lpfarmtypes.RouterKey, lpfarm.NewFarmingPlanProposalHandler(app.LPFarmKeeper))
-
-	app.GovKeeper = govkeeper.NewKeeper(
-		appCodec,
-		keys[govtypes.StoreKey],
-		app.GetSubspace(govtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.StakingKeeper,
-		govRouter,
-	)
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
@@ -597,7 +511,7 @@ func NewApp(
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		keys[evidencetypes.StoreKey],
-		app.StakingKeeper,
+		&app.ConsumerKeeper,
 		app.SlashingKeeper,
 	)
 	app.EvidenceKeeper = *evidenceKeeper
@@ -607,7 +521,8 @@ func NewApp(
 
 	ibcRouter.
 		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
-		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule)
+		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
+		AddRoute(ibcconsumertypes.ModuleName, consumerModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	/****  Module Options ****/
@@ -616,23 +531,13 @@ func NewApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
-		genutil.NewAppModule(
-			app.AccountKeeper,
-			app.StakingKeeper,
-			app.BaseApp.DeliverTx,
-			encodingConfig.TxConfig,
-		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GuardKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
-		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, *app.StakingKeeper),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsumerKeeper),
 		budget.NewAppModule(appCodec, app.BudgetKeeper, app.AccountKeeper, app.BankKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, *app.StakingKeeper),
-		staking.NewAppModule(appCodec, *app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
@@ -640,11 +545,11 @@ func NewApp(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper),
-		farming.NewAppModule(appCodec, app.FarmingKeeper, app.AccountKeeper, app.BankKeeper),
 		liquidfarming.NewAppModule(appCodec, app.LiquidFarmingKeeper, app.AccountKeeper, app.BankKeeper),
 		marketmaker.NewAppModule(appCodec, app.MarketMakerKeeper, app.AccountKeeper, app.BankKeeper),
 		lpfarm.NewAppModule(appCodec, app.LPFarmKeeper, app.AccountKeeper, app.BankKeeper, app.LiquidityKeeper),
 		app.transferModule,
+		consumerModule,
 		app.icaModule,
 		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
 		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.NFTKeeper, app.CoinFactoryKeeper),
@@ -659,12 +564,9 @@ func NewApp(
 	app.mm.SetOrderBeginBlockers(
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
-		minttypes.ModuleName,
 		budgettypes.ModuleName,
-		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
-		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		liquidfarmingtypes.ModuleName,
 		ibchost.ModuleName,
@@ -673,39 +575,31 @@ func NewApp(
 		// empty logic modules
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		govtypes.ModuleName,
 		crisistypes.ModuleName,
-		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		ibctransfertypes.ModuleName,
-		farmingtypes.ModuleName,
 		marketmakertypes.ModuleName,
 		icatypes.ModuleName,
 		guardtypes.ModuleName,
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		ibcconsumertypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		// EndBlocker of crisis module called AssertInvariants
 		crisistypes.ModuleName,
-		govtypes.ModuleName,
-		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
-		farmingtypes.ModuleName,
 		liquidfarmingtypes.ModuleName,
 
 		// empty logic modules
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
-		minttypes.ModuleName,
-		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -722,6 +616,7 @@ func NewApp(
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		ibcconsumertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -733,19 +628,13 @@ func NewApp(
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		distrtypes.ModuleName,
-		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		govtypes.ModuleName,
-		minttypes.ModuleName,
 		ibchost.ModuleName,
-		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		budgettypes.ModuleName,
-		farmingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		liquidfarmingtypes.ModuleName,
 		marketmakertypes.ModuleName,
@@ -761,6 +650,7 @@ func NewApp(
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		ibcconsumertypes.ModuleName,
 
 		// InitGenesis of crisis module called AssertInvariants
 		crisistypes.ModuleName,
@@ -826,12 +716,13 @@ func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Respo
 	return app.mm.EndBlock(ctx, req)
 }
 
-// InitChainer application update at chain initialization.
+// InitChainer application update at chain initialization
 func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
-	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
+
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
@@ -859,9 +750,8 @@ func (app *App) BlockedModuleAccountAddrs() map[string]bool {
 	}
 
 	// allow the following addresses to receive funds
-	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-	delete(modAccAddrs, authtypes.NewModuleAddress(distrtypes.ModuleName).String())
-	delete(modAccAddrs, farmingtypes.RewardsReserveAcc.String())
+	delete(modAccAddrs, authtypes.NewModuleAddress(
+		ibcconsumertypes.ConsumerToSendToProviderName).String())
 
 	return modAccAddrs
 }
@@ -955,7 +845,7 @@ func (app *App) RegisterTxService(clientCtx client.Context) {
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
 func (app *App) RegisterTendermintService(clientCtx client.Context) {
-	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
+	tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
 }
 
 // RegisterSwaggerAPI registers swagger route with API Server
@@ -975,16 +865,11 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
-	paramsKeeper.Subspace(stakingtypes.ModuleName)
-	paramsKeeper.Subspace(minttypes.ModuleName)
-	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
-	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(budgettypes.ModuleName)
-	paramsKeeper.Subspace(farmingtypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(liquidfarmingtypes.ModuleName)
 	paramsKeeper.Subspace(marketmakertypes.ModuleName)
@@ -993,6 +878,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokentypes.ModuleName)
 	paramsKeeper.Subspace(guardtypes.ModuleName)
 	paramsKeeper.Subspace(coinfactorytypes.ModuleName)
+	paramsKeeper.Subspace(ibcconsumertypes.ModuleName)
 
 	return paramsKeeper
 }

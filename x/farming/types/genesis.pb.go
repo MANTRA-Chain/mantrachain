@@ -10,8 +10,8 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -533,7 +533,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x68
 	}
 	if m.LastEpochTime != nil {
-		n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.LastEpochTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.LastEpochTime):])
+		n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.LastEpochTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.LastEpochTime):])
 		if err1 != nil {
 			return 0, err1
 		}
@@ -824,7 +824,7 @@ func (m *QueuedStakingRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	n6, err6 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime):])
+	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.EndTime):])
 	if err6 != nil {
 		return 0, err6
 	}
@@ -1133,7 +1133,7 @@ func (m *GenesisState) Size() (n int) {
 		}
 	}
 	if m.LastEpochTime != nil {
-		l = github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.LastEpochTime)
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.LastEpochTime)
 		n += 1 + l + sovGenesis(uint64(l))
 	}
 	if m.CurrentEpochDays != 0 {
@@ -1184,7 +1184,7 @@ func (m *QueuedStakingRecord) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.EndTime)
 	n += 1 + l + sovGenesis(uint64(l))
 	l = len(m.StakingCoinDenom)
 	if l > 0 {
@@ -1713,7 +1713,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if m.LastEpochTime == nil {
 				m.LastEpochTime = new(time.Time)
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(m.LastEpochTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.LastEpochTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2079,7 +2079,7 @@ func (m *QueuedStakingRecord) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.EndTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.EndTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

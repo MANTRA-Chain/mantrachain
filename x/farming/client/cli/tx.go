@@ -43,6 +43,9 @@ func GetTxCmd() *cobra.Command {
 	if keeper.EnableRatioPlan {
 		farmingTxCmd.AddCommand(NewCreateRatioPlanCmd())
 	}
+	if keeper.EnableAdvanceEpoch {
+		farmingTxCmd.AddCommand(NewAdvanceEpochCmd())
+	}
 
 	return farmingTxCmd
 }
@@ -377,6 +380,41 @@ $ %s tx %s remove-plan 1 --from mykey`,
 		},
 	}
 	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewAdvanceEpochCmd implements the advance epoch by 1 command handler.
+func NewAdvanceEpochCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "advance-epoch",
+		Args:  cobra.NoArgs,
+		Short: "Advance epoch by 1 to simulate reward distribution",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Advance epoch by 1 to simulate reward distribution.
+This message is available for testing purpose and it can only be enabled when you build the binary with "make install-testing" command. 
+
+Example:
+$ %s tx %s advance-epoch --from mykey
+`,
+				version.AppName, types.ModuleName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			requesterAcc := clientCtx.GetFromAddress()
+
+			msg := types.NewMsgAdvanceEpoch(requesterAcc)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
 	return cmd
 }
 

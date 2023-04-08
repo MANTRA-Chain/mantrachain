@@ -15,6 +15,10 @@ type BankKeeper interface {
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error
 	BlockedAddr(addr sdk.AccAddress) bool
+	// AddBlockedAddr(ctx sdk.Context, addr sdk.AccAddress)    // will be removed in v4
+	// RemoveBlockedAddr(ctx sdk.Context, addr sdk.AccAddress) // will be removed in v4
+	// MintCoins is used only for simulation test codes
+	MintCoins(ctx sdk.Context, name string, amt sdk.Coins) error
 }
 
 // AccountKeeper defines the expected account keeper

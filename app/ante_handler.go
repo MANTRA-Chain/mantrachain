@@ -7,8 +7,10 @@ import (
 
 	guardante "github.com/MANTRA-Finance/mantrachain/x/guard/ante"
 	tokenante "github.com/MANTRA-Finance/mantrachain/x/token/ante"
-	ibcante "github.com/cosmos/ibc-go/v3/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
+	consumerante "github.com/cosmos/interchain-security/app/consumer/ante"
+	ibcconsumerkeeper "github.com/cosmos/interchain-security/x/ccv/consumer/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
@@ -16,9 +18,10 @@ import (
 type HandlerOptions struct {
 	ante.HandlerOptions
 
-	IBCKeeper   *ibckeeper.Keeper
-	TokenKeeper tokenante.TokenKeeper
-	GuardKeeper guardante.GuardKeeper
+	IBCKeeper      *ibckeeper.Keeper
+	TokenKeeper    tokenante.TokenKeeper
+	GuardKeeper    guardante.GuardKeeper
+	ConsumerKeeper ibcconsumerkeeper.Keeper
 }
 
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
@@ -40,6 +43,8 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(),
 		ante.NewRejectExtensionOptionsDecorator(),
+		consumerante.NewMsgFilterDecorator(options.ConsumerKeeper),
+		consumerante.NewDisabledModulesDecorator("/cosmos.evidence", "/cosmos.slashing"),
 		ante.NewMempoolFeeDecorator(),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),

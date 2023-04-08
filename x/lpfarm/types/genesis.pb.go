@@ -6,8 +6,8 @@ package types
 import (
 	fmt "fmt"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -282,7 +282,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x18
 	}
 	if m.LastBlockTime != nil {
-		n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(*m.LastBlockTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.LastBlockTime):])
+		n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.LastBlockTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(*m.LastBlockTime):])
 		if err1 != nil {
 			return 0, err1
 		}
@@ -409,7 +409,7 @@ func (m *GenesisState) Size() (n int) {
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
 	if m.LastBlockTime != nil {
-		l = github_com_cosmos_gogoproto_types.SizeOfStdTime(*m.LastBlockTime)
+		l = github_com_gogo_protobuf_types.SizeOfStdTime(*m.LastBlockTime)
 		n += 1 + l + sovGenesis(uint64(l))
 	}
 	if m.LastPlanId != 0 {
@@ -578,7 +578,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if m.LastBlockTime == nil {
 				m.LastBlockTime = new(time.Time)
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(m.LastBlockTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(m.LastBlockTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

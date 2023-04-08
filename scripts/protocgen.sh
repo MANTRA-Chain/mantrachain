@@ -2,10 +2,8 @@
 
 # --------------
 # Commands to run locally
-# How to run manually:
-# docker build --pull --rm -f "contrib/devtools/Dockerfile" -t cosmossdk-proto:latest "contrib/devtools"
-# docker run --rm -v $(pwd):/workspace --workdir /workspace cosmossdk-proto sh ./scripts/protocgen.sh
-
+# docker run --network host --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen:v0.7 sh ./protocgen.sh
+#
 set -eo pipefail
 
 echo "Generating gogo proto code"

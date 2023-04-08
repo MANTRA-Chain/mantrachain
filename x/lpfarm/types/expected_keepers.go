@@ -8,11 +8,13 @@ import (
 )
 
 // AccountKeeper defines the expected keeper interface of the auth module.
+// Some methods are used only in simulation tests.
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 }
 
 // BankKeeper defines the expected keeper interface of the bank module.
+// Some methods are used only in simulation tests.
 type BankKeeper interface {
 	HasSupply(ctx sdk.Context, denom string) bool
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins

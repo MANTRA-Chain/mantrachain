@@ -115,10 +115,14 @@ func (k Keeper) placeOrder(
 		return types.Order{}, types.ErrTooSmallOrder
 	}
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+
 	refundedCoin := offerCoin.Sub(resultOfferCoin)
 	if err := k.bankKeeper.SendCoins(ctx, ordererAddr, pair.GetEscrowAddress(), sdk.NewCoins(resultOfferCoin)); err != nil {
 		return types.Order{}, err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, false)
 
 	orderId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(orderLifespan)
@@ -380,6 +384,8 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 }
 
 func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff sdk.Int) error {
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+
 	bulkOp := types.NewBulkSendCoinsOperation()
 	for _, order := range orders { // TODO: need optimization to filter matched orders only
 		order, ok := order.(*types.PoolOrder)
@@ -477,6 +483,9 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, false)
+
 	for _, r := range poolMatchResults {
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
@@ -500,9 +509,14 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 	if order.RemainingOfferCoin.IsPositive() {
 		pair, _ := k.GetPair(ctx, order.PairId)
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+
 		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
 			return err
 		}
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, false)
 	}
 
 	order.SetStatus(status)

@@ -9,8 +9,8 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -599,7 +599,7 @@ func (m *IncentivePair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x1a
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.UpdateTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.UpdateTime):])
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdateTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdateTime):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -862,7 +862,7 @@ func (m *IncentivePair) Size() (n int) {
 	if m.PairId != 0 {
 		n += 1 + sovMarketmaker(uint64(m.PairId))
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.UpdateTime)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdateTime)
 	n += 1 + l + sovMarketmaker(uint64(l))
 	l = m.IncentiveWeight.Size()
 	n += 1 + l + sovMarketmaker(uint64(l))
@@ -1410,7 +1410,7 @@ func (m *IncentivePair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.UpdateTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdateTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

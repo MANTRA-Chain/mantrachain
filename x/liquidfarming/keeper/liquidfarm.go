@@ -27,6 +27,9 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 	}
 
 	reserveAddr := types.LiquidFarmReserveAddress(pool.Id)
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, farmer, reserveAddr, sdk.NewCoins(farmingCoin)); err != nil {
 		return err
 	}
@@ -63,10 +66,17 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 	// In order to keep in track of the rewards, the module reserves them in the WithdrawnRewardsReserveAddress.
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, true)
+
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
 			return err
 		}
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, false)
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, false)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -92,6 +102,9 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 	}
 
 	reserveAddr := types.LiquidFarmReserveAddress(pool.Id)
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
+
 	poolCoinDenom := liquiditytypes.PoolCoinDenom(pool.Id)
 	lfCoinDenom := types.LiquidFarmCoinDenom(pool.Id)
 	lfCoinTotalSupplyAmt := k.bankKeeper.GetSupply(ctx, lfCoinDenom).Amount
@@ -136,9 +149,14 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 	// In order to keep in track of the rewards, the module reserves them in the WithdrawnRewardsReserveAddress.
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, true)
+
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
 			return sdk.Coin{}, err
 		}
+
+		k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, false)
 	}
 
 	if err := k.bankKeeper.SendCoins(ctx, reserveAddr, farmer, sdk.NewCoins(unfarmedCoin)); err != nil {
@@ -152,6 +170,8 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(unfarmingCoin)); err != nil {
 		return sdk.Coin{}, err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, false)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -204,6 +224,12 @@ func (k Keeper) HandleRemovedLiquidFarm(ctx sdk.Context, liquidFarm types.Liquid
 	rewardsReserveAddr := types.WithdrawnRewardsReserveAddress(liquidFarm.PoolId)
 	poolCoinDenom := liquiditytypes.PoolCoinDenom(liquidFarm.PoolId)
 
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		feeCollectorAddr.String(),
+		reserveAddr.String(),
+		rewardsReserveAddr.String(),
+	}, true)
+
 	position, found := k.lpfarmKeeper.GetPosition(ctx, reserveAddr, poolCoinDenom)
 	if found {
 		// Unfarm all farmed coin to stop having rewards accumulated in the farm module and
@@ -243,4 +269,10 @@ func (k Keeper) HandleRemovedLiquidFarm(ctx sdk.Context, liquidFarm types.Liquid
 
 	k.SetCompoundingRewards(ctx, liquidFarm.PoolId, types.CompoundingRewards{Amount: sdk.ZeroInt()})
 	k.DeleteLiquidFarm(ctx, liquidFarm)
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		feeCollectorAddr.String(),
+		reserveAddr.String(),
+		rewardsReserveAddr.String(),
+	}, false)
 }

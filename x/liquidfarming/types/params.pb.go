@@ -8,8 +8,8 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	io "io"
 	math "math"
@@ -188,7 +188,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x1a
 		}
 	}
-	n1, err1 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.RewardsAuctionDuration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.RewardsAuctionDuration):])
+	n1, err1 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.RewardsAuctionDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.RewardsAuctionDuration):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -285,7 +285,7 @@ func (m *Params) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.RewardsAuctionDuration)
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.RewardsAuctionDuration)
 	n += 1 + l + sovParams(uint64(l))
 	if len(m.LiquidFarms) > 0 {
 		for _, e := range m.LiquidFarms {
@@ -410,7 +410,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(&m.RewardsAuctionDuration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.RewardsAuctionDuration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

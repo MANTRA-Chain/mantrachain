@@ -8,8 +8,8 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/cosmos/gogoproto/proto"
-	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
@@ -372,7 +372,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n1, err1 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.MaxBlockDuration, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MaxBlockDuration):])
+	n1, err1 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.MaxBlockDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxBlockDuration):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -449,7 +449,7 @@ func (m *Plan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x40
 	}
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime):])
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.EndTime):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -457,7 +457,7 @@ func (m *Plan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i = encodeVarintLpfarm(dAtA, i, uint64(n2))
 	i--
 	dAtA[i] = 0x3a
-	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime):])
+	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.StartTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.StartTime):])
 	if err3 != nil {
 		return 0, err3
 	}
@@ -764,7 +764,7 @@ func (m *Params) Size() (n int) {
 	if m.MaxNumPrivatePlans != 0 {
 		n += 1 + sovLpfarm(uint64(m.MaxNumPrivatePlans))
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MaxBlockDuration)
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxBlockDuration)
 	n += 1 + l + sovLpfarm(uint64(l))
 	return n
 }
@@ -796,9 +796,9 @@ func (m *Plan) Size() (n int) {
 			n += 1 + l + sovLpfarm(uint64(l))
 		}
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.StartTime)
 	n += 1 + l + sovLpfarm(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.EndTime)
 	n += 1 + l + sovLpfarm(uint64(l))
 	if m.IsPrivate {
 		n += 2
@@ -1053,7 +1053,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(&m.MaxBlockDuration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.MaxBlockDuration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1285,7 +1285,7 @@ func (m *Plan) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StartTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.StartTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1318,7 +1318,7 @@ func (m *Plan) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.EndTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.EndTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
