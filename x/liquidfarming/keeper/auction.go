@@ -114,16 +114,12 @@ func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidd
 
 // CreateRewardsAuction creates new rewards auction and store it.
 func (k Keeper) CreateRewardsAuction(ctx sdk.Context, poolId uint64, endTime time.Time) {
-	auctionId := k.getNextAuctionIdWithUpdate(ctx, poolId)
 	k.SetRewardsAuction(ctx, types.NewRewardsAuction(
-		auctionId,
+		k.getNextAuctionIdWithUpdate(ctx, poolId),
 		poolId,
 		ctx.BlockTime(),
 		endTime,
 	))
-
-	auction, _ := k.GetRewardsAuction(ctx, auctionId, poolId)
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{auction.GetPayingReserveAddress().String()}, true)
 }
 
 // FinishRewardsAuction finishes ongoing rewards auction by looking up the existence of winning bid.
@@ -138,7 +134,8 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 	withdrawnRewardsReserves := k.bankKeeper.SpendableCoins(ctx, withdrawnRewardsReserveAddr)
 	totalRewards := truncatedRewards.Add(withdrawnRewardsReserves...)
 
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
+		auction.GetPayingReserveAddress().String(),
 		liquidFarmReserveAddr.String(),
 		withdrawnRewardsReserveAddr.String(),
 	}, true)
@@ -179,11 +176,7 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 		})
 	}
 
-	k.gk.WhlstTransferSendersAccAddresses(ctx, []string{
-		auction.GetPayingReserveAddress().String(),
-		liquidFarmReserveAddr.String(),
-		withdrawnRewardsReserveAddr.String(),
-	}, false)
+	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
 
 	return nil
 }

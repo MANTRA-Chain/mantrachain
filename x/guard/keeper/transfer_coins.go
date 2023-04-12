@@ -125,16 +125,23 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 }
 
 func (k Keeper) WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string {
-	whitelisted := make([]string, 0)
+	updated := make([]string, 0)
+
+	if len(addresses) == 0 {
+		return updated
+	}
+
 	for _, address := range addresses {
 		val, ok := k.whlstTransfersSendersAccAddrs[address]
 
 		if ok && !isWhitelisted {
 			delete(k.whlstTransfersSendersAccAddrs, address)
+			updated = append(updated, address)
 		} else if !val && isWhitelisted {
 			k.whlstTransfersSendersAccAddrs[address] = isWhitelisted
-			whitelisted = append(whitelisted, address)
+			updated = append(updated, address)
 		}
 	}
-	return whitelisted
+
+	return updated
 }
