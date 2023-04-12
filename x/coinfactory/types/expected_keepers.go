@@ -25,3 +25,7 @@ type BankKeeper interface {
 type AccountKeeper interface {
 	SetModuleAccount(ctx sdk.Context, macc authtypes.ModuleAccountI)
 }
+
+type GuardKeeper interface {
+	WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string
+}

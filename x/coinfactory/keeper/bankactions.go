@@ -58,6 +58,8 @@ func (k Keeper) forceTransfer(ctx sdk.Context, amount sdk.Coin, fromAddr string,
 		return err
 	}
 
+	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{fromAddr, toAddr}, true)
+
 	fromSdkAddr, err := sdk.AccAddressFromBech32(fromAddr)
 	if err != nil {
 		return err
@@ -67,6 +69,8 @@ func (k Keeper) forceTransfer(ctx sdk.Context, amount sdk.Coin, fromAddr string,
 	if err != nil {
 		return err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
 
 	return k.bankKeeper.SendCoins(ctx, fromSdkAddr, toSdkAddr, sdk.NewCoins(amount))
 }

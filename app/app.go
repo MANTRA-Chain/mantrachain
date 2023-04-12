@@ -463,6 +463,7 @@ func NewApp(
 		app.GetSubspace(coinfactorytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.GuardKeeper = guardkeeper.NewKeeper(

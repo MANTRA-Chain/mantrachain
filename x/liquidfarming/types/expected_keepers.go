@@ -44,5 +44,5 @@ type LiquidityKeeper interface {
 }
 
 type GuardKeeper interface {
-	WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool)
+	WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string
 }
