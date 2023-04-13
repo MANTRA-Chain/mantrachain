@@ -54,7 +54,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		owner := k.nk.GetOwner(ctx, string(collectionIndex), string(index))
 
 		if owner.Empty() || !address.Equals(owner) {
-			return errors.Wrapf(types.ErrIncorrectNftOwner, "incorrect nft owner, address %s", address)
+			return errors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
 		}
 
 		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
