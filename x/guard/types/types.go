@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+const MaxValidSeconds = 157680000000 // 5000 years
+
 type RequiredPrivilegesKind string
 type LockedKind string
 

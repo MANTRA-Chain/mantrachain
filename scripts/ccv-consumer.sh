@@ -285,11 +285,11 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
     --chain-id $PROV_CHAIN_ID \
     -y -b block
 
-  sleep 7
   cecho "CYAN" "Verify the chains validator-set: Query provider chain valset"
+  sleep 7
   interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
+  cecho "CYAN" "Verify the chains validator-set: Query consumer chain valset"
   sleep 14
-  cecho "CYAN" "Verify the chains validator-set: Query consumer chain valset  "
   "$PWD"/build/mantrachaind q tendermint-validator-set --home $HOMEDIR
 fi
 

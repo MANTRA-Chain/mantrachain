@@ -34,7 +34,7 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 				return nil, err
 			}
 
-			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, time.Time{})
+			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, time.Unix(types.MaxValidSeconds, 0))
 			if err != nil {
 				return nil, err
 			}
