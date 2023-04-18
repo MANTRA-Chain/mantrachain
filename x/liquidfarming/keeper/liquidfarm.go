@@ -69,7 +69,7 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
 
-		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, true)
+		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
 
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
 			return err
@@ -119,14 +119,10 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 
 	_, found = k.GetLiquidFarm(ctx, poolId)
 	if !found {
-		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
-
 		// Handle a case when the liquid farm is removed in params
 		// Since the reserve account must have unfarm all farmed coin from the farm module,
 		// the module must use the reserve account balance
 		lpCoinTotalFarmingAmt = k.bankKeeper.SpendableCoins(ctx, reserveAddr).AmountOf(poolCoinDenom)
-
-		k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
 	}
 
 	unfarmingAmt := types.CalculateLiquidUnfarmAmount(
@@ -152,7 +148,7 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
 
-		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{withdrawnRewardsReserveAddr.String()}, true)
+		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
 
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
 			return sdk.Coin{}, err
@@ -161,9 +157,13 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 		k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
 	}
 
+	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{reserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, reserveAddr, farmer, sdk.NewCoins(unfarmedCoin)); err != nil {
 		return sdk.Coin{}, err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
 
 	// Burn the LFCoin amount
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, farmer, types.ModuleName, sdk.NewCoins(unfarmingCoin)); err != nil {

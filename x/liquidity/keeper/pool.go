@@ -540,7 +540,7 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	withdrawnCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, x), sdk.NewCoin(pair.BaseCoinDenom, y))
 	burningCoins := sdk.NewCoins(req.PoolCoin)
 
-	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String()}, true)
+	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{types.GlobalEscrowAddress.String(), pool.GetReserveAddress().String()}, true)
 
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, k.accountKeeper.GetModuleAddress(types.ModuleName), burningCoins)

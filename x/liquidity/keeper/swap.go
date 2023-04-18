@@ -384,7 +384,7 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 }
 
 func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff sdk.Int) error {
-	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+	whitelisted := make([]string, 0)
 
 	bulkOp := types.NewBulkSendCoinsOperation()
 	for _, order := range orders { // TODO: need optimization to filter matched orders only
@@ -396,11 +396,18 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			continue
 		}
 		paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
+
 		bulkOp.QueueSendCoins(order.ReserveAddress, pair.GetEscrowAddress(), sdk.NewCoins(paidCoin))
+
+		whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{order.ReserveAddress.String()}, true)...)
 	}
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
+
+	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
+	whitelisted = make([]string, 0)
+
 	bulkOp = types.NewBulkSendCoinsOperation()
 	type PoolMatchResult struct {
 		PoolId         uint64
@@ -436,6 +443,9 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 				o.SetStatus(types.OrderStatusPartiallyMatched)
 				k.SetOrder(ctx, o)
 			}
+
+			whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
+
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.Orderer, sdk.NewCoins(receivedCoin))
 
 			ctx.EventManager().EmitEvents(sdk.Events{
@@ -453,6 +463,8 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		case *types.PoolOrder:
 			paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
 			receivedCoin := sdk.NewCoin(order.DemandCoinDenom, order.ReceivedDemandCoinAmount)
+
+			whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
 
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.ReserveAddress, sdk.NewCoins(receivedCoin))
 
@@ -479,6 +491,9 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			panic(fmt.Errorf("invalid order type: %T", order))
 		}
 	}
+
+	whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
+
 	bulkOp.QueueSendCoins(pair.GetEscrowAddress(), k.GetDustCollector(ctx), sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, quoteCoinDiff)))
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err

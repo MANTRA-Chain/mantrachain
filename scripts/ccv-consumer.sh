@@ -13,7 +13,7 @@ KEYRING="test"
 LOGLEVEL="info"
 
 GAS_ADJ=2
-GAS_PRICE=0.000000000001aum
+GAS_PRICE=0.0001uaum
 
 # Path variables
 CONFIG=$HOMEDIR/config/config.toml
@@ -77,18 +77,21 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   cecho "CYAN" "Init the validator"
   "$PWD"/build/mantrachaind init $MONIKER -o --chain-id $CHAINID --home "$HOMEDIR"
 
-  cecho "CYAN" "Replace genesis denom with aum"
-  sed -i -E 's|ustake|aum|g' $GENESIS
-  sed -i -E 's|stake|aum|g' $GENESIS
+  cecho "CYAN" "Replace genesis denom with uaum"
+  jq '.app_state["crisis"]["constant_fee"]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["lpfarm"]["params"]["private_plan_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["liquidity"]["params"]["pair_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["liquidity"]["params"]["pool_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["marketmaker"]["params"]["deposit_amount"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "CYAN" "Update genesis"
-  jq '.app_state["bank"]["denom_metadata"]=''[{"name":"aum","symbol":"AUM","description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"aum","exponent":0}],"base":"aum","display":"aum"}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
+  jq '.app_state["bank"]["denom_metadata"]=''[{"name":"aum","symbol":"AUM","description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"uaum","exponent":0,"aliases":["microaum"]},{"denom":"maum","exponent":3,"aliases":["milliaum"]},{"denom":"aum","exponent":6}],"base":"uaum","display":"aum"}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["params"]["admin_account"]='\"$ADMIN_WALLET\" "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["params"]["account_privileges_token_collection_creator"]='\"$ADMIN_WALLET\" "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["guard"]["params"]["account_privileges_token_collection_id"]='\"$ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID\" "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "CYAN" "Create validator node with tokens to transfer to the node"
-  "$PWD"/build/mantrachaind add-genesis-account $VALIDATOR_WALLET 10000000000000000000000000aum,1000000000000000stake --home "$HOMEDIR"
+  "$PWD"/build/mantrachaind add-genesis-account $VALIDATOR_WALLET 10000000000000000000000000uaum --home "$HOMEDIR"
 
   cecho "CYAN" "Validate genesis"
   "$PWD"/build/mantrachaind validate-genesis --home "$HOMEDIR"
@@ -129,7 +132,8 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 }
 EOF
 
-  sleep 14
+  cecho "CYAN" "Wait 20 seconds for provider to init..."
+  sleep 20
 
   cecho "CYAN" "Submit consumer proposal"
   interchain-security-pd tx gov submit-proposal \
@@ -207,8 +211,8 @@ trusting_period = "14days"
 websocket_addr = "ws://127.0.0.1:26648/websocket"
 
 [chains.gas_price]
-  denom = "aum"
-  price = 0.000000000001
+  denom = "uaum"
+  price = 0.0001
 
 [chains.trust_threshold]
   denominator = "3"
@@ -265,26 +269,33 @@ cecho "CYAN" "Start Hermes"
 tmux new -s hermes -d hermes --json start
 
 if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
-  cecho "CYAN" "Get provider delegations"
+  cecho "CYAN" "Test the CCV protocol: Get provider delegations"
   DELEGATIONS=$(interchain-security-pd q staking delegations $(jq -r .address ${PROV_NODE_DIR}/${PROV_KEY}.json) --home $PROV_NODE_DIR -o json)
 
-  cecho "CYAN" "Get provider operator address"
+  cecho "CYAN" "Test the CCV protocol: Get provider operator address"
   OPERATOR_ADDR=$(echo $DELEGATIONS | jq -r '.delegation_responses[0].delegation.validator_address')
 
   sleep 7
 
-  cecho "CYAN" "Get provider operator address"
+  cecho "CYAN" "Test the CCV protocol: Delegate tokens"
   interchain-security-pd tx staking delegate $OPERATOR_ADDR 1000000stake \
     --from $PROV_KEY \
     --keyring-backend test \
     --home $PROV_NODE_DIR \
     --chain-id $PROV_CHAIN_ID \
     -y -b block
+
+  sleep 7
+  cecho "CYAN" "Verify the chains validator-set: Query provider chain valset"
+  interchain-security-pd q tendermint-validator-set --home $PROV_NODE_DIR
+  sleep 14
+  cecho "CYAN" "Verify the chains validator-set: Query consumer chain valset  "
+  "$PWD"/build/mantrachaind q tendermint-validator-set --home $HOMEDIR
 fi
 
 echo
 cecho "YELLOW" "To init sample:"
-cecho "GREEN" "./scripts/init_sample.sh"
+cecho "GREEN" "./scripts/init-sample.sh"
 echo
 cecho "YELLOW" "To track hermes:"
 cecho "GREEN" "tmux a -t hermes"

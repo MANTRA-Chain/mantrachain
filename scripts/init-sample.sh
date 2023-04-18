@@ -12,7 +12,7 @@ KEYRING="test"
 LOGLEVEL="info"
 
 GAS_ADJ=2
-GAS_PRICE=0.000000000001aum
+GAS_PRICE=0.0001uaum
 
 source "$PWD"/scripts/common.sh
 
@@ -23,12 +23,12 @@ RECIPIENT_WALLET=$("$PWD"/build/mantrachaind keys show ${KEYS[1]} -a --keyring-b
 ADMIN_WALLET=$("$PWD"/build/mantrachaind keys show ${KEYS[2]} -a --keyring-backend $KEYRING --home "$HOMEDIR")
 
 cecho "CYAN" "Send aum from ${KEYS[0]} to ${KEYS[1]}"
-"$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $RECIPIENT_WALLET 100000000000000aum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" -y
+"$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $RECIPIENT_WALLET 100000000000000uaum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" -y
 
 sleep 7
 
 cecho "CYAN" "Send aum from ${KEYS[0]} to ${KEYS[2]}"
-"$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $ADMIN_WALLET 100000000000000aum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" -y
+"$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $ADMIN_WALLET 100000000000000uaum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" -y
 
 sleep 7
 
