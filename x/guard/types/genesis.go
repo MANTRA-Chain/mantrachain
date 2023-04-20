@@ -19,6 +19,17 @@ func DefaultGenesis() *GenesisState {
 	}
 }
 
+func NewGenesisState(params Params) *GenesisState {
+	return &GenesisState{
+		AccountPrivilegesList:  []*AccountPrivileges{},
+		GuardTransferCoins:     nil,
+		RequiredPrivilegesList: []*RequiredPrivileges{},
+		LockedList:             []*Locked{},
+		// this line is used by starport scaffolding # genesis/types/default
+		Params: params,
+	}
+}
+
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {

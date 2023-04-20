@@ -35,9 +35,6 @@ command -v hermes >/dev/null 2>&1 || {
 
 source "$PWD"/scripts/common.sh
 
-# Init the provider
-/bin/bash "$PWD"/scripts/ccv-provider.sh
-
 echo "Stop the consumer if any"
 pkill -f mantrachain
 pkill -f hermes
@@ -82,7 +79,6 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   jq '.app_state["lpfarm"]["params"]["private_plan_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["liquidity"]["params"]["pair_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
   jq '.app_state["liquidity"]["params"]["pool_creation_fee"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
-  jq '.app_state["marketmaker"]["params"]["deposit_amount"][0]["denom"]="uaum"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
   cecho "CYAN" "Update genesis"
   jq '.app_state["bank"]["denom_metadata"]=''[{"name":"aum","symbol":"AUM","description":"The native staking token of the Mantrachain.","denom_units":[{"denom":"uaum","exponent":0,"aliases":["microaum"]},{"denom":"maum","exponent":3,"aliases":["milliaum"]},{"denom":"aum","exponent":6}],"base":"uaum","display":"aum"}]' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"

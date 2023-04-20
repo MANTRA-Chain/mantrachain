@@ -13,7 +13,7 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState) {
 	if _, err := sdk.AccAddressFromBech32(genState.Params.AccountPrivilegesTokenCollectionCreator); err != nil {
-		panic(errors.Wrap(types.ErrInvalidAccountPrivilegesTokenCollectionCreatorParam, "account privileges token collection creator param is invalid"))
+		panic(err)
 	}
 	if strings.TrimSpace(genState.Params.AccountPrivilegesTokenCollectionId) == "" {
 		panic(errors.Wrap(types.ErrInvalidAccountPrivilegesTokenCollectionIdParam, "account privileges token collection id param should not be empty"))

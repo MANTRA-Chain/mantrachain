@@ -242,7 +242,7 @@ func (c *NftController) validMetadataTitle() error {
 		}
 
 		if int32(len(nft.Title)) > c.conf.ValidNftMetadataTitleMaxLength {
-			return errors.Wrapf(types.ErrInvalidNftTitle, "title length %d invalid, max 100, index %d", nft.Title, i, c.conf.ValidNftMetadataTitleMaxLength)
+			return errors.Wrapf(types.ErrInvalidNftTitle, "title length %d invalid, max 100, index %d", i, c.conf.ValidNftMetadataTitleMaxLength)
 		}
 	}
 

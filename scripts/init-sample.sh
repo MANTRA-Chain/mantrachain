@@ -27,7 +27,7 @@ cecho "CYAN" "Send aum from ${KEYS[0]} to ${KEYS[1]}"
 
 sleep 7
 
-cecho "CYAN" "Send aum from ${KEYS[0]} to ${KEYS[2]}"
+cecho "CYAN" "Send uaum from ${KEYS[0]} to ${KEYS[2]}"
 "$PWD"/build/mantrachaind tx bank send $VALIDATOR_WALLET $ADMIN_WALLET 100000000000000uaum --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" -y
 
 sleep 7

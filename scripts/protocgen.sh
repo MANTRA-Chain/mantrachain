@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# --------------
-# Commands to run locally
-# docker run --network host --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen:v0.7 sh ./protocgen.sh
-#
 set -eo pipefail
 
 echo "Generating gogo proto code"

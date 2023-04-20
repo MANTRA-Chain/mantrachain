@@ -5,5 +5,5 @@
 ## Get started
 
 ```bash
-./scripts/ccv-consumer.sh
+make localnet
 ```
