@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/ibc-go/v4/modules/core/exported"
@@ -17,17 +18,20 @@ import (
 	icstestingutils "github.com/cosmos/interchain-security/testutil/ibc_testing"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	"github.com/tendermint/spm/cosmoscmd"
 	tmencoding "github.com/tendermint/tendermint/crypto/encoding"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	transfertypes "github.com/cosmos/ibc-go/v4/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v4/modules/core/04-channel/types"
 	ibctmtypes "github.com/cosmos/ibc-go/v4/modules/light-clients/07-tendermint/types"
@@ -40,6 +44,8 @@ import (
 var (
 	TestAdminAddress                          = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 	TestAccountPrivilegesGuardNftCollectionId = "nft-guard-collection"
+	SecondaryDenom                            = "ucoin"
+	SecondaryAmount                           = sdk.NewInt(100000000)
 )
 
 func ConsumerAppIniter() (ibctesting.TestingApp, map[string]json.RawMessage) {
@@ -72,6 +78,8 @@ type IBCConnectionTestSuite struct {
 	ChainApp    e2e.ConsumerApp
 
 	CCVPath *ibctesting.Path
+
+	TestAccs []sdk.AccAddress
 }
 
 func (suite *IBCConnectionTestSuite) GetApp(chain *ibctesting.TestChain) *app.App {
@@ -118,6 +126,8 @@ func (s *IBCConnectionTestSuite) SetupTest() {
 	// try updating the provider client on this consumer chain
 	err = bundle.Path.EndpointA.UpdateClient()
 	s.Require().NoError(err)
+
+	s.TestAccs = CreateRandomAccounts(3)
 }
 
 // preProposalKeyAssignment assigns keys to all provider validators for
@@ -294,9 +304,61 @@ func CheckBalance(t *testing.T, app *app.App, addr sdk.AccAddress, balances sdk.
 }
 
 func FundAccount(bankKeeper bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, amounts sdk.Coins) error {
-	if err := bankKeeper.MintCoins(ctx, minttypes.ModuleName, amounts); err != nil {
+	if err := bankKeeper.MintCoins(ctx, coinfactorytypes.ModuleName, amounts); err != nil {
 		return err
 	}
 
-	return bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, amounts)
+	return bankKeeper.SendCoinsFromModuleToAccount(ctx, coinfactorytypes.ModuleName, addr, amounts)
+}
+
+func TestMessageAuthzSerialization(t *testing.T, msg sdk.Msg) {
+	someDate := time.Date(1, 1, 1, 1, 1, 1, 1, time.UTC)
+	const (
+		mockGranter string = "cosmos1abc"
+		mockGrantee string = "cosmos1xyz"
+	)
+
+	var (
+		mockMsgGrant  authz.MsgGrant
+		mockMsgRevoke authz.MsgRevoke
+		mockMsgExec   authz.MsgExec
+	)
+
+	encodingConfig := app.MakeEncodingConfig()
+
+	// Authz: Grant Msg
+	typeURL := sdk.MsgTypeURL(msg)
+	grant, err := authz.NewGrant(authz.NewGenericAuthorization(typeURL), someDate.Add(time.Hour))
+	require.NoError(t, err)
+
+	msgGrant := authz.MsgGrant{Granter: mockGranter, Grantee: mockGrantee, Grant: grant}
+	msgGrantBytes := json.RawMessage(sdk.MustSortJSON(encodingConfig.Marshaler.MustMarshalJSON(&msgGrant)))
+	err = encodingConfig.Marshaler.UnmarshalJSON(msgGrantBytes, &mockMsgGrant)
+	require.NoError(t, err)
+
+	// Authz: Revoke Msg
+	msgRevoke := authz.MsgRevoke{Granter: mockGranter, Grantee: mockGrantee, MsgTypeUrl: typeURL}
+	msgRevokeByte := json.RawMessage(sdk.MustSortJSON(encodingConfig.Marshaler.MustMarshalJSON(&msgRevoke)))
+	err = encodingConfig.Marshaler.UnmarshalJSON(msgRevokeByte, &mockMsgRevoke)
+	require.NoError(t, err)
+
+	// Authz: Exec Msg
+	msgAny, err := cdctypes.NewAnyWithValue(msg)
+	require.NoError(t, err)
+	msgExec := authz.MsgExec{Grantee: mockGrantee, Msgs: []*cdctypes.Any{msgAny}}
+	execMsgByte := json.RawMessage(sdk.MustSortJSON(encodingConfig.Marshaler.MustMarshalJSON(&msgExec)))
+	err = encodingConfig.Marshaler.UnmarshalJSON(execMsgByte, &mockMsgExec)
+	require.NoError(t, err)
+	require.Equal(t, msgExec.Msgs[0].Value, mockMsgExec.Msgs[0].Value)
+}
+
+// CreateRandomAccounts is a function return a list of randomly generated AccAddresses
+func CreateRandomAccounts(numAccts int) []sdk.AccAddress {
+	testAddrs := make([]sdk.AccAddress, numAccts)
+	for i := 0; i < numAccts; i++ {
+		pk := ed25519.GenPrivKey().PubKey()
+		testAddrs[i] = sdk.AccAddress(pk.Address())
+	}
+
+	return testAddrs
 }

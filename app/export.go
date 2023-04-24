@@ -12,6 +12,10 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 )
 
+func (app *App) ExportState(ctx sdk.Context) map[string]json.RawMessage {
+	return app.MM.ExportGenesis(ctx, app.AppCodec())
+}
+
 // ExportAppStateAndValidators implements the simapp app interface
 // by exporting the state of the application
 func (app *App) ExportAppStateAndValidators(
