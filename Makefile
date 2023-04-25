@@ -232,3 +232,9 @@ proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
 
 .PHONY: proto-gen
+
+
+mocks:
+	@go install github.com/golang/mock/mockgen@v1.6.0
+	sh ./scripts/mockgen.sh
+.PHONY: mocks
