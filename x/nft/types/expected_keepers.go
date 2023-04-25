@@ -14,4 +14,5 @@ type BankKeeper interface {
 // AccountKeeper defines the contract required for account APIs.
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	GetModuleAddress(moduleName string) sdk.AccAddress
 }

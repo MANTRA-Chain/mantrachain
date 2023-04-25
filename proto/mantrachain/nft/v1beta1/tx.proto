@@ -1,8 +1,8 @@
 syntax = "proto3";
 package mantrachain.nft.v1beta1;
 
-import "cosmos_proto/cosmos.proto";
 import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/nft/types";
 
@@ -11,6 +11,7 @@ service Msg {
   // Send defines a method to send a nft from one account to another account.
   rpc Send(MsgSend) returns (MsgSendResponse);
 }
+
 // MsgSend represents a message to send a nft from one account to another account.
 message MsgSend {
   option (cosmos.msg.v1.signer) = "sender";
@@ -22,10 +23,11 @@ message MsgSend {
   string id = 2;
 
   // sender is the address of the owner of nft
-  string sender = 3;
+  string sender = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // receiver is the receiver address of nft
-  string receiver = 4;
+  string receiver = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
+
 // MsgSendResponse defines the Msg/Send response type.
 message MsgSendResponse {}

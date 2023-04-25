@@ -8,7 +8,9 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/nft/types";
 // GenesisState defines the nft module's genesis state.
 message GenesisState {
   // class defines the class of the nft type.
-  repeated Class classes = 1;
+  repeated mantrachain.nft.v1beta1.Class classes = 1;
+
+  // entry defines all nft owned by a person.
   repeated Entry entries = 2;
 }
 
@@ -18,5 +20,5 @@ message Entry {
   string owner = 1;
 
   // nfts is a group of nfts of the same owner
-  repeated NFT nfts = 2;
+  repeated mantrachain.nft.v1beta1.NFT nfts = 2;
 }

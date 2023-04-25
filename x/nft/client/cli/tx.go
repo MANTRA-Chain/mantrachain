@@ -24,14 +24,14 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	// NFT Send is disabled since we don't want to allow users to transfer soul bounded NFTs
-	// nftTxCmd.AddCommand(
-	// 	NewCmdSend(),
-	// )
+	nftTxCmd.AddCommand(
+		NewCmdSend(),
+	)
 
 	return nftTxCmd
 }
 
+// NewCmdSend creates a CLI command for MsgSend.
 func NewCmdSend() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send [class-id] [nft-id] [receiver] --from [sender]",
@@ -44,6 +44,10 @@ func NewCmdSend() *cobra.Command {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
+			}
+
+			if args[0] == "" || args[1] == "" || args[2] == "" {
+				return fmt.Errorf("class-id, nft-id and receiver cannot be empty")
 			}
 
 			msg := types.MsgSend{

@@ -7,7 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// InitGenesis new nft genesis
+// InitGenesis initializes the nft module's genesis state from a given
+// genesis state.
 func (k Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) {
 	for _, class := range data.Classes {
 		if err := k.SaveClass(ctx, *class); err != nil {

@@ -18,7 +18,6 @@ import (
 	icstestingutils "github.com/cosmos/interchain-security/testutil/ibc_testing"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	"github.com/tendermint/spm/cosmoscmd"
@@ -350,15 +349,4 @@ func TestMessageAuthzSerialization(t *testing.T, msg sdk.Msg) {
 	err = encodingConfig.Marshaler.UnmarshalJSON(execMsgByte, &mockMsgExec)
 	require.NoError(t, err)
 	require.Equal(t, msgExec.Msgs[0].Value, mockMsgExec.Msgs[0].Value)
-}
-
-// CreateRandomAccounts is a function return a list of randomly generated AccAddresses
-func CreateRandomAccounts(numAccts int) []sdk.AccAddress {
-	testAddrs := make([]sdk.AccAddress, numAccts)
-	for i := 0; i < numAccts; i++ {
-		pk := ed25519.GenPrivKey().PubKey()
-		testAddrs[i] = sdk.AccAddress(pk.Address())
-	}
-
-	return testAddrs
 }

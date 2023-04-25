@@ -20,7 +20,7 @@ func (k Keeper) SaveClass(ctx sdk.Context, class types.Class) error {
 	return nil
 }
 
-// UpdateClass defines a method for updating a exist nft class
+// UpdateClass defines a method for updating an exist nft class
 func (k Keeper) UpdateClass(ctx sdk.Context, class types.Class) error {
 	if !k.HasClass(ctx, class.Id) {
 		return sdkerrors.Wrap(types.ErrClassNotExists, class.Id)
@@ -37,6 +37,7 @@ func (k Keeper) UpdateClass(ctx sdk.Context, class types.Class) error {
 // GetClass defines a method for returning the class information of the specified id
 func (k Keeper) GetClass(ctx sdk.Context, classID string) (types.Class, bool) {
 	store := ctx.KVStore(k.storeKey)
+
 	bz := store.Get(classStoreKey(classID))
 
 	var class types.Class
@@ -64,19 +65,4 @@ func (k Keeper) GetClasses(ctx sdk.Context) (classes []*types.Class) {
 func (k Keeper) HasClass(ctx sdk.Context, classID string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(classStoreKey(classID))
-}
-
-func (k Keeper) GetClassesByIds(ctx sdk.Context, classesIds []string) (classes []types.Class) {
-	for _, id := range classesIds {
-		store := ctx.KVStore(k.storeKey)
-		bz := store.Get(classStoreKey(id))
-
-		var class types.Class
-		if len(bz) != 0 {
-			k.cdc.MustUnmarshal(bz, &class)
-		}
-		classes = append(classes, class)
-	}
-
-	return
 }
