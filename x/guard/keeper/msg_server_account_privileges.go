@@ -6,7 +6,6 @@ import (
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -16,7 +15,7 @@ func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.Msg
 
 	account, err := sdk.AccAddressFromBech32(msg.Account)
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 	}
 
 	isFound := k.HasAccountPrivileges(ctx, account)
@@ -55,7 +54,7 @@ func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *type
 	for i, acc := range msg.AccountsPrivileges.Accounts {
 		account, err := sdk.AccAddressFromBech32(acc)
 		if err != nil {
-			return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 		}
 
 		isFound := k.HasAccountPrivileges(ctx, account)
@@ -98,7 +97,7 @@ func (k msgServer) UpdateAccountPrivilegesGroupedBatch(goCtx context.Context, ms
 		for _, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
 			account, err := sdk.AccAddressFromBech32(acc)
 			if err != nil {
-				return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 			}
 
 			isFound := k.HasAccountPrivileges(ctx, account)

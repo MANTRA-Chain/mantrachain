@@ -5,7 +5,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/libs/log"
 	tmtproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmttime "github.com/tendermint/tendermint/types/time"
 
@@ -13,11 +12,17 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	guardtestutil "github.com/MANTRA-Finance/mantrachain/x/guard/testutil"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/MANTRA-Finance/mantrachain/testutil"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+var (
+	testAccount    = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+	testIndex      = []byte{0x01, 0x02, 0x02}
+	testPrivileges = []byte{0x04, 0x05, 0x06}
 )
 
 type KeeperTestSuite struct {
@@ -25,13 +30,13 @@ type KeeperTestSuite struct {
 
 	ctx               sdk.Context
 	addrs             []sdk.AccAddress
-	baseApp           *baseapp.BaseApp
 	guardKeeper       keeper.Keeper
 	encCfg            testutil.TestEncodingConfig
 	queryClient       types.QueryClient
 	msgServer         types.MsgServer
 	defaultPrivileges []byte
-	kind              types.RequiredPrivilegesKind
+	rpKind            types.RequiredPrivilegesKind
+	lkKind            types.LockedKind
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -40,21 +45,12 @@ func TestKeeperTestSuite(t *testing.T) {
 
 func (s *KeeperTestSuite) SetupTest() {
 	key := sdk.NewKVStoreKey(types.StoreKey)
-	memStoreKey := sdk.NewMemoryStoreKeys(types.StoreKey)
+	tkey := sdk.NewTransientStoreKey("transient_test")
 	moduleAccAddr := make(map[string]bool)
-	testCtx := testutil.DefaultContextWithDB(s.T(), key, sdk.NewTransientStoreKey("transient_test"))
+
+	testCtx := testutil.DefaultContextWithDB(s.T(), key, tkey)
 	s.ctx = testCtx.Ctx.WithBlockHeader(tmtproto.Header{Time: tmttime.Now()})
 	s.encCfg = testutil.MakeTestEncodingConfig(guard.AppModuleBasic{})
-	paramSpace := paramskeeper.NewSubspace(s.encCfg.Codec, s.encCfg.Amino, key, memStoreKey[types.MemStoreKey], types.ModuleName)
-
-	s.baseApp = baseapp.NewBaseApp(
-		types.ModuleName,
-		log.NewNopLogger(),
-		testCtx.DB,
-		s.encCfg.TxConfig.TxDecoder(),
-	)
-	s.baseApp.SetCMS(testCtx.CMS)
-	s.baseApp.SetInterfaceRegistry(s.encCfg.InterfaceRegistry)
 
 	s.addrs = testutil.CreateIncrementalAccounts(3)
 
@@ -69,10 +65,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.guardKeeper = keeper.NewKeeper(
 		s.encCfg.Codec,
 		key,
-		memStoreKey[types.MemStoreKey],
-		paramSpace,
+		paramstypes.NewSubspace(s.encCfg.Codec, s.encCfg.Amino, key, tkey, "testsubspace").WithKeyTable(types.ParamKeyTable()),
 		moduleAccAddr,
-		s.baseApp.MsgServiceRouter(),
+		nil,
 		accountKeeper,
 		bankKeeper,
 		authzKeeper,
@@ -86,8 +81,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	queryClient := types.NewQueryClient(queryHelper)
 	s.queryClient = queryClient
 
-	s.defaultPrivileges = []byte{0x01}
-	s.kind = types.RequiredPrivilegesCoin
+	s.defaultPrivileges = types.DefaultPrivileges
+	s.rpKind = types.RequiredPrivilegesCoin
+	s.lkKind = types.LockedCoin
 
 	s.msgServer = keeper.NewMsgServerImpl(&s.guardKeeper)
+
+	s.guardKeeper.SetParams(s.ctx, types.NewParams(
+		testutil.TestAdminAddress,
+		testutil.TestAdminAddress,
+		testutil.TestAccountPrivilegesGuardNftCollectionId,
+		types.DefaultPrivileges,
+	))
 }

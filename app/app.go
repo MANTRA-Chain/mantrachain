@@ -115,7 +115,7 @@ import (
 
 const (
 	AppName              = "mantrachain"
-	AccountAddressPrefix = "mantrachain"
+	AccountAddressPrefix = "mantra"
 )
 
 var (
@@ -427,7 +427,6 @@ func New(
 	app.TokenKeeper = *tokenkeeper.NewKeeper(
 		appCodec,
 		keys[tokentypes.StoreKey],
-		keys[tokentypes.MemStoreKey],
 		app.GetSubspace(tokentypes.ModuleName),
 		app.NFTKeeper,
 	)
@@ -444,7 +443,6 @@ func New(
 	app.GuardKeeper = guardkeeper.NewKeeper(
 		appCodec,
 		keys[guardtypes.StoreKey],
-		keys[guardtypes.MemStoreKey],
 		app.GetSubspace(guardtypes.ModuleName),
 		app.ModuleAccountAddrs(),
 		app.MsgServiceRouter(),

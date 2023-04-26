@@ -16,7 +16,6 @@ type (
 	Keeper struct {
 		cdc        codec.BinaryCodec
 		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
 
 		nftKeeper types.NFTKeeper
@@ -25,8 +24,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 
 	nftKeeper types.NFTKeeper,
@@ -40,7 +38,6 @@ func NewKeeper(
 
 		cdc:        cdc,
 		storeKey:   storeKey,
-		memKey:     memKey,
 		paramstore: ps,
 		nftKeeper:  nftKeeper,
 	}

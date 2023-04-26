@@ -193,7 +193,7 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 log_level = "info"
 
 [[chains]]
-account_prefix = "mantrachain"
+account_prefix = "mantra"
 clock_drift = "5s"
 gas_multiplier = 2.0
 grpc_addr = "tcp://127.0.0.1:9081"

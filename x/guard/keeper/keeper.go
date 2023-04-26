@@ -17,7 +17,6 @@ type (
 	Keeper struct {
 		cdc                           codec.BinaryCodec
 		storeKey                      storetypes.StoreKey
-		memKey                        storetypes.StoreKey
 		paramstore                    paramtypes.Subspace
 		whlstTransfersSendersAccAddrs map[string]bool
 		router                        *baseapp.MsgServiceRouter
@@ -32,8 +31,7 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	modAccAddrs map[string]bool,
 	router *baseapp.MsgServiceRouter,
@@ -57,7 +55,6 @@ func NewKeeper(
 	return Keeper{
 		cdc:                           cdc,
 		storeKey:                      storeKey,
-		memKey:                        memKey,
 		paramstore:                    ps,
 		whlstTransfersSendersAccAddrs: modAccAddrsCopy,
 		router:                        router,
