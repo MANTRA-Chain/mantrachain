@@ -16,3 +16,13 @@ type NFTKeeper interface {
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 	BatchTransfer(ctx sdk.Context, classID string, nftIDs []string, receiver sdk.AccAddress) error
 }
+
+// AccountKeeper defines the expected account keeper used for simulations (noalias)
+type AccountKeeper interface {
+	// Methods imported from account should be defined here
+}
+
+// BankKeeper defines the expected interface needed to retrieve account balances.
+type BankKeeper interface {
+	// Methods imported from bank should be defined here
+}

@@ -161,3 +161,49 @@ func (mr *MockNFTKeeperMockRecorder) Transfer(ctx, classID, nftID, receiver inte
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Transfer", reflect.TypeOf((*MockNFTKeeper)(nil).Transfer), ctx, classID, nftID, receiver)
 }
+
+// MockAccountKeeper is a mock of AccountKeeper interface.
+type MockAccountKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockAccountKeeperMockRecorder
+}
+
+// MockAccountKeeperMockRecorder is the mock recorder for MockAccountKeeper.
+type MockAccountKeeperMockRecorder struct {
+	mock *MockAccountKeeper
+}
+
+// NewMockAccountKeeper creates a new mock instance.
+func NewMockAccountKeeper(ctrl *gomock.Controller) *MockAccountKeeper {
+	mock := &MockAccountKeeper{ctrl: ctrl}
+	mock.recorder = &MockAccountKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockAccountKeeper) EXPECT() *MockAccountKeeperMockRecorder {
+	return m.recorder
+}
+
+// MockBankKeeper is a mock of BankKeeper interface.
+type MockBankKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockBankKeeperMockRecorder
+}
+
+// MockBankKeeperMockRecorder is the mock recorder for MockBankKeeper.
+type MockBankKeeperMockRecorder struct {
+	mock *MockBankKeeper
+}
+
+// NewMockBankKeeper creates a new mock instance.
+func NewMockBankKeeper(ctrl *gomock.Controller) *MockBankKeeper {
+	mock := &MockBankKeeper{ctrl: ctrl}
+	mock.recorder = &MockBankKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockBankKeeper) EXPECT() *MockBankKeeperMockRecorder {
+	return m.recorder
+}
