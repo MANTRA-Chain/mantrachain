@@ -31,12 +31,15 @@ type KeeperTestSuite struct {
 	ctx               sdk.Context
 	addrs             []sdk.AccAddress
 	guardKeeper       keeper.Keeper
+	bankKeeper        *guardtestutil.MockBankKeeper
 	encCfg            testutil.TestEncodingConfig
 	queryClient       types.QueryClient
 	msgServer         types.MsgServer
 	defaultPrivileges []byte
 	rpKind            types.RequiredPrivilegesKind
 	lkKind            types.LockedKind
+	lkIndex           []byte
+	params            types.Params
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -56,7 +59,7 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	ctrl := gomock.NewController(s.T())
 	accountKeeper := guardtestutil.NewMockAccountKeeper(ctrl)
-	bankKeeper := guardtestutil.NewMockBankKeeper(ctrl)
+	s.bankKeeper = guardtestutil.NewMockBankKeeper(ctrl)
 	authzKeeper := guardtestutil.NewMockAuthzKeeper(ctrl)
 	tokenKeeper := guardtestutil.NewMockTokenKeeper(ctrl)
 	nftKeeper := guardtestutil.NewMockNFTKeeper(ctrl)
@@ -69,7 +72,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		moduleAccAddr,
 		nil,
 		accountKeeper,
-		bankKeeper,
+		s.bankKeeper,
 		authzKeeper,
 		tokenKeeper,
 		nftKeeper,
@@ -84,13 +87,15 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.defaultPrivileges = types.DefaultPrivileges
 	s.rpKind = types.RequiredPrivilegesCoin
 	s.lkKind = types.LockedCoin
+	s.lkIndex = []byte("factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/testcoin")
 
 	s.msgServer = keeper.NewMsgServerImpl(&s.guardKeeper)
 
-	s.guardKeeper.SetParams(s.ctx, types.NewParams(
+	s.params = types.NewParams(
 		testutil.TestAdminAddress,
 		testutil.TestAdminAddress,
 		testutil.TestAccountPrivilegesGuardNftCollectionId,
 		types.DefaultPrivileges,
-	))
+	)
+	s.guardKeeper.SetParams(s.ctx, s.params)
 }

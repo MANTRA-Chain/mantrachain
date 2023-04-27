@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,7 +18,7 @@ func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts
 	isAdmin := admin.Equals(sdk.MustAccAddressFromBech32(account))
 
 	if restrictedNfts && !isAdmin {
-		return errors.Wrap(sdkerrors.ErrUnauthorized, "not an admin")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not an admin")
 	}
 
 	return nil
@@ -30,7 +29,7 @@ func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
 	if strings.TrimSpace(collectionId) == "" {
-		return errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(collectionCreator)
@@ -47,7 +46,7 @@ func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator
 		ctx,
 		collectionIndex,
 	) && !isAdmin {
-		return errors.Wrap(sdkerrors.ErrUnauthorized, "restricted nfts colection")
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "restricted nfts colection")
 	}
 
 	return nil

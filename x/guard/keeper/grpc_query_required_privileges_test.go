@@ -17,8 +17,8 @@ func TestGRPCQueryRequiredPrivileges(t *testing.T) {
 
 func (s *KeeperTestSuite) TestRequiredPrivileges() {
 	var (
-		req                *types.QueryGetRequiredPrivilegesRequest
-		requiredPrivileges types.RequiredPrivileges
+		req                    *types.QueryGetRequiredPrivilegesRequest
+		requiredPrivilegesResp types.QueryGetRequiredPrivilegesResponse
 	)
 	testCases := []struct {
 		msg      string
@@ -29,7 +29,7 @@ func (s *KeeperTestSuite) TestRequiredPrivileges() {
 		{
 			"success",
 			func(index int, require *require.Assertions) {
-				requiredPrivileges = types.RequiredPrivileges{
+				requiredPrivilegesResp = types.QueryGetRequiredPrivilegesResponse{
 					Index:      []byte{0x01},
 					Privileges: []byte{0x02},
 					Kind:       s.rpKind.String(),
@@ -42,11 +42,7 @@ func (s *KeeperTestSuite) TestRequiredPrivileges() {
 			},
 			"",
 			func(index int, require *require.Assertions, res *types.QueryGetRequiredPrivilegesResponse) {
-				require.Equal(*res, types.QueryGetRequiredPrivilegesResponse{
-					Index:      requiredPrivileges.Index,
-					Privileges: requiredPrivileges.Privileges,
-					Kind:       requiredPrivileges.Kind,
-				})
+				require.Equal(requiredPrivilegesResp, *res)
 			},
 		},
 	}

@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -52,13 +51,13 @@ func (msg *MsgUpdateLocked) GetSignBytes() []byte {
 func (msg *MsgUpdateLocked) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if len(msg.Index) == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "index should not be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index should not be empty")
 	}
 	if strings.TrimSpace(msg.Kind) == "" {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "kind should not be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "kind should not be empty")
 	}
 	return nil
 }

@@ -1,6 +1,6 @@
 package keeper_test
 
-func (s *KeeperTestSuite) TestSetuardTransferCoins() {
+func (s *KeeperTestSuite) TestSetGuardTransferCoins() {
 	s.guardKeeper.SetGuardTransferCoins(s.ctx)
 
 	has := s.guardKeeper.HasGuardTransferCoins(s.ctx)

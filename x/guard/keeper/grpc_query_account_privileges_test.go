@@ -18,8 +18,8 @@ func TestGRPCQueryAccountPrivileges(t *testing.T) {
 
 func (s *KeeperTestSuite) TestAccountPrivileges() {
 	var (
-		req               *types.QueryGetAccountPrivilegesRequest
-		accountPrivileges types.AccountPrivileges
+		req                   *types.QueryGetAccountPrivilegesRequest
+		accountPrivilegesResp types.QueryGetAccountPrivilegesResponse
 	)
 	testCases := []struct {
 		msg      string
@@ -30,8 +30,8 @@ func (s *KeeperTestSuite) TestAccountPrivileges() {
 		{
 			"success",
 			func(index int, require *require.Assertions) {
-				accountPrivileges = types.AccountPrivileges{
-					Account:    s.addrs[0],
+				accountPrivilegesResp = types.QueryGetAccountPrivilegesResponse{
+					Account:    sdk.AccAddress(s.addrs[0]).String(),
 					Privileges: []byte{0x02},
 				}
 				req = &types.QueryGetAccountPrivilegesRequest{
@@ -41,10 +41,7 @@ func (s *KeeperTestSuite) TestAccountPrivileges() {
 			},
 			"",
 			func(index int, require *require.Assertions, res *types.QueryGetAccountPrivilegesResponse) {
-				require.Equal(*res, types.QueryGetAccountPrivilegesResponse{
-					Account:    sdk.AccAddress(accountPrivileges.Account).String(),
-					Privileges: accountPrivileges.Privileges,
-				})
+				require.Equal(accountPrivilegesResp, *res)
 			},
 		},
 	}

@@ -6,7 +6,6 @@ import (
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -40,13 +39,13 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		collectionId := conf.AccountPrivilegesTokenCollectionId
 
 		if strings.TrimSpace(collectionId) == "" {
-			return errors.Wrap(types.ErrInvalidTokenCollectionId, "nft collection id should not be empty")
+			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionId, "nft collection id should not be empty")
 		}
 
 		creator, err := sdk.AccAddressFromBech32(collectionCreator)
 
 		if err != nil {
-			return errors.Wrap(types.ErrInvalidTokenCollectionCreator, "collection creator should not be empty")
+			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionCreator, "collection creator should not be empty")
 		}
 
 		collectionIndex := tokentypes.GetNftCollectionIndex(creator, collectionId)
@@ -54,13 +53,13 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		owner := k.nk.GetOwner(ctx, string(collectionIndex), string(index))
 
 		if owner.Empty() || !address.Equals(owner) {
-			return errors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
+			return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
 		}
 
 		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
 
 		if len(requiredPrivilegesList) == 0 || len(requiredPrivilegesList) != len(indexes) {
-			return errors.Wrap(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found")
+			return sdkerrors.Wrap(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found")
 		}
 
 		hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, requiredPrivilegesList)
@@ -71,7 +70,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 		if !hasPrivileges {
 			k.Logger(ctx).Error("insufficient privileges", "address", address, "coins", coins)
-			return errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address)
+			return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address)
 		}
 	}
 
@@ -84,7 +83,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	}
 
 	if len(inputs) == 0 && len(outputs) == 0 {
-		return errors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
+		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
 	}
 
 	conf := k.GetParams(ctx)
