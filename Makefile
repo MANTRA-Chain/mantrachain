@@ -95,6 +95,9 @@ endif
 
 all: tools install lint
 
+# The below include contains the tools and runsim targets.
+include contrib/devtools/Makefile
+
 ###############################################################################
 ###                                  Build                                  ###
 ###############################################################################
@@ -152,46 +155,38 @@ clean:
 .PHONY: go-mod-cache clean
 
 ###############################################################################
-###                              Documentation                              ###
-###############################################################################
-
-update-swagger-docs: statik
-	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
-	@if [ -n "$(git status --porcelain)" ]; then \
-        echo "Swagger docs are out of sync";\
-        exit 1;\
-    else \
-    	echo "Swagger docs are in sync";\
-    fi
-
-.PHONY: update-swagger-docs
-
-###############################################################################
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
 test: test-unit
-test-all: test-unit test-race test-cover
+test-all: test-unit test-integration test-e2e test-race test-cover
 
 test-unit: 
-	@VERSION=$(VERSION) go test -mod=readonly -tags='norace' $(PACKAGES_NOSIMULATION)
+	@VERSION=$(VERSION) go test ./x/... -mod=readonly -tags='norace' $(PACKAGES_NOSIMULATION)
 
 test-unit-vendor: 
-	@VERSION=$(VERSION) go test -mod=vendor -tags='norace' $(PACKAGES_NOSIMULATION)
+	@VERSION=$(VERSION) go test ./x/... -mod=vendor -tags='norace' $(PACKAGES_NOSIMULATION)
+
+test-integration: 
+	@VERSION=$(VERSION) go test ./tests/integration/... -mod=readonly -tags='integration'
+
+test-e2e:
+	@VERSION=$(VERSION) go test ./tests/e2e/... -mod=readonly -timeout 30m -race -tags='e2e'
 
 test-race:
-	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
+	@go test ./x/... -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
 
 test-cover:
-	@go test -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace ledger test_ledger_mock' ./...
-
-test-build: build
-	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_test -v
+	@go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace ledger test_ledger_mock' ./...
 
 benchmark:
 	@go test -mod=readonly -bench=. ./...
 
-.PHONY: test test-all test-unit test-race test-cover test-build
+mocks:
+	@go install github.com/golang/mock/mockgen@v1.6.0
+	sh ./scripts/mockgen.sh
+
+.PHONY: test test-all test-unit test-race test-cover test-build mocks
 
 ###############################################################################
 ###                               Localnet                                  ###
@@ -209,16 +204,9 @@ localnet:
 
 lint:
 	@echo "--> Running linter"
-	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run --timeout=10m
+	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run -v
 
 .PHONY: lint
-
-format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*/statik*" | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*/statik*" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*/statik*" | xargs goimports -w -local $(REPO)
-
-.PHONY: format
 
 ###############################################################################
 ###                                Protobuf                                 ###
@@ -232,9 +220,3 @@ proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
 
 .PHONY: proto-gen
-
-
-mocks:
-	@go install github.com/golang/mock/mockgen@v1.6.0
-	sh ./scripts/mockgen.sh
-.PHONY: mocks

@@ -13,3 +13,4 @@ account*.txt
 build
 data
 out
+coverage.*
