@@ -171,7 +171,7 @@ test-integration:
 	@VERSION=$(VERSION) go test ./tests/integration/... -mod=readonly -tags='integration'
 
 test-e2e:
-	@VERSION=$(VERSION) go test ./tests/e2e/... -mod=readonly -timeout 30m -race -tags='e2e'
+	@VERSION=$(VERSION) cd ./tests/e2e && yarn install && yarn test
 
 test-race:
 	@go test ./x/... -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
@@ -194,9 +194,12 @@ mocks:
 
 # Run a single testnet locally
 localnet: 
-	./scripts/localnet.sh
+	./scripts/start-localnet.sh
 
-.PHONY: localnet
+delete-localnet: 
+	./scripts/delete-localnet.sh
+
+.PHONY: localnet delete-localnet
 
 ###############################################################################
 ###                                Linting                                  ###

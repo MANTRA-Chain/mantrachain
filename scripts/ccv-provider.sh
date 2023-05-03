@@ -23,7 +23,7 @@ fi
 
 # Setup local node if overwrite is set to Yes, otherwise skip setup
 if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
-  rm -rf ./interchain-security
+  rm -rf "$HOME/.ccv-provider"
 
   git clone \
     --filter=blob:none \
