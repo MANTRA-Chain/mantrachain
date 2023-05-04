@@ -1,5 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists } from '../helpers/coinfactory'
+import { createPairIfNotExists } from '../helpers/liquidity'
 
 describe('Guard module', () => {
   let sdk: MantrachainSdk
@@ -8,7 +9,11 @@ describe('Guard module', () => {
     sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
-    await Promise.all([createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin1'), createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin2')])
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin1')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin2')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin3')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin4')
+    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
   })
 
   describe('Not Authenticated', () => {
@@ -187,19 +192,21 @@ describe('Guard module', () => {
         /unauthorized/
       )
     })
-  })
 
-  test('Should throw when create pair with account with no permission', async () => {
-    const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
-      value: {
-        creator: sdk.recipientAddress,
-        baseCoinDenom: `factory/${sdk.adminAddress}/testcon1`,
-        quoteCoinDenom: `factory/${sdk.adminAddress}/testcon2`
-      }
+
+
+    test('Should throw when create pair with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+        value: {
+          creator: sdk.recipientAddress,
+          baseCoinDenom: `factory/${sdk.adminAddress}/testcoin1`,
+          quoteCoinDenom: `factory/${sdk.adminAddress}/testcoin2`
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
     })
-
-    return expect(promise).rejects.toThrow(
-      /unauthorized/
-    )
   })
 })

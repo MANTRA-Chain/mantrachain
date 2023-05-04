@@ -87,7 +87,6 @@ ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
-TESTING_BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
 ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
@@ -109,17 +108,28 @@ else
 	go build $(BUILD_FLAGS) -o build/$(APPNAME) ./cmd/$(APPNAME)
 endif
 
+build-debug: go.sum
+ifeq ($(OS),Windows_NT)
+	go build -o build/$(APPNAME).exe ./cmd/$(APPNAME)
+else
+	go build -o build/$(APPNAME) ./cmd/$(APPNAME)
+endif
+
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
-build-debug: go-mod-vendor
+build-debug-vendor: go-mod-vendor
+ifeq ($(OS),Windows_NT)
+	go build -mod=vendor -o build/$(APPNAME).exe ./cmd/$(APPNAME)
+else
 	go build -mod=vendor -o build/$(APPNAME) ./cmd/$(APPNAME)
+endif
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/$(APPNAME)
 
-install-testing: go.sum
-	go install $(TESTING_BUILD_FLAGS) ./cmd/$(APPNAME)
+install-debug: go.sum
+	go install ./cmd/$(APPNAME)
 
 build-reproducible: go.sum
 	$(DOCKER) rm latest-build || true
@@ -222,4 +232,4 @@ proto-gen:
 proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
 
-.PHONY: proto-gen
+.PHONY: proto-gen proto-lint

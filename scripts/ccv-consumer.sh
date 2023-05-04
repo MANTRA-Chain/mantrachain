@@ -289,17 +289,3 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   sleep 14
   "$PWD"/build/mantrachaind q tendermint-validator-set --home $HOMEDIR
 fi
-
-echo
-cecho "YELLOW" "To init sample:"
-cecho "GREEN" "./scripts/init-sample.sh"
-echo
-cecho "YELLOW" "To track hermes:"
-cecho "GREEN" "tmux a -t hermes"
-echo
-cecho "YELLOW" "To track mantrachain:"
-cecho "GREEN" "tmux a -t mantrachain"
-echo
-cecho "YELLOW" "To track provider:"
-cecho "GREEN" "tmux a -t provider"
-echo
