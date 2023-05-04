@@ -70,6 +70,7 @@ cecho "CYAN" "Change app.toml values"
 sed -i -E 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $APP_TOML
 sed -i -E 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $APP_TOML
 sed -i -E '112s/.*/enable = true/' $APP_TOML
+sed -i -E '115s/.*/swagger = true/' $APP_TOML
 sed -i -E 's|minimum-gas-prices = \"0stake\"|minimum-gas-prices = \"'$GAS_PRICE'\"|g' $APP_TOML
 
 cecho "CYAN" "Change config.toml values"
