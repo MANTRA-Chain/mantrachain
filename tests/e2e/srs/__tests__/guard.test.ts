@@ -4,8 +4,35 @@ describe('Guard module', () => {
   let sdk: MantrachainSdk
 
   beforeAll(async () => {
+    const promises: Promise<any>[] = []
     sdk = new MantrachainSdk()
-    await sdk.init()
+    await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
+
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(sdk.adminAddress)
+
+    if (res.data?.denoms?.every((denom: string) => !denom.includes('testcoin1'))) {
+      promises.push(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+        value: {
+          sender: sdk.adminAddress,
+          subdenom: 'testcoin1'
+        }
+      }))
+    }
+
+    if (res.data?.denoms?.every((denom: string) => !denom.includes('testcoin2'))) {
+      promises.push(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+        value: {
+          sender: sdk.adminAddress,
+          subdenom: 'testcoin2'
+        }
+      }))
+    }
+
+    if (!!promises.length) {
+      promises.push(sdk.blockWaiter.waitBlocks(1))
+    }
+
+    await Promise.all(promises)
   })
 
   describe('Not Authenticated', () => {
@@ -108,19 +135,6 @@ describe('Guard module', () => {
       )
     })
 
-    test('Should throw when create denom with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
-        value: {
-          sender: sdk.recipientAddress,
-          subdenom: 'testcoin'
-        }
-      })
-
-      return expect(promise).rejects.toThrow(
-        /unauthorized/
-      )
-    })
-
     test('Should throw when update guard transfer coins with account with no permission', async () => {
       const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
         value: {
@@ -166,5 +180,50 @@ describe('Guard module', () => {
         /unauthorized/
       )
     })
+
+    test('Should throw when create denom with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+        value: {
+          sender: sdk.recipientAddress,
+          subdenom: 'testcoin'
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when force transfer with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+        value: {
+          sender: sdk.recipientAddress,
+          amount: {
+            denom: 'uaum',
+            amount: '1000000000000000000'
+          },
+          transferFromAddress: sdk.recipientAddress,
+          transferToAddress: sdk.adminAddress,
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+  })
+
+  test('Should throw when create pair with account with no permission', async () => {
+    const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      value: {
+        creator: sdk.recipientAddress,
+        baseCoinDenom: `factory/${sdk.adminAddress}/testcon1`,
+        quoteCoinDenom: `factory/${sdk.adminAddress}/testcon2`
+      }
+    })
+
+    return expect(promise).rejects.toThrow(
+      /unauthorized/
+    )
   })
 })

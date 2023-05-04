@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "types": ["node", "jest"],
+    "types": ["node", "@types/jest"],
     "module": "commonjs",
     "lib": ["esnext"],
     "outDir": "lib",
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/**/*.test.ts"]
+  "include": ["./src/**/*"]
 }

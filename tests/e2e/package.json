@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "7.21.5",
+    "@cosmos-client/core": "0.46.1",
     "@mantrachain/sdk": "10.0.0",
     "axios": "1.4.0",
     "babel-jest": "29.5.0",
