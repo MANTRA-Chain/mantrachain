@@ -76,13 +76,13 @@ var _ sdk.Msg = &MsgUpdateRequiredPrivilegesBatch{}
 
 func NewMsgUpdateRequiredPrivilegesBatch(
 	creator string,
-	requiredPrivilegesList MsgRequiredPrivilegesList,
+	requiredPrivileges MsgRequiredPrivileges,
 	kind string,
 ) *MsgUpdateRequiredPrivilegesBatch {
 	return &MsgUpdateRequiredPrivilegesBatch{
-		Creator:                creator,
-		RequiredPrivilegesList: &requiredPrivilegesList,
-		Kind:                   kind,
+		Creator:            creator,
+		RequiredPrivileges: &requiredPrivileges,
+		Kind:               kind,
 	}
 }
 
@@ -119,18 +119,18 @@ func (msg *MsgUpdateRequiredPrivilegesBatch) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "kind is invalid")
 	}
-	if msg.RequiredPrivilegesList == nil || len(msg.RequiredPrivilegesList.Indexes) == 0 {
+	if msg.RequiredPrivileges == nil || len(msg.RequiredPrivileges.Indexes) == 0 {
 		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "indexes and/or privileges are empty")
 	}
-	if msg.RequiredPrivilegesList.Privileges == nil || len(msg.RequiredPrivilegesList.Indexes) != len(msg.RequiredPrivilegesList.Privileges) {
+	if msg.RequiredPrivileges.Privileges == nil || len(msg.RequiredPrivileges.Indexes) != len(msg.RequiredPrivileges.Privileges) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "indexes and privileges length is not equal")
 	}
-	for i, index := range msg.RequiredPrivilegesList.Indexes {
+	for i, index := range msg.RequiredPrivileges.Indexes {
 		if len(index) == 0 {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid index (%s)", index)
 		}
-		if msg.RequiredPrivilegesList.Privileges[i] != nil && len(msg.RequiredPrivilegesList.Privileges[i]) > 0 && len(msg.RequiredPrivilegesList.Privileges[i]) != 32 {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivilegesList.Privileges[i]))
+		if msg.RequiredPrivileges.Privileges[i] != nil && len(msg.RequiredPrivileges.Privileges[i]) > 0 && len(msg.RequiredPrivileges.Privileges[i]) != 32 {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivileges.Privileges[i]))
 		}
 	}
 	return nil
@@ -140,13 +140,13 @@ var _ sdk.Msg = &MsgUpdateRequiredPrivilegesGroupedBatch{}
 
 func NewMsgUpdateRequiredPrivilegesGroupedBatch(
 	creator string,
-	requiredPrivilegesListGrouped MsgRequiredPrivilegesListGrouped,
+	requiredPrivilegesGrouped MsgRequiredPrivilegesGrouped,
 	kind string,
 ) *MsgUpdateRequiredPrivilegesGroupedBatch {
 	return &MsgUpdateRequiredPrivilegesGroupedBatch{
-		Creator:                       creator,
-		RequiredPrivilegesListGrouped: &requiredPrivilegesListGrouped,
-		Kind:                          kind,
+		Creator:                   creator,
+		RequiredPrivilegesGrouped: &requiredPrivilegesGrouped,
+		Kind:                      kind,
 	}
 }
 
@@ -183,19 +183,19 @@ func (msg *MsgUpdateRequiredPrivilegesGroupedBatch) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "kind is invalid")
 	}
-	if msg.RequiredPrivilegesListGrouped == nil || len(msg.RequiredPrivilegesListGrouped.Indexes) == 0 {
+	if msg.RequiredPrivilegesGrouped == nil || len(msg.RequiredPrivilegesGrouped.Indexes) == 0 {
 		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "grouped indexes and/or privileges are empty")
 	}
-	if msg.RequiredPrivilegesListGrouped.Privileges == nil || len(msg.RequiredPrivilegesListGrouped.Indexes) != len(msg.RequiredPrivilegesListGrouped.Privileges) {
+	if msg.RequiredPrivilegesGrouped.Privileges == nil || len(msg.RequiredPrivilegesGrouped.Indexes) != len(msg.RequiredPrivilegesGrouped.Privileges) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "indexes and privileges length is not equal")
 	}
-	for i := range msg.RequiredPrivilegesListGrouped.Indexes {
-		for k, index := range msg.RequiredPrivilegesListGrouped.Indexes[i].Indexes {
+	for i := range msg.RequiredPrivilegesGrouped.Indexes {
+		for k, index := range msg.RequiredPrivilegesGrouped.Indexes[i].Indexes {
 			if len(index) == 0 {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid index (%s)", index)
 			}
-			if msg.RequiredPrivilegesListGrouped.Privileges[k] != nil && len(msg.RequiredPrivilegesListGrouped.Privileges[k]) > 0 && len(msg.RequiredPrivilegesListGrouped.Privileges[k]) != 32 {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivilegesListGrouped.Privileges[k]))
+			if msg.RequiredPrivilegesGrouped.Privileges[k] != nil && len(msg.RequiredPrivilegesGrouped.Privileges[k]) > 0 && len(msg.RequiredPrivilegesGrouped.Privileges[k]) != 32 {
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.RequiredPrivilegesGrouped.Privileges[k]))
 			}
 		}
 	}

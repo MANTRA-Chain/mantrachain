@@ -59,19 +59,19 @@ func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *typ
 
 	indexes := []string{}
 
-	for i, index := range msg.RequiredPrivilegesList.Indexes {
+	for i, index := range msg.RequiredPrivileges.Indexes {
 		if len(index) == 0 {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 		}
 
 		isFound := k.HasRequiredPrivileges(ctx, index, kind)
-		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesList.Privileges[i])
+		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivileges.Privileges[i])
 
 		if isFound && reqPr.Empty() {
 			k.RemoveRequiredPrivileges(ctx, index, kind)
 			indexes = append(indexes, string(index))
 		} else if !reqPr.Empty() {
-			k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesList.Privileges[i])
+			k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivileges.Privileges[i])
 			indexes = append(indexes, string(index))
 		}
 	}
@@ -101,10 +101,10 @@ func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, m
 
 	indexes := []string{}
 
-	for i := range msg.RequiredPrivilegesListGrouped.Indexes {
-		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesListGrouped.Privileges[i])
+	for i := range msg.RequiredPrivilegesGrouped.Indexes {
+		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesGrouped.Privileges[i])
 
-		for _, index := range msg.RequiredPrivilegesListGrouped.Indexes[i].Indexes {
+		for _, index := range msg.RequiredPrivilegesGrouped.Indexes[i].Indexes {
 			if len(index) == 0 {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 			}
@@ -115,7 +115,7 @@ func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, m
 				k.RemoveRequiredPrivileges(ctx, index, kind)
 				indexes = append(indexes, string(index))
 			} else if !reqPr.Empty() {
-				k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesListGrouped.Privileges[i])
+				k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesGrouped.Privileges[i])
 				indexes = append(indexes, string(index))
 			}
 		}

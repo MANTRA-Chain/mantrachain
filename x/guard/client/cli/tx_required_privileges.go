@@ -47,7 +47,7 @@ func CmdUpdateRequiredPrivilegesBatch() *cobra.Command {
 		Short: "Update required_privileges in a batch",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argRequiredPrivilegesList := args[0]
+			argRequiredPrivileges := args[0]
 			argKind := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -56,15 +56,15 @@ func CmdUpdateRequiredPrivilegesBatch() *cobra.Command {
 			}
 
 			// Unmarshal payload
-			var requiredPrivilegesList types.MsgRequiredPrivilegesList
-			err = clientCtx.Codec.UnmarshalJSON([]byte(argRequiredPrivilegesList), &requiredPrivilegesList)
+			var requiredPrivileges types.MsgRequiredPrivileges
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argRequiredPrivileges), &requiredPrivileges)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgUpdateRequiredPrivilegesBatch(
 				clientCtx.GetFromAddress().String(),
-				requiredPrivilegesList,
+				requiredPrivileges,
 				argKind,
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -85,7 +85,7 @@ func CmdUpdateRequiredPrivilegesGroupedBatch() *cobra.Command {
 		Short: "Update required_privileges_grouped in a batch",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argRequiredPrivilegesListGrouped := args[0]
+			argRequiredPrivilegesGrouped := args[0]
 			argKind := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -94,15 +94,15 @@ func CmdUpdateRequiredPrivilegesGroupedBatch() *cobra.Command {
 			}
 
 			// Unmarshal payload
-			var requiredPrivilegesListGrouped types.MsgRequiredPrivilegesListGrouped
-			err = clientCtx.Codec.UnmarshalJSON([]byte(argRequiredPrivilegesListGrouped), &requiredPrivilegesListGrouped)
+			var requiredPrivilegesGrouped types.MsgRequiredPrivilegesGrouped
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argRequiredPrivilegesGrouped), &requiredPrivilegesGrouped)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgUpdateRequiredPrivilegesGroupedBatch(
 				clientCtx.GetFromAddress().String(),
-				requiredPrivilegesListGrouped,
+				requiredPrivilegesGrouped,
 				argKind,
 			)
 			if err := msg.ValidateBasic(); err != nil {
