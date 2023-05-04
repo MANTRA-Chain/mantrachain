@@ -1,6 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists } from '../helpers/coinfactory'
-import { createPairIfNotExists } from '../helpers/liquidity'
+import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
 
 describe('Guard module', () => {
   let sdk: MantrachainSdk
@@ -13,6 +13,7 @@ describe('Guard module', () => {
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin2')
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin3')
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin4')
+
     await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
   })
 
@@ -201,6 +202,28 @@ describe('Guard module', () => {
           creator: sdk.recipientAddress,
           baseCoinDenom: `factory/${sdk.adminAddress}/testcoin1`,
           quoteCoinDenom: `factory/${sdk.adminAddress}/testcoin2`
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when create pool with account with no permission', async () => {
+      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+
+      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
+        value: {
+          creator: sdk.recipientAddress,
+          pairId: pairId,
+          depositCoins: [{
+            denom: `factory/${sdk.adminAddress}/testcoin3`,
+            amount: '1000000000000000000'
+          }, {
+            denom: `factory/${sdk.adminAddress}/testcoin4`,
+            amount: '1000000000000000000'
+          }]
         }
       })
 
