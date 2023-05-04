@@ -1,38 +1,14 @@
 import { MantrachainSdk } from '../helpers/sdk'
+import { createDenomIfNotExists } from '../helpers/coinfactory'
 
 describe('Guard module', () => {
   let sdk: MantrachainSdk
 
   beforeAll(async () => {
-    const promises: Promise<any>[] = []
     sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
-    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(sdk.adminAddress)
-
-    if (res.data?.denoms?.every((denom: string) => !denom.includes('testcoin1'))) {
-      promises.push(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
-        value: {
-          sender: sdk.adminAddress,
-          subdenom: 'testcoin1'
-        }
-      }))
-    }
-
-    if (res.data?.denoms?.every((denom: string) => !denom.includes('testcoin2'))) {
-      promises.push(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
-        value: {
-          sender: sdk.adminAddress,
-          subdenom: 'testcoin2'
-        }
-      }))
-    }
-
-    if (!!promises.length) {
-      promises.push(sdk.blockWaiter.waitBlocks(1))
-    }
-
-    await Promise.all(promises)
+    await Promise.all([createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin1'), createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin2')])
   })
 
   describe('Not Authenticated', () => {
