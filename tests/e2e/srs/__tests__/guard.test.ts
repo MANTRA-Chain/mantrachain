@@ -194,8 +194,6 @@ describe('Guard module', () => {
       )
     })
 
-
-
     test('Should throw when create pair with account with no permission', async () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
@@ -216,7 +214,7 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
-          pairId: pairId,
+          pairId,
           depositCoins: [{
             denom: `factory/${sdk.adminAddress}/testcoin3`,
             amount: '1000000000000000000'
@@ -224,6 +222,59 @@ describe('Guard module', () => {
             denom: `factory/${sdk.adminAddress}/testcoin4`,
             amount: '1000000000000000000'
           }]
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when create ranged pool with account with no permission', async () => {
+      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+
+      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
+        value: {
+          creator: sdk.recipientAddress,
+          pairId,
+          depositCoins: [{
+            denom: `factory/${sdk.adminAddress}/testcoin3`,
+            amount: '1000000000000000000'
+          }, {
+            denom: `factory/${sdk.adminAddress}/testcoin4`,
+            amount: '1000000000000000000'
+          }],
+          minPrice: '1000000000',
+          maxPrice: '10000000000',
+          initialPrice: '5000000000'
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when create private plan with account with no permission', async () => {
+      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+
+      const startTime = new Date()
+      const endTime = new Date()
+      endTime.setMinutes(endTime.getMinutes() + 30)
+
+      const promise = sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
+        value: {
+          creator: sdk.recipientAddress,
+          description: 'test plan',
+          rewardAllocations: [{
+            pairId,
+            rewardsPerDay: [{
+              denom: `factory/${sdk.adminAddress}/testcoin3`,
+              amount: '1000'
+            }]
+          }],
+          startTime,
+          endTime,
         }
       })
 

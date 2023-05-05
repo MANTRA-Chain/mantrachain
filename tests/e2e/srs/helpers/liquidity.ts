@@ -7,7 +7,7 @@ const notExistsPair = (res: any, baseCoinDenom: string, quoteCoinDenom: string) 
 
 const queryPairs = (client: any, baseCoinDenom): any => client.MantrachainLiquidityV1Beta1.query.queryPairs({
   denoms: baseCoinDenom // This doesn't work properly, it should be [baseCoinDenom, quoteCoinDenom], 
-  // but the chain parse the request as ["", baseCoinDenom, quoteCoinDenom] if we pass an array
+  // but the chain parse the denoms query as ["", baseCoinDenom, quoteCoinDenom] if we pass an array
 })
 
 const getPair = (res: any, baseCoinDenom: string, quoteCoinDenom: string) => res.data?.pairs?.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
