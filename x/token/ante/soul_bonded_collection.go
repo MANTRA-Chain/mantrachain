@@ -23,6 +23,10 @@ func (ttd TokenSoulBondedNftsCollectionDecorator) AnteHandle(ctx sdk.Context, tx
 				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
 					return ctx, errors.Wrap(err, "token soul bonded collection: fail")
 				}
+			case *types.MsgApproveNfts:
+				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+					return ctx, errors.Wrap(err, "token soul bonded collection: fail")
+				}
 			case *types.MsgTransferNft:
 				if err := ttd.tokenKeeper.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
 					return ctx, errors.Wrap(err, "token soul bonded collection: fail")

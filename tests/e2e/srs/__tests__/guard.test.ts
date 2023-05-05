@@ -1,6 +1,7 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, getCoinDenom } from '../helpers/coinfactory'
 import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
+import { createNftCollectionIfNotExists } from '../helpers/token'
 
 describe('Guard module', () => {
   let sdk: MantrachainSdk
@@ -9,12 +10,28 @@ describe('Guard module', () => {
     sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
-    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin1')
-    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin2')
-    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin3')
-    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin4')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-0')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-1')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-2')
+    await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-3')
 
-    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
+    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
+
+    await createNftCollectionIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, {
+      id: "guard-0",
+      name: 'test collection',
+      images: [],
+      url: '',
+      description: '',
+      links: [],
+      options: [],
+      category: 'utility',
+      opened: false,
+      symbol: 'TEST',
+      soulBondedNfts: false,
+      restrictedNfts: true,
+      data: null
+    })
   })
 
   describe('Not Authenticated', () => {
@@ -167,7 +184,7 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
         value: {
           sender: sdk.recipientAddress,
-          subdenom: 'testcoin'
+          subdenom: 'guard-4'
         }
       })
 
@@ -198,8 +215,8 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
-          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'testcoin1'),
-          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'testcoin2')
+          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'guard-2'),
+          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'guard-3')
         }
       })
 
@@ -209,17 +226,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'testcoin4'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard-1'),
             amount: '1000000000000000000'
           }]
         }
@@ -231,17 +248,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create ranged pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'testcoin4'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard-1'),
             amount: '1000000000000000000'
           }],
           minPrice: '1000000000',
@@ -256,7 +273,7 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create private plan with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
 
       const startTime = new Date()
       const endTime = new Date()
@@ -269,12 +286,201 @@ describe('Guard module', () => {
           rewardAllocations: [{
             pairId,
             rewardsPerDay: [{
-              denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
+              denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
               amount: '1000'
             }]
           }],
           startTime,
           endTime,
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when create restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
+        value: {
+          creator: sdk.recipientAddress,
+          collection: {
+            id: "guard-0",
+            name: 'test collection',
+            images: [],
+            url: '',
+            description: '',
+            links: [],
+            options: [],
+            category: 'utility',
+            opened: false,
+            symbol: 'TEST',
+            soulBondedNfts: false,
+            restrictedNfts: true,
+            data: null
+          }
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when mint nft for restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNft({
+        value: {
+          creator: sdk.recipientAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nft: {
+            id: "0",
+            title: 'test nft',
+            images: [],
+            url: '',
+            description: '',
+            links: [],
+            attributes: [],
+            data: null
+          }
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when mint nfts for restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNfts({
+        value: {
+          creator: sdk.recipientAddress,
+          receiver: sdk.recipientAddress,
+          strict: false,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nfts: {
+            nfts: [{
+              id: "0",
+              title: 'test nft',
+              images: [],
+              url: '',
+              description: '',
+              links: [],
+              attributes: [],
+              data: null
+            }]
+          }
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when burn nft from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNft({
+        value: {
+          creator: sdk.recipientAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nftId: "0",
+          strict: true
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when burn nfts from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNfts({
+        value: {
+          creator: sdk.recipientAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nfts: {
+            nftsIds: ["0"]
+          },
+          strict: true
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when approve nft from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
+        value: {
+          creator: sdk.recipientAddress,
+          receiver: sdk.adminAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nftId: "0",
+          approved: true,
+          strict: true
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when approve nfts from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
+        value: {
+          creator: sdk.recipientAddress,
+          receiver: sdk.adminAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nfts: {
+            nftsIds: ["0"]
+          },
+          approved: true,
+          strict: true
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when transfer nft from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
+        value: {
+          creator: sdk.recipientAddress,
+          owner: sdk.recipientAddress,
+          receiver: sdk.adminAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nftId: "0",
+          strict: true
+        }
+      })
+
+      return expect(promise).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should throw when transfer nfts from restricted nft collection with account with no permission', async () => {
+      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
+        value: {
+          creator: sdk.recipientAddress,
+          owner: sdk.recipientAddress,
+          receiver: sdk.adminAddress,
+          collectionCreator: sdk.adminAddress,
+          collectionId: "guard-0",
+          nfts: {
+            nftsIds: ["0"]
+          },
+          strict: true
         }
       })
 

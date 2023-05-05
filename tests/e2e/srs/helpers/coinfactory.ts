@@ -9,7 +9,7 @@ const existsDenom = (res: any, account: string, subdenom: string) => res.data?.d
 
 export const getCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 
-export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string) => {
+export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, numAttempts = 20) => {
   if (notExistsDenom(await queryDenom(client, account), account, subdenom)) {
     await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
@@ -23,6 +23,6 @@ export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, a
     sdk.blockWaiter,
     async () => await queryDenom(client, account),
     async (res) => existsDenom(res, account, subdenom),
-    20,
+    numAttempts,
   )
 }

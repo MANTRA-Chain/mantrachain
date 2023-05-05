@@ -5,15 +5,14 @@ const existsPair = (res: any, baseCoinDenom: string, quoteCoinDenom: string) => 
 
 const notExistsPair = (res: any, baseCoinDenom: string, quoteCoinDenom: string) => res.data?.pairs?.every((pair: any) => pair.base_coin_denom !== baseCoinDenom && pair.quote_coin_denom !== quoteCoinDenom)
 
-const queryPairs = (client: any, baseCoinDenom): any => client.MantrachainLiquidityV1Beta1.query.queryPairs({
+const queryPairs = (client: any, baseCoinDenom: string): any => client.MantrachainLiquidityV1Beta1.query.queryPairs({
   denoms: baseCoinDenom // This doesn't work properly, it should be [baseCoinDenom, quoteCoinDenom], 
   // but the chain parse the denoms query as ["", baseCoinDenom, quoteCoinDenom] if we pass an array
 })
 
 const getPair = (res: any, baseCoinDenom: string, quoteCoinDenom: string) => res.data?.pairs?.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
-
-export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string) => {
+export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 20) => {
   const res = await queryPairs(client, baseCoinDenom)
 
   if (notExistsPair(res, baseCoinDenom, quoteCoinDenom)) {
@@ -30,7 +29,7 @@ export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, ac
     sdk.blockWaiter,
     async () => await queryPairs(client, baseCoinDenom),
     async (res) => existsPair(res, baseCoinDenom, quoteCoinDenom),
-    20,
+    numAttempts,
   )
 }
 
