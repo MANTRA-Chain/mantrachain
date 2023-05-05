@@ -1,5 +1,5 @@
 import { MantrachainSdk } from '../helpers/sdk'
-import { createDenomIfNotExists } from '../helpers/coinfactory'
+import { createDenomIfNotExists, getCoinDenom } from '../helpers/coinfactory'
 import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
 
 describe('Guard module', () => {
@@ -14,7 +14,7 @@ describe('Guard module', () => {
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin3')
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'testcoin4')
 
-    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
   })
 
   describe('Not Authenticated', () => {
@@ -23,7 +23,7 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           account: sdk.recipientAddress,
-          privileges: Buffer.from(new Uint8Array(32)),
+          privileges: new Uint8Array(32),
         }
       })
 
@@ -71,7 +71,7 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           index: new Uint8Array(1),
-          privileges: Buffer.from(new Uint8Array(32)),
+          privileges: new Uint8Array(32),
           kind: 'coin'
         }
       })
@@ -198,8 +198,8 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
-          baseCoinDenom: `factory/${sdk.adminAddress}/testcoin1`,
-          quoteCoinDenom: `factory/${sdk.adminAddress}/testcoin2`
+          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'testcoin1'),
+          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'testcoin2')
         }
       })
 
@@ -209,17 +209,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: `factory/${sdk.adminAddress}/testcoin3`,
+            denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
             amount: '1000000000000000000'
           }, {
-            denom: `factory/${sdk.adminAddress}/testcoin4`,
+            denom: getCoinDenom(sdk.adminAddress, 'testcoin4'),
             amount: '1000000000000000000'
           }]
         }
@@ -231,17 +231,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create ranged pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: `factory/${sdk.adminAddress}/testcoin3`,
+            denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
             amount: '1000000000000000000'
           }, {
-            denom: `factory/${sdk.adminAddress}/testcoin4`,
+            denom: getCoinDenom(sdk.adminAddress, 'testcoin4'),
             amount: '1000000000000000000'
           }],
           minPrice: '1000000000',
@@ -256,7 +256,7 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create private plan with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, `factory/${sdk.adminAddress}/testcoin3`, `factory/${sdk.adminAddress}/testcoin4`)
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'testcoin3'), getCoinDenom(sdk.adminAddress, 'testcoin4'))
 
       const startTime = new Date()
       const endTime = new Date()
@@ -269,7 +269,7 @@ describe('Guard module', () => {
           rewardAllocations: [{
             pairId,
             rewardsPerDay: [{
-              denom: `factory/${sdk.adminAddress}/testcoin3`,
+              denom: getCoinDenom(sdk.adminAddress, 'testcoin3'),
               amount: '1000'
             }]
           }],

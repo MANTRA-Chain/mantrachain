@@ -3,9 +3,11 @@ import { getWithAttempts } from './wait'
 
 const queryDenom = (client: any, account: string): any => client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
 
-const notExistsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.every((denom: string) => denom !== `factory/${account}/${subdenom}`)
+const notExistsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.every((denom: string) => denom !== getCoinDenom(account, subdenom))
 
-const existsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.some((denom: string) => denom === `factory/${account}/${subdenom}`)
+const existsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.some((denom: string) => denom === getCoinDenom(account, subdenom))
+
+export const getCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 
 export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string) => {
   if (notExistsDenom(await queryDenom(client, account), account, subdenom)) {
