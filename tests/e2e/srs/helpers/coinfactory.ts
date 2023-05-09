@@ -33,7 +33,7 @@ export const mintCoins = async (sdk: MantrachainSdk, client: any, account: strin
   const privBalance = await queryBalance(client, account, denom)
 
   if (!!minBalance && parseInt(privBalance?.data?.balance?.amount) >= parseInt(minBalance)) {
-    return
+    return privBalance
   }
 
   await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({

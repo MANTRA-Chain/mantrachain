@@ -9,7 +9,7 @@ describe('Token module', () => {
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
     await createNftCollectionIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, {
-      id: "token-0",
+      id: "token0",
       name: 'test collection',
       images: [],
       url: '',
@@ -32,7 +32,7 @@ describe('Token module', () => {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "token-0",
+          collectionId: "token0",
           nftId: "0",
           approved: true,
           strict: true
@@ -50,7 +50,7 @@ describe('Token module', () => {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "token-0",
+          collectionId: "token0",
           nfts: {
             nftsIds: ["0"]
           },
@@ -71,7 +71,7 @@ describe('Token module', () => {
           owner: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "token-0",
+          collectionId: "token0",
           nftId: "0",
           strict: true
         }
@@ -89,7 +89,7 @@ describe('Token module', () => {
           owner: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "token-0",
+          collectionId: "token0",
           nfts: {
             nftsIds: ["0"]
           },

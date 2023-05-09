@@ -3,8 +3,12 @@ import { getWithAttempts } from './wait'
 
 export const queryBalance = (client: any, account: string, denom: string): any => client.CosmosBankV1Beta1.query.queryBalance(account, { denom })
 
-export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: string, numAttempts = 20) => {
+export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: string, minBalance?: string, numAttempts = 20) => {
   const privBalance = await queryBalance(client, toAddress, denom)
+
+  if (!!minBalance && parseInt(privBalance?.data?.balance?.amount) >= parseInt(minBalance)) {
+    return privBalance
+  }
 
   await client.CosmosBankV1Beta1.tx.sendMsgSend({
     value: {

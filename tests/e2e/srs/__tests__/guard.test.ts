@@ -15,15 +15,15 @@ describe('Guard module', () => {
 
   describe('Not Authenticated', () => {
     beforeAll(async () => {
-      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-0')
-      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-1')
-      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-2')
-      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-3')
+      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard0')
+      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard1')
+      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard2')
+      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard3')
 
-      await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
+      await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
 
       await createNftCollectionIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, {
-        id: "guard-0",
+        id: 'guard0',
         name: 'test collection',
         images: [],
         url: '',
@@ -188,7 +188,7 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
         value: {
           sender: sdk.recipientAddress,
-          subdenom: 'guard-4'
+          subdenom: 'guard4'
         }
       })
 
@@ -219,8 +219,8 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
-          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'guard-2'),
-          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'guard-3')
+          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'guard2'),
+          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'guard3')
         }
       })
 
@@ -230,17 +230,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'guard-1'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard1'),
             amount: '1000000000000000000'
           }]
         }
@@ -252,17 +252,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create ranged pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'guard-1'),
+            denom: getCoinDenom(sdk.adminAddress, 'guard1'),
             amount: '1000000000000000000'
           }],
           minPrice: '1000000000',
@@ -277,7 +277,7 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create private plan with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard-0'), getCoinDenom(sdk.adminAddress, 'guard-1'))
+      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
 
       const startTime = new Date()
       const endTime = new Date()
@@ -290,7 +290,7 @@ describe('Guard module', () => {
           rewardAllocations: [{
             pairId,
             rewardsPerDay: [{
-              denom: getCoinDenom(sdk.adminAddress, 'guard-0'),
+              denom: getCoinDenom(sdk.adminAddress, 'guard0'),
               amount: '1000'
             }]
           }],
@@ -309,7 +309,7 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           collection: {
-            id: "guard-0",
+            id: 'guard0',
             name: 'test collection',
             images: [],
             url: '',
@@ -336,9 +336,9 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
+          collectionId: 'guard0',
           nft: {
-            id: "0",
+            id: '0',
             title: 'test nft',
             images: [],
             url: '',
@@ -362,10 +362,10 @@ describe('Guard module', () => {
           receiver: sdk.recipientAddress,
           strict: false,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
+          collectionId: 'guard0',
           nfts: {
             nfts: [{
-              id: "0",
+              id: '0',
               title: 'test nft',
               images: [],
               url: '',
@@ -388,8 +388,8 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
-          nftId: "0",
+          collectionId: 'guard0',
+          nftId: '0',
           strict: true
         }
       })
@@ -404,9 +404,9 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
+          collectionId: 'guard0',
           nfts: {
-            nftsIds: ["0"]
+            nftsIds: ['0']
           },
           strict: true
         }
@@ -423,8 +423,8 @@ describe('Guard module', () => {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
-          nftId: "0",
+          collectionId: 'guard0',
+          nftId: '0',
           approved: true,
           strict: true
         }
@@ -441,9 +441,9 @@ describe('Guard module', () => {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
+          collectionId: 'guard0',
           nfts: {
-            nftsIds: ["0"]
+            nftsIds: ['0']
           },
           approved: true,
           strict: true
@@ -462,8 +462,8 @@ describe('Guard module', () => {
           owner: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
-          nftId: "0",
+          collectionId: 'guard0',
+          nftId: '0',
           strict: true
         }
       })
@@ -480,9 +480,9 @@ describe('Guard module', () => {
           owner: sdk.recipientAddress,
           receiver: sdk.adminAddress,
           collectionCreator: sdk.adminAddress,
-          collectionId: "guard-0",
+          collectionId: 'guard0',
           nfts: {
-            nftsIds: ["0"]
+            nftsIds: ['0']
           },
           strict: true
         }
@@ -497,13 +497,13 @@ describe('Guard module', () => {
   describe('Transfer coins', () => {
     beforeAll(async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, false)
-      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-5')
-      await mintCoins(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard-5', "1000000", "1000000")
+      await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard5')
+      await mintCoins(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard5', '1000000', '1000000')
     })
 
     test('Should transfer to account without guard soul-bond nft when guard transfer coins is false', async () => {
-      const denom = getCoinDenom(sdk.adminAddress, 'guard-5')
-      const amount = "1000"
+      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = '1000'
       const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
@@ -520,8 +520,8 @@ describe('Guard module', () => {
     })
 
     test('Should transfer from admin account to account without guard soul-bond nft when guard transfer coins is true', async () => {
-      const denom = getCoinDenom(sdk.adminAddress, 'guard-5')
-      const amount = "1000"
+      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = '1000'
       const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
@@ -540,20 +540,32 @@ describe('Guard module', () => {
     test('Should throw when transfer from account without guard soul-bond nft when guard transfer coins is true', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
-      const denom = getCoinDenom(sdk.adminAddress, 'guard-5')
-      const amount = "1000"
-      const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = '1000'
 
-      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
-
-      expect(privBalance?.data?.balance?.denom).toEqual(denom);
-      expect(parseInt(privBalance?.data?.balance?.amount) + parseInt(amount)).toEqual(parseInt(currBalance?.data?.balance?.amount));
 
       const promise = sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
 
       return expect(promise).rejects.toThrow(
         /missing soul bond nft/
+      )
+    })
+
+    test('Should throw when transfer coin without required privileges', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = '1000'
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
+
+      return expect(promise).rejects.toThrow(
+        /coin required privileges not found/
       )
     })
   })
