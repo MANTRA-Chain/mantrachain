@@ -13,6 +13,7 @@ const config: Config = {
   transform: {
     '^.+\\.[t|j]sx?$': 'babel-jest',
   },
+  verbose: true,
 }
 
 export default config
