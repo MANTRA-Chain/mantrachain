@@ -2,16 +2,19 @@ import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { queryBalance } from './bank'
 
-const queryDenom = (client: any, account: string): any => client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
+const queryDenomsFromCreator = async (client: any, account: string) => {
+  const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
+  return res?.data?.denoms || []
+}
 
-const notExistsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.every((denom: string) => denom !== getCoinDenom(account, subdenom))
+const notExistsDenom = (denoms: string[], account: string, subdenom: string) => denoms.every((denom: string) => denom !== genCoinDenom(account, subdenom))
 
-const existsDenom = (res: any, account: string, subdenom: string) => res.data?.denoms?.some((denom: string) => denom === getCoinDenom(account, subdenom))
+const existsDenom = (denoms: string[], account: string, subdenom: string) => denoms.some((denom: string) => denom === genCoinDenom(account, subdenom))
 
-export const getCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
+export const genCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 
 export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, numAttempts = 20) => {
-  if (notExistsDenom(await queryDenom(client, account), account, subdenom)) {
+  if (notExistsDenom(await queryDenomsFromCreator(client, account), account, subdenom)) {
     await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: account,
@@ -22,17 +25,17 @@ export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, a
 
   return getWithAttempts(
     sdk.blockWaiter,
-    async () => await queryDenom(client, account),
+    async () => await queryDenomsFromCreator(client, account),
     async (res) => existsDenom(res, account, subdenom),
     numAttempts,
   )
 }
 
-export const mintCoins = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, amount: string, minBalance?: string, numAttempts = 20) => {
-  const denom = getCoinDenom(account, subdenom)
+export const mintCoins = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, amount: number, minBalance?: number, numAttempts = 20) => {
+  const denom = genCoinDenom(account, subdenom)
   const privBalance = await queryBalance(client, account, denom)
 
-  if (!!minBalance && parseInt(privBalance?.data?.balance?.amount) >= parseInt(minBalance)) {
+  if (!!minBalance && privBalance >= minBalance) {
     return privBalance
   }
 
@@ -41,7 +44,7 @@ export const mintCoins = async (sdk: MantrachainSdk, client: any, account: strin
       sender: account,
       amount: {
         denom,
-        amount
+        amount: amount.toString()
       }
     }
   })
@@ -49,7 +52,7 @@ export const mintCoins = async (sdk: MantrachainSdk, client: any, account: strin
   return getWithAttempts(
     sdk.blockWaiter,
     async () => await queryBalance(client, account, denom),
-    async (res) => parseInt(res?.data?.balance?.amount) === parseInt(privBalance?.data?.balance?.amount) + parseInt(amount),
+    async (balance) => balance === privBalance + amount,
     numAttempts,
   )
 }

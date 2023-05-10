@@ -1,8 +1,8 @@
 import { MantrachainSdk } from '../helpers/sdk'
-import { createDenomIfNotExists, getCoinDenom, mintCoins } from '../helpers/coinfactory'
+import { createDenomIfNotExists, genCoinDenom, mintCoins } from '../helpers/coinfactory'
 import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
 import { createNftCollectionIfNotExists } from '../helpers/token'
-import { setGuardTransferCoins } from '../helpers/guard'
+import { setGuardTransferCoins, updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 import { queryBalance, sendCoins } from '../helpers/bank'
 
 let sdk: MantrachainSdk
@@ -20,7 +20,7 @@ describe('Guard module', () => {
       await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard2')
       await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard3')
 
-      await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
+      await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
       await createNftCollectionIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, {
         id: 'guard0',
@@ -219,8 +219,8 @@ describe('Guard module', () => {
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
-          baseCoinDenom: getCoinDenom(sdk.adminAddress, 'guard2'),
-          quoteCoinDenom: getCoinDenom(sdk.adminAddress, 'guard3')
+          baseCoinDenom: genCoinDenom(sdk.adminAddress, 'guard2'),
+          quoteCoinDenom: genCoinDenom(sdk.adminAddress, 'guard3')
         }
       })
 
@@ -230,17 +230,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
+      const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'guard0'),
+            denom: genCoinDenom(sdk.adminAddress, 'guard0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'guard1'),
+            denom: genCoinDenom(sdk.adminAddress, 'guard1'),
             amount: '1000000000000000000'
           }]
         }
@@ -252,17 +252,17 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create ranged pool with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
+      const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
       const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: getCoinDenom(sdk.adminAddress, 'guard0'),
+            denom: genCoinDenom(sdk.adminAddress, 'guard0'),
             amount: '1000000000000000000'
           }, {
-            denom: getCoinDenom(sdk.adminAddress, 'guard1'),
+            denom: genCoinDenom(sdk.adminAddress, 'guard1'),
             amount: '1000000000000000000'
           }],
           minPrice: '1000000000',
@@ -277,7 +277,7 @@ describe('Guard module', () => {
     })
 
     test('Should throw when create private plan with account with no permission', async () => {
-      const pairId = await getPairId(sdk.clientRecipient, getCoinDenom(sdk.adminAddress, 'guard0'), getCoinDenom(sdk.adminAddress, 'guard1'))
+      const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
       const startTime = new Date()
       const endTime = new Date()
@@ -290,7 +290,7 @@ describe('Guard module', () => {
           rewardAllocations: [{
             pairId,
             rewardsPerDay: [{
-              denom: getCoinDenom(sdk.adminAddress, 'guard0'),
+              denom: genCoinDenom(sdk.adminAddress, 'guard0'),
               amount: '1000'
             }]
           }],
@@ -496,57 +496,60 @@ describe('Guard module', () => {
 
   describe('Transfer coins', () => {
     beforeAll(async () => {
-      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, false)
       await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard5')
-      await mintCoins(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard5', '1000000', '1000000')
+      await mintCoins(sdk, sdk.clientAdmin, sdk.adminAddress, 'guard5', 1000000, 1000000)
     })
 
-    test('Should transfer to account without guard soul-bond nft when guard transfer coins is false', async () => {
-      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = '1000'
+    test('Should transfer from/to account without guard soul-bond nft when guard transfer coins is false', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, false)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
       const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-      expect(privBalance?.data?.balance?.denom).toEqual(denom);
-      expect(parseInt(privBalance?.data?.balance?.amount) + parseInt(amount)).toEqual(parseInt(currBalance?.data?.balance?.amount));
+      expect(privBalance + amount).toEqual(currBalance);
 
-      await sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
+      await sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, currBalance)
       const latestBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-      expect(latestBalance?.data?.balance?.denom).toEqual(denom);
-      expect(parseInt(latestBalance?.data?.balance?.amount)).toEqual(0);
+      expect(latestBalance).toEqual(0);
     })
 
     test('Should transfer from admin account to account without guard soul-bond nft when guard transfer coins is true', async () => {
-      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = '1000'
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
       const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-      expect(privBalance?.data?.balance?.denom).toEqual(denom);
-      expect(parseInt(privBalance?.data?.balance?.amount) + parseInt(amount)).toEqual(parseInt(currBalance?.data?.balance?.amount));
-
-      await sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
-      const latestBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
-
-      expect(latestBalance?.data?.balance?.denom).toEqual(denom);
-      expect(parseInt(latestBalance?.data?.balance?.amount)).toEqual(0);
+      expect(privBalance + amount).toEqual(currBalance);
     })
 
     test('Should throw when transfer from account without guard soul-bond nft when guard transfer coins is true', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
-      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = '1000'
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
+      const promise = sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, currBalance)
 
       return expect(promise).rejects.toThrow(
         /missing soul bond nft/
@@ -556,17 +559,63 @@ describe('Guard module', () => {
     test('Should throw when transfer coin without required privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
-      const denom = getCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = '1000'
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.adminAddress, denom, parseInt(currBalance?.data?.balance?.amount).toString())
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.adminAddress, denom, currBalance)
 
       return expect(promise).rejects.toThrow(
         /coin required privileges not found/
       )
     })
+
+    test('Should throw when transfer coin from account without account privileges', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+
+      return expect(promise).rejects.toThrow(
+        /insufficient privileges/
+      )
+    })
+
+    test('Should throw when transfer coin to account without soul-bond nft', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+
+      return expect(promise).rejects.toThrow(
+        /missing soul bond nft/
+      )
+    })
+
+    // TODO: test('Should transfer from and to account with guard soul-bond nft and privileges when guard transfer coins is true', async () => {
+    // })
   })
 })

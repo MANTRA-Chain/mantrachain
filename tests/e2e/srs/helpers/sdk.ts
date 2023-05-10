@@ -54,7 +54,6 @@ export class MantrachainSdk {
       this.adminWallet
     )
 
-
     this.blockWaiter = new BlockWaiter(ws);
   }
 }

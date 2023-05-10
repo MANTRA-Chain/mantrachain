@@ -1,12 +1,15 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 
-export const queryBalance = (client: any, account: string, denom: string): any => client.CosmosBankV1Beta1.query.queryBalance(account, { denom })
+export const queryBalance = async (client: any, account: string, denom: string) => {
+  const res = await client.CosmosBankV1Beta1.query.queryBalance(account, { denom })
+  return !!res?.data?.balance?.amount ? parseInt(res.data.balance.amount) : 0
+}
 
-export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: string, minBalance?: string, numAttempts = 20) => {
+export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: number, minBalance?: number, numAttempts = 20) => {
   const privBalance = await queryBalance(client, toAddress, denom)
 
-  if (!!minBalance && parseInt(privBalance?.data?.balance?.amount) >= parseInt(minBalance)) {
+  if (!!minBalance && privBalance >= minBalance) {
     return privBalance
   }
 
@@ -16,7 +19,7 @@ export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: s
       toAddress,
       amount: [{
         denom,
-        amount
+        amount: amount.toString()
       }]
     }
   })
@@ -24,7 +27,7 @@ export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: s
   return getWithAttempts(
     sdk.blockWaiter,
     async () => await queryBalance(client, toAddress, denom),
-    async (res) => parseInt(res?.data?.balance?.amount) === parseInt(privBalance?.data?.balance?.amount) + parseInt(amount),
+    async (balance) => balance === privBalance + amount,
     numAttempts,
   )
 }
