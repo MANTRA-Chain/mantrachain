@@ -46,6 +46,8 @@ export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, ac
         enabled
       }
     })
+  } else {
+    return
   }
 
   return getWithAttempts(

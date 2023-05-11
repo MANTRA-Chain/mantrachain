@@ -268,7 +268,9 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	// Check if collection is with soul bond nfts in an ante handler
+	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
+		return nil, err
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -603,6 +605,10 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
+	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
+		return nil, err
+	}
+
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
@@ -694,6 +700,10 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
+		return nil, err
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
@@ -791,7 +801,9 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	// Check if collection is with soul bond nfts in an ante handler
+	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
+		return nil, err
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).

@@ -1,7 +1,7 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom, mintCoins } from '../helpers/coinfactory'
 import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
-import { createNftCollectionIfNotExists } from '../helpers/token'
+import { createNftCollectionIfNotExists, mintGuardSoulBondNft, burnGuardSoulBondNft } from '../helpers/token'
 import { setGuardTransferCoins, updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 import { queryBalance, sendCoins } from '../helpers/bank'
 
@@ -530,6 +530,7 @@ describe('Guard module', () => {
 
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
@@ -545,6 +546,7 @@ describe('Guard module', () => {
 
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
@@ -584,6 +586,7 @@ describe('Guard module', () => {
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
@@ -604,6 +607,7 @@ describe('Guard module', () => {
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
@@ -615,7 +619,87 @@ describe('Guard module', () => {
       )
     })
 
-    // TODO: test('Should transfer from and to account with guard soul-bond nft and privileges when guard transfer coins is true', async () => {
-    // })
+    test('Should throw when transfer coin to account without account privileges', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+
+      return expect(promise).rejects.toThrow(
+        /insufficient privileges/
+      )
+    })
+
+    test('Should throw when transfer coin to account with insufficient account privileges', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [65])
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+
+      return expect(promise).rejects.toThrow(
+        /insufficient privileges/
+      )
+    })
+
+    test('Should throw when transfer coin to account with insufficient default account privileges', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [64], [0, 65])
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+
+      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+
+      return expect(promise).rejects.toThrow(
+        /insufficient privileges/
+      )
+    })
+
+    test('Should transfer from/to accounts with guard soul-bond nft and privileges when guard transfer coins is true', async () => {
+      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
+
+      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
+      const amount = 1000
+
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [0, 64], [65])
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+
+      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
+      const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+
+      await sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.validatorAddress, denom, currBalance)
+      const latestBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+
+      expect(latestBalance).toEqual(0);
+    })
   })
 })

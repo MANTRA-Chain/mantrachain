@@ -16,9 +16,7 @@ const queryPairs = async (client: any, baseCoinDenom: string) => {
 const getPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
 export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 20) => {
-  const res = await queryPairs(client, baseCoinDenom)
-
-  if (notExistsPair(res, baseCoinDenom, quoteCoinDenom)) {
+  if (notExistsPair(await queryPairs(client, baseCoinDenom), baseCoinDenom, quoteCoinDenom)) {
     await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
       value: {
         creator: account,
@@ -26,6 +24,8 @@ export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, ac
         quoteCoinDenom
       }
     })
+  } else {
+    return
   }
 
   return getWithAttempts(

@@ -104,6 +104,8 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 			return err
 		}
 
+		// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
+		// the account privileges and no matter of the coin required privileges
 		if k.whlstTransfersSendersAccAddrs[in.Address] ||
 			admin.Equals(inAddress) {
 			return nil
@@ -113,6 +115,11 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 		if err != nil {
 			return err
+		}
+
+		if k.whlstTransfersSendersAccAddrs[out.Address] ||
+			admin.Equals(outAddress) {
+			return nil
 		}
 
 		err = k.CheckCanTransferCoins(ctx, outAddress, out.Coins)

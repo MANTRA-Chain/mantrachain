@@ -21,6 +21,8 @@ export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, a
         subdenom
       }
     })
+  } else {
+    return
   }
 
   return getWithAttempts(
