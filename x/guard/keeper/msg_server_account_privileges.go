@@ -11,6 +11,11 @@ import (
 
 func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.MsgUpdateAccountPrivileges) (*types.MsgUpdateAccountPrivilegesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 
 	account, err := sdk.AccAddressFromBech32(msg.Account)
@@ -48,6 +53,11 @@ func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *types.MsgUpdateAccountPrivilegesBatch) (*types.MsgUpdateAccountPrivilegesBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 	accounts := []string{}
 
@@ -87,6 +97,11 @@ func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *type
 
 func (k msgServer) UpdateAccountPrivilegesGroupedBatch(goCtx context.Context, msg *types.MsgUpdateAccountPrivilegesGroupedBatch) (*types.MsgUpdateAccountPrivilegesGroupedBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 	accounts := []string{}
 

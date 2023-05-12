@@ -13,6 +13,10 @@ import (
 func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg *types.MsgUpdateAuthzGenericGrantRevokeBatch) (*types.MsgUpdateAuthzGenericGrantRevokeBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err

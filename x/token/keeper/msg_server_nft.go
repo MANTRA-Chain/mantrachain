@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
@@ -16,6 +16,10 @@ import (
 
 func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*types.MsgMintNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -81,7 +85,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	nftsMetadata := nftController.getMetadata()
 	if len(nftsMetadata) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
 	}
 
 	var newNfts []nfttypes.NFT
@@ -148,6 +152,10 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*types.MsgBurnNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
+
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
@@ -200,7 +208,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -235,6 +243,14 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts) (*types.MsgApproveNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+		return nil, sdkerrors.Wrap(err, "token soul bonded collection: fail")
+	}
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
+
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
@@ -268,10 +284,6 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, err
-	}
-
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
@@ -296,7 +308,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -360,6 +372,10 @@ func (k msgServer) ApproveAllNfts(goCtx context.Context, msg *types.MsgApproveAl
 
 func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types.MsgMintNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -427,7 +443,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	nftsMetadata := nftController.getMetadata()
 
 	if len(nftsMetadata) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNft, "existing or invalid nft")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "existing or invalid nft")
 	}
 
 	nftMetadata := nftsMetadata[0]
@@ -489,6 +505,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types.MsgBurnNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
+
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
@@ -537,7 +557,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -572,6 +592,14 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (*types.MsgApproveNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+		return nil, sdkerrors.Wrap(err, "token soul bonded collection: fail")
+	}
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
+
 	owner, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
@@ -605,10 +633,6 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, err
-	}
-
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
@@ -629,7 +653,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -662,6 +686,14 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 
 func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft) (*types.MsgTransferNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+		return nil, sdkerrors.Wrap(err, "token soul bonded collection: fail")
+	}
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
 
 	operator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -701,10 +733,6 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, err
-	}
-
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
 		WithStore(k).
@@ -725,7 +753,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or no transfer permission")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or no transfer permission")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -763,6 +791,14 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNfts) (*types.MsgTransferNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckSoulBondedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId); err != nil {
+		return nil, sdkerrors.Wrap(err, "token soul bonded collection: fail")
+	}
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, msg.CollectionCreator, msg.CollectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
+
 	operator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
@@ -801,10 +837,6 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, err
-	}
-
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
 		WithStore(k).
@@ -829,7 +861,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or no transfer permission")
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or no transfer permission")
 	}
 
 	nftsIndexes := nftController.getIndexes()

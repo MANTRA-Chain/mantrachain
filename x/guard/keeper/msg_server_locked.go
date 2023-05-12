@@ -13,6 +13,10 @@ import (
 func (k msgServer) UpdateLocked(goCtx context.Context, msg *types.MsgUpdateLocked) (*types.MsgUpdateLockedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if len(msg.Index) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 	}

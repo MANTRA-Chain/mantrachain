@@ -6,10 +6,15 @@ import (
 	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckNewRestrictedNftsCollection(ctx, msg.Collection.RestrictedNfts, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "guard token: fail")
+	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {

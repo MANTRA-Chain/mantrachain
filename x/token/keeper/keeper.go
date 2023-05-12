@@ -19,6 +19,7 @@ type (
 		paramstore paramtypes.Subspace
 
 		nftKeeper types.NFTKeeper
+		gk        types.GuardKeeper
 	}
 )
 
@@ -28,6 +29,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 
 	nftKeeper types.NFTKeeper,
+	gk types.GuardKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -40,6 +42,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		paramstore: ps,
 		nftKeeper:  nftKeeper,
+		gk:         gk,
 	}
 }
 

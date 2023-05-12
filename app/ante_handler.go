@@ -5,8 +5,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 
-	guardante "github.com/MANTRA-Finance/mantrachain/x/guard/ante"
-	tokenante "github.com/MANTRA-Finance/mantrachain/x/token/ante"
 	ibcante "github.com/cosmos/ibc-go/v4/modules/core/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v4/modules/core/keeper"
 	consumerante "github.com/cosmos/interchain-security/app/consumer/ante"
@@ -19,8 +17,6 @@ type HandlerOptions struct {
 	ante.HandlerOptions
 
 	IBCKeeper      *ibckeeper.Keeper
-	TokenKeeper    tokenante.TokenKeeper
-	GuardKeeper    guardante.GuardKeeper
 	ConsumerKeeper ibcconsumerkeeper.Keeper
 }
 
@@ -58,10 +54,6 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
 		ibcante.NewAnteDecorator(options.IBCKeeper),
-		tokenante.NewTokenTransferNftDecorator(options.TokenKeeper),
-		tokenante.NewTokenSoulBondedNftsCollectionDecorator(options.TokenKeeper),
-		guardante.NewGuardTokenAuthzDecorator(options.GuardKeeper),
-		guardante.NewGuardAdminAuthzDecorator(options.GuardKeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...), nil

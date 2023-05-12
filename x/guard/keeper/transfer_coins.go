@@ -106,7 +106,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 		// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
 		// the account privileges and no matter of the coin required privileges
-		if k.whlstTransfersSendersAccAddrs[in.Address] ||
+		if k.whitelistTransfersAccAddrs[in.Address] ||
 			admin.Equals(inAddress) {
 			return nil
 		}
@@ -117,7 +117,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 			return err
 		}
 
-		if k.whlstTransfersSendersAccAddrs[out.Address] ||
+		if k.whitelistTransfersAccAddrs[out.Address] ||
 			admin.Equals(outAddress) {
 			return nil
 		}
@@ -132,7 +132,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	return nil
 }
 
-func (k Keeper) WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string {
+func (k Keeper) WhitelistTransferAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string {
 	updated := make([]string, 0)
 
 	if len(addresses) == 0 {
@@ -140,13 +140,13 @@ func (k Keeper) WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []st
 	}
 
 	for _, address := range addresses {
-		val, ok := k.whlstTransfersSendersAccAddrs[address]
+		val, ok := k.whitelistTransfersAccAddrs[address]
 
 		if ok && !isWhitelisted {
-			delete(k.whlstTransfersSendersAccAddrs, address)
+			delete(k.whitelistTransfersAccAddrs, address)
 			updated = append(updated, address)
 		} else if !val && isWhitelisted {
-			k.whlstTransfersSendersAccAddrs[address] = isWhitelisted
+			k.whitelistTransfersAccAddrs[address] = isWhitelisted
 			updated = append(updated, address)
 		}
 	}

@@ -20,6 +20,7 @@ type Keeper struct {
 	accountKeeper   types.AccountKeeper
 	bankKeeper      types.BankKeeper
 	liquidityKeeper types.LiquidityKeeper
+	gk              types.GuardKeeper
 }
 
 // NewKeeper creates a new Keeper instance.
@@ -30,6 +31,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	liquidityKeeper types.LiquidityKeeper,
+	gk types.GuardKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
@@ -42,6 +44,7 @@ func NewKeeper(
 		accountKeeper:   accountKeeper,
 		bankKeeper:      bankKeeper,
 		liquidityKeeper: liquidityKeeper,
+		gk:              gk,
 	}
 }
 

@@ -12,6 +12,10 @@ import (
 func (k msgServer) UpdateRequiredPrivileges(goCtx context.Context, msg *types.MsgUpdateRequiredPrivileges) (*types.MsgUpdateRequiredPrivilegesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if len(msg.Index) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 	}
@@ -51,6 +55,10 @@ func (k msgServer) UpdateRequiredPrivileges(goCtx context.Context, msg *types.Ms
 
 func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *types.MsgUpdateRequiredPrivilegesBatch) (*types.MsgUpdateRequiredPrivilegesBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
@@ -93,6 +101,10 @@ func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *typ
 
 func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, msg *types.MsgUpdateRequiredPrivilegesGroupedBatch) (*types.MsgUpdateRequiredPrivilegesGroupedBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {

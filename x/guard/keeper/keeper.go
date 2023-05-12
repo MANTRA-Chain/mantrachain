@@ -15,17 +15,17 @@ import (
 
 type (
 	Keeper struct {
-		cdc                           codec.BinaryCodec
-		storeKey                      storetypes.StoreKey
-		paramstore                    paramtypes.Subspace
-		whlstTransfersSendersAccAddrs map[string]bool
-		router                        *baseapp.MsgServiceRouter
-		ak                            types.AccountKeeper
-		bk                            types.BankKeeper
-		azk                           types.AuthzKeeper
-		tk                            types.TokenKeeper
-		nk                            types.NFTKeeper
-		ck                            types.CoinFactoryKeeper
+		cdc                        codec.BinaryCodec
+		storeKey                   storetypes.StoreKey
+		paramstore                 paramtypes.Subspace
+		whitelistTransfersAccAddrs map[string]bool
+		router                     *baseapp.MsgServiceRouter
+		ak                         types.AccountKeeper
+		bk                         types.BankKeeper
+		azk                        types.AuthzKeeper
+		tk                         types.TokenKeeper
+		nk                         types.NFTKeeper
+		ck                         types.CoinFactoryKeeper
 	}
 )
 
@@ -53,17 +53,17 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:                           cdc,
-		storeKey:                      storeKey,
-		paramstore:                    ps,
-		whlstTransfersSendersAccAddrs: modAccAddrsCopy,
-		router:                        router,
-		ak:                            ak,
-		bk:                            bk,
-		azk:                           azk,
-		tk:                            tk,
-		nk:                            nk,
-		ck:                            ck,
+		cdc:                        cdc,
+		storeKey:                   storeKey,
+		paramstore:                 ps,
+		whitelistTransfersAccAddrs: modAccAddrsCopy,
+		router:                     router,
+		ak:                         ak,
+		bk:                         bk,
+		azk:                        azk,
+		tk:                         tk,
+		nk:                         nk,
+		ck:                         ck,
 	}
 }
 

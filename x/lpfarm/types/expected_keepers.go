@@ -31,3 +31,7 @@ type LiquidityKeeper interface {
 	GetAllPairs(ctx sdk.Context) (pairs []liquiditytypes.Pair)
 	IteratePoolsByPair(ctx sdk.Context, pairId uint64, cb func(pool liquiditytypes.Pool) (stop bool, err error)) error
 }
+
+type GuardKeeper interface {
+	CheckIsAdmin(ctx sdk.Context, address string) error
+}

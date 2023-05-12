@@ -416,6 +416,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
@@ -425,6 +426,7 @@ func New(
 		keys[tokentypes.StoreKey],
 		app.GetSubspace(tokentypes.ModuleName),
 		app.NFTKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
@@ -637,8 +639,6 @@ func New(
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 			IBCKeeper:      app.IBCKeeper,
-			TokenKeeper:    app.TokenKeeper,
-			GuardKeeper:    app.GuardKeeper,
 			ConsumerKeeper: app.ConsumerKeeper,
 		},
 	)

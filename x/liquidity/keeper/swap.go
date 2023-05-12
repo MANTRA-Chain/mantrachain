@@ -115,14 +115,14 @@ func (k Keeper) placeOrder(
 		return types.Order{}, types.ErrTooSmallOrder
 	}
 
-	whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+	whitelisted := k.gk.WhitelistTransferAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
 
 	refundedCoin := offerCoin.Sub(resultOfferCoin)
 	if err := k.bankKeeper.SendCoins(ctx, ordererAddr, pair.GetEscrowAddress(), sdk.NewCoins(resultOfferCoin)); err != nil {
 		return types.Order{}, err
 	}
 
-	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
+	k.gk.WhitelistTransferAccAddresses(ctx, whitelisted, false)
 
 	orderId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(orderLifespan)
@@ -399,13 +399,13 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 
 		bulkOp.QueueSendCoins(order.ReserveAddress, pair.GetEscrowAddress(), sdk.NewCoins(paidCoin))
 
-		whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{order.ReserveAddress.String()}, true)...)
+		whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses(ctx, []string{order.ReserveAddress.String()}, true)...)
 	}
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
 
-	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
+	k.gk.WhitelistTransferAccAddresses(ctx, whitelisted, false)
 	whitelisted = make([]string, 0)
 
 	bulkOp = types.NewBulkSendCoinsOperation()
@@ -444,7 +444,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 				k.SetOrder(ctx, o)
 			}
 
-			whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
+			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
 
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.Orderer, sdk.NewCoins(receivedCoin))
 
@@ -464,7 +464,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
 			receivedCoin := sdk.NewCoin(order.DemandCoinDenom, order.ReceivedDemandCoinAmount)
 
-			whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
+			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
 
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.ReserveAddress, sdk.NewCoins(receivedCoin))
 
@@ -492,14 +492,14 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		}
 	}
 
-	whitelisted = append(whitelisted, k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
+	whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)...)
 
 	bulkOp.QueueSendCoins(pair.GetEscrowAddress(), k.GetDustCollector(ctx), sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, quoteCoinDiff)))
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
 
-	k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
+	k.gk.WhitelistTransferAccAddresses(ctx, whitelisted, false)
 
 	for _, r := range poolMatchResults {
 		ctx.EventManager().EmitEvents(sdk.Events{
@@ -525,13 +525,13 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	if order.RemainingOfferCoin.IsPositive() {
 		pair, _ := k.GetPair(ctx, order.PairId)
 
-		whitelisted := k.gk.WhlstTransferSendersAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
+		whitelisted := k.gk.WhitelistTransferAccAddresses(ctx, []string{pair.GetEscrowAddress().String()}, true)
 
 		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
 			return err
 		}
 
-		k.gk.WhlstTransferSendersAccAddresses(ctx, whitelisted, false)
+		k.gk.WhitelistTransferAccAddresses(ctx, whitelisted, false)
 	}
 
 	order.SetStatus(status)
