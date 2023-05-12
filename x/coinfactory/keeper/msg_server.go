@@ -115,16 +115,7 @@ func (server msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForce
 		return nil, sdkerrors.Wrap(err, "unauthorized")
 	}
 
-	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
-	if err != nil {
-		return nil, err
-	}
-
-	if msg.Sender != authorityMetadata.GetAdmin() {
-		return nil, types.ErrUnauthorized
-	}
-
-	err = server.Keeper.forceTransfer(ctx, msg.Amount, msg.TransferFromAddress, msg.TransferToAddress)
+	err := server.Keeper.forceTransfer(ctx, msg.Amount, msg.TransferFromAddress, msg.TransferToAddress)
 	if err != nil {
 		return nil, err
 	}

@@ -696,6 +696,8 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
+      expect(currBalance).toBeGreaterThan(0);
+
       await sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.validatorAddress, denom, currBalance)
       const latestBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 

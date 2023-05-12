@@ -2,14 +2,19 @@ import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { queryBalance } from './bank'
 
-const queryDenomsFromCreator = async (client: any, account: string) => {
+export const queryDenomsFromCreator = async (client: any, account: string) => {
   const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
   return res?.data?.denoms || []
 }
 
+export const queryAdmin = async (client: any, denom: string) => {
+  const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomAuthorityMetadata(denom)
+  return res?.data?.authority_metadata?.admin || null
+}
+
 const notExistsDenom = (denoms: string[], account: string, subdenom: string) => denoms.every((denom: string) => denom !== genCoinDenom(account, subdenom))
 
-const existsDenom = (denoms: string[], account: string, subdenom: string) => denoms.some((denom: string) => denom === genCoinDenom(account, subdenom))
+export const existsDenom = (denoms: string[], account: string, subdenom: string) => denoms.some((denom: string) => denom === genCoinDenom(account, subdenom))
 
 export const genCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 

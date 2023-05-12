@@ -21,7 +21,7 @@ export class BlockWaiter {
     this.url = url;
   }
 
-  waitBlocks(n: number, timeout = 120000): Promise<void> {
+  waitBlocks(n: number, timeout = 30000): Promise<void> {
     return new Promise((resolve, reject) => {
       let ws: any = null;
       const x = setTimeout(() => {
@@ -59,7 +59,7 @@ export const getWithAttempts = async <T>(
   blockWaiter: BlockWaiter,
   getFunc: () => Promise<T>,
   readyFunc: (t: T) => Promise<boolean>,
-  numAttempts = 20,
+  numAttempts = 3,
 ): Promise<T> => {
   let error = null;
   let data: T | null = null;

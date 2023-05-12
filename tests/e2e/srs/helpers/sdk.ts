@@ -17,7 +17,7 @@ export class MantrachainSdk {
   adminAddress: string
   blockWaiter: BlockWaiter
 
-  async init(host = 'http://127.0.0.1:1317', rpc = 'http://127.0.0.1:26648', ws = 'ws://127.0.0.1:26657/websocket') {
+  async init(host = 'http://127.0.0.1:1317', rpc = 'http://127.0.0.1:26648', ws = 'ws://127.0.0.1:26648') {
     this.validatorWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.VALIDATOR_MNEMONIC!, {
       prefix: "mantra",
     })
