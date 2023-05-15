@@ -9,13 +9,60 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
-func CmdQueryDenomAuthorityMetadata2() *cobra.Command {
+func CmdQueryBalance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "denom-authority-metadata-2 [creator] [subdenom] [flags]",
-		Short: "get the authority metadata for a specific subdenom by creator",
+		Use:   "balance [creator] [subdenom] [address] [flags]",
+		Short: "get the address balance for a specific subdenom by creator",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			reqCreator := args[0]
+			reqSubDenom := args[1]
+
+			if strings.TrimSpace(reqCreator) == "" {
+				return errors.Wrap(types.ErrInvalidCreator, "empty creator")
+			}
+
+			if strings.TrimSpace(reqSubDenom) == "" {
+				return errors.Wrap(types.ErrInvalidDenom, "empty subdenom")
+			}
+
+			addr, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryBalanceRequest{
+				Creator:  reqCreator,
+				Subdenom: reqSubDenom,
+				Address:  addr.String(),
+			}
+
+			res, err := queryClient.Balance(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryDenomMetadata() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "denom-metadata [creator] [subdenom] [flags]",
+		Short: "get the authority metadata for a specific denom",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -33,12 +80,12 @@ func CmdQueryDenomAuthorityMetadata2() *cobra.Command {
 				return errors.Wrap(types.ErrInvalidDenom, "empty subdenom")
 			}
 
-			params := &types.QueryDenomAuthorityMetadata2Request{
+			params := &types.QueryDenomMetadataRequest{
 				Creator:  reqCreator,
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.DenomAuthorityMetadata2(context.Background(), params)
+			res, err := queryClient.DenomMetadata(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -52,61 +99,33 @@ func CmdQueryDenomAuthorityMetadata2() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryDenomAuthorityMetadata() *cobra.Command {
+func CmdQuerySupplyOf() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "denom-authority-metadata [denom] [flags]",
+		Use:   "supply [creator] [subdenom] [flags]",
 		Short: "get the authority metadata for a specific denom",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			reqDenom := args[0]
-
-			if strings.TrimSpace(reqDenom) == "" {
-				return errors.Wrap(types.ErrInvalidDenom, "empty denom")
-			}
-
-			params := &types.QueryDenomAuthorityMetadataRequest{
-				Denom: reqDenom,
-			}
-
-			res, err := queryClient.DenomAuthorityMetadata(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdQueryDenomsFromCreator() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "denoms-from-creator [creator] [flags]",
-		Short: "returns a list of all tokens created by a specific creator address",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
 			reqCreator := args[0]
+			reqSubDenom := args[1]
 
 			if strings.TrimSpace(reqCreator) == "" {
 				return errors.Wrap(types.ErrInvalidCreator, "empty creator")
 			}
 
-			params := &types.QueryDenomsFromCreatorRequest{
-				Creator: reqCreator,
+			if strings.TrimSpace(reqSubDenom) == "" {
+				return errors.Wrap(types.ErrInvalidDenom, "empty subdenom")
 			}
 
-			res, err := queryClient.DenomsFromCreator(context.Background(), params)
+			params := &types.QuerySupplyOfRequest{
+				Creator:  reqCreator,
+				Subdenom: reqSubDenom,
+			}
+
+			res, err := queryClient.SupplyOf(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -19,8 +19,6 @@ describe('Coinfactory module', () => {
       }
     })
 
-    await sdk.blockWaiter.waitBlocks(1)
-
     expect(existsDenom(await queryDenomsFromCreator(sdk.clientAdmin, sdk.adminAddress), sdk.adminAddress, subdenom)).toBeTruthy()
   })
 
@@ -39,8 +37,6 @@ describe('Coinfactory module', () => {
         }
       }
     })
-
-    await sdk.blockWaiter.waitBlocks(1)
 
     const currBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
 
@@ -62,8 +58,6 @@ describe('Coinfactory module', () => {
         }
       }
     })
-
-    await sdk.blockWaiter.waitBlocks(1)
 
     const currBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
 
@@ -92,8 +86,6 @@ describe('Coinfactory module', () => {
       }
     })
 
-    await sdk.blockWaiter.waitBlocks(1)
-
     const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
     expect(privBalance + amount).toEqual(currBalance)
@@ -109,8 +101,6 @@ describe('Coinfactory module', () => {
         newAdmin: sdk.validatorAddress,
       }
     })
-
-    await sdk.blockWaiter.waitBlocks(1)
 
     // TODO: fix queryAdmin issue when adding coin queries for denoms with slashes(/)
     // const admin = await queryAdmin(sdk.clientValidator, denom)
@@ -134,8 +124,6 @@ describe('Coinfactory module', () => {
       }
     })
 
-    await sdk.blockWaiter.waitBlocks(1)
-
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
     expect(privBalance + amount).toEqual(currBalance)
@@ -156,8 +144,6 @@ describe('Coinfactory module', () => {
         }
       }
     })
-
-    await sdk.blockWaiter.waitBlocks(1)
 
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
@@ -204,8 +190,6 @@ describe('Coinfactory module', () => {
         transferToAddress: sdk.validatorAddress
       }
     })
-
-    await sdk.blockWaiter.waitBlocks(1)
 
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
