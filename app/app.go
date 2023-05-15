@@ -91,6 +91,9 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory"
 	coinfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did"
+	didkeeper "github.com/MANTRA-Finance/mantrachain/x/did/keeper"
+	didtypes "github.com/MANTRA-Finance/mantrachain/x/did/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard"
 	guardkeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
@@ -143,6 +146,7 @@ var (
 		token.AppModuleBasic{},
 		guard.AppModuleBasic{},
 		coinfactory.AppModuleBasic{},
+		did.AppModuleBasic{},
 		ibcconsumer.AppModuleBasic{},
 	)
 
@@ -209,6 +213,7 @@ type App struct {
 	GuardKeeper       guardkeeper.Keeper
 	CoinFactoryKeeper coinfactorykeeper.Keeper
 	NFTKeeper         nftkeeper.Keeper
+	DidKeeper         didkeeper.Keeper
 	ConsumerKeeper    ibcconsumerkeeper.Keeper
 
 	// scoped keepers
@@ -280,6 +285,7 @@ func New(
 		guardtypes.StoreKey,
 		coinfactorytypes.StoreKey,
 		nftkeeper.StoreKey,
+		didtypes.StoreKey,
 		ibcconsumertypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -452,6 +458,12 @@ func New(
 		app.CoinFactoryKeeper,
 	)
 
+	app.DidKeeper = *didkeeper.NewKeeper(
+		appCodec,
+		keys[didtypes.StoreKey],
+		keys[didtypes.MemStoreKey],
+	)
+
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
@@ -525,6 +537,7 @@ func New(
 		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.NFTKeeper, app.CoinFactoryKeeper),
 		coinfactory.NewAppModule(appCodec, app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
 		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		did.NewAppModule(appCodec, app.DidKeeper),
 	)
 
 	app.MM.SetOrderBeginBlockers(
@@ -549,6 +562,7 @@ func New(
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
 		ibcconsumertypes.ModuleName,
 	)
 	app.MM.SetOrderEndBlockers(
@@ -573,6 +587,7 @@ func New(
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
 		ibcconsumertypes.ModuleName,
 	)
 
@@ -597,6 +612,7 @@ func New(
 		nfttypes.ModuleName,
 		tokentypes.ModuleName,
 		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
 		ibcconsumertypes.ModuleName,
 		crisistypes.ModuleName,
 	)
@@ -827,6 +843,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokentypes.ModuleName)
 	paramsKeeper.Subspace(guardtypes.ModuleName)
 	paramsKeeper.Subspace(coinfactorytypes.ModuleName)
+	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(ibcconsumertypes.ModuleName)
 
 	return paramsKeeper
