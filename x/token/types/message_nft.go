@@ -8,15 +8,16 @@ import (
 )
 
 const (
-	TypeMsgMintNfts       = "mint_nfts"
-	TypeMsgBurnNfts       = "burn_nfts"
-	TypeMsgTransferNfts   = "transfer_nfts"
-	TypeMsgApproveNfts    = "approve_nfts"
-	TypeMsgApproveAllNfts = "approve_all_nfts"
-	TypeMsgMintNft        = "mint_nft"
-	TypeMsgBurnNft        = "burn_nft"
-	TypeMsgTransferNft    = "transfer_nft"
-	TypeMsgApproveNft     = "approve_nft"
+	TypeMsgMintNfts                    = "mint_nfts"
+	TypeMsgBurnNfts                    = "burn_nfts"
+	TypeMsgTransferNfts                = "transfer_nfts"
+	TypeMsgApproveNfts                 = "approve_nfts"
+	TypeMsgApproveAllNfts              = "approve_all_nfts"
+	TypeMsgMintNft                     = "mint_nft"
+	TypeMsgBurnNft                     = "burn_nft"
+	TypeMsgTransferNft                 = "transfer_nft"
+	TypeMsgApproveNft                  = "approve_nft"
+	TypeMsgUpdateGuardSoulBondNftImage = "update_guard_soul_bond_nft_image"
 )
 
 var (
@@ -29,7 +30,68 @@ var (
 	_ sdk.Msg = &MsgBurnNft{}
 	_ sdk.Msg = &MsgTransferNft{}
 	_ sdk.Msg = &MsgApproveNft{}
+	_ sdk.Msg = &MsgUpdateGuardSoulBondNftImage{}
 )
+
+func NewMsgUpdateGuardSoulBondNftImage(creator string, owner string, nftId string, index uint64,
+	image *MsgNftImageMetadata,
+) *MsgUpdateGuardSoulBondNftImage {
+	return &MsgUpdateGuardSoulBondNftImage{
+		Creator: creator,
+		Owner:   owner,
+		NftId:   nftId,
+		Index:   index,
+		Image:   image,
+	}
+}
+
+func (msg *MsgUpdateGuardSoulBondNftImage) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgUpdateGuardSoulBondNftImage) Type() string {
+	return TypeMsgUpdateGuardSoulBondNftImage
+}
+
+func (msg *MsgUpdateGuardSoulBondNftImage) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgUpdateGuardSoulBondNftImage) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgUpdateGuardSoulBondNftImage) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	if msg.Image == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+	}
+	if msg.Image.Image == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+	}
+	if strings.TrimSpace(msg.Image.Image.Type) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+	}
+	if strings.TrimSpace(msg.Image.Image.Url) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+	}
+	if strings.TrimSpace(msg.NftId) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+	}
+	return nil
+}
 
 func NewMsgMintNfts(creator string, collectionCreator string, collectionId string,
 	nfts *MsgNftsMetadata,

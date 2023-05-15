@@ -48,4 +48,6 @@ var (
 	ErrTransferSoulBondedNftNotSupported        = errors.Register(ModuleName, 1148, "transfer soul bonded nft not supported")
 	ErrTransferSoulBondedNftsNotSupported       = errors.Register(ModuleName, 1149, "transfer soul bonded nfts not supported")
 	ErrSoulBondedNftCollectionOperationDisabled = errors.Register(ModuleName, 1150, "soul bonded nft collection operation disabled")
+
+	ErrInvalidNftImageIndex = errors.Register(ModuleName, 1151, "nft image index provided is invalid")
 )

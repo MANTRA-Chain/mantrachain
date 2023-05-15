@@ -51,3 +51,9 @@ func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator
 
 	return nil
 }
+
+func (k Keeper) GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx sdk.Context) (string, string) {
+	conf := k.GetParams(ctx)
+
+	return conf.GetAccountPrivilegesTokenCollectionCreator(), conf.GetAccountPrivilegesTokenCollectionId()
+}

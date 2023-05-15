@@ -9,13 +9,15 @@ const (
 	FlagCollectionCreator = "collection-creator"
 	FlagCollectionId      = "collection-id"
 	FlagReceiver          = "receiver"
+	FlagOwner             = "owner"
 )
 
 var (
-	FsMintNFT     = flag.NewFlagSet("", flag.ContinueOnError)
-	FsBurnNFT     = flag.NewFlagSet("", flag.ContinueOnError)
-	FsTransferNFT = flag.NewFlagSet("", flag.ContinueOnError)
-	FsApproveNFT  = flag.NewFlagSet("", flag.ContinueOnError)
+	FsMintNFT                     = flag.NewFlagSet("", flag.ContinueOnError)
+	FsBurnNFT                     = flag.NewFlagSet("", flag.ContinueOnError)
+	FsTransferNFT                 = flag.NewFlagSet("", flag.ContinueOnError)
+	FsApproveNFT                  = flag.NewFlagSet("", flag.ContinueOnError)
+	FsUpdateGuardSoulBondNFTImage = flag.NewFlagSet("", flag.ContinueOnError)
 )
 
 func init() {
@@ -36,4 +38,5 @@ func init() {
 	FsApproveNFT.String(FlagCollectionCreator, "", "The collection creator address, if not filled, the default is the sender of the transaction")
 	FsApproveNFT.String(FlagCollectionId, "", "The collection id, if not filled, the default is the creator's 'default' collection")
 
+	FsUpdateGuardSoulBondNFTImage.String(FlagOwner, "", "The owner address of the NFT")
 }

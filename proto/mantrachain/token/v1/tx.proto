@@ -21,7 +21,28 @@ service Msg {
   rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
   rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
   rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
+  rpc UpdateGuardSoulBondNftImage(MsgUpdateGuardSoulBondNftImage) returns (MsgUpdateGuardSoulBondNftImageResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgNftImageMetadata {
+  TokenImage image = 1;
+}
+
+message MsgUpdateGuardSoulBondNftImage {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string nft_id = 3;
+  uint64 index = 4;
+  MsgNftImageMetadata image = 5;
+}
+
+message MsgUpdateGuardSoulBondNftImageResponse {
+  string nft_id = 1;
+  string owner = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
 }
 
 message MsgApproveNft {

@@ -9,10 +9,90 @@ import (
 
 	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types.MsgUpdateGuardSoulBondNftImage) (*types.MsgUpdateGuardSoulBondNftImageResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	collectionCreator, collectionId := k.gk.GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx)
+
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	collectionCreatorAddr, err := sdk.AccAddressFromBech32(collectionCreator)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+	}
+
+	if strings.TrimSpace(collectionId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+	}
+
+	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, collectionId)
+
+	nft, found := k.GetNft(ctx, collectionIndex, types.GetNftIndex(collectionIndex, msg.NftId))
+
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft not found")
+	}
+
+	if msg.Index > 0 && (nft.Images == nil || int(msg.Index) >= len(nft.Images)) {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
+	}
+
+	if msg.Image.Image.Type == "" || int32(len(msg.Image.Image.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
+	}
+
+	if !utils.IsUrl(msg.Image.Image.Url) {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
+	}
+
+	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+		nft.Images = []*types.TokenImage{
+			{
+				Type: msg.Image.Image.Type,
+				Url:  msg.Image.Image.Url,
+			},
+		}
+	} else {
+		nft.Images[msg.Index] = &types.TokenImage{
+			Type: msg.Image.Image.Type,
+			Url:  msg.Image.Image.Url,
+		}
+	}
+
+	k.SetNft(ctx, nft)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateGuardSoulBondNftImage),
+			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator),
+			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, msg.NftId),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+		),
+	)
+
+	return &types.MsgUpdateGuardSoulBondNftImageResponse{
+		NftId:             msg.NftId,
+		Owner:             owner.String(),
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+	}, nil
+}
 
 func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*types.MsgMintNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

@@ -27,6 +27,8 @@ type BankKeeper interface {
 	// Methods imported from bank should be defined here
 }
 type GuardKeeper interface {
+	CheckIsAdmin(ctx sdk.Context, address string) error
 	CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNftsCollection bool, address string) error
 	CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator string, collectionId string, address string) error
+	GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx sdk.Context) (string, string)
 }

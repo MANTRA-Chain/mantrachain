@@ -15,6 +15,76 @@ import (
 
 var _ = strconv.Itoa(0)
 
+func CmdUpdateGuardSoulBondNftImage() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-guard-soul-bond-nft-image [nft-id] [image-index] [payload-json]",
+		Short: "Update guard soul-bond nft image by index",
+		Long: "Update guard soul-bond NFT image. " +
+			"[payload-json] is JSON encoded MsgNftImageMetadata.",
+		Example: fmt.Sprintf(
+			"$ %s tx token update-guard-soul-bond-nft-image <nft-id> <image-index> <payload-json> "+
+				"--from=<from> "+
+				"--owner=<owner> "+
+				"--chain-id=<chain-id> ",
+			version.AppName,
+		),
+		Args: cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argNftId := args[0]
+			argIndex := args[1]
+			argMetadata := args[2]
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			// verification
+			signer := clientCtx.GetFromAddress()
+
+			owner, err := cmd.Flags().GetString(FlagOwner)
+			if err != nil {
+				return err
+			}
+
+			ownerStr := strings.TrimSpace(owner)
+			if len(ownerStr) == 0 {
+				owner = signer.String()
+			}
+
+			// Unmarshal payload
+			var image types.MsgNftImageMetadata
+			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &image)
+			if err != nil {
+				return err
+			}
+
+			index, err := strconv.ParseUint(argIndex, 10, 64)
+			if err != nil {
+				return fmt.Errorf("image index: %w", err)
+			}
+
+			msg := types.NewMsgUpdateGuardSoulBondNftImage(
+				clientCtx.GetFromAddress().String(),
+				owner,
+				argNftId,
+				index,
+				&image,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().AddFlagSet(FsUpdateGuardSoulBondNFTImage)
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func CmdMintNfts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-nfts [payload-json]",
