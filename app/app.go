@@ -322,6 +322,13 @@ func New(
 	scopedIBCConsumerKeeper := app.CapabilityKeeper.ScopeToModule(ibcconsumertypes.ModuleName)
 	app.CapabilityKeeper.Seal()
 
+	app.DidKeeper = *didkeeper.NewKeeper(
+		appCodec,
+		keys[didtypes.StoreKey],
+		keys[didtypes.MemStoreKey],
+		&app.GuardKeeper,
+	)
+
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec,
@@ -433,6 +440,7 @@ func New(
 		app.GetSubspace(tokentypes.ModuleName),
 		app.NFTKeeper,
 		&app.GuardKeeper,
+		app.DidKeeper,
 	)
 
 	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
@@ -456,12 +464,6 @@ func New(
 		app.TokenKeeper,
 		app.NFTKeeper,
 		app.CoinFactoryKeeper,
-	)
-
-	app.DidKeeper = *didkeeper.NewKeeper(
-		appCodec,
-		keys[didtypes.StoreKey],
-		keys[didtypes.MemStoreKey],
 	)
 
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(

@@ -97,6 +97,9 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 	nfts *MsgNftsMetadata,
 	receiver string,
 	strict bool,
+	did bool,
+	pubKeyHex string,
+	pubKeyType string,
 ) *MsgMintNfts {
 	return &MsgMintNfts{
 		Creator:           creator,
@@ -105,6 +108,9 @@ func NewMsgMintNfts(creator string, collectionCreator string, collectionId strin
 		Nfts:              nfts,
 		Receiver:          receiver,
 		Strict:            strict,
+		Did:               did,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
 	}
 }
 
@@ -152,6 +158,14 @@ func (msg *MsgMintNfts) ValidateBasic() error {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+		}
+	}
+	if msg.Did {
+		if strings.TrimSpace(msg.PubKeyHex) == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pub key hex should not be empty")
+		}
+		if strings.TrimSpace(msg.PubKeyType) == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pub key type should not be empty")
 		}
 	}
 	if msg.Nfts == nil || len(msg.Nfts.Nfts) == 0 {
@@ -402,6 +416,9 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 	nft *MsgNftMetadata,
 	receiver string,
 	strict bool,
+	did bool,
+	pubKeyHex string,
+	pubKeyType string,
 ) *MsgMintNft {
 	return &MsgMintNft{
 		Creator:           creator,
@@ -410,6 +427,9 @@ func NewMsgMintNft(creator string, collectionCreator string, collectionId string
 		Nft:               nft,
 		Receiver:          receiver,
 		Strict:            strict,
+		Did:               did,
+		PubKeyHex:         pubKeyHex,
+		PubKeyType:        pubKeyType,
 	}
 }
 
@@ -459,8 +479,16 @@ func (msg *MsgMintNft) ValidateBasic() error {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
+	if msg.Did {
+		if strings.TrimSpace(msg.PubKeyHex) == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pub key hex should not be empty")
+		}
+		if strings.TrimSpace(msg.PubKeyType) == "" {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pub key type should not be empty")
+		}
+	}
 	if msg.Nft == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts is empty")
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft is empty")
 	}
 	return nil
 }

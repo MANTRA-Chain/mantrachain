@@ -28,6 +28,11 @@ func (k msgServer) CreateDidDocument(
 	msg *types.MsgCreateDidDocument,
 ) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.Signer); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	k.Logger(ctx).Info("request to create a did document", "target did", msg.Id)
 	// setup a new did document (performs input validation)
 	did, err := types.NewDidDocument(msg.Id,

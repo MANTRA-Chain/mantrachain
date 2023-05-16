@@ -22,7 +22,15 @@ func deriveVMType(pubKeyType string) (vmType types.VerificationMaterialType, err
 	return
 }
 
-func (k Keeper) SetNewDidDocument(ctx sdk.Context, id string, signer sdk.Address, pubKeyHex string, pubKeyType string) (string, error) {
+func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, signer sdk.Address, pubKeyHex string, pubKeyType string, controller sdk.Address) (string, error) {
+	// check that the did is not already taken
+	_, found := k.GetDidDocument(ctx, []byte(id))
+	if found {
+		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", id)
+		k.Logger(ctx).Error(err.Error())
+		return "", err
+	}
+
 	k.Logger(ctx).Info("request to create a did document", "target did", id)
 
 	pubKeyHex = pubKeyHex[1:]
@@ -59,13 +67,7 @@ func (k Keeper) SetNewDidDocument(ctx sdk.Context, id string, signer sdk.Address
 		return "", err
 	}
 
-	// check that the did is not already taken
-	_, found := k.GetDidDocument(ctx, []byte(id))
-	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", id)
-		k.Logger(ctx).Error(err.Error())
-		return "", err
-	}
+	didDocument.AddControllers(types.NewKeyDID(controller.String()).String())
 
 	// persist the did document
 	k.SetDidDocument(ctx, []byte(id), didDocument)
@@ -82,4 +84,17 @@ func (k Keeper) SetNewDidDocument(ctx sdk.Context, id string, signer sdk.Address
 	}
 
 	return didDocument.Id, nil
+}
+
+func (k Keeper) ForceRemoveDidDocumentIfExists(ctx sdk.Context, id string) (bool, error) {
+	k.Logger(ctx).Info("request to delete a did document if exists", "target did", id)
+
+	found := k.HasDidDocument(ctx, []byte(id))
+	if !found {
+		return false, nil
+	}
+
+	k.DeleteDidDocument(ctx, []byte(id))
+
+	return true, nil
 }

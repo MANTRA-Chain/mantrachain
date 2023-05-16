@@ -14,6 +14,14 @@ func (k Keeper) SetDidDocument(ctx sdk.Context, key []byte, document types.DidDo
 	k.Set(ctx, key, types.DidDocumentKey, document, k.Marshal)
 }
 
+func (k Keeper) HasDidDocument(ctx sdk.Context, key []byte) bool {
+	return k.Has(ctx, key, types.DidDocumentKey)
+}
+
+func (k Keeper) DeleteDidDocument(ctx sdk.Context, key []byte) {
+	k.Delete(ctx, key, types.DidDocumentKey)
+}
+
 func (k Keeper) GetDidDocument(ctx sdk.Context, key []byte) (types.DidDocument, bool) {
 	val, found := k.Get(ctx, key, types.DidDocumentKey, k.UnmarshalDidDocument)
 	return val.(types.DidDocument), found

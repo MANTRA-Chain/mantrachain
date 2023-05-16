@@ -20,6 +20,7 @@ type (
 
 		nftKeeper types.NFTKeeper
 		gk        types.GuardKeeper
+		dk        types.DidKeeper
 	}
 )
 
@@ -30,6 +31,7 @@ func NewKeeper(
 
 	nftKeeper types.NFTKeeper,
 	gk types.GuardKeeper,
+	dk types.DidKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -43,6 +45,7 @@ func NewKeeper(
 		paramstore: ps,
 		nftKeeper:  nftKeeper,
 		gk:         gk,
+		dk:         dk,
 	}
 }
 

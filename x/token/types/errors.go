@@ -50,4 +50,5 @@ var (
 	ErrSoulBondedNftCollectionOperationDisabled = errors.Register(ModuleName, 1150, "soul bonded nft collection operation disabled")
 
 	ErrInvalidNftImageIndex = errors.Register(ModuleName, 1151, "nft image index provided is invalid")
+	ErrInvalidDid           = errors.Register(ModuleName, 1152, "did provided is invalid")
 )

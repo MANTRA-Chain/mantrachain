@@ -26,6 +26,7 @@ message Nft {
   ];
   string collection_id = 11 [(gogoproto.moretags) = "yaml:\"collection_id\""];
   bytes collection_index = 12 [(gogoproto.moretags) = "yaml:\"collection_index\""];
+  string did = 13 [(gogoproto.moretags) = "yaml:\"did\""];
 }
 
 message ApprovedAddressesList {

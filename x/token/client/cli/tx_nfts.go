@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -97,6 +98,7 @@ func CmdMintNfts() *cobra.Command {
 				"--receiver=<receiver> "+
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
+				"--did "+
 				"--strict "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
@@ -122,6 +124,10 @@ func CmdMintNfts() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
+			info, err := clientCtx.Keyring.KeyByAddress(signer)
+			if err != nil {
+				return err
+			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -138,11 +144,28 @@ func CmdMintNfts() *cobra.Command {
 				return err
 			}
 
+			did, err := cmd.Flags().GetBool(FlagDid)
+			if err != nil {
+				return err
+			}
+
 			// Unmarshal payload
 			var nfts types.MsgNftsMetadata
 			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &nfts)
 			if err != nil {
 				return err
+			}
+
+			var pubKeyHex string
+			var pubKeyType string
+
+			if did {
+				pubKey := info.GetPubKey()
+				pubKeyHex = utils.GetPubKeyHex(pubKey)
+				pubKeyType, err = utils.DerivePubKeyType(pubKey)
+				if err != nil {
+					return err
+				}
 			}
 
 			msg := types.NewMsgMintNfts(
@@ -152,6 +175,9 @@ func CmdMintNfts() *cobra.Command {
 				&nfts,
 				receiver,
 				strict,
+				did,
+				pubKeyHex,
+				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -445,6 +471,7 @@ func CmdMintNft() *cobra.Command {
 				"--collection-creator=<collection-creator> "+
 				"--collection-id=<collection-id> "+
 				"--strict "+
+				"--did "+
 				"--chain-id=<chain-id> ",
 			version.AppName,
 		),
@@ -469,6 +496,10 @@ func CmdMintNft() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
+			info, err := clientCtx.Keyring.KeyByAddress(signer)
+			if err != nil {
+				return err
+			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -485,11 +516,28 @@ func CmdMintNft() *cobra.Command {
 				return err
 			}
 
+			did, err := cmd.Flags().GetBool(FlagDid)
+			if err != nil {
+				return err
+			}
+
 			// Unmarshal payload
 			var nft types.MsgNftMetadata
 			err = clientCtx.Codec.UnmarshalJSON([]byte(argMetadata), &nft)
 			if err != nil {
 				return err
+			}
+
+			var pubKeyHex string
+			var pubKeyType string
+
+			if did {
+				pubKey := info.GetPubKey()
+				pubKeyHex = utils.GetPubKeyHex(pubKey)
+				pubKeyType, err = utils.DerivePubKeyType(pubKey)
+				if err != nil {
+					return err
+				}
 			}
 
 			msg := types.NewMsgMintNft(
@@ -499,6 +547,9 @@ func CmdMintNft() *cobra.Command {
 				&nft,
 				receiver,
 				strict,
+				did,
+				pubKeyHex,
+				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

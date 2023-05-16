@@ -109,6 +109,9 @@ message MsgMintNft {
   string collection_id = 4;
   MsgNftMetadata nft = 5;
   bool strict = 6;
+  bool did = 7;
+  string pub_key_hex = 8;
+  string pub_key_type = 9;
 }
 
 message MsgMintNftResponse {
@@ -208,6 +211,9 @@ message MsgMintNfts {
   string collection_id = 4;
   MsgNftsMetadata nfts = 5;
   bool strict = 6;
+  bool did = 7;
+  string pub_key_hex = 8;
+  string pub_key_type = 9;
 }
 
 message MsgNftsMetadata {

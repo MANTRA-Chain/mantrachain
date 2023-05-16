@@ -25,11 +25,6 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 
 	collectionCreator, collectionId := k.gk.GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Owner)
-	if err != nil {
-		return nil, err
-	}
-
 	collectionCreatorAddr, err := sdk.AccAddressFromBech32(collectionCreator)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
@@ -40,11 +35,23 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, collectionId)
+	nftIndex := types.GetNftIndex(collectionIndex, msg.NftId)
 
-	nft, found := k.GetNft(ctx, collectionIndex, types.GetNftIndex(collectionIndex, msg.NftId))
+	nft, found := k.GetNft(ctx, collectionIndex, nftIndex)
 
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft not found")
+	}
+
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	nftOwner := k.nftKeeper.GetOwner(ctx, string(collectionIndex), string(nftIndex))
+
+	if nftOwner.Empty() || !owner.Equals(nftOwner) {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft owner invalid")
 	}
 
 	if msg.Index > 0 && (nft.Images == nil || int(msg.Index) >= len(nft.Images)) {
@@ -136,13 +143,27 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	}
 
 	collectionController.MustExist()
-	// The restricted nft collections have role based authentication in an ante handler
-	if !k.HasRestrictedNftsCollection(
+
+	restrictedCollection := k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
-	) {
+	)
+
+	if !restrictedCollection {
 		collectionController.OpenedOrOwner(creator)
 	}
+
+	if msg.Did {
+		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
+			ctx,
+			collectionController.getIndex(),
+		)
+
+		if !restrictedCollection || !soulBondNftsCollection {
+			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nfts for collection which is not restricted and/or not for soul-bond nfts")
+		}
+	}
+
 	if err := collectionController.Validate(); err != nil {
 		return nil, err
 	}
@@ -172,6 +193,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
+	didExecutor := NewDidExecutor(ctx, creator, msg.PubKeyHex, msg.PubKeyType, receiver, k.dk)
+
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
 
@@ -182,6 +205,15 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			UriHash: nftMetadata.Id,
 			Data:    nftMetadata.Data,
 		})
+
+		var did string
+
+		if msg.Did {
+			did, err = didExecutor.CreateDidForNft(nftIndex)
+			if err != nil {
+				return nil, err
+			}
+		}
 
 		newNftsMetadata = append(newNftsMetadata, types.Nft{
 			Index:             nftIndex,
@@ -196,6 +228,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			CollectionId:      collectionId,
 			CollectionCreator: collectionCreator,
 			Creator:           creator,
+			Did:               did,
 		})
 
 		nftsIds = append(nftsIds, string(nftMetadata.Id))
@@ -274,7 +307,6 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	}
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -296,6 +328,11 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
 	if err := nftExecutor.BatchBurnNft(string(collectionIndex), nftsIds); err != nil {
 		return nil, err
+	}
+
+	didExecutor := NewDidExecutor(ctx, nil, "", "", nil, k.dk)
+	for _, nftIndex := range nftsIndexes {
+		didExecutor.ForceDeleteDidOfNftIfExists(nftIndex)
 	}
 
 	k.DeleteApprovedNfts(ctx, collectionIndex, nftsIndexes)
@@ -374,7 +411,6 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	}
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -493,13 +529,26 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	collectionController.MustExist()
 
-	// The restricted nft collections has role based authorization in an ante handler
-	if !k.HasRestrictedNftsCollection(
+	restrictedCollection := k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
-	) {
+	)
+
+	if !restrictedCollection {
 		collectionController.OpenedOrOwner(creator)
 	}
+
+	if msg.Did {
+		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
+			ctx,
+			collectionController.getIndex(),
+		)
+
+		if !restrictedCollection || !soulBondNftsCollection {
+			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nft for collection which is not restricted and/or not for soul-bond nfts")
+		}
+	}
+
 	if err := collectionController.Validate(); err != nil {
 		return nil, err
 	}
@@ -537,6 +586,16 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		Data:    nftMetadata.Data,
 	}
 
+	var did string
+
+	if msg.Did {
+		didExecutor := NewDidExecutor(ctx, creator, msg.PubKeyHex, msg.PubKeyType, receiver, k.dk)
+		did, err = didExecutor.CreateDidForNft(nftIndex)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	newNftMetadata := types.Nft{
 		Index:             nftIndex,
 		Id:                nftMetadata.Id,
@@ -550,6 +609,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		CollectionId:      collectionId,
 		CollectionCreator: collectionCreator,
 		Creator:           creator,
+		Did:               did,
 	}
 
 	nftId := nftMetadata.Id
@@ -623,7 +683,6 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		WithConfiguration(k.GetParams(ctx))
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -646,6 +705,9 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	if err := nftExecutor.BurnNft(string(collectionIndex), nftsIds[0]); err != nil {
 		return nil, err
 	}
+
+	didExecutor := NewDidExecutor(ctx, nil, "", "", nil, k.dk)
+	didExecutor.ForceDeleteDidOfNftIfExists(nftsIndexes[0])
 
 	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])
 	k.DeleteNft(ctx, collectionIndex, nftsIndexes[0])
@@ -719,7 +781,6 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		WithConfiguration(k.GetParams(ctx))
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -819,7 +880,6 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		WithConfiguration(k.GetParams(ctx))
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -927,7 +987,6 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	}
 
 	nftController.FilterNotExist()
-	// The restricted nft collections has role based authorization in an ante handler
 	if !k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),

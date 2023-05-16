@@ -20,13 +20,16 @@ type Keeper struct {
 	cdc      codec.Codec
 	storeKey sdk.StoreKey
 	memKey   sdk.StoreKey
+	gk       types.GuardKeeper
 }
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey) *Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey,
+	gk types.GuardKeeper) *Keeper {
 	return &Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
 		memKey:   memKey,
+		gk:       gk,
 	}
 }
 
@@ -53,6 +56,15 @@ func (k Keeper) Delete(
 ) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(append(prefix, key...))
+}
+
+func (k Keeper) Has(
+	ctx sdk.Context,
+	key []byte,
+	prefix []byte,
+) bool {
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(append(prefix, key...))
 }
 
 // Get gets an item from the store by bytes
