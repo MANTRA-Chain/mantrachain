@@ -527,10 +527,10 @@ github.com/HdrHistogram/hdrhistogram-go v1.1.2/go.mod h1:yDgFjdqOqDEKOvasDdhWNXY
 github.com/Joker/hpp v1.0.0/go.mod h1:8x5n+M1Hp5hC0g8okX3sR3vFQwynaX/UgSOM9MeBKzY=
 github.com/Joker/jade v1.0.1-0.20190614124447-d475f43051e7/go.mod h1:6E6s8o2AE4KhCrqr6GRJjdC/gNfTdxkIXvuGZZda2VM=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230420191427-b7af40d762ad h1:WGUe53JWUkNnu7TDMXcJQuc735TAlz8H3NcePymChG4=
-github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230420191427-b7af40d762ad/go.mod h1:bScuNwWAP0TZJpUf+SHXRU3xGoUPp+X9nAzfeIXts40=
-github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230420192553-e37508423ed3 h1:ULToNEx8hWXfgJDPrr4poaD9BhtSx3YtiKl9QQmDqNE=
-github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230420192553-e37508423ed3/go.mod h1:YbasRvosA1DF7GcVCQ10JDVf5XhBN9Qbrq8EGlFgBsE=
+github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230517071928-9793e3351a6e h1:89uHb7/DuuTkJAunRrow1khLX74g7HexWpjpVB4b2Sw=
+github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230517071928-9793e3351a6e/go.mod h1:bScuNwWAP0TZJpUf+SHXRU3xGoUPp+X9nAzfeIXts40=
+github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230517090045-58215607290f h1:pUZLrRxmHzVx7BcDYRo4oDzEeTy1EvlPp12CA6fpa0g=
+github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230517090045-58215607290f/go.mod h1:uSaIv6fH/4IfujRK7fTTyrhnDal95L4r5WJBYFl7EJc=
 github.com/Masterminds/goutils v1.1.0/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=

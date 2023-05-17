@@ -24,7 +24,12 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		if err == nil {
 			coinAdmin, found := k.ck.GetAdmin(ctx, denom)
 
-			if found && coinAdmin.Equals(address) {
+			if !found {
+				return sdkerrors.Wrapf(types.ErrCoinAdminNotFound, "missing coin admin, denom %s", denom)
+			}
+
+			// The coin admin should be able to transfer without checking the privileges
+			if coinAdmin.Equals(address) {
 				continue
 			}
 
@@ -132,7 +137,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	return nil
 }
 
-func (k Keeper) WhitelistTransferAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) []string {
+func (k Keeper) WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string {
 	updated := make([]string, 0)
 
 	if len(addresses) == 0 {

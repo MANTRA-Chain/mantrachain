@@ -34,4 +34,7 @@ type LiquidityKeeper interface {
 
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
+	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	ValidateCoinLocked(ctx sdk.Context, coin sdk.Coin) error
+	ValidateCoinLockedByDenom(ctx sdk.Context, denom string) error
 }

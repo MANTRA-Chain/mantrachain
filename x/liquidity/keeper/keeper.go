@@ -35,6 +35,8 @@ func NewKeeper(
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
+	gk.WhitelistTransferAccAddresses([]string{types.DefaultFeeCollectorAddress.String(), types.DefaultDustCollectorAddress.String(), types.GlobalEscrowAddress.String()}, true)
+
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,

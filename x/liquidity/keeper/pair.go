@@ -29,6 +29,9 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 	if _, found := k.GetPairByDenoms(ctx, msg.BaseCoinDenom, msg.QuoteCoinDenom); found {
 		return types.ErrPairAlreadyExists
 	}
+	if err := k.gk.ValidateCoinsLockedByDenoms(ctx, []string{msg.BaseCoinDenom, msg.QuoteCoinDenom}); err != nil {
+		return err
+	}
 	return nil
 }
 

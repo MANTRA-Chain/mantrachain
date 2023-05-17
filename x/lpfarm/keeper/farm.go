@@ -12,10 +12,19 @@ import (
 // Farm creates a new farm object for the given coin's denom, if there wasn't.
 func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, coin.Denom); err != nil {
+		return nil, err
+	}
+
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(
 		ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin)); err != nil {
 		return nil, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	_, found := k.GetFarm(ctx, coin.Denom)
 	if !found {
@@ -68,6 +77,10 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "not enough farming amount")
 	}
 
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, coin.Denom); err != nil {
+		return nil, err
+	}
+
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)
 	if err != nil {
 		return nil, err
@@ -88,9 +101,14 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 	k.SetFarm(ctx, coin.Denom, farm)
 
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
+
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin)); err != nil {
 		return nil, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventUnfarm{
 		Farmer:           farmerAddr.String(),
@@ -108,6 +126,10 @@ func (k Keeper) Harvest(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string
 	position, found := k.GetPosition(ctx, farmerAddr, denom)
 	if !found {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "position not found")
+	}
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, denom); err != nil {
+		return nil, err
 	}
 
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)

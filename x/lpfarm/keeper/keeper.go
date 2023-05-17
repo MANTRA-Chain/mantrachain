@@ -37,6 +37,8 @@ func NewKeeper(
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
+	gk.WhitelistTransferAccAddresses([]string{types.DefaultFeeCollector.String(), sdk.AccAddress(types.RewardsPoolAddress).String()}, true)
+
 	return Keeper{
 		cdc:             cdc,
 		storeKey:        storeKey,

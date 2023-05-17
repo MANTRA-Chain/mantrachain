@@ -17,4 +17,6 @@ var (
 	ErrRequiredPrivilegesNotFound                          = errors.Register(ModuleName, 1119, "required privileges not found")
 	ErrCoinRequiredPrivilegesNotFound                      = errors.Register(ModuleName, 1120, "coin required privileges not found")
 	ErrCoinLocked                                          = errors.Register(ModuleName, 1121, "coin locked")
+	ErrCoinAdminNotFound                                   = errors.Register(ModuleName, 1122, "coin admin not found")
+	ErrInvalidDenom                                        = errors.Register(ModuleName, 1123, "invalid denom")
 )

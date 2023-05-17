@@ -414,23 +414,6 @@ func New(
 		app.BankKeeper,
 		app.ModuleAccountAddrs(),
 	)
-	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
-		appCodec,
-		keys[liquiditytypes.StoreKey],
-		app.GetSubspace(liquiditytypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&app.GuardKeeper,
-	)
-	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(
-		appCodec,
-		keys[lpfarmtypes.StoreKey],
-		app.GetSubspace(lpfarmtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.LiquidityKeeper,
-		&app.GuardKeeper,
-	)
 
 	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
@@ -464,6 +447,27 @@ func New(
 		app.TokenKeeper,
 		app.NFTKeeper,
 		app.CoinFactoryKeeper,
+	)
+
+	// Should be initiated after guard keeper
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		app.GetSubspace(liquiditytypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		&app.GuardKeeper,
+	)
+
+	// Should be initiated after guard keeper
+	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(
+		appCodec,
+		keys[lpfarmtypes.StoreKey],
+		app.GetSubspace(lpfarmtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(

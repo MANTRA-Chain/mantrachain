@@ -34,6 +34,15 @@ func (k msgServer) CreateDidDocument(
 	}
 
 	k.Logger(ctx).Info("request to create a did document", "target did", msg.Id)
+
+	// check that the did is not already taken
+	found := k.Keeper.HasDidDocument(ctx, []byte(msg.Id))
+	if found {
+		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", msg.Id)
+		k.Logger(ctx).Error(err.Error())
+		return nil, err
+	}
+
 	// setup a new did document (performs input validation)
 	did, err := types.NewDidDocument(msg.Id,
 		types.WithServices(msg.Services...),
@@ -41,14 +50,6 @@ func (k msgServer) CreateDidDocument(
 		types.WithControllers(msg.Controllers...),
 	)
 	if err != nil {
-		k.Logger(ctx).Error(err.Error())
-		return nil, err
-	}
-
-	// check that the did is not already taken
-	_, found := k.Keeper.GetDidDocument(ctx, []byte(msg.Id))
-	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", msg.Id)
 		k.Logger(ctx).Error(err.Error())
 		return nil, err
 	}

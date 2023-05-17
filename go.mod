@@ -283,8 +283,8 @@ require (
 
 replace (
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0 // dragonberry security patch
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230420191427-b7af40d762ad
-	github.com/cosmos/ibc-go/v4 => github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230420192553-e37508423ed3
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/cosmos-sdk v0.45.16-0.20230517071928-9793e3351a6e
+	github.com/cosmos/ibc-go/v4 => github.com/MANTRA-Finance/ibc-go/v4 v4.3.1-0.20230517090045-58215607290f
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.27
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2

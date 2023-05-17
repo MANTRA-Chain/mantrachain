@@ -25,9 +25,14 @@ func (k Keeper) CreatePrivatePlan(
 	if err != nil {
 		return types.Plan{}, err
 	}
+
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, creatorAddr, feeCollectorAddr, fee); err != nil {
 		return types.Plan{}, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	id, _ := k.GetLastPlanId(ctx)
 	farmingPoolAddr := types.DeriveFarmingPoolAddress(id + 1)
@@ -129,11 +134,23 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.Plan) error {
 	farmingPoolAddr := plan.GetFarmingPoolAddress()
 	if plan.FarmingPoolAddress != plan.TerminationAddress {
 		balances := k.bankKeeper.SpendableCoins(ctx, farmingPoolAddr)
+
+		notLockedCoinsBalances := sdk.Coins{}
+		for _, balance := range balances {
+			if err := k.gk.ValidateCoinLocked(ctx, balance); err == nil {
+				notLockedCoinsBalances = append(notLockedCoinsBalances, balance)
+			}
+		}
+
 		if !balances.IsZero() {
+			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingPoolAddr.String(), plan.GetTerminationAddress().String()}, true)
+
 			if err := k.bankKeeper.SendCoins(
-				ctx, farmingPoolAddr, plan.GetTerminationAddress(), balances); err != nil {
+				ctx, farmingPoolAddr, plan.GetTerminationAddress(), notLockedCoinsBalances); err != nil {
 				return err
 			}
+
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 	}
 	plan.IsTerminated = true
@@ -204,10 +221,27 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 		if !balances.IsAllGTE(totalRewards) {
 			continue
 		}
+
+		var hasLockedCoin bool
+		for _, reward := range totalRewards {
+			if err := k.gk.ValidateCoinLocked(ctx, reward); err != nil {
+				hasLockedCoin = true
+			}
+		}
+
+		if hasLockedCoin {
+			continue
+		}
+
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingPoolAddr.String()}, true)
+
 		if err := k.bankKeeper.SendCoins(
 			ctx, farmingPoolAddr, types.RewardsPoolAddress, totalRewards); err != nil {
 			return err
 		}
+
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+
 		for denom, rewards := range ra.allocatedRewards[farmingPool] {
 			rewardsByDenom[denom] = rewardsByDenom[denom].Add(rewards...)
 		}

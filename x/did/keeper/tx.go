@@ -67,7 +67,12 @@ func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, signer sdk.Addr
 		return "", err
 	}
 
-	didDocument.AddControllers(types.NewKeyDID(controller.String()).String())
+	if !controller.Empty() {
+		err = didDocument.AddControllers(types.NewKeyDID(controller.String()).String())
+		if err != nil {
+			return "", err
+		}
+	}
 
 	// persist the did document
 	k.SetDidDocument(ctx, []byte(id), didDocument)
@@ -76,7 +81,7 @@ func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, signer sdk.Addr
 	didM := types.NewDidMetadata(ctx.TxBytes(), ctx.BlockTime())
 	k.SetDidMetadata(ctx, []byte(id), didM)
 
-	k.Logger(ctx).Info("created did document", "did", id, "controller", signer.String())
+	k.Logger(ctx).Info("created did document", "did", id, "controllers", signer.String(), controller.String())
 
 	// emit the event
 	if err := ctx.EventManager().EmitTypedEvents(types.NewDidDocumentCreatedEvent(id, signer.String())); err != nil {
