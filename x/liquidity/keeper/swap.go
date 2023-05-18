@@ -123,10 +123,14 @@ func (k Keeper) placeOrder(
 		return types.Order{}, err
 	}
 
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
+
 	refundedCoin := offerCoin.Sub(resultOfferCoin)
 	if err := k.bankKeeper.SendCoins(ctx, ordererAddr, pair.GetEscrowAddress(), sdk.NewCoins(resultOfferCoin)); err != nil {
 		return types.Order{}, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	orderId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(orderLifespan)
