@@ -15,6 +15,7 @@ func (s *KeeperTestSuite) TestUpdateRequiredPrivileges() {
 		{
 			name: "set required privileges",
 			req: &types.MsgUpdateRequiredPrivileges{
+				Creator:    s.params.AdminAccount,
 				Index:      testIndex,
 				Privileges: testPrivileges,
 				Kind:       s.rpKind.String(),

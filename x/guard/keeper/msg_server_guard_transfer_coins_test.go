@@ -15,7 +15,7 @@ func (s *KeeperTestSuite) TestUpdateGuardTransferCoins() {
 		{
 			name: "set guard transfer",
 			req: &types.MsgUpdateGuardTransferCoins{
-				Creator: testAccount,
+				Creator: s.params.AdminAccount,
 				Enabled: true,
 			},
 			expErr: false,

@@ -207,3 +207,136 @@ func NewMockBankKeeper(ctrl *gomock.Controller) *MockBankKeeper {
 func (m *MockBankKeeper) EXPECT() *MockBankKeeperMockRecorder {
 	return m.recorder
 }
+
+// MockGuardKeeper is a mock of GuardKeeper interface.
+type MockGuardKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockGuardKeeperMockRecorder
+}
+
+// MockGuardKeeperMockRecorder is the mock recorder for MockGuardKeeper.
+type MockGuardKeeperMockRecorder struct {
+	mock *MockGuardKeeper
+}
+
+// NewMockGuardKeeper creates a new mock instance.
+func NewMockGuardKeeper(ctrl *gomock.Controller) *MockGuardKeeper {
+	mock := &MockGuardKeeper{ctrl: ctrl}
+	mock.recorder = &MockGuardKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockGuardKeeper) EXPECT() *MockGuardKeeperMockRecorder {
+	return m.recorder
+}
+
+// CheckIsAdmin mocks base method.
+func (m *MockGuardKeeper) CheckIsAdmin(ctx types0.Context, address string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckIsAdmin", ctx, address)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckIsAdmin indicates an expected call of CheckIsAdmin.
+func (mr *MockGuardKeeperMockRecorder) CheckIsAdmin(ctx, address interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckIsAdmin", reflect.TypeOf((*MockGuardKeeper)(nil).CheckIsAdmin), ctx, address)
+}
+
+// CheckNewRestrictedNftsCollection mocks base method.
+func (m *MockGuardKeeper) CheckNewRestrictedNftsCollection(ctx types0.Context, restrictedNftsCollection bool, address string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckNewRestrictedNftsCollection", ctx, restrictedNftsCollection, address)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckNewRestrictedNftsCollection indicates an expected call of CheckNewRestrictedNftsCollection.
+func (mr *MockGuardKeeperMockRecorder) CheckNewRestrictedNftsCollection(ctx, restrictedNftsCollection, address interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckNewRestrictedNftsCollection", reflect.TypeOf((*MockGuardKeeper)(nil).CheckNewRestrictedNftsCollection), ctx, restrictedNftsCollection, address)
+}
+
+// CheckRestrictedNftsCollection mocks base method.
+func (m *MockGuardKeeper) CheckRestrictedNftsCollection(ctx types0.Context, collectionCreator, collectionId, address string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckRestrictedNftsCollection", ctx, collectionCreator, collectionId, address)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckRestrictedNftsCollection indicates an expected call of CheckRestrictedNftsCollection.
+func (mr *MockGuardKeeperMockRecorder) CheckRestrictedNftsCollection(ctx, collectionCreator, collectionId, address interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckRestrictedNftsCollection", reflect.TypeOf((*MockGuardKeeper)(nil).CheckRestrictedNftsCollection), ctx, collectionCreator, collectionId, address)
+}
+
+// GetAccountPrivilegesTokenCollectionCreatorAndCollectionId mocks base method.
+func (m *MockGuardKeeper) GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx types0.Context) (string, string) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAccountPrivilegesTokenCollectionCreatorAndCollectionId", ctx)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(string)
+	return ret0, ret1
+}
+
+// GetAccountPrivilegesTokenCollectionCreatorAndCollectionId indicates an expected call of GetAccountPrivilegesTokenCollectionCreatorAndCollectionId.
+func (mr *MockGuardKeeperMockRecorder) GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountPrivilegesTokenCollectionCreatorAndCollectionId", reflect.TypeOf((*MockGuardKeeper)(nil).GetAccountPrivilegesTokenCollectionCreatorAndCollectionId), ctx)
+}
+
+// MockDidKeeper is a mock of DidKeeper interface.
+type MockDidKeeper struct {
+	ctrl     *gomock.Controller
+	recorder *MockDidKeeperMockRecorder
+}
+
+// MockDidKeeperMockRecorder is the mock recorder for MockDidKeeper.
+type MockDidKeeperMockRecorder struct {
+	mock *MockDidKeeper
+}
+
+// NewMockDidKeeper creates a new mock instance.
+func NewMockDidKeeper(ctrl *gomock.Controller) *MockDidKeeper {
+	mock := &MockDidKeeper{ctrl: ctrl}
+	mock.recorder = &MockDidKeeperMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDidKeeper) EXPECT() *MockDidKeeperMockRecorder {
+	return m.recorder
+}
+
+// CreateNewDidDocument mocks base method.
+func (m *MockDidKeeper) CreateNewDidDocument(ctx types0.Context, id string, signer types0.Address, pubKeyHex, pubKeyType string, controller types0.Address) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNewDidDocument", ctx, id, signer, pubKeyHex, pubKeyType, controller)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNewDidDocument indicates an expected call of CreateNewDidDocument.
+func (mr *MockDidKeeperMockRecorder) CreateNewDidDocument(ctx, id, signer, pubKeyHex, pubKeyType, controller interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNewDidDocument", reflect.TypeOf((*MockDidKeeper)(nil).CreateNewDidDocument), ctx, id, signer, pubKeyHex, pubKeyType, controller)
+}
+
+// ForceRemoveDidDocumentIfExists mocks base method.
+func (m *MockDidKeeper) ForceRemoveDidDocumentIfExists(ctx types0.Context, id string) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForceRemoveDidDocumentIfExists", ctx, id)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ForceRemoveDidDocumentIfExists indicates an expected call of ForceRemoveDidDocumentIfExists.
+func (mr *MockDidKeeperMockRecorder) ForceRemoveDidDocumentIfExists(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForceRemoveDidDocumentIfExists", reflect.TypeOf((*MockDidKeeper)(nil).ForceRemoveDidDocumentIfExists), ctx, id)
+}

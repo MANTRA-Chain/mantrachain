@@ -13,6 +13,11 @@ import (
 
 func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts bool, account string) error {
 	conf := k.GetParams(ctx)
+
+	if strings.TrimSpace(conf.AdminAccount) == "" {
+		return sdkerrors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
+	}
+
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
 	isAdmin := admin.Equals(sdk.MustAccAddressFromBech32(account))
@@ -26,6 +31,11 @@ func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts
 
 func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator string, collectionId string, account string) error {
 	conf := k.GetParams(ctx)
+
+	if strings.TrimSpace(conf.AdminAccount) == "" {
+		return sdkerrors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
+	}
+
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
 	if strings.TrimSpace(collectionId) == "" {

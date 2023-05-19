@@ -1,7 +1,6 @@
 syntax = "proto3";
 package mantrachain.nft.v1beta1;
 
-import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/nft/types";
@@ -14,8 +13,6 @@ service Msg {
 
 // MsgSend represents a message to send a nft from one account to another account.
 message MsgSend {
-  option (cosmos.msg.v1.signer) = "sender";
-
   // class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
   string class_id = 1;
 

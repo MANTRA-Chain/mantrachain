@@ -15,7 +15,7 @@ func (s *KeeperTestSuite) TestUpdateLocked() {
 		{
 			name: "invalid denom",
 			req: &types.MsgUpdateLocked{
-				Creator: testAccount,
+				Creator: s.params.AdminAccount,
 				Index:   []byte{0x01},
 				Locked:  true,
 				Kind:    s.lkKind.String(),

@@ -3,10 +3,11 @@ package keeper_test
 import (
 	"context"
 	"encoding/binary"
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/golang/mock/gomock"
 	"testing"
 	"time"
+
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/suite"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -53,6 +54,10 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.querier = keeper.Querier{Keeper: s.keeper}
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper)
 	s.nftKeeper = tokentestutil.NewMockNFTKeeper(ctrl)
+
+	guardKeeper := tokentestutil.NewMockGuardKeeper(ctrl)
+	guardKeeper.EXPECT().CheckIsAdmin(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
+	guardKeeper.EXPECT().CheckRestrictedNftsCollection(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 }
 
 // Below are just shortcuts to frequently-used functions.

@@ -15,6 +15,7 @@ func (s *KeeperTestSuite) TestUpdateAccountPrivileges() {
 		{
 			name: "invalid account address",
 			req: &types.MsgUpdateAccountPrivileges{
+				Creator:    s.params.AdminAccount,
 				Account:    "",
 				Privileges: testPrivileges,
 			},
