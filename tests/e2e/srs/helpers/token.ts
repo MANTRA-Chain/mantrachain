@@ -1,6 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { utils } from '@mantrachain/sdk'
+import { getGasFee } from './sdk'
 
 const queryNftCollection = async (client: any, creator: string, id: string) => {
   try {
@@ -32,14 +32,19 @@ const queryGuardNftTokenCollectionParams = async (client: any): Promise<any> => 
   }
 }
 
-export const createNftCollectionIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, collection: any, numAttempts = 20) => {
+export const createNftCollectionIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, collection: any, numAttempts = 2) => {
   if (!existsNftCollection(await queryNftCollection(client, account, collection.id))) {
-    await client.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
+    const res = await client.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
       value: {
         creator: account,
         collection
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }
@@ -52,10 +57,10 @@ export const createNftCollectionIfNotExists = async (sdk: MantrachainSdk, client
   )
 }
 
-export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, account: string, receiver: string, numAttempts = 20) => {
+export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, account: string, receiver: string, numAttempts = 2) => {
   const guardCollectionParams = await queryGuardNftTokenCollectionParams(client)
   if (!existsNft(await queryNft(client, guardCollectionParams.collectionCreator, guardCollectionParams.collectionId, receiver))) {
-    await client.MantrachainTokenV1.tx.sendMsgMintNft({
+    const res = await client.MantrachainTokenV1.tx.sendMsgMintNft({
       value: {
         creator: account,
         receiver,
@@ -71,8 +76,13 @@ export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, acc
           attributes: [],
           data: null
         }
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }
@@ -85,17 +95,22 @@ export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, acc
   )
 }
 
-export const burnGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, account: string, id: string, numAttempts = 20) => {
+export const burnGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, account: string, id: string, numAttempts = 2) => {
   const guardCollectionParams = await queryGuardNftTokenCollectionParams(client)
   if (existsNft(await queryNft(client, guardCollectionParams.collectionCreator, guardCollectionParams.collectionId, id))) {
-    await client.MantrachainTokenV1.tx.sendMsgBurnNft({
+    const res = await client.MantrachainTokenV1.tx.sendMsgBurnNft({
       value: {
         creator: account,
         collectionCreator: guardCollectionParams.collectionCreator,
         collectionId: guardCollectionParams.collectionId,
         nftId: id
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }

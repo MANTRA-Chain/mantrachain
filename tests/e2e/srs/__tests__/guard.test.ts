@@ -1,4 +1,4 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { MantrachainSdk, getGasFee } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom, mintCoins } from '../helpers/coinfactory'
 import { createPairIfNotExists, getPairId } from '../helpers/liquidity'
 import { createNftCollectionIfNotExists, mintGuardSoulBondNft, burnGuardSoulBondNft } from '../helpers/token'
@@ -39,38 +39,42 @@ describe('Guard module', () => {
       })
     })
 
-    test('Should throw when update account privileges with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
+    test('Should return error when update account privileges with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
         value: {
           creator: sdk.recipientAddress,
           account: sdk.recipientAddress,
           privileges: new Uint8Array(32),
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update account privileges batch with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesBatch({
+    test('Should return error when update account privileges batch with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesBatch({
         value: {
           creator: sdk.recipientAddress,
           accountsPrivileges: {
             accounts: [sdk.recipientAddress],
             privileges: [new Uint8Array(32)]
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update account privileges grouped batch with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesGroupedBatch({
+    test('Should return error when update account privileges grouped batch with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesGroupedBatch({
         value: {
           creator: sdk.recipientAddress,
           accountsPrivilegesGrouped: {
@@ -79,31 +83,35 @@ describe('Guard module', () => {
             }],
             privileges: [new Uint8Array(32)]
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update required privileges with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+    test('Should return error when update required privileges with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
         value: {
           creator: sdk.recipientAddress,
           index: new Uint8Array(1),
           privileges: new Uint8Array(32),
           kind: 'coin'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update required privileges batch with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesBatch({
+    test('Should return error when update required privileges batch with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesBatch({
         value: {
           creator: sdk.recipientAddress,
           requiredPrivileges: {
@@ -111,16 +119,18 @@ describe('Guard module', () => {
             privileges: [new Uint8Array(32)]
           },
           kind: 'coin'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update required privileges grouped batch with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesGroupedBatch({
+    test('Should return error when update required privileges grouped batch with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesGroupedBatch({
         value: {
           creator: sdk.recipientAddress,
           requiredPrivilegesGrouped: {
@@ -130,44 +140,50 @@ describe('Guard module', () => {
             privileges: [new Uint8Array(32)]
           },
           kind: 'coin'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update guard transfer coins with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+    test('Should return error when update guard transfer coins with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
         value: {
           creator: sdk.recipientAddress,
           enabled: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update locked with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateLocked({
+    test('Should return error when update locked with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateLocked({
         value: {
           creator: sdk.recipientAddress,
           index: new Uint8Array(1),
           locked: true,
           kind: 'coin'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when update authz grants with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAuthzGenericGrantRevokeBatch({
+    test('Should return error when update authz grants with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAuthzGenericGrantRevokeBatch({
         value: {
           creator: sdk.recipientAddress,
           grantee: sdk.adminAddress,
@@ -176,29 +192,33 @@ describe('Guard module', () => {
               { typeUrl: '/mantrachain.coinfactory.v1beta1.MsgCreateDenom', grant: true }
             ],
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create denom with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    test('Should return error when create denom with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
         value: {
           sender: sdk.recipientAddress,
           subdenom: 'guard4'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when force transfer with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+    test('Should return error when force transfer with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
         value: {
           sender: sdk.recipientAddress,
           amount: {
@@ -207,32 +227,36 @@ describe('Guard module', () => {
           },
           transferFromAddress: sdk.recipientAddress,
           transferToAddress: sdk.adminAddress,
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create pair with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+    test('Should return error when create pair with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, 'guard2'),
           quoteCoinDenom: genCoinDenom(sdk.adminAddress, 'guard3')
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create pool with account with no permission', async () => {
+    test('Should return error when create pool with account with no permission', async () => {
       const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
-      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
+      const res = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
@@ -243,18 +267,20 @@ describe('Guard module', () => {
             denom: genCoinDenom(sdk.adminAddress, 'guard1'),
             amount: '1000000000000000000'
           }]
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create ranged pool with account with no permission', async () => {
+    test('Should return error when create ranged pool with account with no permission', async () => {
       const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
-      const promise = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
+      const res = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
@@ -268,22 +294,24 @@ describe('Guard module', () => {
           minPrice: '1000000000',
           maxPrice: '10000000000',
           initialPrice: '5000000000'
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create private plan with account with no permission', async () => {
+    test('Should return error when create private plan with account with no permission', async () => {
       const pairId = await getPairId(sdk.clientRecipient, genCoinDenom(sdk.adminAddress, 'guard0'), genCoinDenom(sdk.adminAddress, 'guard1'))
 
       const startTime = new Date()
       const endTime = new Date()
       endTime.setMinutes(endTime.getMinutes() + 30)
 
-      const promise = sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
+      const res = await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
           creator: sdk.recipientAddress,
           description: 'test plan',
@@ -296,16 +324,18 @@ describe('Guard module', () => {
           }],
           startTime,
           endTime,
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when create restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
+    test('Should return error when create restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
         value: {
           creator: sdk.recipientAddress,
           collection: {
@@ -323,16 +353,18 @@ describe('Guard module', () => {
             restrictedNfts: true,
             data: null
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when mint nft for restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNft({
+    test('Should return error when mint nft for restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNft({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
@@ -347,16 +379,18 @@ describe('Guard module', () => {
             attributes: [],
             data: null
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when mint nfts for restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNfts({
+    test('Should return error when mint nfts for restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNfts({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.recipientAddress,
@@ -375,32 +409,36 @@ describe('Guard module', () => {
               data: null
             }]
           }
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when burn nft from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNft({
+    test('Should return error when burn nft from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNft({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
           collectionId: 'guard0',
           nftId: '0',
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when burn nfts from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNfts({
+    test('Should return error when burn nfts from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNfts({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
@@ -409,16 +447,18 @@ describe('Guard module', () => {
             nftsIds: ['0']
           },
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when approve nft from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
+    test('Should return error when approve nft from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -427,16 +467,18 @@ describe('Guard module', () => {
           nftId: '0',
           approved: true,
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when approve nfts from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
+    test('Should return error when approve nfts from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -447,16 +489,18 @@ describe('Guard module', () => {
           },
           approved: true,
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when transfer nft from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
+    test('Should return error when transfer nft from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,
@@ -465,16 +509,18 @@ describe('Guard module', () => {
           collectionId: 'guard0',
           nftId: '0',
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
 
-    test('Should throw when transfer nfts from restricted nft collection with account with no permission', async () => {
-      const promise = sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
+    test('Should return error when transfer nfts from restricted nft collection with account with no permission', async () => {
+      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,
@@ -485,10 +531,12 @@ describe('Guard module', () => {
             nftsIds: ['0']
           },
           strict: true
-        }
+        },
+        fee: getGasFee()
       })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /unauthorized/
       )
     })
@@ -538,7 +586,7 @@ describe('Guard module', () => {
       expect(privBalance + amount).toEqual(currBalance);
     })
 
-    test('Should throw when transfer from account without guard soul-bond nft when guard transfer coins is true', async () => {
+    test('Should return error when transfer from account without guard soul-bond nft when guard transfer coins is true', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -551,14 +599,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientRecipient, sdk.recipientAddress, sdk.adminAddress, denom, currBalance)
+      const res = await sdk.clientRecipient.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.recipientAddress,
+          toAddress: sdk.adminAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /missing soul bond nft/
       )
     })
 
-    test('Should throw when transfer coin without required privileges', async () => {
+    test('Should return error when transfer coin without required privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -570,14 +629,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.adminAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.adminAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /coin required privileges not found/
       )
     })
 
-    test('Should throw when transfer coin from account without account privileges', async () => {
+    test('Should return error when transfer coin from account without account privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -591,14 +661,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.recipientAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /insufficient privileges/
       )
     })
 
-    test('Should throw when transfer coin to account without soul-bond nft', async () => {
+    test('Should return error when transfer coin to account without soul-bond nft', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -612,14 +693,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.recipientAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /missing soul bond nft/
       )
     })
 
-    test('Should throw when transfer coin to account without account privileges', async () => {
+    test('Should return error when transfer coin to account without account privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -633,14 +725,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.recipientAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /insufficient privileges/
       )
     })
 
-    test('Should throw when transfer coin to account with insufficient account privileges', async () => {
+    test('Should return error when transfer coin to account with insufficient account privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -654,14 +757,25 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.recipientAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /insufficient privileges/
       )
     })
 
-    test('Should throw when transfer coin to account with insufficient default account privileges', async () => {
+    test('Should return error when transfer coin to account with insufficient default account privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -676,9 +790,20 @@ describe('Guard module', () => {
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-      const promise = sendCoins(sdk, sdk.clientValidator, sdk.validatorAddress, sdk.recipientAddress, denom, currBalance)
+      const res = await sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
+        value: {
+          fromAddress: sdk.validatorAddress,
+          toAddress: sdk.recipientAddress,
+          amount: [{
+            denom,
+            amount: currBalance.toString()
+          }]
+        },
+        fee: getGasFee()
+      })
 
-      return expect(promise).rejects.toThrow(
+      expect(res.code).not.toBe(0)
+      expect(res.rawLog).toMatch(
         /insufficient privileges/
       )
     })

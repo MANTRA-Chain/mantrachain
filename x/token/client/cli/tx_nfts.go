@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -124,10 +123,6 @@ func CmdMintNfts() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -156,28 +151,14 @@ func CmdMintNfts() *cobra.Command {
 				return err
 			}
 
-			var pubKeyHex string
-			var pubKeyType string
-
-			if did {
-				pubKey := info.GetPubKey()
-				pubKeyHex = utils.GetPubKeyHex(pubKey)
-				pubKeyType, err = utils.DerivePubKeyType(pubKey)
-				if err != nil {
-					return err
-				}
-			}
-
 			msg := types.NewMsgMintNfts(
-				clientCtx.GetFromAddress().String(),
+				signer.String(),
 				collectionCreator,
 				collectionId,
 				&nfts,
 				receiver,
 				strict,
 				did,
-				pubKeyHex,
-				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -496,10 +477,6 @@ func CmdMintNft() *cobra.Command {
 
 			// verification
 			signer := clientCtx.GetFromAddress()
-			info, err := clientCtx.Keyring.KeyByAddress(signer)
-			if err != nil {
-				return err
-			}
 
 			receiver, err := cmd.Flags().GetString(FlagReceiver)
 			if err != nil {
@@ -528,28 +505,14 @@ func CmdMintNft() *cobra.Command {
 				return err
 			}
 
-			var pubKeyHex string
-			var pubKeyType string
-
-			if did {
-				pubKey := info.GetPubKey()
-				pubKeyHex = utils.GetPubKeyHex(pubKey)
-				pubKeyType, err = utils.DerivePubKeyType(pubKey)
-				if err != nil {
-					return err
-				}
-			}
-
 			msg := types.NewMsgMintNft(
-				clientCtx.GetFromAddress().String(),
+				signer.String(),
 				collectionCreator,
 				collectionId,
 				&nft,
 				receiver,
 				strict,
 				did,
-				pubKeyHex,
-				pubKeyType,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

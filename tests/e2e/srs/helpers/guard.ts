@@ -1,5 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
+import { getGasFee } from './sdk'
 import { utils, Privileges } from '@mantrachain/sdk'
 
 const queryGuardTransferCoins = async (client: any) => {
@@ -38,14 +39,19 @@ const queryAccountPrivileges = async (client: any, account: string) => {
   return utils.base64ToBytes(res.data.privileges)
 }
 
-export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, account: string, enabled: boolean, numAttempts = 20) => {
+export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, account: string, enabled: boolean, numAttempts = 2) => {
   if (notSetGuardTransferCoins(await queryGuardTransferCoins(client), enabled)) {
-    await client.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+    const res = await client.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
       value: {
         creator: account,
         enabled
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }
@@ -58,7 +64,7 @@ export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, ac
   )
 }
 
-export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, account: string, receiver: string, setBits?: number[], unsetBits?: number[], numAttempts = 20) => {
+export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, account: string, receiver: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
   const accountPrivileges: any = await queryAccountPrivileges(client, receiver)
   const defaultPrivileges = await queryDefaultPrivileges(client)
   let newAccountPrivileges: any = Buffer.from([])
@@ -83,13 +89,18 @@ export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, 
     return
   }
 
-  await client.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
+  const res = await client.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
     value: {
       creator: account,
       account: receiver,
       privileges: !newAccountPrivileges.length ? null : newAccountPrivileges,
-    }
+    },
+    fee: getGasFee()
   })
+
+  if (res.code !== 0) {
+    throw new Error(res.rawLog)
+  }
 
   return getWithAttempts(
     sdk.blockWaiter,
@@ -105,7 +116,7 @@ export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, 
   )
 }
 
-export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: any, account: string, denom: string, setBits?: number[], unsetBits?: number[], numAttempts = 20) => {
+export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: any, account: string, denom: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
   const requiredPrivileges: any = await queryCoinRequiredPrivileges(client, denom)
   const hasRequiredPrivileges = !!requiredPrivileges.length
   let newRequiredPrivileges: any = Buffer.from([])
@@ -136,14 +147,19 @@ export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: 
     newRequiredPrivileges = newRequiredPrivileges.toBuffer()
   }
 
-  await client.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+  const res = await client.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
     value: {
       creator: account,
       index: utils.strToIndex(denom),
       privileges: !newRequiredPrivileges.length ? null : newRequiredPrivileges,
       kind: "coin",
-    }
+    },
+    fee: getGasFee()
   })
+
+  if (res.code !== 0) {
+    throw new Error(res.rawLog)
+  }
 
   return getWithAttempts(
     sdk.blockWaiter,

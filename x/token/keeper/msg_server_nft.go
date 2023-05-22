@@ -193,7 +193,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
-	didExecutor := NewDidExecutor(ctx, creator, msg.PubKeyHex, msg.PubKeyType, receiver, k.dk)
+	didExecutor := NewDidExecutor(ctx, receiver.String(), k.dk)
 
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
@@ -330,7 +330,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, nil, "", "", nil, k.dk)
+	didExecutor := NewDidExecutor(ctx, "", k.dk)
 	for _, nftIndex := range nftsIndexes {
 		didExecutor.ForceDeleteDidOfNftIfExists(nftIndex)
 	}
@@ -589,7 +589,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	var did string
 
 	if msg.Did {
-		didExecutor := NewDidExecutor(ctx, creator, msg.PubKeyHex, msg.PubKeyType, receiver, k.dk)
+		didExecutor := NewDidExecutor(ctx, receiver.String(), k.dk)
 		did, err = didExecutor.CreateDidForNft(nftIndex)
 		if err != nil {
 			return nil, err
@@ -706,7 +706,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, nil, "", "", nil, k.dk)
+	didExecutor := NewDidExecutor(ctx, "", k.dk)
 	didExecutor.ForceDeleteDidOfNftIfExists(nftsIndexes[0])
 
 	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])

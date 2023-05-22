@@ -1,5 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
+import { getGasFee } from './sdk'
 
 const existsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.some((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
@@ -15,15 +16,20 @@ const queryPairs = async (client: any, baseCoinDenom: string) => {
 
 const getPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
-export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 20) => {
+export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 2) => {
   if (notExistsPair(await queryPairs(client, baseCoinDenom), baseCoinDenom, quoteCoinDenom)) {
-    await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+    const res = await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
       value: {
         creator: account,
         baseCoinDenom,
         quoteCoinDenom
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }

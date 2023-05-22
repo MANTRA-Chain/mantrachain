@@ -1,6 +1,7 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { queryBalance } from './bank'
+import { getGasFee } from './sdk'
 
 export const queryDenomsFromCreator = async (client: any, account: string) => {
   const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
@@ -18,14 +19,19 @@ export const existsDenom = (denoms: string[], account: string, subdenom: string)
 
 export const genCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 
-export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, numAttempts = 20) => {
+export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, numAttempts = 2) => {
   if (notExistsDenom(await queryDenomsFromCreator(client, account), account, subdenom)) {
-    await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    const res = await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: account,
         subdenom
-      }
+      },
+      fee: getGasFee()
     })
+
+    if (res.code !== 0) {
+      throw new Error(res.rawLog)
+    }
   } else {
     return
   }
@@ -38,7 +44,7 @@ export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, a
   )
 }
 
-export const mintCoins = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, amount: number, minBalance?: number, numAttempts = 20) => {
+export const mintCoins = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, amount: number, minBalance?: number, numAttempts = 2) => {
   const denom = genCoinDenom(account, subdenom)
   const privBalance = await queryBalance(client, account, denom)
 
@@ -46,15 +52,20 @@ export const mintCoins = async (sdk: MantrachainSdk, client: any, account: strin
     return privBalance
   }
 
-  await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
+  const res = await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
     value: {
       sender: account,
       amount: {
         denom,
         amount: amount.toString()
       }
-    }
+    },
+    fee: getGasFee()
   })
+
+  if (res.code !== 0) {
+    throw new Error(res.rawLog)
+  }
 
   return getWithAttempts(
     sdk.blockWaiter,

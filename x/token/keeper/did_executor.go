@@ -10,20 +10,14 @@ import (
 )
 
 type DidExecutor struct {
-	signer     sdk.Address
-	pubKeyHex  string
-	pubKeyType string
-	controller sdk.Address
+	controller string
 	ctx        sdk.Context
 	dk         types.DidKeeper
 }
 
-func NewDidExecutor(ctx sdk.Context, signer sdk.Address, pubKeyHex string, pubKeyType string, controller sdk.Address, dk types.DidKeeper) *DidExecutor {
+func NewDidExecutor(ctx sdk.Context, controller string, dk types.DidKeeper) *DidExecutor {
 
 	return &DidExecutor{
-		signer:     signer,
-		pubKeyHex:  pubKeyHex,
-		pubKeyType: pubKeyType,
 		controller: controller,
 		ctx:        ctx,
 		dk:         dk,
@@ -34,7 +28,7 @@ func (c *DidExecutor) CreateDidForNft(id []byte) (string, error) {
 	encoded := sha256.Sum256([]byte(fmt.Sprintf("%s/nft/%s", types.ModuleName, id)))
 	didId := hex.EncodeToString(encoded[:])
 
-	res, err := c.dk.CreateNewDidDocument(c.ctx, didId, c.signer, c.pubKeyHex, c.pubKeyType, c.controller)
+	res, err := c.dk.CreateNewDidDocument(c.ctx, didId, c.controller)
 	if err != nil {
 		return "", err
 	}

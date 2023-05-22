@@ -35,6 +35,6 @@ type GuardKeeper interface {
 }
 
 type DidKeeper interface {
-	CreateNewDidDocument(ctx sdk.Context, id string, signer sdk.Address, pubKeyHex string, pubKeyType string, controller sdk.Address) (string, error)
+	CreateNewDidDocument(ctx sdk.Context, id string, controller string) (string, error)
 	ForceRemoveDidDocumentIfExists(ctx sdk.Context, id string) (bool, error)
 }

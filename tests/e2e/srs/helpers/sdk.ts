@@ -57,3 +57,8 @@ export class MantrachainSdk {
     this.blockWaiter = new BlockWaiter(ws);
   }
 }
+
+export const getGasFee = () => ({
+  amount: [{ denom: "uaum", amount: "20" }],
+  gas: "200000"
+})
