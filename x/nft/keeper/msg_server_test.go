@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	"github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -52,7 +50,7 @@ func (s *TestSuite) TestSend() {
 		errMsg string
 	}{
 		{
-			name: "empty nft id",
+			name: "transfer nft disabled",
 			req: &types.MsgSend{
 				ClassId:  testClassID,
 				Id:       "",
@@ -60,62 +58,7 @@ func (s *TestSuite) TestSend() {
 				Receiver: s.addrs[1].String(),
 			},
 			expErr: true,
-			errMsg: "empty nft id",
-		},
-		{
-			name: "empty class id",
-			req: &types.MsgSend{
-				ClassId:  "",
-				Id:       testID,
-				Sender:   s.addrs[0].String(),
-				Receiver: s.addrs[1].String(),
-			},
-			expErr: true,
-			errMsg: "empty class id",
-		},
-		{
-			name: "invalid class id",
-			req: &types.MsgSend{
-				ClassId:  "invalid ClassId",
-				Id:       testID,
-				Sender:   s.addrs[0].String(),
-				Receiver: s.addrs[1].String(),
-			},
-			expErr: true,
-			errMsg: "unauthorized",
-		},
-		{
-			name: "invalid nft id",
-			req: &types.MsgSend{
-				ClassId:  testClassID,
-				Id:       "invalid Id",
-				Sender:   s.addrs[0].String(),
-				Receiver: s.addrs[1].String(),
-			},
-			expErr: true,
-			errMsg: "unauthorized",
-		},
-		{
-			name: "unauthorized sender",
-			req: &types.MsgSend{
-				ClassId:  testClassID,
-				Id:       testID,
-				Sender:   s.addrs[1].String(),
-				Receiver: s.addrs[2].String(),
-			},
-			expErr: true,
-			errMsg: fmt.Sprintf("%s is not the owner of nft %s", s.addrs[1].String(), testID),
-		},
-		{
-			name: "valid transaction",
-			req: &types.MsgSend{
-				ClassId:  testClassID,
-				Id:       testID,
-				Sender:   s.addrs[0].String(),
-				Receiver: s.addrs[1].String(),
-			},
-			expErr: false,
-			errMsg: "",
+			errMsg: "transfer nft disabled",
 		},
 	}
 

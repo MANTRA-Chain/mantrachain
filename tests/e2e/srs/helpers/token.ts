@@ -75,7 +75,9 @@ export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, acc
           links: [],
           attributes: [],
           data: null
-        }
+        },
+        strict: true,
+        did: true,
       },
       fee: getGasFee()
     })

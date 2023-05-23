@@ -58,6 +58,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	guardKeeper := tokentestutil.NewMockGuardKeeper(ctrl)
 	guardKeeper.EXPECT().CheckIsAdmin(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 	guardKeeper.EXPECT().CheckRestrictedNftsCollection(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
+	guardKeeper.EXPECT().CheckNewRestrictedNftsCollection(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 }
 
 // Below are just shortcuts to frequently-used functions.

@@ -378,7 +378,9 @@ describe('Guard module', () => {
             links: [],
             attributes: [],
             data: null
-          }
+          },
+          strict: true,
+          did: true,
         },
         fee: getGasFee()
       })
@@ -394,7 +396,6 @@ describe('Guard module', () => {
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.recipientAddress,
-          strict: false,
           collectionCreator: sdk.adminAddress,
           collectionId: 'guard0',
           nfts: {
@@ -408,7 +409,9 @@ describe('Guard module', () => {
               attributes: [],
               data: null
             }]
-          }
+          },
+          strict: true,
+          did: true,
         },
         fee: getGasFee()
       })

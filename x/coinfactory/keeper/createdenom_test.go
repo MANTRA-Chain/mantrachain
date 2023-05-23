@@ -37,13 +37,12 @@ func (suite *KeeperTestSuite) TestMsgCreateDenom() {
 	suite.Require().NoError(err)
 	suite.Require().Len(queryRes2.Denoms, 2)
 
-	// Make sure that a second account can create a denom with the same subdenom
-	res, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom(suite.TestAccs[1].String(), "bitcoin"))
-	suite.Require().NoError(err)
-	suite.Require().NotEmpty(res.GetNewTokenDenom())
+	// Make sure that cannot create a denom with account that is not the admin
+	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom(suite.TestAccs[1].String(), "bitcoin"))
+	suite.Require().Error(err)
 
 	// Make sure that an address with a "/" in it can't create denoms
-	res, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom("mantrachain.eth/creator", "bitcoin"))
+	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom("mantrachain.eth/creator", "bitcoin"))
 	suite.Require().Error(err)
 }
 

@@ -91,6 +91,9 @@ func (suite *IBCConnectionTestSuite) GetApp(chain *ibctesting.TestChain) *app.Ap
 }
 
 func (s *IBCConnectionTestSuite) SetupTest() {
+	s.TestAccs = []sdk.AccAddress{sdk.MustAccAddressFromBech32(TestAdminAddress)}
+	s.TestAccs = append(s.TestAccs, CreateRandomAccounts(2)...)
+
 	// Instantiate new coordinator and provider chain
 	s.Coordinator = ibctesting.NewCoordinator(s.T(), 0)
 
@@ -125,8 +128,6 @@ func (s *IBCConnectionTestSuite) SetupTest() {
 	// try updating the provider client on this consumer chain
 	err = bundle.Path.EndpointA.UpdateClient()
 	s.Require().NoError(err)
-
-	s.TestAccs = CreateRandomAccounts(3)
 }
 
 // preProposalKeyAssignment assigns keys to all provider validators for

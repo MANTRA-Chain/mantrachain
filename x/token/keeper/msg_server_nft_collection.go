@@ -12,13 +12,13 @@ import (
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.gk.CheckNewRestrictedNftsCollection(ctx, msg.Collection.RestrictedNfts, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "guard token: fail")
-	}
-
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, err
+	}
+
+	if err := k.gk.CheckNewRestrictedNftsCollection(ctx, msg.Collection.RestrictedNfts, creator.String()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
 	}
 
 	collectionController := NewNftCollectionController(ctx, creator, false).

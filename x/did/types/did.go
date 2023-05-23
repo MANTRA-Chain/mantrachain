@@ -181,7 +181,7 @@ func IsValidDIDDocument(didDoc *DidDocument) bool {
 	return false
 }
 
-// IsValidDIDKeyFormat verify that a did is compliant with the did:cosmos:key format
+// IsValidDIDKeyFormat verify that a did is compliant with the did:key format
 // that is the ID must be a bech32 address no longer than 255 bytes
 func IsValidDIDKeyFormat(did string) bool {
 	if _, err := sdk.AccAddressFromBech32(strings.TrimPrefix(did, DidKeyPrefix)); err != nil {
@@ -321,7 +321,7 @@ func WithVerifications(verifications ...*Verification) DidDocumentOption {
 	}
 }
 
-//WithServices add optional services
+// WithServices add optional services
 func WithServices(services ...*Service) DidDocumentOption {
 	return func(did *DidDocument) error {
 		return did.AddServices(services...)

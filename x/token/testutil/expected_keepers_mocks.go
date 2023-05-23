@@ -312,18 +312,18 @@ func (m *MockDidKeeper) EXPECT() *MockDidKeeperMockRecorder {
 }
 
 // CreateNewDidDocument mocks base method.
-func (m *MockDidKeeper) CreateNewDidDocument(ctx types0.Context, id string, signer types0.Address, pubKeyHex, pubKeyType string, controller types0.Address) (string, error) {
+func (m *MockDidKeeper) CreateNewDidDocument(ctx types0.Context, id, controller string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateNewDidDocument", ctx, id, signer, pubKeyHex, pubKeyType, controller)
+	ret := m.ctrl.Call(m, "CreateNewDidDocument", ctx, id, controller)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateNewDidDocument indicates an expected call of CreateNewDidDocument.
-func (mr *MockDidKeeperMockRecorder) CreateNewDidDocument(ctx, id, signer, pubKeyHex, pubKeyType, controller interface{}) *gomock.Call {
+func (mr *MockDidKeeperMockRecorder) CreateNewDidDocument(ctx, id, controller interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNewDidDocument", reflect.TypeOf((*MockDidKeeper)(nil).CreateNewDidDocument), ctx, id, signer, pubKeyHex, pubKeyType, controller)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNewDidDocument", reflect.TypeOf((*MockDidKeeper)(nil).CreateNewDidDocument), ctx, id, controller)
 }
 
 // ForceRemoveDidDocumentIfExists mocks base method.
