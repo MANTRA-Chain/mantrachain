@@ -155,7 +155,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -184,7 +184,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -215,7 +215,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -232,7 +232,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -251,7 +251,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -271,7 +271,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -293,7 +293,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -313,7 +313,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
 
@@ -335,7 +335,7 @@ describe('Token module', () => {
 
       expect(res.code).not.toBe(0)
       expect(res.rawLog).toMatch(
-        /guard token: fail/
+        /unauthorized/
       )
     })
   })

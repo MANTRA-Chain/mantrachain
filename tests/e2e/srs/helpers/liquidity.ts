@@ -6,10 +6,10 @@ const existsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string)
 
 const notExistsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.every((pair: any) => pair.base_coin_denom !== baseCoinDenom && pair.quote_coin_denom !== quoteCoinDenom)
 
-const queryPairs = async (client: any, baseCoinDenom: string) => {
-  const res = await client.MantrachainLiquidityV1Beta1.query.queryPairs({
-    denoms: baseCoinDenom // This doesn't work properly, it should be [baseCoinDenom, quoteCoinDenom], 
-    // but the chain parse the denoms query as ["", baseCoinDenom, quoteCoinDenom] if we pass an array
+const queryPairs = async (client: any, baseCoinDenom: string, quoteCoinDenom: string) => {
+  const res = await client.MantrachainLiquidityV1Beta1.query.queryPairsByDenoms({
+    denom1: baseCoinDenom,
+    denom2: quoteCoinDenom,
   })
   return res?.data?.pairs || []
 }
@@ -17,7 +17,7 @@ const queryPairs = async (client: any, baseCoinDenom: string) => {
 const getPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
 export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 2) => {
-  if (notExistsPair(await queryPairs(client, baseCoinDenom), baseCoinDenom, quoteCoinDenom)) {
+  if (notExistsPair(await queryPairs(client, baseCoinDenom, quoteCoinDenom), baseCoinDenom, quoteCoinDenom)) {
     const res = await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
       value: {
         creator: account,
@@ -36,14 +36,14 @@ export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, ac
 
   return getWithAttempts(
     sdk.blockWaiter,
-    async () => await queryPairs(client, baseCoinDenom),
+    async () => await queryPairs(client, baseCoinDenom, quoteCoinDenom),
     async (res) => existsPair(res, baseCoinDenom, quoteCoinDenom),
     numAttempts,
   )
 }
 
 export const getPairId = async (client: any, baseCoinDenom: string, quoteCoinDenom: string): Promise<number> => {
-  const res = await queryPairs(client, baseCoinDenom)
+  const res = await queryPairs(client, baseCoinDenom, quoteCoinDenom)
 
   if (notExistsPair(res, baseCoinDenom, quoteCoinDenom)) {
     throw new Error(`Pair ${baseCoinDenom}:${quoteCoinDenom} does not exist`)
