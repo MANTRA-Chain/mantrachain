@@ -817,7 +817,7 @@ describe('Guard module', () => {
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
       const amount = 1000
 
-      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64, 65, 66])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [0, 64], [65])
       await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)

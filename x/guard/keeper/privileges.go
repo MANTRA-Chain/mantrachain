@@ -16,7 +16,7 @@ func (k Keeper) CheckAccountFulfillsRequiredPrivileges(ctx sdk.Context, address 
 	requiredPrivileges := types.NewEmptyPrivileges()
 	requiredPrivileges.МergeMore(requiredPrivilegesList)
 
-	if !accPr.CheckPrivileges(requiredPrivileges) {
+	if !accPr.CheckPrivileges(requiredPrivileges, conf.DefaultPrivileges) {
 		return false, errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address.String())
 	}
 
