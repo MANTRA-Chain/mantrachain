@@ -3,10 +3,10 @@ package keeper
 import (
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type NftControllerFunc func(controller *NftController) error
@@ -242,7 +242,7 @@ func (c *NftController) validMetadataTitle() error {
 		}
 
 		if int32(len(nft.Title)) > c.conf.ValidNftMetadataTitleMaxLength {
-			return errors.Wrapf(types.ErrInvalidNftTitle, "title length %d invalid, max 100, index %d", nft.Title, i, c.conf.ValidNftMetadataTitleMaxLength)
+			return errors.Wrapf(types.ErrInvalidNftTitle, "title length %d invalid, max 100, index %d", i, c.conf.ValidNftMetadataTitleMaxLength)
 		}
 	}
 

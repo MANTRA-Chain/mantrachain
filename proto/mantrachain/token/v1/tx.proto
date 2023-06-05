@@ -1,7 +1,6 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
-import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/any.proto";
 import "mantrachain/token/v1/common.proto";
@@ -21,11 +20,30 @@ service Msg {
   rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
   rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
   rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
+  rpc UpdateGuardSoulBondNftImage(MsgUpdateGuardSoulBondNftImage) returns (MsgUpdateGuardSoulBondNftImageResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
 }
 
+message MsgNftImageMetadata {
+  TokenImage image = 1;
+}
+
+message MsgUpdateGuardSoulBondNftImage {
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string nft_id = 3;
+  uint64 index = 4;
+  MsgNftImageMetadata image = 5;
+}
+
+message MsgUpdateGuardSoulBondNftImageResponse {
+  string nft_id = 1;
+  string owner = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
 message MsgApproveNft {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string receiver = 2;
   string collection_creator = 3;
@@ -45,7 +63,6 @@ message MsgApproveNftResponse {
 }
 
 message MsgTransferNft {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string owner = 2;
   string receiver = 3;
@@ -65,7 +82,6 @@ message MsgTransferNftResponse {
 }
 
 message MsgBurnNft {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string collection_creator = 2;
   string collection_id = 3;
@@ -81,13 +97,13 @@ message MsgBurnNftResponse {
 }
 
 message MsgMintNft {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string receiver = 2;
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftMetadata nft = 5;
   bool strict = 6;
+  bool did = 7;
 }
 
 message MsgMintNftResponse {
@@ -99,7 +115,6 @@ message MsgMintNftResponse {
 }
 
 message MsgApproveAllNfts {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string receiver = 2;
   bool approved = 3;
@@ -113,7 +128,6 @@ message MsgApproveAllNftsResponse {
 }
 
 message MsgApproveNfts {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string receiver = 2;
   string collection_creator = 3;
@@ -133,7 +147,6 @@ message MsgApproveNftsResponse {
 }
 
 message MsgTransferNfts {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string owner = 2;
   string receiver = 3;
@@ -153,7 +166,6 @@ message MsgTransferNftsResponse {
 }
 
 message MsgCreateNftCollection {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   MsgCreateNftCollectionMetadata collection = 2;
 }
@@ -180,13 +192,13 @@ message MsgCreateNftCollectionResponse {
 }
 
 message MsgMintNfts {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string receiver = 2;
   string collection_creator = 3;
   string collection_id = 4;
   MsgNftsMetadata nfts = 5;
   bool strict = 6;
+  bool did = 7;
 }
 
 message MsgNftsMetadata {
@@ -213,7 +225,6 @@ message MsgMintNftsResponse {
 }
 
 message MsgBurnNfts {
-  option (cosmos.msg.v1.signer) = "creator";
   string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string collection_creator = 2;
   string collection_id = 3;

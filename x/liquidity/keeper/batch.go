@@ -10,6 +10,9 @@ import (
 // ExecuteRequests also handles order expiration.
 func (k Keeper) ExecuteRequests(ctx sdk.Context) {
 	if err := k.IterateAllPairs(ctx, func(pair types.Pair) (stop bool, err error) {
+		if err := k.gk.ValidateCoinsLockedByDenoms(ctx, []string{pair.BaseCoinDenom, pair.QuoteCoinDenom}); err != nil {
+			return false, err
+		}
 		if err := k.ExecuteMatching(ctx, pair); err != nil {
 			return false, err
 		}
@@ -18,6 +21,10 @@ func (k Keeper) ExecuteRequests(ctx sdk.Context) {
 		panic(err)
 	}
 	if err := k.IterateAllOrders(ctx, func(order types.Order) (stop bool, err error) {
+		if err := k.gk.ValidateCoinsLocked(ctx, sdk.Coins{order.OfferCoin, order.ReceivedCoin, order.RemainingOfferCoin}); err != nil {
+			return false, err
+		}
+
 		if order.Status.CanBeExpired() && order.ExpiredAt(ctx.BlockTime()) {
 			if err := k.FinishOrder(ctx, order, types.OrderStatusExpired); err != nil {
 				return false, err
@@ -28,12 +35,22 @@ func (k Keeper) ExecuteRequests(ctx sdk.Context) {
 				return false, err
 			}
 		}
+
 		return false, nil
 	}); err != nil {
 		panic(err)
 	}
 	if err := k.IterateAllDepositRequests(ctx, func(req types.DepositRequest) (stop bool, err error) {
 		if req.Status == types.RequestStatusNotExecuted {
+			if err := k.gk.ValidateCoinsLocked(ctx, req.DepositCoins); err != nil {
+				return false, err
+			}
+			if err := k.gk.ValidateCoinsLocked(ctx, req.AcceptedCoins); err != nil {
+				return false, err
+			}
+			if err := k.gk.ValidateCoinLocked(ctx, req.MintedPoolCoin); err != nil {
+				return false, err
+			}
 			if err := k.ExecuteDepositRequest(ctx, req); err != nil {
 				return false, err
 			}
@@ -44,6 +61,12 @@ func (k Keeper) ExecuteRequests(ctx sdk.Context) {
 	}
 	if err := k.IterateAllWithdrawRequests(ctx, func(req types.WithdrawRequest) (stop bool, err error) {
 		if req.Status == types.RequestStatusNotExecuted {
+			if err := k.gk.ValidateCoinsLocked(ctx, req.WithdrawnCoins); err != nil {
+				return false, err
+			}
+			if err := k.gk.ValidateCoinLocked(ctx, req.PoolCoin); err != nil {
+				return false, err
+			}
 			if err := k.ExecuteWithdrawRequest(ctx, req); err != nil {
 				return false, err
 			}

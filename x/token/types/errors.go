@@ -1,6 +1,6 @@
 package types
 
-import "cosmossdk.io/errors"
+import "github.com/cosmos/cosmos-sdk/types/errors"
 
 // DONTCOVER
 
@@ -47,6 +47,9 @@ var (
 	ErrApproveSoulBondedNftsNotSupported        = errors.Register(ModuleName, 1147, "approve soul bonded nfts not supported")
 	ErrTransferSoulBondedNftNotSupported        = errors.Register(ModuleName, 1148, "transfer soul bonded nft not supported")
 	ErrTransferSoulBondedNftsNotSupported       = errors.Register(ModuleName, 1149, "transfer soul bonded nfts not supported")
-	ErrNftModuleTransferNftDisabled             = errors.Register(ModuleName, 1150, "nft module transfer nft disabled")
-	ErrSoulBondedNftCollectionOperationDisabled = errors.Register(ModuleName, 1151, "soul bonded nft collection operation disabled")
+	ErrSoulBondedNftCollectionOperationDisabled = errors.Register(ModuleName, 1150, "soul bonded nft collection operation disabled")
+
+	ErrInvalidNftImageIndex = errors.Register(ModuleName, 1151, "nft image index provided is invalid")
+	ErrInvalidDid           = errors.Register(ModuleName, 1152, "did provided is invalid")
+	ErrInvalidAccount       = errors.Register(ModuleName, 1153, "account provided is invalid")
 )

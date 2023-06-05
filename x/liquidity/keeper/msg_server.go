@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {
@@ -24,6 +25,10 @@ var _ types.MsgServer = msgServer{}
 func (m msgServer) CreatePair(goCtx context.Context, msg *types.MsgCreatePair) (*types.MsgCreatePairResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := m.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if _, err := m.Keeper.CreatePair(ctx, msg); err != nil {
 		return nil, err
 	}
@@ -35,6 +40,10 @@ func (m msgServer) CreatePair(goCtx context.Context, msg *types.MsgCreatePair) (
 func (m msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := m.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if _, err := m.Keeper.CreatePool(ctx, msg); err != nil {
 		return nil, err
 	}
@@ -44,6 +53,10 @@ func (m msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 
 func (m msgServer) CreateRangedPool(goCtx context.Context, msg *types.MsgCreateRangedPool) (*types.MsgCreateRangedPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := m.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	if _, err := m.Keeper.CreateRangedPool(ctx, msg); err != nil {
 		return nil, err

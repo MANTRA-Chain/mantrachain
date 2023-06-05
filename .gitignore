@@ -6,10 +6,10 @@ release/
 .DS_Store
 .history
 *.pem
-*.json
 *.csr
 *.txt
 account*.txt
 build
 data
 out
+coverage.*

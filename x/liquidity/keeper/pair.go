@@ -3,8 +3,8 @@ package keeper
 import (
 	"strconv"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
@@ -29,6 +29,9 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 	if _, found := k.GetPairByDenoms(ctx, msg.BaseCoinDenom, msg.QuoteCoinDenom); found {
 		return types.ErrPairAlreadyExists
 	}
+	if err := k.gk.ValidateCoinsLockedByDenoms(ctx, []string{msg.BaseCoinDenom, msg.QuoteCoinDenom}); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -43,7 +46,7 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 
 	// Send the pair creation fee to the fee collector.
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollector, pairCreationFee); err != nil {
-		return types.Pair{}, errors.Wrap(err, "insufficient pair creation fee")
+		return types.Pair{}, sdkerrors.Wrap(err, "insufficient pair creation fee")
 	}
 
 	id := k.getNextPairIdWithUpdate(ctx)

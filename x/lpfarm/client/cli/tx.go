@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -299,7 +299,7 @@ Where proposal.json contains:
 			}
 
 			from := clientCtx.GetFromAddress()
-			msg, err := govv1beta1.NewMsgSubmitProposal(&content, deposit, from)
+			msg, err := gov.NewMsgSubmitProposal(&content, deposit, from)
 			if err != nil {
 				return err
 			}

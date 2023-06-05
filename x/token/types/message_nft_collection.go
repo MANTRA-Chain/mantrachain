@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
@@ -47,13 +46,13 @@ func (msg *MsgCreateNftCollection) GetSignBytes() []byte {
 func (msg *MsgCreateNftCollection) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Collection == nil {
-		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "nft collection is empty")
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft collection is empty")
 	}
 	if strings.TrimSpace(msg.Collection.Id) == "" {
-		return errors.Wrap(sdkerrors.ErrKeyNotFound, "collection id should not be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "collection id should not be empty")
 	}
 	return nil
 }

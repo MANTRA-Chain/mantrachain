@@ -4,13 +4,53 @@ import (
 	"context"
 	"strings"
 
-	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 )
+
+func CmdQueryDenomAuthorityMetadata2() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "denom-authority-metadata-2 [creator] [subdenom] [flags]",
+		Short: "get the authority metadata for a specific subdenom by creator",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			reqCreator := args[0]
+			reqSubDenom := args[1]
+
+			if strings.TrimSpace(reqCreator) == "" {
+				return errors.Wrap(types.ErrInvalidCreator, "empty creator")
+			}
+
+			if strings.TrimSpace(reqSubDenom) == "" {
+				return errors.Wrap(types.ErrInvalidDenom, "empty subdenom")
+			}
+
+			params := &types.QueryDenomAuthorityMetadata2Request{
+				Creator:  reqCreator,
+				Subdenom: reqSubDenom,
+			}
+
+			res, err := queryClient.DenomAuthorityMetadata2(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
 
 func CmdQueryDenomAuthorityMetadata() *cobra.Command {
 	cmd := &cobra.Command{

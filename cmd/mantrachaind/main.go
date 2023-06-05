@@ -3,16 +3,16 @@ package main
 import (
 	"os"
 
+	app "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/cmd/mantrachaind/cmd"
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-
-	"github.com/MANTRA-Finance/mantrachain/app"
-	"github.com/MANTRA-Finance/mantrachain/cmd/mantrachaind/cmd"
 )
 
 func main() {
 	rootCmd, _ := cmd.NewRootCmd()
-	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
+
+	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
 		switch e := err.(type) {
 		case server.ErrorCode:
 			os.Exit(e.Code)

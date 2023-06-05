@@ -93,7 +93,7 @@ func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply sdk.Int) PoolRes
 // IsTooSmallOrderAmount returns whether the order amount is too small for
 // matching, based on the order price.
 func IsTooSmallOrderAmount(amt sdk.Int, price sdk.Dec) bool {
-	return amt.LT(amm.MinCoinAmount) || price.MulInt(amt).LT(sdk.NewDecFromInt(amm.MinCoinAmount))
+	return amt.LT(amm.MinCoinAmount) || price.MulInt(amt).LT(amm.MinCoinAmount.ToDec())
 }
 
 // PriceLimits returns the lowest and the highest price limits with given last price

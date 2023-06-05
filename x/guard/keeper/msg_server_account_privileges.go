@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -12,11 +11,16 @@ import (
 
 func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.MsgUpdateAccountPrivileges) (*types.MsgUpdateAccountPrivilegesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 
 	account, err := sdk.AccAddressFromBech32(msg.Account)
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 	}
 
 	isFound := k.HasAccountPrivileges(ctx, account)
@@ -49,13 +53,18 @@ func (k msgServer) UpdateAccountPrivileges(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *types.MsgUpdateAccountPrivilegesBatch) (*types.MsgUpdateAccountPrivilegesBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 	accounts := []string{}
 
 	for i, acc := range msg.AccountsPrivileges.Accounts {
 		account, err := sdk.AccAddressFromBech32(acc)
 		if err != nil {
-			return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 		}
 
 		isFound := k.HasAccountPrivileges(ctx, account)
@@ -88,6 +97,11 @@ func (k msgServer) UpdateAccountPrivilegesBatch(goCtx context.Context, msg *type
 
 func (k msgServer) UpdateAccountPrivilegesGroupedBatch(goCtx context.Context, msg *types.MsgUpdateAccountPrivilegesGroupedBatch) (*types.MsgUpdateAccountPrivilegesGroupedBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	conf := k.GetParams(ctx)
 	accounts := []string{}
 
@@ -98,7 +112,7 @@ func (k msgServer) UpdateAccountPrivilegesGroupedBatch(goCtx context.Context, ms
 		for _, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
 			account, err := sdk.AccAddressFromBech32(acc)
 			if err != nil {
-				return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid account address")
 			}
 
 			isFound := k.HasAccountPrivileges(ctx, account)

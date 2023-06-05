@@ -18,6 +18,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBurnNft{}, "token/BurnNft", nil)
 	cdc.RegisterConcrete(&MsgTransferNft{}, "token/TransferNft", nil)
 	cdc.RegisterConcrete(&MsgApproveNft{}, "token/ApproveNft", nil)
+	cdc.RegisterConcrete(&MsgUpdateGuardSoulBondNftImage{}, "token/UpdateGuardSoulBondNftImage", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -33,6 +34,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBurnNft{},
 		&MsgTransferNft{},
 		&MsgApproveNft{},
+		&MsgUpdateGuardSoulBondNftImage{},
 	)
 	// this line is used by starport scaffolding # 3
 

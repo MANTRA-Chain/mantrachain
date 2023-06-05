@@ -3,7 +3,6 @@ package keeper
 import (
 	"strings"
 
-	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,7 +24,12 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		if err == nil {
 			coinAdmin, found := k.ck.GetAdmin(ctx, denom)
 
-			if found && coinAdmin.Equals(address) {
+			if !found {
+				return sdkerrors.Wrapf(types.ErrCoinAdminNotFound, "missing coin admin, denom %s", denom)
+			}
+
+			// The coin admin should be able to transfer without checking the privileges
+			if coinAdmin.Equals(address) {
 				continue
 			}
 
@@ -40,13 +44,13 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		collectionId := conf.AccountPrivilegesTokenCollectionId
 
 		if strings.TrimSpace(collectionId) == "" {
-			return errors.Wrap(types.ErrInvalidTokenCollectionId, "nft collection id should not be empty")
+			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionId, "nft collection id should not be empty")
 		}
 
 		creator, err := sdk.AccAddressFromBech32(collectionCreator)
 
 		if err != nil {
-			return errors.Wrap(types.ErrInvalidTokenCollectionCreator, "collection creator should not be empty")
+			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionCreator, "collection creator should not be empty")
 		}
 
 		collectionIndex := tokentypes.GetNftCollectionIndex(creator, collectionId)
@@ -54,13 +58,15 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		owner := k.nk.GetOwner(ctx, string(collectionIndex), string(index))
 
 		if owner.Empty() || !address.Equals(owner) {
-			return errors.Wrapf(types.ErrIncorrectNftOwner, "incorrect nft owner, address %s", address)
+			return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
 		}
 
 		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
 
-		if len(requiredPrivilegesList) == 0 || len(requiredPrivilegesList) != len(indexes) {
-			return errors.Wrap(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found")
+		for i, privileges := range requiredPrivilegesList {
+			if privileges == nil {
+				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(indexes[i]))
+			}
 		}
 
 		hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, requiredPrivilegesList)
@@ -71,7 +77,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 		if !hasPrivileges {
 			k.Logger(ctx).Error("insufficient privileges", "address", address, "coins", coins)
-			return errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address)
+			return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address)
 		}
 	}
 
@@ -84,7 +90,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	}
 
 	if len(inputs) == 0 && len(outputs) == 0 {
-		return errors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
+		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
 	}
 
 	conf := k.GetParams(ctx)
@@ -103,7 +109,9 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 			return err
 		}
 
-		if k.whlstTransfersSendersAccAddrs[in.Address] ||
+		// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
+		// the account privileges and no matter of the coin required privileges
+		if k.whitelistTransfersAccAddrs[in.Address] ||
 			admin.Equals(inAddress) {
 			return nil
 		}
@@ -112,6 +120,11 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 		if err != nil {
 			return err
+		}
+
+		if k.whitelistTransfersAccAddrs[out.Address] ||
+			admin.Equals(outAddress) {
+			return nil
 		}
 
 		err = k.CheckCanTransferCoins(ctx, outAddress, out.Coins)
@@ -124,14 +137,24 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	return nil
 }
 
-func (k Keeper) WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool) {
+func (k Keeper) WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string {
+	updated := make([]string, 0)
+
+	if len(addresses) == 0 {
+		return updated
+	}
+
 	for _, address := range addresses {
-		val, ok := k.whlstTransfersSendersAccAddrs[address]
+		val, ok := k.whitelistTransfersAccAddrs[address]
 
 		if ok && !isWhitelisted {
-			delete(k.whlstTransfersSendersAccAddrs, address)
+			delete(k.whitelistTransfersAccAddrs, address)
+			updated = append(updated, address)
 		} else if !val && isWhitelisted {
-			k.whlstTransfersSendersAccAddrs[address] = isWhitelisted
+			k.whitelistTransfersAccAddrs[address] = isWhitelisted
+			updated = append(updated, address)
 		}
 	}
+
+	return updated
 }

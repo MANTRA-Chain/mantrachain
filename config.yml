@@ -3,18 +3,17 @@ init:
 accounts:
   - name: validator
     coins:
-      - 1500000000000aum
+      - 1500000000000uaum
     mnemonic:
       guard cream sadness conduct invite crumble clock pudding hole grit liar
       hotel maid produce squeeze return argue turtle know drive eight casino maze host
 validator:
   name: validator
-  staked: "500000000000aum"
+  staked: "500000000000uaum"
 genesis:
   chain_id: "localnet"
   app_state:
     liquidity:
-    liquidfarming:
       params:
         rewards_auction_duration: "120s"
         liquid_farms:

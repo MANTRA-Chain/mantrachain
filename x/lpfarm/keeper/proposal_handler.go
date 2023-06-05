@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -21,11 +20,11 @@ func HandleFarmingPlanProposal(ctx sdk.Context, k Keeper, p *types.FarmingPlanPr
 	for _, req := range p.TerminatePlanRequests {
 		plan, found := k.GetPlan(ctx, req.PlanId)
 		if !found {
-			return errors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", req.PlanId)
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", req.PlanId)
 		}
 		// TODO: do we actually need this restriction?
 		if plan.IsPrivate {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "cannot terminate private plans")
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot terminate private plans")
 		}
 		if err := k.TerminatePlan(ctx, plan); err != nil {
 			return err

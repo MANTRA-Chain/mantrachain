@@ -3,11 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
@@ -15,26 +14,30 @@ import (
 // Keeper of the module's store.
 type Keeper struct {
 	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
+	storeKey   sdk.StoreKey
 	paramSpace paramstypes.Subspace
 
 	accountKeeper   types.AccountKeeper
 	bankKeeper      types.BankKeeper
 	liquidityKeeper types.LiquidityKeeper
+	gk              types.GuardKeeper
 }
 
 // NewKeeper creates a new Keeper instance.
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
+	storeKey sdk.StoreKey,
 	paramSpace paramstypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	liquidityKeeper types.LiquidityKeeper,
+	gk types.GuardKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
+
+	gk.WhitelistTransferAccAddresses([]string{types.DefaultFeeCollector.String(), sdk.AccAddress(types.RewardsPoolAddress).String()}, true)
 
 	return Keeper{
 		cdc:             cdc,
@@ -43,6 +46,7 @@ func NewKeeper(
 		accountKeeper:   accountKeeper,
 		bankKeeper:      bankKeeper,
 		liquidityKeeper: liquidityKeeper,
+		gk:              gk,
 	}
 }
 

@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
@@ -16,7 +16,7 @@ func (k Keeper) CheckAccountFulfillsRequiredPrivileges(ctx sdk.Context, address 
 	requiredPrivileges := types.NewEmptyPrivileges()
 	requiredPrivileges.МergeMore(requiredPrivilegesList)
 
-	if !accPr.CheckPrivileges(requiredPrivileges) {
+	if !accPr.CheckPrivileges(requiredPrivileges, conf.DefaultPrivileges) {
 		return false, errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address.String())
 	}
 

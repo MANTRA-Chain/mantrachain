@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"time"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,6 +12,10 @@ import (
 
 func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg *types.MsgUpdateAuthzGenericGrantRevokeBatch) (*types.MsgUpdateAuthzGenericGrantRevokeBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -33,7 +38,7 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 				return nil, err
 			}
 
-			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, nil)
+			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, time.Unix(types.MaxValidSeconds, 0))
 			if err != nil {
 				return nil, err
 			}

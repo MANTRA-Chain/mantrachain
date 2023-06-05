@@ -1,9 +1,9 @@
 package keeper
 
 import (
+	nfttypes "github.com/MANTRA-Finance/mantrachain/x/nft/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 type NftExecutor struct {
@@ -18,12 +18,12 @@ func NewNftExecutor(ctx sdk.Context, nftKeeper types.NFTKeeper) *NftExecutor {
 	}
 }
 
-func (c *NftExecutor) SetClass(nftClass nft.Class) error {
+func (c *NftExecutor) SetClass(nftClass nfttypes.Class) error {
 	return c.nftKeeper.SaveClass(c.ctx, nftClass)
 }
 
 func (c *NftExecutor) SetDefaultClass(collIndex []byte) error {
-	return c.nftKeeper.SaveClass(c.ctx, nft.Class{
+	return c.nftKeeper.SaveClass(c.ctx, nfttypes.Class{
 		Id:      string(collIndex),
 		Name:    types.DefaultParams().NftCollectionDefaultName,
 		Uri:     types.ModuleName,
@@ -31,11 +31,11 @@ func (c *NftExecutor) SetDefaultClass(collIndex []byte) error {
 	})
 }
 
-func (c *NftExecutor) MintNft(nft nft.NFT, receiver sdk.AccAddress) error {
+func (c *NftExecutor) MintNft(nft nfttypes.NFT, receiver sdk.AccAddress) error {
 	return c.nftKeeper.Mint(c.ctx, nft, receiver)
 }
 
-func (c *NftExecutor) BatchMintNft(nfts []nft.NFT, receiver sdk.AccAddress) error {
+func (c *NftExecutor) BatchMintNft(nfts []nfttypes.NFT, receiver sdk.AccAddress) error {
 	return c.nftKeeper.BatchMint(c.ctx, nfts, receiver)
 }
 

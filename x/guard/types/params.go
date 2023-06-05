@@ -5,6 +5,7 @@ import (
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -114,36 +115,53 @@ func (p Params) Validate() error {
 }
 
 func validateAdminAccount(i interface{}) error {
-	_, ok := i.(string)
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	_, err := sdk.AccAddressFromBech32(v)
+	if err != nil {
+		return fmt.Errorf("invalid account address (%s)", err)
 	}
 
 	return nil
 }
 
 func validateAccountPrivilegesTokenCollectionCreator(i interface{}) error {
-	_, ok := i.(string)
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v == "" {
+		return fmt.Errorf("valid account privileges token collection creator param should not be empty")
 	}
 
 	return nil
 }
 
 func validateAccountPrivilegesTokenCollectionId(i interface{}) error {
-	_, ok := i.(string)
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v == "" {
+		return fmt.Errorf("valid account privileges token collection id param should not be empty")
 	}
 
 	return nil
 }
 
 func validateDefaultPrivileges(i interface{}) error {
-	_, ok := i.([]byte)
+	v, ok := i.([]byte)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if len(v) != 32 {
+		return fmt.Errorf("valid default privileges param should have length of 32")
 	}
 
 	return nil

@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -15,25 +15,23 @@ import (
 
 type (
 	Keeper struct {
-		cdc                           codec.BinaryCodec
-		storeKey                      storetypes.StoreKey
-		memKey                        storetypes.StoreKey
-		paramstore                    paramtypes.Subspace
-		whlstTransfersSendersAccAddrs map[string]bool
-		router                        *baseapp.MsgServiceRouter
-		ak                            types.AccountKeeper
-		bk                            types.BankKeeper
-		azk                           types.AuthzKeeper
-		tk                            types.TokenKeeper
-		nk                            types.NFTKeeper
-		ck                            types.CoinFactoryKeeper
+		cdc                        codec.BinaryCodec
+		storeKey                   storetypes.StoreKey
+		paramstore                 paramtypes.Subspace
+		whitelistTransfersAccAddrs map[string]bool
+		router                     *baseapp.MsgServiceRouter
+		ak                         types.AccountKeeper
+		bk                         types.BankKeeper
+		azk                        types.AuthzKeeper
+		tk                         types.TokenKeeper
+		nk                         types.NFTKeeper
+		ck                         types.CoinFactoryKeeper
 	}
 )
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
+	storeKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	modAccAddrs map[string]bool,
 	router *baseapp.MsgServiceRouter,
@@ -55,18 +53,17 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:                           cdc,
-		storeKey:                      storeKey,
-		memKey:                        memKey,
-		paramstore:                    ps,
-		whlstTransfersSendersAccAddrs: modAccAddrsCopy,
-		router:                        router,
-		ak:                            ak,
-		bk:                            bk,
-		azk:                           azk,
-		tk:                            tk,
-		nk:                            nk,
-		ck:                            ck,
+		cdc:                        cdc,
+		storeKey:                   storeKey,
+		paramstore:                 ps,
+		whitelistTransfersAccAddrs: modAccAddrsCopy,
+		router:                     router,
+		ak:                         ak,
+		bk:                         bk,
+		azk:                        azk,
+		tk:                         tk,
+		nk:                         nk,
+		ck:                         ck,
 	}
 }
 

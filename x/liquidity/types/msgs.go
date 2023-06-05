@@ -3,7 +3,6 @@ package types
 import (
 	"time"
 
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -52,16 +51,16 @@ func (msg MsgCreatePair) Type() string { return TypeMsgCreatePair }
 
 func (msg MsgCreatePair) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if err := sdk.ValidateDenom(msg.BaseCoinDenom); err != nil {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	if err := sdk.ValidateDenom(msg.QuoteCoinDenom); err != nil {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	if msg.BaseCoinDenom == msg.QuoteCoinDenom {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "cannot use same denom for both base coin and quote coin")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot use same denom for both base coin and quote coin")
 	}
 	return nil
 }
@@ -105,20 +104,20 @@ func (msg MsgCreatePool) Type() string { return TypeMsgCreatePool }
 
 func (msg MsgCreatePool) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) != 2 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.GT(amm.MaxCoinAmount) {
-			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
 		}
 	}
 	return nil
@@ -169,24 +168,24 @@ func (msg MsgCreateRangedPool) Type() string { return TypeMsgCreateRangedPool }
 
 func (msg MsgCreateRangedPool) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) == 0 || len(msg.DepositCoins) > 2 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.GT(amm.MaxCoinAmount) {
-			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
 		}
 	}
 	if err := amm.ValidateRangedPoolParams(msg.MinPrice, msg.MaxPrice, msg.InitialPrice); err != nil {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	return nil
 }
@@ -230,16 +229,16 @@ func (msg MsgDeposit) Type() string { return TypeMsgDeposit }
 
 func (msg MsgDeposit) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid depositor address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid depositor address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) == 0 || len(msg.DepositCoins) > 2 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	return nil
 }
@@ -283,16 +282,16 @@ func (msg MsgWithdraw) Type() string { return TypeMsgWithdraw }
 
 func (msg MsgWithdraw) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Withdrawer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid withdrawer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid withdrawer address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
 	}
 	if err := msg.PoolCoin.Validate(); err != nil {
 		return err
 	}
 	if !msg.PoolCoin.IsPositive() {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pool coin must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool coin must be positive")
 	}
 	return nil
 }
@@ -346,34 +345,34 @@ func (msg MsgLimitOrder) Type() string { return TypeMsgLimitOrder }
 
 func (msg MsgLimitOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.Direction != OrderDirectionBuy && msg.Direction != OrderDirectionSell {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
 	}
 	if err := sdk.ValidateDenom(msg.DemandCoinDenom); err != nil {
-		return errors.Wrap(err, "invalid demand coin denom")
+		return sdkerrors.Wrap(err, "invalid demand coin denom")
 	}
 	if !msg.Price.IsPositive() {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "price must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "price must be positive")
 	}
 	if err := msg.OfferCoin.Validate(); err != nil {
-		return errors.Wrap(err, "invalid offer coin")
+		return sdkerrors.Wrap(err, "invalid offer coin")
 	}
 	if msg.OfferCoin.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
 	}
 	if msg.OfferCoin.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
 	}
 	if msg.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
 	}
 	if msg.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
 	}
 	var minOfferCoin sdk.Coin
 	switch msg.Direction {
@@ -383,13 +382,13 @@ func (msg MsgLimitOrder) ValidateBasic() error {
 		minOfferCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
 	}
 	if msg.OfferCoin.IsLT(minOfferCoin) {
-		return errors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
+		return sdkerrors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
 	}
 	if msg.OfferCoin.Denom == msg.DemandCoinDenom {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
 	}
 	if msg.OrderLifespan < 0 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
@@ -441,37 +440,37 @@ func (msg MsgMarketOrder) Type() string { return TypeMsgMarketOrder }
 
 func (msg MsgMarketOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.Direction != OrderDirectionBuy && msg.Direction != OrderDirectionSell {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
 	}
 	if err := sdk.ValidateDenom(msg.DemandCoinDenom); err != nil {
-		return errors.Wrap(err, "invalid demand coin denom")
+		return sdkerrors.Wrap(err, "invalid demand coin denom")
 	}
 	if err := msg.OfferCoin.Validate(); err != nil {
-		return errors.Wrap(err, "invalid offer coin")
+		return sdkerrors.Wrap(err, "invalid offer coin")
 	}
 	if msg.OfferCoin.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
 	}
 	if msg.OfferCoin.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
 	}
 	if msg.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
 	}
 	if msg.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
 	}
 	if msg.OfferCoin.Denom == msg.DemandCoinDenom {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
 	}
 	if msg.OrderLifespan < 0 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
@@ -525,34 +524,34 @@ func (msg MsgMMOrder) Type() string { return TypeMsgMMOrder }
 
 func (msg MsgMMOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.Direction != OrderDirectionBuy && msg.Direction != OrderDirectionSell {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
 	}
 	if err := sdk.ValidateDenom(msg.DemandCoinDenom); err != nil {
-		return errors.Wrap(err, "invalid demand coin denom")
+		return sdkerrors.Wrap(err, "invalid demand coin denom")
 	}
 	if !msg.Price.IsPositive() {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "price must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "price must be positive")
 	}
 	if err := msg.OfferCoin.Validate(); err != nil {
-		return errors.Wrap(err, "invalid offer coin")
+		return sdkerrors.Wrap(err, "invalid offer coin")
 	}
 	if msg.OfferCoin.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
 	}
 	if msg.OfferCoin.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
 	}
 	if msg.Amount.LT(amm.MinCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
 	}
 	if msg.Amount.GT(amm.MaxCoinAmount) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
 	}
 	var minOfferCoin sdk.Coin
 	switch msg.Direction {
@@ -562,13 +561,13 @@ func (msg MsgMMOrder) ValidateBasic() error {
 		minOfferCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
 	}
 	if msg.OfferCoin.IsLT(minOfferCoin) {
-		return errors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
+		return sdkerrors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
 	}
 	if msg.OfferCoin.Denom == msg.DemandCoinDenom {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
 	}
 	if msg.OrderLifespan < 0 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
@@ -612,13 +611,13 @@ func (msg MsgCancelOrder) Type() string { return TypeMsgCancelOrder }
 
 func (msg MsgCancelOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.OrderId == 0 {
-		return errors.Wrap(sdkerrors.ErrInvalidRequest, "order id must not be 0")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order id must not be 0")
 	}
 	return nil
 }
@@ -660,12 +659,12 @@ func (msg MsgCancelAllOrders) Type() string { return TypeMsgCancelAllOrders }
 
 func (msg MsgCancelAllOrders) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	pairIdSet := map[uint64]struct{}{}
 	for _, pairId := range msg.PairIds {
 		if pairId == 0 {
-			return errors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
 		}
 		if _, ok := pairIdSet[pairId]; ok {
 			return ErrDuplicatePairId

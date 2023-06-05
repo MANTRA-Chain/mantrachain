@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,13 +12,17 @@ import (
 func (k msgServer) UpdateRequiredPrivileges(goCtx context.Context, msg *types.MsgUpdateRequiredPrivileges) (*types.MsgUpdateRequiredPrivilegesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if len(msg.Index) == 0 {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
 	}
 
 	isFound := k.HasRequiredPrivileges(ctx, msg.Index, kind)
@@ -53,26 +56,30 @@ func (k msgServer) UpdateRequiredPrivileges(goCtx context.Context, msg *types.Ms
 func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *types.MsgUpdateRequiredPrivilegesBatch) (*types.MsgUpdateRequiredPrivilegesBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
 	}
 
 	indexes := []string{}
 
-	for i, index := range msg.RequiredPrivilegesList.Indexes {
+	for i, index := range msg.RequiredPrivileges.Indexes {
 		if len(index) == 0 {
-			return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 		}
 
 		isFound := k.HasRequiredPrivileges(ctx, index, kind)
-		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesList.Privileges[i])
+		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivileges.Privileges[i])
 
 		if isFound && reqPr.Empty() {
 			k.RemoveRequiredPrivileges(ctx, index, kind)
 			indexes = append(indexes, string(index))
 		} else if !reqPr.Empty() {
-			k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesList.Privileges[i])
+			k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivileges.Privileges[i])
 			indexes = append(indexes, string(index))
 		}
 	}
@@ -95,19 +102,23 @@ func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *typ
 func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, msg *types.MsgUpdateRequiredPrivilegesGroupedBatch) (*types.MsgUpdateRequiredPrivilegesGroupedBatchResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
 	}
 
 	indexes := []string{}
 
-	for i := range msg.RequiredPrivilegesListGrouped.Indexes {
-		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesListGrouped.Privileges[i])
+	for i := range msg.RequiredPrivilegesGrouped.Indexes {
+		reqPr := types.PrivilegesFromBytes(msg.RequiredPrivilegesGrouped.Privileges[i])
 
-		for _, index := range msg.RequiredPrivilegesListGrouped.Indexes[i].Indexes {
+		for _, index := range msg.RequiredPrivilegesGrouped.Indexes[i].Indexes {
 			if len(index) == 0 {
-				return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
 			}
 
 			isFound := k.HasRequiredPrivileges(ctx, index, kind)
@@ -116,7 +127,7 @@ func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, m
 				k.RemoveRequiredPrivileges(ctx, index, kind)
 				indexes = append(indexes, string(index))
 			} else if !reqPr.Empty() {
-				k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesListGrouped.Privileges[i])
+				k.SetRequiredPrivileges(ctx, index, kind, msg.RequiredPrivilegesGrouped.Privileges[i])
 				indexes = append(indexes, string(index))
 			}
 		}

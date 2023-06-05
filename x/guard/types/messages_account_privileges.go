@@ -1,7 +1,6 @@
 package types
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -51,14 +50,14 @@ func (msg *MsgUpdateAccountPrivileges) GetSignBytes() []byte {
 func (msg *MsgUpdateAccountPrivileges) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Account)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
 	}
 	if msg.Privileges != nil && len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
 	}
 	return nil
 }
@@ -99,21 +98,21 @@ func (msg *MsgUpdateAccountPrivilegesBatch) GetSignBytes() []byte {
 func (msg *MsgUpdateAccountPrivilegesBatch) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.AccountsPrivileges == nil || len(msg.AccountsPrivileges.Accounts) == 0 {
-		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "accounts and/or privileges are empty")
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "accounts and/or privileges are empty")
 	}
 	if msg.AccountsPrivileges.Privileges == nil || len(msg.AccountsPrivileges.Accounts) != len(msg.AccountsPrivileges.Privileges) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
 	}
 	for i, acc := range msg.AccountsPrivileges.Accounts {
 		_, err = sdk.AccAddressFromBech32(acc)
 		if err != nil {
-			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
 		}
 		if msg.AccountsPrivileges.Privileges[i] != nil && len(msg.AccountsPrivileges.Privileges[i]) > 0 && len(msg.AccountsPrivileges.Privileges[i]) != 32 {
-			return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivileges.Privileges[i]))
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivileges.Privileges[i]))
 		}
 	}
 	return nil
@@ -155,22 +154,22 @@ func (msg *MsgUpdateAccountPrivilegesGroupedBatch) GetSignBytes() []byte {
 func (msg *MsgUpdateAccountPrivilegesGroupedBatch) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.AccountsPrivilegesGrouped == nil || len(msg.AccountsPrivilegesGrouped.Accounts) == 0 {
-		return errors.Wrapf(sdkerrors.ErrKeyNotFound, "grouped accounts and/or privileges are empty")
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "grouped accounts and/or privileges are empty")
 	}
 	if msg.AccountsPrivilegesGrouped.Privileges == nil || len(msg.AccountsPrivilegesGrouped.Accounts) != len(msg.AccountsPrivilegesGrouped.Privileges) {
-		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "accounts and privileges length is not equal")
 	}
 	for i := range msg.AccountsPrivilegesGrouped.Accounts {
 		for k, acc := range msg.AccountsPrivilegesGrouped.Accounts[i].Accounts {
 			_, err = sdk.AccAddressFromBech32(acc)
 			if err != nil {
-				return errors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address (%s)", err)
 			}
 			if msg.AccountsPrivilegesGrouped.Privileges[k] != nil && len(msg.AccountsPrivilegesGrouped.Privileges[k]) > 0 && len(msg.AccountsPrivilegesGrouped.Privileges[k]) != 32 {
-				return errors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivilegesGrouped.Privileges[k]))
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.AccountsPrivilegesGrouped.Privileges[k]))
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ types.MsgServer = msgServer{}
@@ -23,6 +24,10 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 // CreatePrivatePlan defines a method to create a new private plan.
 func (k msgServer) CreatePrivatePlan(goCtx context.Context, msg *types.MsgCreatePrivatePlan) (*types.MsgCreatePrivatePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	creatorAddr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {

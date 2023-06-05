@@ -27,5 +27,9 @@ type BankKeeper interface {
 }
 
 type GuardKeeper interface {
-	WhlstTransferSendersAccAddresses(ctx sdk.Context, addresses []string, isWhitelisted bool)
+	CheckIsAdmin(ctx sdk.Context, address string) error
+	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	ValidateCoinLocked(ctx sdk.Context, coin sdk.Coin) error
+	ValidateCoinsLocked(ctx sdk.Context, coins sdk.Coins) error
+	ValidateCoinsLockedByDenoms(ctx sdk.Context, denoms []string) error
 }

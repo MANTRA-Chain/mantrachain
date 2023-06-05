@@ -64,8 +64,22 @@ func (ap Privileges) Bytes() []byte {
 	return ap.raw
 }
 
-func (ap Privileges) CheckPrivileges(privileges *Privileges) bool {
-	return big.NewInt(0).And(ap.BigInt(), privileges.BigInt()).Cmp(privileges.BigInt()) == 0
+func (ap Privileges) CheckPrivileges(privileges *Privileges, defPriv []byte) bool {
+	defPrNum := big.NewInt(0).SetBytes(defPriv)
+
+	defReqPr := big.NewInt(0).And(defPrNum, privileges.BigInt())
+	defAccPr := big.NewInt(0).And(defPrNum, ap.BigInt())
+
+	if big.NewInt(0).And(defAccPr, defReqPr).Cmp(defReqPr) == 0 {
+		invDefPrNum := big.NewInt(0).Not(defPrNum)
+
+		reqPr := big.NewInt(0).And(invDefPrNum, privileges.BigInt())
+		accPr := big.NewInt(0).And(invDefPrNum, ap.BigInt())
+
+		return big.NewInt(0).And(accPr, reqPr).Cmp(big.NewInt(0)) == 1
+	}
+
+	return false
 }
 
 func (ap Privileges) Check(query []byte) bool {

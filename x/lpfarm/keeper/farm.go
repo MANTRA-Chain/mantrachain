@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -13,10 +12,19 @@ import (
 // Farm creates a new farm object for the given coin's denom, if there wasn't.
 func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, coin.Denom); err != nil {
+		return nil, err
+	}
+
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(
 		ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin)); err != nil {
 		return nil, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	_, found := k.GetFarm(ctx, coin.Denom)
 	if !found {
@@ -63,10 +71,14 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	position, found := k.GetPosition(ctx, farmerAddr, coin.Denom)
 	if !found {
-		return nil, errors.Wrap(sdkerrors.ErrNotFound, "position not found")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "position not found")
 	}
 	if position.FarmingAmount.LT(coin.Amount) {
-		return nil, errors.Wrapf(sdkerrors.ErrInsufficientFunds, "not enough farming amount")
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "not enough farming amount")
+	}
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, coin.Denom); err != nil {
+		return nil, err
 	}
 
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)
@@ -83,15 +95,20 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 
 	farm, found := k.GetFarm(ctx, coin.Denom)
 	if !found {
-		return nil, errors.Wrap(sdkerrors.ErrNotFound, "farm not found")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "farm not found")
 	}
 	farm.TotalFarmingAmount = farm.TotalFarmingAmount.Sub(coin.Amount)
 	k.SetFarm(ctx, coin.Denom, farm)
 
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
+
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
+
 	if err := k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin)); err != nil {
 		return nil, err
 	}
+
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventUnfarm{
 		Farmer:           farmerAddr.String(),
@@ -108,7 +125,11 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 func (k Keeper) Harvest(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string) (withdrawnRewards sdk.Coins, err error) {
 	position, found := k.GetPosition(ctx, farmerAddr, denom)
 	if !found {
-		return nil, errors.Wrap(sdkerrors.ErrNotFound, "position not found")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "position not found")
+	}
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, denom); err != nil {
+		return nil, err
 	}
 
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)

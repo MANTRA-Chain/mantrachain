@@ -5,7 +5,7 @@ package types
 import (
 	fmt "fmt"
 
-	"cosmossdk.io/errors"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // x/coinfactory module sentinel errors

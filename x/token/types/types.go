@@ -11,8 +11,9 @@ const (
 	MusicNftCollectionCat                              = "music"
 	PhotographyNftCollectionCat                        = "photography"
 	SportsNftCollectionCat                             = "sports"
-	TradingCardsNftCollectionCat                       = "tradingCards"
+	TradingCardsNftCollectionCat                       = "trading-cards"
 	UtilityNftCollectionCat                            = "utility"
+	OtherNftCollectionCat                              = "other"
 )
 
 func ParseNftCollectionCategory(s string) (c NftCollectionCategory, err error) {
@@ -25,6 +26,7 @@ func ParseNftCollectionCategory(s string) (c NftCollectionCategory, err error) {
 		SportsNftCollectionCat:       {},
 		TradingCardsNftCollectionCat: {},
 		UtilityNftCollectionCat:      {},
+		OtherNftCollectionCat:        {},
 	}
 
 	cap := NftCollectionCategory(s)
