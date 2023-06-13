@@ -14,7 +14,7 @@ command -v tmux >/dev/null 2>&1 || {
 cecho(){
     RED="\033[0;31m"
     GREEN="\033[0;32m"  # <-- [0 means not bold
-    YELLOW="\033[1;33m" # <-- [1 means bold
+    YELLOW="\033[0;33m" # <-- [1 means bold
     CYAN="\033[1;36m"
     # ... Add more colors if you like
 

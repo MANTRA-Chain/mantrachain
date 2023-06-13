@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source "$PWD"/scripts/common.sh
 
 # Init the provider
