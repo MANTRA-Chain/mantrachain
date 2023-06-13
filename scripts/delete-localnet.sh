@@ -1,3 +1,5 @@
+#!/bin/bash
+
 pkill -f interchain-security-pd
 pkill -f mantrachain
 pkill -f hermes

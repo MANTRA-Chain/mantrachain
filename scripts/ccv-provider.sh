@@ -66,14 +66,14 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
   interchain-security-pd collect-gentxs --home $HOMEDIR --gentx-dir ${HOMEDIR}/config/gentx/
 
   cecho "CYAN" "Change client.toml values"
-  sed -i -r "/node =/ s/= .*/= \"tcp:\/\/127.0.0.1:26658\"/" ${HOMEDIR}/config/client.toml
+  sed -i -r "/node =/ s/= .*/= \"tcp:\/\/127.0.0.1:26647\"/" ${HOMEDIR}/config/client.toml
 fi
 
 cecho "CYAN" "Start the provider"
 tmux new -s provider -d interchain-security-pd start --home $HOMEDIR \
-  --rpc.laddr tcp://127.0.0.1:26658 \
-  --grpc.address 127.0.0.1:9091 \
-  --address tcp://127.0.0.1:26655 \
-  --p2p.laddr tcp://127.0.0.1:26656 \
+  --rpc.laddr tcp://127.0.0.1:26647 \
+  --grpc.address 127.0.0.1:8090 \
+  --address tcp://127.0.0.1:26648 \
+  --p2p.laddr tcp://127.0.0.1:26646 \
   --grpc-web.enable=false \
   &>${HOMEDIR}/logs &

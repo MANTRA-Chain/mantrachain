@@ -10,7 +10,7 @@ KEYS[2]="admin"
 ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID="account_privileges_guard_nft_collection"
 
 KEYRING="test"
-LOGLEVEL="info"
+LOGLEVEL="debug"
 
 GAS_ADJ=2
 GAS_PRICE=0.0001uaum
@@ -36,7 +36,7 @@ command -v hermes >/dev/null 2>&1 || {
 source "$PWD"/scripts/common.sh
 
 echo "Stop the consumer if any"
-pkill -f mantrachain
+pkill -f mantrachaind
 pkill -f hermes
 
 set -e # exit on first error
@@ -105,14 +105,14 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 
   cecho "CYAN" "Change client.toml values"
   sed -i -E 's|chain-id = \"\"|chain-id = \"'$CHAINID'\"|g' $CLIENT_TOML
-  sed -i -r "/node =/ s/= .*/= \"tcp:\/\/127.0.0.1:26648\"/" $CLIENT_TOML
+  sed -i -r "/node =/ s/= .*/= \"tcp:\/\/127.0.0.1:26657\"/" $CLIENT_TOML
 
   cecho "CYAN" "Create consumer proposal"
   tee ${PROV_NODE_DIR}/consumer-proposal.json <<EOF
 {
   "title": "Create mantrachain",
   "description": "Mantrachain shared security",
-  "chain_id": "mantrachain", 
+  "chain_id": "mantrachain",
   "initial_height": {
       "revision_height": 1
   },
@@ -180,11 +180,12 @@ tmux new -s mantrachain -d "$PWD"/build/mantrachaind start \
   --pruning=nothing \
   --log_level=$LOGLEVEL \
   --home=$HOMEDIR \
-  --rpc.laddr tcp://127.0.0.1:26648 \
-  --grpc.address 127.0.0.1:9081 \
-  --address tcp://127.0.0.1:26645 \
-  --p2p.laddr tcp://127.0.0.1:26646 \
+  --rpc.laddr tcp://0.0.0.0:26657 \
+  --grpc.address 0.0.0.0:9090 \
+  --address tcp://0.0.0.:26658 \
+  --p2p.laddr tcp://0.0.0.0:26656 \
   --grpc-web.enable=true \
+  --trace \
   --p2p.persistent_peers $CONS_P2P_ADDRESS
 
 if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
@@ -197,15 +198,15 @@ log_level = "info"
 account_prefix = "mantra"
 clock_drift = "5s"
 gas_multiplier = 2.0
-grpc_addr = "tcp://127.0.0.1:9081"
+grpc_addr = "tcp://127.0.0.1:9090"
 id = "mantrachain"
 key_name = "relayer"
 max_gas = 2000000
-rpc_addr = "http://127.0.0.1:26648"
+rpc_addr = "http://127.0.0.1:26657"
 rpc_timeout = "10s"
 store_prefix = "ibc"
 trusting_period = "14days"
-websocket_addr = "ws://127.0.0.1:26648/websocket"
+websocket_addr = "ws://127.0.0.1:26657/websocket"
 
 [chains.gas_price]
   denom = "uaum"
@@ -219,15 +220,15 @@ websocket_addr = "ws://127.0.0.1:26648/websocket"
 account_prefix = "cosmos"
 clock_drift = "5s"
 gas_multiplier = 1.1
-grpc_addr = "tcp://127.0.0.1:9091"
+grpc_addr = "tcp://127.0.0.1:8090"
 id = "provider"
 key_name = "relayer"
 max_gas = 2000000
-rpc_addr = "http://127.0.0.1:26658"
+rpc_addr = "http://127.0.0.1:26647"
 rpc_timeout = "10s"
 store_prefix = "ibc"
 trusting_period = "14days"
-websocket_addr = "ws://127.0.0.1:26658/websocket"
+websocket_addr = "ws://127.0.0.1:26647/websocket"
 
 [chains.gas_price]
   denom = "stake"
