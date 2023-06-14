@@ -87,6 +87,9 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm"
 	lpfarmkeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker"
+	marketmakerkeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
+	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory"
 	coinfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
@@ -141,6 +144,7 @@ var (
 		budget.AppModuleBasic{},
 		liquidity.AppModuleBasic{},
 		lpfarm.AppModuleBasic{},
+		marketmaker.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		nft.AppModuleBasic{},
 		token.AppModuleBasic{},
@@ -157,6 +161,7 @@ var (
 		liquiditytypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
 		ibctransfertypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 		lpfarmtypes.ModuleName:                        nil,
+		marketmakertypes.ModuleName:                   nil,
 		icatypes.ModuleName:                           nil,
 		nfttypes.ModuleName:                           nil,
 		coinfactorytypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
@@ -192,22 +197,23 @@ type App struct {
 	memKeys map[string]*sdk.MemoryStoreKey
 
 	// keepers
-	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
-	CapabilityKeeper *capabilitykeeper.Keeper
-	SlashingKeeper   slashingkeeper.Keeper
-	CrisisKeeper     crisiskeeper.Keeper
-	UpgradeKeeper    upgradekeeper.Keeper
-	ParamsKeeper     paramskeeper.Keeper
-	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	EvidenceKeeper   evidencekeeper.Keeper
-	TransferKeeper   ibctransferkeeper.Keeper
-	FeeGrantKeeper   feegrantkeeper.Keeper
-	AuthzKeeper      authzkeeper.Keeper
-	BudgetKeeper     budgetkeeper.Keeper
-	LiquidityKeeper  liquiditykeeper.Keeper
-	LPFarmKeeper     lpfarmkeeper.Keeper
-	ICAHostKeeper    icahostkeeper.Keeper
+	AccountKeeper     authkeeper.AccountKeeper
+	BankKeeper        bankkeeper.Keeper
+	CapabilityKeeper  *capabilitykeeper.Keeper
+	SlashingKeeper    slashingkeeper.Keeper
+	CrisisKeeper      crisiskeeper.Keeper
+	UpgradeKeeper     upgradekeeper.Keeper
+	ParamsKeeper      paramskeeper.Keeper
+	IBCKeeper         *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	EvidenceKeeper    evidencekeeper.Keeper
+	TransferKeeper    ibctransferkeeper.Keeper
+	FeeGrantKeeper    feegrantkeeper.Keeper
+	AuthzKeeper       authzkeeper.Keeper
+	BudgetKeeper      budgetkeeper.Keeper
+	LiquidityKeeper   liquiditykeeper.Keeper
+	LPFarmKeeper      lpfarmkeeper.Keeper
+	MarketMakerKeeper marketmakerkeeper.Keeper
+	ICAHostKeeper     icahostkeeper.Keeper
 
 	TokenKeeper       tokenkeeper.Keeper
 	GuardKeeper       guardkeeper.Keeper
@@ -280,6 +286,7 @@ func New(
 		budgettypes.StoreKey,
 		liquiditytypes.StoreKey,
 		lpfarmtypes.StoreKey,
+		marketmakertypes.StoreKey,
 		icahosttypes.StoreKey,
 		tokentypes.StoreKey,
 		guardtypes.StoreKey,
@@ -470,6 +477,14 @@ func New(
 		&app.GuardKeeper,
 	)
 
+	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
+		appCodec,
+		keys[marketmakertypes.StoreKey],
+		app.GetSubspace(marketmakertypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
@@ -536,6 +551,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper),
 		lpfarm.NewAppModule(appCodec, app.LPFarmKeeper, app.AccountKeeper, app.BankKeeper, app.LiquidityKeeper),
+		marketmaker.NewAppModule(appCodec, app.MarketMakerKeeper, app.AccountKeeper, app.BankKeeper),
 		app.transferModule,
 		consumerModule,
 		app.icaModule,
@@ -555,6 +571,7 @@ func New(
 		liquiditytypes.ModuleName,
 		ibchost.ModuleName,
 		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		crisistypes.ModuleName,
@@ -588,6 +605,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		budgettypes.ModuleName,
 		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
 		icatypes.ModuleName,
 		guardtypes.ModuleName,
 		nfttypes.ModuleName,
@@ -610,6 +628,7 @@ func New(
 		budgettypes.ModuleName,
 		liquiditytypes.ModuleName,
 		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
@@ -845,6 +864,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(budgettypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(lpfarmtypes.ModuleName)
+	paramsKeeper.Subspace(marketmakertypes.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(tokentypes.ModuleName)
 	paramsKeeper.Subspace(guardtypes.ModuleName)
