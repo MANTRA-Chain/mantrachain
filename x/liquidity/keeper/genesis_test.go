@@ -19,7 +19,7 @@ func (s *KeeperTestSuite) TestDefaultGenesis() {
 }
 
 func (s *KeeperTestSuite) TestImportExportGenesis() {
-	s.ctx = s.ctx.WithBlockHeight(1).WithBlockTime(utils.ParseTime("2022-01-01T00:00:00Z"))
+	s.ctx = s.ctx.WithBlockHeight(1).WithBlockTime(time.Now())
 
 	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
 	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
