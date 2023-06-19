@@ -123,6 +123,7 @@ func (k Keeper) placeOrder(
 
 	refundedCoin := offerCoin.Sub(resultOfferCoin)
 	if err := k.bankKeeper.SendCoins(ctx, ordererAddr, pair.GetEscrowAddress(), sdk.NewCoins(resultOfferCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Order{}, err
 	}
 
@@ -410,6 +411,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{order.ReserveAddress.String()}, true)...)
 	}
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
 
@@ -512,6 +514,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 
 	bulkOp.QueueSendCoins(pair.GetEscrowAddress(), k.GetDustCollector(ctx), sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, quoteCoinDiff)))
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
 
@@ -548,6 +551,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 
 		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
 

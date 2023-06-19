@@ -48,16 +48,22 @@ func (k Keeper) PlaceBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidde
 
 	// Refund the previous bid if the bidder has placed bid before
 	if previousBid, found := k.GetBid(ctx, poolId, bidder); found {
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{auction.GetPayingReserveAddress().String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, auction.GetPayingReserveAddress(), previousBid.GetBidder(), sdk.NewCoins(previousBid.Amount)); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return types.Bid{}, err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		k.DeleteBid(ctx, previousBid)
 	}
 
 	// Reserve bidding coin
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{auction.GetPayingReserveAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, bidder, auction.GetPayingReserveAddress(), sdk.NewCoins(biddingCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Bid{}, err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	bid := types.NewBid(poolId, bidder.String(), biddingCoin)
 	k.SetBid(ctx, bid)
@@ -94,9 +100,12 @@ func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidd
 		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "bid by pool %d not found", poolId)
 	}
 
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{auction.GetPayingReserveAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, auction.GetPayingReserveAddress(), bidder, sdk.NewCoins(bid.Amount)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	k.DeleteBid(ctx, bid)
 
@@ -114,12 +123,16 @@ func (k Keeper) RefundBid(ctx sdk.Context, auctionId uint64, poolId uint64, bidd
 
 // CreateRewardsAuction creates new rewards auction and store it.
 func (k Keeper) CreateRewardsAuction(ctx sdk.Context, poolId uint64, endTime time.Time) {
-	k.SetRewardsAuction(ctx, types.NewRewardsAuction(
-		k.getNextAuctionIdWithUpdate(ctx, poolId),
-		poolId,
-		ctx.BlockTime(),
-		endTime,
-	))
+	poolCoinDenom := liquiditytypes.PoolCoinDenom(poolId)
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, poolCoinDenom); err == nil {
+		k.SetRewardsAuction(ctx, types.NewRewardsAuction(
+			k.getNextAuctionIdWithUpdate(ctx, poolId),
+			poolId,
+			ctx.BlockTime(),
+			endTime,
+		))
+	}
 }
 
 // FinishRewardsAuction finishes ongoing rewards auction by looking up the existence of winning bid.
@@ -133,6 +146,10 @@ func (k Keeper) FinishRewardsAuction(ctx sdk.Context, auction types.RewardsAucti
 	withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(auction.PoolId)
 	withdrawnRewardsReserves := k.bankKeeper.SpendableCoins(ctx, withdrawnRewardsReserveAddr)
 	totalRewards := truncatedRewards.Add(withdrawnRewardsReserves...)
+
+	if err := k.gk.ValidateCoinLockedByDenom(ctx, poolCoinDenom); err != nil {
+		return nil
+	}
 
 	winningBid, found := k.GetWinningBid(ctx, auction.Id, auction.PoolId)
 	if !found {
@@ -209,9 +226,12 @@ func (k Keeper) refundAllBids(ctx sdk.Context, auction types.RewardsAuction, inc
 		k.DeleteBid(ctx, bid)
 	}
 
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{auction.GetPayingReserveAddress().String()}, true)
 	if err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	if includeWinningBid {
 		k.DeleteWinningBid(ctx, auction.Id, auction.PoolId)
@@ -249,13 +269,19 @@ func (k Keeper) payoutRewards(
 	if !totalRewards.IsZero() {
 		deducted, fees = types.DeductFees(totalRewards, feeRate)
 
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{withdrawnRewardsReserveAddr.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, withdrawnRewardsReserveAddr, liquidFarmReserveAddr, withdrawnRewardsReserves); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return sdk.Coins{}, sdk.Coins{}, err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
+		whitelisted = k.gk.WhitelistTransferAccAddresses([]string{liquidFarmReserveAddr.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, liquidFarmReserveAddr, winningBid.GetBidder(), deducted); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return sdk.Coins{}, sdk.Coins{}, err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 		if !fees.IsZero() {
 			feeCollectorAddr, err := sdk.AccAddressFromBech32(k.GetFeeCollector(ctx))
@@ -263,9 +289,12 @@ func (k Keeper) payoutRewards(
 				return sdk.Coins{}, sdk.Coins{}, err
 			}
 
+			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{liquidFarmReserveAddr.String()}, true)
 			if err := k.bankKeeper.SendCoins(ctx, liquidFarmReserveAddr, feeCollectorAddr, fees); err != nil {
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return sdk.Coins{}, sdk.Coins{}, err
 			}
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 	}
 
@@ -273,9 +302,12 @@ func (k Keeper) payoutRewards(
 }
 
 func (k Keeper) compoundRewards(ctx sdk.Context, auctionPayingReserveAddr, liquidFarmReserveAddr sdk.AccAddress, amount sdk.Coin) error {
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{auctionPayingReserveAddr.String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, auctionPayingReserveAddr, liquidFarmReserveAddr, sdk.NewCoins(amount)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	if _, err := k.lpfarmKeeper.Farm(ctx, liquidFarmReserveAddr, amount); err != nil {
 		return err
 	}

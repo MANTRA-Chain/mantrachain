@@ -20,6 +20,7 @@ type Keeper struct {
 
 	bankKeeper    types.BankKeeper
 	accountKeeper types.AccountKeeper
+	gk            types.GuardKeeper
 }
 
 // NewKeeper returns a marketmaker keeper. It handles:
@@ -28,6 +29,7 @@ type Keeper struct {
 // - minting, burning PoolCoins
 func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
+	gk types.GuardKeeper,
 ) Keeper {
 	// ensure marketmaker module account is set
 	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
@@ -45,6 +47,7 @@ func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Su
 		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
+		gk:            gk,
 	}
 }
 

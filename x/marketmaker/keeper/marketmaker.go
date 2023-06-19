@@ -289,9 +289,12 @@ func (k Keeper) ClaimIncentives(ctx sdk.Context, mmAddr sdk.AccAddress) error {
 		return types.ErrEmptyClaimableIncentive
 	}
 
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{types.ClaimableIncentiveReserveAcc.String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, types.ClaimableIncentiveReserveAcc, mmAddr, incentive.Claimable); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	k.DeleteIncentive(ctx, mmAddr)
 

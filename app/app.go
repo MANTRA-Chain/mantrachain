@@ -463,7 +463,6 @@ func New(
 		app.CoinFactoryKeeper,
 	)
 
-	// Should be initiated after guard keeper
 	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 		appCodec,
 		keys[liquiditytypes.StoreKey],
@@ -473,7 +472,6 @@ func New(
 		&app.GuardKeeper,
 	)
 
-	// Should be initiated after guard keeper
 	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(
 		appCodec,
 		keys[lpfarmtypes.StoreKey],
@@ -492,6 +490,7 @@ func New(
 		app.BankKeeper,
 		app.LPFarmKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
@@ -500,6 +499,7 @@ func New(
 		app.GetSubspace(marketmakertypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(

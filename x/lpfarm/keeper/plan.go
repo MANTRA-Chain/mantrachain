@@ -29,6 +29,7 @@ func (k Keeper) CreatePrivatePlan(
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAddr.String()}, true)
 
 	if err := k.bankKeeper.SendCoins(ctx, creatorAddr, feeCollectorAddr, fee); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Plan{}, err
 	}
 
@@ -147,6 +148,7 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.Plan) error {
 
 			if err := k.bankKeeper.SendCoins(
 				ctx, farmingPoolAddr, plan.GetTerminationAddress(), notLockedCoinsBalances); err != nil {
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return err
 			}
 
@@ -237,6 +239,7 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 
 		if err := k.bankKeeper.SendCoins(
 			ctx, farmingPoolAddr, types.RewardsPoolAddress, totalRewards); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
 
