@@ -182,7 +182,7 @@ tmux new -s mantrachain -d "$PWD"/build/mantrachaind start \
   --home=$HOMEDIR \
   --rpc.laddr tcp://0.0.0.0:26657 \
   --grpc.address 0.0.0.0:9090 \
-  --address tcp://0.0.0.:26658 \
+  --address tcp://0.0.0.0:26658 \
   --p2p.laddr tcp://0.0.0.0:26656 \
   --grpc-web.enable=true \
   --trace \
