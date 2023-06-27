@@ -32,4 +32,5 @@ type GuardKeeper interface {
 	ValidateCoinLocked(ctx sdk.Context, coin sdk.Coin) error
 	ValidateCoinsLocked(ctx sdk.Context, coins sdk.Coins) error
 	ValidateCoinsLockedByDenoms(ctx sdk.Context, denoms []string) error
+	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 }

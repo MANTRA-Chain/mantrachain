@@ -67,17 +67,13 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			if privileges == nil {
 				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(indexes[i]))
 			}
-		}
 
-		hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, requiredPrivilegesList)
+			hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
 
-		if err != nil {
-			return err
-		}
-
-		if !hasPrivileges {
-			k.Logger(ctx).Error("insufficient privileges", "address", address, "coins", coins)
-			return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s", address)
+			if err != nil || !hasPrivileges {
+				k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(indexes[i]))
+				return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(indexes[i]))
+			}
 		}
 	}
 

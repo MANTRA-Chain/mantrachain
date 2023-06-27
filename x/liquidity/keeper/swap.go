@@ -40,7 +40,7 @@ func (k Keeper) placeOrder(
 		return types.Order{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
 	}
 
-	if err := k.gk.ValidateCoinsLockedByDenoms(ctx, []string{pair.BaseCoinDenom, pair.QuoteCoinDenom}); err != nil {
+	if err := k.gk.CheckCanTransferCoins(ctx, ordererAddr, sdk.Coins{offerCoin, sdk.Coin{Denom: demandCoinDenom}}); err != nil {
 		return types.Order{}, err
 	}
 
@@ -117,10 +117,6 @@ func (k Keeper) placeOrder(
 	}
 	if types.IsTooSmallOrderAmount(amount, resultPrice) {
 		return types.Order{}, types.ErrTooSmallOrder
-	}
-
-	if err := k.gk.ValidateCoinsLocked(ctx, sdk.Coins{offerCoin, resultOfferCoin}); err != nil {
-		return types.Order{}, err
 	}
 
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
