@@ -4,13 +4,4 @@ release/
 .idea/
 .vscode/
 .DS_Store
-.history
-*.pem
-*.csr
-*.txt
-account*.txt
-build
-data
-out
-coverage.*
-interchain-security
+.history/

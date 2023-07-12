@@ -1,23 +1,21 @@
-init:
-  home: "~/.mantrachain"
+version: 1
 accounts:
-  - name: validator
-    coins:
-      - 1500000000000uaum
-    mnemonic:
-      guard cream sadness conduct invite crumble clock pudding hole grit liar
-      hotel maid produce squeeze return argue turtle know drive eight casino maze host
-validator:
-  name: validator
-  staked: "500000000000uaum"
-genesis:
-  chain_id: "localnet"
-  app_state:
-    liquidity:
-      params:
-        rewards_auction_duration: "120s"
-        liquid_farms:
-          - pool_id: "1"
-            min_farm_amount: "1"
-            min_bid_amount: "1"
-            fee_rate: "0.000000000000000000"
+- name: alice
+  coins:
+  - 20000token
+  - 200000000stake
+- name: bob
+  coins:
+  - 10000token
+  - 100000000stake
+client:
+  openapi:
+    path: docs/static/openapi.yml
+faucet:
+  name: bob
+  coins:
+  - 5token
+  - 100000stake
+validators:
+- name: alice
+  bonded: 100000000stake
