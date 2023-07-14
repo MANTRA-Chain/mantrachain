@@ -204,4 +204,8 @@ require (
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
-replace github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+replace (
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20230714123823-81be22fdc71b
+	github.com/cosmos/ibc-go/v7 => github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20230714133924-dc2ab084b2a1
+	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+)
