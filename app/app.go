@@ -110,6 +110,41 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
+	"mantrachain/x/coinfactory"
+	coinfactorykeeper "mantrachain/x/coinfactory/keeper"
+	coinfactorytypes "mantrachain/x/coinfactory/types"
+	"mantrachain/x/did"
+	didkeeper "mantrachain/x/did/keeper"
+	didtypes "mantrachain/x/did/types"
+	"mantrachain/x/farming"
+	farmingclient "mantrachain/x/farming/client"
+	farmingkeeper "mantrachain/x/farming/keeper"
+	farmingtypes "mantrachain/x/farming/types"
+	"mantrachain/x/guard"
+	guardkeeper "mantrachain/x/guard/keeper"
+	guardtypes "mantrachain/x/guard/types"
+	"mantrachain/x/liquidfarming"
+	liquidfarmingkeeper "mantrachain/x/liquidfarming/keeper"
+	liquidfarmingtypes "mantrachain/x/liquidfarming/types"
+	"mantrachain/x/liquidity"
+	liquiditykeeper "mantrachain/x/liquidity/keeper"
+	liquiditytypes "mantrachain/x/liquidity/types"
+	"mantrachain/x/lpfarm"
+	lpfarmclient "mantrachain/x/lpfarm/client"
+	lpfarmkeeper "mantrachain/x/lpfarm/keeper"
+	lpfarmtypes "mantrachain/x/lpfarm/types"
+	"mantrachain/x/marketmaker"
+	marketmakerclient "mantrachain/x/marketmaker/client"
+	marketmakerkeeper "mantrachain/x/marketmaker/keeper"
+	marketmakertypes "mantrachain/x/marketmaker/types"
+	"mantrachain/x/token"
+	tokenkeeper "mantrachain/x/token/keeper"
+	tokentypes "mantrachain/x/token/types"
+
+	"github.com/cosmos/cosmos-sdk/x/nft"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	nftmodule "github.com/cosmos/cosmos-sdk/x/nft/module"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "mantrachain/app/params"
@@ -133,6 +168,9 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		upgradeclient.LegacyCancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
+		farmingclient.ProposalHandler,
+		marketmakerclient.ProposalHandler,
+		lpfarmclient.ProposalHandler,
 		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
 
@@ -161,6 +199,16 @@ var (
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		groupmodule.AppModuleBasic{},
+		nftmodule.AppModuleBasic{},
+		coinfactory.AppModuleBasic{},
+		did.AppModuleBasic{},
+		farming.AppModuleBasic{},
+		guard.AppModuleBasic{},
+		liquidfarming.AppModuleBasic{},
+		liquidity.AppModuleBasic{},
+		lpfarm.AppModuleBasic{},
+		marketmaker.AppModuleBasic{},
+		token.AppModuleBasic{},
 		ibc.AppModuleBasic{},
 		ibctm.AppModuleBasic{},
 		solomachine.AppModuleBasic{},
@@ -183,6 +231,16 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		nft.ModuleName:                 nil,
+		coinfactorytypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		didtypes.ModuleName:            nil,
+		farmingtypes.ModuleName:        nil,
+		guardtypes.ModuleName:          nil,
+		liquidfarmingtypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
+		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		lpfarmtypes.ModuleName:         nil,
+		marketmakertypes.ModuleName:    nil,
+		tokentypes.ModuleName:          nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -240,6 +298,17 @@ type App struct {
 	GroupKeeper           groupkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
+	NFTKeeper           nftkeeper.Keeper
+	CoinFactoryKeeper   coinfactorykeeper.Keeper
+	DidKeeper           didkeeper.Keeper
+	FarmingKeeper       farmingkeeper.Keeper
+	GuardKeeper         guardkeeper.Keeper
+	LiquidFarmingKeeper liquidfarmingkeeper.Keeper
+	LiquidityKeeper     liquiditykeeper.Keeper
+	LPFarmKeeper        lpfarmkeeper.Keeper
+	MarketMakerKeeper   marketmakerkeeper.Keeper
+	TokenKeeper         tokenkeeper.Keeper
+
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -291,6 +360,16 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
+		nftkeeper.StoreKey,
+		coinfactorytypes.StoreKey,
+		didtypes.StoreKey,
+		farmingtypes.StoreKey,
+		guardtypes.StoreKey,
+		liquidfarmingtypes.StoreKey,
+		liquiditytypes.StoreKey,
+		lpfarmtypes.StoreKey,
+		marketmakertypes.StoreKey,
+		tokentypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -504,13 +583,95 @@ func New(
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(farmingtypes.RouterKey, farming.NewPublicPlanProposalHandler(app.FarmingKeeper)).
+		AddRoute(marketmakertypes.RouterKey, marketmaker.NewMarketMakerProposalHandler(app.MarketMakerKeeper)).
+		AddRoute(lpfarmtypes.RouterKey, lpfarm.NewFarmingPlanProposalHandler(app.LPFarmKeeper))
 	govKeeper.SetLegacyRouter(govRouter)
 
 	app.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
 		// register the governance hooks
 		),
+	)
+
+	app.DidKeeper = *didkeeper.NewKeeper(
+		appCodec,
+		keys[didtypes.StoreKey],
+		keys[didtypes.MemStoreKey],
+		&app.GuardKeeper,
+	)
+
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
+
+	app.TokenKeeper = *tokenkeeper.NewKeeper(
+		appCodec, keys[tokentypes.StoreKey], app.GetSubspace(tokentypes.ModuleName), app.NFTKeeper, &app.GuardKeeper, app.DidKeeper,
+	)
+
+	app.CoinFactoryKeeper = *coinfactorykeeper.NewKeeper(
+		appCodec,
+		keys[coinfactorytypes.StoreKey],
+		app.GetSubspace(coinfactorytypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
+		&app.GuardKeeper,
+	)
+
+	app.FarmingKeeper = farmingkeeper.NewKeeper(
+		appCodec,
+		keys[farmingtypes.StoreKey],
+		app.GetSubspace(farmingtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+
+	app.GuardKeeper = guardkeeper.NewKeeper(
+		appCodec,
+		keys[guardtypes.StoreKey],
+		app.GetSubspace(guardtypes.ModuleName),
+		app.ModuleAccountAddrs(),
+		app.MsgServiceRouter(),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.AuthzKeeper,
+		app.TokenKeeper,
+		app.NFTKeeper,
+		app.CoinFactoryKeeper,
+	)
+
+	app.LiquidFarmingKeeper = liquidfarmingkeeper.NewKeeper(
+		appCodec,
+		keys[liquidfarmingtypes.StoreKey],
+		app.GetSubspace(liquidfarmingtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.LPFarmKeeper,
+		app.LiquidityKeeper,
+	)
+
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec,
+		keys[liquiditytypes.StoreKey],
+		app.GetSubspace(liquiditytypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+
+	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(
+		appCodec,
+		keys[lpfarmtypes.StoreKey],
+		app.GetSubspace(lpfarmtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.LiquidityKeeper,
+	)
+
+	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
+		appCodec,
+		keys[marketmakertypes.StoreKey],
+		app.GetSubspace(marketmakertypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
@@ -570,6 +731,16 @@ func New(
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		coinfactory.NewAppModule(appCodec, app.CoinFactoryKeeper, app.AccountKeeper, app.BankKeeper),
+		did.NewAppModule(appCodec, app.DidKeeper),
+		farming.NewAppModule(appCodec, app.FarmingKeeper, app.AccountKeeper, app.BankKeeper),
+		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.NFTKeeper, app.CoinFactoryKeeper),
+		liquidfarming.NewAppModule(appCodec, app.LiquidFarmingKeeper, app.AccountKeeper, app.BankKeeper),
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper),
+		lpfarm.NewAppModule(appCodec, app.LPFarmKeeper, app.AccountKeeper, app.BankKeeper, app.LiquidityKeeper),
+		marketmaker.NewAppModule(appCodec, app.MarketMakerKeeper, app.AccountKeeper, app.BankKeeper),
+		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
@@ -596,6 +767,16 @@ func New(
 		banktypes.ModuleName,
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
+		nft.ModuleName,
+		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
+		farmingtypes.ModuleName,
+		guardtypes.ModuleName,
+		liquidfarmingtypes.ModuleName,
+		liquiditytypes.ModuleName,
+		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
+		tokentypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
@@ -622,6 +803,16 @@ func New(
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		minttypes.ModuleName,
+		nft.ModuleName,
+		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
+		farmingtypes.ModuleName,
+		guardtypes.ModuleName,
+		liquidfarmingtypes.ModuleName,
+		liquiditytypes.ModuleName,
+		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
+		tokentypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
@@ -648,6 +839,16 @@ func New(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
+		nft.ModuleName,
+		coinfactorytypes.ModuleName,
+		didtypes.ModuleName,
+		farmingtypes.ModuleName,
+		guardtypes.ModuleName,
+		liquidfarmingtypes.ModuleName,
+		liquiditytypes.ModuleName,
+		lpfarmtypes.ModuleName,
+		marketmakertypes.ModuleName,
+		tokentypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -772,6 +973,7 @@ func (app *App) ModuleAccountAddrs() map[string]bool {
 func (app *App) BlockedModuleAccountAddrs() map[string]bool {
 	modAccAddrs := app.ModuleAccountAddrs()
 	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	delete(modAccAddrs, authtypes.NewModuleAddress(distrtypes.ModuleName).String())
 
 	return modAccAddrs
 }
@@ -885,6 +1087,15 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(coinfactorytypes.ModuleName)
+	paramsKeeper.Subspace(didtypes.ModuleName)
+	paramsKeeper.Subspace(farmingtypes.ModuleName)
+	paramsKeeper.Subspace(guardtypes.ModuleName)
+	paramsKeeper.Subspace(liquidfarmingtypes.ModuleName)
+	paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	paramsKeeper.Subspace(lpfarmtypes.ModuleName)
+	paramsKeeper.Subspace(marketmakertypes.ModuleName)
+	paramsKeeper.Subspace(tokentypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
