@@ -20,7 +20,6 @@ service Msg {
   rpc UpdateRequiredPrivilegesGroupedBatch(MsgUpdateRequiredPrivilegesGroupedBatch) returns (MsgUpdateRequiredPrivilegesGroupedBatchResponse);
 
   // this line is used by starport scaffolding # proto/tx/rpc}
-  rpc UpdateLocked(MsgUpdateLocked) returns (MsgUpdateLockedResponse);
   rpc UpdateAuthzGenericGrantRevokeBatch(MsgUpdateAuthzGenericGrantRevokeBatch) returns (MsgUpdateAuthzGenericGrantRevokeBatchResponse);
 }
 message MsgAccountsPrivileges {
@@ -96,16 +95,6 @@ message MsgUpdateRequiredPrivilegesGroupedBatch {
 }
 
 message MsgUpdateRequiredPrivilegesGroupedBatchResponse {}
-
-// this line is used by starport scaffolding # proto/tx/message
-message MsgUpdateLocked {
-  string creator = 1;
-  bytes index = 2;
-  bool locked = 3;
-  string kind = 4;
-}
-
-message MsgUpdateLockedResponse {}
 
 message MsgUpdateAuthzGenericGrantRevokeBatch {
   string creator = 1;

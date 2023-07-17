@@ -26,12 +26,6 @@ message RequiredPrivileges {
   string kind = 3;
 }
 
-message Locked {
-  bytes index = 1;
-  bytes locked = 2;
-  string kind = 3;
-}
-
 message AuthzGrantRevokeMsgType {
   string type_url = 1;
   bool grant = 2;

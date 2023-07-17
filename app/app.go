@@ -429,12 +429,13 @@ func New(
 		app.AccountKeeper,
 	)
 
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
+	app.BankKeeper = bankkeeper.NewBaseKeeperWithGuard(
 		appCodec,
 		keys[banktypes.StoreKey],
 		app.AccountKeeper,
 		app.BlockedModuleAccountAddrs(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		&app.GuardKeeper,
 	)
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
@@ -623,6 +624,7 @@ func New(
 		app.GetSubspace(farmingtypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.GuardKeeper = guardkeeper.NewKeeper(
@@ -647,6 +649,7 @@ func New(
 		app.BankKeeper,
 		app.LPFarmKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
@@ -655,6 +658,7 @@ func New(
 		app.GetSubspace(liquiditytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(
@@ -664,6 +668,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.LiquidityKeeper,
+		&app.GuardKeeper,
 	)
 
 	app.MarketMakerKeeper = marketmakerkeeper.NewKeeper(
@@ -672,6 +677,7 @@ func New(
 		app.GetSubspace(marketmakertypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition

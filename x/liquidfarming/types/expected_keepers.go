@@ -42,3 +42,7 @@ type LiquidityKeeper interface {
 	GetPool(ctx sdk.Context, id uint64) (pool liquiditytypes.Pool, found bool)
 	Withdraw(ctx sdk.Context, msg *liquiditytypes.MsgWithdraw) (liquiditytypes.WithdrawRequest, error)
 }
+
+type GuardKeeper interface {
+	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+}

@@ -42,14 +42,6 @@ service Query {
   }
 
   // this line is used by starport scaffolding # 2
-
-  // Queries a list of Locked items.
-  rpc Locked(QueryGetLockedRequest) returns (QueryGetLockedResponse) {
-    option (google.api.http).get = "/mantrachain/guard/v1/locked/{index}";
-  }
-  rpc LockedAll(QueryAllLockedRequest) returns (QueryAllLockedResponse) {
-    option (google.api.http).get = "/mantrachain/guard/v1/locked";
-  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -109,26 +101,3 @@ message QueryAllRequiredPrivilegesResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
-// this line is used by starport scaffolding # 3
-message QueryGetLockedRequest {
-  bytes index = 1;
-  string kind = 2;
-}
-
-message QueryGetLockedResponse {
-  bytes index = 1;
-  bool locked = 2;
-  string kind = 3;
-}
-
-message QueryAllLockedRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  string kind = 2;
-}
-
-message QueryAllLockedResponse {
-  repeated bytes indexes = 1;
-  repeated bool locked = 2;
-  string kind = 3;
-  cosmos.base.query.v1beta1.PageResponse pagination = 4;
-}

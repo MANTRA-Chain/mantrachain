@@ -300,9 +300,13 @@ func (k Keeper) IterateTotalStakings(ctx sdk.Context, cb func(stakingCoinDenom s
 func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoins sdk.Coins) error {
 	if stakingCoins.Len() == 1 {
 		reserveAcc := types.StakingReserveAcc(stakingCoins[0].Denom)
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAcc.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, farmerAcc, reserveAcc, stakingCoins); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
 		// Ref: https://github.com/crescent-network/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
 		//
@@ -312,10 +316,13 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 	} else {
 		var inputs []banktypes.Input
 		var outputs []banktypes.Output
+		whitelisted := make([]string, 0)
 		for _, coin := range stakingCoins {
 			reserveAcc := types.StakingReserveAcc(coin.Denom)
 			inputs = append(inputs, banktypes.NewInput(farmerAcc, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(reserveAcc, sdk.Coins{coin}))
+			// Guard: whitelist account address
+			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{reserveAcc.String()}, true)...)
 			// Comment out the following lines to bypass the "reverted dynamic BlockAddrs function" in the fork of Cosmos SDK
 			// Ref: https://github.com/crescent-network/cosmos-sdk/releases/tag/v1.1.3-sdk-0.45.9
 			//
@@ -324,8 +331,10 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			// }
 		}
 		if err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 	return nil
 }
@@ -333,19 +342,29 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 // ReleaseStakingCoins sends staking coins back to the farmer.
 func (k Keeper) ReleaseStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoins sdk.Coins) error {
 	if stakingCoins.Len() == 1 {
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{types.StakingReserveAcc(stakingCoins[0].Denom).String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, types.StakingReserveAcc(stakingCoins[0].Denom), farmerAcc, stakingCoins); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	} else {
 		var inputs []banktypes.Input
 		var outputs []banktypes.Output
+		whitelisted := make([]string, 0)
 		for _, coin := range stakingCoins {
-			inputs = append(inputs, banktypes.NewInput(types.StakingReserveAcc(coin.Denom), sdk.Coins{coin}))
+			reservAddr := types.StakingReserveAcc(coin.Denom)
+			inputs = append(inputs, banktypes.NewInput(reservAddr, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(farmerAcc, sdk.Coins{coin}))
+			// Guard: whitelist account address
+			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{reservAddr.String()}, true)...)
 		}
 		if err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 	return nil
 }

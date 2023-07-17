@@ -20,6 +20,7 @@ type Keeper struct {
 
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	gk            types.GuardKeeper
 }
 
 // NewKeeper creates a new liquidity Keeper instance.
@@ -29,10 +30,21 @@ func NewKeeper(
 	paramSpace paramstypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	gk types.GuardKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
+
+	// Guard: whitelist account address
+	gk.WhitelistTransferAccAddresses(
+		[]string{
+			types.DefaultFeeCollectorAddress.String(),
+			types.DefaultDustCollectorAddress.String(),
+			types.GlobalEscrowAddress.String(),
+		},
+		true,
+	)
 
 	return Keeper{
 		cdc:           cdc,
@@ -40,6 +52,7 @@ func NewKeeper(
 		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
+		gk:            gk,
 	}
 }
 

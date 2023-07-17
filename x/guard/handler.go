@@ -3,11 +3,12 @@ package guard
 import (
 	"fmt"
 
+	"mantrachain/x/guard/keeper"
+	"mantrachain/x/guard/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"mantrachain/x/guard/keeper"
-	"mantrachain/x/guard/types"
 )
 
 // NewHandler ...
@@ -38,9 +39,6 @@ func NewHandler(k *keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateGuardTransferCoins:
 			res, err := msgServer.UpdateGuardTransferCoins(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateLocked:
-			res, err := msgServer.UpdateLocked(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateAuthzGenericGrantRevokeBatch:
 			res, err := msgServer.UpdateAuthzGenericGrantRevokeBatch(sdk.WrapSDKContext(ctx), msg)

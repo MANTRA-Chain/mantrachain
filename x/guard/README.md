@@ -16,7 +16,7 @@
 
 The Guard module is responsible for managing all the permissions and privileges of the users in the network. It allows other modules to define their own permissions and use the Guard module to enforce them.
 
-The Guard module provides a set of functions for updating account privileges, updating required privileges, updating locked status, updating guard transfer coins and updating authz grant/revoke execute permissions.
+The Guard module provides a set of functions for updating account privileges, updating required privileges, updating guard transfer coins and updating authz grant/revoke execute permissions.
 
 The Guard module is responsible for:
 
@@ -30,7 +30,6 @@ The Guard module defines several concepts:
 
 - **Accounts privileges:** Actions that can be performed within the system. Each privilege has an associated bytes array and an account that have that privilege.
 - **Required privileges:** The privileges required to perform an action. These can be set by the admin or by the system operators.
-- **Locked coins:** Coins that have been locked and cannot perform any actions on them.
 - **Guarded transfer of coins:** A setting that can be enabled or disabled which prevents coins from being transferred without proper authorization.
 
 ## Installation
@@ -47,7 +46,6 @@ The Guard module stores the following data:
 
 - **Accounts privileges:** A list of all the privileges of associated accounts.
 - **Required privileges:** A list of the required privileges for coins transfers.
-- **Locked accounts:** A list of all the locked coins.
 - **Guarded transfer of coins:** A flag that can turn enable/disable the coins tranfers.
 
 ## Messages
@@ -105,15 +103,6 @@ This message is used to update the required privileges associated with a grouped
 - `creator`: The address of the user who is creating the message.
 - `required_privileges_list_grouped`: The list of grouped indexes and their new privileges.
 - `kind`: The type of the required privileges.
-
-### MsgUpdateLocked
-
-This message is used to update the locked status associated with a specific index. It takes the following parameters:
-
-- `creator`: The address of the user who is creating the message.
-- `index`: The index of the locked status to update.
-- `locked`: Whether or not to lock the index.
-- `kind`: The type of the locked status.
 
 ### MsgUpdateAuthzGenericGrantRevokeBatch
 
@@ -194,26 +183,6 @@ Queries a list of RequiredPrivileges items.
 
 HTTP GET Path
 `/mantrachain/guard/v1/required_privileges`
-
-##### Locked
-
-Queries a Locked item by index.
-
-- Request Type: `QueryGetLockedRequest`
-- Response Type: `QueryGetLockedResponse`
-
-HTTP GET Path
-`/mantrachain/guard/v1/locked/{index}`
-
-##### LockedAll
-
-Queries a list of Locked items.
-
-- Request Type: `QueryAllLockedRequest`
-- Response Type: `QueryAllLockedResponse`
-
-HTTP GET Path
-`/mantrachain/guard/v1/locked`
 
 #### Message Types
 
@@ -315,45 +284,6 @@ Fields:
 - `kind`: kind of RequiredPrivileges items that were queried.
 - `pagination`: page response parameters.
 
-##### QueryGetLockedRequest
-
-Request type for the Locked RPC method.
-
-Fields:
-
-- `index`: index of the Locked item to be queried.
-- `kind`: kind of Locked item to be queried.
-
-##### QueryGetLockedResponse
-
-Response type for the Locked RPC method.
-
-Fields:
-
-- `index`: index of the Locked item that was queried.
-- `locked`: whether the item is locked or not.
-- `kind`: kind of Locked item that was queried.
-
-##### QueryAllLockedRequest
-
-Request type for the LockedAll RPC method.
-
-Fields:
-
-`pagination`: page request parameters.
-`kind`: kind of Locked items to be queried.
-
-##### QueryAllLockedResponse
-
-Response type for the LockedAll RPC method.
-
-Fields:
-
-- `indexes`: list of indexes of the Locked items.
-- `locked`: list of boolean values indicating whether each item is locked or not.
-- `kind`: kind of Locked items that were queried.
-- `pagination`: page response parameters.
-
 ## Events
 
 The Guard module emits the following events:
@@ -382,14 +312,6 @@ The Guard module emits the following events:
 - creator: The address of the user who created the message.
 - guard_transfer_coins: The updated guard transfer coins status.
 
-### MsgUpdateLocked: Emits an event when the locked status is updated
-
-- action: `update_locked`
-- creator: The address of the user who created the message.
-- locked: The updated locked status.
-- index: The index of the locked status that was updated.
-- kind: The type of the locked status.
-
 ### MsgUpdateRequiredPrivileges: Emits an event when the required privileges are updated for a specific index
 
 - action: `update_required_privileges`
@@ -415,12 +337,12 @@ The Guard module emits the following events:
 
 The `Params` message defines the parameters for the `guard` module.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| admin_account | string | The address of the admin account that can update the parameters. |
+| Field                                       | Type   | Description                                                                           |
+| ------------------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| admin_account                               | string | The address of the admin account that can update the parameters.                      |
 | account_privileges_token_collection_creator | string | The address of the user who created the token collection used for account privileges. |
-| account_privileges_token_collection_id | string | The ID of the token collection used for account privileges. |
-| default_privileges | bytes | The default privileges that will be set for new accounts. |
+| account_privileges_token_collection_id      | string | The ID of the token collection used for account privileges.                           |
+| default_privileges                          | bytes  | The default privileges that will be set for new accounts.                             |
 
 ## Dependencies
 

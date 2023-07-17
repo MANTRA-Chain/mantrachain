@@ -20,6 +20,11 @@ func (k Keeper) PriceLimits(ctx sdk.Context, lastPrice sdk.Dec) (lowest, highest
 // ValidateMsgLimitOrder validates types.MsgLimitOrder with state and returns
 // calculated offer coin and price that is fit into ticks.
 func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
+	// Guard: check cah transfer
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+		return sdk.Coin{}, sdk.Dec{}, err
+	}
+
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -96,9 +101,14 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 
 	refundedCoin := msg.OfferCoin.Sub(offerCoin)
 	pair, _ := k.GetPair(ctx, msg.PairId)
+
+	// Guard: whitelist account address
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Order{}, err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
@@ -131,6 +141,11 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 // ValidateMsgMarketOrder validates types.MsgMarketOrder with state and returns
 // calculated offer coin and price.
 func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
+	// Guard: check cah transfer
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+		return sdk.Coin{}, sdk.Dec{}, err
+	}
+
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -199,9 +214,13 @@ func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.O
 
 	refundedCoin := msg.OfferCoin.Sub(offerCoin)
 	pair, _ := k.GetPair(ctx, msg.PairId)
+	// Guard: whitelist account address
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Order{}, err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
@@ -326,9 +345,18 @@ func (k Keeper) MMOrder(ctx sdk.Context, msg *types.MsgMMOrder) (orders []types.
 		return nil, err
 	}
 
-	if err := k.bankKeeper.SendCoins(ctx, orderer, pair.GetEscrowAddress(), sdk.NewCoins(offerBaseCoin, offerQuoteCoin)); err != nil {
+	// Guard: check cah transfer
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerBaseCoin, offerQuoteCoin}); err != nil {
 		return nil, err
 	}
+
+	// Guard: whitelist account address
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
+	if err := k.bankKeeper.SendCoins(ctx, orderer, pair.GetEscrowAddress(), sdk.NewCoins(offerBaseCoin, offerQuoteCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		return nil, err
+	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
 	lastOrderId := pair.LastOrderId
@@ -615,6 +643,7 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 }
 
 func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff sdk.Int) error {
+	whitelisted := make([]string, 0)
 	bulkOp := types.NewBulkSendCoinsOperation()
 	for _, order := range orders { // TODO: need optimization to filter matched orders only
 		order, ok := order.(*types.PoolOrder)
@@ -625,11 +654,16 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			continue
 		}
 		paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
+
+		// Guard: whitelist account address
+		whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{order.ReserveAddress.String()}, true)...)
 		bulkOp.QueueSendCoins(order.ReserveAddress, pair.GetEscrowAddress(), sdk.NewCoins(paidCoin))
 	}
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	bulkOp = types.NewBulkSendCoinsOperation()
 	type PoolMatchResult struct {
 		PoolId         uint64
@@ -682,7 +716,6 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		case *types.PoolOrder:
 			paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
 			receivedCoin := sdk.NewCoin(order.DemandCoinDenom, order.ReceivedDemandCoinAmount)
-
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.ReserveAddress, sdk.NewCoins(receivedCoin))
 
 			r, ok := poolMatchResultById[order.PoolId]
@@ -708,10 +741,14 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			panic(fmt.Errorf("invalid order type: %T", order))
 		}
 	}
+	// Guard: whitelist account address
+	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 	bulkOp.QueueSendCoins(pair.GetEscrowAddress(), k.GetDustCollector(ctx), sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, quoteCoinDiff)))
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	for _, r := range poolMatchResults {
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
@@ -735,9 +772,13 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 	if order.RemainingOfferCoin.IsPositive() {
 		pair, _ := k.GetPair(ctx, order.PairId)
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 
 	order.SetStatus(status)

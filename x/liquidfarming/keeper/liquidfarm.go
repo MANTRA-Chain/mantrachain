@@ -27,9 +27,13 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 	}
 
 	reserveAddr := types.LiquidFarmReserveAddress(pool.Id)
+	// Guard: whitelist account address
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAddr.String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, farmer, reserveAddr, sdk.NewCoins(farmingCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	lfCoinDenom := types.LiquidFarmCoinDenom(pool.Id)
 	lfCoinTotalSupplyAmt := k.bankKeeper.GetSupply(ctx, lfCoinDenom).Amount
@@ -63,9 +67,13 @@ func (k Keeper) LiquidFarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddress
 	// In order to keep in track of the rewards, the module reserves them in the WithdrawnRewardsReserveAddress.
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAddr.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -136,14 +144,22 @@ func (k Keeper) LiquidUnfarm(ctx sdk.Context, poolId uint64, farmer sdk.AccAddre
 	// In order to keep in track of the rewards, the module reserves them in the WithdrawnRewardsReserveAddress.
 	if !withdrawnRewards.IsZero() {
 		withdrawnRewardsReserveAddr := types.WithdrawnRewardsReserveAddress(poolId)
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAddr.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, reserveAddr, withdrawnRewardsReserveAddr, withdrawnRewards); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			return sdk.Coin{}, err
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 
+	// Guard: whitelist account address
+	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAddr.String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, reserveAddr, farmer, sdk.NewCoins(unfarmedCoin)); err != nil {
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return sdk.Coin{}, err
 	}
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	// Burn the LFCoin amount
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, farmer, types.ModuleName, sdk.NewCoins(unfarmingCoin)); err != nil {
@@ -214,18 +230,26 @@ func (k Keeper) HandleRemovedLiquidFarm(ctx sdk.Context, liquidFarm types.Liquid
 		}
 
 		if !withdrawnRewards.IsZero() {
+			// Guard: whitelist account address
+			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAddr.String()}, true)
 			if err := k.bankKeeper.SendCoins(ctx, reserveAddr, feeCollectorAddr, withdrawnRewards); err != nil {
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				panic(err)
 			}
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 	}
 
 	// Send all auto withdrawn rewards by the farm module to the fee collector
 	rewardsReserveBalance := k.bankKeeper.SpendableCoins(ctx, rewardsReserveAddr)
 	if !rewardsReserveBalance.IsZero() {
+		// Guard: whitelist account address
+		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{rewardsReserveAddr.String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, rewardsReserveAddr, feeCollectorAddr, rewardsReserveBalance); err != nil {
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			panic(err)
 		}
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 
 	// Finish the ongoing rewards auction by refunding all bids and

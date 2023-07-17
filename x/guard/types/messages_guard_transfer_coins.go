@@ -11,7 +11,6 @@ const (
 	AttributeKeyCreator            = "creator"
 	AttributeKeyAccount            = "account"
 	AttributeKeyAccounts           = "accounts"
-	AttributeKeyLocked             = "locked"
 	AttributeKeyIndex              = "index"
 	AttributeKeyIndexes            = "indexes"
 	AttributeKeyKind               = "kind"

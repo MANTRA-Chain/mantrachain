@@ -18,5 +18,4 @@ message GenesisState {
   repeated RequiredPrivileges required_privileges_list = 4;
 
   // this line is used by starport scaffolding # genesis/proto/state
-  repeated Locked lockedList = 5;
 }

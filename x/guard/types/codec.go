@@ -15,7 +15,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivileges{}, "guard/UpdateRequiredPrivileges", nil)
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesBatch{}, "guard/UpdateRequiredPrivilegesBatch", nil)
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesGroupedBatch{}, "guard/UpdateRequiredPrivilegesGroupedBatch", nil)
-	cdc.RegisterConcrete(&MsgUpdateLocked{}, "guard/UpdateLocked", nil)
+
 	cdc.RegisterConcrete(&MsgUpdateAuthzGenericGrantRevokeBatch{}, "guard/UpdateAuthzGenericGrantRevokeBatch", nil)
 	// this line is used by starport scaffolding # 2
 }
@@ -29,7 +29,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateRequiredPrivilegesBatch{},
 		&MsgUpdateRequiredPrivilegesGroupedBatch{},
 		&MsgUpdateGuardTransferCoins{},
-		&MsgUpdateLocked{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateAuthzGenericGrantRevokeBatch{},

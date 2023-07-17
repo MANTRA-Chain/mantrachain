@@ -26,3 +26,8 @@ type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	GetModuleAddress(name string) sdk.AccAddress
 }
+
+type GuardKeeper interface {
+	CheckIsAdmin(ctx sdk.Context, address string) error
+	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+}

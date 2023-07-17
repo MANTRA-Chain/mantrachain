@@ -11,6 +11,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"mantrachain/x/farming/types"
 )
@@ -30,6 +31,11 @@ var _ types.MsgServer = msgServer{}
 // CreateFixedAmountPlan defines a method for creating fixed amount farming plan.
 func (k msgServer) CreateFixedAmountPlan(goCtx context.Context, msg *types.MsgCreateFixedAmountPlan) (*types.MsgCreateFixedAmountPlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.Keeper.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	poolAcc, err := k.DerivePrivatePlanFarmingPoolAcc(ctx, msg.Name)
 	if err != nil {
 		return nil, err
@@ -48,6 +54,10 @@ func (k msgServer) CreateRatioPlan(goCtx context.Context, msg *types.MsgCreateRa
 
 	if !EnableRatioPlan {
 		return nil, types.ErrRatioPlanDisabled
+	}
+
+	if err := k.Keeper.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
 	}
 
 	poolAcc, err := k.DerivePrivatePlanFarmingPoolAcc(ctx, msg.Name)
@@ -103,6 +113,10 @@ func (k msgServer) Harvest(goCtx context.Context, msg *types.MsgHarvest) (*types
 func (k msgServer) RemovePlan(goCtx context.Context, msg *types.MsgRemovePlan) (*types.MsgRemovePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.Keeper.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	if err := k.Keeper.RemovePlan(ctx, msg.GetCreator(), msg.PlanId); err != nil {
 		return nil, err
 	}
@@ -114,6 +128,10 @@ func (k msgServer) RemovePlan(goCtx context.Context, msg *types.MsgRemovePlan) (
 // and shouldn't be used in real world.
 func (k msgServer) AdvanceEpoch(goCtx context.Context, msg *types.MsgAdvanceEpoch) (*types.MsgAdvanceEpochResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.Keeper.gk.CheckIsAdmin(ctx, msg.Requester); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	if EnableAdvanceEpoch {
 		currentEpochDays := k.GetCurrentEpochDays(ctx)

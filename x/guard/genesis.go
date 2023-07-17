@@ -3,10 +3,11 @@ package guard
 import (
 	"strings"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	"mantrachain/x/guard/keeper"
 	"mantrachain/x/guard/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
@@ -34,14 +35,6 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState)
 		}
 		k.SetRequiredPrivileges(ctx, elem.Index, kind, elem.Privileges)
 	}
-	// Set all the locked
-	for _, elem := range genState.LockedList {
-		kind, err := types.ParseLockedKind(elem.Kind)
-		if err != nil {
-			panic("kind is invalid")
-		}
-		k.SetLocked(ctx, elem.Index, kind)
-	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -57,7 +50,6 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 		genesis.GuardTransferCoins = types.Placeholder
 	}
 	genesis.RequiredPrivilegesList = k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesCoin)
-	genesis.LockedList = k.GetAllLocked(ctx, types.LockedCoin)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis
