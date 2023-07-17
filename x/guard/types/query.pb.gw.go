@@ -770,21 +770,21 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AccountPrivileges_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "account_privileges", "account"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AccountPrivileges_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "account_privileges", "account"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_AccountPrivilegesAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "account_privileges"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AccountPrivilegesAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "account_privileges"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GuardTransferCoins_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "guard_transfer_coins"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GuardTransferCoins_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "guard_transfer_coins"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_RequiredPrivileges_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "required_privileges", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RequiredPrivileges_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "required_privileges", "index"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_RequiredPrivilegesAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "required_privileges"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RequiredPrivilegesAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "required_privileges"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Locked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "locked", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Locked_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "guard", "v1", "locked", "index"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LockedAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "locked"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LockedAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "guard", "v1", "locked"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

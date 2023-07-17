@@ -1,21 +1,85 @@
 version: 1
 accounts:
-- name: alice
+- name: validator
   coins:
-  - 20000token
-  - 200000000stake
-- name: bob
+  - 10000000000000000uaum
+  mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind
+    want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
+- name: admin
   coins:
-  - 10000token
-  - 100000000stake
+  - 10000000000000000uaum
+  mnemonic: border expire liar nurse pulse code network nut solution juice rate
+    cloth bread broom total lobster clog response ill before acoustic wasp club clump
+- name: recipient
+  coins:
+  - 10000000000000000uaum
+  mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they
+    essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
 client:
+  typescript:
+    path: ts-client
   openapi:
     path: docs/static/openapi.yml
-faucet:
-  name: bob
-  coins:
-  - 5token
-  - 100000stake
+genesis:
+  app_state:
+    bank:
+      denom_metadata:
+      - base: uaum
+        denom_units:
+        - aliases:
+          - microaum
+          denom: uaum
+          exponent: 0
+        - aliases:
+          - milliaum
+          denom: maum
+          exponent: 3
+        - denom: aum
+          exponent: 6
+        description: The native staking token of the Mantrachain.
+        display: aum
+        name: aum
+        symbol: AUM
+    crisis:
+      constant_fee:
+        denom: uaum
+    gov:
+      deposit_params:
+        min_deposit:
+        - amount: "10000000"
+          denom: uaum
+    guard:
+      params:
+        account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+        account_privileges_token_collection_id: account_privileges_guard_nft_collection
+        admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+    liquidity:
+      params:
+        pair_creation_fee:
+        - amount: "1000000"
+          denom: uaum
+        pool_creation_fee:
+        - amount: "1000000"
+          denom: uaum
+    lpfarm:
+      params:
+        private_plan_creation_fee:
+        - amount: "1000000"
+          denom: uaum
+    mint:
+      params:
+        mint_denom: uaum
+    staking:
+      params:
+        bond_denom: uaum
 validators:
-- name: alice
-  bonded: 100000000stake
+- name: validator
+  bonded: 100000000uaum
+  app:
+    minimum-gas-prices: 0uaum
+    pruning: nothing
+  config:
+    moniker: mantra-dev-01
+    proxy_app: tcp://0.0.0.0:26658
+  client:
+    node: tcp://0.0.0.0:26657
