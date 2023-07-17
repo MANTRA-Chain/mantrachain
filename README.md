@@ -15,9 +15,18 @@ ignite chain serve
 
 `serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
 
-### Configure
+## Configure
 
 Your blockchain in development can be configured with [config.yml](./config.yml). To learn more, see the [Ignite CLI docs](https://docs.ignite.com).
+
+### Accounts
+
+`validator` - used for bootstrapping the blockchain logic (the chain will be started with only one validator)
+
+`admin` - Genesis Admin for MANTRACHAIN, set during the genesis initialization, holding the initial control of
+guard module and admin for the soul bound nft collection
+
+`recipient` - used for various transactions once the chain is started
 
 ## Learn more
 
