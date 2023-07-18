@@ -837,19 +837,19 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "coinfactory", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "coinfactory", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DenomsFromCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "coinfactory", "v1beta1", "denoms_from_creator", "creator"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DenomsFromCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "coinfactory", "v1beta1", "denoms_from_creator", "creator"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DenomAuthorityMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "coinfactory", "v1beta1", "denoms", "denom", "authority_metadata"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DenomAuthorityMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "coinfactory", "v1beta1", "denoms", "denom", "authority_metadata"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DenomAuthorityMetadata2_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "authority_metadata"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DenomAuthorityMetadata2_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "authority_metadata"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7, 1, 0, 4, 1, 5, 8}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "balances", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Balance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7, 1, 0, 4, 1, 5, 8}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "balances", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_SupplyOf_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "supply"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_SupplyOf_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "supply"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DenomMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "denoms_metadata"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DenomMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6, 2, 7}, []string{"mantrachain", "coinfactory", "v1beta1", "creators", "creator", "subdenoms", "subdenom", "denoms_metadata"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

@@ -983,23 +983,23 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "lpfarm", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "lpfarm", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Plans_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "lpfarm", "v1beta1", "plans"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Plans_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "lpfarm", "v1beta1", "plans"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Plan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "plans", "plan_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Plan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "plans", "plan_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Farm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "farms", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Farm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "farms", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Positions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "positions", "farmer"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Positions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "positions", "farmer"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Position_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "lpfarm", "v1beta1", "positions", "farmer", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Position_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "lpfarm", "v1beta1", "positions", "farmer", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_HistoricalRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "historical_rewards", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_HistoricalRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "historical_rewards", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_TotalRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "rewards", "farmer"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TotalRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "lpfarm", "v1beta1", "rewards", "farmer"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "lpfarm", "v1beta1", "rewards", "farmer", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"mantrachain", "lpfarm", "v1beta1", "rewards", "farmer", "denom"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

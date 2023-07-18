@@ -3,18 +3,15 @@ accounts:
 - name: validator
   coins:
   - 10000000000000000uaum
-  mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind
-    want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
+  mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
 - name: admin
   coins:
   - 10000000000000000uaum
-  mnemonic: border expire liar nurse pulse code network nut solution juice rate
-    cloth bread broom total lobster clog response ill before acoustic wasp club clump
+  mnemonic: border expire liar nurse pulse code network nut solution juice rate cloth bread broom total lobster clog response ill before acoustic wasp club clump
 - name: recipient
   coins:
   - 10000000000000000uaum
-  mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they
-    essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
+  mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
 client:
   typescript:
     path: ts-client
@@ -76,7 +73,7 @@ validators:
 - name: validator
   bonded: 100000000uaum
   app:
-    minimum-gas-prices: 0uaum
+    minimum-gas-prices: 0.002uaum
     pruning: nothing
   config:
     moniker: mantra-dev-01
