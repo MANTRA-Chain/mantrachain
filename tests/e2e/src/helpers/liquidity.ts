@@ -7,9 +7,8 @@ const existsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string)
 const notExistsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.every((pair: any) => pair.base_coin_denom !== baseCoinDenom && pair.quote_coin_denom !== quoteCoinDenom)
 
 const queryPairs = async (client: any, baseCoinDenom: string, quoteCoinDenom: string) => {
-  const res = await client.MantrachainLiquidityV1Beta1.query.queryPairsByDenoms({
-    denom1: baseCoinDenom,
-    denom2: quoteCoinDenom,
+  const res = await client.MantrachainLiquidityV1Beta1.query.queryPairs({
+    denoms: [baseCoinDenom, quoteCoinDenom]
   })
   return res?.data?.pairs || []
 }

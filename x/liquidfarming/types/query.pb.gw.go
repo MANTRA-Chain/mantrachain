@@ -864,21 +864,21 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "liquidfarming", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "liquidfarming", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LiquidFarms_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidFarms_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_LiquidFarm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidFarm_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_RewardsAuctions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards_auctions"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RewardsAuctions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards_auctions"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_RewardsAuction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards_auctions", "auction_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_RewardsAuction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards_auctions", "auction_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Bids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "bids"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Bids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "bids"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "rewards"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ExchangeRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "exchange_rate"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ExchangeRate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"mantrachain", "liquidfarming", "v1beta1", "liquidfarms", "pool_id", "exchange_rate"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

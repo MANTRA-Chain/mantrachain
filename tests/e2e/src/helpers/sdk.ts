@@ -59,6 +59,6 @@ export class MantrachainSdk {
 }
 
 export const getGasFee = () => ({
-  amount: [{ denom: "uaum", amount: "20" }],
-  gas: "200000"
+  amount: [{ denom: "uaum", amount: "80" }],
+  gas: "350000"
 })

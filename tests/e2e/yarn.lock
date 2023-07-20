@@ -1349,8 +1349,8 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mantrachain/sdk@file:../../../../LimeChain/mantrachain-sdk/mantrachain-sdk.git":
-  "resolved" "file:../../../../LimeChain/mantrachain-sdk/mantrachain-sdk.git"
+"@mantrachain/sdk@file:../../../mantrachain-sdk":
+  "resolved" "file:../../../mantrachain-sdk"
   "version" "0.0.0"
   dependencies:
     "@cosmjs/launchpad" "0.27.0"

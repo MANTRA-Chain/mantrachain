@@ -321,11 +321,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketmaker", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketmaker", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_MarketMakers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketmaker", "v1beta1", "marketmakers"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_MarketMakers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "marketmaker", "v1beta1", "marketmakers"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Incentive_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "marketmaker", "v1beta1", "incentive", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Incentive_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "marketmaker", "v1beta1", "incentive", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

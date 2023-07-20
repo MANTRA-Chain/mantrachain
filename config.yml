@@ -73,7 +73,7 @@ validators:
 - name: validator
   bonded: 100000000uaum
   app:
-    minimum-gas-prices: 0.002uaum
+    minimum-gas-prices: 0.0002uaum
     pruning: nothing
   config:
     moniker: mantra-dev-01
