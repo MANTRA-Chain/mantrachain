@@ -255,7 +255,7 @@ func NewQueryPoolCmd() *cobra.Command {
 Example:
 $ %s query %s pool 1
 $ %s query %s pool --pool-coin-denom=pool1
-$ %s query %s pool --reserve-address=cre1...
+$ %s query %s pool --reserve-address=mantra...
 `,
 				version.AppName, types.ModuleName,
 				version.AppName, types.ModuleName,
@@ -537,8 +537,8 @@ func NewQueryOrdersCmd() *cobra.Command {
 			fmt.Sprintf(`Query for all orders in the pair.
 
 Example:
-$ %s query %s orders cre1...
-$ %s query %s orders --pair-id=1 cre1...
+$ %s query %s orders mantra...
+$ %s query %s orders --pair-id=1 mantra...
 $ %s query %s orders --pair-id=1
 `,
 				version.AppName, types.ModuleName,

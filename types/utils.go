@@ -1,8 +1,11 @@
 package types
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"math/big"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -154,4 +157,22 @@ func LengthPrefixString(s string) []byte {
 	bz := []byte(s)
 	bzLen := len(bz)
 	return append([]byte{byte(bzLen)}, bz...)
+}
+
+// RandomInt returns a random integer in the half-open interval [min, max).
+func RandomInt(r *rand.Rand, min, max sdk.Int) sdk.Int {
+	return min.Add(sdk.NewIntFromBigInt(new(big.Int).Rand(r, max.Sub(min).BigInt())))
+}
+
+// RandomDec returns a random decimal in the half-open interval [min, max).
+func RandomDec(r *rand.Rand, min, max sdk.Dec) sdk.Dec {
+	return min.Add(sdk.NewDecFromBigIntWithPrec(new(big.Int).Rand(r, max.Sub(min).BigInt()), sdk.Precision))
+}
+
+// TestAddress returns an address for testing purpose.
+// TestAddress returns same address when addrNum is same.
+func TestAddress(addrNum int) sdk.AccAddress {
+	addr := make(sdk.AccAddress, 20)
+	binary.PutVarint(addr, int64(addrNum))
+	return addr
 }

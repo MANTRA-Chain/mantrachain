@@ -440,8 +440,8 @@ Where proposal.json contains:
   "name": "Cosmos Hub Community Tax",
   "add_plan_requests": [
     {
-      "farming_pool_address": "cre1mzgucqnfr2l8cj5apvdpllhzt4zeuh2c5l33n3",
-      "termination_address": "cre1mzgucqnfr2l8cj5apvdpllhzt4zeuh2c5l33n3",
+      "farming_pool_address": "mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550",
+      "termination_address": "mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550",
       "staking_coin_weights": [
         {
           "denom": "pool1",
