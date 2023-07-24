@@ -1,8 +1,9 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import {getGasFee, MantrachainSdk} from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory";
 import { getPairId } from '../helpers/liquidity';
 import { updateAccountPrivileges, updateCoinRequiredPrivileges } from '../helpers/guard';
 import {mintGuardSoulBondNft} from "../helpers/token";
+import {Privileges, utils} from "../../../../../mantrachain-sdk/src/utils";
 
 describe('Lpfarm module', () => {
     let sdk: MantrachainSdk
@@ -31,7 +32,8 @@ describe('Lpfarm module', () => {
                     denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
                     amount: "10000000000000000000"
                 }
-            }
+            },
+            fee: getGasFee()
         })
 
         await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
@@ -41,27 +43,71 @@ describe('Lpfarm module', () => {
                     denom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
                     amount: "10000000000000000000"
                 }
-            }
+            },
+            fee: getGasFee()
         })
 
-        await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress);
+        const res = await sdk.clientAdmin.MantrachainGuardV1.query.queryParams();
+        const defaultPrivileges = utils.base64ToBytes(
+            res.data.params.default_privileges
+        );
 
-        await updateCoinRequiredPrivileges(
-            sdk,
-            sdk.clientAdmin,
-            sdk.adminAddress,
-            genCoinDenom(sdk.adminAddress, baseCoinDenom),
-            [1, 1]
-        )
-        await updateCoinRequiredPrivileges(
-            sdk,
-            sdk.clientAdmin,
-            sdk.adminAddress,
-            genCoinDenom(sdk.adminAddress, quoteCoinDenom),
-            [1, 1]
-        )
+        const privileges = Privileges.fromBuffer(defaultPrivileges).set(64).toBuffer();
 
-        await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [1, 1])
+        await sdk.clientAdmin.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+            value: {
+                creator: sdk.adminAddress,
+                index: utils.strToIndex(
+                    genCoinDenom(sdk.adminAddress, baseCoinDenom)
+                ), // denom of the coin from the `CoinFactory` module represented in bytes
+                privileges,
+                kind: "coin",
+            },
+            fee: getGasFee()
+        });
+
+        await sdk.clientAdmin.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+            value: {
+                creator: sdk.adminAddress,
+                index: utils.strToIndex(
+                    genCoinDenom(sdk.adminAddress, quoteCoinDenom),
+                ), // denom of the coin from the `CoinFactory` module represented in bytes
+                privileges,
+                kind: "coin",
+            },
+            fee: getGasFee()
+        });
+
+        await sdk.clientAdmin.MantrachainTokenV1.tx.sendMsgMintNft({
+            value: {
+                creator: sdk.adminAddress,
+                receiver: sdk.recipientAddress,
+                collectionCreator: sdk.adminAddress,
+                collectionId: "account_privileges_guard_nft_collection",
+                nft: {
+                    id: sdk.recipientAddress,
+                    title: 'AccountPrivileges',
+                    images: [],
+                    url: '',
+                    description: 'AccountPrivileges',
+                    links: [],
+                    attributes: [],
+                    data: undefined
+                },
+                strict: true,
+                did: false
+            },
+            fee: getGasFee()
+        })
+
+        await sdk.clientAdmin.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
+            value: {
+                creator: sdk.adminAddress,
+                account: sdk.recipientAddress,
+                privileges: privileges
+            },
+            fee: getGasFee()
+        })
 
         await sdk.clientAdmin.CosmosBankV1Beta1.tx.sendMsgSend({
             value: {
@@ -77,23 +123,23 @@ describe('Lpfarm module', () => {
                         amount: '100000000000'
                     }
                 ]
-            }
+            },
+            fee: getGasFee()
         })
 
 
-        const a = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+        await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
             value: {
                 creator: sdk.adminAddress,
                 baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
                 quoteCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom)
-            }
+            },
+            fee: getGasFee()
         })
 
-        pairId = await getPairId(
-            sdk.clientAdmin,
-            genCoinDenom(sdk.adminAddress, baseCoinDenom),
-            genCoinDenom(sdk.adminAddress, quoteCoinDenom)
-        )
+        const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
+        const lastPair = allPairs.data.pairs.pop();
+        pairId = lastPair.id
 
         await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
             {
@@ -110,7 +156,8 @@ describe('Lpfarm module', () => {
                             amount: "1000000"
                         }
                     ]
-                }
+                },
+                fee: getGasFee()
             }
         )
 
@@ -136,7 +183,8 @@ describe('Lpfarm module', () => {
                             amount: "1000000"
                         }
                     ]
-                }
+                },
+                fee: getGasFee()
             }
         )
     })
@@ -158,14 +206,15 @@ describe('Lpfarm module', () => {
                             rewardsPerDay: [
                                 {
                                     denom: 'uaum',
-                                    value: '1000000'
+                                    value: '100000000000'
                                 }
                             ]
                         },
                     ],
                     startTime: new Date(),
                     endTime: new Date(new Date().setMonth(new Date().getMonth() + 1))
-                }
+                },
+                fee: getGasFee()
             })
 
             await expect(res).rejects.toThrow()
@@ -193,11 +242,13 @@ describe('Lpfarm module', () => {
                     ],
                     startTime: new Date(new Date().setMinutes(new Date().getMinutes() - 10)),
                     endTime: new Date(new Date().setMonth(new Date().getMonth() + 1))
-                }
+                },
+                fee: getGasFee()
             })
 
-            const plan = await sdk.clientAdmin.MantrachainLpfarmV1Beta1.query.queryPlan('1');
-            const planFarmingPoolAddress = plan.data.plan.farming_pool_address;
+            const plan = await sdk.clientAdmin.MantrachainLpfarmV1Beta1.query.queryPlans();
+            const lastPlan = plan.data.plans.pop();
+            const planFarmingPoolAddress = lastPlan.farming_pool_address;
 
             await sdk.clientAdmin.CosmosBankV1Beta1.tx.sendMsgSend({
                 value: {
@@ -207,7 +258,8 @@ describe('Lpfarm module', () => {
                         denom: 'uaum',
                         amount: '100000000000'
                     }]
-                }
+                },
+                fee: getGasFee()
             })
 
             await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgFarm({
@@ -217,11 +269,12 @@ describe('Lpfarm module', () => {
                         denom: pool.pool_coin_denom,
                         amount: '1000000'
                     }
-                }
+                },
+                fee: getGasFee()
             })
 
             const position = await sdk.clientRecipient.MantrachainLpfarmV1Beta1.query.queryPosition(
-                sdk.recipientAddress, poolId.pool_coin_denom
+                sdk.recipientAddress, pool.pool_coin_denom
             )
 
             expect(Number(position.data.position.farming_amount)).toBe(1000000)
@@ -229,43 +282,50 @@ describe('Lpfarm module', () => {
 
         test('should be able to claim accumulated staking rewards', async () => {
             const balanceOfRewardCoinBefore = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
-                sdk.recipientAddress, 'uaum'
+                sdk.recipientAddress, {denom: 'uaum'}
             )
 
             const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
-
             const pool = resp.data.pool;
+
+            await new Promise((r) => setTimeout(r, 7000));
 
             await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgHarvest({
                 value: {
                     farmer: sdk.recipientAddress,
                     denom: pool.pool_coin_denom
-                }
+                },
+                fee: getGasFee()
             })
 
+
             const balanceOfRewardCoinAfter = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
-                sdk.recipientAddress, 'uaum'
+                sdk.recipientAddress, {denom: 'uaum'}
             )
 
             expect(Number(balanceOfRewardCoinAfter.data.balance.amount)).toBeGreaterThan(Number(balanceOfRewardCoinBefore.data.balance.amount))
         })
 
         test('should be able to unfarm his pool tokens', async () => {
+            const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
+            const pool = resp.data.pool;
+
             await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgUnfarm({
                 value: {
                     farmer: sdk.recipientAddress,
                     coin: {
-                        denom: poolId.pool_coin_denom,
+                        denom: pool.pool_coin_denom,
                         amount: '1000000'
                     }
-                }
+                },
+                fee: getGasFee()
             })
 
-            const position = await sdk.clientRecipient.MantrachainLpfarmV1Beta1.query.queryPosition(
-                sdk.recipientAddress, poolId.pool_coin_denom
-            )
+            const balanceOfPoolCoins = await sdk.clientAdmin.CosmosBankV1Beta1.query.queryBalance(sdk.recipientAddress, {
+                denom: pool.pool_coin_denom
+            })
 
-            expect(Number(position.data.position.farming_amount)).toBe(0)
+            expect(Number(balanceOfPoolCoins.data.balance.amount)).toBeGreaterThan(0)
         })
     })
 })

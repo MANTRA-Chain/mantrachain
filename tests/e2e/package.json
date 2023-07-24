@@ -4,7 +4,7 @@
   "description": "Mantrachain e2e tests",
   "main": "index.js",
   "scripts": {
-    "test": "jest ./src/__tests__/dex.test.ts",
+    "test": "jest -i -b --runtTestsByPath=./src/__tests__/",
     "lint": "eslint ./src",
     "fmt": "eslint ./src --fix"
   },
