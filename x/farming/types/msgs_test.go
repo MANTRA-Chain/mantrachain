@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/crypto"
@@ -15,7 +16,7 @@ import (
 func TestMsgCreateFixedAmountPlan(t *testing.T) {
 	name := "test"
 	creatorAddr := sdk.AccAddress(crypto.AddressHash([]byte("creatorPoolAddr")))
-	stakingCoinWeights := sdk.NewDecCoins(sdk.DecCoin{Denom: "farmingCoinDenom", Amount: sdk.MustNewDecFromStr("1.0")})
+	stakingCoinWeights := sdk.NewDecCoins(sdk.DecCoin{Denom: "farmingCoinDenom", Amount: math.LegacyMustNewDecFromStr("1.0")})
 	startTime, _ := time.Parse(time.RFC3339, "2021-11-01T22:08:41+00:00") // needs to be deterministic for test
 	endTime := startTime.AddDate(1, 0, 0)
 
@@ -27,28 +28,28 @@ func TestMsgCreateFixedAmountPlan(t *testing.T) {
 			"", // empty means no error expected
 			types.NewMsgCreateFixedAmountPlan(
 				name, creatorAddr, stakingCoinWeights,
-				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1))},
+				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", math.NewInt(1))},
 			),
 		},
 		{
 			"invalid creator address \"\": empty address string is not allowed: invalid address",
 			types.NewMsgCreateFixedAmountPlan(
 				name, sdk.AccAddress{}, stakingCoinWeights,
-				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1))},
+				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", math.NewInt(1))},
 			),
 		},
 		{
 			"end time 2020-11-01T22:08:41Z must be greater than start time 2021-11-01T22:08:41Z: invalid plan end time",
 			types.NewMsgCreateFixedAmountPlan(
 				name, creatorAddr, stakingCoinWeights,
-				startTime, startTime.AddDate(-1, 0, 0), sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1))},
+				startTime, startTime.AddDate(-1, 0, 0), sdk.Coins{sdk.NewCoin("uatom", math.NewInt(1))},
 			),
 		},
 		{
 			"staking coin weights must not be empty: invalid staking coin weights",
 			types.NewMsgCreateFixedAmountPlan(
 				name, creatorAddr, sdk.NewDecCoins(),
-				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1))},
+				startTime, endTime, sdk.Coins{sdk.NewCoin("uatom", math.NewInt(1))},
 			),
 		},
 		{
@@ -81,7 +82,7 @@ func TestMsgCreateFixedAmountPlan(t *testing.T) {
 func TestMsgCreateRatioPlan(t *testing.T) {
 	name := "test"
 	creatorAddr := sdk.AccAddress(crypto.AddressHash([]byte("creatorAddr")))
-	stakingCoinWeights := sdk.NewDecCoins(sdk.DecCoin{Denom: "farmingCoinDenom", Amount: sdk.MustNewDecFromStr("1.0")})
+	stakingCoinWeights := sdk.NewDecCoins(sdk.DecCoin{Denom: "farmingCoinDenom", Amount: math.LegacyMustNewDecFromStr("1.0")})
 	startTime, _ := time.Parse(time.RFC3339, "2021-11-01T22:08:41+00:00") // needs to be deterministic for test
 	endTime := startTime.AddDate(1, 0, 0)
 
@@ -146,7 +147,7 @@ func TestMsgCreateRatioPlan(t *testing.T) {
 
 func TestMsgStake(t *testing.T) {
 	farmingPoolAddr := sdk.AccAddress(crypto.AddressHash([]byte("farmingPoolAddr")))
-	stakingCoins := sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", sdk.NewInt(1)))
+	stakingCoins := sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", math.NewInt(1)))
 
 	testCases := []struct {
 		expectedErr string
@@ -162,7 +163,7 @@ func TestMsgStake(t *testing.T) {
 		},
 		{
 			"staking coins must not be zero: invalid request",
-			types.NewMsgStake(farmingPoolAddr, sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", sdk.NewInt(0)))),
+			types.NewMsgStake(farmingPoolAddr, sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", math.NewInt(0)))),
 		},
 	}
 
@@ -186,7 +187,7 @@ func TestMsgStake(t *testing.T) {
 
 func TestMsgUnstake(t *testing.T) {
 	farmingPoolAddr := sdk.AccAddress(crypto.AddressHash([]byte("farmingPoolAddr")))
-	stakingCoins := sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", sdk.NewInt(1)))
+	stakingCoins := sdk.NewCoins(sdk.NewCoin("farmingCoinDenom", math.NewInt(1)))
 
 	testCases := []struct {
 		expectedErr string

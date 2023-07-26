@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	liquiditytypes "mantrachain/x/liquidity/types"
@@ -166,5 +167,5 @@ func (k Keeper) PoolRewardWeight(ctx sdk.Context, pool liquiditytypes.Pool, pair
 	spendable := k.bankKeeper.SpendableCoins(ctx, pool.GetReserveAddress())
 	rx := spendable.AmountOf(pair.QuoteCoinDenom)
 	ry := spendable.AmountOf(pair.BaseCoinDenom)
-	return types.PoolRewardWeight(pool.AMMPool(rx, ry, sdk.Int{}))
+	return types.PoolRewardWeight(pool.AMMPool(rx, ry, math.Int{}))
 }

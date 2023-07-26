@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/suite"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -22,7 +23,7 @@ import (
 )
 
 var (
-	helperAddr      = utils.TestAddress(10000)
+	helperAddr      = sdk.MustAccAddressFromBech32(testutil.TestAdminAddress)
 	sampleStartTime = utils.ParseTime("0001-01-01T00:00:00Z")
 	sampleEndTime   = utils.ParseTime("9999-12-31T23:59:59Z")
 )
@@ -43,14 +44,14 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	s.app = testutil.Setup(false)
+	s.app = testutil.SetupWithGenesisValSet(s.T())
 	s.ctx = s.app.BaseApp.NewContext(false, cbproto.Header{})
 	s.keeper = s.app.LiquidFarmingKeeper
 	s.querier = keeper.Querier{Keeper: s.keeper}
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper)
 	s.ctx = s.ctx.WithBlockTime(time.Now()) // set to current time
 	s.hdr = cbproto.Header{
-		Height: 1,
+		Height: s.app.LastBlockHeight() + 1,
 		Time:   time.Now(),
 	}
 }
@@ -71,12 +72,25 @@ func (s *KeeperTestSuite) endBlock() {
 	s.app.Commit()
 }
 
+// func (s *KeeperTestSuite) nextBlock() {
+// 	s.T().Helper()
+// 	s.endBlock()
+// 	s.hdr.Height++
+// 	s.hdr.Time = s.hdr.Time.Add(5 * time.Second)
+// 	s.beginBlock()
+// }
+
 func (s *KeeperTestSuite) nextBlock() {
 	s.T().Helper()
-	s.endBlock()
-	s.hdr.Height++
-	s.hdr.Time = s.hdr.Time.Add(5 * time.Second)
-	s.beginBlock()
+	s.app.EndBlock(abci.RequestEndBlock{})
+	s.app.Commit()
+	hdr := cbproto.Header{
+		Height: s.app.LastBlockHeight() + 1,
+		Time:   s.ctx.BlockTime().Add(5 * time.Second),
+	}
+	s.app.BeginBlock(abci.RequestBeginBlock{Header: hdr})
+	s.ctx = s.app.BaseApp.NewContext(false, hdr)
+	s.app.BeginBlocker(s.ctx, abci.RequestBeginBlock{Header: hdr})
 }
 
 func (s *KeeperTestSuite) fundAddr(addr sdk.AccAddress, amt sdk.Coins) {
@@ -91,8 +105,8 @@ func (s *KeeperTestSuite) assertEq(exp, got interface{}) {
 	s.T().Helper()
 	var equal bool
 	switch exp := exp.(type) {
-	case sdk.Int:
-		equal = exp.Equal(got.(sdk.Int))
+	case math.Int:
+		equal = exp.Equal(got.(math.Int))
 	case sdk.Dec:
 		equal = exp.Equal(got.(sdk.Dec))
 	case sdk.Coin:
@@ -149,7 +163,7 @@ func (s *KeeperTestSuite) deposit(depositor sdk.AccAddress, poolId uint64, depos
 	return req
 }
 
-func (s *KeeperTestSuite) createLiquidFarm(poolId uint64, minFarmAmt, minBidAmt sdk.Int, feeRate sdk.Dec) types.LiquidFarm {
+func (s *KeeperTestSuite) createLiquidFarm(poolId uint64, minFarmAmt, minBidAmt math.Int, feeRate sdk.Dec) types.LiquidFarm {
 	s.T().Helper()
 	liquidFarm := types.NewLiquidFarm(poolId, minFarmAmt, minBidAmt, feeRate)
 	params := s.keeper.GetParams(s.ctx)
@@ -213,19 +227,6 @@ func (s *KeeperTestSuite) getBalances(addr sdk.AccAddress) sdk.Coins { //nolint
 func (s *KeeperTestSuite) getBalance(addr sdk.AccAddress, denom string) sdk.Coin {
 	return s.app.BankKeeper.GetBalance(s.ctx, addr, denom)
 }
-
-// func (s *KeeperTestSuite) nextBlock() {
-// 	s.T().Helper()
-// 	s.app.EndBlock(abci.RequestEndBlock{})
-// 	s.app.Commit()
-// 	hdr := cbproto.Header{
-// 		Height: s.app.LastBlockHeight() + 1,
-// 		Time:   s.ctx.BlockTime().Add(5 * time.Second),
-// 	}
-// 	s.app.BeginBlock(abci.RequestBeginBlock{Header: hdr})
-// 	s.ctx = s.app.BaseApp.NewContext(false, hdr)
-// 	s.app.BeginBlocker(s.ctx, abci.RequestBeginBlock{Header: hdr})
-// }
 
 func (s *KeeperTestSuite) nextAuction() {
 	s.T().Helper()

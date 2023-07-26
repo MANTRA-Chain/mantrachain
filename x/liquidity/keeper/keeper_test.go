@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/stretchr/testify/suite"
 
@@ -34,9 +35,9 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	s.app = testutil.Setup(false)
+	s.app = testutil.SetupWithGenesisValSet(s.T())
 	hdr := cbproto.Header{
-		Height: 1,
+		Height: s.app.LastBlockHeight() + 1,
 		Time:   utils.ParseTime("2022-01-01T00:00:00Z"),
 	}
 	s.app.BeginBlock(abci.RequestBeginBlock{Header: hdr})
@@ -145,7 +146,7 @@ func (s *KeeperTestSuite) withdraw(withdrawer sdk.AccAddress, poolId uint64, poo
 
 func (s *KeeperTestSuite) limitOrder(
 	orderer sdk.AccAddress, pairId uint64, dir types.OrderDirection,
-	price sdk.Dec, amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	price sdk.Dec, amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	pair, found := s.keeper.GetPair(s.ctx, pairId)
 	s.Require().True(found)
@@ -174,7 +175,7 @@ func (s *KeeperTestSuite) limitOrder(
 
 func (s *KeeperTestSuite) buyLimitOrder(
 	orderer sdk.AccAddress, pairId uint64, price sdk.Dec,
-	amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	return s.limitOrder(
 		orderer, pairId, types.OrderDirectionBuy, price, amt, orderLifespan, fund)
@@ -182,7 +183,7 @@ func (s *KeeperTestSuite) buyLimitOrder(
 
 func (s *KeeperTestSuite) sellLimitOrder(
 	orderer sdk.AccAddress, pairId uint64, price sdk.Dec,
-	amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	return s.limitOrder(
 		orderer, pairId, types.OrderDirectionSell, price, amt, orderLifespan, fund)
@@ -190,7 +191,7 @@ func (s *KeeperTestSuite) sellLimitOrder(
 
 func (s *KeeperTestSuite) marketOrder(
 	orderer sdk.AccAddress, pairId uint64, dir types.OrderDirection,
-	amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	pair, found := s.keeper.GetPair(s.ctx, pairId)
 	s.Require().True(found)
@@ -221,7 +222,7 @@ func (s *KeeperTestSuite) marketOrder(
 
 func (s *KeeperTestSuite) buyMarketOrder(
 	orderer sdk.AccAddress, pairId uint64,
-	amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	return s.marketOrder(
 		orderer, pairId, types.OrderDirectionBuy, amt, orderLifespan, fund)
@@ -229,7 +230,7 @@ func (s *KeeperTestSuite) buyMarketOrder(
 
 func (s *KeeperTestSuite) sellMarketOrder(
 	orderer sdk.AccAddress, pairId uint64,
-	amt sdk.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
 	s.T().Helper()
 	return s.marketOrder(
 		orderer, pairId, types.OrderDirectionSell, amt, orderLifespan, fund)
@@ -237,8 +238,8 @@ func (s *KeeperTestSuite) sellMarketOrder(
 
 func (s *KeeperTestSuite) mmOrder(
 	orderer sdk.AccAddress, pairId uint64,
-	maxSellPrice, minSellPrice sdk.Dec, sellAmt sdk.Int,
-	maxBuyPrice, minBuyPrice sdk.Dec, buyAmt sdk.Int,
+	maxSellPrice, minSellPrice sdk.Dec, sellAmt math.Int,
+	maxBuyPrice, minBuyPrice sdk.Dec, buyAmt math.Int,
 	orderLifespan time.Duration, fund bool) []types.Order {
 	s.T().Helper()
 	if fund {
@@ -310,7 +311,7 @@ func coinsEq(exp, got sdk.Coins) (bool, string, string, string) {
 	return exp.IsEqual(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
 }
 
-func intEq(exp, got sdk.Int) (bool, string, string, string) {
+func intEq(exp, got math.Int) (bool, string, string, string) {
 	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
 }
 
@@ -318,6 +319,6 @@ func decEq(exp, got sdk.Dec) (bool, string, string, string) {
 	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
 }
 
-func newInt(i int64) sdk.Int {
-	return sdk.NewInt(i)
+func newInt(i int64) math.Int {
+	return math.NewInt(i)
 }

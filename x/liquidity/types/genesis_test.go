@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -42,8 +43,8 @@ func TestGenesisState_Validate(t *testing.T) {
 		RemainingOfferCoin: sdk.NewInt64Coin("denom1", 500000),
 		ReceivedCoin:       sdk.NewInt64Coin("denom2", 500000),
 		Price:              utils.ParseDec("1.0"),
-		Amount:             sdk.NewInt(1000000),
-		OpenAmount:         sdk.NewInt(500000),
+		Amount:             math.NewInt(1000000),
+		OpenAmount:         math.NewInt(500000),
 		BatchId:            1,
 		ExpireAt:           utils.ParseTime("2022-02-01T00:00:00Z"),
 		Status:             types.OrderStatusPartiallyMatched,

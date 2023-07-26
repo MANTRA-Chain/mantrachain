@@ -9,18 +9,19 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // GetShareValue multiplies with truncation by receiving int amount and decimal ratio and returns int result.
-func GetShareValue(amount sdk.Int, ratio sdk.Dec) sdk.Int {
+func GetShareValue(amount math.Int, ratio sdk.Dec) math.Int {
 	return sdk.NewDecFromInt(amount).MulTruncate(ratio).TruncateInt()
 }
 
-type StrIntMap map[string]sdk.Int
+type StrIntMap map[string]math.Int
 
 // AddOrSet Set when the key not existed on the map or add existed value of the key.
-func (m StrIntMap) AddOrSet(key string, value sdk.Int) {
+func (m StrIntMap) AddOrSet(key string, value math.Int) {
 	if _, ok := m[key]; !ok {
 		m[key] = value
 	} else {
@@ -50,9 +51,9 @@ func DateRangeIncludes(startTime, endTime, targetTime time.Time) bool {
 	return endTime.After(targetTime) && !startTime.After(targetTime)
 }
 
-// ParseDec is a shortcut for sdk.MustNewDecFromStr.
+// ParseDec is a shortcut for math.LegacyMustNewDecFromStr.
 func ParseDec(s string) sdk.Dec {
-	return sdk.MustNewDecFromStr(strings.ReplaceAll(s, "_", ""))
+	return math.LegacyMustNewDecFromStr(strings.ReplaceAll(s, "_", ""))
 }
 
 // ParseDecP is like ParseDec, but it returns a pointer to sdk.Dec.
@@ -112,7 +113,7 @@ func DecApproxEqual(a, b sdk.Dec) bool {
 	if b.GT(a) {
 		a, b = b, a
 	}
-	return a.Sub(b).Quo(a).LTE(sdk.NewDecWithPrec(1, 3))
+	return a.Sub(b).Quo(a).LTE(math.LegacyNewDecWithPrec(1, 3))
 }
 
 // DecApproxSqrt returns an approximate estimation of x's square root.
@@ -160,8 +161,8 @@ func LengthPrefixString(s string) []byte {
 }
 
 // RandomInt returns a random integer in the half-open interval [min, max).
-func RandomInt(r *rand.Rand, min, max sdk.Int) sdk.Int {
-	return min.Add(sdk.NewIntFromBigInt(new(big.Int).Rand(r, max.Sub(min).BigInt())))
+func RandomInt(r *rand.Rand, min, max math.Int) math.Int {
+	return min.Add(math.NewIntFromBigInt(new(big.Int).Rand(r, max.Sub(min).BigInt())))
 }
 
 // RandomDec returns a random decimal in the half-open interval [min, max).

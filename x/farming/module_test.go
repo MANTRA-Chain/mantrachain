@@ -3,6 +3,7 @@ package farming_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/suite"
 
@@ -46,7 +47,7 @@ func TestModuleTestSuite(t *testing.T) {
 }
 
 func (suite *ModuleTestSuite) SetupTest() {
-	app := testutil.Setup(false)
+	app := testutil.SetupWithGenesisValSet(suite.T())
 	ctx := app.BaseApp.NewContext(false, cbproto.Header{})
 
 	keeper.EnableRatioPlan = true
@@ -55,7 +56,7 @@ func (suite *ModuleTestSuite) SetupTest() {
 	suite.ctx = ctx
 	suite.keeper = suite.app.FarmingKeeper
 	suite.querier = keeper.Querier{Keeper: suite.keeper}
-	suite.addrs = testutil.AddTestAddrs(suite.app, suite.ctx, 6, sdk.ZeroInt())
+	suite.addrs = testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, 6, sdk.ZeroInt())
 	for _, addr := range suite.addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, initialBalances)
 		suite.Require().NoError(err)
@@ -69,8 +70,8 @@ func (suite *ModuleTestSuite) SetupTest() {
 				suite.addrs[4].String(),
 				suite.addrs[4].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 				),
 				types.ParseTime("2021-08-02T00:00:00Z"),
 				types.ParseTime("2021-09-02T00:00:00Z"),
@@ -102,13 +103,13 @@ func (suite *ModuleTestSuite) SetupTest() {
 				suite.addrs[4].String(),
 				suite.addrs[4].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(5, 1)), // 50%
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(5, 1)), // 50%
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(5, 1)), // 50%
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(5, 1)), // 50%
 				),
 				types.ParseTime("2021-08-01T00:00:00Z"),
 				types.ParseTime("2021-08-09T00:00:00Z"),
 			),
-			sdk.NewDecWithPrec(4, 2), // 4%
+			math.LegacyNewDecWithPrec(4, 2), // 4%
 		),
 		types.NewRatioPlan(
 			types.NewBasePlan(
@@ -123,7 +124,7 @@ func (suite *ModuleTestSuite) SetupTest() {
 				types.ParseTime("2021-08-03T00:00:00Z"),
 				types.ParseTime("2021-08-07T00:00:00Z"),
 			),
-			sdk.NewDecWithPrec(3, 2), // 3%
+			math.LegacyNewDecWithPrec(3, 2), // 3%
 		),
 	}
 	suite.samplePlans = append(suite.sampleFixedAmtPlans, suite.sampleRatioPlans...)

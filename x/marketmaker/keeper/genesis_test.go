@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"mantrachain/x/marketmaker/types"
@@ -55,7 +56,7 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 	suite.handleProposal(proposal)
 
 	// distribute incentive
-	incentiveAmount := sdk.NewInt(500000000)
+	incentiveAmount := math.NewInt(500000000)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 	proposal = types.NewMarketMakerProposal("title", "description", nil, nil, nil,
 		[]types.IncentiveDistribution{

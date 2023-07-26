@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"mantrachain/testutil"
@@ -53,7 +54,7 @@ func (suite *KeeperTestSuite) TestAllocationInfos() {
 				types.ParseTime("2021-07-27T00:00:00Z"),
 				types.ParseTime("2021-07-28T00:00:00Z"),
 			),
-			sdk.MustNewDecFromStr("0.5")),
+			math.LegacyMustNewDecFromStr("0.5")),
 		types.NewRatioPlan(
 			types.NewBasePlan(
 				4,
@@ -65,7 +66,7 @@ func (suite *KeeperTestSuite) TestAllocationInfos() {
 				types.ParseTime("2021-07-27T12:00:00Z"),
 				types.ParseTime("2021-07-28T12:00:00Z"),
 			),
-			sdk.MustNewDecFromStr("0.6")),
+			math.LegacyMustNewDecFromStr("0.6")),
 	}
 
 	hugeRatioPlan := types.NewRatioPlan(
@@ -79,7 +80,7 @@ func (suite *KeeperTestSuite) TestAllocationInfos() {
 			types.ParseTime("2021-07-27T12:00:00Z"),
 			types.ParseTime("2021-07-28T12:00:00Z"),
 		),
-		sdk.MustNewDecFromStr("0.999999"))
+		math.LegacyMustNewDecFromStr("0.999999"))
 
 	for _, tc := range []struct {
 		name      string

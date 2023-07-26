@@ -18,7 +18,7 @@ import (
 //			panic(err)
 //		}
 //	} else if epochRatioStr != "" {
-//		epochRatio = sdk.MustNewDecFromStr(epochRatioStr)
+//		epochRatio = math.LegacyMustNewDecFromStr(epochRatioStr)
 //	}
 //	return types.AddPlanRequest{
 //		Name:               name,
@@ -85,7 +85,7 @@ import (
 //			panic(err)
 //		}
 //	} else if epochRatioStr != "" {
-//		epochRatio = sdk.MustNewDecFromStr(epochRatioStr)
+//		epochRatio = math.LegacyMustNewDecFromStr(epochRatioStr)
 //	}
 //	return types.ModifyPlanRequest{
 //		PlanId:             id,
@@ -145,7 +145,7 @@ import (
 //	plan, _ = suite.keeper.GetPlan(suite.ctx, 1)
 //	ratioPlan, ok := plan.(*types.RatioPlan)
 //	suite.Require().True(ok)
-//	suite.Require().True(decEq(sdk.MustNewDecFromStr("0.05"), ratioPlan.EpochRatio))
+//	suite.Require().True(decEq(math.LegacyMustNewDecFromStr("0.05"), ratioPlan.EpochRatio))
 //
 //	// Test for private plan cannot be modified.
 //	err := plan.SetType(types.PlanTypePrivate)
@@ -293,8 +293,8 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("2021-08-01T00:00:00Z"),
 //				types.ParseTime("2021-08-30T00:00:00Z"),
@@ -318,8 +318,8 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("2021-08-01T00:00:00Z"),
 //				types.ParseTime("2021-08-30T00:00:00Z"),
@@ -351,7 +351,7 @@ import (
 //				sdk.NewDecCoins(
 //					sdk.DecCoin{
 //						Denom:  "pool1",
-//						Amount: sdk.MustNewDecFromStr("0.1"),
+//						Amount: math.LegacyMustNewDecFromStr("0.1"),
 //					},
 //				),
 //				types.ParseTime("2021-08-01T00:00:00Z"),
@@ -368,8 +368,8 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("2021-08-13T00:00:00Z"),
 //				types.ParseTime("2021-08-06T00:00:00Z"),
@@ -387,8 +387,8 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("2021-08-01T00:00:00Z"),
 //				types.ParseTime("2021-08-30T00:00:00Z"),
@@ -404,8 +404,8 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("2021-08-01T00:00:00Z"),
 //				types.ParseTime("2021-08-30T00:00:00Z"),
@@ -447,13 +447,13 @@ import (
 //			suite.addrs[0].String(),
 //			suite.addrs[0].String(),
 //			sdk.NewDecCoins(
-//				sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-//				sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+//				sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+//				sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 //			),
 //			types.ParseTime("2021-08-01T00:00:00Z"),
 //			types.ParseTime("2021-08-30T00:00:00Z"),
 //			nil,
-//			sdk.NewDecWithPrec(10, 2), // 10%
+//			math.LegacyNewDecWithPrec(10, 2), // 10%
 //		),
 //	}
 //
@@ -483,7 +483,7 @@ import (
 //				plan.GetStartTime(),
 //				plan.GetEndTime(),
 //				nil,
-//				sdk.NewDecWithPrec(5, 2),
+//				math.LegacyNewDecWithPrec(5, 2),
 //			)},
 //			nil,
 //		},
@@ -550,7 +550,7 @@ import (
 //				sdk.NewDecCoins(
 //					sdk.DecCoin{
 //						Denom:  "pool1",
-//						Amount: sdk.MustNewDecFromStr("0.1"),
+//						Amount: math.LegacyMustNewDecFromStr("0.1"),
 //					},
 //				),
 //				plan.GetStartTime(),
@@ -641,13 +641,13 @@ import (
 //		suite.addrs[0].String(),
 //		suite.addrs[0].String(),
 //		sdk.NewDecCoins(
-//			sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-//			sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+//			sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+//			sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 //		),
 //		types.ParseTime("2021-08-01T00:00:00Z"),
 //		types.ParseTime("2021-08-30T00:00:00Z"),
 //		nil,
-//		sdk.NewDecWithPrec(10, 2), // 10%
+//		math.LegacyNewDecWithPrec(10, 2), // 10%
 //	)}
 //
 //	suite.handleProposal(types.NewPublicPlanProposal("testTitle", "testDescription", addRequests, nil, nil))
@@ -675,20 +675,20 @@ import (
 //				suite.addrs[0].String(),
 //				suite.addrs[0].String(),
 //				sdk.NewDecCoins(
-//					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //				),
 //				types.ParseTime("0001-01-01T00:00:00Z"),
 //				types.ParseTime("9999-12-31T00:00:00Z"),
 //				sdk.NewCoins(),
-//				sdk.NewDecWithPrec(10, 2),
+//				math.LegacyNewDecWithPrec(10, 2),
 //			),
 //		}, nil, nil),
 //	)
 //
 //	plan, found := suite.keeper.GetPlan(suite.ctx, uint64(1))
 //	suite.Require().Equal(true, found)
-//	suite.Require().Equal(plan.(*types.RatioPlan).EpochRatio, sdk.NewDecWithPrec(10, 2))
+//	suite.Require().Equal(plan.(*types.RatioPlan).EpochRatio, math.LegacyNewDecWithPrec(10, 2))
 //
 //	// update the ratio plan type to fixed amount plan type
 //	suite.handleProposal(
@@ -723,14 +723,14 @@ import (
 //				plan.GetStartTime(),
 //				plan.GetEndTime(),
 //				nil,
-//				sdk.NewDecWithPrec(7, 2), // 7%
+//				math.LegacyNewDecWithPrec(7, 2), // 7%
 //			),
 //		}, nil),
 //	)
 //
 //	plan, found = suite.keeper.GetPlan(suite.ctx, uint64(1))
 //	suite.Require().Equal(true, found)
-//	suite.Require().Equal(plan.(*types.RatioPlan).EpochRatio, sdk.NewDecWithPrec(7, 2))
+//	suite.Require().Equal(plan.(*types.RatioPlan).EpochRatio, math.LegacyNewDecWithPrec(7, 2))
 //}
 //
 //func (suite *KeeperTestSuite) TestDeletePublicPlan() {
@@ -766,8 +766,8 @@ import (
 //						tc.farmingPoolAddr.String(),
 //						tc.terminationAddr.String(),
 //						sdk.NewDecCoins(
-//							sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-//							sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)),
+//							sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+//							sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)),
 //						),
 //						types.ParseTime("0001-01-01T00:00:00Z"),
 //						types.ParseTime("9999-12-31T00:00:00Z"),

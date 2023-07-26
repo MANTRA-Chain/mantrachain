@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,14 +29,14 @@ func TestValidateGenesis(t *testing.T) {
 			types.ParseTime("0001-01-01T00:00:00Z"),
 			types.ParseTime("9999-12-31T00:00:00Z"),
 		),
-		sdk.NewDecWithPrec(5, 2),
+		math.LegacyNewDecWithPrec(5, 2),
 	)
 	validStaking := types.Staking{
-		Amount:        sdk.NewInt(1000000),
+		Amount:        math.NewInt(1000000),
 		StartingEpoch: 1,
 	}
 	validQueuedStaking := types.QueuedStaking{
-		Amount: sdk.NewInt(1000000),
+		Amount: math.NewInt(1000000),
 	}
 	validHistoricalRewards := types.HistoricalRewards{
 		CumulativeUnitRewards: sdk.NewDecCoins(sdk.NewInt64DecCoin("denom3", 100000)),
@@ -85,7 +86,7 @@ func TestValidateGenesis(t *testing.T) {
 						types.ParseTime("0001-01-01T00:00:00Z"),
 						types.ParseTime("9999-12-31T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(5, 2),
+					math.LegacyNewDecWithPrec(5, 2),
 				)
 				planAny, _ := types.PackPlan(plan)
 				genState.PlanRecords = []types.PlanRecord{
@@ -139,7 +140,7 @@ func TestValidateGenesis(t *testing.T) {
 						types.ParseTime("0001-01-01T00:00:00Z"),
 						types.ParseTime("9999-12-31T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(5, 2),
+					math.LegacyNewDecWithPrec(5, 2),
 				)
 				planB := types.NewFixedAmountPlan(
 					types.NewBasePlan(

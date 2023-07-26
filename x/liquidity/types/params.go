@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -23,11 +24,11 @@ const (
 var (
 	DefaultFeeCollectorAddress      = farmingtypes.DeriveAddress(AddressType, ModuleName, "FeeCollector")
 	DefaultDustCollectorAddress     = farmingtypes.DeriveAddress(AddressType, ModuleName, "DustCollector")
-	DefaultMinInitialPoolCoinSupply = sdk.NewInt(1_000_000_000_000)
+	DefaultMinInitialPoolCoinSupply = math.NewInt(1_000_000_000_000)
 	DefaultPairCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
 	DefaultPoolCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
-	DefaultMinInitialDepositAmount  = sdk.NewInt(1000000)
-	DefaultMaxPriceLimitRatio       = sdk.NewDecWithPrec(1, 1) // 10%
+	DefaultMinInitialDepositAmount  = math.NewInt(1000000)
+	DefaultMaxPriceLimitRatio       = math.LegacyNewDecWithPrec(1, 1) // 10%
 	DefaultSwapFeeRate              = sdk.ZeroDec()
 	DefaultWithdrawFeeRate          = sdk.ZeroDec()
 	DefaultDepositExtraGas          = sdk.Gas(60000)
@@ -200,7 +201,7 @@ func validateDustCollectorAddress(i interface{}) error {
 }
 
 func validateMinInitialPoolCoinSupply(i interface{}) error {
-	v, ok := i.(sdk.Int)
+	v, ok := i.(math.Int)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -243,7 +244,7 @@ func validatePoolCreationFee(i interface{}) error {
 }
 
 func validateMinInitialDepositAmount(i interface{}) error {
-	v, ok := i.(sdk.Int)
+	v, ok := i.(math.Int)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/suite"
 
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -35,7 +36,7 @@ func TestModuleTestSuite(t *testing.T) {
 }
 
 func (s *ModuleTestSuite) SetupTest() {
-	s.app = testutil.Setup(false)
+	s.app = testutil.SetupWithGenesisValSet(s.T())
 	s.ctx = s.app.BaseApp.NewContext(false, cbproto.Header{})
 	s.keeper = s.app.LiquidFarmingKeeper
 	s.querier = keeper.Querier{Keeper: s.keeper}
@@ -81,7 +82,7 @@ func (s *ModuleTestSuite) createPool(creator sdk.AccAddress, pairId uint64, depo
 	return pool
 }
 
-func (s *ModuleTestSuite) createLiquidFarm(poolId uint64, minFarmAmt, minBidAmt sdk.Int, feeRate sdk.Dec) types.LiquidFarm { //nolint
+func (s *ModuleTestSuite) createLiquidFarm(poolId uint64, minFarmAmt, minBidAmt math.Int, feeRate sdk.Dec) types.LiquidFarm { //nolint
 	s.T().Helper()
 	liquidFarm := types.NewLiquidFarm(poolId, minFarmAmt, minBidAmt, feeRate)
 	params := s.keeper.GetParams(s.ctx)

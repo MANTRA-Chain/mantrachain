@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"mantrachain/x/marketmaker/keeper"
@@ -102,7 +103,7 @@ func (suite *KeeperTestSuite) TestIncentiveReservedAmountInvariant() {
 	}, nil, nil, nil)
 	suite.handleProposal(proposal)
 
-	incentiveAmount := sdk.NewInt(500000000)
+	incentiveAmount := math.NewInt(500000000)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 
 	// submit incentive distribution proposal
@@ -142,7 +143,7 @@ func (suite *KeeperTestSuite) TestIncentiveReservedAmountInvariant() {
 	suite.Require().EqualValues(incentiveCoins, incentive2.Claimable)
 
 	// manipulate claimable amount of the market maker to break invariant
-	incentive2.Claimable = incentive2.Claimable.Add(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1)))
+	incentive2.Claimable = incentive2.Claimable.Add(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1)))
 	k.SetIncentive(ctx, incentive2)
 
 	// broken incentive reserved invariant

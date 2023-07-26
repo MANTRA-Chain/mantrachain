@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"mantrachain/x/farming/types"
@@ -30,7 +31,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 		k.SetPlan(ctx, plan)
 	}
 
-	totalStakings := map[string]sdk.Int{} // (staking coin denom) => (amount)
+	totalStakings := map[string]math.Int{} // (staking coin denom) => (amount)
 
 	for _, record := range genState.StakingRecords {
 		farmerAcc, err := sdk.AccAddressFromBech32(record.Farmer)

@@ -9,18 +9,20 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	cbtypes "github.com/cometbft/cometbft/types"
-	"github.com/stretchr/testify/require"
-
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+
+	"github.com/cosmos/cosmos-sdk/testutil/mock"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -29,6 +31,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/stretchr/testify/require"
 
 	chain "mantrachain/app"
 	"mantrachain/app/params"
@@ -120,7 +123,28 @@ func Setup(isCheckTx bool) *chain.App {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in App.
-func SetupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *chain.App {
+func SetupWithGenesisValSet(t *testing.T) *chain.App {
+	privVal := mock.NewPV()
+	pubKey, err := privVal.GetPubKey()
+	require.NoError(t, err)
+
+	// create validator set with single validator
+	validator := cbtypes.NewValidator(pubKey, 1)
+	valSet := cbtypes.NewValidatorSet([]*cbtypes.Validator{validator})
+
+	// generate genesis account
+	senderPrivKey := secp256k1.GenPrivKey()
+	acc := authtypes.NewBaseAccount(senderPrivKey.PubKey().Address().Bytes(), senderPrivKey.PubKey(), 0, 0)
+	balance := banktypes.Balance{
+		Address: acc.GetAddress().String(),
+		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(100000000000000))),
+	}
+
+	app := setupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, balance)
+	return app
+}
+
+func setupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *chain.App {
 	app, genesisState := setup(true, 5)
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
@@ -129,7 +153,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs 
 	validators := make([]stakingtypes.Validator, 0, len(valSet.Validators))
 	delegations := make([]stakingtypes.Delegation, 0, len(valSet.Validators))
 
-	bondAmt := sdk.NewInt(1000000)
+	bondAmt := math.NewInt(1000000)
 
 	for _, val := range valSet.Validators {
 		pk, err := cryptocodec.FromTmPubKeyInterface(val.PubKey)
@@ -251,8 +275,18 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 
 type GenerateAccountStrategy func(int) []sdk.AccAddress
 
-// createRandomAccounts is a strategy used by addTestAddrs() in order to generated addresses in random order.
-func createRandomAccounts(accNum int) []sdk.AccAddress {
+func createTestAccountsAndAdmin(accNum int) []sdk.AccAddress {
+	testAddrs := make([]sdk.AccAddress, accNum)
+	testAddrs[0] = sdk.MustAccAddressFromBech32(TestAdminAddress)
+	for i := 1; i < accNum; i++ {
+		pk := ed25519.GenPrivKey().PubKey()
+		testAddrs[i] = sdk.AccAddress(pk.Address())
+	}
+
+	return testAddrs
+}
+
+func createTestAccounts(accNum int) []sdk.AccAddress {
 	testAddrs := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		pk := ed25519.GenPrivKey().PubKey()
@@ -285,7 +319,7 @@ func createIncrementalAccounts(accNum int) []sdk.AccAddress {
 }
 
 // AddTestAddrsFromPubKeys adds the addresses into the App providing only the public keys.
-func AddTestAddrsFromPubKeys(app *chain.App, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt sdk.Int) {
+func AddTestAddrsFromPubKeys(app *chain.App, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt math.Int) {
 	initCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, accAmt))
 
 	for _, pk := range pubKeys {
@@ -295,17 +329,23 @@ func AddTestAddrsFromPubKeys(app *chain.App, ctx sdk.Context, pubKeys []cryptoty
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrs(app *chain.App, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
-	return addTestAddrs(app, ctx, accNum, accAmt, createRandomAccounts)
+func AddTestAddrs(app *chain.App, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
+	return addTestAddrs(app, ctx, accNum, accAmt, createTestAccounts)
+}
+
+// AddTestAddrsAndAdmin constructs and returns accNum amount of accounts with an
+// initial balance of accAmt in random order and the first account as the admin
+func AddTestAddrsAndAdmin(app *chain.App, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
+	return addTestAddrs(app, ctx, accNum, accAmt, createTestAccountsAndAdmin)
 }
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrsIncremental(app *chain.App, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+func AddTestAddrsIncremental(app *chain.App, ctx sdk.Context, accNum int, accAmt math.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createIncrementalAccounts)
 }
 
-func addTestAddrs(app *chain.App, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+func addTestAddrs(app *chain.App, ctx sdk.Context, accNum int, accAmt math.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
 	initCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, accAmt))
@@ -359,6 +399,28 @@ func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 	}
 
 	return res, nil
+}
+
+// CreateIncrementalAccounts is a strategy used by addTestAddrs() in order to generated addresses in ascending order.
+func CreateIncrementalAccounts(accNum int) []sdk.AccAddress {
+	var addresses []sdk.AccAddress
+	var buffer bytes.Buffer
+
+	// start at 100 so we can make up to 999 test addresses with valid test addresses
+	for i := 100; i < (accNum + 100); i++ {
+		numString := strconv.Itoa(i)
+		buffer.WriteString("A58856F0FD53BF058B4909A21AEC019107BA6") // base address string
+
+		buffer.WriteString(numString) // adding on final two digits to make addresses unique
+		res, _ := sdk.AccAddressFromHexUnsafe(buffer.String())
+		bech := res.String()
+		addr, _ := TestAddr(buffer.String(), bech)
+
+		addresses = append(addresses, addr)
+		buffer.Reset()
+	}
+
+	return addresses
 }
 
 // CheckBalance checks the balance of an account.

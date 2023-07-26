@@ -13,8 +13,6 @@ import (
 	guardtestutil "mantrachain/x/guard/testutil"
 	"mantrachain/x/guard/types"
 
-	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"mantrachain/testutil"
@@ -58,7 +56,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.ctx = testCtx.Ctx.WithBlockHeader(cbproto.Header{Time: cbttime.Now()})
 	s.encCfg = testutil.MakeTestEncodingConfig()
 
-	s.addrs = simtestutil.CreateIncrementalAccounts(3)
+	s.addrs = testutil.CreateIncrementalAccounts(3)
 
 	ctrl := gomock.NewController(s.T())
 	accountKeeper := guardtestutil.NewMockAccountKeeper(ctrl)

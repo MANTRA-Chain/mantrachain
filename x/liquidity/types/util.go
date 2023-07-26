@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -63,10 +64,10 @@ func (op *BulkSendCoinsOperation) Run(ctx sdk.Context, bankKeeper BankKeeper) er
 }
 
 // NewPoolResponse returns a new PoolResponse from given information.
-func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply sdk.Int) PoolResponse {
+func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply math.Int) PoolResponse {
 	var price *sdk.Dec
 	if !pool.Disabled {
-		p := pool.AMMPool(rx.Amount, ry.Amount, sdk.Int{}).Price()
+		p := pool.AMMPool(rx.Amount, ry.Amount, math.Int{}).Price()
 		price = &p
 	}
 	return PoolResponse{
@@ -92,7 +93,7 @@ func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply sdk.Int) PoolRes
 
 // IsTooSmallOrderAmount returns whether the order amount is too small for
 // matching, based on the order price.
-func IsTooSmallOrderAmount(amt sdk.Int, price sdk.Dec) bool {
+func IsTooSmallOrderAmount(amt math.Int, price sdk.Dec) bool {
 	return amt.LT(amm.MinCoinAmount) || price.MulInt(amt).LT(sdk.NewDecFromInt(amm.MinCoinAmount))
 }
 
@@ -122,13 +123,13 @@ func (index MMOrderIndex) GetOrderer() sdk.AccAddress {
 
 // MMOrderTick holds information about each tick's price and amount of an MMOrder.
 type MMOrderTick struct {
-	OfferCoinAmount sdk.Int
+	OfferCoinAmount math.Int
 	Price           sdk.Dec
-	Amount          sdk.Int
+	Amount          math.Int
 }
 
 // MMOrderTicks returns fairly distributed tick information with given parameters.
-func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdk.Dec, amt sdk.Int, maxNumTicks, tickPrec int) (ticks []MMOrderTick) {
+func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdk.Dec, amt math.Int, maxNumTicks, tickPrec int) (ticks []MMOrderTick) {
 	ammDir := amm.OrderDirection(dir)
 	if minPrice.Equal(maxPrice) {
 		return []MMOrderTick{{OfferCoinAmount: amm.OfferCoinAmount(ammDir, minPrice, amt), Price: minPrice, Amount: amt}}

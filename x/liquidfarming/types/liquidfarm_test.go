@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -73,31 +74,31 @@ func TestLiquidFarmReserveAddress(t *testing.T) {
 func TestCalculateLiquidFarmAmount(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
-		lfTotalSupplyAmt  sdk.Int
-		lpTotalFarmingAmt sdk.Int
-		newFarmingAmt     sdk.Int
-		expectedAmt       sdk.Int
+		lfTotalSupplyAmt  math.Int
+		lpTotalFarmingAmt math.Int
+		newFarmingAmt     math.Int
+		expectedAmt       math.Int
 	}{
 		{
 			name:              "initial minting",
 			lfTotalSupplyAmt:  sdk.ZeroInt(),
 			lpTotalFarmingAmt: sdk.ZeroInt(),
-			newFarmingAmt:     sdk.NewInt(1_000_00_000),
-			expectedAmt:       sdk.NewInt(1_000_00_000),
+			newFarmingAmt:     math.NewInt(1_000_00_000),
+			expectedAmt:       math.NewInt(1_000_00_000),
 		},
 		{
 			name:              "normal",
-			lfTotalSupplyAmt:  sdk.NewInt(1_000_000_000),
-			lpTotalFarmingAmt: sdk.NewInt(1_000_000_000),
-			newFarmingAmt:     sdk.NewInt(250_000_000),
-			expectedAmt:       sdk.NewInt(250_000_000),
+			lfTotalSupplyAmt:  math.NewInt(1_000_000_000),
+			lpTotalFarmingAmt: math.NewInt(1_000_000_000),
+			newFarmingAmt:     math.NewInt(250_000_000),
+			expectedAmt:       math.NewInt(250_000_000),
 		},
 		{
 			name:              "rewards are auto compounded",
-			lfTotalSupplyAmt:  sdk.NewInt(1_000_000_000),
-			lpTotalFarmingAmt: sdk.NewInt(1_100_000_000),
-			newFarmingAmt:     sdk.NewInt(100_000_000),
-			expectedAmt:       sdk.NewInt(90_909_090),
+			lfTotalSupplyAmt:  math.NewInt(1_000_000_000),
+			lpTotalFarmingAmt: math.NewInt(1_100_000_000),
+			newFarmingAmt:     math.NewInt(100_000_000),
+			expectedAmt:       math.NewInt(90_909_090),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -114,51 +115,51 @@ func TestCalculateLiquidFarmAmount(t *testing.T) {
 func TestCalculateLiquidUnfarmAmount(t *testing.T) {
 	for _, tc := range []struct {
 		name               string
-		lfTotalSupplyAmt   sdk.Int
-		lpTotalFarmingAmt  sdk.Int
-		unfarmingAmt       sdk.Int
-		compoundingRewards sdk.Int
-		expectedAmt        sdk.Int
+		lfTotalSupplyAmt   math.Int
+		lpTotalFarmingAmt  math.Int
+		unfarmingAmt       math.Int
+		compoundingRewards math.Int
+		expectedAmt        math.Int
 	}{
 		{
 			name:               "unfarm all",
-			lfTotalSupplyAmt:   sdk.NewInt(100_000_000),
-			lpTotalFarmingAmt:  sdk.NewInt(100_000_000),
-			unfarmingAmt:       sdk.NewInt(100_000_000),
+			lfTotalSupplyAmt:   math.NewInt(100_000_000),
+			lpTotalFarmingAmt:  math.NewInt(100_000_000),
+			unfarmingAmt:       math.NewInt(100_000_000),
 			compoundingRewards: sdk.ZeroInt(),
-			expectedAmt:        sdk.NewInt(100_000_000),
+			expectedAmt:        math.NewInt(100_000_000),
 		},
 		{
 			name:               "unfarming small amount #1: no compounding rewards",
-			lfTotalSupplyAmt:   sdk.NewInt(100_000_000),
-			lpTotalFarmingAmt:  sdk.NewInt(100_000_000),
-			unfarmingAmt:       sdk.NewInt(1),
+			lfTotalSupplyAmt:   math.NewInt(100_000_000),
+			lpTotalFarmingAmt:  math.NewInt(100_000_000),
+			unfarmingAmt:       math.NewInt(1),
 			compoundingRewards: sdk.ZeroInt(),
-			expectedAmt:        sdk.NewInt(1),
+			expectedAmt:        math.NewInt(1),
 		},
 		{
 			name:               "unfarming small amount #2: with compounding rewards",
-			lfTotalSupplyAmt:   sdk.NewInt(100_000_000),
-			lpTotalFarmingAmt:  sdk.NewInt(100_000_100),
-			unfarmingAmt:       sdk.NewInt(1),
-			compoundingRewards: sdk.NewInt(100),
-			expectedAmt:        sdk.NewInt(1),
+			lfTotalSupplyAmt:   math.NewInt(100_000_000),
+			lpTotalFarmingAmt:  math.NewInt(100_000_100),
+			unfarmingAmt:       math.NewInt(1),
+			compoundingRewards: math.NewInt(100),
+			expectedAmt:        math.NewInt(1),
 		},
 		{
 			name:               "rewards are auto compounded #1: no compouding rewards",
-			lfTotalSupplyAmt:   sdk.NewInt(1_000_000_000),
-			lpTotalFarmingAmt:  sdk.NewInt(1_100_000_000),
-			unfarmingAmt:       sdk.NewInt(100_000_000),
+			lfTotalSupplyAmt:   math.NewInt(1_000_000_000),
+			lpTotalFarmingAmt:  math.NewInt(1_100_000_000),
+			unfarmingAmt:       math.NewInt(100_000_000),
 			compoundingRewards: sdk.ZeroInt(),
-			expectedAmt:        sdk.NewInt(110_000_000),
+			expectedAmt:        math.NewInt(110_000_000),
 		},
 		{
 			name:               "rewards are auto compounded #1: with compouding rewards",
-			lfTotalSupplyAmt:   sdk.NewInt(1_000_000_000),
-			lpTotalFarmingAmt:  sdk.NewInt(1_100_000_000),
-			unfarmingAmt:       sdk.NewInt(100_000_000),
-			compoundingRewards: sdk.NewInt(100_000),
-			expectedAmt:        sdk.NewInt(109_990_000),
+			lfTotalSupplyAmt:   math.NewInt(1_000_000_000),
+			lpTotalFarmingAmt:  math.NewInt(1_100_000_000),
+			unfarmingAmt:       math.NewInt(100_000_000),
+			compoundingRewards: math.NewInt(100_000),
+			expectedAmt:        math.NewInt(109_990_000),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -190,14 +191,14 @@ func TestDeductFees(t *testing.T) {
 		},
 		{
 			name:     "fee rate - 10%",
-			feeRate:  sdk.MustNewDecFromStr("0.1"),
+			feeRate:  math.LegacyMustNewDecFromStr("0.1"),
 			rewards:  utils.ParseCoins("100denom1"),
 			deducted: utils.ParseCoins("90denom1"),
 			fees:     utils.ParseCoins("10denom1"),
 		},
 		{
 			name:     "fee rate - 6.666666666666%",
-			feeRate:  sdk.MustNewDecFromStr("0.066666666666666"),
+			feeRate:  math.LegacyMustNewDecFromStr("0.066666666666666"),
 			rewards:  utils.ParseCoins("100000denom1"),
 			deducted: utils.ParseCoins("93333denom1"),
 			fees:     utils.ParseCoins("6667denom1"),

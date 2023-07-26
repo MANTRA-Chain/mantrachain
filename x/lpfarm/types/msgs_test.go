@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -31,7 +32,7 @@ func TestMsgFarm(t *testing.T) {
 		{
 			"negative coin",
 			func(msg *types.MsgFarm) {
-				msg.Coin = sdk.Coin{Denom: "pool1", Amount: sdk.NewInt(-1)}
+				msg.Coin = sdk.Coin{Denom: "pool1", Amount: math.NewInt(-1)}
 			},
 			"invalid coin: negative coin amount: -1: invalid request",
 		},
@@ -82,7 +83,7 @@ func TestMsgUnfarm(t *testing.T) {
 		{
 			"negative bond",
 			func(msg *types.MsgUnfarm) {
-				msg.Coin = sdk.Coin{Denom: "pool1", Amount: sdk.NewInt(-1)}
+				msg.Coin = sdk.Coin{Denom: "pool1", Amount: math.NewInt(-1)}
 			},
 			"invalid coin: negative coin amount: -1: invalid request",
 		},

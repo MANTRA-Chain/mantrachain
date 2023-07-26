@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -43,7 +44,7 @@ func (suite *KeeperTestSuite) TestStake() {
 				suite.Require().False(found)
 
 				queuedStakingAmt := suite.keeper.GetAllQueuedStakingAmountByFarmerAndDenom(suite.ctx, suite.addrs[0], denom1)
-				suite.Require().True(intEq(sdk.NewInt(tc.amt), queuedStakingAmt))
+				suite.Require().True(intEq(math.NewInt(tc.amt), queuedStakingAmt))
 			}
 		})
 	}
@@ -131,7 +132,7 @@ func (suite *KeeperTestSuite) TestQueuedStaking() {
 	farming.EndBlocker(suite.ctx, suite.keeper)
 	staking, found := suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1000000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(1000000), staking.Amount))
 	queuedCoins = suite.keeper.GetAllQueuedCoinsByFarmer(suite.ctx, suite.addrs[0])
 	suite.Require().True(coinsEq(sdk.NewCoins(sdk.NewInt64Coin(denom1, 1250000)), queuedCoins))
 
@@ -139,7 +140,7 @@ func (suite *KeeperTestSuite) TestQueuedStaking() {
 	suite.ctx = suite.ctx.WithBlockTime(types.ParseTime("2022-01-02T10:00:00Z"))
 	farming.EndBlocker(suite.ctx, suite.keeper)
 	staking, _ = suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
-	suite.Require().True(intEq(sdk.NewInt(1500000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(1500000), staking.Amount))
 	queuedCoins = suite.keeper.GetAllQueuedCoinsByFarmer(suite.ctx, suite.addrs[0])
 	suite.Require().True(coinsEq(sdk.NewCoins(sdk.NewInt64Coin(denom1, 750000)), queuedCoins))
 
@@ -147,7 +148,7 @@ func (suite *KeeperTestSuite) TestQueuedStaking() {
 	suite.ctx = suite.ctx.WithBlockTime(types.ParseTime("2022-01-03T00:00:00Z"))
 	farming.EndBlocker(suite.ctx, suite.keeper)
 	staking, _ = suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
-	suite.Require().True(intEq(sdk.NewInt(2250000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(2250000), staking.Amount))
 	queuedCoins = suite.keeper.GetAllQueuedCoinsByFarmer(suite.ctx, suite.addrs[0])
 	suite.Require().True(coinsEq(sdk.Coins{}, queuedCoins))
 }
@@ -161,7 +162,7 @@ func (suite *KeeperTestSuite) TestStakeTwice() {
 	suite.Stake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 500000)))
 	farming.EndBlocker(suite.ctx, suite.keeper)
 	amt := suite.keeper.GetAllQueuedStakingAmountByFarmerAndDenom(suite.ctx, suite.addrs[0], denom1)
-	suite.Require().True(intEq(sdk.NewInt(1500000), amt))
+	suite.Require().True(intEq(math.NewInt(1500000), amt))
 	cnt := 0
 	suite.keeper.IterateQueuedStakingsByFarmer(suite.ctx, suite.addrs[0], func(_ string, _ time.Time, _ types.QueuedStaking) (stop bool) {
 		cnt++
@@ -175,7 +176,7 @@ func (suite *KeeperTestSuite) TestStakeTwice() {
 	suite.Require().True(intEq(sdk.ZeroInt(), amt))
 	staking, found := suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1500000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(1500000), staking.Amount))
 }
 
 func (suite *KeeperTestSuite) TestUnstake() {
@@ -347,9 +348,9 @@ func (suite *KeeperTestSuite) TestUnstakeFromLatestQueuedStaking() {
 	farming.EndBlocker(suite.ctx, suite.keeper)
 	staking, found := suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1000000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(1000000), staking.Amount))
 	amt := suite.keeper.GetAllQueuedStakingAmountByFarmerAndDenom(suite.ctx, suite.addrs[0], denom1)
-	suite.Require().True(intEq(sdk.NewInt(2000000), amt))
+	suite.Require().True(intEq(math.NewInt(2000000), amt))
 
 	suite.ctx = suite.ctx.WithBlockTime(types.ParseTime("2022-01-02T03:00:00Z"))
 	suite.Unstake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 700000)))
@@ -357,10 +358,10 @@ func (suite *KeeperTestSuite) TestUnstakeFromLatestQueuedStaking() {
 	suite.Require().False(found)
 	queuedStaking, found := suite.keeper.GetQueuedStaking(suite.ctx, types.ParseTime("2022-01-02T15:00:00Z"), denom1, suite.addrs[0])
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(300000), queuedStaking.Amount))
+	suite.Require().True(intEq(math.NewInt(300000), queuedStaking.Amount))
 	queuedStaking, found = suite.keeper.GetQueuedStaking(suite.ctx, types.ParseTime("2022-01-02T09:00:00Z"), denom1, suite.addrs[0])
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1000000), queuedStaking.Amount))
+	suite.Require().True(intEq(math.NewInt(1000000), queuedStaking.Amount))
 
 	suite.Unstake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 1500000)))
 	cnt := 0
@@ -370,7 +371,7 @@ func (suite *KeeperTestSuite) TestUnstakeFromLatestQueuedStaking() {
 	})
 	suite.Require().Equal(0, cnt)
 	staking, _ = suite.keeper.GetStaking(suite.ctx, denom1, suite.addrs[0])
-	suite.Require().True(intEq(sdk.NewInt(800000), staking.Amount))
+	suite.Require().True(intEq(math.NewInt(800000), staking.Amount))
 }
 
 func (suite *KeeperTestSuite) TestUnstakeInsufficientFunds() {
@@ -400,16 +401,16 @@ func (suite *KeeperTestSuite) TestTotalStakings() {
 	suite.Unstake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 300000)))
 	totalStakings, found := suite.keeper.GetTotalStakings(suite.ctx, denom1)
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1000000), totalStakings.Amount))
+	suite.Require().True(intEq(math.NewInt(1000000), totalStakings.Amount))
 
 	suite.advanceEpochDays()
 	totalStakings, _ = suite.keeper.GetTotalStakings(suite.ctx, denom1)
 	suite.Require().True(found)
-	suite.Require().True(intEq(sdk.NewInt(1200000), totalStakings.Amount))
+	suite.Require().True(intEq(math.NewInt(1200000), totalStakings.Amount))
 
 	suite.Unstake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 1000000)))
 	totalStakings, _ = suite.keeper.GetTotalStakings(suite.ctx, denom1)
-	suite.Require().True(intEq(sdk.NewInt(200000), totalStakings.Amount))
+	suite.Require().True(intEq(math.NewInt(200000), totalStakings.Amount))
 
 	suite.Unstake(suite.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(denom1, 200000)))
 	farming.EndBlocker(suite.ctx, suite.keeper)

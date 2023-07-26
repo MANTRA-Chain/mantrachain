@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -115,7 +116,7 @@ func (pool Pool) Validate() error {
 }
 
 // AMMPool constructs amm.Pool interface from Pool.
-func (pool Pool) AMMPool(rx, ry, ps sdk.Int) amm.Pool {
+func (pool Pool) AMMPool(rx, ry, ps math.Int) amm.Pool {
 	switch pool.Type {
 	case PoolTypeBasic:
 		return amm.NewBasicPool(rx, ry, ps)
@@ -143,7 +144,7 @@ func NewPoolOrderer(pool amm.Pool, id uint64, reserveAddr sdk.AccAddress, baseCo
 	}
 }
 
-func (orderer *PoolOrderer) Order(dir amm.OrderDirection, price sdk.Dec, amt sdk.Int) amm.Order {
+func (orderer *PoolOrderer) Order(dir amm.OrderDirection, price sdk.Dec, amt math.Int) amm.Order {
 	var offerCoinDenom, demandCoinDenom string
 	switch dir {
 	case amm.Buy:

@@ -4,6 +4,7 @@ import (
 	"math/big"
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,7 +28,7 @@ func TestPriceToTick(t *testing.T) {
 		{utils.ParseDec("10019"), utils.ParseDec("10010")},
 		{utils.ParseDec("1000100005"), utils.ParseDec("1000000000")},
 	} {
-		require.True(sdk.DecEq(t, tc.expected, amm.PriceToDownTick(tc.price, 3)))
+		require.True(math.LegacyDecEq(t, tc.expected, amm.PriceToDownTick(tc.price, 3)))
 	}
 }
 
@@ -37,7 +38,7 @@ func TestTick(t *testing.T) {
 		prec     int
 		expected sdk.Dec
 	}{
-		{0, 3, sdk.NewDecWithPrec(1, int64(sdk.Precision-defTickPrec))},
+		{0, 3, math.LegacyNewDecWithPrec(1, int64(sdk.Precision-defTickPrec))},
 		{1, 3, utils.ParseDec("0.000000000000001001")},
 		{8999, 3, utils.ParseDec("0.000000000000009999")},
 		{9000, 3, utils.ParseDec("0.000000000000010000")},
@@ -49,7 +50,7 @@ func TestTick(t *testing.T) {
 	} {
 		t.Run("", func(t *testing.T) {
 			res := amm.TickFromIndex(tc.i, tc.prec)
-			require.True(sdk.DecEq(t, tc.expected, res))
+			require.True(math.LegacyDecEq(t, tc.expected, res))
 			require.Equal(t, tc.i, amm.TickToIndex(res, tc.prec))
 		})
 	}
@@ -75,7 +76,7 @@ func TestUpTick(t *testing.T) {
 		{utils.ParseDec("1000.9"), 3, utils.ParseDec("1001")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.UpTick(tc.price, tc.prec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.UpTick(tc.price, tc.prec)))
 		})
 	}
 }
@@ -100,7 +101,7 @@ func TestDownTick(t *testing.T) {
 		{utils.ParseDec("1000.9"), 3, utils.ParseDec("1000")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.DownTick(tc.price, tc.prec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.DownTick(tc.price, tc.prec)))
 		})
 	}
 }
@@ -118,7 +119,7 @@ func TestHighestTick(t *testing.T) {
 			i, ok := new(big.Int).SetString(tc.expected, 10)
 			require.True(t, ok)
 			tick := amm.HighestTick(tc.prec)
-			require.True(sdk.DecEq(t, sdk.NewDecFromBigInt(i), tick))
+			require.True(math.LegacyDecEq(t, sdk.NewDecFromBigInt(i), tick))
 		})
 	}
 }
@@ -128,11 +129,11 @@ func TestLowestTick(t *testing.T) {
 		prec     int
 		expected sdk.Dec
 	}{
-		{0, sdk.NewDecWithPrec(1, 18)},
-		{3, sdk.NewDecWithPrec(1, 15)},
+		{0, math.LegacyNewDecWithPrec(1, 18)},
+		{3, math.LegacyNewDecWithPrec(1, 15)},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.LowestTick(tc.prec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.LowestTick(tc.prec)))
 		})
 	}
 }
@@ -149,7 +150,7 @@ func TestPriceToUpTick(t *testing.T) {
 		{utils.ParseDec("100.099"), 3, utils.ParseDec("100.1")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.PriceToUpTick(tc.price, tc.prec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.PriceToUpTick(tc.price, tc.prec)))
 		})
 	}
 }
@@ -196,7 +197,7 @@ func TestRoundPrice(t *testing.T) {
 		{utils.ParseDec("1.0035"), 3, utils.ParseDec("1.004")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.RoundPrice(tc.price, tc.prec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.RoundPrice(tc.price, tc.prec)))
 		})
 	}
 }
@@ -215,7 +216,7 @@ func TestTickGap(t *testing.T) {
 		{utils.ParseDec("0.00000000009"), 3, utils.ParseDec("0.00000000000001")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, amm.TickGap(tc.price, tc.tickPrec)))
+			require.True(math.LegacyDecEq(t, tc.expected, amm.TickGap(tc.price, tc.tickPrec)))
 		})
 	}
 }

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	_ "github.com/stretchr/testify/suite"
@@ -167,7 +168,7 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalDistribution() {
 	_, found := k.GetIncentive(ctx, mmAddr)
 	suite.False(found)
 
-	incentiveAmount := sdk.NewInt(500000000)
+	incentiveAmount := math.NewInt(500000000)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 
 	balanceBeforeMM := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
@@ -299,7 +300,7 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalHugeCase() {
 	params.IncentiveBudgetAddress = suite.addrs[29].String()
 	k.SetParams(ctx, params)
 
-	incentiveAmount := sdk.NewInt(100)
+	incentiveAmount := math.NewInt(100)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 
 	//balanceInitMM := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
@@ -384,7 +385,7 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalAfterResetIncentivePair() {
 	suite.True(mm.Eligible)
 
 	// distribute market maker incentive
-	incentiveAmount := sdk.NewInt(500000000)
+	incentiveAmount := math.NewInt(500000000)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 
 	proposal = types.NewMarketMakerProposal("title", "description", nil, nil, nil,
@@ -434,7 +435,7 @@ func (suite *KeeperTestSuite) TestRefundDepositWhenAmountChanged() {
 	suite.EqualValues(balanceBeforeModuleAcc.Add(params.DepositAmount...), balanceAfterModuleAcc)
 
 	// change deposit amount
-	params.DepositAmount = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(500000000)))
+	params.DepositAmount = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(500000000)))
 	k.SetParams(ctx, params)
 
 	// apply market maker

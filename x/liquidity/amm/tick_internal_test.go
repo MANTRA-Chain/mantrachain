@@ -3,6 +3,7 @@ package amm
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,18 +20,18 @@ func Test_char(t *testing.T) {
 		x        sdk.Dec
 		expected int
 	}{
-		{sdk.MustNewDecFromStr("999.99999999999999999"), 20},
-		{sdk.MustNewDecFromStr("100"), 20},
-		{sdk.MustNewDecFromStr("99.999999999999999999"), 19},
-		{sdk.MustNewDecFromStr("10"), 19},
-		{sdk.MustNewDecFromStr("9.999999999999999999"), 18},
-		{sdk.MustNewDecFromStr("1"), 18},
-		{sdk.MustNewDecFromStr("0.999999999999999999"), 17},
-		{sdk.MustNewDecFromStr("0.1"), 17},
-		{sdk.MustNewDecFromStr("0.099999999999999999"), 16},
-		{sdk.MustNewDecFromStr("0.01"), 16},
-		{sdk.MustNewDecFromStr("0.000000000000000009"), 0},
-		{sdk.MustNewDecFromStr("0.000000000000000001"), 0},
+		{math.LegacyMustNewDecFromStr("999.99999999999999999"), 20},
+		{math.LegacyMustNewDecFromStr("100"), 20},
+		{math.LegacyMustNewDecFromStr("99.999999999999999999"), 19},
+		{math.LegacyMustNewDecFromStr("10"), 19},
+		{math.LegacyMustNewDecFromStr("9.999999999999999999"), 18},
+		{math.LegacyMustNewDecFromStr("1"), 18},
+		{math.LegacyMustNewDecFromStr("0.999999999999999999"), 17},
+		{math.LegacyMustNewDecFromStr("0.1"), 17},
+		{math.LegacyMustNewDecFromStr("0.099999999999999999"), 16},
+		{math.LegacyMustNewDecFromStr("0.01"), 16},
+		{math.LegacyMustNewDecFromStr("0.000000000000000009"), 0},
+		{math.LegacyMustNewDecFromStr("0.000000000000000001"), 0},
 	} {
 		t.Run("", func(t *testing.T) {
 			require.Equal(t, tc.expected, char(tc.x))
@@ -46,11 +47,11 @@ func Test_pow10(t *testing.T) {
 		{18, sdk.NewDec(1)},
 		{19, sdk.NewDec(10)},
 		{20, sdk.NewDec(100)},
-		{17, sdk.NewDecWithPrec(1, 1)},
-		{16, sdk.NewDecWithPrec(1, 2)},
+		{17, math.LegacyNewDecWithPrec(1, 1)},
+		{16, math.LegacyNewDecWithPrec(1, 2)},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, pow10(tc.power)))
+			require.True(math.LegacyDecEq(t, tc.expected, pow10(tc.power)))
 		})
 	}
 }

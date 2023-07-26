@@ -5,7 +5,7 @@ import (
 
 	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/cosmos/cosmos-sdk/store"
@@ -23,7 +23,7 @@ func DefaultContext(key storetypes.StoreKey, tkey storetypes.StoreKey) sdk.Conte
 	if err != nil {
 		panic(err)
 	}
-	ctx := sdk.NewContext(cms, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, cbproto.Header{}, false, log.NewNopLogger())
 
 	return ctx
 }
@@ -42,7 +42,7 @@ func DefaultContextWithDB(t *testing.T, key storetypes.StoreKey, tkey storetypes
 	err := cms.LoadLatestVersion()
 	assert.NoError(t, err)
 
-	ctx := sdk.NewContext(cms, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, cbproto.Header{}, false, log.NewNopLogger())
 
 	return TestContext{ctx, db, cms}
 }

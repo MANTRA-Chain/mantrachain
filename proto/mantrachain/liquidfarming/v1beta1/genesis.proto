@@ -10,7 +10,7 @@ option go_package = "mantrachain/x/liquidfarming/types";
 
 // GenesisState defines the liquidfarming module's genesis state.
 message GenesisState {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   Params params = 1 [(gogoproto.nullable) = false];
@@ -29,7 +29,7 @@ message GenesisState {
 }
 
 message LastRewardsAuctionIdRecord {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   uint64 pool_id = 1;
@@ -40,7 +40,7 @@ message LastRewardsAuctionIdRecord {
 // WinningBidRecord defines a custom winning bid record that is required to be recorded
 // in genesis state.
 message WinningBidRecord {
-  option (gogoproto.equal)           = false;
+  option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
   uint64 auction_id = 1;

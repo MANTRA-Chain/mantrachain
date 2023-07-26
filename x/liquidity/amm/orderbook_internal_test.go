@@ -4,6 +4,7 @@ import (
 	"sort"
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +12,7 @@ import (
 	utils "mantrachain/types"
 )
 
-func newOrder(dir OrderDirection, price sdk.Dec, amt sdk.Int) *BaseOrder {
+func newOrder(dir OrderDirection, price sdk.Dec, amt math.Int) *BaseOrder {
 	return NewBaseOrder(dir, price, amt, OfferCoinAmount(dir, price, amt))
 }
 
@@ -27,7 +28,7 @@ func TestOrderBookTicks_add(t *testing.T) {
 	}
 	var ticks orderBookTicks
 	for _, price := range prices {
-		ticks.addOrder(newOrder(Buy, price, sdk.NewInt(10000)))
+		ticks.addOrder(newOrder(Buy, price, math.NewInt(10000)))
 	}
 	pricesSet := map[string]struct{}{}
 	for _, price := range prices {
@@ -41,6 +42,6 @@ func TestOrderBookTicks_add(t *testing.T) {
 		return prices[i].GT(prices[j])
 	})
 	for i, price := range prices {
-		require.True(sdk.DecEq(t, price, ticks.ticks[i].price))
+		require.True(math.LegacyDecEq(t, price, ticks.ticks[i].price))
 	}
 }

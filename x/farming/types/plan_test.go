@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/crypto"
@@ -111,8 +112,8 @@ func TestPlanI(t *testing.T) {
 			},
 			sdk.NewDecCoins(sdk.NewInt64DecCoin("stake1", 1)),
 			sdk.NewDecCoins(
-				sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(5, 1)),
-				sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(5, 1)),
+				sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(5, 1)),
+				sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(5, 1)),
 			),
 			func(a, b interface{}) bool {
 				return a.(sdk.DecCoins).IsEqual(b.(sdk.DecCoins))
@@ -282,7 +283,7 @@ func TestBasePlanValidate(t *testing.T) {
 			"invalid staking coin weights - invalid sum of weights #1",
 			func(plan *types.BasePlan) {
 				plan.StakingCoinWeights = sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(7, 1)),
+					sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(7, 1)),
 				)
 			},
 			"total weight must be 1: invalid staking coin weights",
@@ -291,8 +292,8 @@ func TestBasePlanValidate(t *testing.T) {
 			"invalid staking coin weights - invalid sum of weights #2",
 			func(plan *types.BasePlan) {
 				plan.StakingCoinWeights = sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(7, 1)),
-					sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(4, 1)),
+					sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(7, 1)),
+					sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(4, 1)),
 				)
 			},
 			"total weight must be 1: invalid staking coin weights",
@@ -397,24 +398,24 @@ func TestValidateStakingCoinTotalWeights(t *testing.T) {
 		{
 			"valid case 2",
 			sdk.NewDecCoins(
-				sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(5, 1)),
-				sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(5, 1)),
+				sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(5, 1)),
+				sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(5, 1)),
 			),
 			"",
 		},
 		{
 			"invalid case 1",
 			sdk.NewDecCoins(
-				sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(3, 1)),
-				sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(6, 1)),
+				sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(3, 1)),
+				sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(6, 1)),
 			),
 			"total weight must be 1: invalid staking coin weights",
 		},
 		{
 			"invalid case 2",
 			sdk.NewDecCoins(
-				sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(5, 1)),
-				sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(6, 1)),
+				sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(5, 1)),
+				sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(6, 1)),
 			),
 			"total weight must be 1: invalid staking coin weights",
 		},
@@ -442,7 +443,7 @@ func TestTotalEpochRatio(t *testing.T) {
 	farmingPoolAddr2 := sdk.AccAddress("farmingPoolAddr2")
 	terminationAddr1 := sdk.AccAddress("terminationAddr1")
 	stakingCoinWeights := sdk.NewDecCoins(
-		sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: sdk.MustNewDecFromStr("1.0")},
+		sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: math.LegacyMustNewDecFromStr("1.0")},
 	)
 	startTime := time.Now().UTC()
 	endTime := startTime.AddDate(1, 0, 0)
@@ -481,7 +482,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(
@@ -489,7 +490,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr2.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 			},
 			nil,
@@ -502,7 +503,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(
@@ -510,7 +511,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2023-01-01T00:00:00Z"), types.ParseTime("2024-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 			},
 			nil,
@@ -523,7 +524,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(
@@ -531,7 +532,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-12-31T00:00:00Z"), types.ParseTime("2024-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(7, 1), // 0.7
+					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 			},
 			sdkerrors.Wrap(types.ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1"),
@@ -544,7 +545,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(5, 1), // 0.5
+					math.LegacyNewDecWithPrec(5, 1), // 0.5
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(
@@ -552,7 +553,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2022-07-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(5, 1), // 0.5
+					math.LegacyNewDecWithPrec(5, 1), // 0.5
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(
@@ -560,7 +561,7 @@ func TestTotalEpochRatio(t *testing.T) {
 						farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights,
 						types.ParseTime("2022-07-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
 					),
-					sdk.NewDecWithPrec(5, 1), // 0.5
+					math.LegacyNewDecWithPrec(5, 1), // 0.5
 				),
 			},
 			nil,
@@ -597,7 +598,7 @@ func TestUnpackPlan(t *testing.T) {
 				types.PlanTypePrivate,
 				types.PrivatePlanFarmingPoolAcc("farmingPoolAddr1", 1).String(),
 				sdk.AccAddress("terminationAddr1").String(),
-				sdk.NewDecCoins(sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: sdk.MustNewDecFromStr("1.0")}),
+				sdk.NewDecCoins(sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: math.LegacyMustNewDecFromStr("1.0")}),
 				types.ParseTime("2021-08-03T00:00:00Z"),
 				types.ParseTime("2021-08-07T00:00:00Z"),
 			),
@@ -636,7 +637,7 @@ func TestUnpackPlanJSON(t *testing.T) {
 			types.PlanTypePrivate,
 			types.PrivatePlanFarmingPoolAcc("farmingPoolAddr1", 1).String(),
 			sdk.AccAddress("terminationAddr1").String(),
-			sdk.NewDecCoins(sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: sdk.MustNewDecFromStr("1.0")}),
+			sdk.NewDecCoins(sdk.DecCoin{Denom: "testFarmStakingCoinDenom", Amount: math.LegacyMustNewDecFromStr("1.0")}),
 			types.ParseTime("2021-08-03T00:00:00Z"),
 			types.ParseTime("2021-08-07T00:00:00Z"),
 		),

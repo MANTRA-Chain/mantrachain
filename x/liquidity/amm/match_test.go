@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -11,7 +12,7 @@ import (
 	"mantrachain/x/liquidity/amm"
 )
 
-func newOrder(dir amm.OrderDirection, price sdk.Dec, amt sdk.Int) amm.Order {
+func newOrder(dir amm.OrderDirection, price sdk.Dec, amt math.Int) amm.Order {
 	return amm.DefaultOrderer.Order(dir, price, amt)
 }
 
@@ -25,8 +26,8 @@ func TestFindMatchPrice(t *testing.T) {
 		{
 			"happy case",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("0.9"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("0.9"), math.NewInt(10000)),
 			).MakeView(),
 			true,
 			utils.ParseDec("1.0"),
@@ -34,7 +35,7 @@ func TestFindMatchPrice(t *testing.T) {
 		{
 			"buy order only",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000)),
 			).MakeView(),
 			false,
 			sdk.Dec{},
@@ -42,7 +43,7 @@ func TestFindMatchPrice(t *testing.T) {
 		{
 			"sell order only",
 			amm.NewOrderBook(
-				newOrder(amm.Sell, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.0"), math.NewInt(10000)),
 			).MakeView(),
 			false,
 			sdk.Dec{},
@@ -50,8 +51,8 @@ func TestFindMatchPrice(t *testing.T) {
 		{
 			"highest buy price is lower than lowest sell price",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("0.9"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("0.9"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000)),
 			).MakeView(),
 			false,
 			sdk.Dec{},
@@ -72,14 +73,14 @@ func TestFindMatchPrice_Rounding(t *testing.T) {
 
 	for i := 0; i < 50; i++ {
 		ob := amm.NewOrderBook(
-			newOrder(amm.Buy, defTickPrec.UpTick(defTickPrec.UpTick(basePrice)), sdk.NewInt(80)),
-			newOrder(amm.Sell, defTickPrec.UpTick(basePrice), sdk.NewInt(20)),
-			newOrder(amm.Buy, basePrice, sdk.NewInt(10)), newOrder(amm.Sell, basePrice, sdk.NewInt(10)),
-			newOrder(amm.Sell, defTickPrec.DownTick(basePrice), sdk.NewInt(70)),
+			newOrder(amm.Buy, defTickPrec.UpTick(defTickPrec.UpTick(basePrice)), math.NewInt(80)),
+			newOrder(amm.Sell, defTickPrec.UpTick(basePrice), math.NewInt(20)),
+			newOrder(amm.Buy, basePrice, math.NewInt(10)), newOrder(amm.Sell, basePrice, math.NewInt(10)),
+			newOrder(amm.Sell, defTickPrec.DownTick(basePrice), math.NewInt(70)),
 		)
 		matchPrice, found := amm.FindMatchPrice(ob.MakeView(), int(defTickPrec))
 		require.True(t, found)
-		require.True(sdk.DecEq(t,
+		require.True(math.LegacyDecEq(t,
 			defTickPrec.RoundPrice(basePrice.Add(defTickPrec.UpTick(basePrice)).QuoInt64(2)),
 			matchPrice))
 
@@ -97,13 +98,13 @@ func TestMatchOrders(t *testing.T) {
 		lastPrice     sdk.Dec
 		matched       bool
 		matchPrice    sdk.Dec
-		quoteCoinDust sdk.Int
+		quoteCoinDust math.Int
 	}{
 		{
 			"happy case",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.0"), math.NewInt(10000)),
 			),
 			utils.ParseDec("1.0"),
 			true,
@@ -113,8 +114,8 @@ func TestMatchOrders(t *testing.T) {
 		{
 			"happy case #2",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("0.9"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("0.9"), math.NewInt(10000)),
 			),
 			utils.ParseDec("1.0"),
 			true,
@@ -124,23 +125,23 @@ func TestMatchOrders(t *testing.T) {
 		{
 			"positive quote coin dust",
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("0.9999"), sdk.NewInt(1000)),
-				newOrder(amm.Buy, utils.ParseDec("0.9999"), sdk.NewInt(1000)),
-				newOrder(amm.Sell, utils.ParseDec("0.9999"), sdk.NewInt(1000)),
-				newOrder(amm.Sell, utils.ParseDec("0.9999"), sdk.NewInt(1000)),
+				newOrder(amm.Buy, utils.ParseDec("0.9999"), math.NewInt(1000)),
+				newOrder(amm.Buy, utils.ParseDec("0.9999"), math.NewInt(1000)),
+				newOrder(amm.Sell, utils.ParseDec("0.9999"), math.NewInt(1000)),
+				newOrder(amm.Sell, utils.ParseDec("0.9999"), math.NewInt(1000)),
 			),
 			utils.ParseDec("0.9999"),
 			true,
 			utils.ParseDec("0.9999"),
-			sdk.NewInt(2),
+			math.NewInt(2),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			matchPrice, quoteCoinDust, matched := tc.ob.Match(tc.lastPrice)
 			require.Equal(t, tc.matched, matched)
-			require.True(sdk.DecEq(t, tc.matchPrice, matchPrice))
+			require.True(math.LegacyDecEq(t, tc.matchPrice, matchPrice))
 			if matched {
-				require.True(sdk.IntEq(t, tc.quoteCoinDust, quoteCoinDust))
+				require.True(math.IntEq(t, tc.quoteCoinDust, quoteCoinDust))
 				for _, order := range tc.ob.Orders() {
 					if order.IsMatched() {
 						paid := order.GetPaidOfferCoinAmount()
@@ -165,28 +166,28 @@ func TestFindMatchableAmountAtSinglePrice(t *testing.T) {
 		orders       []amm.Order
 		matchPrice   sdk.Dec
 		found        bool
-		matchableAmt sdk.Int
+		matchableAmt math.Int
 	}{
 		{
 			[]amm.Order{
-				newOrder(amm.Sell, utils.ParseDec("0.100"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("0.099"), sdk.NewInt(9995)),
-				newOrder(amm.Buy, utils.ParseDec("0.101"), sdk.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("0.100"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("0.099"), math.NewInt(9995)),
+				newOrder(amm.Buy, utils.ParseDec("0.101"), math.NewInt(10000)),
 			},
 			utils.ParseDec("0.100"),
 			true,
-			sdk.NewInt(9995),
+			math.NewInt(9995),
 		},
 		{
 			[]amm.Order{
-				newOrder(amm.Sell, utils.ParseDec("0.100"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("0.099"), sdk.NewInt(9995)),
-				newOrder(amm.Buy, utils.ParseDec("0.101"), sdk.NewInt(10000)),
-				newOrder(amm.Buy, utils.ParseDec("0.100"), sdk.NewInt(1000)),
+				newOrder(amm.Sell, utils.ParseDec("0.100"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("0.099"), math.NewInt(9995)),
+				newOrder(amm.Buy, utils.ParseDec("0.101"), math.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("0.100"), math.NewInt(1000)),
 			},
 			utils.ParseDec("0.100"),
 			true,
-			sdk.NewInt(11000),
+			math.NewInt(11000),
 		},
 	} {
 		t.Run("", func(t *testing.T) {
@@ -194,7 +195,7 @@ func TestFindMatchableAmountAtSinglePrice(t *testing.T) {
 			matchableAmt, found := ob.FindMatchableAmountAtSinglePrice(tc.matchPrice)
 			require.Equal(t, tc.found, found)
 			if found {
-				require.True(sdk.IntEq(t, tc.matchableAmt, matchableAmt))
+				require.True(math.IntEq(t, tc.matchableAmt, matchableAmt))
 			}
 		})
 	}
@@ -202,10 +203,10 @@ func TestFindMatchableAmountAtSinglePrice(t *testing.T) {
 
 func TestMatch_edgecase1(t *testing.T) {
 	orders := []amm.Order{
-		newOrder(amm.Sell, utils.ParseDec("0.100"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("0.099"), sdk.NewInt(9995)),
-		newOrder(amm.Buy, utils.ParseDec("0.101"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("0.100"), sdk.NewInt(5000)),
+		newOrder(amm.Sell, utils.ParseDec("0.100"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("0.099"), math.NewInt(9995)),
+		newOrder(amm.Buy, utils.ParseDec("0.101"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("0.100"), math.NewInt(5000)),
 	}
 	ob := amm.NewOrderBook(orders...)
 	_, _, matched := ob.Match(utils.ParseDec("0.098"))

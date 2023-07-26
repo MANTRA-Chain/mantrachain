@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -57,7 +58,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := testutil.Setup(false)
+	app := testutil.SetupWithGenesisValSet(suite.T())
 	ctx := app.BaseApp.NewContext(false, cbproto.Header{})
 
 	keeper.EnableRatioPlan = true
@@ -68,7 +69,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.querier = keeper.Querier{Keeper: suite.keeper}
 	suite.msgServer = keeper.NewMsgServerImpl(suite.keeper)
 	suite.govHandler = farming.NewPublicPlanProposalHandler(suite.keeper)
-	suite.addrs = testutil.AddTestAddrs(suite.app, suite.ctx, 6, sdk.ZeroInt())
+	suite.addrs = testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, 6, sdk.ZeroInt())
 	for _, addr := range suite.addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, initialBalances)
 		suite.Require().NoError(err)
@@ -82,8 +83,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 				suite.addrs[4].String(),
 				suite.addrs[4].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 				),
 				types.ParseTime("2021-08-02T00:00:00Z"),
 				types.ParseTime("2021-08-10T00:00:00Z"),
@@ -115,13 +116,13 @@ func (suite *KeeperTestSuite) SetupTest() {
 				suite.addrs[4].String(),
 				suite.addrs[4].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(5, 1)), // 50%
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(5, 1)), // 50%
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(5, 1)), // 50%
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(5, 1)), // 50%
 				),
 				types.ParseTime("2021-08-01T00:00:00Z"),
 				types.ParseTime("2021-08-09T00:00:00Z"),
 			),
-			sdk.NewDecWithPrec(4, 2), // 4%
+			math.LegacyNewDecWithPrec(4, 2), // 4%
 		),
 		types.NewRatioPlan(
 			types.NewBasePlan(
@@ -136,14 +137,14 @@ func (suite *KeeperTestSuite) SetupTest() {
 				types.ParseTime("2021-08-03T00:00:00Z"),
 				types.ParseTime("2021-08-07T00:00:00Z"),
 			),
-			sdk.NewDecWithPrec(3, 2), // 3%
+			math.LegacyNewDecWithPrec(3, 2), // 3%
 		),
 	}
 	suite.samplePlans = append(suite.sampleFixedAmtPlans, suite.sampleRatioPlans...)
 }
 
-func (suite *KeeperTestSuite) AddTestAddrs(num int, coins sdk.Coins) []sdk.AccAddress {
-	addrs := testutil.AddTestAddrs(suite.app, suite.ctx, num, sdk.ZeroInt())
+func (suite *KeeperTestSuite) AddTestAddrsAndAdmin(num int, coins sdk.Coins) []sdk.AccAddress {
+	addrs := testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, num, sdk.ZeroInt())
 	for _, addr := range addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, coins)
 		suite.Require().NoError(err)
@@ -260,7 +261,7 @@ func (suite *KeeperTestSuite) createPublicRatioPlan(
 func (suite *KeeperTestSuite) CreateFixedAmountPlan(farmingPoolAcc sdk.AccAddress, stakingCoinWeightsMap map[string]string, epochAmountMap map[string]int64) {
 	stakingCoinWeights := sdk.NewDecCoins()
 	for denom, weight := range stakingCoinWeightsMap {
-		stakingCoinWeights = stakingCoinWeights.Add(sdk.NewDecCoinFromDec(denom, sdk.MustNewDecFromStr(weight)))
+		stakingCoinWeights = stakingCoinWeights.Add(sdk.NewDecCoinFromDec(denom, math.LegacyMustNewDecFromStr(weight)))
 	}
 
 	epochAmount := sdk.NewCoins()
@@ -283,10 +284,10 @@ func (suite *KeeperTestSuite) CreateFixedAmountPlan(farmingPoolAcc sdk.AccAddres
 func (suite *KeeperTestSuite) CreateRatioPlan(farmingPoolAcc sdk.AccAddress, stakingCoinWeightsMap map[string]string, epochRatioStr string) {
 	stakingCoinWeights := sdk.NewDecCoins()
 	for denom, weight := range stakingCoinWeightsMap {
-		stakingCoinWeights = stakingCoinWeights.Add(sdk.NewDecCoinFromDec(denom, sdk.MustNewDecFromStr(weight)))
+		stakingCoinWeights = stakingCoinWeights.Add(sdk.NewDecCoinFromDec(denom, math.LegacyMustNewDecFromStr(weight)))
 	}
 
-	epochRatio := sdk.MustNewDecFromStr(epochRatioStr)
+	epochRatio := math.LegacyMustNewDecFromStr(epochRatioStr)
 
 	msg := types.NewMsgCreateRatioPlan(
 		fmt.Sprintf("plan%d", suite.keeper.GetGlobalPlanId(suite.ctx)+1),
@@ -344,7 +345,7 @@ func (suite *KeeperTestSuite) executeBlock(blockTime time.Time, f func()) {
 	suite.app.EndBlocker(suite.ctx, abcitypes.RequestEndBlock{})
 }
 
-func intEq(exp, got sdk.Int) (bool, string, string, string) {
+func intEq(exp, got math.Int) (bool, string, string, string) {
 	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
 }
 

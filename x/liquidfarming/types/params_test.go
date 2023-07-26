@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -52,7 +53,7 @@ func TestParams_Validate(t *testing.T) {
 			"invalid minimum farm amount in liquid farm",
 			func(params *types.Params) {
 				params.LiquidFarms = []types.LiquidFarm{
-					types.NewLiquidFarm(1, sdk.NewInt(-1), sdk.ZeroInt(), sdk.ZeroDec()),
+					types.NewLiquidFarm(1, math.NewInt(-1), sdk.ZeroInt(), sdk.ZeroDec()),
 				}
 			},
 			"invalid liquid farm: minimum farm amount must be 0 or positive value: -1",
@@ -61,7 +62,7 @@ func TestParams_Validate(t *testing.T) {
 			"invalid minimum bid amount in liquid farm",
 			func(params *types.Params) {
 				params.LiquidFarms = []types.LiquidFarm{
-					types.NewLiquidFarm(1, sdk.ZeroInt(), sdk.NewInt(-1), sdk.ZeroDec()),
+					types.NewLiquidFarm(1, sdk.ZeroInt(), math.NewInt(-1), sdk.ZeroDec()),
 				}
 			},
 			"invalid liquid farm: minimum bid amount must be 0 or positive value: -1",

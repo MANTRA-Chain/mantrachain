@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "mantrachain/types"
@@ -11,12 +12,12 @@ import (
 	"mantrachain/x/liquidity/types"
 )
 
-func newOrder(dir amm.OrderDirection, price sdk.Dec, amt sdk.Int) amm.Order {
+func newOrder(dir amm.OrderDirection, price sdk.Dec, amt math.Int) amm.Order {
 	return amm.DefaultOrderer.Order(dir, price, amt)
 }
 
 func TestMakeOrderBookResponse(t *testing.T) {
-	pool := amm.NewBasicPool(sdk.NewInt(1000_000000), sdk.NewInt(1000_000000), sdk.Int{})
+	pool := amm.NewBasicPool(math.NewInt(1000_000000), math.NewInt(1000_000000), math.Int{})
 	lastPrice := utils.ParseDec("1")
 	lowestPrice := lastPrice.Mul(utils.ParseDec("0.9"))
 	highestPrice := lastPrice.Mul(utils.ParseDec("1.1"))
@@ -55,15 +56,15 @@ func makeOrderBookPairResponse(numOrders, numPools, numTicks, tickPrec int) type
 		}
 		price := amm.PriceToDownTick(
 			utils.RandomDec(r, utils.ParseDec("0.5"), utils.ParseDec("1.5")), tickPrec)
-		amt := utils.RandomInt(r, sdk.NewInt(1000), sdk.NewInt(100000))
+		amt := utils.RandomInt(r, math.NewInt(1000), math.NewInt(100000))
 		ob.AddOrder(newOrder(dir, price, amt))
 	}
 
 	lowestPrice, highestPrice := utils.ParseDec("0.9"), utils.ParseDec("1.1")
 	for i := 0; i < numPools; i++ {
-		rx := utils.RandomInt(r, sdk.NewInt(10000_000000), sdk.NewInt(11000_000000))
-		ry := utils.RandomInt(r, sdk.NewInt(10000_000000), sdk.NewInt(11000_000000))
-		pool := amm.NewBasicPool(rx, ry, sdk.Int{})
+		rx := utils.RandomInt(r, math.NewInt(10000_000000), math.NewInt(11000_000000))
+		ry := utils.RandomInt(r, math.NewInt(10000_000000), math.NewInt(11000_000000))
+		pool := amm.NewBasicPool(rx, ry, math.Int{})
 		ob.AddOrder(amm.PoolOrders(pool, amm.DefaultOrderer, lowestPrice, highestPrice, tickPrec)...)
 	}
 

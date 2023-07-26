@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -104,7 +105,7 @@ func TestMarketMakerProposal_ValidateBasic(t *testing.T) {
 					{
 						Address: mm1.String(),
 						PairId:  1,
-						Amount:  sdk.Coins{{Denom: sdk.DefaultBondDenom, Amount: sdk.NewInt(0)}},
+						Amount:  sdk.Coins{{Denom: sdk.DefaultBondDenom, Amount: math.NewInt(0)}},
 					},
 				}
 			},
@@ -131,12 +132,12 @@ func TestMarketMakerProposal_ValidateBasic(t *testing.T) {
 					{
 						Address: mm1.String(),
 						PairId:  1,
-						Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000))),
+						Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1000000))),
 					},
 					{
 						Address: mm1.String(),
 						PairId:  2,
-						Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000))),
+						Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1000000))),
 					},
 				})
 			tc.malleate(proposal)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -57,7 +58,7 @@ func (k Keeper) getPoolBalances(ctx sdk.Context, pool types.Pool, pair types.Pai
 }
 
 // GetPoolCoinSupply returns total pool coin supply of the pool.
-func (k Keeper) GetPoolCoinSupply(ctx sdk.Context, pool types.Pool) sdk.Int {
+func (k Keeper) GetPoolCoinSupply(ctx sdk.Context, pool types.Pool) math.Int {
 	return k.bankKeeper.GetSupply(ctx, pool.PoolCoinDenom).Amount
 }
 
@@ -133,23 +134,14 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 
 	// Send deposit coins to the pool's reserve account.
 	creator := msg.GetCreator()
-
-	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, creator, pool.GetReserveAddress(), msg.DepositCoins); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Pool{}, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
-	// Guard: whitelist account address
-	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{k.GetFeeCollector(ctx).String()}, true)
 	// Send the pool creation fee to the fee collector.
 	if err := k.bankKeeper.SendCoins(ctx, creator, k.GetFeeCollector(ctx), k.GetPoolCreationFee(ctx)); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Pool{}, sdkerrors.Wrap(err, "insufficient pool creation fee")
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	// Mint and send pool coin to the creator.
 	// Minting pool coin amount is calculated based on two coins' amount.
@@ -252,26 +244,16 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	creator := msg.GetCreator()
 	depositCoins := sdk.NewCoins(
 		sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
-
-	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, creator, pool.GetReserveAddress(), depositCoins); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Pool{}, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	// Send the pool creation fee to the fee collector.
 	feeCollector := k.GetFeeCollector(ctx)
 	poolCreationFee := k.GetPoolCreationFee(ctx)
-
-	// Guard: whitelist account address
-	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{feeCollector.String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, creator, feeCollector, poolCreationFee); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return types.Pool{}, sdkerrors.Wrap(err, "insufficient pool creation fee")
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	// Mint and send pool coin to the creator.
 	// Minimum minting amount is params.MinInitialPoolCoinSupply.
@@ -532,14 +514,9 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, k.accountKeeper.GetModuleAddress(types.ModuleName), burningCoins)
 	bulkOp.QueueSendCoins(pool.GetReserveAddress(), req.GetWithdrawer(), withdrawnCoins)
-
-	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burningCoins); err != nil {
 		return err

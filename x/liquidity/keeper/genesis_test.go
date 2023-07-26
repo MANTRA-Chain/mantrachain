@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "mantrachain/types"
@@ -97,8 +98,8 @@ func (s *KeeperTestSuite) TestIndexesAfterImport() {
 	withdrawReq1 := s.withdraw(s.addr(4), pool1.Id, utils.ParseCoin("1000000pool1"))
 	withdrawReq2 := s.withdraw(s.addr(5), pool2.Id, utils.ParseCoin("1000000pool2"))
 
-	order1 := s.limitOrder(s.addr(6), pair1.Id, types.OrderDirectionBuy, utils.ParseDec("1.0"), sdk.NewInt(10000), time.Minute, true)
-	order2 := s.limitOrder(s.addr(7), pair2.Id, types.OrderDirectionSell, utils.ParseDec("1.0"), sdk.NewInt(10000), time.Minute, true)
+	order1 := s.limitOrder(s.addr(6), pair1.Id, types.OrderDirectionBuy, utils.ParseDec("1.0"), math.NewInt(10000), time.Minute, true)
+	order2 := s.limitOrder(s.addr(7), pair2.Id, types.OrderDirectionSell, utils.ParseDec("1.0"), math.NewInt(10000), time.Minute, true)
 
 	liquidity.EndBlocker(s.ctx, s.keeper)
 

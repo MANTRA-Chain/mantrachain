@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -44,12 +45,12 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	s.app = testutil.Setup(false)
+	s.app = testutil.SetupWithGenesisValSet(s.T())
 	s.keeper = s.app.LPFarmKeeper
 	s.querier = keeper.Querier{Keeper: s.keeper}
 	s.govHandler = lpfarm.NewFarmingPlanProposalHandler(s.keeper)
 	s.hdr = cbproto.Header{
-		Height: 1,
+		Height: s.app.LastBlockHeight() + 1,
 		Time:   utils.ParseTime("2022-01-01T00:00:00Z"),
 	}
 	s.beginBlock()
@@ -92,8 +93,8 @@ func (s *KeeperTestSuite) assertEq(exp, got interface{}) {
 	s.T().Helper()
 	var equal bool
 	switch exp := exp.(type) {
-	case sdk.Int:
-		equal = exp.Equal(got.(sdk.Int))
+	case math.Int:
+		equal = exp.Equal(got.(math.Int))
 	case sdk.Dec:
 		equal = exp.Equal(got.(sdk.Dec))
 	case sdk.Coin:

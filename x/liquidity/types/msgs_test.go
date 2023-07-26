@@ -200,7 +200,7 @@ func TestMsgCreateRangedPool(t *testing.T) {
 		{
 			"too small min price",
 			func(msg *types.MsgCreateRangedPool) {
-				msg.MinPrice = sdk.NewDecWithPrec(1, 16)
+				msg.MinPrice = math.LegacyNewDecWithPrec(1, 16)
 			},
 			"min price must not be lower than 0.000000000000001000: invalid request",
 		},
@@ -646,7 +646,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small sell amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = sdk.NewInt(99)
+				msg.SellAmount = math.NewInt(99)
 			},
 			"sell amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -675,7 +675,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small buy amount",
 			func(msg *types.MsgMMOrder) {
-				msg.BuyAmount = sdk.NewInt(99)
+				msg.BuyAmount = math.NewInt(99)
 			},
 			"buy amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -689,7 +689,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small sell amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = sdk.NewInt(99)
+				msg.SellAmount = math.NewInt(99)
 			},
 			"sell amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -719,8 +719,8 @@ func TestMsgMMOrder(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			msg := types.NewMsgMMOrder(
 				testAddr, 1,
-				utils.ParseDec("1.5"), utils.ParseDec("1.1"), sdk.NewInt(1000000),
-				utils.ParseDec("0.9"), utils.ParseDec("0.5"), sdk.NewInt(1000000),
+				utils.ParseDec("1.5"), utils.ParseDec("1.1"), math.NewInt(1000000),
+				utils.ParseDec("0.9"), utils.ParseDec("0.5"), math.NewInt(1000000),
 				orderLifespan)
 			tc.malleate(msg)
 			require.Equal(t, types.TypeMsgMMOrder, msg.Type())

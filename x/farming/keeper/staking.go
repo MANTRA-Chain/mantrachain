@@ -4,6 +4,7 @@ import (
 	"sort"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -195,7 +196,7 @@ func (k Keeper) IterateQueuedStakingsByFarmerAndDenomReverse(ctx sdk.Context, fa
 
 // GetAllQueuedStakingAmountByFarmerAndDenom returns the amount of all queued
 // stakings by the farmer for given staking coin denom.
-func (k Keeper) GetAllQueuedStakingAmountByFarmerAndDenom(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) sdk.Int {
+func (k Keeper) GetAllQueuedStakingAmountByFarmerAndDenom(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) math.Int {
 	amt := sdk.ZeroInt()
 	k.IterateQueuedStakingsByFarmerAndDenom(ctx, farmerAcc, stakingCoinDenom, func(endTime time.Time, queuedStaking types.QueuedStaking) (stop bool) {
 		if endTime.After(ctx.BlockTime()) { // sanity check
@@ -246,7 +247,7 @@ func (k Keeper) DeleteTotalStakings(ctx sdk.Context, stakingCoinDenom string) {
 
 // IncreaseTotalStakings increases total stakings for given staking coin denom
 // by given amount.
-func (k Keeper) IncreaseTotalStakings(ctx sdk.Context, stakingCoinDenom string, amount sdk.Int) {
+func (k Keeper) IncreaseTotalStakings(ctx sdk.Context, stakingCoinDenom string, amount math.Int) {
 	totalStakings, found := k.GetTotalStakings(ctx, stakingCoinDenom)
 	if !found {
 		totalStakings.Amount = sdk.ZeroInt()
@@ -260,7 +261,7 @@ func (k Keeper) IncreaseTotalStakings(ctx sdk.Context, stakingCoinDenom string, 
 
 // DecreaseTotalStakings decreases total stakings for given staking coin denom
 // by given amount.
-func (k Keeper) DecreaseTotalStakings(ctx sdk.Context, stakingCoinDenom string, amount sdk.Int) {
+func (k Keeper) DecreaseTotalStakings(ctx sdk.Context, stakingCoinDenom string, amount math.Int) {
 	totalStakings, found := k.GetTotalStakings(ctx, stakingCoinDenom)
 	if !found {
 		panic("total stakings not found")
@@ -526,8 +527,8 @@ func (k Keeper) ProcessQueuedCoins(ctx sdk.Context, currTime time.Time) {
 		farmerAcc        string
 		stakingCoinDenom string
 	}
-	newStakingMap := map[farmerDenomPair]sdk.Int{} // (farmerAcc, stakingCoinDenom) => newStakingAmt
-	newTotalStakingsMap := map[string]sdk.Int{}    // stakingCoinDenom => newTotalStakingsAmt
+	newStakingMap := map[farmerDenomPair]math.Int{} // (farmerAcc, stakingCoinDenom) => newStakingAmt
+	newTotalStakingsMap := map[string]math.Int{}    // stakingCoinDenom => newTotalStakingsAmt
 
 	k.IterateMatureQueuedStakings(ctx, currTime, func(endTime time.Time, stakingCoinDenom string, farmerAcc sdk.AccAddress, queuedStaking types.QueuedStaking) (stop bool) {
 		newStakingKey := farmerDenomPair{farmerAcc.String(), stakingCoinDenom}

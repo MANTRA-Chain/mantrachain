@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/suite"
 
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -29,7 +30,7 @@ type QueryTestSuite struct {
 
 var (
 	SecondaryDenom  = "ucoin"
-	SecondaryAmount = sdk.NewInt(100000000)
+	SecondaryAmount = math.NewInt(100000000)
 )
 
 func (s *QueryTestSuite) SetupSuite() {

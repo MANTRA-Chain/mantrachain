@@ -3,6 +3,7 @@ package cli_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -58,5 +59,5 @@ func TestParseMarketMakerProposal(t *testing.T) {
 	require.Equal(t, "cosmos1vqac3p8fl4kez7ehjz8eltugd2fm67pckpl7pn", proposal.Rejections[0].Address)
 	require.Equal(t, uint64(1), proposal.Distributions[0].PairId)
 	require.Equal(t, "cosmos1vqac3p8fl4kez7ehjz8eltugd2fm67pckpl7pn", proposal.Distributions[0].Address)
-	require.Equal(t, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100000000))), proposal.Distributions[0].Amount)
+	require.Equal(t, sdk.NewCoins(sdk.NewCoin("stake", math.NewInt(100000000))), proposal.Distributions[0].Amount)
 }

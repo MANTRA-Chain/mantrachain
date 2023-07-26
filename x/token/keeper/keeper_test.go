@@ -54,17 +54,13 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) SetupTest() {
-	s.app = testutil.Setup(false)
+	s.app = testutil.SetupWithGenesisValSet(s.T())
 	hdr := cbproto.Header{
 		Height: s.app.LastBlockHeight() + 1,
 		Time:   utils.ParseTime("2022-01-01T00:00:00Z"),
 	}
 	ctrl := gomock.NewController(s.T())
-	s.addrs = testutil.AddTestAddrs(s.app, s.ctx, 30, sdk.ZeroInt())
-	for _, addr := range s.addrs {
-		err := testutil.FundAccount(s.app.BankKeeper, s.ctx, addr, initialBalances)
-		s.Require().NoError(err)
-	}
+	s.addrs = testutil.CreateIncrementalAccounts(3)
 	s.app.BeginBlock(abci.RequestBeginBlock{Header: hdr})
 	s.ctx = s.app.BaseApp.NewContext(false, hdr)
 	s.app.BeginBlocker(s.ctx, abci.RequestBeginBlock{Header: hdr})

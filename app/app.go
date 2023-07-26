@@ -641,17 +641,6 @@ func New(
 		&app.GuardKeeper,
 	)
 
-	app.LiquidFarmingKeeper = liquidfarmingkeeper.NewKeeper(
-		appCodec,
-		keys[liquidfarmingtypes.StoreKey],
-		app.GetSubspace(liquidfarmingtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.LPFarmKeeper,
-		app.LiquidityKeeper,
-		&app.GuardKeeper,
-	)
-
 	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 		appCodec,
 		keys[liquiditytypes.StoreKey],
@@ -667,6 +656,17 @@ func New(
 		app.GetSubspace(lpfarmtypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		app.LiquidityKeeper,
+		&app.GuardKeeper,
+	)
+
+	app.LiquidFarmingKeeper = liquidfarmingkeeper.NewKeeper(
+		appCodec,
+		keys[liquidfarmingtypes.StoreKey],
+		app.GetSubspace(liquidfarmingtypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.LPFarmKeeper,
 		app.LiquidityKeeper,
 		&app.GuardKeeper,
 	)

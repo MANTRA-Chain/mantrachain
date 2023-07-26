@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "mantrachain/types"
@@ -276,7 +277,7 @@ func (s *KeeperTestSuite) TestGRPCPool() {
 				s.Require().Equal(pool.PairId, resp.Pool.PairId)
 				s.Require().Equal(pool.ReserveAddress, resp.Pool.ReserveAddress)
 				s.Require().Equal(pool.PoolCoinDenom, resp.Pool.PoolCoinDenom)
-				s.Require().True(intEq(sdk.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
+				s.Require().True(intEq(math.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
 				s.Require().Nil(resp.Pool.MinPrice)
 				s.Require().Nil(resp.Pool.MaxPrice)
 				s.Require().NotNil(resp.Pool.Price)
@@ -301,7 +302,7 @@ func (s *KeeperTestSuite) TestGRPCPool() {
 				s.Require().Equal(rangedPool.PairId, resp.Pool.PairId)
 				s.Require().Equal(rangedPool.ReserveAddress, resp.Pool.ReserveAddress)
 				s.Require().Equal(rangedPool.PoolCoinDenom, resp.Pool.PoolCoinDenom)
-				s.Require().True(intEq(sdk.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
+				s.Require().True(intEq(math.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
 				s.Require().NotNil(resp.Pool.MinPrice)
 				s.Require().NotNil(resp.Pool.MaxPrice)
 				s.Require().NotNil(resp.Pool.Price)
@@ -373,7 +374,7 @@ func (s *KeeperTestSuite) TestGRPCPoolByReserveAddress() {
 				s.Require().Equal(pool.PairId, resp.Pool.PairId)
 				s.Require().Equal(pool.ReserveAddress, resp.Pool.ReserveAddress)
 				s.Require().Equal(pool.PoolCoinDenom, resp.Pool.PoolCoinDenom)
-				s.Require().True(intEq(sdk.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
+				s.Require().True(intEq(math.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
 				s.Require().Nil(resp.Pool.MinPrice)
 				s.Require().Nil(resp.Pool.MaxPrice)
 				s.Require().NotNil(resp.Pool.Price)
@@ -434,7 +435,7 @@ func (s *KeeperTestSuite) TestGRPCPoolByPoolCoinDenom() {
 				s.Require().Equal(pool.PairId, resp.Pool.PairId)
 				s.Require().Equal(pool.ReserveAddress, resp.Pool.ReserveAddress)
 				s.Require().Equal(pool.PoolCoinDenom, resp.Pool.PoolCoinDenom)
-				s.Require().True(intEq(sdk.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
+				s.Require().True(intEq(math.NewInt(1000000000000), resp.Pool.PoolCoinSupply))
 				s.Require().Nil(resp.Pool.MinPrice)
 				s.Require().Nil(resp.Pool.MaxPrice)
 				s.Require().NotNil(resp.Pool.Price)
@@ -720,11 +721,11 @@ func (s *KeeperTestSuite) TestGRPCOrders() {
 	creator := s.addr(0)
 	pair := s.createPair(creator, "denom1", "denom2", true)
 
-	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), 10*time.Second, true)
-	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(5000000), 10*time.Second, true)
+	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), 10*time.Second, true)
+	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(5000000), 10*time.Second, true)
 	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), newInt(10000), time.Hour, true)
 	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), newInt(700000), time.Hour, true)
-	s.buyLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), 10*time.Second, true)
+	s.buyLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), 10*time.Second, true)
 	liquidity.EndBlocker(s.ctx, s.keeper)
 
 	for _, tc := range []struct {
@@ -772,7 +773,7 @@ func (s *KeeperTestSuite) TestGRPCOrder() {
 	creator := s.addr(0)
 	pair := s.createPair(creator, "denom1", "denom2", true)
 
-	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), 10*time.Second, true)
+	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), 10*time.Second, true)
 	liquidity.EndBlocker(s.ctx, s.keeper)
 
 	for _, tc := range []struct {
@@ -834,9 +835,9 @@ func (s *KeeperTestSuite) TestGRPCOrdersByOrderer() {
 	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
 	pair2 := s.createPair(s.addr(0), "denom2", "denom3", true)
 
-	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), time.Minute, true)
-	order2 := s.buyLimitOrder(s.addr(1), pair2.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), time.Minute, true)
-	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), time.Minute, true)
+	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
+	order2 := s.buyLimitOrder(s.addr(1), pair2.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
+	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
 	liquidity.EndBlocker(s.ctx, s.keeper)
 
 	for _, tc := range []struct {
@@ -913,11 +914,11 @@ func (s *KeeperTestSuite) TestGRPCOrderBooks() {
 
 	pair2 := s.createPair(s.addr(0), "denom2", "denom3", true)
 
-	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), sdk.NewInt(1000000), time.Minute, true)
-	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.02"), sdk.NewInt(1000000), time.Minute, true)
+	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
+	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.02"), math.NewInt(1000000), time.Minute, true)
 
-	s.buyLimitOrder(s.addr(3), pair2.Id, utils.ParseDec("1.02"), sdk.NewInt(10000), time.Minute, true)
-	s.sellLimitOrder(s.addr(4), pair2.Id, utils.ParseDec("1.08"), sdk.NewInt(10000), time.Minute, true)
+	s.buyLimitOrder(s.addr(3), pair2.Id, utils.ParseDec("1.02"), math.NewInt(10000), time.Minute, true)
+	s.sellLimitOrder(s.addr(4), pair2.Id, utils.ParseDec("1.08"), math.NewInt(10000), time.Minute, true)
 
 	for _, tc := range []struct {
 		name      string
@@ -1030,7 +1031,7 @@ func (s *KeeperTestSuite) TestBuyOrdersOnlyOrderBook() {
 	pair.LastPrice = utils.ParseDecP("987")
 	s.keeper.SetPair(s.ctx, pair)
 
-	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), sdk.NewInt(1000), time.Minute, true)
+	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), math.NewInt(1000), time.Minute, true)
 
 	resp, err := s.querier.OrderBooks(sdk.WrapSDKContext(s.ctx), &types.QueryOrderBooksRequest{
 		PairIds:  []uint64{pair.Id},
@@ -1062,7 +1063,7 @@ func (s *KeeperTestSuite) TestSellOrdersOnlyOrderBook() {
 	pair.LastPrice = utils.ParseDecP("987")
 	s.keeper.SetPair(s.ctx, pair)
 
-	s.sellLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), sdk.NewInt(1000), time.Minute, true)
+	s.sellLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), math.NewInt(1000), time.Minute, true)
 
 	resp, err := s.querier.OrderBooks(sdk.WrapSDKContext(s.ctx), &types.QueryOrderBooksRequest{
 		PairIds:  []uint64{pair.Id},

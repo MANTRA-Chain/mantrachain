@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -101,13 +102,13 @@ func (s *KeeperTestSuite) TestCreateRangedPool() {
 				poolCreatorWithNoFee, pair.Id, validDepositCoins,
 				utils.ParseDec("0.9"), utils.ParseDec("1.1"), utils.ParseDec("1.0")),
 			nil,
-			"insufficient pool creation fee: 0stake is smaller than 1000000stake: insufficient funds",
+			"insufficient pool creation fee: spendable balance  is smaller than 1000000stake: insufficient funds",
 		},
 		{
 			"too small min price",
 			types.NewMsgCreateRangedPool(
 				poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-				sdk.NewDecWithPrec(1, 15), utils.ParseDec("1.1"), utils.ParseDec("1.0")),
+				math.LegacyNewDecWithPrec(1, 15), utils.ParseDec("1.1"), utils.ParseDec("1.0")),
 			nil,
 			"min price must not be less than 0.000000000000100000: invalid request",
 		},
@@ -252,7 +253,7 @@ func (s *KeeperTestSuite) TestCreatePoolInitialPoolCoinSupply() {
 	pair = s.createPair(s.addr(0), "denom2", "denom3", true)
 
 	pool = s.createPool(poolCreator, pair.Id, utils.ParseCoins("2000000000000denom2,500000000000000denom3"), true)
-	s.Require().True(intEq(sdk.NewInt(100000000000000), s.getBalance(poolCreator, pool.PoolCoinDenom).Amount))
+	s.Require().True(intEq(math.NewInt(100000000000000), s.getBalance(poolCreator, pool.PoolCoinDenom).Amount))
 }
 
 func (s *KeeperTestSuite) TestPoolIndexes() {
@@ -492,7 +493,7 @@ func (s *KeeperTestSuite) TestPoolOrderOverflow_ExternalFunds() {
 	externalFunds := utils.ParseCoins("10000000000000000000000000000000000000000000denom2")
 	s.fundAddr(s.addr(1), externalFunds)
 	s.sendCoins(s.addr(1), pool.GetReserveAddress(), externalFunds)
-	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("0.0000000001"), sdk.NewInt(1e18), 0, true)
+	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("0.0000000001"), math.NewInt(1e18), 0, true)
 	s.Require().NotPanics(func() {
 		liquidity.EndBlocker(s.ctx, s.keeper)
 	})
@@ -505,20 +506,20 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw() {
 		s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
 		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
-	ammPool := pool.AMMPool(rx.Amount, ry.Amount, sdk.Int{})
+	ammPool := pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
 	s.Require().True(utils.DecApproxEqual(ammPool.Price(), utils.ParseDec("1.0")))
 
 	s.deposit(s.addr(2), pool.Id, utils.ParseCoins("400000denom1,1000000denom2"), true)
 	liquidity.EndBlocker(s.ctx, s.keeper)
 	rx, ry = s.keeper.GetPoolBalances(s.ctx, pool)
-	ammPool = pool.AMMPool(rx.Amount, ry.Amount, sdk.Int{})
+	ammPool = pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
 	s.Require().True(utils.DecApproxEqual(ammPool.Price(), utils.ParseDec("1.0")))
 
 	poolCoin := s.getBalance(s.addr(2), pool.PoolCoinDenom)
 	s.withdraw(s.addr(2), pool.Id, poolCoin.SubAmount(poolCoin.Amount.QuoRaw(3))) // withdraw 2/3 pool coin
 	liquidity.EndBlocker(s.ctx, s.keeper)
 	rx, ry = s.keeper.GetPoolBalances(s.ctx, pool)
-	ammPool = pool.AMMPool(rx.Amount, ry.Amount, sdk.Int{})
+	ammPool = pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
 	s.Require().True(utils.DecApproxEqual(ammPool.Price(), utils.ParseDec("1.0")))
 }
 
@@ -530,7 +531,7 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side() {
 
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
 	s.Require().True(intEq(sdk.ZeroInt(), rx.Amount))
-	s.Require().True(intEq(sdk.NewInt(1000000), ry.Amount))
+	s.Require().True(intEq(math.NewInt(1000000), ry.Amount))
 	ps := s.keeper.GetPoolCoinSupply(s.ctx, pool)
 
 	s.deposit(s.addr(2), pool.Id, utils.ParseCoins("50000denom1"), true)
@@ -540,7 +541,7 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side() {
 
 	rx, ry = s.keeper.GetPoolBalances(s.ctx, pool)
 	s.Require().True(intEq(sdk.ZeroInt(), rx.Amount))
-	s.Require().True(intEq(sdk.NewInt(1050000), ry.Amount))
+	s.Require().True(intEq(math.NewInt(1050000), ry.Amount))
 	s.Require().True(intEq(ps.QuoRaw(20), pc.Amount))
 
 	balanceBefore := s.getBalance(s.addr(2), "denom1")
@@ -548,13 +549,13 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side() {
 	s.nextBlock()
 	balanceAfter := s.getBalance(s.addr(2), "denom1")
 
-	s.Require().True(balanceAfter.Sub(balanceBefore).Amount.Sub(sdk.NewInt(50000)).LTE(sdk.OneInt()))
+	s.Require().True(balanceAfter.Sub(balanceBefore).Amount.Sub(math.NewInt(50000)).LTE(sdk.OneInt()))
 
 	s.deposit(s.addr(3), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
 
 	s.Require().True(intEq(sdk.ZeroInt(), s.getBalance(s.addr(3), "denom1").Amount))
-	s.Require().True(intEq(sdk.NewInt(1000000), s.getBalance(s.addr(3), "denom2").Amount))
+	s.Require().True(intEq(math.NewInt(1000000), s.getBalance(s.addr(3), "denom2").Amount))
 }
 
 func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
@@ -564,7 +565,7 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
 		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("2.0"), true)
 
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
-	s.Require().True(intEq(sdk.NewInt(1000000), rx.Amount))
+	s.Require().True(intEq(math.NewInt(1000000), rx.Amount))
 	s.Require().True(intEq(sdk.ZeroInt(), ry.Amount))
 	ps := s.keeper.GetPoolCoinSupply(s.ctx, pool)
 
@@ -574,7 +575,7 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
 	pc := s.getBalance(s.addr(2), pool.PoolCoinDenom)
 
 	rx, ry = s.keeper.GetPoolBalances(s.ctx, pool)
-	s.Require().True(intEq(sdk.NewInt(1050000), rx.Amount))
+	s.Require().True(intEq(math.NewInt(1050000), rx.Amount))
 	s.Require().True(intEq(sdk.ZeroInt(), ry.Amount))
 	s.Require().True(intEq(ps.QuoRaw(20), pc.Amount))
 
@@ -583,13 +584,13 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
 	s.nextBlock()
 	balanceAfter := s.getBalance(s.addr(2), "denom2")
 
-	s.Require().True(balanceAfter.Sub(balanceBefore).Amount.Sub(sdk.NewInt(50000)).LTE(sdk.OneInt()))
+	s.Require().True(balanceAfter.Sub(balanceBefore).Amount.Sub(math.NewInt(50000)).LTE(sdk.OneInt()))
 
 	s.deposit(s.addr(3), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
 
 	s.Require().True(intEq(sdk.ZeroInt(), s.getBalance(s.addr(3), "denom2").Amount))
-	s.Require().True(intEq(sdk.NewInt(1000000), s.getBalance(s.addr(3), "denom1").Amount))
+	s.Require().True(intEq(math.NewInt(1000000), s.getBalance(s.addr(3), "denom1").Amount))
 }
 
 func (s *KeeperTestSuite) TestMaxNumActivePoolsPerPair() {

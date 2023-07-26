@@ -3,6 +3,7 @@ package amm
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -51,7 +52,7 @@ func Test_poolOrderPriceGapRatio(t *testing.T) {
 		{utils.ParseDec("1"), utils.ParseDec("0.1"), utils.ParseDec("0.005")},
 	} {
 		t.Run("", func(t *testing.T) {
-			require.True(sdk.DecEq(t, tc.expected, poolOrderPriceGapRatio(tc.poolPrice, tc.currentPrice)))
+			require.True(math.LegacyDecEq(t, tc.expected, poolOrderPriceGapRatio(tc.poolPrice, tc.currentPrice)))
 		})
 	}
 }

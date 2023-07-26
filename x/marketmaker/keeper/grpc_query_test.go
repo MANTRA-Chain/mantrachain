@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -178,7 +179,7 @@ func (suite *KeeperTestSuite) TestGRPCIncentive() {
 	suite.NoError(err)
 
 	// distribute incentive
-	incentiveAmount := sdk.NewInt(500000000)
+	incentiveAmount := math.NewInt(500000000)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 	proposal := types.NewMarketMakerProposal("title", "description",
 		[]types.MarketMakerHandle{

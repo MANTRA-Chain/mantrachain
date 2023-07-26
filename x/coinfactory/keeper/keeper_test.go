@@ -3,10 +3,12 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/exp/slices"
 
@@ -33,7 +35,7 @@ type KeeperTestSuite struct {
 
 var (
 	SecondaryDenom  = "ucoin"
-	SecondaryAmount = sdk.NewInt(100000000)
+	SecondaryAmount = math.NewInt(100000000)
 )
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -41,7 +43,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	suite.app = testutil.Setup(false)
+	suite.app = testutil.SetupWithGenesisValSet(suite.T())
 	hdr := cbproto.Header{
 		Height: suite.app.LastBlockHeight() + 1,
 		Time:   utils.ParseTime("2022-01-01T00:00:00Z"),
@@ -51,7 +53,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: hdr})
 	suite.keeper = suite.app.CoinFactoryKeeper
 	initialBalances := sdk.NewCoins(sdk.NewCoin(SecondaryDenom, SecondaryAmount))
-	suite.addrs = testutil.AddTestAddrs(suite.app, suite.ctx, 6, sdk.ZeroInt())
+	suite.addrs = testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, 6, sdk.ZeroInt())
 	for _, addr := range suite.addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, initialBalances)
 		suite.Require().NoError(err)
@@ -65,7 +67,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func (suite *KeeperTestSuite) CreateDefaultDenom() {
-	res, _ := suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom(suite.addrs[0].String(), "bitcoin"))
+	res, err := suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom(suite.addrs[0].String(), "bitcoin"))
+	require.NoError(suite.T(), err)
 	suite.defaultDenom = res.GetNewTokenDenom()
 }
 

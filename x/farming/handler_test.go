@@ -9,8 +9,8 @@ import (
 //		"handlerTestPlan1",
 //		suite.addrs[0],
 //		sdk.NewDecCoins(
-//			sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-//			sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+//			sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+//			sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 //		),
 //		types.ParseTime("2021-08-02T00:00:00Z"),
 //		types.ParseTime("2021-08-10T00:00:00Z"),
@@ -38,12 +38,12 @@ import (
 //		"handlerTestPlan2",
 //		suite.addrs[0],
 //		sdk.NewDecCoins(
-//			sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)), // 30%
-//			sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1)), // 70%
+//			sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)), // 30%
+//			sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1)), // 70%
 //		),
 //		types.ParseTime("2021-08-02T00:00:00Z"),
 //		types.ParseTime("2021-08-10T00:00:00Z"),
-//		sdk.NewDecWithPrec(4, 2), // 4%,
+//		math.LegacyNewDecWithPrec(4, 2), // 4%,
 //	)
 //
 //	handler := farming.NewHandler(suite.keeper)
@@ -129,7 +129,7 @@ import (
 //	_, err := handler(suite.ctx, types.NewMsgCreateRatioPlan(
 //		"plan1", suite.addrs[4], sdk.NewDecCoins(sdk.NewInt64DecCoin(denom1, 1)),
 //		types.ParseTime("2022-01-01T00:00:00Z"), types.ParseTime("2023-01-01T00:00:00Z"),
-//		sdk.MustNewDecFromStr("0.1")))
+//		math.LegacyMustNewDecFromStr("0.1")))
 //	suite.Require().NoError(err)
 //
 //	suite.ctx = suite.ctx.WithBlockTime(types.ParseTime("2022-01-01T00:00:00Z"))

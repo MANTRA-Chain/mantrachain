@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -63,7 +64,7 @@ func TestParamsValidate(t *testing.T) {
 				params.DepositAmount = sdk.Coins{
 					sdk.Coin{
 						Denom:  "stake",
-						Amount: sdk.NewInt(-1),
+						Amount: math.NewInt(-1),
 					},
 				}
 			},
@@ -89,7 +90,7 @@ func TestParamsValidate(t *testing.T) {
 				params.IncentivePairs = []types.IncentivePair{
 					{
 						PairId:          1,
-						IncentiveWeight: sdk.MustNewDecFromStr("0.1"),
+						IncentiveWeight: math.LegacyMustNewDecFromStr("0.1"),
 					},
 				}
 				a, _ := json.Marshal(params.IncentivePairs[0])
@@ -103,11 +104,11 @@ func TestParamsValidate(t *testing.T) {
 				params.IncentivePairs = []types.IncentivePair{
 					{
 						PairId:          1,
-						IncentiveWeight: sdk.MustNewDecFromStr("0.1"),
+						IncentiveWeight: math.LegacyMustNewDecFromStr("0.1"),
 					},
 					{
 						PairId:          1,
-						IncentiveWeight: sdk.MustNewDecFromStr("0.2"),
+						IncentiveWeight: math.LegacyMustNewDecFromStr("0.2"),
 					},
 				}
 			},
@@ -119,11 +120,11 @@ func TestParamsValidate(t *testing.T) {
 				params.IncentivePairs = []types.IncentivePair{
 					{
 						PairId:          1,
-						IncentiveWeight: sdk.MustNewDecFromStr("0.1"),
+						IncentiveWeight: math.LegacyMustNewDecFromStr("0.1"),
 					},
 					{
 						PairId:          2,
-						IncentiveWeight: sdk.MustNewDecFromStr("0.2"),
+						IncentiveWeight: math.LegacyMustNewDecFromStr("0.2"),
 					},
 				}
 			},

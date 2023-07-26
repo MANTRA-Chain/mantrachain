@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -14,30 +15,30 @@ import (
 
 func TestOrderBook(t *testing.T) {
 	ob := amm.NewOrderBook(
-		newOrder(amm.Buy, utils.ParseDec("10.01"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("10.00"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("9.999"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("9.999"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("9.998"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("9.998"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("9.997"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("9.996"), sdk.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("10.01"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("10.00"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("9.999"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("9.999"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("9.998"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("9.998"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("9.997"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("9.996"), math.NewInt(10000)),
 	)
 
 	highest, found := ob.HighestPrice()
 	require.True(t, found)
-	require.True(sdk.DecEq(t, utils.ParseDec("10.01"), highest))
+	require.True(math.LegacyDecEq(t, utils.ParseDec("10.01"), highest))
 	lowest, found := ob.LowestPrice()
 	require.True(t, found)
-	require.True(sdk.DecEq(t, utils.ParseDec("9.996"), lowest))
+	require.True(math.LegacyDecEq(t, utils.ParseDec("9.996"), lowest))
 }
 
 func TestOrderBook_BuyOrdersAt(t *testing.T) {
-	order1 := newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order2 := newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order3 := newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order4 := newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000))
-	order5 := newOrder(amm.Buy, utils.ParseDec("1.2"), sdk.NewInt(10000))
+	order1 := newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000))
+	order2 := newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000))
+	order3 := newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000))
+	order4 := newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000))
+	order5 := newOrder(amm.Buy, utils.ParseDec("1.2"), math.NewInt(10000))
 
 	ob := amm.NewOrderBook(order1, order2, order3, order4, order5)
 	buyOrders := ob.BuyOrdersAt(utils.ParseDec("1.1"))
@@ -50,11 +51,11 @@ func TestOrderBook_BuyOrdersAt(t *testing.T) {
 }
 
 func TestOrderBook_SellOrdersAt(t *testing.T) {
-	order1 := newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order2 := newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order3 := newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000))
-	order4 := newOrder(amm.Sell, utils.ParseDec("1.0"), sdk.NewInt(10000))
-	order5 := newOrder(amm.Sell, utils.ParseDec("1.2"), sdk.NewInt(10000))
+	order1 := newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000))
+	order2 := newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000))
+	order3 := newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000))
+	order4 := newOrder(amm.Sell, utils.ParseDec("1.0"), math.NewInt(10000))
+	order5 := newOrder(amm.Sell, utils.ParseDec("1.2"), math.NewInt(10000))
 
 	ob := amm.NewOrderBook(order1, order2, order3, order4, order5)
 	sellOrders := ob.SellOrdersAt(utils.ParseDec("1.1"))
@@ -79,24 +80,24 @@ func TestOrderBook_HighestPriceLowestPrice(t *testing.T) {
 		},
 		{
 			amm.NewOrderBook(
-				newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-				newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000)),
 			),
 			true, utils.ParseDec("1.1"), utils.ParseDec("1.0"),
 		},
 		{
 			amm.NewOrderBook(
-				newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.0"), math.NewInt(10000)),
 			),
 			true, utils.ParseDec("1.1"), utils.ParseDec("1.0"),
 		},
 		{
 			amm.NewOrderBook(
-				newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-				newOrder(amm.Sell, utils.ParseDec("1.0"), sdk.NewInt(10000)),
-				newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000)),
-				newOrder(amm.Buy, utils.ParseDec("0.9"), sdk.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000)),
+				newOrder(amm.Sell, utils.ParseDec("1.0"), math.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000)),
+				newOrder(amm.Buy, utils.ParseDec("0.9"), math.NewInt(10000)),
 			),
 			true, utils.ParseDec("1.1"), utils.ParseDec("0.9"),
 		},
@@ -107,8 +108,8 @@ func TestOrderBook_HighestPriceLowestPrice(t *testing.T) {
 			lowestPrice, foundLowestPrice := tc.ob.LowestPrice()
 			require.Equal(t, tc.found, foundLowestPrice)
 			if tc.found {
-				require.True(sdk.DecEq(t, tc.highestPrice, highestPrice))
-				require.True(sdk.DecEq(t, tc.lowestPrice, lowestPrice))
+				require.True(math.LegacyDecEq(t, tc.highestPrice, highestPrice))
+				require.True(math.LegacyDecEq(t, tc.lowestPrice, lowestPrice))
 			}
 		})
 	}
@@ -116,15 +117,15 @@ func TestOrderBook_HighestPriceLowestPrice(t *testing.T) {
 
 func ExampleOrderBook_String() {
 	ob := amm.NewOrderBook(
-		newOrder(amm.Sell, utils.ParseDec("1.2"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("1.17"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("1.15"), sdk.NewInt(5000)),
-		newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(3000)),
-		newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(5000)),
-		newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(1000)),
-		newOrder(amm.Sell, utils.ParseDec("1.09"), sdk.NewInt(6000)),
-		newOrder(amm.Sell, utils.ParseDec("1.09"), sdk.NewInt(4000)),
-		newOrder(amm.Buy, utils.ParseDec("1.06"), sdk.NewInt(15000)),
+		newOrder(amm.Sell, utils.ParseDec("1.2"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("1.17"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("1.15"), math.NewInt(5000)),
+		newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(3000)),
+		newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(5000)),
+		newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(1000)),
+		newOrder(amm.Sell, utils.ParseDec("1.09"), math.NewInt(6000)),
+		newOrder(amm.Sell, utils.ParseDec("1.09"), math.NewInt(4000)),
+		newOrder(amm.Buy, utils.ParseDec("1.06"), math.NewInt(15000)),
 	)
 	fmt.Println(ob.String())
 
@@ -141,15 +142,15 @@ func ExampleOrderBook_String() {
 
 func ExampleOrderBook_FullString() {
 	ob := amm.NewOrderBook(
-		newOrder(amm.Sell, utils.ParseDec("1.2"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("1.17"), sdk.NewInt(10000)),
-		newOrder(amm.Sell, utils.ParseDec("1.15"), sdk.NewInt(5000)),
-		newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(3000)),
-		newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(5000)),
-		newOrder(amm.Buy, utils.ParseDec("1.1"), sdk.NewInt(1000)),
-		newOrder(amm.Sell, utils.ParseDec("1.09"), sdk.NewInt(6000)),
-		newOrder(amm.Sell, utils.ParseDec("1.09"), sdk.NewInt(4000)),
-		newOrder(amm.Buy, utils.ParseDec("1.06"), sdk.NewInt(15000)),
+		newOrder(amm.Sell, utils.ParseDec("1.2"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("1.17"), math.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("1.15"), math.NewInt(5000)),
+		newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(3000)),
+		newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(5000)),
+		newOrder(amm.Buy, utils.ParseDec("1.1"), math.NewInt(1000)),
+		newOrder(amm.Sell, utils.ParseDec("1.09"), math.NewInt(6000)),
+		newOrder(amm.Sell, utils.ParseDec("1.09"), math.NewInt(4000)),
+		newOrder(amm.Buy, utils.ParseDec("1.06"), math.NewInt(15000)),
 	)
 	fmt.Println(ob.FullString(2))
 
@@ -202,7 +203,7 @@ func BenchmarkOrderBook_AddOrder(b *testing.B) {
 		}
 		price := defTickPrec.PriceToDownTick(
 			utils.RandomDec(r, utils.ParseDec("0.01"), utils.ParseDec("100.0")))
-		orders[i] = newOrder(dir, price, sdk.NewInt(10000))
+		orders[i] = newOrder(dir, price, math.NewInt(10000))
 	}
 	for _, numOrders := range []int{1000, 5000, 10000} {
 		b.Run(fmt.Sprintf("%d orders", numOrders), func(b *testing.B) {

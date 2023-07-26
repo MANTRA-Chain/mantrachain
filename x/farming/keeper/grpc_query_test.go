@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "mantrachain/types"
@@ -335,10 +336,10 @@ func (suite *KeeperTestSuite) TestGRPCStakings() {
 				for _, staking := range resp.Stakings {
 					switch staking.StakingCoinDenom {
 					case denom1:
-						suite.Require().True(intEq(sdk.NewInt(1000), staking.Amount))
+						suite.Require().True(intEq(math.NewInt(1000), staking.Amount))
 						suite.Require().EqualValues(1, staking.StartingEpoch)
 					case denom2:
-						suite.Require().True(intEq(sdk.NewInt(1500), staking.Amount))
+						suite.Require().True(intEq(math.NewInt(1500), staking.Amount))
 						suite.Require().EqualValues(1, staking.StartingEpoch)
 					default:
 						suite.FailNowf("invalid staking coin denom: %s", staking.StakingCoinDenom)
@@ -359,7 +360,7 @@ func (suite *KeeperTestSuite) TestGRPCStakings() {
 			func(resp *types.QueryStakingsResponse) {
 				suite.Require().Len(resp.Stakings, 1)
 				suite.Require().Equal(denom2, resp.Stakings[0].StakingCoinDenom)
-				suite.Require().True(intEq(sdk.NewInt(2000), resp.Stakings[0].Amount))
+				suite.Require().True(intEq(math.NewInt(2000), resp.Stakings[0].Amount))
 				suite.Require().EqualValues(1, resp.Stakings[0].StartingEpoch)
 			},
 		},
@@ -420,10 +421,10 @@ func (suite *KeeperTestSuite) TestGRPCQueuedStakings() {
 				for _, queuedStaking := range resp.QueuedStakings {
 					switch queuedStaking.StakingCoinDenom {
 					case denom1:
-						suite.Require().True(intEq(sdk.NewInt(1000), queuedStaking.Amount))
+						suite.Require().True(intEq(math.NewInt(1000), queuedStaking.Amount))
 						suite.Require().Equal(utils.ParseTime("2022-04-03T23:00:00Z"), queuedStaking.EndTime)
 					case denom2:
-						suite.Require().True(intEq(sdk.NewInt(1500), queuedStaking.Amount))
+						suite.Require().True(intEq(math.NewInt(1500), queuedStaking.Amount))
 						suite.Require().Equal(utils.ParseTime("2022-04-03T23:00:00Z"), queuedStaking.EndTime)
 					default:
 						suite.FailNowf("invalid staking coin denom: %s", queuedStaking.StakingCoinDenom)
@@ -444,7 +445,7 @@ func (suite *KeeperTestSuite) TestGRPCQueuedStakings() {
 			func(resp *types.QueryQueuedStakingsResponse) {
 				suite.Require().Len(resp.QueuedStakings, 1)
 				suite.Require().Equal(denom2, resp.QueuedStakings[0].StakingCoinDenom)
-				suite.Require().True(intEq(sdk.NewInt(2000), resp.QueuedStakings[0].Amount))
+				suite.Require().True(intEq(math.NewInt(2000), resp.QueuedStakings[0].Amount))
 				suite.Require().Equal(utils.ParseTime("2022-04-03T23:00:00Z"), resp.QueuedStakings[0].EndTime)
 			},
 		},
@@ -503,7 +504,7 @@ func (suite *KeeperTestSuite) TestGRPCTotalStakings() {
 			&types.QueryTotalStakingsRequest{StakingCoinDenom: denom1},
 			false,
 			func(resp *types.QueryTotalStakingsResponse) {
-				suite.Require().True(intEq(sdk.NewInt(1500), resp.Amount))
+				suite.Require().True(intEq(math.NewInt(1500), resp.Amount))
 			},
 		},
 		{
@@ -511,7 +512,7 @@ func (suite *KeeperTestSuite) TestGRPCTotalStakings() {
 			&types.QueryTotalStakingsRequest{StakingCoinDenom: denom2},
 			false,
 			func(resp *types.QueryTotalStakingsResponse) {
-				suite.Require().True(intEq(sdk.NewInt(3500), resp.Amount))
+				suite.Require().True(intEq(math.NewInt(3500), resp.Amount))
 			},
 		},
 		{

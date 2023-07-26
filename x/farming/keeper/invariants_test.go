@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "mantrachain/types"
@@ -14,7 +15,7 @@ func (suite *KeeperTestSuite) TestPositiveStakingAmountInvariant() {
 
 	// Normal staking
 	k.SetStaking(ctx, denom1, suite.addrs[0], types.Staking{
-		Amount:        sdk.NewInt(1000000),
+		Amount:        math.NewInt(1000000),
 		StartingEpoch: 1,
 	})
 	_, broken := farmingkeeper.PositiveStakingAmountInvariant(k)(ctx)
@@ -30,7 +31,7 @@ func (suite *KeeperTestSuite) TestPositiveStakingAmountInvariant() {
 
 	// Negative-amount staking
 	k.SetStaking(ctx, denom1, suite.addrs[1], types.Staking{
-		Amount:        sdk.NewInt(-1),
+		Amount:        math.NewInt(-1),
 		StartingEpoch: 1,
 	})
 	_, broken = farmingkeeper.PositiveStakingAmountInvariant(k)(ctx)
@@ -44,7 +45,7 @@ func (suite *KeeperTestSuite) TestPositiveQueuedStakingAmountInvariant() {
 
 	// Normal queued staking
 	k.SetQueuedStaking(ctx, endTime, denom1, suite.addrs[0], types.QueuedStaking{
-		Amount: sdk.NewInt(1000000),
+		Amount: math.NewInt(1000000),
 	})
 	_, broken := farmingkeeper.PositiveQueuedStakingAmountInvariant(k)(ctx)
 	suite.Require().False(broken)
@@ -58,7 +59,7 @@ func (suite *KeeperTestSuite) TestPositiveQueuedStakingAmountInvariant() {
 
 	// Negative-amount queued staking
 	k.SetQueuedStaking(ctx, endTime, denom1, suite.addrs[1], types.QueuedStaking{
-		Amount: sdk.NewInt(-1),
+		Amount: math.NewInt(-1),
 	})
 	_, broken = farmingkeeper.PositiveQueuedStakingAmountInvariant(k)(ctx)
 	suite.Require().True(broken)
@@ -88,19 +89,19 @@ func (suite *KeeperTestSuite) TestStakingReservedAmountInvariant() {
 	staking, _ := k.GetStaking(ctx, denom1, suite.addrs[0])
 
 	// Staking amount in the store <= balance of staking reserve acc. This should be OK.
-	staking.Amount = sdk.NewInt(999999)
+	staking.Amount = math.NewInt(999999)
 	k.SetStaking(ctx, denom1, suite.addrs[0], staking)
 	_, broken = farmingkeeper.StakingReservedAmountInvariant(k)(ctx)
 	suite.Require().False(broken)
 
 	// Staking amount in the store > balance of staking reserve acc. This shouldn't be OK.
-	staking.Amount = sdk.NewInt(1000001)
+	staking.Amount = math.NewInt(1000001)
 	k.SetStaking(ctx, denom1, suite.addrs[0], staking)
 	_, broken = farmingkeeper.StakingReservedAmountInvariant(k)(ctx)
 	suite.Require().True(broken)
 
 	// Reset to the original state.
-	staking.Amount = sdk.NewInt(1000000)
+	staking.Amount = math.NewInt(1000000)
 	k.SetStaking(ctx, denom1, suite.addrs[0], staking)
 	_, broken = farmingkeeper.StakingReservedAmountInvariant(k)(ctx)
 	suite.Require().False(broken)
@@ -342,7 +343,7 @@ func (suite *KeeperTestSuite) TestPositiveTotalStakingsAmountInvariant() {
 	k, ctx := suite.keeper, suite.ctx
 
 	// This is normal.
-	k.SetTotalStakings(ctx, denom1, types.TotalStakings{Amount: sdk.NewInt(1000000)})
+	k.SetTotalStakings(ctx, denom1, types.TotalStakings{Amount: math.NewInt(1000000)})
 	_, broken := farmingkeeper.PositiveTotalStakingsAmountInvariant(k)(ctx)
 	suite.Require().False(broken)
 
@@ -352,7 +353,7 @@ func (suite *KeeperTestSuite) TestPositiveTotalStakingsAmountInvariant() {
 	suite.Require().True(broken)
 
 	// Negative-amount total stakings.
-	k.SetTotalStakings(ctx, denom1, types.TotalStakings{Amount: sdk.NewInt(-1)})
+	k.SetTotalStakings(ctx, denom1, types.TotalStakings{Amount: math.NewInt(-1)})
 	_, broken = farmingkeeper.PositiveTotalStakingsAmountInvariant(k)(ctx)
 	suite.Require().True(broken)
 }

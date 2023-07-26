@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,7 +46,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"negative MinInitialPoolCoinSupply",
 			func(params *types.Params) {
-				params.MinInitialPoolCoinSupply = sdk.NewInt(-1)
+				params.MinInitialPoolCoinSupply = math.NewInt(-1)
 			},
 			"min initial pool coin supply must be positive: -1",
 		},
@@ -73,7 +74,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"negative MinInitialDepositAmount",
 			func(params *types.Params) {
-				params.MinInitialDepositAmount = sdk.NewInt(-1)
+				params.MinInitialDepositAmount = math.NewInt(-1)
 			},
 			"minimum initial deposit amount must not be negative: -1",
 		},

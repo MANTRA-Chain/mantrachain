@@ -12,6 +12,8 @@ import (
 	"mantrachain/x/farming"
 	"mantrachain/x/farming/types"
 
+	"cosmossdk.io/math"
+
 	_ "github.com/stretchr/testify/suite"
 )
 
@@ -46,8 +48,8 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 				suite.addrs[0].String(),
 				suite.addrs[0].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1))),
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1))),
 				types.ParseTime("2021-07-30T00:00:00Z"),
 				types.ParseTime("2021-08-30T00:00:00Z"),
 			),
@@ -60,12 +62,12 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 				suite.addrs[0].String(),
 				suite.addrs[0].String(),
 				sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec(denom1, sdk.NewDecWithPrec(3, 1)),
-					sdk.NewDecCoinFromDec(denom2, sdk.NewDecWithPrec(7, 1))),
+					sdk.NewDecCoinFromDec(denom1, math.LegacyNewDecWithPrec(3, 1)),
+					sdk.NewDecCoinFromDec(denom2, math.LegacyNewDecWithPrec(7, 1))),
 				types.ParseTime("2021-07-30T00:00:00Z"),
 				types.ParseTime("2021-08-30T00:00:00Z"),
 			),
-			sdk.MustNewDecFromStr("0.01"),
+			math.LegacyMustNewDecFromStr("0.01"),
 		),
 	}
 	//for _, plan := range plans {
@@ -143,14 +145,14 @@ func (suite *KeeperTestSuite) TestInitGenesisPanics() {
 		{
 			"invalid staking records",
 			func(genState *types.GenesisState) {
-				genState.StakingRecords[0].Staking.Amount = sdk.NewInt(10000000)
+				genState.StakingRecords[0].Staking.Amount = math.NewInt(10000000)
 			},
 			true,
 		},
 		{
 			"invalid queued staking records",
 			func(genState *types.GenesisState) {
-				genState.QueuedStakingRecords[0].QueuedStaking.Amount = sdk.NewInt(10000000)
+				genState.QueuedStakingRecords[0].QueuedStaking.Amount = math.NewInt(10000000)
 			},
 			true,
 		},
@@ -219,7 +221,7 @@ func (suite *KeeperTestSuite) TestMarshalUnmarshalDefaultGenesis() {
 	suite.Require().NoError(err)
 	suite.Require().Equal(*genState, genState2)
 
-	app2 := testutil.Setup(false)
+	app2 := testutil.SetupWithGenesisValSet(suite.T())
 	ctx2 := app2.BaseApp.NewContext(false, cbproto.Header{})
 	keeper2 := app2.FarmingKeeper
 	keeper2.InitGenesis(ctx2, genState2)
@@ -305,16 +307,16 @@ func (suite *KeeperTestSuite) TestExportGenesis() {
 					case suite.addrs[0].String():
 						switch record.StakingCoinDenom {
 						case denom1:
-							suite.Require().True(intEq(sdk.NewInt(3000000), record.Staking.Amount))
+							suite.Require().True(intEq(math.NewInt(3000000), record.Staking.Amount))
 						case denom2:
-							suite.Require().True(intEq(sdk.NewInt(3000000), record.Staking.Amount))
+							suite.Require().True(intEq(math.NewInt(3000000), record.Staking.Amount))
 						}
 					case suite.addrs[1].String():
 						switch record.StakingCoinDenom {
 						case denom1:
-							suite.Require().True(intEq(sdk.NewInt(2000000), record.Staking.Amount))
+							suite.Require().True(intEq(math.NewInt(2000000), record.Staking.Amount))
 						case denom2:
-							suite.Require().True(intEq(sdk.NewInt(1000000), record.Staking.Amount))
+							suite.Require().True(intEq(math.NewInt(1000000), record.Staking.Amount))
 						}
 					}
 				}
@@ -329,16 +331,16 @@ func (suite *KeeperTestSuite) TestExportGenesis() {
 					case suite.addrs[0].String():
 						switch record.StakingCoinDenom {
 						case denom1:
-							suite.Require().True(intEq(sdk.NewInt(1000000), record.QueuedStaking.Amount))
+							suite.Require().True(intEq(math.NewInt(1000000), record.QueuedStaking.Amount))
 						case denom2:
-							suite.Require().True(intEq(sdk.NewInt(1000000), record.QueuedStaking.Amount))
+							suite.Require().True(intEq(math.NewInt(1000000), record.QueuedStaking.Amount))
 						}
 					case suite.addrs[1].String():
 						switch record.StakingCoinDenom {
 						case denom1:
-							suite.Require().True(intEq(sdk.NewInt(2000000), record.QueuedStaking.Amount))
+							suite.Require().True(intEq(math.NewInt(2000000), record.QueuedStaking.Amount))
 						case denom2:
-							suite.Require().True(intEq(sdk.NewInt(1000000), record.QueuedStaking.Amount))
+							suite.Require().True(intEq(math.NewInt(1000000), record.QueuedStaking.Amount))
 						}
 					}
 				}
@@ -351,12 +353,12 @@ func (suite *KeeperTestSuite) TestExportGenesis() {
 				for _, record := range genState.TotalStakingsRecords {
 					switch record.StakingCoinDenom {
 					case denom1:
-						suite.Require().True(intEq(sdk.NewInt(5000000), record.Amount))
+						suite.Require().True(intEq(math.NewInt(5000000), record.Amount))
 						suite.Require().True(coinsEq(
 							sdk.NewCoins(sdk.NewInt64Coin(denom1, 8000000)),
 							record.StakingReserveCoins))
 					case denom2:
-						suite.Require().True(intEq(sdk.NewInt(4000000), record.Amount))
+						suite.Require().True(intEq(math.NewInt(4000000), record.Amount))
 						suite.Require().True(coinsEq(
 							sdk.NewCoins(sdk.NewInt64Coin(denom2, 6000000)),
 							record.StakingReserveCoins))

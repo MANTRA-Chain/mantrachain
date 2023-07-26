@@ -47,7 +47,7 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	app := testutil.Setup(false)
+	app := testutil.SetupWithGenesisValSet(suite.T())
 	ctx := app.BaseApp.NewContext(false, cbproto.Header{})
 
 	suite.app = app
@@ -56,7 +56,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.querier = keeper.Querier{Keeper: suite.keeper}
 	suite.msgServer = keeper.NewMsgServerImpl(suite.keeper)
 	suite.govHandler = marketmaker.NewMarketMakerProposalHandler(suite.keeper)
-	suite.addrs = testutil.AddTestAddrs(suite.app, suite.ctx, 30, sdk.ZeroInt())
+	suite.addrs = testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, 30, sdk.ZeroInt())
 	for _, addr := range suite.addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, initialBalances)
 		suite.Require().NoError(err)
@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func (suite *KeeperTestSuite) AddTestAddrs(num int, coins sdk.Coins) []sdk.AccAddress {
-	addrs := testutil.AddTestAddrs(suite.app, suite.ctx, num, sdk.ZeroInt())
+	addrs := testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, num, sdk.ZeroInt())
 	for _, addr := range addrs {
 		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, addr, coins)
 		suite.Require().NoError(err)

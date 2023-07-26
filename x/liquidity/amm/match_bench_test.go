@@ -2,8 +2,8 @@ package amm_test
 
 //func BenchmarkFindMatchPrice(b *testing.B) {
 //	minPrice, maxPrice := utils.ParseDec("0.0000001"), utils.ParseDec("10000000")
-//	minAmt, maxAmt := sdk.NewInt(100), sdk.NewInt(10000000)
-//	minReserveAmt, maxReserveAmt := sdk.NewInt(500), sdk.NewInt(1000000000)
+//	minAmt, maxAmt := math.NewInt(100), math.NewInt(10000000)
+//	minReserveAmt, maxReserveAmt := math.NewInt(500), math.NewInt(1000000000)
 //
 //	for seed := int64(0); seed < 5; seed++ {
 //		b.Run(fmt.Sprintf("seed/%d", seed), func(b *testing.B) {
@@ -16,7 +16,7 @@ package amm_test
 //			var poolOrderSources []amm.OrderSource
 //			for i := 0; i < 1000; i++ {
 //				rx, ry := utils.RandomInt(r, minReserveAmt, maxReserveAmt), utils.RandomInt(r, minReserveAmt, maxReserveAmt)
-//				pool := amm.NewBasicPool(rx, ry, sdk.Int{})
+//				pool := amm.NewBasicPool(rx, ry, math.Int{})
 //				poolOrderSources = append(poolOrderSources, amm.NewMockPoolOrderSource(pool, "denom1", "denom2"))
 //			}
 //			os := amm.MergeOrderSources(append(poolOrderSources, ob)...)

@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	"gopkg.in/yaml.v2"
 
@@ -25,10 +26,10 @@ var (
 	KeyIncentivePairs         = []byte("IncentivePairs")
 
 	DefaultIncentiveBudgetAddress = farmingtypes.DeriveAddress(AddressType, farmingtypes.ModuleName, "ecosystem_incentive_mm")
-	DefaultDepositAmount          = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000000)))
+	DefaultDepositAmount          = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1000000000)))
 	DefaultCommon                 = Common{
-		MinOpenRatio:      sdk.MustNewDecFromStr("0.5"),
-		MinOpenDepthRatio: sdk.MustNewDecFromStr("0.1"),
+		MinOpenRatio:      math.LegacyMustNewDecFromStr("0.5"),
+		MinOpenDepthRatio: math.LegacyMustNewDecFromStr("0.1"),
 		MaxDowntime:       uint32(20),
 		MaxTotalDowntime:  uint32(100),
 		MinHours:          uint32(16),

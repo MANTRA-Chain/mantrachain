@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -17,7 +18,7 @@ func (s *KeeperTestSuite) TestFarm() {
 
 	farm, found := s.keeper.GetFarm(s.ctx, "pool1")
 	s.Require().True(found)
-	s.assertEq(sdk.NewInt(1_000000), farm.TotalFarmingAmount)
+	s.assertEq(math.NewInt(1_000000), farm.TotalFarmingAmount)
 	s.assertEq(sdk.DecCoins{}, farm.CurrentRewards)
 	s.assertEq(sdk.DecCoins{}, farm.OutstandingRewards)
 	s.Require().EqualValues(2, farm.Period)
@@ -26,7 +27,7 @@ func (s *KeeperTestSuite) TestFarm() {
 	s.Require().True(found)
 	s.Require().Equal(farmerAddr.String(), position.Farmer)
 	s.Require().Equal("pool1", position.Denom)
-	s.assertEq(sdk.NewInt(1_000000), position.FarmingAmount)
+	s.assertEq(math.NewInt(1_000000), position.FarmingAmount)
 	s.Require().EqualValues(1, position.PreviousPeriod)
 
 	s.assertHistoricalRewards(map[string]map[uint64]types.HistoricalRewards{
@@ -42,7 +43,7 @@ func (s *KeeperTestSuite) TestFarm() {
 	s.farm(farmerAddr2, utils.ParseCoin("1_000000pool1"))
 
 	farm, _ = s.keeper.GetFarm(s.ctx, "pool1")
-	s.assertEq(sdk.NewInt(2_000000), farm.TotalFarmingAmount)
+	s.assertEq(math.NewInt(2_000000), farm.TotalFarmingAmount)
 	s.Require().EqualValues(3, farm.Period)
 
 	position, found = s.keeper.GetPosition(s.ctx, farmerAddr2, "pool1")
@@ -157,11 +158,11 @@ func (s *KeeperTestSuite) TestUnfarm() {
 	s.assertEq(withdrawnRewards.Add(utils.ParseCoin("500000pool1")), balancesDiff)
 
 	farm, _ := s.keeper.GetFarm(s.ctx, "pool1")
-	s.assertEq(sdk.NewInt(500000), farm.TotalFarmingAmount)
+	s.assertEq(math.NewInt(500000), farm.TotalFarmingAmount)
 	s.Require().EqualValues(3, farm.Period)
 
 	position, _ := s.keeper.GetPosition(s.ctx, farmerAddr, "pool1")
-	s.assertEq(sdk.NewInt(500000), position.FarmingAmount)
+	s.assertEq(math.NewInt(500000), position.FarmingAmount)
 	s.Require().EqualValues(2, position.PreviousPeriod)
 
 	s.unfarm(farmerAddr, utils.ParseCoin("500000pool1"))

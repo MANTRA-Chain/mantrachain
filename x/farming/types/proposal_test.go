@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -110,7 +111,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 			"valid for ratio plan",
 			func(req *types.AddPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.NewDecWithPrec(5, 2)
+				req.EpochRatio = math.LegacyNewDecWithPrec(5, 2)
 			},
 			"",
 		},
@@ -124,7 +125,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 		{
 			"ambiguous plan type #1",
 			func(req *types.AddPlanRequest) {
-				req.EpochRatio = sdk.NewDecWithPrec(5, 2)
+				req.EpochRatio = math.LegacyNewDecWithPrec(5, 2)
 			},
 			"exactly one of epoch amount or epoch ratio must be provided: invalid request",
 		},
@@ -183,8 +184,8 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 			"invalid staking coin weights - invalid sum of weights",
 			func(req *types.AddPlanRequest) {
 				req.StakingCoinWeights = sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(5, 1)),
-					sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(6, 1)),
+					sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(5, 1)),
+					sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(6, 1)),
 				)
 			},
 			"total weight must be 1: invalid staking coin weights",
@@ -265,7 +266,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 			"valid for ratio plan",
 			func(req *types.ModifyPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.NewDecWithPrec(5, 2)
+				req.EpochRatio = math.LegacyNewDecWithPrec(5, 2)
 			},
 			"",
 		},
@@ -286,7 +287,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 		{
 			"ambiguous plan type",
 			func(req *types.ModifyPlanRequest) {
-				req.EpochRatio = sdk.NewDecWithPrec(5, 2)
+				req.EpochRatio = math.LegacyNewDecWithPrec(5, 2)
 			},
 			"at most one of epoch amount or epoch ratio must be provided: invalid request",
 		},
@@ -366,8 +367,8 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 			"invalid staking coin weights - invalid sum of weights",
 			func(req *types.ModifyPlanRequest) {
 				req.StakingCoinWeights = sdk.NewDecCoins(
-					sdk.NewDecCoinFromDec("stake1", sdk.NewDecWithPrec(5, 1)),
-					sdk.NewDecCoinFromDec("stake2", sdk.NewDecWithPrec(6, 1)),
+					sdk.NewDecCoinFromDec("stake1", math.LegacyNewDecWithPrec(5, 1)),
+					sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(6, 1)),
 				)
 			},
 			"total weight must be 1: invalid staking coin weights",

@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -20,11 +21,11 @@ func TestOrderBookView(t *testing.T) {
 		// Add 10 random orders for each buy and sell direction
 		for j := 0; j < 10; j++ {
 			price := utils.RandomDec(r, utils.ParseDec("0.5"), utils.ParseDec("2.0"))
-			amt := utils.RandomInt(r, sdk.NewInt(1000), sdk.NewInt(10000))
+			amt := utils.RandomInt(r, math.NewInt(1000), math.NewInt(10000))
 			ob.AddOrder(newOrder(amm.Buy, price, amt))
 
 			price = utils.RandomDec(r, utils.ParseDec("0.5"), utils.ParseDec("2.0"))
-			amt = utils.RandomInt(r, sdk.NewInt(1000), sdk.NewInt(10000))
+			amt = utils.RandomInt(r, math.NewInt(1000), math.NewInt(10000))
 			ob.AddOrder(newOrder(amm.Sell, price, amt))
 		}
 
@@ -43,7 +44,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.BuyAmountOver(price, true)))
+			require.True(math.IntEq(t, expected, ov.BuyAmountOver(price, true)))
 
 			// buy amount over (exclusive)
 			expected = sdk.ZeroInt()
@@ -52,7 +53,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.BuyAmountOver(price, false)))
+			require.True(math.IntEq(t, expected, ov.BuyAmountOver(price, false)))
 
 			// buy amount under (inclusive)
 			expected = sdk.ZeroInt()
@@ -61,7 +62,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.BuyAmountUnder(price, true)))
+			require.True(math.IntEq(t, expected, ov.BuyAmountUnder(price, true)))
 
 			// buy amount under (exclusive)
 			expected = sdk.ZeroInt()
@@ -70,7 +71,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.BuyAmountUnder(price, false)))
+			require.True(math.IntEq(t, expected, ov.BuyAmountUnder(price, false)))
 
 			// sell amount under (inclusive)
 			expected = sdk.ZeroInt()
@@ -79,7 +80,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.SellAmountUnder(price, true)))
+			require.True(math.IntEq(t, expected, ov.SellAmountUnder(price, true)))
 
 			// sell amount under (exclusive)
 			expected = sdk.ZeroInt()
@@ -88,7 +89,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.SellAmountUnder(price, false)))
+			require.True(math.IntEq(t, expected, ov.SellAmountUnder(price, false)))
 
 			// sell amount over (inclusive)
 			expected = sdk.ZeroInt()
@@ -97,7 +98,7 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.SellAmountOver(price, true)))
+			require.True(math.IntEq(t, expected, ov.SellAmountOver(price, true)))
 
 			// sell amount over (exclusive)
 			expected = sdk.ZeroInt()
@@ -106,20 +107,20 @@ func TestOrderBookView(t *testing.T) {
 					expected = expected.Add(order.GetAmount())
 				}
 			}
-			require.True(sdk.IntEq(t, expected, ov.SellAmountOver(price, false)))
+			require.True(math.IntEq(t, expected, ov.SellAmountOver(price, false)))
 		}
 	}
 }
 
 func TestOrderBookView_NoMatch(t *testing.T) {
 	ob := amm.NewOrderBook(
-		newOrder(amm.Sell, utils.ParseDec("1.1"), sdk.NewInt(10000)),
-		newOrder(amm.Buy, utils.ParseDec("1.0"), sdk.NewInt(10000)),
+		newOrder(amm.Sell, utils.ParseDec("1.1"), math.NewInt(10000)),
+		newOrder(amm.Buy, utils.ParseDec("1.0"), math.NewInt(10000)),
 	)
 
 	ov := ob.MakeView()
 	ov.Match()
 
-	require.True(sdk.IntEq(t, sdk.NewInt(10000), ov.BuyAmountOver(utils.ParseDec("1.0"), true)))
-	require.True(sdk.IntEq(t, sdk.NewInt(10000), ov.SellAmountUnder(utils.ParseDec("1.1"), true)))
+	require.True(math.IntEq(t, math.NewInt(10000), ov.BuyAmountOver(utils.ParseDec("1.0"), true)))
+	require.True(math.IntEq(t, math.NewInt(10000), ov.SellAmountUnder(utils.ParseDec("1.1"), true)))
 }
