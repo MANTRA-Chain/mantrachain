@@ -4,7 +4,7 @@ package mantrachain.did.v1;
 import "mantrachain/did/v1/did.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "mantrachain/x/did/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
 // Msg defines the identity Msg service.
 service Msg {

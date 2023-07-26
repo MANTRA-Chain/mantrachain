@@ -17,9 +17,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"mantrachain/x/liquidity/client/cli"
-	"mantrachain/x/liquidity/keeper"
-	"mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 var (

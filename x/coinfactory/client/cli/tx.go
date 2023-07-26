@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"mantrachain/x/coinfactory/types"
 )
 
 var (

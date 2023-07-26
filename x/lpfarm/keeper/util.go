@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	liquiditytypes "mantrachain/x/liquidity/types"
-	"mantrachain/x/lpfarm/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // cachingKeeper acts like a proxy to keeper methods,

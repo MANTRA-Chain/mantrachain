@@ -23,9 +23,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"mantrachain/x/coinfactory/client/cli"
-	"mantrachain/x/coinfactory/keeper"
-	"mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 var (

@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	farmingtypes "mantrachain/x/farming/types"
-	"mantrachain/x/liquidity/amm"
+	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 var (

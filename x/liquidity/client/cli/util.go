@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // excConditions returns true when exactly one condition is true.

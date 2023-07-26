@@ -4,7 +4,7 @@ package mantrachain.token.v1;
 import "gogoproto/gogo.proto";
 import "mantrachain/token/v1/common.proto";
 
-option go_package = "mantrachain/x/token/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 option (gogoproto.equal_all) = true;
 
 message NftCollection {

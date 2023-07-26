@@ -38,8 +38,8 @@ import (
 	"github.com/spf13/pflag"
 	// this line is used by starport scaffolding # root/moduleImport
 
-	"mantrachain/app"
-	appparams "mantrachain/app/params"
+	"github.com/MANTRA-Finance/mantrachain/app"
+	appparams "github.com/MANTRA-Finance/mantrachain/app/params"
 )
 
 // NewRootCmd creates a new root command for a Cosmos SDK application

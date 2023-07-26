@@ -3,7 +3,7 @@ package cmd
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/app"
 )
 
 func initSDKConfig() {

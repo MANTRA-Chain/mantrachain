@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"mantrachain/x/liquidfarming/keeper"
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 // NewHandler returns a new msg handler.

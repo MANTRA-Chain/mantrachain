@@ -10,7 +10,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	farmingtypes "mantrachain/x/farming/types"
+	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 const (

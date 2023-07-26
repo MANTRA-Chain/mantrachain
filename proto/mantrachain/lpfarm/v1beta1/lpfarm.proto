@@ -7,7 +7,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "mantrachain/x/lpfarm/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types";
 option (gogoproto.goproto_getters_all) = false;
 
 message Params {
