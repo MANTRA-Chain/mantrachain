@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"mantrachain/x/guard/types"
 )
 
 // GetParams get all parameters as types.Params

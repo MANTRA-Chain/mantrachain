@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"mantrachain/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // CreatePrivatePlan creates a new private farming plan.

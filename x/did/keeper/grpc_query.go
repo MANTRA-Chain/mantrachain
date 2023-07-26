@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 var _ types.QueryServer = Keeper{}

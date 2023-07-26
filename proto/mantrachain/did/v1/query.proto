@@ -7,7 +7,7 @@ import "mantrachain/did/v1/did.proto";
 import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # 1
 
-option go_package = "mantrachain/x/did/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
 // this line is used by starport scaffolding # 1
 

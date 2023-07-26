@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 )
 
 var _ types.QueryServer = Keeper{}

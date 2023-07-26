@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"mantrachain/x/token/types"
 )
 
 type DidExecutor struct {

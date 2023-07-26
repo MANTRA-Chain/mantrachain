@@ -4,9 +4,9 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"mantrachain/x/guard/types"
 )
 
 func (k msgServer) UpdateGuardTransferCoins(goCtx context.Context, msg *types.MsgUpdateGuardTransferCoins) (*types.MsgUpdateGuardTransferCoinsResponse, error) {

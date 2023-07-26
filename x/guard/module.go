@@ -11,9 +11,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"mantrachain/x/guard/client/cli"
-	"mantrachain/x/guard/keeper"
-	"mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"

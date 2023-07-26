@@ -3,12 +3,12 @@ package keeper
 import (
 	"context"
 
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"mantrachain/x/guard/types"
 )
 
 func (k Keeper) RequiredPrivilegesAll(goCtx context.Context, req *types.QueryAllRequiredPrivilegesRequest) (*types.QueryAllRequiredPrivilegesResponse, error) {

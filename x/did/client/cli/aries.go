@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 // request send a json http request

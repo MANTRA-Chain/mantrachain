@@ -6,10 +6,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	"mantrachain/x/coinfactory/types"
 )
 
 func CmdQueryDenomAuthorityMetadata2() *cobra.Command {

@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"mantrachain/x/liquidfarming/client/cli"
-	"mantrachain/x/liquidfarming/keeper"
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 var (

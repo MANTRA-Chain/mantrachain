@@ -1,9 +1,9 @@
 package keeper
 
 import (
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"mantrachain/x/guard/types"
 )
 
 func (k Keeper) SetGuardTransferCoins(ctx sdk.Context) {

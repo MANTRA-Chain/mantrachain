@@ -14,9 +14,9 @@ import ( // this line is used by starport scaffolding # 1
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"mantrachain/x/did/client/cli"
-	"mantrachain/x/did/keeper"
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/did/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 var (
