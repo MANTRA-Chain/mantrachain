@@ -1,10 +1,10 @@
 syntax = "proto3";
 package mantrachain.liquidity.v1beta1;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/liquidity/v1beta1/liquidity.proto";
 
 option go_package = "mantrachain/x/liquidity/types";
@@ -34,6 +34,11 @@ service Query {
   // PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
   rpc PoolByPoolCoinDenom(QueryPoolByPoolCoinDenomRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/pool_coin_denom/{pool_coin_denom}";
+  }
+
+  // Pairs returns all liquidity pairs by denoms.
+  rpc PairsByDenoms(QueryPairsByDenomsRequest) returns (QueryPairsByDenomsResponse) {
+    option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs_by_denoms";
   }
 
   // Pairs returns all liquidity pairs.
@@ -130,6 +135,21 @@ message QueryPoolByPoolCoinDenomRequest {
   string pool_coin_denom = 1;
 }
 
+// QueryPairsByDenomsRequest is request type for the Query/Pairs RPC method.
+message QueryPairsByDenomsRequest {
+  string denom1 = 1;
+  string denom2 = 2;
+
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+// QueryPairsByDenomsResponse is response type for the Query/Pairs RPC method.
+message QueryPairsByDenomsResponse {
+  repeated Pair pairs = 1 [(gogoproto.nullable) = false];
+
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 // QueryPairsRequest is request type for the Query/Pairs RPC method.
 message QueryPairsRequest {
   repeated string denoms = 1;
@@ -171,7 +191,7 @@ message QueryDepositRequestsResponse {
 // QueryDepositRequestRequest is request type for the Query/DepositRequest RPC method.
 message QueryDepositRequestRequest {
   uint64 pool_id = 1;
-  uint64 id      = 2;
+  uint64 id = 2;
 }
 
 // QueryDepositRequestResponse is response type for the Query/DepositRequest RPC method.
@@ -196,7 +216,7 @@ message QueryWithdrawRequestsResponse {
 // QueryWithdrawRequestRequest is request type for the Query/WithdrawRequest RPC method.
 message QueryWithdrawRequestRequest {
   uint64 pool_id = 1;
-  uint64 id      = 2;
+  uint64 id = 2;
 }
 
 // QueryWithdrawRequestResponse is response type for the Query/WithdrawRequest RPC method.
@@ -221,7 +241,7 @@ message QueryOrdersResponse {
 // QueryOrderRequest is request type for the Query/Order RPC method.
 message QueryOrderRequest {
   uint64 pair_id = 1;
-  uint64 id      = 2;
+  uint64 id = 2;
 }
 
 // QueryOrderResponse is response type for the Query/Order RPC method.
@@ -231,16 +251,16 @@ message QueryOrderResponse {
 
 // QueryOrdersByOrdererRequest is request type for the Query/OrdersByOrderer RPC method.
 message QueryOrdersByOrdererRequest {
-  string                                orderer    = 1;
-  uint64                                pair_id    = 2;
+  string orderer = 1;
+  uint64 pair_id = 2;
   cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryOrderBooksRequest is request type for the Query/OrderBooks RPC method.
 message QueryOrderBooksRequest {
-  repeated uint64 pair_ids          = 1;
+  repeated uint64 pair_ids = 1;
   repeated uint32 price_unit_powers = 2;
-  uint32          num_ticks         = 3;
+  uint32 num_ticks = 3;
 }
 
 // QueryOrderBooksResponse is response type for Query/OrderBooks RPC method.
@@ -266,8 +286,10 @@ message PoolResponse {
 
   string pool_coin_denom = 6;
 
-  string pool_coin_supply = 7
-      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string pool_coin_supply = 7 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 
   string min_price = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"];
 
@@ -291,23 +313,34 @@ message PoolBalances {
 }
 
 message OrderBookPairResponse {
-  uint64 pair_id    = 1;
-  string base_price = 2
-      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  uint64 pair_id = 1;
+  string base_price = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
   repeated OrderBookResponse order_books = 3 [(gogoproto.nullable) = false];
 }
 
 message OrderBookResponse {
-  string price_unit = 1
-      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  string price_unit = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
   repeated OrderBookTickResponse sells = 2 [(gogoproto.nullable) = false];
-  repeated OrderBookTickResponse buys  = 3 [(gogoproto.nullable) = false];
+  repeated OrderBookTickResponse buys = 3 [(gogoproto.nullable) = false];
 }
 
 message OrderBookTickResponse {
-  string price = 1 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  string user_order_amount = 2
-      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
-  string pool_order_amount = 3
-      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int", (gogoproto.nullable) = false];
+  string price = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string user_order_amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string pool_order_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
