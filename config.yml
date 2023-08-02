@@ -73,9 +73,16 @@ validators:
 - name: validator
   bonded: 100000000uaum
   app:
+    grpc:
+      address: 0.0.0.0:9090
+    grpc-web:
+      address: 0.0.0.0:9091
     minimum-gas-prices: 0.0002uaum
     pruning: nothing
   config:
+    consensus:
+      timeout_commit: "6s"
+      timeout_propose: "6s"
     moniker: mantra-dev-01
     proxy_app: tcp://0.0.0.0:26658
   client:
