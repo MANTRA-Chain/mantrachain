@@ -18,6 +18,7 @@ client:
   openapi:
     path: docs/static/openapi.yml
 genesis:
+  chain_id: "mantrachain-9001"
   app_state:
     bank:
       denom_metadata:

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHAINID="mantrachain"
+CHAINID="mantrachain-9001"
 HOMEDIR="$HOME/.mantrachain"
 
 KEYS[0]="validator"
