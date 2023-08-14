@@ -1,0 +1,12 @@
+syntax = "proto3";
+package mantrachain.txfees;
+
+import "gogoproto/gogo.proto";
+import "mantrachain/txfees/params.proto";
+
+option go_package = "mantrachain/x/txfees/types";
+
+// GenesisState defines the txfees module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

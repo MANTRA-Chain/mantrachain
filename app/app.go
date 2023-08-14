@@ -145,6 +145,10 @@ import (
 	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
 	nftmodule "github.com/cosmos/cosmos-sdk/x/nft/module"
 
+	txfeesmodule "mantrachain/x/txfees"
+	txfeesmodulekeeper "mantrachain/x/txfees/keeper"
+	txfeesmoduletypes "mantrachain/x/txfees/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	ante "mantrachain/app/ante"
@@ -219,6 +223,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
+		txfeesmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -242,6 +247,7 @@ var (
 		lpfarmtypes.ModuleName:         nil,
 		marketmakertypes.ModuleName:    nil,
 		tokentypes.ModuleName:          nil,
+		txfeesmoduletypes.ModuleName:   {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -315,6 +321,7 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
+	TxfeesKeeper txfeesmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -371,6 +378,7 @@ func New(
 		lpfarmtypes.StoreKey,
 		marketmakertypes.StoreKey,
 		tokentypes.StoreKey,
+		txfeesmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -682,6 +690,17 @@ func New(
 		),
 	)
 
+	app.TxfeesKeeper = *txfeesmodulekeeper.NewKeeper(
+		appCodec,
+		keys[txfeesmoduletypes.StoreKey],
+		keys[txfeesmoduletypes.MemStoreKey],
+		app.GetSubspace(txfeesmoduletypes.ModuleName),
+
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+	txfeesModule := txfeesmodule.NewAppModule(appCodec, app.TxfeesKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -753,6 +772,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
+		txfeesModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -795,6 +815,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -830,6 +851,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -870,6 +892,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1104,6 +1127,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(lpfarmtypes.ModuleName)
 	paramsKeeper.Subspace(marketmakertypes.ModuleName)
 	paramsKeeper.Subspace(tokentypes.ModuleName)
+	paramsKeeper.Subspace(txfeesmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
