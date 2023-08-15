@@ -932,6 +932,7 @@ func New(
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
+			GuardKeeper:     &app.GuardKeeper,
 		},
 	)
 	if err != nil {
