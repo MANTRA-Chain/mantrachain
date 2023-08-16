@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/txfees/params.proto";
 
-option go_package = "mantrachain/x/txfees/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // Query defines the gRPC querier service.
 service Query {

@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 func TestParams_Validate(t *testing.T) {

@@ -3,7 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func (s *KeeperTestSuite) TestPairIndexes() {

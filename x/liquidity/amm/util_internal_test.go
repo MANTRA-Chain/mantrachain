@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "mantrachain/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 )
 
 func Test_findFirstTrueCondition(t *testing.T) {

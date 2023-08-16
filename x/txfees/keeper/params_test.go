@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
+	testkeeper "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	"github.com/stretchr/testify/require"
-	testkeeper "mantrachain/testutil/keeper"
-	"mantrachain/x/txfees/types"
 )
 
 func TestGetParams(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidity/amm"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 func TestOrderBook(t *testing.T) {

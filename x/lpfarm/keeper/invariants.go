@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {

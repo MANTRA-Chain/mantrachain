@@ -33,9 +33,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
 
-	chain "mantrachain/app"
-	"mantrachain/app/params"
-	guardtypes "mantrachain/x/guard/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/app/params"
+	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 const (

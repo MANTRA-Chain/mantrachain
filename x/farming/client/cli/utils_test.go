@@ -8,8 +8,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil"
 
-	mantratestutil "mantrachain/testutil"
-	"mantrachain/x/farming/client/cli"
+	mantratestutil "github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/client/cli"
 )
 
 func TestParsePrivateFixedPlan(t *testing.T) {

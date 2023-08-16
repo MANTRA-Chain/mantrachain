@@ -12,11 +12,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/exp/slices"
 
-	"mantrachain/app"
-	"mantrachain/testutil"
-	utils "mantrachain/types"
-	"mantrachain/x/coinfactory/keeper"
-	"mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 type KeeperTestSuite struct {

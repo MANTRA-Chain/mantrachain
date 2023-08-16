@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 func (suite *KeeperTestSuite) TestDidDocumentKeeperSetAndGet() {

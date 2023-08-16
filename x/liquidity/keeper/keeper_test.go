@@ -12,12 +12,12 @@ import (
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "mantrachain/app"
-	"mantrachain/testutil"
-	utils "mantrachain/types"
-	"mantrachain/x/liquidity/amm"
-	"mantrachain/x/liquidity/keeper"
-	"mantrachain/x/liquidity/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 type KeeperTestSuite struct {

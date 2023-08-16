@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	utils "mantrachain/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 
 	"github.com/golang/mock/gomock"
 
@@ -16,11 +16,11 @@ import (
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "mantrachain/app"
-	"mantrachain/testutil"
-	"mantrachain/x/token/keeper"
-	tokentestutil "mantrachain/x/token/testutil"
-	"mantrachain/x/token/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/token/keeper"
+	tokentestutil "github.com/MANTRA-Finance/mantrachain/x/token/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 )
 
 type KeeperTestSuite struct {

@@ -19,7 +19,7 @@ var _ govv1beta1.Content = &PublicPlanProposal{}
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypePublicPlan)
-	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&PublicPlanProposal{}, "mantrachain/PublicPlanProposal", nil)
+	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&PublicPlanProposal{}, "github.com/MANTRA-Finance/mantrachain/PublicPlanProposal", nil)
 }
 
 // NewPublicPlanProposal creates a new PublicPlanProposal object.

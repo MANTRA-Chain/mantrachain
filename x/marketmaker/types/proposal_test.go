@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 func TestMarketMakerProposal_ValidateBasic(t *testing.T) {

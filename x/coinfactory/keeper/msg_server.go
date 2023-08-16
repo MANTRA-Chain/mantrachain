@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"mantrachain/x/coinfactory/types"
 )
 
 type msgServer struct {

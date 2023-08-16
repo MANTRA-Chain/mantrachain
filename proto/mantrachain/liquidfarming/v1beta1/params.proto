@@ -5,7 +5,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 
-option go_package = "mantrachain/x/liquidfarming/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types";
 
 // Params defines the parameters for the module.
 message Params {

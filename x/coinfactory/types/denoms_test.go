@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 func TestDeconstructDenom(t *testing.T) {

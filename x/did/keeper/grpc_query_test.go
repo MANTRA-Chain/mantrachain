@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryDidDocuments() {

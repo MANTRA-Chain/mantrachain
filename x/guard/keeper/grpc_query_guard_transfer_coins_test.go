@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func TestGRPCQueryGuardTransferCoins(t *testing.T) {

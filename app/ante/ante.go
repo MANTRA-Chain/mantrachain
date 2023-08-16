@@ -1,8 +1,8 @@
 package ante
 
 import (
-	txfeeskeeper "mantrachain/x/txfees/keeper"
-	txfeestypes "mantrachain/x/txfees/types"
+	txfeeskeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"

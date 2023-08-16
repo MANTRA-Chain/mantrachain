@@ -12,7 +12,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 // GetQueryCmd returns the cli query commands for the module

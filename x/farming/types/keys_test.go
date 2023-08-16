@@ -10,7 +10,7 @@ import (
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 type keysTestSuite struct {

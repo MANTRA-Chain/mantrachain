@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidity"
-	"mantrachain/x/liquidity/amm"
-	"mantrachain/x/liquidity/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

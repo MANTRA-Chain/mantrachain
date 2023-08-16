@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgCreateDenom() {

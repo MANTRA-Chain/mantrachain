@@ -52987,6 +52987,7 @@ paths:
           format: uint64
       tags:
         - Query
+<<<<<<< HEAD
   /mantrachain/liquidity/v1beta1/pairs_by_denoms:
     get:
       summary: Pairs returns all liquidity pairs by denoms.
@@ -53136,6 +53137,8 @@ paths:
           type: boolean
       tags:
         - Query
+=======
+>>>>>>> develop
   /mantrachain/liquidity/v1beta1/params:
     get:
       summary: Params returns parameters of the module.
@@ -91644,6 +91647,7 @@ definitions:
             format: uint64
         description: Pair defines a coin pair.
     description: QueryPairResponse is response type for the Query/Pair RPC method.
+<<<<<<< HEAD
   mantrachain.liquidity.v1beta1.QueryPairsByDenomsResponse:
     type: object
     properties:
@@ -91699,6 +91703,8 @@ definitions:
     description: >-
       QueryPairsByDenomsResponse is response type for the Query/Pairs RPC
       method.
+=======
+>>>>>>> develop
   mantrachain.liquidity.v1beta1.QueryPairsResponse:
     type: object
     properties:

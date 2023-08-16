@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	utils "mantrachain/types"
-	"mantrachain/x/liquidity/keeper"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
 )
 
 func (s *KeeperTestSuite) TestDepositCoinsEscrowInvariant() {

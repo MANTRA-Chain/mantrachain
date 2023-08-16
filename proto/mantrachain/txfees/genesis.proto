@@ -4,7 +4,7 @@ package mantrachain.txfees;
 import "gogoproto/gogo.proto";
 import "mantrachain/txfees/params.proto";
 
-option go_package = "mantrachain/x/txfees/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // GenesisState defines the txfees module's genesis state.
 message GenesisState {

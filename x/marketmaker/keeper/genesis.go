@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 // InitGenesis initializes the marketmaker module's state from a given genesis state.

@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
+	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-    "mantrachain/x/txfees/types"
-    "mantrachain/x/txfees/keeper"
-    keepertest "mantrachain/testutil/keeper"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	"mantrachain/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 func ParseFarmingPlanProposal(cdc codec.JSONCodec, proposalFile string) (types.FarmingPlanProposal, error) {

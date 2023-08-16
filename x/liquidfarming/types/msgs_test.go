@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidfarming/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 var testAddr = sdk.AccAddress(crypto.AddressHash([]byte("test")))

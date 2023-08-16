@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 )
 
 func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts bool, account string) error {

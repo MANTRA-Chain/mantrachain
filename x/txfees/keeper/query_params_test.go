@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"testing"
 
+	testkeeper "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	testkeeper 	"mantrachain/testutil/keeper"
-	"mantrachain/x/txfees/types"
 )
 
 func TestParamsQuery(t *testing.T) {

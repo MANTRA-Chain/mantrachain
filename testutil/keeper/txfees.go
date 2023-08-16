@@ -3,8 +3,11 @@ package keeper
 import (
 	"testing"
 
-	"mantrachain/x/txfees/keeper"
-	"mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	tmdb "github.com/cometbft/cometbft-db"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
@@ -12,9 +15,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
-	"github.com/cometbft/cometbft/libs/log"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmdb "github.com/cometbft/cometbft-db"
 )
 
 func TxfeesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
@@ -37,12 +37,12 @@ func TxfeesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		"TxfeesParams",
 	)
 	k := keeper.NewKeeper(
-	    cdc,
-	    storeKey,
-	    memStoreKey,
-	    paramsSubspace, 
-        nil,
-        nil,
+		cdc,
+		storeKey,
+		memStoreKey,
+		paramsSubspace,
+		nil,
+		nil,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

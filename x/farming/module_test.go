@@ -9,10 +9,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "mantrachain/app"
-	"mantrachain/testutil"
-	"mantrachain/x/farming/keeper"
-	"mantrachain/x/farming/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 const (

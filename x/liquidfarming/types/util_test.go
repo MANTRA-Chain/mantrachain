@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 func TestPayingReserveAddress(t *testing.T) {

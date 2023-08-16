@@ -7,8 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/liquidfarming/keeper"
-	"mantrachain/x/liquidfarming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 // BeginBlocker compares all LiquidFarms stored in KVstore with all LiquidFarms registered in params.

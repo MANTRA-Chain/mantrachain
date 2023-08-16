@@ -1,7 +1,7 @@
 syntax = "proto3";
 package mantrachain.txfees;
 
-option go_package = "mantrachain/x/txfees/types";
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // Msg defines the Msg service.
 service Msg {}

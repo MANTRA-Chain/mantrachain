@@ -10,8 +10,8 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidfarming/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 func TestRewardsAuctionValidate(t *testing.T) {

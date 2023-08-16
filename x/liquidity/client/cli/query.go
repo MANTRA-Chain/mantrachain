@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

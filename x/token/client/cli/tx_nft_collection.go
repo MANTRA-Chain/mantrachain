@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
-	"mantrachain/x/token/types"
 )
 
 var _ = strconv.Itoa(0)

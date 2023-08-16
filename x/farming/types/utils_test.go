@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 func TestParseTime(t *testing.T) {

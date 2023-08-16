@@ -3,17 +3,17 @@ package txfees_test
 import (
 	"testing"
 
-	keepertest "mantrachain/testutil/keeper"
-	"mantrachain/testutil/nullify"
-	"mantrachain/x/txfees"
-	"mantrachain/x/txfees/types"
+	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
-		Params:	types.DefaultParams(),
-		
+		Params: types.DefaultParams(),
+
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -24,8 +24,6 @@ func TestGenesis(t *testing.T) {
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
-
-	
 
 	// this line is used by starport scaffolding # genesis/test/assert
 }

@@ -8,8 +8,8 @@ import (
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidfarming/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

@@ -16,7 +16,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 // GetQueryCmd returns a root CLI command handler for all x/farming query commands.

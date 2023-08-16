@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

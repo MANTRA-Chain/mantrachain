@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	utils "mantrachain/types"
-	"mantrachain/x/guard/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func TestMsgUpdateRequiredPrivileges(t *testing.T) {

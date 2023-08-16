@@ -6,8 +6,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "mantrachain/types"
-	"mantrachain/x/liquidity/amm"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 // OrderDirectionFromAMM converts amm.OrderDirection to liquidity module's

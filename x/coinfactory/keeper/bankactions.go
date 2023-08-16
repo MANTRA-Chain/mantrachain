@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 func (k Keeper) mintTo(ctx sdk.Context, amount sdk.Coin, mintTo string) error {

@@ -12,11 +12,11 @@ import (
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "mantrachain/app"
-	"mantrachain/testutil"
-	"mantrachain/x/liquidfarming/keeper"
-	"mantrachain/x/liquidfarming/types"
-	liquiditytypes "mantrachain/x/liquidity/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 
 	_ "github.com/stretchr/testify/suite"
 )
