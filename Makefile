@@ -2,6 +2,7 @@
 
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
+PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 
 ###############################################################################
 ###                                  Build                                  ###
@@ -20,3 +21,16 @@ $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 .PHONY: build build-linux
+
+###############################################################################
+###                           Tests                            							###
+###############################################################################
+
+test: test-unit
+
+test-unit: 
+	@VERSION=$(VERSION) go test ./x/... -mod=readonly -tags='norace' $(PACKAGES_NOSIMULATION)
+
+mocks:
+	@go install github.com/golang/mock/mockgen@v1.6.0
+	sh ./scripts/mockgen.sh

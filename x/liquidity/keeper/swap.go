@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -24,7 +25,6 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
 		return sdk.Coin{}, sdk.Dec{}, err
 	}
-
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -608,7 +608,7 @@ func (k Keeper) ExecuteMatching(ctx sdk.Context, pair types.Pair) error {
 	return nil
 }
 
-func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrderer, lastPrice *sdk.Dec) (matchPrice sdk.Dec, quoteCoinDiff sdk.Int, matched bool) {
+func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrderer, lastPrice *sdk.Dec) (matchPrice sdk.Dec, quoteCoinDiff math.Int, matched bool) {
 	tickPrec := int(k.GetTickPrecision(ctx))
 	if lastPrice == nil {
 		ov := amm.MultipleOrderViews{ob.MakeView()}
@@ -618,7 +618,7 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 		var found bool
 		matchPrice, found = amm.FindMatchPrice(ov, tickPrec)
 		if !found {
-			return sdk.Dec{}, sdk.Int{}, false
+			return sdk.Dec{}, math.Int{}, false
 		}
 		for _, pool := range pools {
 			buyAmt := pool.BuyAmountOver(matchPrice, true)
@@ -642,7 +642,7 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 	return
 }
 
-func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff sdk.Int) error {
+func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff math.Int) error {
 	whitelisted := make([]string, 0)
 	bulkOp := types.NewBulkSendCoinsOperation()
 	for _, order := range orders { // TODO: need optimization to filter matched orders only
@@ -654,7 +654,6 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 			continue
 		}
 		paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
-
 		// Guard: whitelist account address
 		whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{order.ReserveAddress.String()}, true)...)
 		bulkOp.QueueSendCoins(order.ReserveAddress, pair.GetEscrowAddress(), sdk.NewCoins(paidCoin))
@@ -670,7 +669,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		OrderDirection types.OrderDirection
 		PaidCoin       sdk.Coin
 		ReceivedCoin   sdk.Coin
-		MatchedAmount  sdk.Int
+		MatchedAmount  math.Int
 	}
 	poolMatchResultById := map[uint64]*PoolMatchResult{}
 	var poolMatchResults []*PoolMatchResult
@@ -716,6 +715,7 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		case *types.PoolOrder:
 			paidCoin := sdk.NewCoin(order.OfferCoinDenom, order.PaidOfferCoinAmount)
 			receivedCoin := sdk.NewCoin(order.DemandCoinDenom, order.ReceivedDemandCoinAmount)
+
 			bulkOp.QueueSendCoins(pair.GetEscrowAddress(), order.ReserveAddress, sdk.NewCoins(receivedCoin))
 
 			r, ok := poolMatchResultById[order.PoolId]

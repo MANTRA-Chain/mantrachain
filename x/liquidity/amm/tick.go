@@ -5,6 +5,8 @@ import (
 	"math/big"
 	"math/rand"
 
+	cosmosmath "cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -153,7 +155,7 @@ func HighestTick(prec int) sdk.Dec {
 
 // LowestTick returns the lowest possible price tick.
 func LowestTick(prec int) sdk.Dec {
-	return sdk.NewDecWithPrec(1, int64(sdk.Precision-prec))
+	return cosmosmath.LegacyNewDecWithPrec(1, int64(sdk.Precision-prec))
 }
 
 // TickToIndex returns a tick index for given price.

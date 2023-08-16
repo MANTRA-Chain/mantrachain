@@ -3,6 +3,7 @@ package keeper
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
@@ -44,7 +45,7 @@ func (k Keeper) GetDustCollector(ctx sdk.Context) sdk.AccAddress {
 
 // GetMinInitialPoolCoinSupply returns the current minimum pool coin supply
 // parameter.
-func (k Keeper) GetMinInitialPoolCoinSupply(ctx sdk.Context) (i sdk.Int) {
+func (k Keeper) GetMinInitialPoolCoinSupply(ctx sdk.Context) (i math.Int) {
 	k.paramSpace.Get(ctx, types.KeyMinInitialPoolCoinSupply, &i)
 	return
 }
@@ -63,7 +64,7 @@ func (k Keeper) GetPoolCreationFee(ctx sdk.Context) (fee sdk.Coins) {
 
 // GetMinInitialDepositAmount returns the current minimum initial deposit
 // amount parameter.
-func (k Keeper) GetMinInitialDepositAmount(ctx sdk.Context) (amt sdk.Int) {
+func (k Keeper) GetMinInitialDepositAmount(ctx sdk.Context) (amt math.Int) {
 	k.paramSpace.Get(ctx, types.KeyMinInitialDepositAmount, &amt)
 	return
 }

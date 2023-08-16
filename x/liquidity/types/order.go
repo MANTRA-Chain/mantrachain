@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -33,7 +34,7 @@ type UserOrder struct {
 // NewUserOrder returns a new user order.
 func NewUserOrder(order Order) *UserOrder {
 	var dir amm.OrderDirection
-	var amt sdk.Int
+	var amt math.Int
 	switch order.Direction {
 	case OrderDirectionBuy:
 		dir = amm.Buy
@@ -90,7 +91,7 @@ type PoolOrder struct {
 }
 
 func NewPoolOrder(
-	poolId uint64, reserveAddr sdk.AccAddress, dir amm.OrderDirection, price sdk.Dec, amt sdk.Int,
+	poolId uint64, reserveAddr sdk.AccAddress, dir amm.OrderDirection, price sdk.Dec, amt math.Int,
 	offerCoinDenom, demandCoinDenom string) *PoolOrder {
 	return &PoolOrder{
 		BaseOrder:       amm.NewBaseOrder(dir, price, amt, amm.OfferCoinAmount(dir, price, amt)),

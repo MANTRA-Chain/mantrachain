@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -30,7 +31,7 @@ var (
 	KeyDelayedStakingGasFee   = []byte("DelayedStakingGasFee")
 	KeyMaxNumPrivatePlans     = []byte("MaxNumPrivatePlans")
 
-	DefaultPrivatePlanCreationFee = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1_000_000_000)))
+	DefaultPrivatePlanCreationFee = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1_000_000_000)))
 	DefaultCurrentEpochDays       = uint32(1)
 	DefaultNextEpochDays          = uint32(1)
 	DefaultFarmingFeeCollector    = sdk.AccAddress(address.Module(ModuleName, []byte("FarmingFeeCollectorAcc")))

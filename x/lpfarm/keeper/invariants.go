@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
@@ -133,8 +134,8 @@ func CanWithdrawInvariant(k Keeper) sdk.Invariant {
 // equal to the sum of all the positions' farming amount which belong to the farm.
 func TotalFarmingAmountInvariant(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		totalFarmingAmtByDenom := map[string]sdk.Int{}
-		farmingAmtSumByDenom := map[string]sdk.Int{}
+		totalFarmingAmtByDenom := map[string]math.Int{}
+		farmingAmtSumByDenom := map[string]math.Int{}
 		k.IterateAllFarms(ctx, func(denom string, farm types.Farm) (stop bool) {
 			totalFarmingAmtByDenom[denom] = farm.TotalFarmingAmount
 			farmingAmtSumByDenom[denom] = sdk.ZeroInt()

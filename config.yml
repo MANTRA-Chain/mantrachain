@@ -3,24 +3,22 @@ accounts:
 - name: validator
   coins:
   - 10000000000000000uaum
-  mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind
-    want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
+  mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
 - name: admin
   coins:
   - 10000000000000000uaum
-  mnemonic: border expire liar nurse pulse code network nut solution juice rate
-    cloth bread broom total lobster clog response ill before acoustic wasp club clump
+  mnemonic: border expire liar nurse pulse code network nut solution juice rate cloth bread broom total lobster clog response ill before acoustic wasp club clump
 - name: recipient
   coins:
   - 10000000000000000uaum
-  mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they
-    essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
+  mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
 client:
   typescript:
     path: ts-client
   openapi:
     path: docs/static/openapi.yml
 genesis:
+  chain_id: "mantrachain-9001"
   app_state:
     bank:
       denom_metadata:
@@ -76,9 +74,16 @@ validators:
 - name: validator
   bonded: 100000000uaum
   app:
-    minimum-gas-prices: 0uaum
+    grpc:
+      address: 0.0.0.0:9090
+    grpc-web:
+      address: 0.0.0.0:9091
+    minimum-gas-prices: 0.0002uaum
     pruning: nothing
   config:
+    consensus:
+      timeout_commit: "6s"
+      timeout_propose: "6s"
     moniker: mantra-dev-01
     proxy_app: tcp://0.0.0.0:26658
   client:

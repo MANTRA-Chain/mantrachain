@@ -3,6 +3,7 @@ package amm
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -29,12 +30,12 @@ func (dir PriceDirection) String() string {
 }
 
 // FillOrder fills the order by given amount and price.
-func FillOrder(order Order, amt sdk.Int, price sdk.Dec) (quoteCoinDiff sdk.Int) {
+func FillOrder(order Order, amt math.Int, price sdk.Dec) (quoteCoinDiff math.Int) {
 	matchableAmt := MatchableAmount(order, price)
 	if amt.GT(matchableAmt) {
 		panic(fmt.Errorf("cannot match more than open amount; %s > %s", amt, matchableAmt))
 	}
-	var paid, received sdk.Int
+	var paid, received math.Int
 	switch order.GetDirection() {
 	case Buy:
 		paid = price.MulInt(amt).Ceil().TruncateInt()
@@ -52,7 +53,7 @@ func FillOrder(order Order, amt sdk.Int, price sdk.Dec) (quoteCoinDiff sdk.Int) 
 }
 
 // FulfillOrder fills the order by its remaining open amount at given price.
-func FulfillOrder(order Order, price sdk.Dec) (quoteCoinDiff sdk.Int) {
+func FulfillOrder(order Order, price sdk.Dec) (quoteCoinDiff math.Int) {
 	quoteCoinDiff = sdk.ZeroInt()
 	matchableAmt := MatchableAmount(order, price)
 	if matchableAmt.IsPositive() {
@@ -63,7 +64,7 @@ func FulfillOrder(order Order, price sdk.Dec) (quoteCoinDiff sdk.Int) {
 
 // FulfillOrders fills multiple orders by their remaining open amount
 // at given price.
-func FulfillOrders(orders []Order, price sdk.Dec) (quoteCoinDiff sdk.Int) {
+func FulfillOrders(orders []Order, price sdk.Dec) (quoteCoinDiff math.Int) {
 	quoteCoinDiff = sdk.ZeroInt()
 	for _, order := range orders {
 		quoteCoinDiff = quoteCoinDiff.Add(FulfillOrder(order, price))
@@ -108,12 +109,12 @@ func FindMatchPrice(ov OrderView, tickPrec int) (matchPrice sdk.Dec, found bool)
 
 // FindMatchableAmountAtSinglePrice returns the largest matchable amount of orders
 // when matching orders at single price(batch auction).
-func (ob *OrderBook) FindMatchableAmountAtSinglePrice(matchPrice sdk.Dec) (matchableAmt sdk.Int, found bool) {
+func (ob *OrderBook) FindMatchableAmountAtSinglePrice(matchPrice sdk.Dec) (matchableAmt math.Int, found bool) {
 	type Side struct {
 		ticks             []*orderBookTick
-		totalMatchableAmt sdk.Int
+		totalMatchableAmt math.Int
 		i                 int
-		partialMatchAmt   sdk.Int
+		partialMatchAmt   math.Int
 	}
 	buildSide := func(ticks []*orderBookTick, priceIncreasing bool) (side *Side) {
 		side = &Side{totalMatchableAmt: zeroInt}
@@ -130,11 +131,11 @@ func (ob *OrderBook) FindMatchableAmountAtSinglePrice(matchPrice sdk.Dec) (match
 	}
 	buySide := buildSide(ob.buys.ticks, ob.buys.priceIncreasing)
 	if len(buySide.ticks) == 0 {
-		return sdk.Int{}, false
+		return math.Int{}, false
 	}
 	sellSide := buildSide(ob.sells.ticks, ob.sells.priceIncreasing)
 	if len(sellSide.ticks) == 0 {
-		return sdk.Int{}, false
+		return math.Int{}, false
 	}
 	sides := map[OrderDirection]*Side{
 		Buy:  buySide,
@@ -159,7 +160,7 @@ func (ob *OrderBook) FindMatchableAmountAtSinglePrice(matchPrice sdk.Dec) (match
 			if otherTicksAmt.GTE(matchableAmt) ||
 				(dir == Sell && matchPrice.MulInt(side.partialMatchAmt).TruncateInt().IsZero()) {
 				if i == 0 { // There's no orders left, which means orders are not matchable.
-					return sdk.Int{}, false
+					return math.Int{}, false
 				}
 				side.totalMatchableAmt = side.totalMatchableAmt.Sub(tickAmt)
 				side.i--
@@ -175,10 +176,10 @@ func (ob *OrderBook) FindMatchableAmountAtSinglePrice(matchPrice sdk.Dec) (match
 // MatchAtSinglePrice matches all matchable orders(buy orders with higher(or equal) price
 // than the price and sell orders with lower(or equal) price than the price)
 // at the price.
-func (ob *OrderBook) MatchAtSinglePrice(matchPrice sdk.Dec) (quoteCoinDiff sdk.Int, matched bool) {
+func (ob *OrderBook) MatchAtSinglePrice(matchPrice sdk.Dec) (quoteCoinDiff math.Int, matched bool) {
 	matchableAmt, found := ob.FindMatchableAmountAtSinglePrice(matchPrice)
 	if !found {
-		return sdk.Int{}, false
+		return math.Int{}, false
 	}
 	quoteCoinDiff = sdk.ZeroInt()
 	distributeToTicks := func(ticks []*orderBookTick) {
@@ -246,9 +247,9 @@ func (ob *OrderBook) PriceDirection(lastPrice sdk.Dec) PriceDirection {
 // Match matches orders sequentially, starting from buy orders with the highest price
 // and sell orders with the lowest price.
 // The matching continues until there's no more matchable orders.
-func (ob *OrderBook) Match(lastPrice sdk.Dec) (matchPrice sdk.Dec, quoteCoinDiff sdk.Int, matched bool) {
+func (ob *OrderBook) Match(lastPrice sdk.Dec) (matchPrice sdk.Dec, quoteCoinDiff math.Int, matched bool) {
 	if len(ob.buys.ticks) == 0 || len(ob.sells.ticks) == 0 {
-		return sdk.Dec{}, sdk.Int{}, false
+		return sdk.Dec{}, math.Int{}, false
 	}
 	matchPrice = lastPrice
 	dir := ob.PriceDirection(lastPrice)
@@ -302,7 +303,7 @@ func (ob *OrderBook) Match(lastPrice sdk.Dec) (matchPrice sdk.Dec, quoteCoinDiff
 // at the tick.
 // Orders with higher priority(have lower batch id) get matched first,
 // then the remaining amount is distributed to the remaining orders.
-func DistributeOrderAmountToTick(tick *orderBookTick, amt sdk.Int, price sdk.Dec) (quoteCoinDiff sdk.Int) {
+func DistributeOrderAmountToTick(tick *orderBookTick, amt math.Int, price sdk.Dec) (quoteCoinDiff math.Int) {
 	remainingAmt := amt
 	quoteCoinDiff = sdk.ZeroInt()
 	groups := GroupOrdersByBatchId(tick.orders)
@@ -334,10 +335,10 @@ func DistributeOrderAmountToTick(tick *orderBookTick, amt sdk.Int, price sdk.Dec
 // to the orders again, by priority.
 // This time, the proportion is not considered and each order takes up
 // the amount as much as possible.
-func DistributeOrderAmountToOrders(orders []Order, amt sdk.Int, price sdk.Dec) (quoteCoinDiff sdk.Int) {
+func DistributeOrderAmountToOrders(orders []Order, amt math.Int, price sdk.Dec) (quoteCoinDiff math.Int) {
 	totalAmt := TotalAmount(orders)
 	totalMatchedAmt := sdk.ZeroInt()
-	matchedAmtByOrder := map[Order]sdk.Int{}
+	matchedAmtByOrder := map[Order]math.Int{}
 
 	for _, order := range orders {
 		matchableAmt := MatchableAmount(order, price)

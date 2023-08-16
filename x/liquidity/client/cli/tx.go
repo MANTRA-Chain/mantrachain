@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -324,7 +325,7 @@ $ %s tx %s limit-order 1 s 10000uatom stake 2.0 10000 --order-lifespan=10m --fro
 				return fmt.Errorf("invalid price: %w", err)
 			}
 
-			amt, ok := sdk.NewIntFromString(args[5])
+			amt, ok := math.NewIntFromString(args[5])
 			if !ok {
 				return fmt.Errorf("invalid amount: %s", args[5])
 			}
@@ -404,7 +405,7 @@ $ %s tx %s market-order 1 s 10000uatom stake 10000 --order-lifespan=10m --from m
 				return fmt.Errorf("invalid demand coin denom: %w", err)
 			}
 
-			amt, ok := sdk.NewIntFromString(args[4])
+			amt, ok := math.NewIntFromString(args[4])
 			if !ok {
 				return fmt.Errorf("invalid amount: %s", args[4])
 			}
@@ -480,7 +481,7 @@ $ %s tx %s mm-order 1 102 101 10000 0 0 0 --from mykey
 				return fmt.Errorf("invalid min sell price: %w", err)
 			}
 
-			sellAmt, ok := sdk.NewIntFromString(args[3])
+			sellAmt, ok := math.NewIntFromString(args[3])
 			if !ok {
 				return fmt.Errorf("invalid sell amount: %s", args[3])
 			}
@@ -495,7 +496,7 @@ $ %s tx %s mm-order 1 102 101 10000 0 0 0 --from mykey
 				return fmt.Errorf("invalid min buy price: %w", err)
 			}
 
-			buyAmt, ok := sdk.NewIntFromString(args[6])
+			buyAmt, ok := math.NewIntFromString(args[6])
 			if !ok {
 				return fmt.Errorf("invalid buy amount: %s", args[3])
 			}

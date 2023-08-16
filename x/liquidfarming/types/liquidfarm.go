@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,7 +23,7 @@ var (
 )
 
 // NewLiquidFarm returns a new LiquidFarm.
-func NewLiquidFarm(poolId uint64, minFarmAmt, minBidAmount sdk.Int, feeRate sdk.Dec) LiquidFarm {
+func NewLiquidFarm(poolId uint64, minFarmAmt, minBidAmount math.Int, feeRate sdk.Dec) LiquidFarm {
 	return LiquidFarm{
 		PoolId:        poolId,
 		MinFarmAmount: minFarmAmt,
@@ -93,10 +94,10 @@ func LiquidFarmReserveAddress(poolId uint64) sdk.AccAddress {
 // CalculateLiquidFarmAmount calculates minting liquid farm amount.
 // MintingAmt = LFCoinTotalSupply / LPCoinTotalAmount * LPCoinFarmingAmount
 func CalculateLiquidFarmAmount(
-	lfCoinTotalSupplyAmt sdk.Int,
-	lpCoinTotalFarmingAmt sdk.Int,
-	newFarmingAmt sdk.Int,
-) sdk.Int {
+	lfCoinTotalSupplyAmt math.Int,
+	lpCoinTotalFarmingAmt math.Int,
+	newFarmingAmt math.Int,
+) math.Int {
 	if lfCoinTotalSupplyAmt.IsZero() { // initial minting
 		return newFarmingAmt
 	}
@@ -106,11 +107,11 @@ func CalculateLiquidFarmAmount(
 // CalculateLiquidUnfarmAmount calculates unfarming amount.
 // UnfarmingAmount = LPCoinTotalAmount - CompoundingRewards / LFCoinTotalSupply * LFCoinUnfarmingAmount
 func CalculateLiquidUnfarmAmount(
-	lfCoinTotalSupplyAmt sdk.Int,
-	lpCoinTotalFarmingAmt sdk.Int,
-	unfarmingAmt sdk.Int,
-	compoundingRewards sdk.Int,
-) sdk.Int {
+	lfCoinTotalSupplyAmt math.Int,
+	lpCoinTotalFarmingAmt math.Int,
+	unfarmingAmt math.Int,
+	compoundingRewards math.Int,
+) math.Int {
 	if lfCoinTotalSupplyAmt.Equal(unfarmingAmt) { // last one to unfarm
 		return lpCoinTotalFarmingAmt
 	}

@@ -30,6 +30,7 @@ func GetQueryCmd() *cobra.Command {
 		NewQueryPoolCmd(),
 		NewQueryPairsCmd(),
 		NewQueryPairCmd(),
+		NewQueryPairsByDenomsCmd(),
 		NewQueryDepositRequestsCmd(),
 		NewQueryDepositRequestCmd(),
 		NewQueryWithdrawRequestsCmd(),
@@ -175,6 +176,64 @@ $ %s query %s pair 1
 	return cmd
 }
 
+// NewQueryPairsByDenomsCmd implements the pairs query command.
+func NewQueryPairsByDenomsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pairs-by-denoms [denom-1] [denom-2]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Query for all pairs by denoms",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query for all existing pairs by denoms on a network.
+
+Example:
+$ %s query %s pairs-by-denoms uatom stake
+`,
+				version.AppName, types.ModuleName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			denom1 := args[0]
+
+			if denom1 == "" {
+				return fmt.Errorf("denom-1 is empty")
+			}
+
+			denom2 := args[1]
+
+			if denom2 == "" {
+				return fmt.Errorf("denom-2 is empty")
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PairsByDenoms(cmd.Context(), &types.QueryPairsByDenomsRequest{
+				Denom1:     denom1,
+				Denom2:     denom2,
+				Pagination: pageReq,
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "pairs-by-denoms")
+
+	return cmd
+}
+
 // NewQueryPoolsCmd implements the pools query command.
 func NewQueryPoolsCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -255,7 +314,7 @@ func NewQueryPoolCmd() *cobra.Command {
 Example:
 $ %s query %s pool 1
 $ %s query %s pool --pool-coin-denom=pool1
-$ %s query %s pool --reserve-address=cre1...
+$ %s query %s pool --reserve-address=mantra...
 `,
 				version.AppName, types.ModuleName,
 				version.AppName, types.ModuleName,
@@ -537,8 +596,8 @@ func NewQueryOrdersCmd() *cobra.Command {
 			fmt.Sprintf(`Query for all orders in the pair.
 
 Example:
-$ %s query %s orders cre1...
-$ %s query %s orders --pair-id=1 cre1...
+$ %s query %s orders mantra...
+$ %s query %s orders --pair-id=1 mantra...
 $ %s query %s orders --pair-id=1
 `,
 				version.AppName, types.ModuleName,

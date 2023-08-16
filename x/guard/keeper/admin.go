@@ -5,9 +5,13 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k Keeper) CheckIsAdmin(ctx sdk.Context, address string) error {
+func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	conf := k.GetParams(ctx)
-	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
+	return sdk.MustAccAddressFromBech32(conf.AdminAccount)
+}
+
+func (k Keeper) CheckIsAdmin(ctx sdk.Context, address string) error {
+	admin := k.GetAdmin(ctx)
 
 	acc, err := sdk.AccAddressFromBech32(address)
 	if err != nil {

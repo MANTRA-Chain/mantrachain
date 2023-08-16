@@ -3,6 +3,7 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -326,7 +327,7 @@ func NewMsgLimitOrder(
 	offerCoin sdk.Coin,
 	demandCoinDenom string,
 	price sdk.Dec,
-	amt sdk.Int,
+	amt math.Int,
 	orderLifespan time.Duration,
 ) *MsgLimitOrder {
 	return &MsgLimitOrder{
@@ -422,7 +423,7 @@ func NewMsgMarketOrder(
 	dir OrderDirection,
 	offerCoin sdk.Coin,
 	demandCoinDenom string,
-	amt sdk.Int,
+	amt math.Int,
 	orderLifespan time.Duration,
 ) *MsgMarketOrder {
 	return &MsgMarketOrder{
@@ -501,8 +502,8 @@ func (msg MsgMarketOrder) GetOrderer() sdk.AccAddress {
 func NewMsgMMOrder(
 	orderer sdk.AccAddress,
 	pairId uint64,
-	maxSellPrice, minSellPrice sdk.Dec, sellAmt sdk.Int,
-	maxBuyPrice, minBuyPrice sdk.Dec, buyAmt sdk.Int,
+	maxSellPrice, minSellPrice sdk.Dec, sellAmt math.Int,
+	maxBuyPrice, minBuyPrice sdk.Dec, buyAmt math.Int,
 	orderLifespan time.Duration,
 ) *MsgMMOrder {
 	return &MsgMMOrder{

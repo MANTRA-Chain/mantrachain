@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -17,7 +18,7 @@ var (
 
 // OfferCoinAmount returns the minimum offer coin amount for
 // given order direction, price and order amount.
-func OfferCoinAmount(dir OrderDirection, price sdk.Dec, amt sdk.Int) sdk.Int {
+func OfferCoinAmount(dir OrderDirection, price sdk.Dec, amt math.Int) math.Int {
 	switch dir {
 	case Buy:
 		return price.MulInt(amt).Ceil().TruncateInt()
@@ -30,7 +31,7 @@ func OfferCoinAmount(dir OrderDirection, price sdk.Dec, amt sdk.Int) sdk.Int {
 
 // MatchableAmount returns matchable amount of an order considering
 // remaining offer coin and price.
-func MatchableAmount(order Order, price sdk.Dec) (matchableAmt sdk.Int) {
+func MatchableAmount(order Order, price sdk.Dec) (matchableAmt math.Int) {
 	switch order.GetDirection() {
 	case Buy:
 		remainingOfferCoinAmt := order.GetOfferCoinAmount().Sub(order.GetPaidOfferCoinAmount())
@@ -48,7 +49,7 @@ func MatchableAmount(order Order, price sdk.Dec) (matchableAmt sdk.Int) {
 }
 
 // TotalAmount returns total amount of orders.
-func TotalAmount(orders []Order) sdk.Int {
+func TotalAmount(orders []Order) math.Int {
 	amt := sdk.ZeroInt()
 	for _, order := range orders {
 		amt = amt.Add(order.GetAmount())
@@ -57,7 +58,7 @@ func TotalAmount(orders []Order) sdk.Int {
 }
 
 // TotalMatchableAmount returns total matchable amount of orders.
-func TotalMatchableAmount(orders []Order, price sdk.Dec) (amt sdk.Int) {
+func TotalMatchableAmount(orders []Order, price sdk.Dec) (amt math.Int) {
 	amt = sdk.ZeroInt()
 	for _, order := range orders {
 		amt = amt.Add(MatchableAmount(order, price))
@@ -147,7 +148,7 @@ var (
 
 func poolOrderPriceGapRatio(poolPrice, currentPrice sdk.Dec) (r sdk.Dec) {
 	if poolPrice.IsZero() {
-		poolPrice = sdk.NewDecWithPrec(1, sdk.Precision) // lowest possible sdk.Dec
+		poolPrice = math.LegacyNewDecWithPrec(1, sdk.Precision) // lowest possible sdk.Dec
 	}
 	x := currentPrice.Sub(poolPrice).Abs().Quo(poolPrice)
 	switch {

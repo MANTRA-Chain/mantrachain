@@ -3,6 +3,7 @@ package amm
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -34,14 +35,14 @@ func (dir OrderDirection) String() string {
 }
 
 type Orderer interface {
-	Order(dir OrderDirection, price sdk.Dec, amt sdk.Int) Order
+	Order(dir OrderDirection, price sdk.Dec, amt math.Int) Order
 }
 
 // BaseOrderer creates new BaseOrder with sufficient offer coin amount
 // considering price and amount.
 type BaseOrderer struct{}
 
-func (orderer BaseOrderer) Order(dir OrderDirection, price sdk.Dec, amt sdk.Int) Order {
+func (orderer BaseOrderer) Order(dir OrderDirection, price sdk.Dec, amt math.Int) Order {
 	return NewBaseOrder(dir, price, amt, OfferCoinAmount(dir, price, amt))
 }
 
@@ -52,14 +53,14 @@ type Order interface {
 	// Batch id of 0 means the current batch.
 	GetBatchId() uint64
 	GetPrice() sdk.Dec
-	GetAmount() sdk.Int // The original order amount
-	GetOfferCoinAmount() sdk.Int
-	GetPaidOfferCoinAmount() sdk.Int
-	SetPaidOfferCoinAmount(amt sdk.Int)
-	GetReceivedDemandCoinAmount() sdk.Int
-	SetReceivedDemandCoinAmount(amt sdk.Int)
-	GetOpenAmount() sdk.Int
-	SetOpenAmount(amt sdk.Int)
+	GetAmount() math.Int // The original order amount
+	GetOfferCoinAmount() math.Int
+	GetPaidOfferCoinAmount() math.Int
+	SetPaidOfferCoinAmount(amt math.Int)
+	GetReceivedDemandCoinAmount() math.Int
+	SetReceivedDemandCoinAmount(amt math.Int)
+	GetOpenAmount() math.Int
+	SetOpenAmount(amt math.Int)
 	IsMatched() bool
 	// HasPriority returns true if the order has higher priority
 	// than the other order.
@@ -71,17 +72,17 @@ type Order interface {
 type BaseOrder struct {
 	Direction       OrderDirection
 	Price           sdk.Dec
-	Amount          sdk.Int
-	OfferCoinAmount sdk.Int
+	Amount          math.Int
+	OfferCoinAmount math.Int
 
 	// Match info
-	OpenAmount               sdk.Int
-	PaidOfferCoinAmount      sdk.Int
-	ReceivedDemandCoinAmount sdk.Int
+	OpenAmount               math.Int
+	PaidOfferCoinAmount      math.Int
+	ReceivedDemandCoinAmount math.Int
 }
 
 // NewBaseOrder returns a new BaseOrder.
-func NewBaseOrder(dir OrderDirection, price sdk.Dec, amt, offerCoinAmt sdk.Int) *BaseOrder {
+func NewBaseOrder(dir OrderDirection, price sdk.Dec, amt, offerCoinAmt math.Int) *BaseOrder {
 	return &BaseOrder{
 		Direction:                dir,
 		Price:                    price,
@@ -108,35 +109,35 @@ func (order *BaseOrder) GetPrice() sdk.Dec {
 }
 
 // GetAmount returns the order amount.
-func (order *BaseOrder) GetAmount() sdk.Int {
+func (order *BaseOrder) GetAmount() math.Int {
 	return order.Amount
 }
 
-func (order *BaseOrder) GetOfferCoinAmount() sdk.Int {
+func (order *BaseOrder) GetOfferCoinAmount() math.Int {
 	return order.OfferCoinAmount
 }
 
-func (order *BaseOrder) GetPaidOfferCoinAmount() sdk.Int {
+func (order *BaseOrder) GetPaidOfferCoinAmount() math.Int {
 	return order.PaidOfferCoinAmount
 }
 
-func (order *BaseOrder) SetPaidOfferCoinAmount(amt sdk.Int) {
+func (order *BaseOrder) SetPaidOfferCoinAmount(amt math.Int) {
 	order.PaidOfferCoinAmount = amt
 }
 
-func (order *BaseOrder) GetReceivedDemandCoinAmount() sdk.Int {
+func (order *BaseOrder) GetReceivedDemandCoinAmount() math.Int {
 	return order.ReceivedDemandCoinAmount
 }
 
-func (order *BaseOrder) SetReceivedDemandCoinAmount(amt sdk.Int) {
+func (order *BaseOrder) SetReceivedDemandCoinAmount(amt math.Int) {
 	order.ReceivedDemandCoinAmount = amt
 }
 
-func (order *BaseOrder) GetOpenAmount() sdk.Int {
+func (order *BaseOrder) GetOpenAmount() math.Int {
 	return order.OpenAmount
 }
 
-func (order *BaseOrder) SetOpenAmount(amt sdk.Int) {
+func (order *BaseOrder) SetOpenAmount(amt math.Int) {
 	order.OpenAmount = amt
 }
 

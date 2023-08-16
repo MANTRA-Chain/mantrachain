@@ -3,7 +3,9 @@ package keeper
 import (
 	"context"
 	"strconv"
+	"strings"
 
+	"cosmossdk.io/math"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -90,6 +92,70 @@ func (k Querier) Pairs(c context.Context, req *types.QueryPairsRequest) (*types.
 	}
 
 	return &types.QueryPairsResponse{Pairs: pairs, Pagination: pageRes}, nil
+}
+
+// Pairs queries all pairs by denoms.
+func (k Querier) PairsByDenoms(c context.Context, req *types.QueryPairsByDenomsRequest) (*types.QueryPairsByDenomsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if strings.TrimSpace(req.Denom1) == "" || strings.TrimSpace(req.Denom2) == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "empty denom: denom-1: %s, denom-2: %s", req.Denom1, req.Denom2)
+	}
+
+	denoms := []string{req.Denom1, req.Denom2}
+
+	for _, denom := range denoms {
+		if err := sdk.ValidateDenom(denom); err != nil {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	store := ctx.KVStore(k.storeKey)
+
+	var keyPrefix []byte
+	var pairGetter func(key, value []byte) types.Pair
+	switch len(denoms) {
+	case 0:
+		keyPrefix = types.PairKeyPrefix
+		pairGetter = func(_, value []byte) types.Pair {
+			return types.MustUnmarshalPair(k.cdc, value)
+		}
+	case 1:
+		keyPrefix = types.GetPairsByDenomIndexKeyPrefix(denoms[0])
+		pairGetter = func(key, _ []byte) types.Pair {
+			_, _, pairId := types.ParsePairsByDenomsIndexKey(append(keyPrefix, key...))
+			pair, _ := k.GetPair(ctx, pairId)
+			return pair
+		}
+	case 2:
+		keyPrefix = types.GetPairsByDenomsIndexKeyPrefix(denoms[0], denoms[1])
+		pairGetter = func(key, _ []byte) types.Pair {
+			_, _, pairId := types.ParsePairsByDenomsIndexKey(append(keyPrefix, key...))
+			pair, _ := k.GetPair(ctx, pairId)
+			return pair
+		}
+	}
+	pairStore := prefix.NewStore(store, keyPrefix)
+
+	var pairs []types.Pair
+	pageRes, err := query.FilteredPaginate(pairStore, req.Pagination, func(key, value []byte, accumulate bool) (bool, error) {
+		pair := pairGetter(key, value)
+
+		if accumulate {
+			pairs = append(pairs, pair)
+		}
+
+		return true, nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryPairsByDenomsResponse{Pairs: pairs, Pagination: pageRes}, nil
 }
 
 // Pair queries the specific pair.
@@ -559,7 +625,7 @@ func (k Querier) OrderBooks(c context.Context, req *types.QueryOrderBooksRequest
 				return false, nil
 			}
 			rx, ry := k.getPoolBalances(ctx, pool, pair)
-			ammPool := pool.AMMPool(rx.Amount, ry.Amount, sdk.Int{})
+			ammPool := pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
 			ob.AddOrder(amm.PoolOrders(ammPool, amm.DefaultOrderer, lowestPrice, highestPrice, int(tickPrec))...)
 			return false, nil
 		})

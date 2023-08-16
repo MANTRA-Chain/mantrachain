@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -16,18 +17,18 @@ var (
 
 // Pool is the interface of a pool.
 type Pool interface {
-	Balances() (rx, ry sdk.Int)
-	SetBalances(rx, ry sdk.Int, derive bool)
-	PoolCoinSupply() sdk.Int
+	Balances() (rx, ry math.Int)
+	SetBalances(rx, ry math.Int, derive bool)
+	PoolCoinSupply() math.Int
 	Price() sdk.Dec
 	IsDepleted() bool
 
 	HighestBuyPrice() (sdk.Dec, bool)
 	LowestSellPrice() (sdk.Dec, bool)
-	BuyAmountOver(price sdk.Dec, inclusive bool) sdk.Int
-	SellAmountUnder(price sdk.Dec, inclusive bool) sdk.Int
-	BuyAmountTo(price sdk.Dec) sdk.Int
-	SellAmountTo(price sdk.Dec) sdk.Int
+	BuyAmountOver(price sdk.Dec, inclusive bool) math.Int
+	SellAmountUnder(price sdk.Dec, inclusive bool) math.Int
+	BuyAmountTo(price sdk.Dec) math.Int
+	SellAmountTo(price sdk.Dec) math.Int
 
 	Clone() Pool
 }
@@ -37,14 +38,14 @@ type BasicPool struct {
 	// rx and ry are the pool's reserve balance of each x/y coin.
 	// In perspective of a pair, x coin is the quote coin and
 	// y coin is the base coin.
-	rx, ry sdk.Int
+	rx, ry math.Int
 	// ps is the pool's pool coin supply.
-	ps sdk.Int
+	ps math.Int
 }
 
 // NewBasicPool returns a new BasicPool.
-// It is OK to pass an empty sdk.Int to ps when ps is not going to be used.
-func NewBasicPool(rx, ry, ps sdk.Int) *BasicPool {
+// It is OK to pass an empty math.Int to ps when ps is not going to be used.
+func NewBasicPool(rx, ry, ps math.Int) *BasicPool {
 	return &BasicPool{
 		rx: rx,
 		ry: ry,
@@ -52,7 +53,7 @@ func NewBasicPool(rx, ry, ps sdk.Int) *BasicPool {
 	}
 }
 
-func CreateBasicPool(rx, ry sdk.Int) (*BasicPool, error) {
+func CreateBasicPool(rx, ry math.Int) (*BasicPool, error) {
 	if rx.IsZero() || ry.IsZero() {
 		return nil, fmt.Errorf("cannot create basic pool with zero reserve amount")
 	}
@@ -67,17 +68,17 @@ func CreateBasicPool(rx, ry sdk.Int) (*BasicPool, error) {
 }
 
 // Balances returns the balances of the pool.
-func (pool *BasicPool) Balances() (rx, ry sdk.Int) {
+func (pool *BasicPool) Balances() (rx, ry math.Int) {
 	return pool.rx, pool.ry
 }
 
-func (pool *BasicPool) SetBalances(rx, ry sdk.Int, _ bool) {
+func (pool *BasicPool) SetBalances(rx, ry math.Int, _ bool) {
 	pool.rx = rx
 	pool.ry = ry
 }
 
 // PoolCoinSupply returns the pool coin supply.
-func (pool *BasicPool) PoolCoinSupply() sdk.Int {
+func (pool *BasicPool) PoolCoinSupply() math.Int {
 	return pool.ps
 }
 
@@ -111,7 +112,7 @@ func (pool *BasicPool) LowestSellPrice() (price sdk.Dec, found bool) {
 // BuyAmountOver returns the amount of buy orders for price greater than
 // or equal to given price.
 // amt = (X - P*Y)/P
-func (pool *BasicPool) BuyAmountOver(price sdk.Dec, _ bool) (amt sdk.Int) {
+func (pool *BasicPool) BuyAmountOver(price sdk.Dec, _ bool) (amt math.Int) {
 	origPrice := price
 	if price.LT(MinPoolPrice) {
 		price = MinPoolPrice
@@ -134,7 +135,7 @@ func (pool *BasicPool) BuyAmountOver(price sdk.Dec, _ bool) (amt sdk.Int) {
 	return
 }
 
-func (pool *BasicPool) SellAmountUnder(price sdk.Dec, _ bool) (amt sdk.Int) {
+func (pool *BasicPool) SellAmountUnder(price sdk.Dec, _ bool) (amt math.Int) {
 	if price.GT(MaxPoolPrice) {
 		price = MaxPoolPrice
 	}
@@ -151,7 +152,7 @@ func (pool *BasicPool) SellAmountUnder(price sdk.Dec, _ bool) (amt sdk.Int) {
 // BuyAmountTo returns the amount of buy orders of the pool for price,
 // where BuyAmountTo is used when the pool price is higher than the highest
 // price of the order book.
-func (pool *BasicPool) BuyAmountTo(price sdk.Dec) (amt sdk.Int) {
+func (pool *BasicPool) BuyAmountTo(price sdk.Dec) (amt math.Int) {
 	origPrice := price
 	if price.LT(MinPoolPrice) {
 		price = MinPoolPrice
@@ -180,7 +181,7 @@ func (pool *BasicPool) BuyAmountTo(price sdk.Dec) (amt sdk.Int) {
 // SellAmountTo returns the amount of sell orders of the pool for price,
 // where SellAmountTo is used when the pool price is lower than the lowest
 // price of the order book.
-func (pool *BasicPool) SellAmountTo(price sdk.Dec) (amt sdk.Int) {
+func (pool *BasicPool) SellAmountTo(price sdk.Dec) (amt math.Int) {
 	if price.GT(MaxPoolPrice) {
 		price = MaxPoolPrice
 	}
@@ -203,15 +204,15 @@ func (pool *BasicPool) Clone() Pool {
 }
 
 type RangedPool struct {
-	rx, ry             sdk.Int
-	ps                 sdk.Int
+	rx, ry             math.Int
+	ps                 math.Int
 	minPrice, maxPrice sdk.Dec
 	transX, transY     sdk.Dec
 	xComp, yComp       sdk.Dec
 }
 
 // NewRangedPool returns a new RangedPool.
-func NewRangedPool(rx, ry, ps sdk.Int, minPrice, maxPrice sdk.Dec) *RangedPool {
+func NewRangedPool(rx, ry, ps math.Int, minPrice, maxPrice sdk.Dec) *RangedPool {
 	transX, transY := DeriveTranslation(rx, ry, minPrice, maxPrice)
 	return &RangedPool{
 		rx:       rx,
@@ -228,7 +229,7 @@ func NewRangedPool(rx, ry, ps sdk.Int, minPrice, maxPrice sdk.Dec) *RangedPool {
 
 // CreateRangedPool creates new RangedPool from given inputs, while validating
 // the inputs and using only needed amount of x/y coins(the rest should be refunded).
-func CreateRangedPool(x, y sdk.Int, minPrice, maxPrice, initialPrice sdk.Dec) (pool *RangedPool, err error) {
+func CreateRangedPool(x, y math.Int, minPrice, maxPrice, initialPrice sdk.Dec) (pool *RangedPool, err error) {
 	if !x.IsPositive() && !y.IsPositive() {
 		return nil, fmt.Errorf("either x or y must be positive")
 	}
@@ -237,7 +238,7 @@ func CreateRangedPool(x, y sdk.Int, minPrice, maxPrice, initialPrice sdk.Dec) (p
 	}
 
 	// P = initialPrice, M = minPrice, L = maxPrice
-	var ax, ay sdk.Int
+	var ax, ay math.Int
 	switch {
 	case initialPrice.Equal(minPrice): // single y asset pool
 		ax = zeroInt
@@ -294,13 +295,13 @@ func ValidateRangedPoolParams(minPrice, maxPrice, initialPrice sdk.Dec) error {
 }
 
 // Balances returns the balances of the pool.
-func (pool *RangedPool) Balances() (rx, ry sdk.Int) {
+func (pool *RangedPool) Balances() (rx, ry math.Int) {
 	return pool.rx, pool.ry
 }
 
 // SetBalances sets RangedPool's balances without recalculating
 // transX and transY.
-func (pool *RangedPool) SetBalances(rx, ry sdk.Int, derive bool) {
+func (pool *RangedPool) SetBalances(rx, ry math.Int, derive bool) {
 	if derive {
 		pool.transX, pool.transY = DeriveTranslation(rx, ry, pool.minPrice, pool.maxPrice)
 	}
@@ -311,7 +312,7 @@ func (pool *RangedPool) SetBalances(rx, ry sdk.Int, derive bool) {
 }
 
 // PoolCoinSupply returns the pool coin supply.
-func (pool *RangedPool) PoolCoinSupply() sdk.Int {
+func (pool *RangedPool) PoolCoinSupply() math.Int {
 	return pool.ps
 }
 
@@ -356,7 +357,7 @@ func (pool *RangedPool) LowestSellPrice() (price sdk.Dec, found bool) {
 
 // BuyAmountOver returns the amount of buy orders for price greater than
 // or equal to given price.
-func (pool *RangedPool) BuyAmountOver(price sdk.Dec, _ bool) (amt sdk.Int) {
+func (pool *RangedPool) BuyAmountOver(price sdk.Dec, _ bool) (amt math.Int) {
 	origPrice := price
 	if price.LT(pool.minPrice) {
 		price = pool.minPrice
@@ -384,7 +385,7 @@ func (pool *RangedPool) BuyAmountOver(price sdk.Dec, _ bool) (amt sdk.Int) {
 
 // SellAmountUnder returns the amount of sell orders for price less than
 // or equal to given price.
-func (pool *RangedPool) SellAmountUnder(price sdk.Dec, _ bool) (amt sdk.Int) {
+func (pool *RangedPool) SellAmountUnder(price sdk.Dec, _ bool) (amt math.Int) {
 	if price.GT(pool.maxPrice) {
 		price = pool.maxPrice
 	}
@@ -405,7 +406,7 @@ func (pool *RangedPool) SellAmountUnder(price sdk.Dec, _ bool) (amt sdk.Int) {
 // BuyAmountTo returns the amount of buy orders of the pool for price,
 // where BuyAmountTo is used when the pool price is higher than the highest
 // price of the order book.
-func (pool *RangedPool) BuyAmountTo(price sdk.Dec) (amt sdk.Int) {
+func (pool *RangedPool) BuyAmountTo(price sdk.Dec) (amt math.Int) {
 	origPrice := price
 	if price.LT(pool.minPrice) {
 		price = pool.minPrice
@@ -437,7 +438,7 @@ func (pool *RangedPool) BuyAmountTo(price sdk.Dec) (amt sdk.Int) {
 // SellAmountTo returns the amount of sell orders of the pool for price,
 // where SellAmountTo is used when the pool price is lower than the lowest
 // price of the order book.
-func (pool *RangedPool) SellAmountTo(price sdk.Dec) (amt sdk.Int) {
+func (pool *RangedPool) SellAmountTo(price sdk.Dec) (amt math.Int) {
 	if price.GT(pool.maxPrice) {
 		price = pool.maxPrice
 	}
@@ -474,7 +475,7 @@ func (pool *RangedPool) Clone() Pool {
 
 // Deposit returns accepted x and y coin amount and minted pool coin amount
 // when someone deposits x and y coins.
-func Deposit(rx, ry, ps, x, y sdk.Int) (ax, ay, pc sdk.Int) {
+func Deposit(rx, ry, ps, x, y math.Int) (ax, ay, pc math.Int) {
 	// Calculate accepted amount and minting amount.
 	// Note that we take as many coins as possible(by ceiling numbers)
 	// from depositor and mint as little coins as possible.
@@ -511,7 +512,7 @@ func Deposit(rx, ry, ps, x, y sdk.Int) (ax, ay, pc sdk.Int) {
 // Withdraw returns withdrawn x and y coin amount when someone withdraws
 // pc pool coin.
 // Withdraw also takes care of the fee rate.
-func Withdraw(rx, ry, ps, pc sdk.Int, feeRate sdk.Dec) (x, y sdk.Int) {
+func Withdraw(rx, ry, ps, pc math.Int, feeRate sdk.Dec) (x, y math.Int) {
 	if pc.Equal(ps) {
 		// Redeeming the last pool coin - give all remaining rx and ry.
 		x = rx
@@ -531,7 +532,7 @@ func Withdraw(rx, ry, ps, pc sdk.Int, feeRate sdk.Dec) (x, y sdk.Int) {
 	return
 }
 
-func DeriveTranslation(rx, ry sdk.Int, minPrice, maxPrice sdk.Dec) (transX, transY sdk.Dec) {
+func DeriveTranslation(rx, ry math.Int, minPrice, maxPrice sdk.Dec) (transX, transY sdk.Dec) {
 	sqrt := utils.DecApproxSqrt
 
 	// M = minPrice, L = maxPrice
@@ -600,7 +601,7 @@ func PoolBuyOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdk.Dec
 		return nil
 	}
 	tmpPool := pool.Clone()
-	placeOrder := func(price sdk.Dec, amt sdk.Int, derive bool) {
+	placeOrder := func(price sdk.Dec, amt math.Int, derive bool) {
 		orders = append(orders, orderer.Order(Buy, price, amt))
 		rx, ry := tmpPool.Balances()
 		rx = rx.Sub(price.MulInt(amt).Ceil().TruncateInt()) // quote coin ceiling
@@ -641,7 +642,7 @@ func PoolSellOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdk.De
 		return nil
 	}
 	tmpPool := pool.Clone()
-	placeOrder := func(price sdk.Dec, amt sdk.Int, derive bool) {
+	placeOrder := func(price sdk.Dec, amt math.Int, derive bool) {
 		orders = append(orders, orderer.Order(Sell, price, amt))
 		rx, ry := tmpPool.Balances()
 		rx = rx.Add(price.MulInt(amt).TruncateInt()) // quote coin truncation
@@ -672,11 +673,11 @@ func PoolSellOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdk.De
 }
 
 // InitialPoolCoinSupply returns ideal initial pool coin minting amount.
-func InitialPoolCoinSupply(x, y sdk.Int) sdk.Int {
+func InitialPoolCoinSupply(x, y math.Int) math.Int {
 	cx := len(x.BigInt().Text(10)) - 1 // characteristic of x
 	cy := len(y.BigInt().Text(10)) - 1 // characteristic of y
 	c := ((cx + 1) + (cy + 1) + 1) / 2 // ceil(((cx + 1) + (cy + 1)) / 2)
 	res := big.NewInt(10)
 	res.Exp(res, big.NewInt(int64(c)), nil) // 10^c
-	return sdk.NewIntFromBigInt(res)
+	return math.NewIntFromBigInt(res)
 }

@@ -3,6 +3,7 @@ package amm
 import (
 	"sort"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -15,8 +16,8 @@ var (
 type OrderView interface {
 	HighestBuyPrice() (sdk.Dec, bool)
 	LowestSellPrice() (sdk.Dec, bool)
-	BuyAmountOver(price sdk.Dec, inclusive bool) sdk.Int
-	SellAmountUnder(price sdk.Dec, inclusive bool) sdk.Int
+	BuyAmountOver(price sdk.Dec, inclusive bool) math.Int
+	SellAmountUnder(price sdk.Dec, inclusive bool) math.Int
 }
 
 type OrderBookView struct {
@@ -29,7 +30,7 @@ func (ob *OrderBook) MakeView() *OrderBookView {
 		sellAmtAccSums: make([]amtAccSum, len(ob.sells.ticks)),
 	}
 	for i, tick := range ob.buys.ticks {
-		var prevSum sdk.Int
+		var prevSum math.Int
 		if i == 0 {
 			prevSum = sdk.ZeroInt()
 		} else {
@@ -41,7 +42,7 @@ func (ob *OrderBook) MakeView() *OrderBookView {
 		}
 	}
 	for i, tick := range ob.sells.ticks {
-		var prevSum sdk.Int
+		var prevSum math.Int
 		if i == 0 {
 			prevSum = sdk.ZeroInt()
 		} else {
@@ -119,7 +120,7 @@ func (view *OrderBookView) LowestSellPrice() (sdk.Dec, bool) {
 	return view.sellAmtAccSums[i].price, true
 }
 
-func (view *OrderBookView) BuyAmountOver(price sdk.Dec, inclusive bool) sdk.Int {
+func (view *OrderBookView) BuyAmountOver(price sdk.Dec, inclusive bool) math.Int {
 	i := sort.Search(len(view.buyAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.buyAmtAccSums[i].price.LT(price)
@@ -133,7 +134,7 @@ func (view *OrderBookView) BuyAmountOver(price sdk.Dec, inclusive bool) sdk.Int 
 	return view.buyAmtAccSums[i-1].sum
 }
 
-func (view *OrderBookView) BuyAmountUnder(price sdk.Dec, inclusive bool) sdk.Int {
+func (view *OrderBookView) BuyAmountUnder(price sdk.Dec, inclusive bool) math.Int {
 	i := sort.Search(len(view.buyAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.buyAmtAccSums[i].price.LTE(price)
@@ -147,7 +148,7 @@ func (view *OrderBookView) BuyAmountUnder(price sdk.Dec, inclusive bool) sdk.Int
 	return view.buyAmtAccSums[len(view.buyAmtAccSums)-1].sum.Sub(view.buyAmtAccSums[i-1].sum)
 }
 
-func (view *OrderBookView) SellAmountUnder(price sdk.Dec, inclusive bool) sdk.Int {
+func (view *OrderBookView) SellAmountUnder(price sdk.Dec, inclusive bool) math.Int {
 	i := sort.Search(len(view.sellAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.sellAmtAccSums[i].price.GT(price)
@@ -161,7 +162,7 @@ func (view *OrderBookView) SellAmountUnder(price sdk.Dec, inclusive bool) sdk.In
 	return view.sellAmtAccSums[i-1].sum
 }
 
-func (view *OrderBookView) SellAmountOver(price sdk.Dec, inclusive bool) sdk.Int {
+func (view *OrderBookView) SellAmountOver(price sdk.Dec, inclusive bool) math.Int {
 	i := sort.Search(len(view.sellAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.sellAmtAccSums[i].price.GTE(price)
@@ -177,7 +178,7 @@ func (view *OrderBookView) SellAmountOver(price sdk.Dec, inclusive bool) sdk.Int
 
 type amtAccSum struct {
 	price sdk.Dec
-	sum   sdk.Int
+	sum   math.Int
 }
 
 type MultipleOrderViews []OrderView
@@ -204,7 +205,7 @@ func (views MultipleOrderViews) LowestSellPrice() (price sdk.Dec, found bool) {
 	return
 }
 
-func (views MultipleOrderViews) BuyAmountOver(price sdk.Dec, inclusive bool) sdk.Int {
+func (views MultipleOrderViews) BuyAmountOver(price sdk.Dec, inclusive bool) math.Int {
 	amt := sdk.ZeroInt()
 	for _, view := range views {
 		amt = amt.Add(view.BuyAmountOver(price, inclusive))
@@ -212,7 +213,7 @@ func (views MultipleOrderViews) BuyAmountOver(price sdk.Dec, inclusive bool) sdk
 	return amt
 }
 
-func (views MultipleOrderViews) SellAmountUnder(price sdk.Dec, inclusive bool) sdk.Int {
+func (views MultipleOrderViews) SellAmountUnder(price sdk.Dec, inclusive bool) math.Int {
 	amt := sdk.ZeroInt()
 	for _, view := range views {
 		amt = amt.Add(view.SellAmountUnder(price, inclusive))

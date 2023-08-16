@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -259,7 +260,7 @@ func (k Keeper) decrementReferenceCount(ctx sdk.Context, denom string, period ui
 	}
 }
 
-func (k Keeper) rewardsBetweenPeriods(ctx sdk.Context, denom string, startPeriod, endPeriod uint64, amt sdk.Int) sdk.DecCoins {
+func (k Keeper) rewardsBetweenPeriods(ctx sdk.Context, denom string, startPeriod, endPeriod uint64, amt math.Int) sdk.DecCoins {
 	start, found := k.GetHistoricalRewards(ctx, denom, startPeriod)
 	if !found {
 		panic("historical rewards not found")

@@ -13,7 +13,7 @@ import (
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -331,8 +331,8 @@ func TestAppImportExport(t *testing.T) {
 		}
 	}()
 
-	ctxA := bApp.NewContext(true, tmproto.Header{Height: bApp.LastBlockHeight()})
-	ctxB := newApp.NewContext(true, tmproto.Header{Height: bApp.LastBlockHeight()})
+	ctxA := bApp.NewContext(true, cbproto.Header{Height: bApp.LastBlockHeight()})
+	ctxB := newApp.NewContext(true, cbproto.Header{Height: bApp.LastBlockHeight()})
 	newApp.ModuleManager().InitGenesis(ctxB, bApp.AppCodec(), genesisState)
 	newApp.StoreConsensusParams(ctxB, exported.ConsensusParams)
 

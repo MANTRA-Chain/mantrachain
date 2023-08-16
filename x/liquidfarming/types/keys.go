@@ -16,6 +16,9 @@ const (
 
 	// RouterKey is the message route key
 	RouterKey = ModuleName
+
+	// QuerierRoute defines the module's query routing key
+	QuerierRoute = ModuleName
 )
 
 // keys for the store prefixes
