@@ -22,6 +22,8 @@ type HandlerOptions struct {
 	SigGasConsumer         func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error
 	TxFeeChecker           txfeeskeeper.TxFeeChecker
 	GuardKeeper            txfeestypes.GuardKeeper
+	LiquidityKeeper        txfeestypes.LiquidityKeeper
+	TxfeesKeeper           txfeestypes.TxfeesKeeper
 }
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -47,7 +49,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		authante.NewTxTimeoutHeightDecorator(),
 		authante.NewValidateMemoDecorator(options.AccountKeeper),
 		authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		txfeeskeeper.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker, options.GuardKeeper),
+		txfeeskeeper.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker, options.GuardKeeper, options.LiquidityKeeper, options.TxfeesKeeper),
 		authante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		authante.NewValidateSigCountDecorator(options.AccountKeeper),
 		authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),

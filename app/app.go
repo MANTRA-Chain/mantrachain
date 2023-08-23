@@ -698,6 +698,7 @@ func New(
 
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 	txfeesModule := txfeesmodule.NewAppModule(appCodec, app.TxfeesKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -805,6 +806,7 @@ func New(
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
 		tokentypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
@@ -815,7 +817,6 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -842,6 +843,7 @@ func New(
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
 		tokentypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
@@ -851,7 +853,6 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -879,6 +880,7 @@ func New(
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
 		tokentypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -892,7 +894,6 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -933,6 +934,8 @@ func New(
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
 			GuardKeeper:     &app.GuardKeeper,
+			LiquidityKeeper: app.LiquidityKeeper,
+			TxfeesKeeper:    app.TxfeesKeeper,
 		},
 	)
 	if err != nil {

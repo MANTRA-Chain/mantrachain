@@ -27,4 +27,17 @@ type BankKeeper interface {
 // FeegrantKeeper defines the expected feegrant keeper.
 type GuardKeeper interface {
 	GetAdmin(ctx sdk.Context) sdk.AccAddress
+	CheckIsAdmin(ctx sdk.Context, address string) error
+}
+
+type LiquidityKeeper interface {
+	GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error)
+}
+
+type TxfeesKeeper interface {
+	GetParams(ctx sdk.Context) (params Params)
+	GetFeeToken(
+		ctx sdk.Context,
+		denom string,
+	) (val FeeToken, found bool)
 }

@@ -5,9 +5,7 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
-// Params defines the parameters for the module.
-message Params {
-  option (gogoproto.goproto_stringer) = false;
-
-  string base_denom = 1;
+message FeeToken {
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  uint64 pairId = 2 [(gogoproto.moretags) = "yaml:\"pair_id\""];
 }
