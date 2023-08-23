@@ -229,7 +229,7 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin)
 		offerCoin = sdk.NewCoin(pair.BaseCoinDenom, amm.OfferCoinAmount(amm.Buy, price, swapCoin.Amount))
 	} else if swapCoin.Denom == pair.BaseCoinDenom { // Sell
 		price = amm.PriceToUpTick(lastPrice.Mul(sdk.OneDec().Sub(maxPriceLimitRatio)), int(tickPrec))
-		offerCoin = sdk.NewCoin(pair.QuoteCoinDenom, swapCoin.Amount)
+		offerCoin = sdk.NewCoin(pair.QuoteCoinDenom, sdk.NewDecFromInt(swapCoin.Amount).Quo(price).Ceil().TruncateInt())
 	}
 
 	return offerCoin, price, nil
