@@ -698,6 +698,7 @@ func New(
 
 		app.AccountKeeper,
 		app.BankKeeper,
+		&app.GuardKeeper,
 	)
 	txfeesModule := txfeesmodule.NewAppModule(appCodec, app.TxfeesKeeper, app.AccountKeeper, app.BankKeeper)
 
@@ -933,6 +934,8 @@ func New(
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
 			GuardKeeper:     &app.GuardKeeper,
+			LiquidityKeeper: app.LiquidityKeeper,
+			TxfeesKeeper:    app.TxfeesKeeper,
 		},
 	)
 	if err != nil {

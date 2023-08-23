@@ -25,7 +25,7 @@ func TestMsgCreateDidDocument_GetSigners(t *testing.T) {
 		MsgCreateDidDocument{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgCreateDidDocument{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgCreateDidDocument{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgUpdateDidDocument_Route(t *testing.T) {
@@ -47,7 +47,7 @@ func TestMsgUpdateDidDocument_GetSigners(t *testing.T) {
 		MsgUpdateDidDocument{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgUpdateDidDocument{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgUpdateDidDocument{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgAddVerification_Route(t *testing.T) {
@@ -69,7 +69,7 @@ func TestMsgAddVerification_GetSigners(t *testing.T) {
 		MsgAddVerification{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgAddVerification{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgAddVerification{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgRevokeVerification_Route(t *testing.T) {
@@ -91,7 +91,7 @@ func TestMsgRevokeVerification_GetSigners(t *testing.T) {
 		MsgRevokeVerification{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgRevokeVerification{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgRevokeVerification{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgSetVerificationRelationships_Route(t *testing.T) {
@@ -113,7 +113,7 @@ func TestMsgSetVerificationRelationships_GetSigners(t *testing.T) {
 		MsgSetVerificationRelationships{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgSetVerificationRelationships{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgSetVerificationRelationships{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgDeleteService_Route(t *testing.T) {
@@ -135,7 +135,7 @@ func TestMsgDeleteService_GetSigners(t *testing.T) {
 		MsgDeleteService{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgDeleteService{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgDeleteService{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgAddService_Route(t *testing.T) {
@@ -157,7 +157,7 @@ func TestMsgAddService_GetSigners(t *testing.T) {
 		MsgAddService{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgAddService{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgAddService{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgAddController_Route(t *testing.T) {
@@ -179,7 +179,7 @@ func TestMsgAddController_GetSigners(t *testing.T) {
 		MsgAddController{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgAddController{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgAddController{Signer: "invalid"}.GetSigners() })
 }
 
 func TestMsgDeleteController_Route(t *testing.T) {
@@ -201,5 +201,5 @@ func TestMsgDeleteController_GetSigners(t *testing.T) {
 		MsgDeleteController{Signer: "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"}.GetSigners(),
 		[]sdk.AccAddress{a},
 	)
-	assert.Panics(t, func(){MsgDeleteController{Signer: "invalid"}.GetSigners()})
+	assert.Panics(t, func() { MsgDeleteController{Signer: "invalid"}.GetSigners() })
 }

@@ -1,7 +1,36 @@
 syntax = "proto3";
+
 package mantrachain.txfees;
+
+import "mantrachain/txfees/fee_token.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateFeeToken(MsgCreateFeeToken) returns (MsgCreateFeeTokenResponse);
+  rpc UpdateFeeToken(MsgUpdateFeeToken) returns (MsgUpdateFeeTokenResponse);
+  rpc DeleteFeeToken(MsgDeleteFeeToken) returns (MsgDeleteFeeTokenResponse);
+}
+message MsgCreateFeeToken {
+  string creator = 1;
+  string denom = 2;
+  uint64 pairId = 3;
+}
+
+message MsgCreateFeeTokenResponse {}
+
+message MsgUpdateFeeToken {
+  string creator = 1;
+  string denom = 2;
+  uint64 pairId = 3;
+}
+
+message MsgUpdateFeeTokenResponse {}
+
+message MsgDeleteFeeToken {
+  string creator = 1;
+  string denom = 2;
+}
+
+message MsgDeleteFeeTokenResponse {}

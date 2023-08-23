@@ -1,22 +1,43 @@
 package keeper
 
 import (
-	"math"
-
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
 // unit of gas is fixed and set by each validator, can the tx priority is computed from the gas price.
-func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error) {
+func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom string, txfeesKeeper types.TxfeesKeeper, liquidityKeeper types.LiquidityKeeper) (sdk.Coins, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return nil, 0, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	feeCoins := feeTx.GetFee()
+
+	if len(feeCoins) > 1 {
+		return nil, sdkerrors.Wrap(types.ErrTooManyFeeCoins, "Only accepts fees in one denom")
+	}
+
+	var pairId uint64
+	var feeDenomNotBaseDenom bool
+
+	if len(feeCoins) == 1 {
+		feeDenom := feeCoins.GetDenomByIndex(0)
+		feeDenomNotBaseDenom = feeDenom != baseDenom
+
+		if feeDenomNotBaseDenom {
+			feeToken, foundFeeToken := txfeesKeeper.GetFeeToken(ctx, feeDenom)
+			if !foundFeeToken {
+				return nil, sdkerrors.Wrap(types.ErrInvalidFeeDenom, "Invalid fee denom")
+			}
+
+			pairId = feeToken.PairId
+		}
+	}
+
 	gas := feeTx.GetGas()
 
 	// Ensure that the provided fees meet a minimum threshold for the validator,
@@ -24,6 +45,11 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins,
 	// is only ran on check tx.
 	if ctx.IsCheckTx() {
 		minGasPrices := ctx.MinGasPrices()
+
+		if len(minGasPrices) > 1 {
+			return nil, sdkerrors.Wrap(types.ErrTooManyGasPricesCoins, "Only accepts min gas prices in one denom")
+		}
+
 		if !minGasPrices.IsZero() {
 			requiredFees := make(sdk.Coins, len(minGasPrices))
 
@@ -31,36 +57,25 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx) (sdk.Coins,
 			// price by the gas limit, where fee = ceil(minGasPrice * gasLimit).
 			glDec := sdkmath.LegacyNewDec(int64(gas))
 			for i, gp := range minGasPrices {
-				fee := gp.Amount.Mul(glDec)
-				requiredFees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
+				fee := gp.Amount.Mul(glDec).Ceil().RoundInt()
+
+				if feeDenomNotBaseDenom {
+					offerCoin, _, err := liquidityKeeper.GetSwapAmount(ctx, pairId, sdk.NewCoin(gp.Denom, fee))
+					if err != nil {
+						return nil, err
+					}
+
+					requiredFees[i] = offerCoin
+				} else {
+					requiredFees[i] = sdk.NewCoin(gp.Denom, fee)
+				}
 			}
 
 			if !feeCoins.IsAnyGTE(requiredFees) {
-				return nil, 0, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
+				return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
 			}
 		}
 	}
 
-	priority := getTxPriority(feeCoins, int64(gas))
-	return feeCoins, priority, nil
-}
-
-// getTxPriority returns a naive tx priority based on the amount of the smallest denomination of the gas price
-// provided in a transaction.
-// NOTE: This implementation should be used with a great consideration as it opens potential attack vectors
-// where txs with multiple coins could not be prioritize as expected.
-func getTxPriority(fee sdk.Coins, gas int64) int64 {
-	var priority int64
-	for _, c := range fee {
-		p := int64(math.MaxInt64)
-		gasPrice := c.Amount.QuoRaw(gas)
-		if gasPrice.IsInt64() {
-			p = gasPrice.Int64()
-		}
-		if priority == 0 || p < priority {
-			priority = p
-		}
-	}
-
-	return priority
+	return feeCoins, nil
 }

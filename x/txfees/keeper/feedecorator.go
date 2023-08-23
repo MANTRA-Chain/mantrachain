@@ -12,35 +12,41 @@ import (
 
 // TxFeeChecker check if the provided fee is enough and returns the effective fee and tx priority,
 // the effective fee should be deducted later, and the priority should be returned in abci response.
-type TxFeeChecker func(ctx sdk.Context, tx sdk.Tx) (sdk.Coins, int64, error)
+type TxFeeChecker func(ctx sdk.Context, tx sdk.Tx, baseDenom string, txfeesKeeper types.TxfeesKeeper, liquidityKeeper types.LiquidityKeeper) (sdk.Coins, error)
 
 // DeductFeeDecorator deducts fees from the first signer of the tx
 // If the first signer does not have the funds to pay for the fees, return with InsufficientFunds error
 // Call next AnteHandler if fees successfully deducted
 // CONTRACT: Tx must implement FeeTx interface to use DeductFeeDecorator
 type DeductFeeDecorator struct {
-	accountKeeper  types.AccountKeeper
-	bankKeeper     authtypes.BankKeeper
-	feegrantKeeper types.FeegrantKeeper
-	txFeeChecker   TxFeeChecker
-	guardKeeper    types.GuardKeeper
+	accountKeeper   types.AccountKeeper
+	bankKeeper      authtypes.BankKeeper
+	feegrantKeeper  types.FeegrantKeeper
+	txFeeChecker    TxFeeChecker
+	guardKeeper     types.GuardKeeper
+	liquidityKeeper types.LiquidityKeeper
+	txfeesKeeper    types.TxfeesKeeper
 }
 
-func NewDeductFeeDecorator(ak types.AccountKeeper, bk authtypes.BankKeeper, fk types.FeegrantKeeper, tfc TxFeeChecker, gk types.GuardKeeper) DeductFeeDecorator {
+func NewDeductFeeDecorator(ak types.AccountKeeper, bk authtypes.BankKeeper, fk types.FeegrantKeeper, tfc TxFeeChecker, gk types.GuardKeeper, lk types.LiquidityKeeper, tfk types.TxfeesKeeper) DeductFeeDecorator {
 	if tfc == nil {
 		tfc = checkTxFeeWithValidatorMinGasPrices
 	}
 
 	return DeductFeeDecorator{
-		accountKeeper:  ak,
-		bankKeeper:     bk,
-		feegrantKeeper: fk,
-		txFeeChecker:   tfc,
-		guardKeeper:    gk,
+		accountKeeper:   ak,
+		bankKeeper:      bk,
+		feegrantKeeper:  fk,
+		txFeeChecker:    tfc,
+		guardKeeper:     gk,
+		liquidityKeeper: lk,
+		txfeesKeeper:    tfk,
 	}
 }
 
 func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	conf := dfd.txfeesKeeper.GetParams(ctx)
+
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
@@ -51,13 +57,12 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	var (
-		priority int64
-		err      error
+		err error
 	)
 
 	fee := feeTx.GetFee()
 	if !simulate {
-		fee, priority, err = dfd.txFeeChecker(ctx, tx)
+		fee, err = dfd.txFeeChecker(ctx, tx, conf.BaseDenom, dfd.txfeesKeeper, dfd.liquidityKeeper)
 		if err != nil {
 			return ctx, err
 		}
@@ -66,9 +71,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		return ctx, err
 	}
 
-	newCtx := ctx.WithPriority(priority)
-
-	return next(newCtx, tx, simulate)
+	return next(ctx, tx, simulate)
 }
 
 func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee sdk.Coins) error {

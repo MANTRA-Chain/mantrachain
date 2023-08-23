@@ -42,7 +42,7 @@ genesis:
       constant_fee:
         denom: uaum
     gov:
-      deposit_params:
+      params:
         min_deposit:
         - amount: "10000000"
           denom: uaum
@@ -51,6 +51,9 @@ genesis:
         account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
         account_privileges_token_collection_id: account_privileges_guard_nft_collection
         admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+    txfees:
+      params:
+        base_denom: uaum
     liquidity:
       params:
         pair_creation_fee:
@@ -63,6 +66,16 @@ genesis:
       params:
         private_plan_creation_fee:
         - amount: "1000000"
+          denom: uaum
+    farming:
+      params:
+        private_plan_creation_fee:
+        - amount: "1000000000"
+          denom: uaum
+    marketmaker:
+      params:
+        deposit_amount:
+        - amount: "1000000000"
           denom: uaum
     mint:
       params:
