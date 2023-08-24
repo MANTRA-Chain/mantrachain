@@ -65,6 +65,10 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom s
 						return nil, err
 					}
 
+					if offerCoin.IsZero() {
+						return nil, sdkerrors.Wrapf(types.ErrZeroFee, "zero fees; required fees: %s", offerCoin)
+					}
+
 					requiredFees[i] = offerCoin
 				} else {
 					requiredFees[i] = sdk.NewCoin(gp.Denom, fee)

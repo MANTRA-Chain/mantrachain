@@ -16,4 +16,5 @@ var (
 	ErrLiquidityPoolPairLastPriceNotAvailable = sdkerrors.Register(ModuleName, 1105, "Liquidity pool pair last price not available")
 	ErrLiquidityPoolPairFeeDenomNotMatch      = sdkerrors.Register(ModuleName, 1106, "Liquidity pool pair fee denom not match")
 	ErrTooManyGasPricesCoins                  = sdkerrors.Register(ModuleName, 1107, "too many gas prices coins")
+	ErrZeroFee                                = sdkerrors.Register(ModuleName, 1108, "zero fee")
 )

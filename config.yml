@@ -79,9 +79,9 @@ genesis:
           denom: uaum
     mint:
       params:
-        inflation_min: "0"
-        inflation_max: "0"
-        inflation_rate_change: "0"
+        # inflation_min: "0"
+        # inflation_max: "0"
+        # inflation_rate_change: "0"
         mint_denom: uaum
     staking:
       params:
