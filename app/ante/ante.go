@@ -4,6 +4,9 @@ import (
 	txfeeskeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 
+	wasm "github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -14,6 +17,8 @@ import (
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.
 type HandlerOptions struct {
+	WasmConfig 						 wasm.Config
+	TxCounterStoreKey 		 storetypes.StoreKey
 	AccountKeeper          AccountKeeper
 	BankKeeper             types.BankKeeper
 	ExtensionOptionChecker authante.ExtensionOptionChecker
@@ -44,6 +49,8 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 
 	anteDecorators := []sdk.AnteDecorator{
 		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit),
+		wasmkeeper.NewCountTXDecorator(options.TxCounterStoreKey),
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),
 		authante.NewTxTimeoutHeightDecorator(),

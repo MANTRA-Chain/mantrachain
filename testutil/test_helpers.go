@@ -22,6 +22,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/cosmos/cosmos-sdk/testutil/mock"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
@@ -68,6 +69,7 @@ func MakeTestEncodingConfig() params.EncodingConfig {
 func setup(withGenesis bool, invCheckPeriod uint) (*chain.App, chain.GenesisState) {
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
+	var emptyWasmOpts []wasmkeeper.Option
 	app := chain.New(
 		log.NewNopLogger(),
 		db,
@@ -78,6 +80,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*chain.App, chain.GenesisStat
 		invCheckPeriod,
 		encCdc,
 		EmptyAppOptions{},
+		emptyWasmOpts,
 	)
 
 	if withGenesis {
