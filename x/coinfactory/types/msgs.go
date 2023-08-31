@@ -56,10 +56,11 @@ func (m MsgCreateDenom) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgMint{}
 
 // NewMsgMint creates a message to mint tokens
-func NewMsgMint(sender string, amount sdk.Coin) *MsgMint {
+func NewMsgMint(sender string, amount sdk.Coin, mintToAddress string) *MsgMint {
 	return &MsgMint{
-		Sender: sender,
-		Amount: amount,
+		Sender:        sender,
+		Amount:        amount,
+		MintToAddress: mintToAddress,
 	}
 }
 
@@ -73,6 +74,13 @@ func (m MsgMint) ValidateBasic() error {
 
 	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	}
+
+	if m.MintToAddress != "" {
+		_, err = sdk.AccAddressFromBech32(m.MintToAddress)
+		if err != nil {
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
+		}
 	}
 
 	return nil
@@ -90,10 +98,11 @@ func (m MsgMint) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBurn{}
 
 // NewMsgBurn creates a message to burn tokens
-func NewMsgBurn(sender string, amount sdk.Coin) *MsgBurn {
+func NewMsgBurn(sender string, amount sdk.Coin, burnFromAddress string) *MsgBurn {
 	return &MsgBurn{
-		Sender: sender,
-		Amount: amount,
+		Sender:          sender,
+		Amount:          amount,
+		BurnFromAddress: burnFromAddress,
 	}
 }
 
@@ -107,6 +116,13 @@ func (m MsgBurn) ValidateBasic() error {
 
 	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	}
+
+	if m.BurnFromAddress != "" {
+		_, err = sdk.AccAddressFromBech32(m.BurnFromAddress)
+		if err != nil {
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
+		}
 	}
 
 	return nil

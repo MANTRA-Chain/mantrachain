@@ -11,9 +11,9 @@ import (
 
 func CmdBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [amount]",
+		Use:   "burn [amount] [burn-from-address]",
 		Short: "Burn tokens from an address. Must have admin authority to do so.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			amount, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
@@ -25,7 +25,9 @@ func CmdBurn() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgBurn(clientCtx.GetFromAddress().String(), amount)
+			burnFrom := args[1]
+
+			msg := types.NewMsgBurn(clientCtx.GetFromAddress().String(), amount, burnFrom)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

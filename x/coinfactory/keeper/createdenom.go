@@ -16,6 +16,11 @@ func (k Keeper) CreateDenom(ctx sdk.Context, creatorAddr string, subdenom string
 		return "", err
 	}
 
+	err = k.chargeForCreateDenom(ctx, creatorAddr)
+	if err != nil {
+		return "", err
+	}
+
 	err = k.createDenomAfterValidation(ctx, creatorAddr, denom)
 	return denom, err
 }
@@ -63,4 +68,35 @@ func (k Keeper) validateCreateDenom(ctx sdk.Context, creatorAddr string, subdeno
 	}
 
 	return denom, nil
+}
+
+func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string) (err error) {
+	params := k.GetParams(ctx)
+
+	// if DenomCreationFee is non-zero, transfer the tokens from the creator
+	// account to community pool
+	if params.DenomCreationFee != nil {
+		accAddr, err := sdk.AccAddressFromBech32(creatorAddr)
+		if err != nil {
+			return err
+		}
+
+		admin := k.gk.GetAdmin(ctx)
+
+		err = k.bankKeeper.SendCoins(ctx, accAddr, admin, params.DenomCreationFee)
+		if err != nil {
+			return err
+		}
+
+		// if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.DenomCreationFee, accAddr); err != nil {
+		// 	return err
+		// }
+	}
+
+	// if DenomCreationGasConsume is non-zero, consume the gas
+	if params.DenomCreationGasConsume != 0 {
+		ctx.GasMeter().ConsumeGas(params.DenomCreationGasConsume, "consume denom creation gas")
+	}
+
+	return nil
 }

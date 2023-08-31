@@ -611,6 +611,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper.WithMintCoinsRestriction(coinfactorytypes.NewCoinFactoryDenomMintCoinsRestriction()),
 		&app.GuardKeeper,
+		app.DistrKeeper,
 	)
 
 	app.GuardKeeper = guardkeeper.NewKeeper(

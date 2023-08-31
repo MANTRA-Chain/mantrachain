@@ -143,6 +143,7 @@ func TestMsgMint(t *testing.T) {
 		properMsg := *types.NewMsgMint(
 			addr1.String(),
 			sdk.NewCoin("bitcoin", math.NewInt(500000000)),
+			"",
 		)
 
 		return after(properMsg)
@@ -215,6 +216,7 @@ func TestMsgBurn(t *testing.T) {
 	baseMsg := types.NewMsgBurn(
 		addr1.String(),
 		sdk.NewCoin("bitcoin", math.NewInt(500000000)),
+		"",
 	)
 
 	// validate burn message was created as intended

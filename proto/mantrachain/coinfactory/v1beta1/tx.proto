@@ -47,6 +47,7 @@ message MsgMint {
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false
   ];
+  string mintToAddress = 3 [(gogoproto.moretags) = "yaml:\"mint_to_address\""];
 }
 
 message MsgMintResponse {}
@@ -59,6 +60,7 @@ message MsgBurn {
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false
   ];
+  string burnFromAddress = 3 [(gogoproto.moretags) = "yaml:\"burn_from_address\""];
 }
 
 message MsgBurnResponse {}

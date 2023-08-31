@@ -26,6 +26,8 @@ type (
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
 		gk            types.GuardKeeper
+
+		communityPoolKeeper types.CommunityPoolKeeper
 	}
 )
 
@@ -37,6 +39,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	gk types.GuardKeeper,
+	communityPoolKeeper types.CommunityPoolKeeper,
 ) *Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
@@ -47,9 +50,10 @@ func NewKeeper(
 		storeKey:   storeKey,
 		paramSpace: paramSpace,
 
-		accountKeeper: accountKeeper,
-		bankKeeper:    bankKeeper,
-		gk:            gk,
+		accountKeeper:       accountKeeper,
+		bankKeeper:          bankKeeper,
+		gk:                  gk,
+		communityPoolKeeper: communityPoolKeeper,
 	}
 }
 
