@@ -86,6 +86,11 @@ genesis:
     staking:
       params:
         bond_denom: uaum
+    coinfactory:
+      params:
+        denom_creation_fee:
+        - amount: "10"
+          denom: uaum
 validators:
 - name: validator
   bonded: 100000000uaum

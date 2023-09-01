@@ -45,7 +45,7 @@ func (suite *KeeperTestSuite) TestAdminMsgs() {
 	suite.Require().True(bankKeeper.GetBalance(suite.ctx, suite.addrs[1], suite.defaultDenom).IsEqual(sdk.NewInt64Coin(suite.defaultDenom, addr1bal)))
 
 	// Test burning from own account
-	_, err = suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 5), ""))
+	_, err = suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 5)))
 	addr0bal -= 5
 	suite.Require().NoError(err)
 	suite.Require().True(bankKeeper.GetBalance(suite.ctx, suite.addrs[1], suite.defaultDenom).Amount.Int64() == addr1bal)
@@ -60,7 +60,7 @@ func (suite *KeeperTestSuite) TestAdminMsgs() {
 	suite.Require().Equal(suite.addrs[1].String(), queryRes.AuthorityMetadata.Admin)
 
 	// Make sure old admin can no longer do actions
-	_, err = suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 5), ""))
+	_, err = suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 5)))
 	suite.Require().Error(err)
 
 	// Make sure the new admin works
@@ -182,7 +182,7 @@ func (suite *KeeperTestSuite) TestBurnDenom() {
 		suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {
 			// Test minting to admins own account
 			bankKeeper := suite.app.BankKeeper
-			_, err := suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(tc.admin, sdk.NewInt64Coin(tc.burnDenom, 10), ""))
+			_, err := suite.msgServer.Burn(sdk.WrapSDKContext(suite.ctx), types.NewMsgBurn(tc.admin, sdk.NewInt64Coin(tc.burnDenom, 10)))
 			if tc.valid {
 				addr0bal -= 10
 				suite.Require().NoError(err)

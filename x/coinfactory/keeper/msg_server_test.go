@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestBurnDenomMsg() {
 			ctx := suite.ctx.WithEventManager(sdk.NewEventManager())
 			suite.Require().Equal(0, len(ctx.EventManager().Events()))
 			// Test burn message
-			suite.msgServer.Burn(sdk.WrapSDKContext(ctx), types.NewMsgBurn(tc.admin, sdk.NewInt64Coin(tc.burnDenom, 10), ""))
+			suite.msgServer.Burn(sdk.WrapSDKContext(ctx), types.NewMsgBurn(tc.admin, sdk.NewInt64Coin(tc.burnDenom, 10)))
 			// Ensure current number and type of event is emitted
 			suite.AssertEventEmitted(ctx, types.TypeMsgBurn, tc.expectedMessageEvents)
 		})

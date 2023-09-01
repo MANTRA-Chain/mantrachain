@@ -31,8 +31,7 @@ func NewParams(denomCreationFee sdk.Coins, denomCreationGasConsume uint64) Param
 // default gamm module parameters.
 func DefaultParams() Params {
 	return Params{
-		// For choice, see: https://github.com/osmosis-labs/osmosis/pull/4983
-		DenomCreationFee:        sdk.NewCoins(), // used to be 10 OSMO at launch.
+		DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))), // 10 UAUM
 		DenomCreationGasConsume: uint64(DefaultCreationGasFee),
 	}
 }

@@ -24,6 +24,10 @@ var _ types.MsgServer = msgServer{}
 func (server msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := server.gk.CheckIsAdmin(ctx, msg.Sender); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
 	denom, err := server.Keeper.CreateDenom(ctx, msg.Sender, msg.Subdenom)
 	if err != nil {
 		return nil, err
@@ -92,11 +96,7 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 		return nil, types.ErrUnauthorized
 	}
 
-	if msg.BurnFromAddress == "" {
-		msg.BurnFromAddress = msg.Sender
-	}
-
-	err = server.Keeper.burnFrom(ctx, msg.Amount, msg.BurnFromAddress)
+	err = server.Keeper.burnFrom(ctx, msg.Amount, msg.Sender)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.TypeMsgBurn,
-			sdk.NewAttribute(types.AttributeBurnFromAddress, msg.BurnFromAddress),
+			sdk.NewAttribute(types.AttributeBurnFromAddress, msg.Sender),
 			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
 		),
 	})
