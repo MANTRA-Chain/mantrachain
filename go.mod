@@ -4,8 +4,10 @@ go 1.19
 
 require (
 	cosmossdk.io/api v0.3.1
+	cosmossdk.io/errors v1.0.0
 	cosmossdk.io/math v1.0.1
 	github.com/CosmWasm/wasmd v0.40.1
+	github.com/CosmWasm/wasmvm v1.3.0
 	github.com/bufbuild/buf v1.9.0
 	github.com/cometbft/cometbft v0.37.2
 	github.com/cometbft/cometbft-db v0.8.0
@@ -40,7 +42,6 @@ require (
 	cloud.google.com/go/storage v1.30.1 // indirect
 	cosmossdk.io/core v0.5.1 // indirect
 	cosmossdk.io/depinject v1.0.0-alpha.3 // indirect
-	cosmossdk.io/errors v1.0.0 // indirect
 	cosmossdk.io/log v1.1.1-0.20230704160919-88f2c830b0ca // indirect
 	cosmossdk.io/tools/rosetta v0.2.1 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
@@ -48,7 +49,6 @@ require (
 	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
-	github.com/CosmWasm/wasmvm v1.3.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/aws/aws-sdk-go v1.44.203 // indirect

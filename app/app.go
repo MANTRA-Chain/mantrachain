@@ -11,6 +11,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	mwasm "github.com/MANTRA-Finance/mantrachain/wasmbinding"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
@@ -171,7 +172,7 @@ const (
 
 	// If EnabledSpecificProposals is "", and this is "true", then enable all x/wasm proposals.
 	// If EnabledSpecificProposals is "", and this is not "true", then disable all x/wasm proposals.
-	ProposalsEnabled = "true"
+	ProposalsEnabled = "false"
 	// If set to non-empty string it must be comma-separated list of values that are all a subset
 	// of "EnableAllProposals" (takes precedence over ProposalsEnabled)
 	// https://github.com/CosmWasm/wasmd/blob/02a54d33ff2c064f3539ae12d75d027d9c665f05/x/wasm/internal/types/proposal.go#L28-L34
@@ -331,7 +332,7 @@ type App struct {
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
 	AuthzKeeper           authzkeeper.Keeper
-	BankKeeper            bankkeeper.Keeper
+	BankKeeper            bankkeeper.BaseKeeper
 	CapabilityKeeper      *capabilitykeeper.Keeper
 	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
@@ -791,6 +792,10 @@ func New(
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	availableCapabilities := strings.Join(AllCapabilities(), ",")
+
+	wasmOpts = append(mwasm.RegisterCustomPlugins(&app.BankKeeper, &app.CoinFactoryKeeper), wasmOpts...)
+	wasmOpts = append(mwasm.RegisterStargateQueries(*bApp.GRPCQueryRouter(), appCodec), wasmOpts...)
+
 	wasmKeeper := wasm.NewKeeper(
 		appCodec,
 		keys[wasmtypes.StoreKey],
