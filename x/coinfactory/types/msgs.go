@@ -56,11 +56,10 @@ func (m MsgCreateDenom) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgMint{}
 
 // NewMsgMint creates a message to mint tokens
-func NewMsgMint(sender string, amount sdk.Coin, mintToAddress string) *MsgMint {
+func NewMsgMint(sender string, amount sdk.Coin) *MsgMint {
 	return &MsgMint{
-		Sender:        sender,
-		Amount:        amount,
-		MintToAddress: mintToAddress,
+		Sender: sender,
+		Amount: amount,
 	}
 }
 
@@ -74,13 +73,6 @@ func (m MsgMint) ValidateBasic() error {
 
 	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
-	}
-
-	if m.MintToAddress != "" {
-		_, err = sdk.AccAddressFromBech32(m.MintToAddress)
-		if err != nil {
-			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
-		}
 	}
 
 	return nil

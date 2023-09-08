@@ -107,24 +107,20 @@ func PerformMint(f *coinfactorykeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.
 	if mint == nil {
 		return wasmvmtypes.InvalidRequest{Err: "mint token null mint"}
 	}
-	rcpt, err := parseAddress(mint.MintToAddress)
-	if err != nil {
-		return err
-	}
 
 	coin := sdk.Coin{Denom: mint.Denom, Amount: mint.Amount}
-	sdkMsg := coinfactorytypes.NewMsgMint(contractAddr.String(), coin, rcpt.String())
-	if err = sdkMsg.ValidateBasic(); err != nil {
+	sdkMsg := coinfactorytypes.NewMsgMint(contractAddr.String(), coin)
+	if err := sdkMsg.ValidateBasic(); err != nil {
 		return err
 	}
 
 	// Mint through token factory / message server
 	msgServer := coinfactorykeeper.NewMsgServerImpl(*f)
-	_, err = msgServer.Mint(sdk.WrapSDKContext(ctx), sdkMsg)
+	_, err := msgServer.Mint(sdk.WrapSDKContext(ctx), sdkMsg)
 	if err != nil {
 		return errorsmod.Wrap(err, "minting coins from message")
 	}
-	err = b.SendCoins(ctx, contractAddr, rcpt, sdk.NewCoins(coin))
+	err = b.SendCoins(ctx, contractAddr, contractAddr, sdk.NewCoins(coin))
 	if err != nil {
 		return errorsmod.Wrap(err, "sending newly minted coins from message")
 	}

@@ -11,9 +11,9 @@ import (
 
 func CmdMint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [amount] [mint-to-address]",
+		Use:   "mint [amount]",
 		Short: "Mint a denom to an address. Must have admin authority to do so.",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			amount, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
@@ -25,9 +25,7 @@ func CmdMint() *cobra.Command {
 				return err
 			}
 
-			mintTo := args[1]
-
-			msg := types.NewMsgMint(clientCtx.GetFromAddress().String(), amount, mintTo)
+			msg := types.NewMsgMint(clientCtx.GetFromAddress().String(), amount)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

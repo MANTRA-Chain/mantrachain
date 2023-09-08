@@ -64,11 +64,7 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 		return nil, types.ErrUnauthorized
 	}
 
-	if msg.MintToAddress == "" {
-		msg.MintToAddress = msg.Sender
-	}
-
-	err = server.Keeper.mintTo(ctx, msg.Amount, msg.MintToAddress)
+	err = server.Keeper.mintTo(ctx, msg.Amount, msg.Sender)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +72,7 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.TypeMsgMint,
-			sdk.NewAttribute(types.AttributeMintToAddress, msg.MintToAddress),
+			sdk.NewAttribute(types.AttributeMintToAddress, msg.Sender),
 			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
 		),
 	})

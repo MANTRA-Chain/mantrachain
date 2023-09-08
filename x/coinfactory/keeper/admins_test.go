@@ -24,7 +24,7 @@ func (suite *KeeperTestSuite) TestAdminMsgs() {
 	suite.Require().Equal(suite.addrs[0].String(), queryRes.AuthorityMetadata.Admin)
 
 	// Test minting to own accounts
-	_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10), ""))
+	_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10)))
 	addr0bal += 10
 	suite.Require().NoError(err)
 	suite.Require().True(bankKeeper.GetBalance(suite.ctx, suite.addrs[0], suite.defaultDenom).Amount.Int64() == addr0bal, bankKeeper.GetBalance(suite.ctx, suite.addrs[0], suite.defaultDenom))
@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) TestAdminMsgs() {
 	suite.Require().Error(err)
 
 	// Make sure the new admin works
-	_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[1].String(), sdk.NewInt64Coin(suite.defaultDenom, 5), ""))
+	_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[1].String(), sdk.NewInt64Coin(suite.defaultDenom, 5)))
 	addr1bal += 5
 	suite.Require().NoError(err)
 	suite.Require().True(bankKeeper.GetBalance(suite.ctx, suite.addrs[1], suite.defaultDenom).Amount.Int64() == addr1bal)
@@ -121,7 +121,7 @@ func (suite *KeeperTestSuite) TestMintDenom() {
 		suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {
 			// Test minting to admins own account
 			bankKeeper := suite.app.BankKeeper
-			_, err := suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(tc.admin, sdk.NewInt64Coin(tc.mintDenom, 10), ""))
+			_, err := suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(tc.admin, sdk.NewInt64Coin(tc.mintDenom, 10)))
 			if tc.valid {
 				addr0bal += 10
 				suite.Require().NoError(err)
@@ -140,7 +140,7 @@ func (suite *KeeperTestSuite) TestBurnDenom() {
 	suite.CreateDefaultDenom()
 
 	// mint 10 default token for testAcc[0]
-	suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10), ""))
+	suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(suite.defaultDenom, 10)))
 	addr0bal += 10
 
 	for _, tc := range []struct {
@@ -212,7 +212,7 @@ func (suite *KeeperTestSuite) TestChangeAdminDenom() {
 			expectedChangeAdminPass: true,
 			expectedAdminIndex:      -1,
 			msgMint: func(denom string) *types.MsgMint {
-				return types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(denom, 5), "")
+				return types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(denom, 5))
 			},
 			expectedMintPass: false,
 		},
@@ -232,7 +232,7 @@ func (suite *KeeperTestSuite) TestChangeAdminDenom() {
 			expectedAdminIndex:      1,
 			expectedChangeAdminPass: true,
 			msgMint: func(denom string) *types.MsgMint {
-				return types.NewMsgMint(suite.addrs[1].String(), sdk.NewInt64Coin(denom, 5), "")
+				return types.NewMsgMint(suite.addrs[1].String(), sdk.NewInt64Coin(denom, 5))
 			},
 			expectedMintPass: true,
 		},
@@ -247,7 +247,7 @@ func (suite *KeeperTestSuite) TestChangeAdminDenom() {
 
 			testDenom := res.GetNewTokenDenom()
 
-			_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(testDenom, 10), ""))
+			_, err = suite.msgServer.Mint(sdk.WrapSDKContext(suite.ctx), types.NewMsgMint(suite.addrs[0].String(), sdk.NewInt64Coin(testDenom, 10)))
 			suite.Require().NoError(err)
 
 			_, err = suite.msgServer.ChangeAdmin(sdk.WrapSDKContext(suite.ctx), tc.msgChangeAdmin(testDenom))

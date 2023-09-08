@@ -143,7 +143,6 @@ func TestMsgMint(t *testing.T) {
 		properMsg := *types.NewMsgMint(
 			addr1.String(),
 			sdk.NewCoin("bitcoin", math.NewInt(500000000)),
-			"",
 		)
 
 		return after(properMsg)
