@@ -6,7 +6,7 @@ import (
 )
 
 // DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 1
+const DefaultIndex uint64 = 4
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
