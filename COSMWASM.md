@@ -1,4 +1,4 @@
-# CosmWasm & Local Mantrachain Tutorial
+# CosmWasm & Mantrachain Tutorial
 
 ## Setup
 

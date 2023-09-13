@@ -7,10 +7,16 @@
     MANTRACHAIN is a blockchain built using Cosmos SDK and Tendermint and created with Ignite CLI
 </div>
 
+## Pre-requisites
+
+- [Go](https://golang.org/doc/install) >= 1.19.0
+- [Ignite](https://github.com/ignite/cli) = 0.27.1
+
 ## Get started
 
 ```
-ignite chain serve
+make build
+ignite chain serve -v
 ```
 
 `serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
@@ -29,6 +35,14 @@ guard module and admin for the soul bound nft collection
 `recipient` - used for various transactions once the chain is started
 
 ## Learn more
+
+### Mantrachain
+
+- [Mantrachain Guard Module](./GUARD.md)
+- [CosmWasm & Mantrachain Tutorial](./COSMWASM_TUTORIAL.md)
+- [Mantrachain-SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
+
+### Cosmos SDK
 
 - [Ignite CLI](https://ignite.com/cli)
 - [Tutorials](https://docs.ignite.com/guide)
