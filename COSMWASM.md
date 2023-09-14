@@ -62,6 +62,12 @@ Run the chain:
  ignite chain serve -v
 ```
 
+If you have issues with the chain not finding `libwasmvm.x86_64.so` you can install it manually with:
+
+```
+sudo wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v1.3.0/libwasmvm.x86_64.so
+```
+
 (Optionally) You can enable the mantrachain guard module:
 
 ```bash
