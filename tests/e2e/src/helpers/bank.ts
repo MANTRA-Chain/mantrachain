@@ -1,6 +1,5 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { getGasFee } from './sdk'
 
 export const queryBalance = async (client: any, account: string, denom: string) => {
   const res = await client.CosmosBankV1Beta1.query.queryBalance(account, { denom })
@@ -22,8 +21,7 @@ export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: s
         denom,
         amount: amount.toString()
       }]
-    },
-    fee: getGasFee()
+    }
   })
 
   if (res.code !== 0) {

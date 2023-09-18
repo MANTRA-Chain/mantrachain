@@ -1,7 +1,6 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { queryBalance } from './bank'
-import { getGasFee } from './sdk'
 
 export const queryDenomsFromCreator = async (client: any, account: string) => {
   const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
@@ -25,8 +24,7 @@ export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, a
       value: {
         sender: account,
         subdenom
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {
@@ -59,8 +57,7 @@ export const mintCoins = async (sdk: MantrachainSdk, client: any, account: strin
         denom,
         amount: amount.toString()
       }
-    },
-    fee: getGasFee()
+    }
   })
 
   if (res.code !== 0) {

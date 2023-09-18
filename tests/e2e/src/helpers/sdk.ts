@@ -37,28 +37,23 @@ export class MantrachainSdk {
         apiURL: host,
         rpcURL: rpc,
       },
-      this.validatorWallet
+      this.validatorWallet as any
     )
     this.clientRecipient = new Client(
       {
         apiURL: host,
         rpcURL: rpc,
       },
-      this.recipientWallet
+      this.recipientWallet as any
     )
     this.clientAdmin = new Client(
       {
         apiURL: host,
         rpcURL: rpc,
       },
-      this.adminWallet
+      this.adminWallet as any
     )
 
     this.blockWaiter = new BlockWaiter(ws);
   }
 }
-
-export const getGasFee = () => ({
-  amount: [{ denom: "uaum", amount: "80" }],
-  gas: "350000"
-})

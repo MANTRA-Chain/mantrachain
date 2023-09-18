@@ -1,6 +1,5 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { getGasFee } from './sdk'
 
 const existsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.some((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
 
@@ -22,8 +21,7 @@ export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, ac
         creator: account,
         baseCoinDenom,
         quoteCoinDenom
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {

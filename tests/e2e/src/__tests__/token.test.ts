@@ -1,4 +1,4 @@
-import { MantrachainSdk, getGasFee } from '../helpers/sdk'
+import { MantrachainSdk } from '../helpers/sdk'
 import { createNftCollectionIfNotExists } from '../helpers/token'
 
 describe('Token module', () => {
@@ -43,7 +43,7 @@ describe('Token module', () => {
 
   describe('Soul-bond nfts collection', () => {
     test('Should return error when approve nft from soul-bond nft collection', async () => {
-      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
+      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -52,18 +52,14 @@ describe('Token module', () => {
           nftId: "0",
           approved: true,
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /operation disabled/
       )
     })
 
     test('Should return error when approve nfts from soul-bond nft collection', async () => {
-      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
+      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -74,18 +70,14 @@ describe('Token module', () => {
           },
           approved: true,
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /operation disabled/
       )
     })
 
     test('Should return error when transfer nft from soul-bond nft collection', async () => {
-      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
+      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,
@@ -94,18 +86,14 @@ describe('Token module', () => {
           collectionId: "token0",
           nftId: "0",
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /operation disabled/
       )
     })
 
     test('Should return error when transfer nfts from soul-bond nft collection', async () => {
-      const res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
+      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,
@@ -116,12 +104,8 @@ describe('Token module', () => {
             nftsIds: ["0"]
           },
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /operation disabled/
       )
     })
@@ -145,16 +129,12 @@ describe('Token module', () => {
         data: null
       }
 
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
         value: {
           creator: sdk.validatorAddress,
           collection
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
@@ -171,19 +151,15 @@ describe('Token module', () => {
         data: null
       }
 
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgMintNft({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgMintNft({
         value: {
           creator: sdk.validatorAddress,
           receiver: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
           collectionId: "token1",
           nft
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
@@ -200,7 +176,7 @@ describe('Token module', () => {
         data: null
       }
 
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgMintNfts({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgMintNfts({
         value: {
           creator: sdk.validatorAddress,
           receiver: sdk.recipientAddress,
@@ -209,35 +185,27 @@ describe('Token module', () => {
           nfts: {
             nfts: [nft]
           }
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when burn nft for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgBurnNft({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgBurnNft({
         value: {
           creator: sdk.validatorAddress,
           collectionCreator: sdk.adminAddress,
           collectionId: "token1",
           nftId: "0"
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when burn nfts for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgBurnNfts({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgBurnNfts({
         value: {
           creator: sdk.validatorAddress,
           collectionCreator: sdk.adminAddress,
@@ -245,18 +213,14 @@ describe('Token module', () => {
           nfts: {
             nftsIds: ["0"]
           }
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when approve nft for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgApproveNft({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgApproveNft({
         value: {
           creator: sdk.validatorAddress,
           receiver: sdk.recipientAddress,
@@ -265,18 +229,14 @@ describe('Token module', () => {
           nftId: "0",
           approved: true,
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when approve nfts for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgApproveNfts({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgApproveNfts({
         value: {
           creator: sdk.validatorAddress,
           receiver: sdk.recipientAddress,
@@ -287,18 +247,14 @@ describe('Token module', () => {
           },
           approved: true,
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when transfer nft for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgTransferNft({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgTransferNft({
         value: {
           creator: sdk.validatorAddress,
           owner: sdk.adminAddress,
@@ -307,18 +263,14 @@ describe('Token module', () => {
           collectionId: "token1",
           nftId: "0",
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })
 
     test('Should return error when transfer nfts for restricted nft collection from non-admin account', async () => {
-      const res = await sdk.clientValidator.MantrachainTokenV1.tx.sendMsgTransferNfts({
+      await expect(sdk.clientValidator.MantrachainTokenV1.tx.sendMsgTransferNfts({
         value: {
           creator: sdk.validatorAddress,
           owner: sdk.adminAddress,
@@ -329,12 +281,8 @@ describe('Token module', () => {
             nftsIds: ["0"]
           },
           strict: true
-        },
-        fee: getGasFee()
-      })
-
-      expect(res.code).not.toBe(0)
-      expect(res.rawLog).toMatch(
+        }
+      })).rejects.toThrow(
         /unauthorized/
       )
     })

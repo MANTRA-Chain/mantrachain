@@ -1,6 +1,5 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { getGasFee } from './sdk'
 
 const queryNftCollection = async (client: any, creator: string, id: string) => {
   try {
@@ -38,8 +37,7 @@ export const createNftCollectionIfNotExists = async (sdk: MantrachainSdk, client
       value: {
         creator: account,
         collection
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {
@@ -78,8 +76,7 @@ export const mintGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, acc
         },
         strict: true,
         did: true,
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {
@@ -106,8 +103,7 @@ export const burnGuardSoulBondNft = async (sdk: MantrachainSdk, client: any, acc
         collectionCreator: guardCollectionParams.collectionCreator,
         collectionId: guardCollectionParams.collectionId,
         nftId: id
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {

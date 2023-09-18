@@ -1,5 +1,5 @@
-import { MantrachainSdk, getGasFee } from '../helpers/sdk'
-import { existsDenom, queryDenomsFromCreator, genCoinDenom, queryAdmin } from '../helpers/coinfactory'
+import { MantrachainSdk } from '../helpers/sdk'
+import { existsDenom, queryDenomsFromCreator, genCoinDenom } from '../helpers/coinfactory'
 import { queryBalance, sendCoins } from '../helpers/bank'
 
 describe('Coinfactory module', () => {
@@ -16,8 +16,7 @@ describe('Coinfactory module', () => {
       value: {
         sender: sdk.adminAddress,
         subdenom
-      },
-      fee: getGasFee()
+      }
     })
 
     expect(res.code).toBe(0)
@@ -37,8 +36,7 @@ describe('Coinfactory module', () => {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
@@ -60,8 +58,7 @@ describe('Coinfactory module', () => {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
@@ -89,8 +86,7 @@ describe('Coinfactory module', () => {
         },
         transferFromAddress: sdk.validatorAddress,
         transferToAddress: sdk.recipientAddress
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
@@ -107,8 +103,7 @@ describe('Coinfactory module', () => {
         sender: sdk.adminAddress,
         denom,
         newAdmin: sdk.validatorAddress,
-      },
-      fee: getGasFee()
+      }
     })
 
     // TODO: fix queryAdmin issue when adding coin queries for denoms with slashes(/)
@@ -131,8 +126,7 @@ describe('Coinfactory module', () => {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
@@ -154,8 +148,7 @@ describe('Coinfactory module', () => {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
@@ -168,7 +161,7 @@ describe('Coinfactory module', () => {
     const amount = 500
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    const res = await sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+    await expect(sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
       value: {
         sender: sdk.validatorAddress,
         amount: {
@@ -177,12 +170,8 @@ describe('Coinfactory module', () => {
         },
         transferFromAddress: sdk.recipientAddress,
         transferToAddress: sdk.validatorAddress
-      },
-      fee: getGasFee()
-    })
-
-    expect(res.code).not.toBe(0)
-    expect(res.rawLog).toMatch(
+      }
+    })).rejects.toThrow(
       /unauthorized/
     )
   })
@@ -204,8 +193,7 @@ describe('Coinfactory module', () => {
         },
         transferFromAddress: sdk.recipientAddress,
         transferToAddress: sdk.validatorAddress
-      },
-      fee: getGasFee()
+      }
     })
 
     const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
@@ -218,19 +206,15 @@ describe('Coinfactory module', () => {
     const amount = 1000
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
-    })
-
-    expect(res.code).not.toBe(0)
-    expect(res.rawLog).toMatch(
+      }
+    })).rejects.toThrow(
       /unauthorized/
     )
   })
@@ -239,49 +223,37 @@ describe('Coinfactory module', () => {
     const amount = 500
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgBurn({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgBurn({
       value: {
         sender: sdk.adminAddress,
         amount: {
           denom,
           amount: amount.toString()
         }
-      },
-      fee: getGasFee()
-    })
-
-    expect(res.code).not.toBe(0)
-    expect(res.rawLog).toMatch(
+      }
+    })).rejects.toThrow(
       /unauthorized/
     )
   })
 
   test('Should return error when create denom with account with no permission', async () => {
-    const res = await sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    await expect(sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.validatorAddress,
         subdenom: 'cf0'
-      },
-      fee: getGasFee()
-    })
-
-    expect(res.code).not.toBe(0)
-    expect(res.rawLog).toMatch(
+      }
+    })).rejects.toThrow(
       /unauthorized/
     )
   })
 
   test('Should return error when create existing denom', async () => {
-    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.adminAddress,
         subdenom
-      },
-      fee: getGasFee()
-    })
-
-    expect(res.code).not.toBe(0)
-    expect(res.rawLog).toMatch(
+      }
+    })).rejects.toThrow(
       /attempting to create a denom that already exists/
     )
   })

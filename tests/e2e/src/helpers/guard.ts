@@ -1,6 +1,5 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { getGasFee } from './sdk'
 import { utils, Privileges } from '@mantrachain/sdk'
 
 const queryGuardTransferCoins = async (client: any) => {
@@ -45,8 +44,7 @@ export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, ac
       value: {
         creator: account,
         enabled
-      },
-      fee: getGasFee()
+      }
     })
 
     if (res.code !== 0) {
@@ -94,8 +92,7 @@ export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, 
       creator: account,
       account: receiver,
       privileges: !newAccountPrivileges.length ? null : newAccountPrivileges,
-    },
-    fee: getGasFee()
+    }
   })
 
   if (res.code !== 0) {
@@ -153,8 +150,7 @@ export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: 
       index: utils.strToIndex(denom),
       privileges: !newRequiredPrivileges.length ? null : newRequiredPrivileges,
       kind: "coin",
-    },
-    fee: getGasFee()
+    }
   })
 
   if (res.code !== 0) {
