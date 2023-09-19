@@ -34,12 +34,22 @@ guard module and admin for the soul bound nft collection
 
 `recipient` - used for various transactions once the chain is started
 
+### E2E Tests
+
+```bash
+cd tests/e2e
+yarn
+yarn run test
+```
+
 ## Learn more
 
 ### Mantrachain
 
+- [Mantrachain Modules Params](./PARAMS.md)
 - [Mantrachain Guard Module](./GUARD.md)
-- [CosmWasm & Mantrachain Tutorial](./COSMWASM_TUTORIAL.md)
+- [Mantrachain Token Flow](./TOKEN_FLOW.md)
+- [CosmWasm & Mantrachain Tutorial](./COSMWASM.md)
 - [Mantrachain-SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
 
 ### Cosmos SDK

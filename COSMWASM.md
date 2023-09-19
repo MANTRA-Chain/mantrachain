@@ -64,7 +64,7 @@ Run the chain:
 
 If you have issues with the chain not finding `libwasmvm.x86_64.so` you can install it manually with:
 
-```
+```bash
 sudo wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v1.3.0/libwasmvm.x86_64.so
 ```
 

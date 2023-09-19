@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "jest -i -b --runtTestsByPath=./src/__tests__/",
-    "test:t": "jest -i -b liquidity.test.ts",
     "lint": "eslint ./src",
     "fmt": "eslint ./src --fix"
   },
