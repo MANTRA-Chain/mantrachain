@@ -1,9 +1,11 @@
-package keeper
+package keeper_test
 
 import (
 	"testing"
 
+	"github.com/MANTRA-Finance/mantrachain/testutil"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	txfeestestutil "github.com/MANTRA-Finance/mantrachain/x/txfees/testutil"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
@@ -14,6 +16,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -36,20 +39,29 @@ func TxfeesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"TxfeesParams",
 	)
+
+	ctrl := gomock.NewController(t)
+	accountKeeper := txfeestestutil.NewMockAccountKeeper(ctrl)
+	bankKeeper := txfeestestutil.NewMockBankKeeper(ctrl)
+	guardKeeper := txfeestestutil.NewMockGuardKeeper(ctrl)
+
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
-		nil,
-		nil,
-		nil,
+		accountKeeper,
+		bankKeeper,
+		guardKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
 	k.SetParams(ctx, types.DefaultParams())
+
+	guardKeeper.EXPECT().CheckIsAdmin(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
+	guardKeeper.EXPECT().GetAdmin(gomock.Any()).Return(sdk.MustAccAddressFromBech32(testutil.TestAdminAddress)).AnyTimes()
 
 	return k, ctx
 }

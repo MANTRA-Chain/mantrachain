@@ -19,6 +19,13 @@ func DefaultGenesis() *GenesisState {
 	}
 }
 
+func NewGenesisState(params Params) *GenesisState {
+	return &GenesisState{
+		FactoryDenoms: []GenesisDenom{},
+		Params:        params,
+	}
+}
+
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {

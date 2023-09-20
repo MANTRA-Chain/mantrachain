@@ -21,7 +21,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-
+				Params: types.DefaultParams(),
 				FeeTokenList: []types.FeeToken{
 					{
 						Denom: "0",
@@ -37,6 +37,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated feeToken",
 			genState: &types.GenesisState{
+				Params: types.DefaultParams(),
 				FeeTokenList: []types.FeeToken{
 					{
 						Denom: "0",

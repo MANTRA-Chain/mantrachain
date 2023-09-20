@@ -64,28 +64,6 @@ The `x/coinfactory` module contains the following params:
 
 The `coinfactory` module params can be updated with governance.
 
-## Farming Module
-
-The `x/farming` module contains the following params:
-
-- private_plan_creation_fee
-- next_epoch_days
-- farming_fee_collector
-- delayed_staking_gas_fee
-- max_num_private_plans
-
-`PrivatePlanCreationFee` specifies the fee for plan creation this fee prevents from spamming and is collected in the community pool.
-
-`NextEpochDays` is the epoch length in number of days it updates internal state called `CurrentEpochDays` that is used to process staking and reward distribution in end blocker.
-
-`FarmingFeeCollector` is the module account address to collect fees within the farming module.
-
-`DelayedStakingGasFee` is used to impose gas fee for the delayed staking.
-
-`MaxNumPrivatePlans` is the maximum number of active private plans.
-
-The `farming` module params can be updated with governance.
-
 ## Liquid Farming Module
 
 The `x/liquidfarming` module contains the following params:
@@ -120,7 +98,7 @@ The `x/liquidity` module contains the following params:
 - order_extra_gas
 - max_num_active_pools_per_pair
 
-`N/A` details about the params can be found atm.
+Details: `N/A` (updating in progress).
 
 The `liquidity` module params can be updated with governance.
 
@@ -188,6 +166,8 @@ The `x/token` module contains the following params:
 - valid_burn_nft_max_count
 
 The `token` module params contain varios restrictions being validated in the token collection/nft creation and/or update.
+
+Details: `N/A` (updating in progress).
 
 The `token` module params can be updated with governance.
 

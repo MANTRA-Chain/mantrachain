@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 )
@@ -19,7 +18,7 @@ import (
 var _ = strconv.IntSize
 
 func TestFeeTokenQuerySingle(t *testing.T) {
-	keeper, ctx := keepertest.TxfeesKeeper(t)
+	keeper, ctx := TxfeesKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNFeeToken(keeper, ctx, 2)
 	tests := []struct {
@@ -71,7 +70,7 @@ func TestFeeTokenQuerySingle(t *testing.T) {
 }
 
 func TestFeeTokenQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.TxfeesKeeper(t)
+	keeper, ctx := TxfeesKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNFeeToken(keeper, ctx, 5)
 

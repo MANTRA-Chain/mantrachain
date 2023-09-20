@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"testing"
 
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
@@ -26,7 +25,7 @@ func createNFeeToken(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.FeeT
 }
 
 func TestFeeTokenGet(t *testing.T) {
-	keeper, ctx := keepertest.TxfeesKeeper(t)
+	keeper, ctx := TxfeesKeeper(t)
 	items := createNFeeToken(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetFeeToken(ctx,
@@ -40,7 +39,7 @@ func TestFeeTokenGet(t *testing.T) {
 	}
 }
 func TestFeeTokenRemove(t *testing.T) {
-	keeper, ctx := keepertest.TxfeesKeeper(t)
+	keeper, ctx := TxfeesKeeper(t)
 	items := createNFeeToken(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveFeeToken(ctx,
@@ -54,7 +53,7 @@ func TestFeeTokenRemove(t *testing.T) {
 }
 
 func TestFeeTokenGetAll(t *testing.T) {
-	keeper, ctx := keepertest.TxfeesKeeper(t)
+	keeper, ctx := TxfeesKeeper(t)
 	items := createNFeeToken(keeper, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),

@@ -8,7 +8,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 )
@@ -17,7 +16,7 @@ import (
 var _ = strconv.IntSize
 
 func TestFeeTokenMsgServerCreate(t *testing.T) {
-	k, ctx := keepertest.TxfeesKeeper(t)
+	k, ctx := TxfeesKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
 	for i := 0; i < 5; i++ {
@@ -55,7 +54,7 @@ func TestFeeTokenMsgServerUpdate(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.TxfeesKeeper(t)
+			k, ctx := TxfeesKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateFeeToken{
@@ -100,7 +99,7 @@ func TestFeeTokenMsgServerDelete(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.TxfeesKeeper(t)
+			k, ctx := TxfeesKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 

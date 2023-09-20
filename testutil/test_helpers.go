@@ -36,6 +36,7 @@ import (
 
 	chain "github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/app/params"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
@@ -192,6 +193,11 @@ func setupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs 
 		guardtypes.DefaultPrivileges,
 	))
 	genesisState[guardtypes.ModuleName] = app.AppCodec().MustMarshalJSON(guardGenesis)
+	coinfactoryGenesis := coinfactorytypes.NewGenesisState(coinfactorytypes.NewParams(
+		sdk.Coins{},
+		0,
+	))
+	genesisState[coinfactorytypes.ModuleName] = app.AppCodec().MustMarshalJSON(coinfactoryGenesis)
 
 	totalSupply := sdk.NewCoins()
 	for _, b := range balances {

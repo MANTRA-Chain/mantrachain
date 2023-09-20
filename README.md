@@ -34,12 +34,26 @@ guard module and admin for the soul bound nft collection
 
 `recipient` - used for various transactions once the chain is started
 
+### Unit tests
+  
+```bash
+make test
+```
+
 ### E2E Tests
+
+Start the chain running locally:
+
+```bash
+ignite chain serve -v
+```
+
+Execute the tests:
 
 ```bash
 cd tests/e2e
 yarn
-yarn run test
+yarn test
 ```
 
 ## Learn more

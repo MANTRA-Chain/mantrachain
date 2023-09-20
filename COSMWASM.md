@@ -59,7 +59,7 @@ make build
 Run the chain:
 
 ```bash
- ignite chain serve -v
+ignite chain serve -v
 ```
 
 If you have issues with the chain not finding `libwasmvm.x86_64.so` you can install it manually with:

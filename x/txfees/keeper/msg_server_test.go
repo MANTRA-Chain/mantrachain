@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +11,7 @@ import (
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx := keepertest.TxfeesKeeper(t)
+	k, ctx := TxfeesKeeper(t)
 	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
 }
 
