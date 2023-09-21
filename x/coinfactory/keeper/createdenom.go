@@ -81,17 +81,17 @@ func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string) (err e
 			return err
 		}
 
-		admin := k.gk.GetAdmin(ctx)
+		// admin := k.gk.GetAdmin(ctx)
 
-		err = k.bankKeeper.SendCoins(ctx, accAddr, admin, params.DenomCreationFee)
-		if err != nil {
-			return err
-		}
-
-		// Currently, we don't use the community pool for denom creation fees
-		// if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.DenomCreationFee, accAddr); err != nil {
+		// err = k.bankKeeper.SendCoins(ctx, accAddr, admin, params.DenomCreationFee)
+		// if err != nil {
 		// 	return err
 		// }
+
+		// Currently, we use the community pool for denom creation fees
+		if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.DenomCreationFee, accAddr); err != nil {
+			return err
+		}
 	}
 
 	// if DenomCreationGasConsume is non-zero, consume the gas
