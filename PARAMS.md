@@ -74,6 +74,10 @@ The `x/liquidfarming` module contains the following params:
 
 `FeeCollector` is the module account address to collect fees within the liquid farming module.
 
+`RewardsAuctionDuration` is the duration of the rewards auction.
+
+`LiquidFarms` include the farming variables used in liquid farming.
+
 The `liquidfarming` module params can be updated with governance.
 
 ## Liquidity Module
@@ -98,7 +102,39 @@ The `x/liquidity` module contains the following params:
 - order_extra_gas
 - max_num_active_pools_per_pair
 
-Details: `N/A` (updating in progress).
+`BatchSize` is how many orders to be matched by a tick.
+
+`TickPrecision` is the number of blocks per tick
+
+`FeeCollectorAddress` is the module account address to collect fees within the liquid module.
+
+`DustCollectorAddress` is the module account address to collect dust within the liquid module.
+
+`MinInitialPoolCoinSupply` is the minimum initial pool coin supply.
+
+`PairCreationFee` is the fee to be charged on the creation of a new pair. The fee is drawn from the MsgCreatePair's sender account, and transferred to the fee collector's wallet.
+
+`PoolCreationFee` is the fee to be charged on the creation of a new pool. The fee is drawn from the MsgCreatePool's sender account, and transferred to the fee collector's wallet.
+
+`MinInitialDepositAmount` is the minimum initial deposit amount when providing a liquidity.
+
+`MaxPriceLimitRatio` is the maximum price limit ratio. Default: 10%.
+
+`MaxNumMarketMakingOrderTicks` is the maximum number of market making order ticks.
+
+`MaxOrderLifespan` is the maximum order lifespan.
+
+`SwapFeeRate` is the swap fee rate. Unused.
+
+`WithdrawFeeRate` is the withdraw fee rate.
+
+`DepositExtraGas` is the deposit extra gas.
+
+`WithdrawExtraGas` is the withdraw extra gas.
+
+`OrderExtraGas` is the order extra gas.
+
+`MaxNumActivePoolsPerPair` is the maximum number of active pools per pair.
 
 The `liquidity` module params can be updated with governance.
 
@@ -110,6 +146,14 @@ The `x/lpfarm` module contains the following params:
 - fee_collector
 - max_num_private_plans
 - max_block_duration
+
+`PrivatePlanCreationFee` specifies the fee for plan creation this fee prevents from spamming.
+
+`FeeCollector` is the module account address to collect fees within the lpfarm module.
+
+`MaxNumPrivatePlans` is the maximum number of active private plans.
+
+`MaxBlockDuration` is the maximum block duration for the private plan.
 
 The `lpfarm` module params can be updated with governance.
 
@@ -167,7 +211,61 @@ The `x/token` module contains the following params:
 
 The `token` module params contain varios restrictions being validated in the token collection/nft creation and/or update.
 
-Details: `N/A` (updating in progress).
+`ValidNFTCollectionId` is a regex which validates the nft collection id.
+
+`NFTCollectionDefaultId` is the default nft collection id.
+
+`NFTCollectionDefaultName` is the default nft collection name.
+
+`ValidNFTCollectionMetadataSymbolMinLength` is the valid nft collection metadata symbol min length.
+
+`ValidNFTCollectionMetadataSymbolMaxLength` is the valid nft collection metadata symbol max length.
+
+`ValidNFTCollectionMetadataDescriptionMaxLength` is the valid nft collection metadata description max length.
+
+`ValidNFTCollectionMetadataNameMaxLength` is the valid nft collection metadata name max length.
+
+`ValidNFTCollectionMetadataImagesMaxCount` is the valid nft collection metadata images max count.
+
+`ValidNFTCollectionMetadataImagesTypeMaxLength` is the valid nft collection metadata images type max length.
+
+`ValidNFTCollectionMetadataLinksMaxCount` is the valid nft collection metadata links max count.
+
+`ValidNFTCollectionMetadataLinksTypeMaxLength` is the valid nft collection metadata links type max length.
+
+`ValidNFTCollectionMetadataOptionsMaxCount` is the valid nft collection metadata options max count.
+
+`ValidNFTCollectionMetadataOptionsTypeMaxLength` is the valid nft collection metadata options type max length.
+
+`ValidNFTCollectionMetadataOptionsValueMaxLength` is the valid nft collection metadata options value max length.
+
+`ValidNFTCollectionMetadataOptionsSubValueMaxLength` is the valid nft collection metadata options sub value max length.
+
+`ValidNFTId` is a regex which validates the nft id.
+
+`ValidNFTMetadataMaxCount` is the max count of the nfts that can be minted in a single batch transaction.
+
+`ValidNFTMetadataTitleMaxLength` is the valid nft metadata title max length.
+
+`ValidNFTMetadataDescriptionMaxLength` is the valid nft metadata description max length.
+
+`ValidNFTMetadataImagesMaxCount` is the valid nft metadata images max count.
+
+`ValidNFTMetadataImagesTypeMaxLength` is the valid nft metadata images type max length.
+
+`ValidNFTMetadataLinksMaxCount` is the valid nft metadata links max count.
+
+`ValidNFTMetadataLinksTypeMaxLength` is the valid nft metadata links type max length.
+
+`ValidNFTMetadataAttributesMaxCount` is the valid nft metadata attributes max count.
+
+`ValidNFTMetadataAttributesTypeMaxLength` is the valid nft metadata attributes type max length.
+
+`ValidNFTMetadataAttributesValueMaxLength` is the valid nft metadata attributes value max length.
+
+`ValidNFTMetadataAttributesSubValueMaxLength` is the valid nft metadata attributes sub value max length.
+
+`ValidBurnNFTMaxCount` is the max count of the nfts that can be burnt in a single batch transaction.
 
 The `token` module params can be updated with governance.
 
