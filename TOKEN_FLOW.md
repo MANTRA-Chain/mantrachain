@@ -345,3 +345,14 @@ The `x/txfees` module params contain the `base_denom` param, which is the token 
 
 In order to add additional tokens, the `admin` should make a `CreateFeeToken` transaction.
 Adding additional gas fees tokens is not possible through governance. The `admin` can also update/remove a token by making a `UpdateFeeToken`/`RemoveFeeToken` transaction. The `create` and `update` transactions require a `pairId` param which correspond to a pair including the `base denom` and the corresponding `fee denom`.
+
+### Coinfactory Module
+
+The `x/coinfactory` module is used to:
+
+- create a new token
+- mint tokens
+- burn tokens
+- seize tokens
+
+In order to create a new token, the `admin` should make a `CreateDenom` transaction. The `admin` can also mint/burn/seize tokens by making a `Mint`/`Burn`/`ForceTransfer` transaction. The `mint` and `burn` transactions require a custom token created through the module, while force transfer works for any token.
