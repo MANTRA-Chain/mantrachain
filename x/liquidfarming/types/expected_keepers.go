@@ -44,5 +44,6 @@ type LiquidityKeeper interface {
 }
 
 type GuardKeeper interface {
+	CheckIsAdmin(ctx sdk.Context, address string) error
 	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
 }

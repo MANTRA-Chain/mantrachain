@@ -60,8 +60,8 @@ yarn test
 
 ### Mantrachain
 
-- [Mantrachain Docs](./spec/README.md)
-- [Mantrachain SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
+- [Docs](./spec/README.md)
+- [SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
 
 ### Cosmos SDK
 

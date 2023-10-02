@@ -2,21 +2,26 @@
 
 ## Basic
 
-- [Mantrachain Token Flow](./token_flow.md)
+- [Token Flow](./token_flow.md)
 
 ## Config
 
-- [Mantrachain Modules Params](./params.md)
+- [Modules Params](./params.md)
 
 ## Tutorials
 
-- [CosmWasm & Mantrachain Tutorial](./cosmwasm.md)
+- [CosmWasm & Tutorial](./cosmwasm.md)
 
 ## Modules
 
-- [Mantrachain Guard Module](../x/guard/spec/README.md)
-- [Mantrachain Coin Factory Module](../x/coinfactory/spec/README.md)
-- [Mantrachain Token Module](../x/token/spec/README.md)
-- [Mantrachain DiD Module](../x/did/spec/README.md)
-- [Mantrachain Tx Fees Module](../x/txfees/spec/README.md)
+- [Guard Module](../x/guard/spec/README.md)
+- [Coin Factory Module](../x/coinfactory/spec/README.md)
+- [Token Module](../x/token/spec/README.md)
+- [DID Module](../x/did/spec/README.md)
+- [Tx Fees Module](../x/txfees/spec/README.md)
+- [Liquidity Module](../x/liquidity/spec/README.md)
+- [Farming Module](../x/farming/spec/README.md)
+- [Liquid Farming Module](../x/liquidfarming/spec/README.md)
+- [LPFarm Module](../x/lpfarm/spec/README.md)
+- [Market Maker Module](../x/marketmaker/spec/README.md)
   

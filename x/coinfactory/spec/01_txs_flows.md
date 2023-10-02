@@ -11,9 +11,9 @@ Coin factory module->>Guard module: Is chain admin?
 Note left of Guard module: The guard module checks if the creator is the chain admin.
 alt Chain admin
   Guard module-->>Coin factory module: Yes
-  Coin factory->>Coin factory: Set authority metadata
-  Coin factory->>Bank module: Set denom metadata
-  Coin factory->>Community pool: Charge fee
+  Coin factory module->>Coin factory module: Set authority metadata
+  Coin factory module->>Bank module: Set denom metadata
+  Coin factory module->>Community pool: Charge fee
   Coin factory module-->> Creator: Success
 else Not a chain admin
   Guard module-->>Coin factory module: No

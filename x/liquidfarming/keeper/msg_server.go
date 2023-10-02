@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 )
@@ -82,6 +83,10 @@ func (m msgServer) RefundBid(goCtx context.Context, msg *types.MsgRefundBid) (*t
 // This message is just for testing purpose and it shouldn't be used in production.
 func (k msgServer) AdvanceAuction(goCtx context.Context, msg *types.MsgAdvanceAuction) (*types.MsgAdvanceAuctionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.Requester); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	if EnableAdvanceAuction {
 		endTime, _ := k.GetLastRewardsAuctionEndTime(ctx)
