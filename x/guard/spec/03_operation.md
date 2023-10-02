@@ -1,19 +1,6 @@
-# x/guard
+<!-- order: 3 -->
 
-This module is primarily responsible for handling all the public facing user privileges permissions. Separate from the network permissions, these permissions are on the basis of a user account.
-
-## Concepts
-
-It use of bitwise operations, with each bit representing a **permission/category** for the user. So in this way we are able to create a multi permission requirement performant and cost effectively.
-Currently, thee only supported permissions are related to tokens transfer for coins minted by the `x/coinfactory` module.
-
-> The privileges are set to **0**, which means that the user and the custom tokens has no permissions by default and they cannot be traded if the user doesn't pass the KYC and the token groups privileges are not being specified by the operator.
-
-## State
-
-**Account privileges** and **required privileges** are stored in the form of a bytes array.
-
-## Operation
+# Operation
 
 When a user wants to transfer a coin minted by the `x/coinfactory` module, the following checks are performed:
 

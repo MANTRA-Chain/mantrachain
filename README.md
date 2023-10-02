@@ -60,16 +60,13 @@ yarn test
 
 ### Mantrachain
 
-- [Mantrachain Modules Params](./PARAMS.md)
-- [Mantrachain Guard Module](./GUARD.md)
-- [Mantrachain Token Flow](./TOKEN_FLOW.md)
-- [CosmWasm & Mantrachain Tutorial](./COSMWASM.md)
-- [Mantrachain-SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
+- [Mantrachain Docs](./spec/README.md)
+- [Mantrachain SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
 
 ### Cosmos SDK
 
 - [Ignite CLI](https://ignite.com/cli)
 - [Tutorials](https://docs.ignite.com/guide)
-- [Ignite CLI docs](https://docs.ignite.com)
-- [Cosmos SDK docs](https://docs.cosmos.network)
+- [Ignite CLI Docs](https://docs.ignite.com)
+- [Cosmos SDK Docs](https://docs.cosmos.network)
 - [Developer Chat](https://discord.gg/ignite)
