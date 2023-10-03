@@ -269,4 +269,78 @@ The `token` module params contain varios restrictions being validated in the tok
 
 The `token` module params can be updated with governance.
 
+# Cosmos SDK native modules
+
+
+### Auth Module
+
+The `x/auth` contains the following parameters:
+
+- `max_memo_characters` - max tx memo length // 256
+- `sig_verify_cost_ed25519` - difficulty of signature verification // 590
+- `sig_verify_cost_secp256k1` - difficulty of signature verification - 1000
+- `tx_sig_limit` - transaction signature limit // 7
+- `tx_size_cost_per_byte` - transaction size cost per byte // 10
+
+### Bank Module
+
+The `x/bank` contains the following parameters:
+
+- `default_send_enabled` - is the send transactions enabled by default / true
+
+### Crisis
+
+- `constant_fee` -  // 1000uaum
+
+### Distribution
+
+- `community_tax` - the tax that gets allocated to the community pool // 2%
+- `withdra_addr_enabled` - probably related to mantrachaind tx distribution set-withdraw-addr // true
+
+### gov
+
+- `max_deposit_period` - maximum deposit period 172800s
+- `min_deposit` - minimum deposit // 10000000uaum
+- `burn_proposal_deposit_prevote` - burn the prevote deposits // false
+- `burn_vote_quorum` -  burn the // false
+- `burn_vote_veto`- burn the // true
+- `min_initial_deposit_ratio` - minimum initial deposit // "0.000000000000000000"
+- `quorum` - // "0.334000000000000000"
+- `threshold` - // "0.500000000000000000"
+- `veto_threshold` - // "0.334000000000000000"
+- `voting_period` - // 172800s
+- `quorum` - // "0.334000000000000000"
+- `threshold` - // "0.500000000000000000"
+- `veto_threshold` - // "0.334000000000000000"
+- `voting_period` - // 172800s
+
+
+### Mint
+
+- `mint_denom` - which denom is minted // "uaum"
+- `inflation_rate_change` - the inflation rate change over year // "0.130000000000000000"
+- `inflation_max` - max annual inflation // "0.200000000000000000"
+- `inflation_min` - min annual inflation // "0.070000000000000000"
+- `goal_bonded` - % goal bonded tokens // "0.670000000000000000"
+- `blocks_per_year` - blocks per year // "6311520"
+
+### Slashing
+
+- `signed_blocks_window` - blocks per tracked window // "100"
+- `min_signed_per_window` -  minimum singed blocks per window // "0.500000000000000000"
+- `downtime_jail_duration` - how many seconds downtime the validator is allowed to have // "600000000000"
+- `slash_fraction_double_sign` - how much validator is slashed for double signing // "0.050000000000000000"
+- `slash_fraction_downtime` - how much is validator slashed for downtime // "0.010000000000000000"
+
+### Staking
+
+- `unbonding_time` - time duration of unbonding // "259200000000000"
+- `max_validators` - maximum number of validators // 100
+- `key_max_entries` - max entries for either unbonding delegation or redelegation (per pair/trio).// 7
+- `historical_entries` - number historical entries to persist in store. //3
+- `bond_denom string` - bondable coin denomination // "uaum"
+- `min_commission_rate` - chain-wide minimum commission rate that a validator can charge their delegators. // "0.000000000000000000"
+
+
+
 ## ***Note***: For more information about the Cosmos SDK native modules params, please refer to the [Cosmos SDK docs](https://docs.cosmos.network/v0.47)
