@@ -2,7 +2,8 @@
 
 ## Basic
 
-- [Token Flow](./token_flow.md)
+- [Coins flows Flow](./coins_flows.md)
+- [Transactions flows](./txs_flows.md)
 
 ## Config
 

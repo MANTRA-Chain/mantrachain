@@ -1,4 +1,4 @@
-# Mantrachain Token Flow
+# Mantrachain Coins Flows
 
 ## Tx Fees
 

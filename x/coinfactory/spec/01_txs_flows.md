@@ -2,83 +2,91 @@
 
 # Transactions flows
 
-## Create denom
+## Create Denom
 
 ```mermaid
 sequenceDiagram
-Creator ->> Coin factory module: Create denom
+Creator->>+Coin factory module: Create Denom Tx
 Coin factory module->>Guard module: Is chain admin?
-Note left of Guard module: The guard module checks if the creator is the chain admin.
 alt Chain admin
-  Guard module-->>Coin factory module: Yes
   Coin factory module->>Coin factory module: Set authority metadata
   Coin factory module->>Bank module: Set denom metadata
   Coin factory module->>Community pool: Charge fee
-  Coin factory module-->> Creator: Success
+  Coin factory module-->>Creator: Success
 else Not a chain admin
-  Guard module-->>Coin factory module: No
-  Coin factory module--x Creator: Error
+  Coin factory module--x-Creator: Error
 end
 ```
 
-## Mint coins
+## Mint
 
 ```mermaid
 sequenceDiagram
-Creator ->> Coin factory module: Mint
+Creator->>+Coin factory module: Mint Tx
 Coin factory module->>Coin factory module: Is coin admin?
-Note left of Coin factory module: The coin factory module checks if the creator is the coin admin.
 alt Coin admin
   Coin factory module->>Bank module: Mint coins to creator
-  Coin factory module-->> Creator: Success
+  Note over Coin factory module, Bank module: The transfer IS NOT restricted by the guard module
+  Coin factory module-->>Creator: Success
 else Not a coin admin
-  Coin factory module--x Creator: Error
+  Coin factory module--x-Creator: Error
 end
 ```
 
-## Burn coins
+## Burn
 
 ```mermaid
 sequenceDiagram
-Creator ->> Coin factory module: Burn
+Creator->>+Coin factory module: Burn Tx
 Coin factory module->>Coin factory module: Is coin admin?
-Note left of Coin factory module: The coin factory module checks if the creator is the coin admin.
 alt Coin admin
   Coin factory module->>Bank module: Burn coins from creator
-  Coin factory module-->> Creator: Success
+  Note over Coin factory module, Bank module: The transfer IS NOT restricted by the guard module
+  Coin factory module-->>Creator: Success
 else Not a coin admin
-  Coin factory module--x Creator: Error
+  Coin factory module--x-Creator: Error
 end
 ```
 
-## Change coin admin
+## Change Coin Admin
 
 ```mermaid
 sequenceDiagram
-Creator ->> Coin factory module: Change coin admin
+Creator->>+Coin factory module: Change Coin Admin Tx
 Coin factory module->>Coin factory module: Is coin admin?
-Note left of Coin factory module: The coin factory module checks if the creator is the coin admin.
 alt Coin admin
   Coin factory module->>Coin factory module: Set new coin admin
-  Coin factory module-->> Creator: Success
+  Coin factory module-->>Creator: Success
 else Not a coin admin
-  Coin factory module--x Creator: Error
+  Coin factory module--x-Creator: Error
 end
 ```
 
-## Force transfer coins
+## Set Denom Metadata
 
 ```mermaid
 sequenceDiagram
-Creator ->> Coin factory module: Force transfer
+Creator->>+Coin factory module: Set Denom Metadata Tx
 Coin factory module->>Guard module: Is chain admin?
-Note left of Guard module: The guard module checks if the creator is the chain admin.
 alt Chain admin
-  Guard module-->>Coin factory module: Yes
-  Coin factory module->>Bank module: Transfer coins from a wallet to the chain admin
-  Coin factory module-->> Creator: Success
+  Coin factory module->>Bank module: Set denom metadata
+  Coin factory module-->>Creator: Success
 else Not a chain admin
-  Guard module-->>Coin factory module: No
-  Coin factory module--x Creator: Error
+  Coin factory module--x-Creator: Error
+end
+```
+
+## Force Transfer Tx
+
+```mermaid
+sequenceDiagram
+Creator->>+Coin factory module: Force Transfer Tx
+Coin factory module->>Guard module: Is chain admin?
+alt Chain admin
+  Coin factory module->>Bank module: Transfer coins from a wallet to the chain admin
+  Note over Coin factory module, Bank module: The transfer IS NOT restricted by the guard module
+  Coin factory module-->>Creator: Success
+else Not a chain admin
+  Coin factory module--x-Creator: Error
 end
 ```
