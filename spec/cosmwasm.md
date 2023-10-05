@@ -179,7 +179,7 @@ Instantiate the contract where `SOME_LABEL` should be your smart contract label,
 Set the contract address to environment variable:
 
 ```bash
-CONTRACT_ADDRESS=$(./build/mantrachain query wasm list-contract-by-code $CODE_ID --output json | jq -r '.contracts[0]')
+CONTRACT_ADDRESS=$(./build/mantrachaind query wasm list-contract-by-code $CODE_ID --output json | jq -r '.contracts[0]')
 ```
 
 ## Send some amount of custom coin to the contract
