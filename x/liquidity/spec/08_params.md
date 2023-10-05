@@ -5,7 +5,7 @@
 The `liquidity` module contains the following parameters:
 
 | Key                          | Type               | Example                                                        |
-|------------------------------|--------------------|----------------------------------------------------------------|
+| ---------------------------- | ------------------ | -------------------------------------------------------------- |
 | BatchSize                    | uint32             | 1                                                              |
 | TickPrecision                | uint32             | 3                                                              |
 | FeeCollectorAddress          | string             | cre1zdew6yxyw92z373yqp756e0x4rvd2het37j0a2wjp7fj48eevxvq303p8d |
@@ -84,13 +84,13 @@ Since our DEX allows partial execution of swap orders,
 we need a parameter for how long the remaining swap orders will remain on-chain.
 Leaving it for a long time needs lots of resources, the default is set to one day.
 
-## SwapFeeRate 
+## SwapFeeRate
 
 Swap fee rate for swap.
 In this version, swap fees aren't paid upon swap orders directly.
 Instead, pool just adjust pool's quoting prices to reflect the swap fees.
 
-## WithdrawFeeRate  
+## WithdrawFeeRate
 
 Reserve coin withdrawal with less proportion by WithdrawFeeRate.
 This fee prevents attack vectors from repeated deposit/withdraw transactions.

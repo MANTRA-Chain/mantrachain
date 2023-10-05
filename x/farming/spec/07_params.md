@@ -4,14 +4,13 @@
 
 The `farming` module contains the following parameters:
 
-| Key                     | Type      | Example                                                          |
-|-------------------------|-----------|------------------------------------------------------------------|
-| PrivatePlanCreationFee  | sdk.Coins | [{"denom":"stake","amount":"1000000000"}]                        |
-| NextEpochDays           | uint32    | 1                                                                |
-| FarmingFeeCollector     | string    | "cre1h292smhhttwy0rl3qr4p6xsvpvxc4v05s6rxtczwq3cs6qc462mq4p6cjy" |
-| DelayedStakingGasFee    | sdk.Gas   | 60000                                                            |
-| MaxNumPrivatePlans      | uint32    | 10000                                                            |
-
+| Key                    | Type      | Example                                                          |
+| ---------------------- | --------- | ---------------------------------------------------------------- |
+| PrivatePlanCreationFee | sdk.Coins | [{"denom":"stake","amount":"1000000000"}]                        |
+| NextEpochDays          | uint32    | 1                                                                |
+| FarmingFeeCollector    | string    | "cre1h292smhhttwy0rl3qr4p6xsvpvxc4v05s6rxtczwq3cs6qc462mq4p6cjy" |
+| DelayedStakingGasFee   | sdk.Gas   | 60000                                                            |
+| MaxNumPrivatePlans     | uint32    | 10000                                                            |
 
 ## PrivatePlanCreationFee
 
@@ -29,7 +28,7 @@ A farming fee collector is a module account address that collects farming fees, 
 
 Since the farming module has adopted F1 reward distribution, changes in staked coins cause withdrawal of accrued rewards.
 
-In addition, the farming module employs a concept of delayed staking. This means that when a farmer stakes coins through `MsgStake`, staked coins are not modified immediately. 
+In addition, the farming module employs a concept of delayed staking. This means that when a farmer stakes coins through `MsgStake`, staked coins are not modified immediately.
 
 Instead, at the end of the epoch, queued staking coins becomes staked and the rewards are withdrawn. For this reason, the `DelayedStakingGasFee` parameter is available to impose gas fees for the future call of `WithdrawRewards` if a farmer has any staked coins with same
 denom of newly staked coin.

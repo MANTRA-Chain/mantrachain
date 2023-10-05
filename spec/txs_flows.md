@@ -400,11 +400,16 @@ fm-->>-cr: Success
 
 cr->>+fm: Advance epoch Tx
 Note left of fm: For testing purposes
-fm->>fm: Is advance epoch enabled?
-alt Advance epoch enabled
-  fm->>fm: Advance epoch
-  fm-->>cr: Success
-else Advance epoch disabled
+fm->>gd: Is chain admin?
+alt Chain admin
+  fm->>fm: Is advance epoch enabled?
+  alt Advance epoch enabled
+    fm->>fm: Advance epoch
+    fm-->>cr: Success
+  else Advance epoch disabled
+    fm--xcr: Error
+  end
+else Not a chain admin
   fm--x-cr: Error
 end
 
@@ -454,13 +459,19 @@ lf-->>-cr: Success
 
 cr->>+lf: Advance Auction Tx
 Note left of lf: For testing purposes
-lf->>lf: Is advance auction enabled?
-alt Advance auction enabled
-  lf->>lf: Advance auction(includes calls to LPFarm and Liquidity modules)
-  lf-->>cr: Success
-else Advance auction disabled
+lf->>gd: Is chain admin?
+alt Chain admin
+  lf->>lf: Is advance auction enabled?
+  alt Advance auction enabled
+    lf->>lf: Advance auction(includes calls to LPFarm and Liquidity modules)
+    lf-->>cr: Success
+  else Advance auction disabled
+    lf--xcr: Error
+  end
+else Not a chain admin
   lf--x-cr: Error
 end
+
 
 Note over cr, nft: Liquidity Transactions
 cr->>+lt: Create Pair Tx

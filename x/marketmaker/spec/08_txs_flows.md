@@ -14,6 +14,8 @@ Note over Market Maker module, Bank module: The transfer IS restricted by the gu
 Market Maker module-->>-Creator: Success
 ```
 
+Apply market maker for a list of pairs.
+
 ## Claim Incentives
 
 ```mermaid
@@ -24,3 +26,5 @@ Note over Market Maker module, Bank module: The transfer IS NOT restricted by th
 Market Maker module->>Market Maker module: Delete incentive
 Market Maker module-->>-Creator: Success
 ```
+
+Claim incentives.

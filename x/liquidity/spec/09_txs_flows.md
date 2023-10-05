@@ -37,6 +37,8 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
 ## Deposit
 
 ```mermaid
@@ -75,6 +77,8 @@ Liquidity module->>Liquidity module: Create limit order(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
 
+Create limit order.
+
 ## Market Order
 
 ```mermaid
@@ -86,6 +90,8 @@ Note over Liquidity module, Bank module: The transfer IS restricted by the guard
 Liquidity module->>Liquidity module: Create market order(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
+
+Create market order.
 
 ## MM Order
 
@@ -99,6 +105,8 @@ Liquidity module->>Liquidity module: Create mm order(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
 
+Create mm order.
+
 ## Cancel Order
 
 ```mermaid
@@ -107,6 +115,8 @@ Creator->>+Liquidity module: Cancel Order
 Liquidity module->>Liquidity module: Finish order(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
+
+Cancel order.
 
 ## Cancel All Orders
 
@@ -118,6 +128,8 @@ Liquidity module->>Liquidity module: Finish all orders(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
 
+Cancel all orders.
+
 ## Cancel MM Order
 
 ```mermaid
@@ -127,3 +139,5 @@ Liquidity module->>Liquidity module: Get pair
 Liquidity module->>Liquidity module: Finish mm order(includes multiple calls)
 Liquidity module-->>-Creator: Success
 ```
+
+Cancel mm order.

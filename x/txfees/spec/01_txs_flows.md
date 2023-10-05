@@ -17,6 +17,10 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Creates a mapping between a fee token and a liquidity pair. The fee token is used to pay fees(gas) for transactions instead of the native token.
+
 ## Update Fee Token
 
 ```mermaid
@@ -31,6 +35,10 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Updates a mapping between a fee token and a liquidity pair.
+
 ## Delete Fee Token
 
 ```mermaid
@@ -44,3 +52,7 @@ else Not a chain admin
   Tx fees module--x-Creator: Error
 end
 ```
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Deletes a mapping between a fee token and a liquidity pair.

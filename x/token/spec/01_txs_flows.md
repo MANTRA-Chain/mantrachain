@@ -24,6 +24,8 @@ else Not restricted nft collection
 end
 ```
 
+Creates a new nft collection.
+
 ## Mint Nft/Batch Mint Nfts
 
 ```mermaid
@@ -52,6 +54,8 @@ else Not restricted nft collection
   end
 end
 ```
+
+Mints a new nft.
 
 ## Burn Nft/Batch Burn Nfts
 
@@ -84,6 +88,8 @@ else Not restricted nft collection
 end
 ```
 
+Burns an existing nft.
+
 ## Approve Nft/Batch Approve Nfts
 
 ```mermaid
@@ -109,6 +115,8 @@ else Not restricted nft collection
 end
 ```
 
+Adds/removes an approval for an existing nft.
+
 ## Approve All Nfts
 
 ```mermaid
@@ -117,6 +125,8 @@ Creator->>+Token module: Approve(Remove Approval) All Nfts Tx
 Token module->>Token module: Approve(remove approval) all nfts
 Token module-->>-Creator: Success
 ```
+
+Adds/removes an approval for all nfts.
 
 ## Transfer Nft/Batch Transfer Nfts
 
@@ -150,6 +160,8 @@ else Soul bonded nft collection
 end
 ```
 
+Transfers an existing nft.
+
 ## Update Guard Soul Bond Nft Image
 
 ```mermaid
@@ -168,3 +180,5 @@ else Not restricted nft collection
   Token module--x-Creator: Error
 end
 ```
+
+Updates a guard's soul bond nft image.

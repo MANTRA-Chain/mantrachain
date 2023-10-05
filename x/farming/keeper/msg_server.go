@@ -113,10 +113,6 @@ func (k msgServer) Harvest(goCtx context.Context, msg *types.MsgHarvest) (*types
 func (k msgServer) RemovePlan(goCtx context.Context, msg *types.MsgRemovePlan) (*types.MsgRemovePlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.Keeper.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	if err := k.Keeper.RemovePlan(ctx, msg.GetCreator(), msg.PlanId); err != nil {
 		return nil, err
 	}

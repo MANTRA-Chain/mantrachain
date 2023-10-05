@@ -17,6 +17,10 @@ else Not a chain admin
 end
 ```
 
+Creates a new did document and metadata.
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
 ## Update Did Document
 
 ```mermaid
@@ -30,6 +34,8 @@ else Cannot update
   Did module--x-Creator: No
 end
 ```
+
+Updates an existing did document.
 
 ## Add Verification
 
@@ -45,6 +51,8 @@ else Cannot update
 end
 ```
 
+Adds a new verification method and related verification relationships to a did document.
+
 ## Revoke Verification
 
 ```mermaid
@@ -58,6 +66,8 @@ else Cannot update
   Did module--x-Creator: No
 end
 ```
+
+Removes a verification method and related verification relationships from a did document.
 
 ## Set Verification Relationships
 
@@ -73,6 +83,8 @@ else Cannot update
 end
 ```
 
+Overwrites the verification relationships for a verification methods of a did document.
+
 ## Add Service
 
 ```mermaid
@@ -86,6 +98,8 @@ else Cannot update
   Did module--x-Creator: No
 end
 ```
+
+Adds a new service to a did document.
 
 ## Delete Service
 
@@ -101,6 +115,8 @@ else Cannot update
 end
 ```
 
+Removes a service from a did document.
+
 ## Add Controller
 
 ```mermaid
@@ -115,6 +131,8 @@ else Cannot update
 end
 ```
 
+Adds a new controller to a did document.
+
 ## Delete Controller
 
 ```mermaid
@@ -128,3 +146,5 @@ else Cannot update
   Did module--x-Creator: No
 end
 ```
+
+Removes a controller from a did document.

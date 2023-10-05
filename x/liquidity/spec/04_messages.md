@@ -22,6 +22,7 @@ type MsgCreatePair struct {
 
 Validity checks are performed for `MsgCreatePair` messages.
 The transaction that is triggered with `MsgCreatePair` fails if:
+
 - `Creator` address is invalid
 - The coin pair already exists
 - The balance of `Creator` does not have enough coins for `PairCreationFee`
@@ -42,6 +43,7 @@ type MsgCreatePool struct {
 
 Validity checks are performed for `MsgCreatePool` messages.
 The transaction that is triggered with `MsgCreatePool` fails if:
+
 - `Creator` address is invalid
 - Pair with `PairId` does not exist
 - Coin denoms from `DepositCoins` aren't equal to coin pair with `PairID`
@@ -69,6 +71,7 @@ type MsgCreateRangedPool struct {
 
 Validity checks are performed for `MsgCreateRangedPool` messages.
 The transaction that is triggered with `MsgCreateRangedPool` fails if:
+
 - `Creator` address is invalid
 - Pair with `PairId` does not exist
 - Coin denoms from `DepositCoins` aren't equal to coin pair with `PairID`
@@ -93,6 +96,7 @@ type MsgDeposit struct {
 
 Validity checks are performed for `MsgDeposit` messages.
 The transaction that is triggered with the `MsgDeposit` message fails if:
+
 - `Depositor` address is invalid
 - Pool with `PoolId` does not exist
 - The pool with `PoolId` is disabled
@@ -115,6 +119,7 @@ type MsgWithdraw struct {
 
 Validity checks are performed for `MsgWithdraw` messages.
 The transaction that is triggered with the `MsgWithdraw` message fails if:
+
 - `Withdrawer` address is invalid
 - Pool with `PoolId` does not exist
 - The pool with `PoolId` is disabled
@@ -149,13 +154,14 @@ Note that an order will be executed for at least one batch, even if `OrderLifesp
 
 Validity checks are performed for `MsgLimitOrder` messages.
 The transaction that is triggered with the `MsgLimitOrder` message fails if:
+
 - `Orderer` address is invalid
 - Pair with `PairId` does not exist
 - `OrderLifespan` is greater than `MaxOrderLifespan`
 - `Direction` is invalid
 - Denom of `OfferCoin` or `DemandCoinDenom` doesn't match with the pair specified `PairId`
 - Denom of `OfferCoin` and `DemandCoinDenom` are not entered properly according to the `Direction`
-- `Price` is not in the range of (1-`MaxPriceLimitRatio`)*`LastPrice` to (1+`MaxPriceLimitRatio`)*`LastPrice`
+- `Price` is not in the range of (1-`MaxPriceLimitRatio`)_`LastPrice` to (1+`MaxPriceLimitRatio`)_`LastPrice`
 - The balance of `Orderer` does not have enough coins for `OfferCoin`
 
 ## MsgMarketOrder
@@ -188,6 +194,7 @@ Note that an order will be executed for at least one batch, even if `OrderLifesp
 
 Validity checks are performed for `MsgMarketOrder` messages.
 The transaction that is triggered with the `MsgMarketOrder` message fails if:
+
 - `Orderer` address is invalid
 - Pair with `PairId` does not exist
 - `OrderLifespan` is greater than `MaxOrderLifespan`
@@ -241,6 +248,7 @@ That means, users cannot cancel orders that has just been made.
 
 Validity checks are performed for `MsgCancelOrder` messages.
 The transaction that is triggered with the `MsgCancelOrder` message fails if:
+
 - `Orderer` address is invalid
 - Pair with `PairId` does not exist
 - Order with `OrderId` does not exist in pair with `PairId`
@@ -264,6 +272,7 @@ type MsgCancelAllOrders struct {
 
 Validity checks are performed for `MsgCancelAllOrders` messages.
 The transaction that is triggered with the `MsgCancelAllOrders` message fails if:
+
 - `Orderer` address is invalid
 - Pair with `PairId` in `PairIds` does not exist
 

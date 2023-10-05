@@ -9,15 +9,15 @@ The `liquidfarming` module keeps track of the states of pool coins and LFCoins.
 ```go
 // LiquidFarms tracks the list of the activated LiquidFarms
 type LiquidFarms struct {
-	liquidfarms []LiquidFarm
+  liquidfarms []LiquidFarm
 }
 
 // LiquidFarm defines liquid farm.
 type LiquidFarm struct {
-	PoolId        uint64  // the pool id
-	MinFarmAmount sdk.Int // the minimum farm amount; it allows zero value
-	MinBidAmount  sdk.Int // the minimum bid amount; it allows zero value
-	FeeRate       sdk.Dec // the fee rate for the liquidfarm which deducts from auction winner's rewards
+  PoolId        uint64  // the pool id
+  MinFarmAmount sdk.Int // the minimum farm amount; it allows zero value
+  MinBidAmount  sdk.Int // the minimum bid amount; it allows zero value
+  FeeRate       sdk.Dec // the fee rate for the liquidfarm which deducts from auction winner's rewards
 }
 ```
 
@@ -28,26 +28,26 @@ type LiquidFarm struct {
 type AuctionStatus int32
 
 const (
-	AuctionStatusNil      AuctionStatus = 0
-	AuctionStatusStarted  AuctionStatus = 1
-	AuctionStatusFinished AuctionStatus = 2
-	AuctionStatusSkipped  AuctionStatus = 3
+  AuctionStatusNil      AuctionStatus = 0
+  AuctionStatusStarted  AuctionStatus = 1
+  AuctionStatusFinished AuctionStatus = 2
+  AuctionStatusSkipped  AuctionStatus = 3
 )
 
 // RewardsAuction defines rewards auction information.
 type RewardsAuction struct {
-	Id                   uint64        // rewards auction id
-	PoolId               uint64        // corresponding pool id of the target liquid farm
-	BiddingCoinDenom     string        // corresponding pool coin denom
-	PayingReserveAddress string        // the paying reserve address that collects bidding coin placed by bidders
-	StartTime            time.Time     // the auction start time
-	EndTime              time.Time     // the auction end time
-	Status               AuctionStatus // the auction status
-	Winner               string        // the bidder who won the auction
-	WinningAmount        sdk.Coin      // the winning amount placed by the winner
-	Rewards              sdk.Coins     // the farming rewards for are accumulated every block
-	Fees                 sdk.Coins     // the fees for the rewards by the fee rate
-	FeeRate              sdk.Dec       // the fee rate for the liquid farm
+  Id                   uint64        // rewards auction id
+  PoolId               uint64        // corresponding pool id of the target liquid farm
+  BiddingCoinDenom     string        // corresponding pool coin denom
+  PayingReserveAddress string        // the paying reserve address that collects bidding coin placed by bidders
+  StartTime            time.Time     // the auction start time
+  EndTime              time.Time     // the auction end time
+  Status               AuctionStatus // the auction status
+  Winner               string        // the bidder who won the auction
+  WinningAmount        sdk.Coin      // the winning amount placed by the winner
+  Rewards              sdk.Coins     // the farming rewards for are accumulated every block
+  Fees                 sdk.Coins     // the fees for the rewards by the fee rate
+  FeeRate              sdk.Dec       // the fee rate for the liquid farm
 }
 ```
 
@@ -56,7 +56,7 @@ type RewardsAuction struct {
 ```go
 // CompoundingRewards records the amount of farming rewards
 type CompoundingRewards struct {
-	Amount sdk.Int
+  Amount sdk.Int
 }
 ```
 
@@ -65,9 +65,9 @@ type CompoundingRewards struct {
 ```go
 // Bid defines a standard bid for an auction.
 type Bid struct {
-	PoolId uint64
-	Bidder string
-	Amount sdk.Coin
+  PoolId uint64
+  Bidder string
+  Amount sdk.Coin
 }
 ```
 

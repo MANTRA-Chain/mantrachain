@@ -15,6 +15,10 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Update account privileges for an account. The account can be a user account or a module account. The account privileges are also used to determine if the account is authorized to execute a transaction that is restricted by the guard module. Currently, the only restricted transaction by the guard module is `bank -> transfer`.
+
 ## Update Required Privileges/Update Required Privileges Batch/Update Required Privileges Grouped Batch
 
 ```mermaid
@@ -27,6 +31,10 @@ else Not a chain admin
   Guard module--x-Creator: Error
 end
 ```
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Update required privileges for a entity. Currently, the only entity that can have required privileges is a `denom`. The required privileges are used to determine if an account is authorized to execute a transaction that is restricted by the guard module. Currently, the only restricted transaction by the guard module is `bank -> transfer`.
 
 ## Update Guard Transfer Coins
 
@@ -41,6 +49,10 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Sets the flag to enable/disable the guard module to restrict the `bank -> transfer` transaction.
+
 ## Update Authz Generic Grant Revoke Batch
 
 ```mermaid
@@ -53,3 +65,7 @@ else Not a chain admin
   Guard module--x-Creator: Error
 end
 ```
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Adds or removes generic authorization(s) for an account. The generic authorization(s) are used to determine if the account is authorized to execute a transaction on behalf of another account.

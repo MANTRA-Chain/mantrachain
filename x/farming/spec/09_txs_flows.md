@@ -17,6 +17,11 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Create a new fixed amount plan. The plan will be created with the `Pending` status. The plan will be activated after the `start_time` is reached. The plan will be deleted after the `end_time` is reached.
+The plan will be terminated if the `termination_address` calls the `Remove Plan` transaction. The plan's termination address is set to the plan creator.
+
 ## Create Ratio Plan
 
 ```mermaid
@@ -32,6 +37,11 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Create a new ratio plan. The plan will be created with the `Pending` status. The plan will be activated after the `start_time` is reached. The plan will be deleted after the `end_time` is reached.
+The plan will be terminated if the `termination_address` calls the `Remove Plan` transaction. The plan's termination address is set to the plan creator.
+
 ## Stake
 
 ```mermaid
@@ -42,6 +52,8 @@ Note over Farming module, Bank module: The transfer IS restricted by the guard m
 Farming module->>Farming module: Set stake
 Farming module-->>-Creator: Success
 ```
+
+Stake coins to a farming plan.
 
 ## Untake
 
@@ -54,6 +66,8 @@ Farming module->>Farming module: Set unstake
 Farming module-->>-Creator: Success
 ```
 
+Unstake coins from a farming plan.
+
 ## Harvest
 
 ```mermaid
@@ -63,6 +77,8 @@ Farming module->>Bank module: Withdraw farming rewards to the creator
 Note over Farming module, Bank module: The transfer IS NOT restricted by the guard module
 Farming module-->>-Creator: Success
 ```
+
+Harvest farming rewards from a farming plan.
 
 ## Remove Plan
 
@@ -74,17 +90,28 @@ Farming module->>Farming module: Delete plan
 Farming module-->>-Creator: Success
 ```
 
+Remove a farming plan.
+
 ## Advance Epoch
 
 ```mermaid
 sequenceDiagram
 Creator->>+Farming module: Advance Epoch Tx
 Note left of Farming module: For testing purposes
-Farming module->>Farming module: Is advance epoch enabled?
-alt Advance epoch enabled
-  Farming module->>Farming module: Advance epoch
-  Farming module-->>Creator: Success
-else Advance epoch disabled
+Farming module->>Guard module: Is chain admin?
+alt Chain admin
+  Farming module->>Farming module: Is advance epoch enabled?
+  alt Advance epoch enabled
+    Farming module->>Farming module: Advance epoch
+    Farming module-->>Creator: Success
+  else Advance epoch disabled
+    Farming module--xCreator: Error
+  end
+else Not a chain admin
   Farming module--x-Creator: Error
 end
 ```
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Advance the farming module's epoch. This transaction is only enabled when the `EnableAdvanceEpoch` flag is set to `true`.

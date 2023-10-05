@@ -6,7 +6,7 @@ The `farming` module keeps track of the staking and rewards states.
 
 ## Plan Interface
 
-The plan interface exposes methods to read and write standard farming plan information. 
+The plan interface exposes methods to read and write standard farming plan information.
 
 Note that all of these methods operate on a plan struct that confirms to the interface. In order to write the plan to the store, the plan keeper is required.
 
@@ -17,7 +17,7 @@ type PlanI interface {
 
     GetId() uint64
     SetId(uint64) error
-    
+
     GetName() string
     SetName(name string) error
 
@@ -171,6 +171,7 @@ type HistoricalRewards struct {
 - HistoricalRewards: `0x31 | StakingCoinDenomLen (1 byte) | StakingCoinDenom | Epoch -> ProtocolBuffer(HistoricalRewards)`
 - CurrentEpoch: `0x32 | StakingCoinDenom -> ProtocolBuffer(uint64)`
   - CurrentEpoch remains unchanged after all farmers has unstaked their coins.
+
 ## Outstanding Rewards
 
 The `OutstandingRewards` struct holds outstanding (un-withdrawn) rewards for a staking denom.

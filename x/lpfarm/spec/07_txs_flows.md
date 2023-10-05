@@ -19,6 +19,13 @@ else Not a chain admin
 end
 ```
 
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Create a new private farming plan.
+The newly created plan's farming pool address is automatically generated and will have no balances in the account initially.
+Manually send enough reward coins to the generated farming pool address to make sure that the rewards allocation happens.
+The plan's termination address is set to the plan creator.
+
 ## Terminate Private Plan
 
 ```mermaid
@@ -33,6 +40,8 @@ else Not the plan termination account
 end
 ```
 
+Terminate a private farming plan.
+
 ## Farm
 
 ```mermaid
@@ -43,6 +52,8 @@ Note over LP Farm module, Bank module: The transfer IS restricted by the guard m
 LP Farm module->>LP Farm module: Set farming position
 LP Farm module-->>-Creator: Success
 ```
+
+Add a new farming position to an existing farming plan.
 
 ## Unfarm
 
@@ -57,6 +68,8 @@ LP Farm module->>LP Farm module: Delete farming position
 LP Farm module-->>-Creator: Success
 ```
 
+Remove an existing farming position from an existing farming plan.
+
 ## Harvest
 
 ```mermaid
@@ -66,3 +79,5 @@ LP Farm module->>Bank module: Withdraw farming rewards to the creator
 Note over LP Farm module, Bank module: The transfer IS NOT restricted by the guard module
 LP Farm module-->>-Creator: Success
 ```
+
+Withdraw farming rewards from an existing farming plan.

@@ -2,12 +2,12 @@
 
 # State
 
-The `liquidity` module keeps track of the Pair, Pool, Requests states. 
+The `liquidity` module keeps track of the Pair, Pool, Requests states.
 
 ## Pair
 
 Pair stores information about the coin pair in the liquidity module.
-A pair is the dyadic quotation of the relative value of a base coin unit against the unit of quote coin. 
+A pair is the dyadic quotation of the relative value of a base coin unit against the unit of quote coin.
 
 Pair type has the following structure.
 
@@ -25,7 +25,7 @@ type Pair struct {
 
 ## Pool
 
-Pool stores information about the liquidity pool. 
+Pool stores information about the liquidity pool.
 
 Pool type has the following structure.
 
@@ -197,62 +197,62 @@ type MMOrderIndex struct {
 Stores are KVStores in the `multistore`.
 The key to find the store is the first parameter in the list.
 
-### The key for the latest pair id
+## The key for the latest pair id
 
 - LastPairIdKey: `[]byte{0xa0} -> ProtocolBuffer(uint64)`
 
-### The key for the latest pool id
+## The key for the latest pool id
 
 - LastPoolIdKey: `[]byte{0xa1} -> ProtocolBuffer(uint64)`
 
-### The key to get the pair object 
+## The key to get the pair object
 
 - PairKey: `[]byte{0xa5} | PairId -> ProtocolBuffer(Pair)`
 
-### The index key to get the pair object by base and quote denoms
+## The index key to get the pair object by base and quote denoms
 
 - PairIndexKey: `[]byte{0xa6} | BaseCoinDenomLen (1 byte) | BaseCoinDenom | QuoteCoinDenomLen (1 byte) | QuoteCoinDenom -> ProtocolBuffer(uint64)`
 
-### The index key to lookup pairs with the given denom
+## The index key to lookup pairs with the given denom
 
 - PairsByDenomsIndexKey: `[]byte{0xa7} | DenomALen (1 byte) | DenomA | DenomBLen (1 byte) | DenomB | PairId -> nil`
 
-### The key to get the pool object
+## The key to get the pool object
 
 - PoolKey: `[]byte{0xab} | PoolId -> ProtocolBuffer(Pool)`
 
-### The index key to get the pool object from the reserve address
+## The index key to get the pool object from the reserve address
 
 - PoolByReserveAddressIndexKey: `[]byte{0xac} | ReserveAddressLen (1 byte) | ReserveAddress -> ProtocolBuffer(uint64)`
 
-### The index key to lookup pools by pair id
+## The index key to lookup pools by pair id
 
 - PoolsByPairIndexKey: `[]byte{0xad} | PairId | PoolId -> nil`
 
-### The key to get the deposit request by pool id and deposit request id
+## The key to get the deposit request by pool id and deposit request id
 
 - DepositRequestKey: `[]byte{0xb0} | PoolId | DepositRequestId -> ProtocolBuffer(DepositRequest)`
 
-### The index key to get the deposit request by depositor address, pool id and request id
+## The index key to get the deposit request by depositor address, pool id and request id
 
 - DepositRequestIndexKey: `[]byte{0xb4} | DepositorAddressLen (1 byte) | DepositorAddress | PoolId | ReqId -> nil`
 
-### The key to get the withdraw request by pool id and withdraw request id
+## The key to get the withdraw request by pool id and withdraw request id
 
 - WithdrawRequestKey: `[]byte{0xb1} | PoolId | WithdrawRequestId -> ProtocolBuffer(WithdrawRequest)`
 
-### The index key to get the withdraw request by withdrawer address, pool id and request id
+## The index key to get the withdraw request by withdrawer address, pool id and request id
 
 - WithdrawRequestIndexKey: `[]byte{0xb5} | WithdrawerAddressLen (1 byte) | WithdrawerAddress | PoolId | ReqId -> nil`
 
-### The key to get the order by pair id and order id
+## The key to get the order by pair id and order id
 
 - OrderKey: `[]byte{0xb2} | PairId | Id -> ProtocolBuffer(Order)`
 
-### The index key to get the order by orderer address, pair id and order id
+## The index key to get the order by orderer address, pair id and order id
 
 - OrderIndexKey: `[]byte{0xb3} | OrdererAddressLen (1 byte) | OrdererAddress | PairId | OrderId -> nil`
 
-### The key to get the MM order index by orderer address and pair id
+## The key to get the MM order index by orderer address and pair id
 
 - MMOrderIndexKey: `[]byte{0xb6} | OrdererAddressLen (1 byte) | OrdererAddress | PairId`

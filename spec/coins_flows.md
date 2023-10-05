@@ -18,7 +18,7 @@ The ultimate value of the fees paid is equal to the gas multiplied by the gas pr
 
 Later, validators decide whether or not to include the transaction in their block by comparing the given or calculated gas-prices to their local `min-gas-prices`. Tx is rejected if its gas-prices is not high enough, so users are incentivized to pay more.
 
-## ***Note***: Currently, all of the gas fees are sent to an ***admin wallet*** and not to the validators
+## ***Note***: All of the gas fees are sent to an ***admin wallet*** and not to the validators
 
 ## Gas
 

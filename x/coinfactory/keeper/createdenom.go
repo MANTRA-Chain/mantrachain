@@ -88,7 +88,7 @@ func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string) (err e
 		// 	return err
 		// }
 
-		// Currently, we use the community pool for denom creation fees
+		// We use the community pool for denom creation fees
 		if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.DenomCreationFee, accAddr); err != nil {
 			return err
 		}

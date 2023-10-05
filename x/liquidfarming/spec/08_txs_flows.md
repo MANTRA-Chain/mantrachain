@@ -14,6 +14,8 @@ Note over Liquid Farming module, Bank module: The transfer IS NOT restricted by 
 Liquid Farming module-->>-Creator: Success
 ```
 
+Staking pool coins to the `lpfarm` module and minting LFCoin.
+
 ## Liquid Unfarm
 
 ```mermaid
@@ -27,6 +29,8 @@ Liquid Farming module->>Bank module: Burn LP coins from creator
 Note over Liquid Farming module, Bank module: The transfer IS NOT restricted by the guard module
 Liquid Farming module-->>-Creator: Success
 ```
+
+Unstaking pool coins from the `lpfarm` module and burning LFCoin. Also, the tx claims farming rewards.
 
 ## Liquid Unfarm And Withdraw
 
@@ -44,6 +48,8 @@ Note over Liquid Farming module, Bank module: The transfer IS NOT restricted by 
 Liquid Farming module-->>-Creator: Success
 ```
 
+Unstaking pool coins from the `lpfarm` module, withdrawing pool coins from the `liquidity` module, and burning LFCoin. Also, the tx claims farming rewards.
+
 ## Place Bid
 
 ```mermaid
@@ -58,6 +64,8 @@ Note over Liquid Farming module, Bank module: The transfer IS restricted by the 
 Liquid Farming module-->>-Creator: Success
 ```
 
+Placing a bid for the rewards auction.
+
 ## Refund Bid
 
 ```mermaid
@@ -70,17 +78,28 @@ Liquid Farming module->>Liquid Farming module: Delete Bid
 Liquid Farming module-->>-Creator: Success
 ```
 
+Refunding the bid for the rewards auction.
+
 ## Advance Auction
 
 ```mermaid
 sequenceDiagram
 Creator->>+Liquid Farming module: Advance Auction Tx
 Note left of Liquid Farming module: For testing purposes
-Liquid Farming module->>Liquid Farming module: Is advance auction enabled?
-alt Advance auction enabled
-  Liquid Farming module->>Liquid Farming module: Advance auction(includes calls to LPFarm and Liquidity modules)
-  Liquid Farming module-->>Creator: Success
-else Advance auction disabled
+Liquid Farming module->>Guard module: Is chain admin?
+alt Chain admin
+  Liquid Farming module->>Liquid Farming module: Is advance auction enabled?
+  alt Advance auction enabled
+    Liquid Farming module->>Liquid Farming module: Advance auction(includes calls to LPFarm and Liquidity modules)
+    Liquid Farming module-->>Creator: Success
+  else Advance auction disabled
+    Liquid Farming module--xCreator: Error
+  end
+else Not a chain admin
   Liquid Farming module--x-Creator: Error
 end
 ```
+
+**Note**: Only the `chain admin` is authorized to execute this type of transaction.
+
+Advancing the rewards auction. This transaction is only enabled when the `EnableAdvanceAuction` flag is set to `true`.

@@ -14,9 +14,9 @@ A synthetic version of the farming coin is called as LFCoin in the module and th
 
 ```go
 type MsgLiquidFarm struct {
-	PoolId      uint64   // target pool id
-	Farmer      string   // the bech32-encoded address that farms coin
-	FarmingCoin sdk.Coin // farming amount of pool coin
+  PoolId      uint64   // target pool id
+  Farmer      string   // the bech32-encoded address that farms coin
+  FarmingCoin sdk.Coin // farming amount of pool coin
 }
 ```
 
@@ -35,9 +35,9 @@ The module burns LFCoin amounts and releases the corresponding amount of pool co
 
 ```go
 type MsgLiquidUnfarm struct {
-	PoolId        uint64   // target deposit request id
-	Farmer        string   // the bech32-encoded address that unfarms liquid farm coin
-	UnfarmingCoin sdk.Coin // withdrawing amount of LF coin
+  PoolId        uint64   // target deposit request id
+  Farmer        string   // the bech32-encoded address that unfarms liquid farm coin
+  UnfarmingCoin sdk.Coin // withdrawing amount of LF coin
 }
 ```
 
@@ -55,9 +55,9 @@ The module burns LFCoin amounts at the current burn rate, withdraw the correspon
 
 ```go
 type MsgLiquidUnfarmAndWithdraw struct {
-	PoolId        uint64   // target pool id
-	Farmer        string   // the bech32-encoded address that unfarms liquid farm coin and withdraws
-	UnfarmingCoin sdk.Coin // withdrawing amount of LF coin
+  PoolId        uint64   // target pool id
+  Farmer        string   // the bech32-encoded address that unfarms liquid farm coin and withdraws
+  UnfarmingCoin sdk.Coin // withdrawing amount of LF coin
 }
 ```
 
@@ -75,10 +75,10 @@ Anyone can place a bid for an auction where the bidder placing with the highest 
 
 ```go
 type MsgPlaceBid struct {
-	AuctionId   uint64   // auction id
-	PoolId      uint64   // target pool id
-	Bidder      string   // the bech32-encoded address that places a bid
-	BiddingCoin sdk.Coin // bidding amount of pool coin
+  AuctionId   uint64   // auction id
+  PoolId      uint64   // target pool id
+  Bidder      string   // the bech32-encoded address that places a bid
+  BiddingCoin sdk.Coin // bidding amount of pool coin
 }
 ```
 
@@ -94,9 +94,9 @@ Refund the bid that is not winning for the auction.
 
 ```go
 type MsgRefundBid struct {
-	AuctionId uint64 // auction id
-	PoolId    uint64 // target pool id
-	Bidder    string // the bech32-encoded address that refunds a bid
+  AuctionId uint64 // auction id
+  PoolId    uint64 // target pool id
+  Bidder    string // the bech32-encoded address that refunds a bid
 }
 ```
 
@@ -116,6 +116,6 @@ When you send the `MsgAdvanceAuction` message to the network, finish the ongoing
 
 ```go
 type MsgAdvanceAuction struct {
-	Requester string // requester defines the bech32-encoded address of the requester
+  Requester string // requester defines the bech32-encoded address of the requester
 }
 ```

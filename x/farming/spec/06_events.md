@@ -7,7 +7,7 @@ The `farming` module emits the following events:
 ## EndBlocker
 
 | Type              | Attribute Key        | Attribute Value        |
-|-------------------|----------------------|------------------------|
+| ----------------- | -------------------- | ---------------------- |
 | plan_terminated   | plan_id              | {planID}               |
 | plan_terminated   | farming_pool_address | {farmingPoolAddress}   |
 | plan_terminated   | termination_address  | {terminationAddress}   |
@@ -22,7 +22,7 @@ The `farming` module emits the following events:
 ### MsgCreateFixedAmountPlan
 
 | Type                     | Attribute Key        | Attribute Value          |
-|--------------------------|----------------------|--------------------------|
+| ------------------------ | -------------------- | ------------------------ |
 | create_fixed_amount_plan | plan_id              | {planID}                 |
 | create_fixed_amount_plan | plan_name            | {planName}               |
 | create_fixed_amount_plan | farming_pool_address | {farmingPoolAddress}     |
@@ -36,7 +36,7 @@ The `farming` module emits the following events:
 ### MsgCreateRatioPlan
 
 | Type              | Attribute Key        | Attribute Value      |
-|-------------------|----------------------|----------------------|
+| ----------------- | -------------------- | -------------------- |
 | create_ratio_plan | plan_id              | {planID}             |
 | create_ratio_plan | plan_name            | {planName}           |
 | create_ratio_plan | farming_pool_address | {farmingPoolAddress} |
@@ -50,9 +50,9 @@ The `farming` module emits the following events:
 ### MsgStake
 
 | Type    | Attribute Key | Attribute Value |
-|---------|---------------|-----------------|
+| ------- | ------------- | --------------- |
 | stake   | farmer        | {farmer}        |
-| stake   | staking_coins | {stakingCoins}  | 
+| stake   | staking_coins | {stakingCoins}  |
 | message | module        | farming         |
 | message | action        | stake           |
 | message | sender        | {senderAddress} |
@@ -60,7 +60,7 @@ The `farming` module emits the following events:
 ### MsgUnstake
 
 | Type              | Attribute Key      | Attribute Value    |
-|-------------------|--------------------|--------------------|
+| ----------------- | ------------------ | ------------------ |
 | unstake           | farmer             | {farmer}           |
 | unstake           | unstaking_coins    | {unstakingCoins}   |
 | rewards_withdrawn | farmer             | {farmer}           |
@@ -73,7 +73,7 @@ The `farming` module emits the following events:
 ### MsgHarvest
 
 | Type    | Attribute Key       | Attribute Value     |
-|---------|---------------------|---------------------|
+| ------- | ------------------- | ------------------- |
 | harvest | farmer              | {farmer}            |
 | harvest | staking_coin_denoms | {stakingCoinDenoms} |
 | message | module              | farming             |
@@ -83,7 +83,7 @@ The `farming` module emits the following events:
 ### MsgRemovePlan
 
 | Type        | Attribute Key | Attribute Value |
-|-------------|---------------|-----------------|
+| ----------- | ------------- | --------------- |
 | remove_plan | creator       | {creator}       |
 | remove_plan | plan_id       | {planId}        |
 | message     | module        | farming         |

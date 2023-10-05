@@ -1,6 +1,6 @@
 <!-- order: 3 -->
 
- # State Transitions
+# State Transitions
 
 This document describes the state transaction operations for the farming module.
 
@@ -9,8 +9,7 @@ This document describes the state transaction operations for the farming module.
 As stated in [Concepts](01_concepts.md), both public and private farming plans are available in the `farming` module:
 
 - A public farming plan can be created only through governance proposal.
-- A private farming plan can be created with any account. 
-
+- A private farming plan can be created with any account.
 
 ```go
 // PlanType enumerates the valid types of a plan.
@@ -30,7 +29,7 @@ const (
 
 When a farmer stakes an amount of coins, the following state transitions occur:
 
-- Reserves the amount of coins to the staking reserve account for each staking coin denom `address.Module(ModuleName, []byte("StakingReserveAcc|"+stakingCoinDenom))` 
+- Reserves the amount of coins to the staking reserve account for each staking coin denom `address.Module(ModuleName, []byte("StakingReserveAcc|"+stakingCoinDenom))`
 - Creates `QueuedStaking` object, which waits in a queue for `CurrentEpochDays` days and then moves to the `Staking` object
 - Imposes more gas if the farmer already has `Staking` with the same coin denom. See [Parameters](07_params.md#DelayedStakingGasFee) for details.
 
@@ -46,7 +45,7 @@ When a farmer unstakes an amount of coins, the following state transitions occur
 
 ## Harvest (Reward Withdrawal)
 
-- Calculates `CumulativeUnitRewards` in `HistoricalRewards` object in order to get the rewards for the staking coin denom that are accumulated over the last epochs 
+- Calculates `CumulativeUnitRewards` in `HistoricalRewards` object in order to get the rewards for the staking coin denom that are accumulated over the last epochs
 - Releases the accumulated rewards to the farmer if it is not zero and decreases the `OutstandingRewards`
 - When there is positive `UnharvestedRewards`, sends the rewards to the farmer and deletes the `UnharvestedRewards` object
 - Sets `StartingEpoch` in `Staking` object

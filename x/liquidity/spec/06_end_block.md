@@ -1,5 +1,9 @@
 <!-- order: 6 -->
 
+# End-Block
+
+End-block operations for the liquidity module.
+
 ## Before-End-Block
 
 These operations occur before the end-block operations for the liquidity module.
@@ -32,9 +36,9 @@ This batch contains one or more `Deposit`, `Withdraw`, and swap processes.
 
   Even if the request is completed or expired:
 
-    1. Set the status as `ShouldBeDeleted` instead of deleting the request directly from the `end-block`
-    2. Delete the request that have `ShouldBeDeleted` state from the begin-block in the next block
-       so that each request with result state in the block can be stored to kvstore.
+  1. Set the status as `ShouldBeDeleted` instead of deleting the request directly from the `end-block`
+  2. Delete the request that have `ShouldBeDeleted` state from the begin-block in the next block
+     so that each request with result state in the block can be stored to kvstore.
 
   This process allows searching for past requests that have this result state.
   Searching is supported when the kvstore is not pruning.
