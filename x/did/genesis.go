@@ -12,8 +12,11 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	for _, elem := range genState.DidDocuments {
-		k.SetDidDocument(ctx, []byte(elem.DidDocument.Id), elem.DidDocument)
-		k.SetDidMetadata(ctx, []byte(elem.DidDocument.Id), elem.DidMetadata)
+		account := strings.TrimPrefix(elem.DidDocument.Id, types.DidChainPrefix)
+		parts := strings.Split(account, ":")
+		key := []byte(parts[len(parts)-1])
+		k.SetDidDocument(ctx, key, elem.DidDocument)
+		k.SetDidMetadata(ctx, key, elem.DidMetadata)
 	}
 	// this line is used by starport scaffolding # genesis/module/init
 }
