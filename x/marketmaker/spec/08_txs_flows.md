@@ -16,6 +16,12 @@ Market Maker module-->>-Creator: Success
 
 Apply market maker for a list of pairs.
 
+CLI command:
+
+```bash
+mantrachaind tx marketmaker apply [pool-ids] [flags]
+```
+
 ## Claim Incentives
 
 ```mermaid
@@ -28,3 +34,9 @@ Market Maker module-->>-Creator: Success
 ```
 
 Claim incentives.
+
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming claim [flags]
+```

@@ -21,6 +21,12 @@ Creates a new did document and metadata.
 
 **Note**: Only the `chain admin` is authorized to execute this type of transaction.
 
+CLI command:
+
+```bash
+mantrachaind tx did create-did [id] [flags]
+```
+
 ## Update Did Document
 
 ```mermaid
@@ -53,6 +59,12 @@ end
 
 Adds a new verification method and related verification relationships to a did document.
 
+CLI command:
+
+```bash
+mantrachaind tx did add-verification-method [id] [pubkey] [flags]
+```
+
 ## Revoke Verification
 
 ```mermaid
@@ -68,6 +80,12 @@ end
 ```
 
 Removes a verification method and related verification relationships from a did document.
+
+CLI command:
+
+```bash
+mantrachaind tx did revoke-verification-method [did_id] [verification_method_id_fragment] [flags]
+```
 
 ## Set Verification Relationships
 
@@ -85,6 +103,12 @@ end
 
 Overwrites the verification relationships for a verification methods of a did document.
 
+CLI command:
+
+```bash
+mantrachaind tx did set-verification-relationship [did_id] [verification_method_id_fragment] --relationship NAME [--relationship NAME ...] [flags]
+```
+
 ## Add Service
 
 ```mermaid
@@ -100,6 +124,12 @@ end
 ```
 
 Adds a new service to a did document.
+
+CLI command:
+
+```bash
+mantrachaind tx did add-service [id] [service_id] [type] [endpoint] [flags]
+```
 
 ## Delete Service
 
@@ -117,6 +147,12 @@ end
 
 Removes a service from a did document.
 
+CLI command:
+
+```bash
+mantrachaind tx did delete-service [id] [service-id] [flags]
+```
+
 ## Add Controller
 
 ```mermaid
@@ -133,6 +169,12 @@ end
 
 Adds a new controller to a did document.
 
+CLI command:
+
+```bash
+mantrachaind tx did add-controller [id] [controllerAddress] [flags]
+```
+
 ## Delete Controller
 
 ```mermaid
@@ -148,3 +190,9 @@ end
 ```
 
 Removes a controller from a did document.
+
+CLI command:
+
+```bash
+mantrachaind tx did delete-controller [id] [controllerAddress] [flags]
+```

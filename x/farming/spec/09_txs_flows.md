@@ -22,6 +22,12 @@ end
 Create a new fixed amount plan. The plan will be created with the `Pending` status. The plan will be activated after the `start_time` is reached. The plan will be deleted after the `end_time` is reached.
 The plan will be terminated if the `termination_address` calls the `Remove Plan` transaction. The plan's termination address is set to the plan creator.
 
+CLI command:
+
+```bash
+mantrachaind tx farming create-private-fixed-plan [plan-file] [flags]
+```
+
 ## Create Ratio Plan
 
 ```mermaid
@@ -42,6 +48,8 @@ end
 Create a new ratio plan. The plan will be created with the `Pending` status. The plan will be activated after the `start_time` is reached. The plan will be deleted after the `end_time` is reached.
 The plan will be terminated if the `termination_address` calls the `Remove Plan` transaction. The plan's termination address is set to the plan creator.
 
+This transaction is only enabled when the `EnableRatioPlan` flag is set to `true`.
+
 ## Stake
 
 ```mermaid
@@ -54,6 +62,12 @@ Farming module-->>-Creator: Success
 ```
 
 Stake coins to a farming plan.
+
+CLI command:
+
+```bash
+mantrachaind tx farming stake [amount] [flags]
+```
 
 ## Untake
 
@@ -68,6 +82,12 @@ Farming module-->>-Creator: Success
 
 Unstake coins from a farming plan.
 
+CLI command:
+
+```bash
+mantrachaind tx farming unstake [amount] [flags]
+```
+
 ## Harvest
 
 ```mermaid
@@ -80,6 +100,12 @@ Farming module-->>-Creator: Success
 
 Harvest farming rewards from a farming plan.
 
+CLI command:
+
+```bash
+mantrachaind tx farming harvest [staking-coin-denoms] [flags]
+```
+
 ## Remove Plan
 
 ```mermaid
@@ -91,6 +117,12 @@ Farming module-->>-Creator: Success
 ```
 
 Remove a farming plan.
+
+CLI command:
+
+```bash
+mantrachaind tx farming remove-plan [plan-id] [flags]
+```
 
 ## Advance Epoch
 

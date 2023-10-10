@@ -26,6 +26,12 @@ The newly created plan's farming pool address is automatically generated and wil
 Manually send enough reward coins to the generated farming pool address to make sure that the rewards allocation happens.
 The plan's termination address is set to the plan creator.
 
+CLI command:
+
+```bash
+mantrachaind tx lpfarm create-private-plan [description] [start-time] [end-time] [reward-allocations...] [flags]
+```
+
 ## Terminate Private Plan
 
 ```mermaid
@@ -42,6 +48,12 @@ end
 
 Terminate a private farming plan.
 
+CLI command:
+
+```bash
+mantrachaind tx lpfarm terminate-private-plan [plan-id] [flags]
+```
+
 ## Farm
 
 ```mermaid
@@ -54,6 +66,12 @@ LP Farm module-->>-Creator: Success
 ```
 
 Add a new farming position to an existing farming plan.
+
+CLI command:
+
+```bash
+mantrachaind tx lpfarm farm [coin] [flags]
+```
 
 ## Unfarm
 
@@ -70,6 +88,12 @@ LP Farm module-->>-Creator: Success
 
 Remove an existing farming position from an existing farming plan.
 
+CLI command:
+
+```bash
+mantrachaind tx lpfarm unfarm [coin] [flags]
+```
+
 ## Harvest
 
 ```mermaid
@@ -81,3 +105,9 @@ LP Farm module-->>-Creator: Success
 ```
 
 Withdraw farming rewards from an existing farming plan.
+
+CLI command:
+
+```bash
+mantrachaind tx lpfarm harvest [denom] [flags]
+```

@@ -20,6 +20,12 @@ end
 
 Creates a mapping between a fee token and a liquidity pair. The fee token is used to pay fees(gas) for transactions instead of the native token.
 
+CLI command:
+
+```bash
+mantrachaind tx txfees create-fee-token [denom] [pair-id] [flags]
+```
+
 ## Update Fee Token
 
 ```mermaid
@@ -38,6 +44,12 @@ end
 
 Updates a mapping between a fee token and a liquidity pair.
 
+CLI command:
+
+```bash
+mantrachaind tx txfees update-fee-token [denom] [pair-id] [flags]
+```
+
 ## Delete Fee Token
 
 ```mermaid
@@ -55,3 +67,9 @@ end
 **Note**: Only the `chain admin` is authorized to execute this type of transaction.
 
 Deletes a mapping between a fee token and a liquidity pair.
+
+CLI command:
+
+```bash
+mantrachaind tx txfees delete-fee-token [denom] [flags]
+```

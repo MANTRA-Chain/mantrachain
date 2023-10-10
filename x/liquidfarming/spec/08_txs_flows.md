@@ -16,6 +16,12 @@ Liquid Farming module-->>-Creator: Success
 
 Staking pool coins to the `lpfarm` module and minting LFCoin.
 
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming liquid-farm [pool-id] [amount] [flags]
+```
+
 ## Liquid Unfarm
 
 ```mermaid
@@ -31,6 +37,12 @@ Liquid Farming module-->>-Creator: Success
 ```
 
 Unstaking pool coins from the `lpfarm` module and burning LFCoin. Also, the tx claims farming rewards.
+
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming liquid-unfarm [pool-id] [amount] [flags]
+```
 
 ## Liquid Unfarm And Withdraw
 
@@ -50,6 +62,12 @@ Liquid Farming module-->>-Creator: Success
 
 Unstaking pool coins from the `lpfarm` module, withdrawing pool coins from the `liquidity` module, and burning LFCoin. Also, the tx claims farming rewards.
 
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming liquid-unfarm-and-withdraw [pool-id] [amount] [flags]
+```
+
 ## Place Bid
 
 ```mermaid
@@ -66,6 +84,12 @@ Liquid Farming module-->>-Creator: Success
 
 Placing a bid for the rewards auction.
 
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming place-bid [auction-id] [pool-id] [amount] [flags]
+```
+
 ## Refund Bid
 
 ```mermaid
@@ -79,6 +103,12 @@ Liquid Farming module-->>-Creator: Success
 ```
 
 Refunding the bid for the rewards auction.
+
+CLI command:
+
+```bash
+mantrachaind tx liquidfarming refund-bid [auction-id] [pool-id] [flags]
+```
 
 ## Advance Auction
 
