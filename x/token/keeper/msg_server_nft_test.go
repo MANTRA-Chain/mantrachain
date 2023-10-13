@@ -159,6 +159,8 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 		},
 	})
 
+	s.Require().NoError(err)
+
 	//s.nftKeeper.Mint(goCtx,  &types.Nft{Id: "1"}, s.addrs[0])
 
 	for _, tc := range testCases {

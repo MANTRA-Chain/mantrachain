@@ -339,7 +339,7 @@ Now you can send some amount of the custom coin to the smart contract:
 ```bash
 cd .. # navigate back to the chain directory
 
-./build/mantrachaind tx bank send  $ADMIN_WALLET  $CONTRACT_ADDRESS 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR"
+./build/mantrachaind tx bank send $ADMIN_WALLET $CONTRACT_ADDRESS 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR"
 ```
 
 Check the contract balance:
