@@ -1557,7 +1557,7 @@
     axios "^0.27.2"
     long "^4.0.0"
 
-"@mantrachain/sdk@^12.2.0":
+"@mantrachain/sdk@12.2.0":
   version "12.2.0"
   resolved "https://registry.yarnpkg.com/@mantrachain/sdk/-/sdk-12.2.0.tgz#5de0b696830574c9003728719438bdb6abf348da"
   integrity sha512-+g0xc1hbV1fqMuEB5BrccmlYkJDnzB1sjYGN84Gf+ynJIBnGBKaNpUo0sZIktC5H77wnF56LLuUQREqmuj+9rA==
@@ -3208,7 +3208,7 @@ jest-cli@^29.5.0:
     jest-validate "^29.7.0"
     yargs "^17.3.1"
 
-jest-config@^29.7.0:
+jest-config@29.7.0, jest-config@^29.7.0:
   version "29.7.0"
   resolved "https://registry.yarnpkg.com/jest-config/-/jest-config-29.7.0.tgz#bcbda8806dbcc01b1e316a46bb74085a84b0245f"
   integrity sha512-uXbpfeQ7R6TZBqI3/TxCU4q4ttk3u0PJeC+E0zbfSoSjq6bJ7buBPxzQPL0ifrkY4DNu4JUdk0ImlBUYi840eQ==

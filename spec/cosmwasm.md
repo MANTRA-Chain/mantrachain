@@ -281,7 +281,7 @@ Set some additional constants:
 
 ```js
 const coinDenom = "factory/{ADMIN_WALLET}/{CUSTOM_COIN_SUBDENOM}"; // e.g. const coinDenom  =  "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc";
-const contractAddress = { CONTRACT_ADDRESS }; // e.g. const contractAddress = "mantra1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq8pey27";
+const contractAddress = {CONTRACT_ADDRESS}; // e.g. const contractAddress = "mantra1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrq8pey27";
 ```
 
 In our case the admin wallet is the current wallet address so you can set the `coinDenom` to:

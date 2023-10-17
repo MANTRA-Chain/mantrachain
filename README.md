@@ -14,7 +14,7 @@
 
 ## Get started
 
-```
+```bash
 make build
 ignite chain serve -v
 ```
@@ -35,7 +35,7 @@ guard module and admin for the soul bound nft collection
 `recipient` - used for various transactions once the chain is started
 
 ### Unit tests
-  
+
 ```bash
 make test
 ```
@@ -46,6 +46,13 @@ Start the chain running locally:
 
 ```bash
 ignite chain serve -v
+```
+
+Setup the chain:
+
+```bash
+./scripts/init-guard.sh
+./scripts/init-e2e.sh
 ```
 
 Execute the tests:
