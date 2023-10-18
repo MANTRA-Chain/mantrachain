@@ -6,10 +6,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (s *KeeperTestSuite) TestMintNfts() {
+func (s *KeeperTestSuite) TestMintNftsNotRestrictedCollection() {
 	testCases := []struct {
 		name   string
 		req    *types.MsgMintNfts
+		cnt    int
 		expErr bool
 		errMsg string
 	}{
@@ -36,16 +37,70 @@ func (s *KeeperTestSuite) TestMintNfts() {
 			errMsg: "not found: 2: nft collection does not exists",
 		},
 		{
-			name: "should successfully mint nfts",
+			name: "should successfully mint nfts for the same address",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "1", Title: "nft1", Description: "nft1"},
+						{Id: "2", Title: "nft2", Description: "nft2"},
+					},
+				},
+			},
+			cnt:    2,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully mint nfts for another address",
 			req: &types.MsgMintNfts{
 				Creator:           s.addrs[0].String(),
 				Receiver:          s.addrs[1].String(),
 				CollectionCreator: s.addrs[0].String(),
 				CollectionId:      "1",
 				Nfts: &types.MsgNftsMetadata{
-					Nfts: []*types.MsgNftMetadata{{Id: "1", Title: "nft1", Description: "nft1"}, {Id: "2", Title: "nft1", Description: "nft2"}},
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "3", Title: "nft3", Description: "nft3"},
+					},
 				},
 			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail when mint existing nfts",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "1", Title: "nft1", Description: "nft1"},
+						{Id: "2", Title: "nft2", Description: "nft2"},
+					},
+				},
+			},
+			expErr: true,
+			errMsg: "nfts count provided is invalid",
+		},
+		{
+			name: "should successfully mint only the nfts that do not exist",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				Receiver:          s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "3", Title: "nft3", Description: "nft3"},
+						{Id: "4", Title: "nft4", Description: "nft4"},
+					},
+				},
+			},
+			cnt:    1,
 			expErr: false,
 			errMsg: "",
 		},
@@ -65,11 +120,192 @@ func (s *KeeperTestSuite) TestMintNfts() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			_, err := s.msgServer.MintNfts(goCtx, tc.req)
+			req, err := s.msgServer.MintNfts(goCtx, tc.req)
 			if tc.expErr {
 				s.Require().Error(err)
 				s.Require().Contains(err.Error(), tc.errMsg)
 			} else {
+				if tc.req.Receiver == "" {
+					s.Require().EqualValues(req.Receiver, tc.req.Creator)
+				} else {
+					s.Require().EqualValues(req.Receiver, tc.req.Receiver)
+				}
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMintNftsRestrictedCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgMintNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully mint nfts for the same address",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "1", Title: "nft1", Description: "nft1"},
+						{Id: "2", Title: "nft2", Description: "nft2"},
+					},
+				},
+			},
+			cnt:    2,
+			expErr: false,
+			errMsg: "",
+		}, {
+			name: "should successfully mint nfts for another address",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				Receiver:          s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "3", Title: "nft3", Description: "nft3"},
+						{Id: "4", Title: "nft4", Description: "nft4"},
+					},
+				},
+			},
+			cnt:    2,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail when mint nfts with no permission",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[1].String(),
+				Receiver:          s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "1",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "3", Title: "nft3", Description: "nft3"},
+					},
+				},
+			},
+			expErr: true,
+			errMsg: "unauthorized",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
+		Creator: s.addrs[0].String(),
+		Collection: &types.MsgCreateNftCollectionMetadata{
+			Id:             "2",
+			RestrictedNfts: true,
+		},
+	})
+	if err != nil {
+		return
+	}
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.MintNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				if tc.req.Receiver == "" {
+					s.Require().EqualValues(req.Receiver, tc.req.Creator)
+				} else {
+					s.Require().EqualValues(req.Receiver, tc.req.Receiver)
+				}
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMintNftsDefaultCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgMintNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully mint nfts in the default collection for the same address",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[1].String(),
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "1", Title: "nft1", Description: "nft1"},
+						{Id: "2", Title: "nft2", Description: "nft2"},
+					},
+				},
+				Strict: false,
+			},
+			cnt:    2,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully mint nfts in the default collection for another address",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				Receiver:          s.addrs[1].String(),
+				CollectionCreator: s.addrs[1].String(),
+				CollectionId:      "",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "3", Title: "nft3", Description: "nft3"},
+						{Id: "4", Title: "nft4", Description: "nft4"},
+					},
+				},
+				Strict: false,
+			},
+			cnt:    2,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail when mint nfts in the default collection with strict flag set to true",
+			req: &types.MsgMintNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[1].String(),
+				CollectionId:      "",
+				Nfts: &types.MsgNftsMetadata{
+					Nfts: []*types.MsgNftMetadata{
+						{Id: "5", Title: "nft5", Description: "nft5"},
+					},
+				},
+				Strict: true,
+			},
+			expErr: true,
+			errMsg: "nft collection does not exists",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.MintNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				if tc.req.Receiver == "" {
+					s.Require().EqualValues(req.Receiver, tc.req.Creator)
+				} else {
+					s.Require().EqualValues(req.Receiver, tc.req.Receiver)
+				}
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
 				s.Require().NoError(err)
 			}
 		})
@@ -175,7 +411,6 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 		})
 	}
 }
-
 func (s *KeeperTestSuite) TestTransferNfts() {
 	testCases := []struct {
 		name   string
@@ -259,6 +494,8 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 		},
 	})
 
+	s.Require().NoError(err)
+
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
 			_, err := s.msgServer.TransferNft(goCtx, tc.req)
@@ -271,7 +508,6 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 		})
 	}
 }
-
 func (s *KeeperTestSuite) TestApproveNft() {
 	testCases := []struct {
 		name   string
@@ -350,6 +586,8 @@ func (s *KeeperTestSuite) TestApproveNft() {
 			Nfts: []*types.MsgNftMetadata{{Id: "1", Title: "nft1", Description: "nft1"}, {Id: "2", Title: "nft1", Description: "nft2"}},
 		},
 	})
+
+	s.Require().NoError(err)
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {

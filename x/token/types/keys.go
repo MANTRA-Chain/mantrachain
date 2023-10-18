@@ -11,6 +11,7 @@ const (
 	AttributeKeyNftCollectionId      = "nft_collection_id"
 	AttributeKeyNftCollectionCreator = "nft_collection_creator"
 	AttributeKeyNftsIds              = "nfts_ids"
+	AttributeKeyNftsCount            = "nfts_count"
 	AttributeKeyNftId                = "nft_id"
 	AttributeKeySigner               = "signer"
 	AttributeKeyOwner                = "owner"

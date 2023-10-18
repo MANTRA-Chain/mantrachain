@@ -71,6 +71,7 @@ func (c *NftCollectionController) CreateDefaultIfNotExists() *NftCollectionContr
 func (c *NftCollectionController) CreateDefaultNftCollection() error {
 	c.metadata.Id = ""
 	c.metadata.Category = string(types.GeneralNftCollectionCat)
+	c.metadata.Opened = true
 	collectionIndex := c.getIndex()
 
 	c.requireNftCollection()

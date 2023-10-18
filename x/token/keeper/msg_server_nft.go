@@ -21,7 +21,7 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
 		return nil, sdkerrors.Wrap(err, "unauthorized")
 	}
 
@@ -106,13 +106,13 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*types.MsgMintNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
 
 	if strings.TrimSpace(msg.Receiver) == "" {
-		msg.Receiver = msg.Creator
+		msg.Receiver = msg.GetCreator()
 	}
 
 	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
@@ -123,7 +123,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = creator
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -132,13 +132,10 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		}
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.CreateDefaultIfNotExists().Execute(); err != nil {
 		return nil, err
@@ -172,6 +169,10 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithMetadata(msg.Nfts.Nfts).
@@ -250,6 +251,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNftsIds, strings.Join(nftsIds, ",")),
+			sdk.NewAttribute(types.AttributeKeyNftsCount, strconv.FormatUint(uint64(len(nftsIds)), 10)),
 			sdk.NewAttribute(types.AttributeKeySigner, creator.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
 		),
@@ -257,6 +259,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	return &types.MsgMintNftsResponse{
 		NftsIds:           nftsIds,
+		NftsCount:         uint32(len(nftsIds)),
 		Creator:           creator.String(),
 		Receiver:          receiver.String(),
 		CollectionCreator: collectionCreator.String(),
@@ -267,7 +270,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*types.MsgBurnNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -275,7 +278,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = owner
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -284,13 +287,10 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		}
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -298,6 +298,10 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -347,12 +351,14 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNftsIds, strings.Join(nftsIds, ",")),
+			sdk.NewAttribute(types.AttributeKeyNftsCount, strconv.FormatUint(uint64(len(nftsIds)), 10)),
 			sdk.NewAttribute(types.AttributeKeySigner, owner.String()),
 		),
 	)
 
 	return &types.MsgBurnNftsResponse{
 		NftsIds:           nftsIds,
+		NftsCount:         uint32(len(nftsIds)),
 		Burner:            owner.String(),
 		CollectionCreator: collectionCreator.String(),
 		CollectionId:      collectionId,
@@ -362,7 +368,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts) (*types.MsgApproveNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -375,7 +381,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = owner
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -388,13 +394,10 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -402,6 +405,10 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -440,6 +447,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNftsIds, strings.Join(nftsIds, ",")),
+			sdk.NewAttribute(types.AttributeKeyNftsCount, strconv.FormatUint(uint64(len(nftsIds)), 10)),
 			sdk.NewAttribute(types.AttributeKeySigner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
@@ -448,6 +456,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 
 	return &types.MsgApproveNftsResponse{
 		NftsIds:           nftsIds,
+		NftsCount:         uint32(len(nftsIds)),
 		Owner:             owner.String(),
 		Receiver:          receiver.String(),
 		Approved:          msg.Approved,
@@ -459,7 +468,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 func (k msgServer) ApproveAllNfts(goCtx context.Context, msg *types.MsgApproveAllNfts) (*types.MsgApproveAllNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -491,13 +500,13 @@ func (k msgServer) ApproveAllNfts(goCtx context.Context, msg *types.MsgApproveAl
 func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types.MsgMintNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
 
 	if strings.TrimSpace(msg.Receiver) == "" {
-		msg.Receiver = msg.Creator
+		msg.Receiver = msg.GetCreator()
 	}
 
 	receiver, err := sdk.AccAddressFromBech32(msg.Receiver)
@@ -508,7 +517,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = creator
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -517,13 +526,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		}
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.CreateDefaultIfNotExists().Execute(); err != nil {
 		return nil, err
@@ -557,6 +563,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithMetadata([]*types.MsgNftMetadata{msg.Nft}).
@@ -647,7 +657,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types.MsgBurnNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -655,7 +665,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = owner
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -664,13 +674,10 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		}
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -678,6 +685,10 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
@@ -736,7 +747,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (*types.MsgApproveNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	owner, err := sdk.AccAddressFromBech32(msg.Creator)
+	owner, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -749,7 +760,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = owner
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -762,13 +773,10 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -776,6 +784,10 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
@@ -830,7 +842,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft) (*types.MsgTransferNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	operator, err := sdk.AccAddressFromBech32(msg.Creator)
+	operator, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -848,7 +860,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = operator
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -861,13 +873,10 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -875,6 +884,10 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithId(msg.NftId).
@@ -933,7 +946,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNfts) (*types.MsgTransferNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	operator, err := sdk.AccAddressFromBech32(msg.Creator)
+	operator, err := sdk.AccAddressFromBech32(msg.GetCreator())
 	if err != nil {
 		return nil, err
 	}
@@ -951,7 +964,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	var collectionCreator sdk.AccAddress
 
 	if strings.TrimSpace(msg.CollectionCreator) == "" && !msg.Strict {
-		msg.CollectionCreator = msg.Creator
+		msg.CollectionCreator = msg.GetCreator()
 		collectionCreator = operator
 	} else {
 		collectionCreator, err = sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -964,13 +977,10 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), msg.CollectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
-	}
-
 	collectionController := NewNftCollectionController(ctx, collectionCreator, msg.Strict).
 		WithId(msg.CollectionId).
-		WithStore(k)
+		WithStore(k).
+		WithConfiguration(k.GetParams(ctx))
 
 	if err := collectionController.MustExist().Validate(); err != nil {
 		return nil, err
@@ -978,6 +988,10 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
+
+	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
 
 	nftController := NewNftController(ctx, collectionIndex).
 		WithIds(msg.Nfts.NftsIds).
@@ -1021,6 +1035,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, collectionCreator.String()),
 			sdk.NewAttribute(types.AttributeKeyNftCollectionId, collectionId),
 			sdk.NewAttribute(types.AttributeKeyNftsIds, strings.Join(nftsIds, ",")),
+			sdk.NewAttribute(types.AttributeKeyNftsCount, strconv.FormatUint(uint64(len(nftsIds)), 10)),
 			sdk.NewAttribute(types.AttributeKeySigner, operator.String()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyReceiver, receiver.String()),
@@ -1029,6 +1044,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 
 	return &types.MsgTransferNftsResponse{
 		NftsIds:           nftsIds,
+		NftsCount:         uint32(len(nftsIds)),
 		Operator:          operator.String(),
 		Owner:             owner.String(),
 		Receiver:          receiver.String(),

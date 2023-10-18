@@ -139,11 +139,12 @@ message MsgApproveNfts {
 
 message MsgApproveNftsResponse {
   repeated string nfts_ids = 1;
-  string owner = 2;
-  string receiver = 3;
-  bool approved = 4;
-  string collection_creator = 5;
-  string collection_id = 6;
+  uint32 nfts_count = 2;
+  string owner = 3;
+  string receiver = 4;
+  bool approved = 5;
+  string collection_creator = 6;
+  string collection_id = 7;
 }
 
 message MsgTransferNfts {
@@ -158,11 +159,12 @@ message MsgTransferNfts {
 
 message MsgTransferNftsResponse {
   repeated string nfts_ids = 1;
-  string operator = 2;
-  string owner = 3;
-  string receiver = 4;
-  string collection_creator = 5;
-  string collection_id = 6;
+  uint32 nfts_count = 2;
+  string operator = 3;
+  string owner = 4;
+  string receiver = 5;
+  string collection_creator = 6;
+  string collection_id = 7;
 }
 
 message MsgCreateNftCollection {
@@ -218,10 +220,11 @@ message MsgNftMetadata {
 
 message MsgMintNftsResponse {
   repeated string nfts_ids = 1;
-  string creator = 2;
-  string receiver = 3;
-  string collection_creator = 4;
-  string collection_id = 5;
+  uint32 nfts_count = 2;
+  string creator = 3;
+  string receiver = 4;
+  string collection_creator = 5;
+  string collection_id = 6;
 }
 
 message MsgBurnNfts {
@@ -238,9 +241,10 @@ message MsgNftsIds {
 
 message MsgBurnNftsResponse {
   repeated string nfts_ids = 1;
-  string burner = 2;
-  string collection_creator = 3;
-  string collection_id = 4;
+  uint32 nfts_count = 2;
+  string burner = 3;
+  string collection_creator = 4;
+  string collection_id = 5;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
