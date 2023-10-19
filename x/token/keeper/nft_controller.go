@@ -65,6 +65,7 @@ func (c *NftController) Validate() error {
 			return err
 		}
 	}
+	c.validators = []NftControllerFunc{}
 	return nil
 }
 
@@ -74,6 +75,7 @@ func (c *NftController) Execute() error {
 			return err
 		}
 	}
+	c.actions = []NftControllerFunc{}
 	return nil
 }
 

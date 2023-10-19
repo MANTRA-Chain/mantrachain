@@ -143,6 +143,10 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	collectionController.MustExist()
 
+	if err := collectionController.Validate(); err != nil {
+		return nil, err
+	}
+
 	restrictedCollection := k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -150,17 +154,6 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	if !restrictedCollection {
 		collectionController.OpenedOrOwner(creator)
-	}
-
-	if msg.Did {
-		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
-			ctx,
-			collectionController.getIndex(),
-		)
-
-		if !restrictedCollection || !soulBondNftsCollection {
-			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nfts for collection which is not restricted and/or not for soul-bond nfts")
-		}
 	}
 
 	if err := collectionController.Validate(); err != nil {
@@ -172,6 +165,17 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
 		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	if msg.Did {
+		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
+			ctx,
+			collectionIndex,
+		)
+
+		if !restrictedCollection || !soulBondNftsCollection {
+			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nfts for collection which is not restricted and/or not for soul-bond nfts")
+		}
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -537,6 +541,10 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	collectionController.MustExist()
 
+	if err := collectionController.Validate(); err != nil {
+		return nil, err
+	}
+
 	restrictedCollection := k.HasRestrictedNftsCollection(
 		ctx,
 		collectionController.getIndex(),
@@ -544,17 +552,6 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	if !restrictedCollection {
 		collectionController.OpenedOrOwner(creator)
-	}
-
-	if msg.Did {
-		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
-			ctx,
-			collectionController.getIndex(),
-		)
-
-		if !restrictedCollection || !soulBondNftsCollection {
-			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nft for collection which is not restricted and/or not for soul-bond nfts")
-		}
 	}
 
 	if err := collectionController.Validate(); err != nil {
@@ -566,6 +563,17 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 
 	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
 		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	if msg.Did {
+		soulBondNftsCollection := k.HasSoulBondedNftsCollection(
+			ctx,
+			collectionIndex,
+		)
+
+		if !restrictedCollection || !soulBondNftsCollection {
+			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nft for collection which is not restricted and/or not for soul-bond nfts")
+		}
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).

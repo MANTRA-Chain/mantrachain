@@ -106,6 +106,7 @@ func (c *NftCollectionController) Execute() error {
 			return err
 		}
 	}
+	c.actions = []NftCollectionControllerFunc{}
 	return nil
 }
 
@@ -115,6 +116,7 @@ func (c *NftCollectionController) Validate() error {
 			return err
 		}
 	}
+	c.validators = []NftCollectionControllerFunc{}
 	return nil
 }
 

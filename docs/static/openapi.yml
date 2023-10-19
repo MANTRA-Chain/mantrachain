@@ -100994,6 +100994,9 @@ definitions:
         type: array
         items:
           type: string
+      nfts_count:
+        type: integer
+        format: int64
       owner:
         type: string
       receiver:
@@ -101022,6 +101025,9 @@ definitions:
         type: array
         items:
           type: string
+      nfts_count:
+        type: integer
+        format: int64
       burner:
         type: string
       collection_creator:
@@ -101262,6 +101268,9 @@ definitions:
         type: array
         items:
           type: string
+      nfts_count:
+        type: integer
+        format: int64
       creator:
         type: string
       receiver:
@@ -101718,6 +101727,9 @@ definitions:
         type: array
         items:
           type: string
+      nfts_count:
+        type: integer
+        format: int64
       operator:
         type: string
       owner:
