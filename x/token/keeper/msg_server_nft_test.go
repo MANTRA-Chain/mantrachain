@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (s *KeeperTestSuite) TestMintNftsNotRestrictedNftCollection() {
+func (s *KeeperTestSuite) TestMintNfts() {
 	testCases := []struct {
 		name   string
 		req    *types.MsgMintNfts
@@ -34,7 +34,7 @@ func (s *KeeperTestSuite) TestMintNftsNotRestrictedNftCollection() {
 				CollectionId:      "2",
 			},
 			expErr: true,
-			errMsg: "not found: 2: nft collection does not exists",
+			errMsg: "nft collection does not exists",
 		},
 		{
 			name: "should successfully mint nfts for the same address",
@@ -713,6 +713,7 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 	testCases := []struct {
 		name   string
 		req    *types.MsgBurnNfts
+		cnt    int
 		expErr bool
 		errMsg string
 	}{
@@ -721,7 +722,7 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 			req: &types.MsgBurnNfts{
 				Creator:           "",
 				CollectionCreator: "",
-				CollectionId:      "1",
+				CollectionId:      "4",
 				Nfts: &types.MsgNftsIds{
 					NftsIds: []string{"1", "2"},
 				},
@@ -734,20 +735,20 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 			req: &types.MsgBurnNfts{
 				Creator:           s.addrs[0].String(),
 				CollectionCreator: "",
-				CollectionId:      "2",
+				CollectionId:      "5",
 				Nfts: &types.MsgNftsIds{
 					NftsIds: []string{"1", "2"},
 				},
 			},
 			expErr: true,
-			errMsg: "not found: 2: nft collection does not exists",
+			errMsg: "nft collection does not exists",
 		},
 		{
 			name: "should fail burning nfts when not an owner",
 			req: &types.MsgBurnNfts{
 				Creator:           s.addrs[0].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "4",
 				Nfts: &types.MsgNftsIds{
 					NftsIds: []string{"1", "2"},
 				},
@@ -756,15 +757,30 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 			errMsg: "not existing nfts or not an owner: nfts count provided is invalid",
 		},
 		{
+			name: "should successfully burn only the nfts that do exist",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "4",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"3", "5"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
 			name: "should successfully burn nfts",
 			req: &types.MsgBurnNfts{
 				Creator:           s.addrs[1].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "4",
 				Nfts: &types.MsgNftsIds{
 					NftsIds: []string{"1", "2"},
 				},
 			},
+			cnt:    2,
 			expErr: false,
 			errMsg: "",
 		},
@@ -775,7 +791,7 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
 		Creator: s.addrs[0].String(),
 		Collection: &types.MsgCreateNftCollectionMetadata{
-			Id: "1",
+			Id: "4",
 		},
 	})
 	s.Require().NoError(err)
@@ -784,28 +800,596 @@ func (s *KeeperTestSuite) TestBurnNfts() {
 		Creator:           s.addrs[0].String(),
 		Receiver:          s.addrs[1].String(),
 		CollectionCreator: s.addrs[0].String(),
-		CollectionId:      "1",
+		CollectionId:      "4",
 		Nfts: &types.MsgNftsMetadata{
-			Nfts: []*types.MsgNftMetadata{{Id: "1", Title: "nft1", Description: "nft1"}, {Id: "2", Title: "nft1", Description: "nft2"}},
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft2", Description: "nft2"},
+				{Id: "3", Title: "nft3", Description: "nft3"},
+				{Id: "4", Title: "nft4", Description: "nft4"},
+			},
 		},
 	})
-
 	s.Require().NoError(err)
-
-	//s.nftKeeper.Mint(goCtx,  &types.Nft{Id: "1"}, s.addrs[0])
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			_, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
 			if tc.expErr {
 				s.Require().Error(err)
 				s.Require().Contains(err.Error(), tc.errMsg)
 			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
 				s.Require().NoError(err)
 			}
 		})
 	}
 }
+
+func (s *KeeperTestSuite) TestBurnNftsRestrictedNftCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgBurnNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully burn nfts for the same address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "3",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"1"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully burn nfts for another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "3",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"3"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail burning nfts with no permission",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "3",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"4"},
+				},
+			},
+			expErr: true,
+			errMsg: "unauthorized",
+		}, {
+			name: "should successfully burn only existing nfts",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "3",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"2", "5"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
+		Creator: s.testAdminAccount,
+		Collection: &types.MsgCreateNftCollectionMetadata{
+			Id:             "3",
+			RestrictedNfts: true,
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.testAdminAccount,
+		CollectionCreator: s.testAdminAccount,
+		CollectionId:      "3",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft2", Description: "nft2"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.testAdminAccount,
+		Receiver:          s.addrs[1].String(),
+		CollectionCreator: s.testAdminAccount,
+		CollectionId:      "3",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "3", Title: "nft3", Description: "nft3"},
+				{Id: "4", Title: "nft4", Description: "nft4"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestBurnNftsDefaultNftCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgBurnNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully burn nfts in the default collection for the same address",
+			req: &types.MsgBurnNfts{
+				Creator: s.addrs[0].String(),
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"7"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail burning nfts for another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"9"},
+				},
+			},
+			expErr: true,
+			errMsg: "not existing nfts or not an owner",
+		}, {
+			name: "should successfully burn nfts in the default collection when it is set explicitly",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "default",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"8"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		}, {
+			name: "should successfully burn nfts in the default collection from another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"10"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[0].String(),
+		CollectionCreator: s.addrs[0].String(),
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "7", Title: "nft7", Description: "nft7"},
+				{Id: "8", Title: "nft8", Description: "nft8"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[0].String(),
+		Receiver:          s.addrs[1].String(),
+		CollectionCreator: s.addrs[0].String(),
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "9", Title: "nft9", Description: "nft9"},
+				{Id: "10", Title: "nft10", Description: "nft10"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestBurnNftsSoulBondedNftCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgBurnNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully burn nfts for the same address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "5",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"1"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully burn nfts with another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "5",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"3"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail burning nfts with no permission",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "5",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"4"},
+				},
+			},
+			expErr: true,
+			errMsg: "not existing nfts or not an owner",
+		}, {
+			name: "should successfully burn only existing nfts",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "5",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"2", "5"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
+		Creator: s.addrs[0].String(),
+		Collection: &types.MsgCreateNftCollectionMetadata{
+			Id:             "5",
+			SoulBondedNfts: true,
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[0].String(),
+		CollectionCreator: s.addrs[0].String(),
+		CollectionId:      "5",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft2", Description: "nft2"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[0].String(),
+		Receiver:          s.addrs[1].String(),
+		CollectionCreator: s.addrs[0].String(),
+		CollectionId:      "5",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "3", Title: "nft3", Description: "nft3"},
+				{Id: "4", Title: "nft4", Description: "nft4"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestBurnNftsOpenedNftCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgBurnNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully burn nfts for the same address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "6",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"1"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully burn nfts with another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[1].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "6",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"3"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail burning nfts with no permission",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "6",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"4"},
+				},
+			},
+			expErr: true,
+			errMsg: "not existing nfts or not an owner",
+		}, {
+			name: "should successfully burn only existing nfts",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.addrs[0].String(),
+				CollectionId:      "6",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"2", "5"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
+		Creator: s.addrs[0].String(),
+		Collection: &types.MsgCreateNftCollectionMetadata{
+			Id:     "6",
+			Opened: true,
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[0].String(),
+		CollectionCreator: s.addrs[0].String(),
+		CollectionId:      "6",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft2", Description: "nft2"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.addrs[1].String(),
+		CollectionCreator: s.addrs[0].String(),
+		CollectionId:      "6",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "3", Title: "nft3", Description: "nft3"},
+				{Id: "4", Title: "nft4", Description: "nft4"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestBurnNftsRestrictedAndSoulBondedNftCollection() {
+	testCases := []struct {
+		name   string
+		req    *types.MsgBurnNfts
+		cnt    int
+		expErr bool
+		errMsg string
+	}{
+		{
+			name: "should successfully burn nfts for the same address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "4",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"1"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should successfully burn nfts for another address",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "4",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"3"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+		{
+			name: "should fail burning nfts with no permission",
+			req: &types.MsgBurnNfts{
+				Creator:           s.addrs[0].String(),
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "4",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"4"},
+				},
+			},
+			expErr: true,
+			errMsg: "unauthorized",
+		}, {
+			name: "should successfully burn only existing nfts",
+			req: &types.MsgBurnNfts{
+				Creator:           s.testAdminAccount,
+				CollectionCreator: s.testAdminAccount,
+				CollectionId:      "4",
+				Nfts: &types.MsgNftsIds{
+					NftsIds: []string{"2", "5"},
+				},
+			},
+			cnt:    1,
+			expErr: false,
+			errMsg: "",
+		},
+	}
+
+	goCtx := sdk.WrapSDKContext(s.ctx)
+
+	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
+		Creator: s.testAdminAccount,
+		Collection: &types.MsgCreateNftCollectionMetadata{
+			Id:             "4",
+			RestrictedNfts: true,
+			SoulBondedNfts: true,
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.testAdminAccount,
+		CollectionCreator: s.testAdminAccount,
+		CollectionId:      "4",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft2", Description: "nft2"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	_, err = s.msgServer.MintNfts(goCtx, &types.MsgMintNfts{
+		Creator:           s.testAdminAccount,
+		Receiver:          s.addrs[1].String(),
+		CollectionCreator: s.testAdminAccount,
+		CollectionId:      "4",
+		Nfts: &types.MsgNftsMetadata{
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "3", Title: "nft3", Description: "nft3"},
+				{Id: "4", Title: "nft4", Description: "nft4"},
+			},
+		},
+	})
+	s.Require().NoError(err)
+
+	for _, tc := range testCases {
+		s.Run(tc.name, func() {
+			req, err := s.msgServer.BurnNfts(goCtx, tc.req)
+			if tc.expErr {
+				s.Require().Error(err)
+				s.Require().Contains(err.Error(), tc.errMsg)
+			} else {
+				s.Require().EqualValues(req.NftsCount, tc.cnt)
+				s.Require().NoError(err)
+			}
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestTransferNfts() {
 	testCases := []struct {
 		name   string
@@ -820,7 +1404,7 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 				Owner:             s.addrs[1].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: "",
-				CollectionId:      "1",
+				CollectionId:      "7",
 				NftId:             "1",
 			},
 			expErr: true,
@@ -833,11 +1417,11 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 				Owner:             s.addrs[1].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[1].String(),
-				CollectionId:      "2",
+				CollectionId:      "8",
 				NftId:             "1",
 			},
 			expErr: true,
-			errMsg: "not found: 2: nft collection does not exists",
+			errMsg: "nft collection does not exists",
 		},
 		{
 			name: "should fail transferring nft when no transfer permission/not an owner",
@@ -846,7 +1430,7 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 				Owner:             s.addrs[0].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "7",
 				NftId:             "1",
 			},
 			expErr: true,
@@ -859,7 +1443,7 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 				Owner:             s.addrs[1].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "7",
 				NftId:             "1",
 			},
 			expErr: false,
@@ -872,7 +1456,7 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
 		Creator: s.addrs[0].String(),
 		Collection: &types.MsgCreateNftCollectionMetadata{
-			Id: "1",
+			Id: "7",
 		},
 	})
 	s.Require().NoError(err)
@@ -881,9 +1465,12 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 		Creator:           s.addrs[0].String(),
 		Receiver:          s.addrs[1].String(),
 		CollectionCreator: s.addrs[0].String(),
-		CollectionId:      "1",
+		CollectionId:      "7",
 		Nfts: &types.MsgNftsMetadata{
-			Nfts: []*types.MsgNftMetadata{{Id: "1", Title: "nft1", Description: "nft1"}, {Id: "2", Title: "nft1", Description: "nft2"}},
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft1", Description: "nft2"},
+			},
 		},
 	})
 
@@ -901,6 +1488,7 @@ func (s *KeeperTestSuite) TestTransferNfts() {
 		})
 	}
 }
+
 func (s *KeeperTestSuite) TestApproveNft() {
 	testCases := []struct {
 		name   string
@@ -914,7 +1502,7 @@ func (s *KeeperTestSuite) TestApproveNft() {
 				Creator:           "",
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: "",
-				CollectionId:      "1",
+				CollectionId:      "8",
 				NftId:             "1",
 			},
 			expErr: true,
@@ -926,11 +1514,11 @@ func (s *KeeperTestSuite) TestApproveNft() {
 				Creator:           s.addrs[0].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[1].String(),
-				CollectionId:      "2",
+				CollectionId:      "9",
 				NftId:             "1",
 			},
 			expErr: true,
-			errMsg: "not found: 2: nft collection does not exists",
+			errMsg: "nft collection does not exists",
 		},
 		{
 			name: "should fail transferring nft when no transfer permission/not an owner",
@@ -938,7 +1526,7 @@ func (s *KeeperTestSuite) TestApproveNft() {
 				Creator:           s.addrs[0].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "8",
 				NftId:             "1",
 			},
 			expErr: true,
@@ -950,7 +1538,7 @@ func (s *KeeperTestSuite) TestApproveNft() {
 				Creator:           s.addrs[1].String(),
 				Receiver:          s.addrs[2].String(),
 				CollectionCreator: s.addrs[0].String(),
-				CollectionId:      "1",
+				CollectionId:      "8",
 				NftId:             "1",
 			},
 			expErr: false,
@@ -963,7 +1551,7 @@ func (s *KeeperTestSuite) TestApproveNft() {
 	_, err := s.msgServer.CreateNftCollection(goCtx, &types.MsgCreateNftCollection{
 		Creator: s.addrs[0].String(),
 		Collection: &types.MsgCreateNftCollectionMetadata{
-			Id: "1",
+			Id: "8",
 		},
 	})
 	s.Require().NoError(err)
@@ -972,9 +1560,12 @@ func (s *KeeperTestSuite) TestApproveNft() {
 		Creator:           s.addrs[0].String(),
 		Receiver:          s.addrs[1].String(),
 		CollectionCreator: s.addrs[0].String(),
-		CollectionId:      "1",
+		CollectionId:      "8",
 		Nfts: &types.MsgNftsMetadata{
-			Nfts: []*types.MsgNftMetadata{{Id: "1", Title: "nft1", Description: "nft1"}, {Id: "2", Title: "nft1", Description: "nft2"}},
+			Nfts: []*types.MsgNftMetadata{
+				{Id: "1", Title: "nft1", Description: "nft1"},
+				{Id: "2", Title: "nft1", Description: "nft2"},
+			},
 		},
 	})
 
