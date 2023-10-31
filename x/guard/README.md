@@ -343,6 +343,7 @@ The `Params` message defines the parameters for the `guard` module.
 | account_privileges_token_collection_creator | string | The address of the user who created the token collection used for account privileges. |
 | account_privileges_token_collection_id      | string | The ID of the token collection used for account privileges.                           |
 | default_privileges                          | bytes  | The default privileges that will be set for new accounts.                             |
+| base_denom                                  | string | The base denomination of the network.                                                 |
 
 ## Dependencies
 

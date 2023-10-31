@@ -22,6 +22,7 @@ var (
 			),
 		big.NewInt(1),
 	).Bytes()[:]...)
+	DefaultBaseDenom = "uaum"
 )
 
 var (
@@ -29,6 +30,7 @@ var (
 	KeyAccountPrivilegesTokenCollectionCreator = []byte("AccountPrivilegesTokenCollectionCreator")
 	KeyAccountPrivilegesTokenCollectionId      = []byte("AccountPrivilegesTokenCollectionId")
 	KeyDefaultPrivileges                       = []byte("DefaultPrivileges")
+	KeyBaseDenom                               = []byte("BaseDenom")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -44,12 +46,14 @@ func NewParams(
 	accountPrivilegesTokenCollectionCreator string,
 	accountPrivilegesTokenCollectionId string,
 	defaultPrivileges []byte,
+	baseDenom string,
 ) Params {
 	return Params{
 		AdminAccount:                            adminAccount,
 		AccountPrivilegesTokenCollectionCreator: accountPrivilegesTokenCollectionCreator,
 		AccountPrivilegesTokenCollectionId:      accountPrivilegesTokenCollectionId,
 		DefaultPrivileges:                       defaultPrivileges,
+		BaseDenom:                               baseDenom,
 	}
 }
 
@@ -60,6 +64,7 @@ func DefaultParams() Params {
 		DefaultAccountPrivilegesTokenCollectionCreator,
 		DefaultAccountPrivilegesTokenCollectionId,
 		DefaultPrivileges,
+		DefaultBaseDenom,
 	)
 }
 
@@ -70,6 +75,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyAccountPrivilegesTokenCollectionCreator, &p.AccountPrivilegesTokenCollectionCreator, validateAccountPrivilegesTokenCollectionCreator),
 		paramtypes.NewParamSetPair(KeyAccountPrivilegesTokenCollectionId, &p.AccountPrivilegesTokenCollectionId, validateAccountPrivilegesTokenCollectionId),
 		paramtypes.NewParamSetPair(KeyDefaultPrivileges, &p.DefaultPrivileges, validateDefaultPrivileges),
+		paramtypes.NewParamSetPair(KeyBaseDenom, &p.BaseDenom, validateBaseDenom),
 	}
 }
 
@@ -106,6 +112,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateDefaultPrivileges(p.DefaultPrivileges); err != nil {
+		return err
+	}
+
+	if err := validateBaseDenom(p.BaseDenom); err != nil {
 		return err
 	}
 
@@ -160,6 +170,19 @@ func validateDefaultPrivileges(i interface{}) error {
 
 	if len(v) != 32 {
 		return fmt.Errorf("valid default privileges param should have length of 32")
+	}
+
+	return nil
+}
+
+func validateBaseDenom(i interface{}) error {
+	v, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v == "" {
+		return fmt.Errorf("valid base denom param should not be empty")
 	}
 
 	return nil

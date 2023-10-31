@@ -9,4 +9,5 @@ message Params {
   string account_privileges_token_collection_creator = 2;
   string account_privileges_token_collection_id = 3;
   bytes default_privileges = 4;
+  string base_denom = 5;
 }

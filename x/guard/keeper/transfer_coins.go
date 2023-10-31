@@ -13,15 +13,21 @@ import (
 )
 
 func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error {
+	conf := k.GetParams(ctx)
+
 	var indexes [][]byte
 
 	for _, coin := range coins {
 		denom := coin.GetDenom()
 		denomBytes := []byte(denom)
 
-		// verify that denom is an x/coinfactory denom
-		_, _, err := coinfactorytypes.DeconstructDenom(denom)
-		if err == nil {
+		if strings.HasPrefix(denom, "factory/") {
+			// verify that denom is an x/coinfactory denom
+			_, _, err := coinfactorytypes.DeconstructDenom(denom)
+			if err != nil {
+				return err
+			}
+
 			coinAdmin, found := k.ck.GetAdmin(ctx, denom)
 
 			if !found {
@@ -33,6 +39,8 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 				continue
 			}
 
+			indexes = append(indexes, denomBytes)
+		} else if conf.BaseDenom != denom {
 			indexes = append(indexes, denomBytes)
 		}
 	}

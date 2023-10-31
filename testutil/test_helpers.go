@@ -93,6 +93,7 @@ func setup(withGenesis bool, invCheckPeriod uint) (*chain.App, chain.GenesisStat
 			TestAdminAddress,
 			TestAccountPrivilegesGuardNftCollectionId,
 			guardtypes.DefaultPrivileges,
+			guardtypes.DefaultBaseDenom,
 		))
 		genesisState[guardtypes.ModuleName] = app.AppCodec().MustMarshalJSON(guardGenesis)
 		return app, genesisState
@@ -191,6 +192,7 @@ func setupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs 
 		TestAdminAddress,
 		TestAccountPrivilegesGuardNftCollectionId,
 		guardtypes.DefaultPrivileges,
+		guardtypes.DefaultBaseDenom,
 	))
 	genesisState[guardtypes.ModuleName] = app.AppCodec().MustMarshalJSON(guardGenesis)
 	coinfactoryGenesis := coinfactorytypes.NewGenesisState(coinfactorytypes.NewParams(
@@ -260,6 +262,7 @@ func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...ba
 		TestAdminAddress,
 		TestAccountPrivilegesGuardNftCollectionId,
 		guardtypes.DefaultPrivileges,
+		guardtypes.DefaultBaseDenom,
 	))
 	genesisState[guardtypes.ModuleName] = app.AppCodec().MustMarshalJSON(guardGenesis)
 

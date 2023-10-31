@@ -34,6 +34,8 @@ type KeeperTestSuite struct {
 	addrs             []sdk.AccAddress
 	guardKeeper       keeper.Keeper
 	bankKeeper        *guardtestutil.MockBankKeeper
+	nftKeeper         *guardtestutil.MockNFTKeeper
+	coinFactoryKeeper *guardtestutil.MockCoinFactoryKeeper
 	encCfg            params.EncodingConfig
 	queryClient       types.QueryClient
 	msgServer         types.MsgServer
@@ -41,6 +43,7 @@ type KeeperTestSuite struct {
 	rpKind            types.RequiredPrivilegesKind
 	lkIndex           []byte
 	params            types.Params
+	testAdminAccount  string
 }
 
 func TestKeeperTestSuite(t *testing.T) {
@@ -63,8 +66,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.bankKeeper = guardtestutil.NewMockBankKeeper(ctrl)
 	authzKeeper := guardtestutil.NewMockAuthzKeeper(ctrl)
 	tokenKeeper := guardtestutil.NewMockTokenKeeper(ctrl)
-	nftKeeper := guardtestutil.NewMockNFTKeeper(ctrl)
-	coinFactoryKeeper := guardtestutil.NewMockCoinFactoryKeeper(ctrl)
+	s.nftKeeper = guardtestutil.NewMockNFTKeeper(ctrl)
+	s.coinFactoryKeeper = guardtestutil.NewMockCoinFactoryKeeper(ctrl)
 
 	s.guardKeeper = keeper.NewKeeper(
 		s.encCfg.Marshaler,
@@ -76,8 +79,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.bankKeeper,
 		authzKeeper,
 		tokenKeeper,
-		nftKeeper,
-		coinFactoryKeeper,
+		s.nftKeeper,
+		s.coinFactoryKeeper,
 	)
 
 	queryHelper := baseapp.NewQueryServerTestHelper(s.ctx, s.encCfg.InterfaceRegistry)
@@ -96,6 +99,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		testutil.TestAdminAddress,
 		testutil.TestAccountPrivilegesGuardNftCollectionId,
 		types.DefaultPrivileges,
+		types.DefaultBaseDenom,
 	)
 	s.guardKeeper.SetParams(s.ctx, s.params)
+	s.testAdminAccount = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 }

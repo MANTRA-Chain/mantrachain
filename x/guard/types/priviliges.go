@@ -10,7 +10,7 @@ type IPrivileges interface {
 	Мerge(pr []byte) *Privileges
 	МergeMore(prs [][]byte) *Privileges
 	SwitchOn(ids []*big.Int) *Privileges
-	SwitchOff(ids []*big.Int, base *big.Int) *Privileges
+	SwitchOff(ids []*big.Int) *Privileges
 	SetBytes(buf []byte) *Privileges
 	Bytes() []byte
 	Empty() bool
@@ -46,35 +46,35 @@ func PrivilegesFromBytes(bz []byte) *Privileges {
 	return NewEmptyPrivileges().SetBytes(bz)
 }
 
-func (ap Privileges) SetBytes(buf []byte) *Privileges {
-	ap.BigInt().SetBytes(buf)
-	ap.raw = ap.BigInt().Bytes()
-	return &ap
+func (p Privileges) SetBytes(buf []byte) *Privileges {
+	p.BigInt().SetBytes(buf)
+	p.raw = p.BigInt().Bytes()
+	return &p
 }
 
-func (ap Privileges) Empty() bool {
-	return len(ap.Bytes()) == 0
+func (p Privileges) Empty() bool {
+	return len(p.Bytes()) == 0
 }
 
-func (ap Privileges) BigInt() *big.Int {
-	return ap.num
+func (p Privileges) BigInt() *big.Int {
+	return p.num
 }
 
-func (ap Privileges) Bytes() []byte {
-	return ap.raw
+func (p Privileges) Bytes() []byte {
+	return p.raw
 }
 
-func (ap Privileges) CheckPrivileges(privileges *Privileges, defPriv []byte) bool {
+func (p Privileges) CheckPrivileges(privileges *Privileges, defPriv []byte) bool {
 	defPrNum := big.NewInt(0).SetBytes(defPriv)
 
 	defReqPr := big.NewInt(0).And(defPrNum, privileges.BigInt())
-	defAccPr := big.NewInt(0).And(defPrNum, ap.BigInt())
+	defAccPr := big.NewInt(0).And(defPrNum, p.BigInt())
 
 	if big.NewInt(0).And(defAccPr, defReqPr).Cmp(defReqPr) == 0 {
 		invDefPrNum := big.NewInt(0).Not(defPrNum)
 
 		reqPr := big.NewInt(0).And(invDefPrNum, privileges.BigInt())
-		accPr := big.NewInt(0).And(invDefPrNum, ap.BigInt())
+		accPr := big.NewInt(0).And(invDefPrNum, p.BigInt())
 
 		return big.NewInt(0).And(accPr, reqPr).Cmp(big.NewInt(0)) == 1
 	}
@@ -82,41 +82,41 @@ func (ap Privileges) CheckPrivileges(privileges *Privileges, defPriv []byte) boo
 	return false
 }
 
-func (ap Privileges) Check(query []byte) bool {
+func (p Privileges) Check(query []byte) bool {
 	queryNum := big.NewInt(0).SetBytes(query)
-	return big.NewInt(0).And(ap.BigInt(), queryNum).Cmp(queryNum) == 0
+	return big.NewInt(0).And(p.BigInt(), queryNum).Cmp(queryNum) == 0
 }
 
-func (ap Privileges) Equal(pr []byte) bool {
-	return ap.BigInt().Cmp(big.NewInt(0).SetBytes(pr)) == 0
+func (p Privileges) Equal(pr []byte) bool {
+	return p.BigInt().Cmp(big.NewInt(0).SetBytes(pr)) == 0
 }
 
-func (ap Privileges) Мerge(pr []byte) *Privileges {
-	ap.BigInt().Or(ap.BigInt(), big.NewInt(0).SetBytes(pr))
-	ap.raw = ap.BigInt().Bytes()
-	return &ap
+func (p Privileges) Мerge(pr []byte) *Privileges {
+	p.BigInt().Or(p.BigInt(), big.NewInt(0).SetBytes(pr))
+	p.raw = p.BigInt().Bytes()
+	return &p
 }
 
-func (ap Privileges) МergeMore(prs [][]byte) *Privileges {
+func (p Privileges) МergeMore(prs [][]byte) *Privileges {
 	for _, pr := range prs {
-		ap.BigInt().Or(ap.BigInt(), big.NewInt(0).SetBytes(pr))
+		p.BigInt().Or(p.BigInt(), big.NewInt(0).SetBytes(pr))
 	}
-	ap.raw = ap.BigInt().Bytes()
-	return &ap
+	p.raw = p.BigInt().Bytes()
+	return &p
 }
 
-func (ap Privileges) SwitchOn(ids []*big.Int) *Privileges {
+func (p Privileges) SwitchOn(ids []*big.Int) *Privileges {
 	for _, id := range ids {
-		ap.BigInt().Or(ap.BigInt(), big.NewInt(0).Exp(big.NewInt(2), id, nil))
+		p.BigInt().Or(p.BigInt(), big.NewInt(0).Exp(big.NewInt(2), id, nil))
 	}
-	ap.raw = ap.BigInt().Bytes()
-	return &ap
+	p.raw = p.BigInt().Bytes()
+	return &p
 }
 
-func (ap Privileges) SwitchOff(ids []*big.Int, base *big.Int) *Privileges {
+func (p Privileges) SwitchOff(ids []*big.Int) *Privileges {
 	for _, id := range ids {
-		ap.BigInt().AndNot(ap.BigInt(), big.NewInt(0).Exp(big.NewInt(2), id, nil))
+		p.BigInt().AndNot(p.BigInt(), big.NewInt(0).Exp(big.NewInt(2), id, nil))
 	}
-	ap.raw = ap.BigInt().Bytes()
-	return &ap
+	p.raw = p.BigInt().Bytes()
+	return &p
 }

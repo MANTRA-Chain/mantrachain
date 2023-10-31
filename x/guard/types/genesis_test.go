@@ -22,6 +22,7 @@ func TestGenesisStateValidate(t *testing.T) {
 					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
 					AccountPrivilegesTokenCollectionId:      "id",
 					DefaultPrivileges:                       make([]byte, 32),
+					BaseDenom:                               "uaum",
 				},
 				AccountPrivilegesList: []*AccountPrivileges{
 					{
@@ -49,6 +50,7 @@ func TestGenesisStateValidate(t *testing.T) {
 					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
 					AccountPrivilegesTokenCollectionId:      "id",
 					DefaultPrivileges:                       make([]byte, 31),
+					BaseDenom:                               "uaum",
 				},
 			},
 			true,
@@ -61,6 +63,7 @@ func TestGenesisStateValidate(t *testing.T) {
 					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
 					AccountPrivilegesTokenCollectionId:      "id",
 					DefaultPrivileges:                       make([]byte, 32),
+					BaseDenom:                               "uaum",
 				},
 				AccountPrivilegesList: []*AccountPrivileges{
 					{

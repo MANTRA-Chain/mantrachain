@@ -8,6 +8,7 @@ The `x/guard` module contains the following params:
 - account_privileges_token_collection_creator
 - account_privileges_token_collection_id
 - default_privileges
+- base_denom
 
 `AdminAccount` is the chain main admin account wallet address.
 
@@ -16,6 +17,8 @@ The `x/guard` module contains the following params:
 `AccountPrivilegesTokenCollectionId` is the collection id of the guard soul-bond nft token collection.
 
 `DefaultPrivileges` is the default privileges for the guard module.
+
+`BaseDenom` is the native token(`uaum`) in which the gas fees are paid.
 
 The `guard` module params can be updated with governance.
 

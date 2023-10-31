@@ -51,6 +51,7 @@ genesis:
         account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
         account_privileges_token_collection_id: account_privileges_guard_nft_collection
         admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+        base_denom: uaum
     txfees:
       params:
         base_denom: uaum
