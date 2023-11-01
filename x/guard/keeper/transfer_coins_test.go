@@ -44,10 +44,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	privileges := types.PrivilegesFromBytes(s.defaultPrivileges)
-	ids := make([]*big.Int, 0)
-	ids = append(ids, big.NewInt(64))
-	privileges = privileges.SwitchOn(ids)
+	privileges := types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
 	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
 		Creator:    s.testAdminAccount,
 		Index:      s.lkIndex,
@@ -60,10 +57,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	privileges = types.PrivilegesFromBytes(s.defaultPrivileges)
-	ids = make([]*big.Int, 0)
-	ids = append(ids, big.NewInt(64))
-	privileges = privileges.SwitchOn(ids)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
 	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
 		Creator:    s.testAdminAccount,
 		Index:      s.lkIndex,
@@ -71,7 +65,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 		Kind:       "coin",
 	})
 	s.Require().NoError(err)
-	privileges = privileges.SwitchOff(ids)
+	privileges = privileges.SwitchOff([]*big.Int{big.NewInt(64)})
 	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
 		Creator:    s.testAdminAccount,
 		Account:    s.addrs[0].String(),
@@ -83,10 +77,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	privileges = types.PrivilegesFromBytes(s.defaultPrivileges)
-	ids = make([]*big.Int, 0)
-	ids = append(ids, big.NewInt(64))
-	privileges = privileges.SwitchOn(ids)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
 	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
 		Creator:    s.testAdminAccount,
 		Index:      s.lkIndex,
@@ -94,10 +85,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 		Kind:       "coin",
 	})
 	s.Require().NoError(err)
-	privileges = privileges.SwitchOff(ids)
-	ids = make([]*big.Int, 0)
-	ids = append(ids, big.NewInt(65))
-	privileges = privileges.SwitchOn(ids)
+	privileges = privileges.SwitchOff([]*big.Int{big.NewInt(64)}).SwitchOn([]*big.Int{big.NewInt(65)})
 	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
 		Creator:    s.testAdminAccount,
 		Account:    s.addrs[0].String(),
@@ -109,10 +97,86 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	privileges = types.PrivilegesFromBytes(s.defaultPrivileges)
-	ids = make([]*big.Int, 0)
-	ids = append(ids, big.NewInt(64))
-	privileges = privileges.SwitchOn(ids)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
+	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
+		Creator:    s.testAdminAccount,
+		Index:      s.lkIndex,
+		Privileges: privileges.Bytes(),
+		Kind:       "coin",
+	})
+	s.Require().NoError(err)
+	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
+		Creator:    s.testAdminAccount,
+		Account:    s.addrs[0].String(),
+		Privileges: privileges.Bytes(),
+	})
+	s.Require().NoError(err)
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
+	s.Require().NoError(err)
+
+	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
+	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)}).SwitchOff([]*big.Int{big.NewInt(0)})
+	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
+		Creator:    s.testAdminAccount,
+		Index:      s.lkIndex,
+		Privileges: privileges.Bytes(),
+		Kind:       "coin",
+	})
+	s.Require().NoError(err)
+	privileges = privileges.SwitchOn([]*big.Int{big.NewInt(0)})
+	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
+		Creator:    s.testAdminAccount,
+		Account:    s.addrs[0].String(),
+		Privileges: privileges.Bytes(),
+	})
+	s.Require().NoError(err)
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
+	s.Require().Contains(err.Error(), "insufficient privileges")
+
+	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
+	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64), big.NewInt(65)})
+	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
+		Creator:    s.testAdminAccount,
+		Index:      s.lkIndex,
+		Privileges: privileges.Bytes(),
+		Kind:       "coin",
+	})
+	s.Require().NoError(err)
+	privileges = privileges.SwitchOff([]*big.Int{big.NewInt(65)})
+	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
+		Creator:    s.testAdminAccount,
+		Account:    s.addrs[0].String(),
+		Privileges: privileges.Bytes(),
+	})
+	s.Require().NoError(err)
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
+	s.Require().NoError(err)
+
+	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
+	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
+	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
+		Creator:    s.testAdminAccount,
+		Index:      s.lkIndex,
+		Privileges: privileges.Bytes(),
+		Kind:       "coin",
+	})
+	s.Require().NoError(err)
+	privileges = privileges.SwitchOff([]*big.Int{big.NewInt(0)})
+	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
+		Creator:    s.testAdminAccount,
+		Account:    s.addrs[0].String(),
+		Privileges: privileges.Bytes(),
+	})
+	s.Require().NoError(err)
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
+	s.Require().Contains(err.Error(), "insufficient privileges")
+
+	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
+	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)}).SwitchOff([]*big.Int{big.NewInt(0)})
 	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
 		Creator:    s.testAdminAccount,
 		Index:      s.lkIndex,
