@@ -40,7 +40,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	})
 	s.Require().NoError(err)
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
-	s.Require().Contains(err.Error(), "insufficient privileges")
+	s.Require().Contains(err.Error(), "coin required privileges not set")
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
@@ -56,7 +56,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	})
 	s.Require().NoError(err)
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
-	s.Require().Contains(err.Error(), "insufficient privileges")
+	s.Require().Contains(err.Error(), "account privileges not set")
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
@@ -72,6 +72,32 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	})
 	s.Require().NoError(err)
 	privileges = privileges.SwitchOff(ids)
+	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
+		Creator:    s.testAdminAccount,
+		Account:    s.addrs[0].String(),
+		Privileges: privileges.Bytes(),
+	})
+	s.Require().NoError(err)
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
+	s.Require().Contains(err.Error(), "account privileges not set")
+
+	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
+	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
+	privileges = types.PrivilegesFromBytes(s.defaultPrivileges)
+	ids = make([]*big.Int, 0)
+	ids = append(ids, big.NewInt(64))
+	privileges = privileges.SwitchOn(ids)
+	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
+		Creator:    s.testAdminAccount,
+		Index:      s.lkIndex,
+		Privileges: privileges.Bytes(),
+		Kind:       "coin",
+	})
+	s.Require().NoError(err)
+	privileges = privileges.SwitchOff(ids)
+	ids = make([]*big.Int, 0)
+	ids = append(ids, big.NewInt(65))
+	privileges = privileges.SwitchOn(ids)
 	_, err = s.msgServer.UpdateAccountPrivileges(goCtx, &types.MsgUpdateAccountPrivileges{
 		Creator:    s.testAdminAccount,
 		Account:    s.addrs[0].String(),

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"math/big"
 	"strings"
 
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
@@ -76,9 +77,22 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(indexes[i]))
 			}
 
+			defaultPrivileges := big.NewInt(0).SetBytes(conf.DefaultPrivileges)
+			inverseDefaultPrilileges := big.NewInt(0).Not(defaultPrivileges)
+			requiredPrivileges := types.PrivilegesFromBytes(privileges)
+			requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
+
+			if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
+				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(indexes[i]))
+			}
+
 			hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
 
-			if err != nil || !hasPrivileges {
+			if err != nil {
+				return err
+			}
+
+			if !hasPrivileges {
 				k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(indexes[i]))
 				return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(indexes[i]))
 			}
