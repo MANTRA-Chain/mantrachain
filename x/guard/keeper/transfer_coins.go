@@ -107,7 +107,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		return nil
 	}
 
-	if len(inputs) == 0 && len(outputs) == 0 {
+	if len(inputs) != len(outputs) {
 		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "inputs and outputs length not equal")
 	}
 
@@ -131,7 +131,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		// the account privileges and no matter of the coin required privileges
 		if k.whitelistTransfersAccAddrs[in.Address] ||
 			admin.Equals(inAddress) {
-			return nil
+			continue
 		}
 
 		err = k.CheckCanTransferCoins(ctx, inAddress, in.Coins)
@@ -142,7 +142,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 		if k.whitelistTransfersAccAddrs[out.Address] ||
 			admin.Equals(outAddress) {
-			return nil
+			continue
 		}
 
 		err = k.CheckCanTransferCoins(ctx, outAddress, out.Coins)

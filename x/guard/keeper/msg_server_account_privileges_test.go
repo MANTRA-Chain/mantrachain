@@ -22,6 +22,23 @@ func (s *KeeperTestSuite) TestUpdateAccountPrivileges() {
 			},
 			expErr: true,
 			errMsg: "invalid account address",
+		}, {
+			name: "set account privileges",
+			req: &types.MsgUpdateAccountPrivileges{
+				Creator:    s.params.AdminAccount,
+				Account:    s.testAccount,
+				Privileges: testPrivileges,
+			},
+			expErr: false,
+		}, {
+			name: "not an admin",
+			req: &types.MsgUpdateAccountPrivileges{
+				Creator:    s.addrs[0].String(),
+				Account:    s.testAccount,
+				Privileges: testPrivileges,
+			},
+			expErr: true,
+			errMsg: "unauthorized",
 		},
 	}
 
