@@ -58,7 +58,7 @@ describe('Cosm Wasm module', () => {
         }]
       }
     })).rejects.toThrow(
-      /insufficient privileges/
+      /account privileges not set/
     )
   })
 

@@ -22,6 +22,10 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		denom := coin.GetDenom()
 		denomBytes := []byte(denom)
 
+		if strings.HasPrefix(denom, "pool") {
+			continue
+		}
+
 		if strings.HasPrefix(denom, "factory/") {
 			// verify that denom is an x/coinfactory denom
 			_, _, err := coinfactorytypes.DeconstructDenom(denom)
