@@ -567,7 +567,7 @@ describe('Guard module', () => {
           }]
         }
       })).rejects.toThrow(
-        /insufficient privileges/
+        /account privileges not set/
       )
     })
 
@@ -623,7 +623,7 @@ describe('Guard module', () => {
           }]
         }
       })).rejects.toThrow(
-        /insufficient privileges/
+        /account privileges not set/
       )
     })
 
