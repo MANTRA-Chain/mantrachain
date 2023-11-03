@@ -56668,6 +56668,8 @@ paths:
                   default_privileges:
                     type: string
                     format: byte
+                  base_denom:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -97411,6 +97413,8 @@ definitions:
       default_privileges:
         type: string
         format: byte
+      base_denom:
+        type: string
     description: Params defines the parameters for the module.
   mantrachain.guard.v1.QueryAllAccountPrivilegesResponse:
     type: object
@@ -97531,6 +97535,8 @@ definitions:
           default_privileges:
             type: string
             format: byte
+          base_denom:
+            type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   mantrachain.liquidfarming.v1beta1.AuctionStatus:
     type: string

@@ -29,5 +29,4 @@ type BankKeeper interface {
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
 	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
-	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 }
