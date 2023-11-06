@@ -22,7 +22,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		denom := coin.GetDenom()
 		denomBytes := []byte(denom)
 
-		if strings.HasPrefix(denom, "pool") {
+		if denom == conf.BaseDenom || strings.HasPrefix(denom, "pool") {
 			continue
 		}
 
@@ -43,11 +43,9 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			if coinAdmin.Equals(address) {
 				continue
 			}
-
-			indexes = append(indexes, denomBytes)
-		} else if conf.BaseDenom != denom {
-			indexes = append(indexes, denomBytes)
 		}
+
+		indexes = append(indexes, denomBytes)
 	}
 
 	if len(indexes) > 0 {
