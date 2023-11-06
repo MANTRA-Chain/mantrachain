@@ -43,6 +43,7 @@ type KeeperTestSuite struct {
 	rpKind            types.RequiredPrivilegesKind
 	lkIndex           []byte
 	params            types.Params
+	testAccount       string
 	testAdminAccount  string
 }
 
@@ -103,4 +104,5 @@ func (s *KeeperTestSuite) SetupTest() {
 	)
 	s.guardKeeper.SetParams(s.ctx, s.params)
 	s.testAdminAccount = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+	s.testAccount = testAccount
 }

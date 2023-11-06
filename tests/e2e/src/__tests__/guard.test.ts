@@ -189,11 +189,13 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create pool with account with no permission', async () => {
+      let baseCoinDenom = 'guard' + new Date().getTime().toString();
+      let quoteCoinDenom = 'guard' + new Date().getTime().toString() + 1;
       await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.adminAddress,
-          baseCoinDenom: genCoinDenom(sdk.adminAddress, 'guard2'),
-          quoteCoinDenom: genCoinDenom(sdk.adminAddress, 'guard3')
+          baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
+          quoteCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom)
         }
       })
 
@@ -206,10 +208,10 @@ describe('Guard module', () => {
           creator: sdk.recipientAddress,
           pairId,
           depositCoins: [{
-            denom: genCoinDenom(sdk.adminAddress, 'guard2'),
+            denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
             amount: '1000000000000000000'
           }, {
-            denom: genCoinDenom(sdk.adminAddress, 'guard3'),
+            denom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
             amount: '1000000000000000000'
           }]
         }
@@ -567,7 +569,7 @@ describe('Guard module', () => {
           }]
         }
       })).rejects.toThrow(
-        /insufficient privileges/
+        /account privileges not set/
       )
     })
 
@@ -623,7 +625,7 @@ describe('Guard module', () => {
           }]
         }
       })).rejects.toThrow(
-        /insufficient privileges/
+        /account privileges not set/
       )
     })
 

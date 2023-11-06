@@ -20,6 +20,14 @@ func (s *KeeperTestSuite) TestUpdateGuardTransferCoins() {
 				Enabled: true,
 			},
 			expErr: false,
+		}, {
+			name: "not an admin",
+			req: &types.MsgUpdateGuardTransferCoins{
+				Creator: s.addrs[0].String(),
+				Enabled: true,
+			},
+			expErr: true,
+			errMsg: "unauthorized",
 		},
 	}
 

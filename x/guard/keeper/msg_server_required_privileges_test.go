@@ -22,6 +22,16 @@ func (s *KeeperTestSuite) TestUpdateRequiredPrivileges() {
 				Kind:       s.rpKind.String(),
 			},
 			expErr: false,
+		}, {
+			name: "not an admin",
+			req: &types.MsgUpdateRequiredPrivileges{
+				Creator:    s.addrs[0].String(),
+				Index:      testIndex,
+				Privileges: testPrivileges,
+				Kind:       s.rpKind.String(),
+			},
+			expErr: true,
+			errMsg: "unauthorized",
 		},
 	}
 
