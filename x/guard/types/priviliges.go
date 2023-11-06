@@ -70,7 +70,7 @@ func (p Privileges) CheckPrivileges(privileges *Privileges, defPriv []byte) bool
 	defReqPr := big.NewInt(0).And(defPrNum, privileges.BigInt())
 	defAccPr := big.NewInt(0).And(defPrNum, p.BigInt())
 
-	if defAccPr.Cmp(defReqPr) == 0 {
+	if big.NewInt(0).And(defAccPr, defReqPr).Cmp(defReqPr) == 0 {
 		invDefPrNum := big.NewInt(0).Not(defPrNum)
 
 		reqPr := big.NewInt(0).And(invDefPrNum, privileges.BigInt())
