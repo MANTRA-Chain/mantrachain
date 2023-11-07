@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package mantrachain.txfees;
+package mantrachain.txfees.v1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "mantrachain/txfees/params.proto";
-import "mantrachain/txfees/fee_token.proto";
+import "mantrachain/txfees/v1/params.proto";
+import "mantrachain/txfees/v1/fee_token.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
@@ -15,17 +15,17 @@ service Query {
   
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/mantrachain/txfees/params";
+    option (google.api.http).get = "/mantrachain/txfees/v1/params";
   
   }
   
   // Queries a list of FeeToken items.
   rpc FeeToken    (QueryGetFeeTokenRequest) returns (QueryGetFeeTokenResponse) {
-    option (google.api.http).get = "/MANTRA-Finance/mantrachain/txfees/fee_token/{denom}";
+    option (google.api.http).get = "/MANTRA-Finance/mantrachain/txfees/v1/fee_token/{denom}";
   
   }
   rpc FeeTokenAll (QueryAllFeeTokenRequest) returns (QueryAllFeeTokenResponse) {
-    option (google.api.http).get = "/MANTRA-Finance/mantrachain/txfees/fee_token";
+    option (google.api.http).get = "/MANTRA-Finance/mantrachain/txfees/v1/fee_token";
   
   }
 }

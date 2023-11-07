@@ -1,5 +1,5 @@
-import { MantrachainSdk } from "../helpers/sdk";
-import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory";
+import { MantrachainSdk } from "../helpers/sdk"
+import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory"
 import { mintGuardSoulBondNft } from '../helpers/token'
 import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 
@@ -17,14 +17,14 @@ export enum OrderDirection {
 describe('Liquidity module', () => {
   let sdk: MantrachainSdk
 
-  let baseCoinDenom = 'atom' + new Date().getTime().toString();
+  let baseCoinDenom = 'atom' + new Date().getTime().toString()
   // with this we manipulate the time and space
   // of this test environment according to our needs
   // to the infinity and beyond!
-  let quoteCoinDenom = 'osmo' + new Date().getTime().toString() + 1;
+  let quoteCoinDenom = 'osmo' + new Date().getTime().toString() + 1
 
-  let pairId = 0;
-  let poolId = 0;
+  let pairId = 0
+  let poolId = 0
 
   beforeAll(async () => {
     sdk = new MantrachainSdk()
@@ -64,12 +64,12 @@ describe('Liquidity module', () => {
         }
       })
 
-      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
-      const lastPair = allPairs.data.pairs.pop();
+      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs()
+      const lastPair = allPairs.data.pairs.pop()
       pairId = lastPair.id
 
-      expect(Number(lastPair.id)).toBeGreaterThan(0);
-    });
+      expect(Number(lastPair.id)).toBeGreaterThan(0)
+    })
 
     test('should throw when trying to create already existing pair for existing denoms', async () => {
       await expect(sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
@@ -78,8 +78,8 @@ describe('Liquidity module', () => {
           baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
           quoteCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom)
         }
-      })).rejects.toThrow(/pair already exists/);
-    });
+      })).rejects.toThrow(/pair already exists/)
+    })
 
     test('should be able to create pool for existing pair', async () => {
       await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
@@ -103,11 +103,11 @@ describe('Liquidity module', () => {
 
       const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
         pair_id: String(pairId)
-      });
+      })
 
-      const lastPool = resp.data.pools.pop();
+      const lastPool = resp.data.pools.pop()
 
-      poolId = lastPool.id;
+      poolId = lastPool.id
 
       expect(lastPool.creator).toBe(sdk.adminAddress)
     })
@@ -147,8 +147,8 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to withdraw liquidity from existing pool', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
-      const pool = resp.data.pool;
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const pool = resp.data.pool
 
       const balanceOfBaseCoinsBefore = await sdk.clientAdmin.CosmosBankV1Beta1.query.queryBalance(
         sdk.adminAddress, {
@@ -202,9 +202,9 @@ describe('Liquidity module', () => {
 
       const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
         pair_id: pairId.toString()
-      });
+      })
 
-      const lastPool = resp.data.pools.pop();
+      const lastPool = resp.data.pools.pop()
 
       expect(lastPool.type).toBe('POOL_TYPE_RANGED')
       expect(lastPool.creator).toBe(sdk.adminAddress)
@@ -327,9 +327,9 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to withdraw liquidity from existing pool after deposit', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
 
-      const pool = resp.data.pool;
+      const pool = resp.data.pool
 
       const balanceOfBaseCoinsBefore = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
         sdk.recipientAddress, {
@@ -380,8 +380,7 @@ describe('Liquidity module', () => {
           amount: '1000000',
           orderLifespan: undefined
         }
-      }
-      )
+      })
 
       const balanceOfBaseCoinsAfter = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
         sdk.recipientAddress, {
@@ -446,7 +445,7 @@ describe('Liquidity module', () => {
       const orders = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
 
       // const order = orders.data.orders.find(o => o.type == 'ORDER_TYPE_MM')
-      const order = orders.data.orders.pop();
+      const order = orders.data.orders.pop()
 
       await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCancelOrder({
         value: {
@@ -456,7 +455,7 @@ describe('Liquidity module', () => {
         }
       })
 
-      await new Promise((r) => setTimeout(r, 7000));
+      await new Promise((r) => setTimeout(r, 7000))
 
       const ordersAfter = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
       expect(ordersAfter.data.orders.length).toBe(0)
@@ -504,7 +503,7 @@ describe('Liquidity module', () => {
         }
       })
 
-      await new Promise((r) => setTimeout(r, 7000));
+      await new Promise((r) => setTimeout(r, 7000))
 
       const ordersAfter = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
 

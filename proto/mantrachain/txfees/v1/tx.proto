@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package mantrachain.txfees;
+package mantrachain.txfees.v1;
 
-import "mantrachain/txfees/fee_token.proto";
+import "mantrachain/txfees/v1/fee_token.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 

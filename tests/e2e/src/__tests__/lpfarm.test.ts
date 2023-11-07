@@ -1,20 +1,20 @@
 import { MantrachainSdk } from '../helpers/sdk'
-import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory";
+import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory"
 import { mintGuardSoulBondNft } from '../helpers/token'
 import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 
 describe('Lpfarm module', () => {
   let sdk: MantrachainSdk
 
-  let baseCoinDenom = 'liquidity' + new Date().getTime().toString();
+  let baseCoinDenom = 'liquidity' + new Date().getTime().toString()
   // with this we manipulate the time and space
   // of this test environment according to our needs
   // to the infinity and beyond!
-  let quoteCoinDenom = 'liquidity' + new Date().getTime().toString() + 1;
+  let quoteCoinDenom = 'liquidity' + new Date().getTime().toString() + 1
 
-  let pairId = 0;
+  let pairId = 0
 
-  let poolId;
+  let poolId
 
   beforeAll(async () => {
     sdk = new MantrachainSdk()
@@ -74,8 +74,8 @@ describe('Lpfarm module', () => {
       }
     })
 
-    const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
-    const lastPair = allPairs.data.pairs.pop();
+    const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs()
+    const lastPair = allPairs.data.pairs.pop()
     pairId = lastPair.id
 
     await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
@@ -99,10 +99,10 @@ describe('Lpfarm module', () => {
 
     const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
       pair_id: pairId.toString()
-    });
+    })
 
-    const poolIndex = resp.data.pools.length - 1;
-    poolId = resp.data.pools[poolIndex].id;
+    const poolIndex = resp.data.pools.length - 1
+    poolId = resp.data.pools[poolIndex].id
 
     await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgDeposit(
       {
@@ -126,9 +126,9 @@ describe('Lpfarm module', () => {
 
   describe('User', () => {
     test('should throw when trying to create private farming plan', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
 
-      const pool = resp.data.pool;
+      const pool = resp.data.pool
 
       const res = sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
@@ -155,8 +155,8 @@ describe('Lpfarm module', () => {
     })
 
     test('should be able to stake its pool coins', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
-      const pool = resp.data.pool;
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const pool = resp.data.pool
 
       await sdk.clientAdmin.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
@@ -179,9 +179,9 @@ describe('Lpfarm module', () => {
         }
       })
 
-      const plan = await sdk.clientAdmin.MantrachainLpfarmV1Beta1.query.queryPlans();
-      const lastPlan = plan.data.plans.pop();
-      const planFarmingPoolAddress = lastPlan.farming_pool_address;
+      const plan = await sdk.clientAdmin.MantrachainLpfarmV1Beta1.query.queryPlans()
+      const lastPlan = plan.data.plans.pop()
+      const planFarmingPoolAddress = lastPlan.farming_pool_address
 
       await sdk.clientAdmin.CosmosBankV1Beta1.tx.sendMsgSend({
         value: {
@@ -216,10 +216,10 @@ describe('Lpfarm module', () => {
         sdk.recipientAddress, { denom: 'uaum' }
       )
 
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
-      const pool = resp.data.pool;
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const pool = resp.data.pool
 
-      await new Promise((r) => setTimeout(r, 7000));
+      await new Promise((r) => setTimeout(r, 7000))
 
       await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgHarvest({
         value: {
@@ -237,8 +237,8 @@ describe('Lpfarm module', () => {
     })
 
     test('should be able to unfarm his pool tokens', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId);
-      const pool = resp.data.pool;
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const pool = resp.data.pool
 
       await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgUnfarm({
         value: {
