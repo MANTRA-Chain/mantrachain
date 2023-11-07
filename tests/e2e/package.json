@@ -4,7 +4,7 @@
   "description": "Mantrachain e2e tests",
   "main": "index.js",
   "scripts": {
-    "test": "jest -i -b ./src/__tests__/txfees.test.ts",
+    "test": "jest -i -b --runtTestsByPath=./src/__tests__/",
     "lint": "eslint ./src",
     "fmt": "eslint ./src --fix"
   },
@@ -14,7 +14,7 @@
     "@babel/plugin-transform-modules-commonjs": "7.23.0",
     "@cosmjs/proto-signing": "0.31.0",
     "@cosmos-client/core": "0.46.1",
-    "@mantrachain/sdk": "12.5.0",
+    "@mantrachain/sdk": "13.0.0",
     "axios": "1.6.0",
     "babel-jest": "29.7.0",
     "dotenv": "16.3.1",

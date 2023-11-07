@@ -10,6 +10,7 @@ PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 
 BUILD_TARGETS := build install
 
+build: BUILD_FLAGS=-ldflags="-X 'github.com/cosmos/cosmos-sdk/version.Version=1.0.0'"
 build: BUILD_ARGS=-o $(BUILDDIR)/
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) $(MAKE) build

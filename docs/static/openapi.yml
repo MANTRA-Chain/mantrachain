@@ -65008,9 +65008,9 @@ paths:
           format: byte
       tags:
         - Query
-  /MANTRA-Finance/mantrachain/txfees/fee_token:
+  /MANTRA-Finance/mantrachain/txfees/v1/fee_token:
     get:
-      operationId: MantrachainTxfeesFeeTokenAll
+      operationId: MantrachainTxfeesV1FeeTokenAll
       responses:
         '200':
           description: A successful response.
@@ -65132,10 +65132,10 @@ paths:
           type: boolean
       tags:
         - Query
-  /MANTRA-Finance/mantrachain/txfees/fee_token/{denom}:
+  /MANTRA-Finance/mantrachain/txfees/v1/fee_token/{denom}:
     get:
       summary: Queries a list of FeeToken items.
-      operationId: MantrachainTxfeesFeeToken
+      operationId: MantrachainTxfeesV1FeeToken
       responses:
         '200':
           description: A successful response.
@@ -65175,10 +65175,10 @@ paths:
           type: string
       tags:
         - Query
-  /mantrachain/txfees/params:
+  /mantrachain/txfees/v1/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: MantrachainTxfeesParams
+      operationId: MantrachainTxfeesV1Params
       responses:
         '200':
           description: A successful response.
@@ -102462,7 +102462,7 @@ definitions:
         type: string
       sub_value:
         type: string
-  mantrachain.txfees.FeeToken:
+  mantrachain.txfees.v1.FeeToken:
     type: object
     properties:
       denom:
@@ -102470,19 +102470,19 @@ definitions:
       pairId:
         type: string
         format: uint64
-  mantrachain.txfees.MsgCreateFeeTokenResponse:
+  mantrachain.txfees.v1.MsgCreateFeeTokenResponse:
     type: object
-  mantrachain.txfees.MsgDeleteFeeTokenResponse:
+  mantrachain.txfees.v1.MsgDeleteFeeTokenResponse:
     type: object
-  mantrachain.txfees.MsgUpdateFeeTokenResponse:
+  mantrachain.txfees.v1.MsgUpdateFeeTokenResponse:
     type: object
-  mantrachain.txfees.Params:
+  mantrachain.txfees.v1.Params:
     type: object
     properties:
       base_denom:
         type: string
     description: Params defines the parameters for the module.
-  mantrachain.txfees.QueryAllFeeTokenResponse:
+  mantrachain.txfees.v1.QueryAllFeeTokenResponse:
     type: object
     properties:
       feeToken:
@@ -102521,7 +102521,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  mantrachain.txfees.QueryGetFeeTokenResponse:
+  mantrachain.txfees.v1.QueryGetFeeTokenResponse:
     type: object
     properties:
       feeToken:
@@ -102532,7 +102532,7 @@ definitions:
           pairId:
             type: string
             format: uint64
-  mantrachain.txfees.QueryParamsResponse:
+  mantrachain.txfees.v1.QueryParamsResponse:
     type: object
     properties:
       params:
