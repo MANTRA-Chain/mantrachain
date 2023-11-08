@@ -188,6 +188,41 @@ describe('Guard module', () => {
       )
     })
 
+    test('Should return error when create fee token with account with no permission', async () => {
+      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgCreateFeeToken({
+        value: {
+          creator: sdk.recipientAddress,
+          denom: genCoinDenom(sdk.adminAddress, 'guard4'),
+          pairId: '1'
+        }
+      })).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should return error when update fee token with account with no permission', async () => {
+      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgUpdateFeeToken({
+        value: {
+          creator: sdk.recipientAddress,
+          denom: genCoinDenom(sdk.adminAddress, 'guard4'),
+          pairId: '2'
+        }
+      })).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
+    test('Should return error when delete fee token with account with no permission', async () => {
+      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgDeleteFeeToken({
+        value: {
+          creator: sdk.recipientAddress,
+          denom: genCoinDenom(sdk.adminAddress, 'guard4'),
+        }
+      })).rejects.toThrow(
+        /unauthorized/
+      )
+    })
+
     test('Should return error when create pool with account with no permission', async () => {
       let baseCoinDenom = 'guard' + new Date().getTime().toString();
       let quoteCoinDenom = 'guard' + new Date().getTime().toString() + 1;
