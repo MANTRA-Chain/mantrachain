@@ -133,9 +133,6 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/guard"
 	guardkeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidfarming"
-	liquidfarmingkeeper "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/keeper"
-	liquidfarmingtypes "github.com/MANTRA-Finance/mantrachain/x/liquidfarming/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity"
 	liquiditykeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
@@ -251,7 +248,6 @@ var (
 		did.AppModuleBasic{},
 		farming.AppModuleBasic{},
 		guard.AppModuleBasic{},
-		liquidfarming.AppModuleBasic{},
 		liquidity.AppModuleBasic{},
 		lpfarm.AppModuleBasic{},
 		marketmaker.AppModuleBasic{},
@@ -285,7 +281,6 @@ var (
 		didtypes.ModuleName:            nil,
 		farmingtypes.ModuleName:        nil,
 		guardtypes.ModuleName:          nil,
-		liquidfarmingtypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		lpfarmtypes.ModuleName:         nil,
 		marketmakertypes.ModuleName:    nil,
@@ -352,16 +347,15 @@ type App struct {
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	WasmKeeper            *wasm.Keeper
 
-	NFTKeeper           nftkeeper.Keeper
-	CoinFactoryKeeper   coinfactorykeeper.Keeper
-	DidKeeper           didkeeper.Keeper
-	FarmingKeeper       farmingkeeper.Keeper
-	GuardKeeper         guardkeeper.Keeper
-	LiquidFarmingKeeper liquidfarmingkeeper.Keeper
-	LiquidityKeeper     liquiditykeeper.Keeper
-	LPFarmKeeper        lpfarmkeeper.Keeper
-	MarketMakerKeeper   marketmakerkeeper.Keeper
-	TokenKeeper         tokenkeeper.Keeper
+	NFTKeeper         nftkeeper.Keeper
+	CoinFactoryKeeper coinfactorykeeper.Keeper
+	DidKeeper         didkeeper.Keeper
+	FarmingKeeper     farmingkeeper.Keeper
+	GuardKeeper       guardkeeper.Keeper
+	LiquidityKeeper   liquiditykeeper.Keeper
+	LPFarmKeeper      lpfarmkeeper.Keeper
+	MarketMakerKeeper marketmakerkeeper.Keeper
+	TokenKeeper       tokenkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -442,7 +436,6 @@ func New(
 		didtypes.StoreKey,
 		farmingtypes.StoreKey,
 		guardtypes.StoreKey,
-		liquidfarmingtypes.StoreKey,
 		liquiditytypes.StoreKey,
 		lpfarmtypes.StoreKey,
 		marketmakertypes.StoreKey,
@@ -653,17 +646,6 @@ func New(
 		app.GetSubspace(lpfarmtypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.LiquidityKeeper,
-		&app.GuardKeeper,
-	)
-
-	app.LiquidFarmingKeeper = liquidfarmingkeeper.NewKeeper(
-		appCodec,
-		keys[liquidfarmingtypes.StoreKey],
-		app.GetSubspace(liquidfarmingtypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.LPFarmKeeper,
 		app.LiquidityKeeper,
 		&app.GuardKeeper,
 	)
@@ -905,7 +887,6 @@ func New(
 		did.NewAppModule(appCodec, app.DidKeeper),
 		farming.NewAppModule(appCodec, app.FarmingKeeper, app.AccountKeeper, app.BankKeeper),
 		guard.NewAppModule(appCodec, app.GuardKeeper, app.AccountKeeper, app.NFTKeeper, app.CoinFactoryKeeper),
-		liquidfarming.NewAppModule(appCodec, app.LiquidFarmingKeeper, app.AccountKeeper, app.BankKeeper),
 		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper),
 		lpfarm.NewAppModule(appCodec, app.LPFarmKeeper, app.AccountKeeper, app.BankKeeper, app.LiquidityKeeper),
 		marketmaker.NewAppModule(appCodec, app.MarketMakerKeeper, app.AccountKeeper, app.BankKeeper),
@@ -945,7 +926,6 @@ func New(
 		didtypes.ModuleName,
 		farmingtypes.ModuleName,
 		guardtypes.ModuleName,
-		liquidfarmingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
@@ -986,7 +966,6 @@ func New(
 		didtypes.ModuleName,
 		farmingtypes.ModuleName,
 		guardtypes.ModuleName,
-		liquidfarmingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
@@ -1023,7 +1002,6 @@ func New(
 		didtypes.ModuleName,
 		farmingtypes.ModuleName,
 		guardtypes.ModuleName,
-		liquidfarmingtypes.ModuleName,
 		liquiditytypes.ModuleName,
 		lpfarmtypes.ModuleName,
 		marketmakertypes.ModuleName,
@@ -1290,7 +1268,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(farmingtypes.ModuleName)
 	paramsKeeper.Subspace(guardtypes.ModuleName)
-	paramsKeeper.Subspace(liquidfarmingtypes.ModuleName)
 	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(lpfarmtypes.ModuleName)
 	paramsKeeper.Subspace(marketmakertypes.ModuleName)

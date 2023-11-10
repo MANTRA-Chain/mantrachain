@@ -22,7 +22,6 @@
 - [Tx Fees Module](../x/txfees/spec/README.md)
 - [Liquidity Module](../x/liquidity/spec/README.md)
 - [Farming Module](../x/farming/spec/README.md)
-- [Liquid Farming Module](../x/liquidfarming/spec/README.md)
 - [LPFarm Module](../x/lpfarm/spec/README.md)
 - [Market Maker Module](../x/marketmaker/spec/README.md)
   

@@ -413,66 +413,6 @@ else Not a chain admin
   fm--x-cr: Error
 end
 
-Note over cr, nft: Liquid Farming Transactions
-cr->>+lf: Liquid Farm Tx
-lf->>bk: Transfer farming coins from the creator
-Note over lf, bk: The transfer IS restricted by the guard module
-lf->>bk: Mint LP coins to creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf-->>-cr: Success
-
-cr->>+lf: Liquid Unfarm Tx
-lf->>bk: Return farming coins back to the creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>bk: Withdraw farming rewards to the creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>bk: Burn LP coins from creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf-->>-cr: Success
-
-cr->>+lf: Liquid Unfarm And Withdraw Tx
-lf->>bk: Return farming coins back to the creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>bk: Withdraw pool coins(includes call to the liquidity module)
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>bk: Withdraw farming rewards to the creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>bk: Burn LP coins from creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf-->>-cr: Success
-
-cr->>+lf: Place Bid Tx
-lf->>lf: Get Rewards Auction
-lf->>bk: Refund the previous bid if the bidder has placed bid before
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>lf: Set Bid
-lf->>bk: Transfer bidding coin from the creator
-Note over lf, bk: The transfer IS restricted by the guard module
-lf-->>-cr: Success
-
-cr->>+lf: Refund Bid Tx
-lf->>lf: Get Rewards Auction
-lf->>bk: Return bidding coin back to the creator
-Note over lf, bk: The transfer IS NOT restricted by the guard module
-lf->>lf: Delete Bid
-lf-->>-cr: Success
-
-cr->>+lf: Advance Auction Tx
-Note left of lf: For testing purposes
-lf->>gd: Is chain admin?
-alt Chain admin
-  lf->>lf: Is advance auction enabled?
-  alt Advance auction enabled
-    lf->>lf: Advance auction(includes calls to LPFarm and Liquidity modules)
-    lf-->>cr: Success
-  else Advance auction disabled
-    lf--xcr: Error
-  end
-else Not a chain admin
-  lf--x-cr: Error
-end
-
-
 Note over cr, nft: Liquidity Transactions
 cr->>+lt: Create Pair Tx
 lt->>gd: Is chain admin?
