@@ -21,4 +21,7 @@ var (
 	ErrCoinRequiredPrivilegesNotSet                        = errors.Register(ModuleName, 1123, "coin required privileges not set")
 	ErrAccountRequiredPrivilegesNotSet                     = errors.Register(ModuleName, 1124, "account required privileges not set")
 	ErrAccountRequiredPrivilegesNotFound                   = errors.Register(ModuleName, 1125, "account required privileges not found")
+	ErrCoinsRequiredPrivilegesNotFound                     = errors.Register(ModuleName, 1126, "coins required privileges not found")
+	ErrAuthzRequiredPrivilegesNotFound                     = errors.Register(ModuleName, 1127, "authz required privileges not found")
+	ErrAuthzRequiredPrivilegesNotSet                       = errors.Register(ModuleName, 1128, "authz required privileges not set")
 )

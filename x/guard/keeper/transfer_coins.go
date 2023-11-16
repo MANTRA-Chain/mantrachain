@@ -74,6 +74,10 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
 
+		if len(requiredPrivilegesList) != len(indexes) {
+			return sdkerrors.Wrapf(types.ErrCoinsRequiredPrivilegesNotFound, "coins required privileges not found")
+		}
+
 		for i, privileges := range requiredPrivilegesList {
 			if privileges == nil {
 				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(indexes[i]))

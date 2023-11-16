@@ -32,6 +32,7 @@ type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
 	GetAdmin(ctx sdk.Context) sdk.AccAddress
 	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	CheckHasAuthz(ctx sdk.Context, address string, authz string) error
 }
 
 // CommunityPoolKeeper defines the contract needed to be fulfilled for community pool interactions.

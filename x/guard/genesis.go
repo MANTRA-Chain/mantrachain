@@ -49,7 +49,9 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 	if k.HasGuardTransferCoins(ctx) {
 		genesis.GuardTransferCoins = types.Placeholder
 	}
-	genesis.RequiredPrivilegesList = k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesCoin)
+	requiredPrivilegesCoin := k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesCoin)
+	requiredPrivilegesAuthz := k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesAuthz)
+	genesis.RequiredPrivilegesList = append(requiredPrivilegesCoin, requiredPrivilegesAuthz...)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis
