@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var authz = "coinfactory.create_denom"
+var authz = "module:coinfactory:CreateDenom"
 
 func (s *KeeperTestSuite) TestValidateAuthz() {
 	goCtx := sdk.WrapSDKContext(s.ctx)

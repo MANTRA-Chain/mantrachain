@@ -24,7 +24,7 @@ var _ types.MsgServer = msgServer{}
 func (server msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := server.gk.CheckHasAuthz(ctx, msg.Sender, "coinfactory.create_denom"); err != nil {
+	if err := server.gk.CheckHasAuthz(ctx, msg.Sender, "module:"+types.ModuleName+":CreateDenom"); err != nil {
 		return nil, sdkerrors.Wrap(err, "unauthorized")
 	}
 
