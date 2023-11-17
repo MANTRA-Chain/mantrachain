@@ -31,12 +31,8 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdUpdateAccountPrivileges())
-	cmd.AddCommand(CmdUpdateAccountPrivilegesBatch())
-	cmd.AddCommand(CmdUpdateAccountPrivilegesGroupedBatch())
 	cmd.AddCommand(CmdUpdateGuardTransferCoins())
 	cmd.AddCommand(CmdUpdateRequiredPrivileges())
-	cmd.AddCommand(CmdUpdateRequiredPrivilegesBatch())
-	cmd.AddCommand(CmdUpdateRequiredPrivilegesGroupedBatch())
 	cmd.AddCommand(CmdUpdateAuthzGenericGrantRevokeBatch())
 	// this line is used by starport scaffolding # 1
 
