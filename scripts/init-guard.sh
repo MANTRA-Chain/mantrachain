@@ -45,5 +45,7 @@ sleep 7
 cecho "CYAN" "Update guard transfer coins"
 "$PWD"/build/mantrachaind tx guard update-guard-transfer-coins true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 
+sleep 7
+
 cecho "CYAN" "Set module coinfactory CreateDenom required privileges"
 ./build/mantrachaind tx guard update-required-privileges module:coinfactory:CreateDenom AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA//////////8= authz --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes

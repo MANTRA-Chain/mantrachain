@@ -1,6 +1,7 @@
 import { MantrachainSdk } from '../helpers/sdk'
 import { existsDenom, queryDenomsFromCreator, genCoinDenom } from '../helpers/coinfactory'
 import { queryBalance, sendCoins } from '../helpers/bank'
+import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 
 describe('Coinfactory module', () => {
   let sdk: MantrachainSdk
@@ -9,6 +10,14 @@ describe('Coinfactory module', () => {
   beforeAll(async () => {
     sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
+
+    // Adds permission and allows for the recipient to be able to create denoms
+    await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, [100])
+  })
+  
+  afterAll(async () => {
+    // Clear the permissions for the recipient
+    await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
   })
 
   test('Should create denom', async () => {
@@ -245,6 +254,18 @@ describe('Coinfactory module', () => {
     })).rejects.toThrow(
       /unauthorized/
     )
+  })
+
+  test('Should create denom with account with permission', async () => {
+    const res = await sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+      value: {
+        sender: sdk.recipientAddress,
+        subdenom
+      }
+    })
+
+    expect(res.code).toBe(0)
+    expect(existsDenom(await queryDenomsFromCreator(sdk.clientRecipient, sdk.recipientAddress), sdk.recipientAddress, subdenom)).toBeTruthy()
   })
 
   test('Should return error when create existing denom', async () => {
