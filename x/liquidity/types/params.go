@@ -38,10 +38,11 @@ var (
 
 // General constants
 const (
-	PoolReserveAddressPrefix  = "PoolReserveAddress"
-	PairEscrowAddressPrefix   = "PairEscrowAddress"
-	ModuleAddressNameSplitter = "|"
-	AddressType               = farmingtypes.AddressType32Bytes
+	PoolReserveAddressPrefix          = "PoolReserveAddress"
+	PairEscrowAddressPrefix           = "PairEscrowAddress"
+	PairSwapFeeCollectorAddressPrefix = "PairSwapFeeCollectorAddress"
+	ModuleAddressNameSplitter         = "|"
+	AddressType                       = farmingtypes.AddressType32Bytes
 )
 
 var (

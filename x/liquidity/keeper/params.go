@@ -21,6 +21,12 @@ func (k Keeper) GetTickPrecision(ctx sdk.Context) (tickPrec uint32) {
 	return
 }
 
+// GetSwapFeeRate returns the current swap fee rate parameter.
+func (k Keeper) GetSwapFeeRate(ctx sdk.Context) (swapFeeRate sdk.Dec) {
+	k.paramSpace.Get(ctx, types.KeySwapFeeRate, &swapFeeRate)
+	return
+}
+
 // GetFeeCollector returns the current fee collector address parameter.
 func (k Keeper) GetFeeCollector(ctx sdk.Context) sdk.AccAddress {
 	var feeCollectorAddr string
