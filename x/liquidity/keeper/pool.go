@@ -155,6 +155,8 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 		return types.Pool{}, err
 	}
 
+	k.Hooks().AfterPoolCoinMinted(ctx, creator, pair.Id, pool.Id, poolCoin)
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeCreatePool,
@@ -265,6 +267,8 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
+
+	k.Hooks().AfterPoolCoinMinted(ctx, creator, pair.Id, pool.Id, poolCoin)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -438,6 +442,8 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 		return err
 	}
 
+	k.Hooks().AfterPoolCoinMinted(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
+
 	req.AcceptedCoins = acceptedCoins
 	req.MintedPoolCoin = mintedPoolCoin
 	if err := k.FinishDepositRequest(ctx, req, types.RequestStatusSucceeded); err != nil {
@@ -524,6 +530,8 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burningCoins); err != nil {
 		return err
 	}
+
+	k.Hooks().AfterPoolCoinBurned(ctx, req.GetWithdrawer(), pair.Id, pool.Id, req.PoolCoin)
 
 	// If the pool coin supply becomes 0, disable the pool.
 	if req.PoolCoin.Amount.Equal(ps) {

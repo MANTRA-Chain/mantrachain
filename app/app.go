@@ -631,13 +631,17 @@ func New(
 		&app.GuardKeeper,
 	)
 
-	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+	liquidityKeeper := liquiditykeeper.NewKeeper(
 		appCodec,
 		keys[liquiditytypes.StoreKey],
 		app.GetSubspace(liquiditytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
 		&app.GuardKeeper,
+	)
+
+	app.LiquidityKeeper = *liquidityKeeper.SetHooks(
+		liquiditytypes.NewMultiLiquidityHooks(),
 	)
 
 	app.LPFarmKeeper = lpfarmkeeper.NewKeeper(

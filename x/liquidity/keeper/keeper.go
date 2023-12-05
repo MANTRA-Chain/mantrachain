@@ -18,6 +18,8 @@ type Keeper struct {
 	storeKey   storetypes.StoreKey
 	paramSpace paramstypes.Subspace
 
+	hooks types.LiquidityHooks
+
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	gk            types.GuardKeeper
@@ -54,6 +56,25 @@ func NewKeeper(
 		bankKeeper:    bankKeeper,
 		gk:            gk,
 	}
+}
+
+func (keeper *Keeper) Hooks() types.LiquidityHooks {
+	if keeper.hooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiLiquidityHooks{}
+	}
+
+	return keeper.hooks
+}
+
+func (keeper *Keeper) SetHooks(gh types.LiquidityHooks) *Keeper {
+	if keeper.hooks != nil {
+		panic("cannot set liquidity hooks twice")
+	}
+
+	keeper.hooks = gh
+
+	return keeper
 }
 
 // Logger returns a module-specific logger.

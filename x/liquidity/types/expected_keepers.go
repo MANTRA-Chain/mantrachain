@@ -30,3 +30,8 @@ type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
 	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
 }
+
+type LiquidityHooks interface {
+	AfterPoolCoinMinted(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
+	AfterPoolCoinBurned(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
+}
