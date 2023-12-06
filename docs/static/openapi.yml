@@ -56838,6 +56838,7 @@ paths:
                 format: byte
               privileges:
                 type: string
+                format: byte
               kind:
                 type: string
         default:
@@ -57265,6 +57266,8 @@ paths:
                     current_batch_id:
                       type: string
                       format: uint64
+                    swap_fee_collector_address:
+                      type: string
                   description: Pair defines a coin pair.
               pagination:
                 type: object
@@ -57411,6 +57414,8 @@ paths:
                   current_batch_id:
                     type: string
                     format: uint64
+                  swap_fee_collector_address:
+                    type: string
                 description: Pair defines a coin pair.
             description: QueryPairResponse is response type for the Query/Pair RPC method.
         default:
@@ -57922,6 +57927,8 @@ paths:
                     current_batch_id:
                       type: string
                       format: uint64
+                    swap_fee_collector_address:
+                      type: string
                   description: Pair defines a coin pair.
               pagination:
                 type: object
@@ -61038,6 +61045,42 @@ paths:
                           "@type": "type.googleapis.com/google.protobuf.Duration",
                           "value": "1.212s"
                         }
+      tags:
+        - Query
+  /MANTRA-Finance/mantrachain/rewards/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: MantrachainRewardsParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - Query
   /mantrachain/token/v1/nft-collection:
@@ -96616,6 +96659,7 @@ definitions:
         format: byte
       privileges:
         type: string
+        format: byte
       kind:
         type: string
   mantrachain.guard.v1.QueryParamsResponse:
@@ -97017,6 +97061,8 @@ definitions:
       current_batch_id:
         type: string
         format: uint64
+      swap_fee_collector_address:
+        type: string
     description: Pair defines a coin pair.
   mantrachain.liquidity.v1beta1.Params:
     type: object
@@ -97793,6 +97839,8 @@ definitions:
           current_batch_id:
             type: string
             format: uint64
+          swap_fee_collector_address:
+            type: string
         description: Pair defines a coin pair.
     description: QueryPairResponse is response type for the Query/Pair RPC method.
   mantrachain.liquidity.v1beta1.QueryPairsByDenomsResponse:
@@ -97820,6 +97868,8 @@ definitions:
             current_batch_id:
               type: string
               format: uint64
+            swap_fee_collector_address:
+              type: string
           description: Pair defines a coin pair.
       pagination:
         type: object
@@ -97875,6 +97925,8 @@ definitions:
             current_batch_id:
               type: string
               format: uint64
+            swap_fee_collector_address:
+              type: string
           description: Pair defines a coin pair.
       pagination:
         type: object
@@ -99389,6 +99441,16 @@ definitions:
               variables used in market maker scoring system
         description: Params defines the set of params for the marketmaker module.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
+  mantrachain.rewards.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  mantrachain.rewards.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   mantrachain.token.v1.MsgApproveAllNftsResponse:
     type: object
     properties:

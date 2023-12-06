@@ -1,0 +1,7 @@
+syntax = "proto3";
+package mantrachain.rewards.v1beta1;
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
+
+// Msg defines the Msg service.
+service Msg {}

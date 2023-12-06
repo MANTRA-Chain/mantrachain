@@ -17,8 +17,8 @@ import (
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.
 type HandlerOptions struct {
-	WasmConfig 						 wasm.Config
-	TxCounterStoreKey 		 storetypes.StoreKey
+	WasmConfig             wasm.Config
+	TxCounterStoreKey      storetypes.StoreKey
 	AccountKeeper          AccountKeeper
 	BankKeeper             types.BankKeeper
 	ExtensionOptionChecker authante.ExtensionOptionChecker
