@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package mantrachain.rewards;
+
+import "gogoproto/gogo.proto";
+import "mantrachain/rewards/params.proto";
+import "mantrachain/rewards/snapshot.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
+
+// GenesisState defines the rewards module's genesis state.
+message GenesisState {
+           Params   params        = 1 [(gogoproto.nullable) = false];
+  repeated Snapshot snapshotList  = 2 [(gogoproto.nullable) = false];
+           uint64   snapshotCount = 3;
+}
+

@@ -22,11 +22,46 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc:     "valid genesis state",
 			genState: &types.GenesisState{
 
-				// this line is used by starport scaffolding # types/genesis/validField
+				SnapshotList: []types.Snapshot{
+	{
+		Id: 0,
+	},
+	{
+		Id: 1,
+	},
+},
+SnapshotCount: 2,
+// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
 		},
-		// this line is used by starport scaffolding # types/genesis/testcase
+		{
+	desc:     "duplicated snapshot",
+	genState: &types.GenesisState{
+		SnapshotList: []types.Snapshot{
+			{
+				Id: 0,
+			},
+			{
+				Id: 0,
+			},
+		},
+	},
+	valid:    false,
+},
+{
+	desc:     "invalid snapshot count",
+	genState: &types.GenesisState{
+		SnapshotList: []types.Snapshot{
+			{
+				Id: 1,
+			},
+		},
+		SnapshotCount: 0,
+	},
+	valid:    false,
+},
+// this line is used by starport scaffolding # types/genesis/testcase
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {

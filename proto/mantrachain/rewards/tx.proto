@@ -1,5 +1,5 @@
 syntax = "proto3";
-package mantrachain.rewards.v1beta1;
+package mantrachain.rewards;
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
 
