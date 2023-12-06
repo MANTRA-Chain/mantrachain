@@ -15,6 +15,10 @@ for _, elem := range genState.SnapshotList {
 
 // Set snapshot count
 k.SetSnapshotCount(ctx, genState.SnapshotCount)
+// Set all the provider
+for _, elem := range genState.ProviderList {
+	k.SetProvider(ctx, elem)
+}
 // this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -26,6 +30,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.SnapshotList = k.GetAllSnapshot(ctx)
 genesis.SnapshotCount = k.GetSnapshotCount(ctx)
+genesis.ProviderList = k.GetAllProvider(ctx)
 // this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

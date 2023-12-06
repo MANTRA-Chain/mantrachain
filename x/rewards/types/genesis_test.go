@@ -31,6 +31,14 @@ func TestGenesisState_Validate(t *testing.T) {
 	},
 },
 SnapshotCount: 2,
+ProviderList: []types.Provider{
+	{
+		Index: "0",
+},
+	{
+		Index: "1",
+},
+},
 // this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -58,6 +66,20 @@ SnapshotCount: 2,
 			},
 		},
 		SnapshotCount: 0,
+	},
+	valid:    false,
+},
+{
+	desc:     "duplicated provider",
+	genState: &types.GenesisState{
+		ProviderList: []types.Provider{
+			{
+				Index: "0",
+},
+			{
+				Index: "0",
+},
+		},
 	},
 	valid:    false,
 },

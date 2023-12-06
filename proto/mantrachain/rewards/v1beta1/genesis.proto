@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-package mantrachain.rewards;
+package mantrachain.rewards.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "mantrachain/rewards/params.proto";
-import "mantrachain/rewards/snapshot.proto";
+import "mantrachain/rewards/v1beta1/params.proto";
+import "mantrachain/rewards/v1beta1/snapshot.proto";
+import "mantrachain/rewards/v1beta1/provider.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
 
@@ -13,5 +14,6 @@ message GenesisState {
            Params   params        = 1 [(gogoproto.nullable) = false];
   repeated Snapshot snapshotList  = 2 [(gogoproto.nullable) = false];
            uint64   snapshotCount = 3;
+  repeated Provider providerList  = 4 [(gogoproto.nullable) = false];
 }
 

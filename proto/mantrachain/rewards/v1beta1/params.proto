@@ -1,5 +1,5 @@
 syntax = "proto3";
-package mantrachain.rewards;
+package mantrachain.rewards.v1beta1;
 
 import "gogoproto/gogo.proto";
 

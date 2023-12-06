@@ -11,6 +11,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		SnapshotList: []Snapshot{},
+ProviderList: []Provider{},
 // this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -30,6 +31,16 @@ for _, elem := range gs.SnapshotList {
 		return fmt.Errorf("snapshot id should be lower or equal than the last id")
 	}
 	snapshotIdMap[elem.Id] = true
+}
+// Check for duplicated index in provider
+providerIndexMap := make(map[string]struct{})
+
+for _, elem := range gs.ProviderList {
+	index := string(ProviderKey(elem.Index))
+	if _, ok := providerIndexMap[index]; ok {
+		return fmt.Errorf("duplicated index for provider")
+	}
+	providerIndexMap[index] = struct{}{}
 }
 // this line is used by starport scaffolding # genesis/types/validate
 
