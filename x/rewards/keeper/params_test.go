@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	testkeeper "github.com/MANTRA-Finance/aumega/testutil/keeper"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/stretchr/testify/require"
 )
 

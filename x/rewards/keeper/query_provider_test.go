@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-    "strconv"
+	"strconv"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	keepertest "github.com/MANTRA-Finance/aumega/testutil/keeper"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 )
 
 // Prevent strconv unused error
@@ -29,28 +29,25 @@ func TestProviderQuerySingle(t *testing.T) {
 		err      error
 	}{
 		{
-			desc:     "First",
-			request:  &types.QueryGetProviderRequest{
-			    Index: msgs[0].Index,
-                
+			desc: "First",
+			request: &types.QueryGetProviderRequest{
+				Index: msgs[0].Index,
 			},
 			response: &types.QueryGetProviderResponse{Provider: msgs[0]},
 		},
 		{
-			desc:     "Second",
-			request:  &types.QueryGetProviderRequest{
-			    Index: msgs[1].Index,
-                
+			desc: "Second",
+			request: &types.QueryGetProviderRequest{
+				Index: msgs[1].Index,
 			},
 			response: &types.QueryGetProviderResponse{Provider: msgs[1]},
 		},
 		{
-			desc:    "KeyNotFound",
+			desc: "KeyNotFound",
 			request: &types.QueryGetProviderRequest{
-			    Index:strconv.Itoa(100000),
-                
+				Index: strconv.Itoa(100000),
 			},
-			err:     status.Error(codes.NotFound, "not found"),
+			err: status.Error(codes.NotFound, "not found"),
 		},
 		{
 			desc: "InvalidRequest",
@@ -95,9 +92,9 @@ func TestProviderQueryPaginated(t *testing.T) {
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.Provider), step)
 			require.Subset(t,
-            	nullify.Fill(msgs),
-            	nullify.Fill(resp.Provider),
-            )
+				nullify.Fill(msgs),
+				nullify.Fill(resp.Provider),
+			)
 		}
 	})
 	t.Run("ByKey", func(t *testing.T) {
@@ -108,9 +105,9 @@ func TestProviderQueryPaginated(t *testing.T) {
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.Provider), step)
 			require.Subset(t,
-            	nullify.Fill(msgs),
-            	nullify.Fill(resp.Provider),
-            )
+				nullify.Fill(msgs),
+				nullify.Fill(resp.Provider),
+			)
 			next = resp.Pagination.NextKey
 		}
 	})

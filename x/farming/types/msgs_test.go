@@ -10,7 +10,7 @@ import (
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 func TestMsgCreateFixedAmountPlan(t *testing.T) {

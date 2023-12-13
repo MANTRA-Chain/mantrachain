@@ -31,23 +31,23 @@ Example:
 
 <!-- 
 
-mantrachaind tx did create-did \
+aumegad tx did create-did \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 -->
 
 ```javascript
 /* gRPC message */
 CreateDidDocument(
     MsgCreateDidDocument(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
         [], // controller
         [   // verifications
             {
                 "relationships": ["authentication"],
                 {
-                    "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-                    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+                    "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+                    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
                     "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
                     "type": "EcdsaSecp256k1VerificationKey2019"
                 },
@@ -65,19 +65,19 @@ CreateDidDocument(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
@@ -105,8 +105,8 @@ The operation will fail if:
 Example:
 
 <!--
-mantrachaind query did did did:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain \
+aumegad query did did did:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e \
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega \
  --output=json | jq
 -->
 
@@ -114,7 +114,7 @@ mantrachaind query did did did:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e 
 /* gRPC message */
 QueryDidDocument(
     QueryDidDocumentRequest(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e"
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e"
     )
 )
 
@@ -124,19 +124,19 @@ QueryDidDocument(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
@@ -182,17 +182,17 @@ The operation will fail if:
 
 <!-- 
 
-mantrachaind tx did update-did-document \
+aumegad tx did update-did-document \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 -->
 
 ```javascript
 /* gRPC message */
 UpdateDidDocument(
     MsgUpdateDidDocument(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
         ["did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"],
         "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     )
@@ -205,21 +205,21 @@ UpdateDidDocument(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
@@ -248,22 +248,22 @@ The operation will fail if:
 
 <!-- 
 
-mantrachaind tx did add-verification-method \
+aumegad tx did add-verification-method \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  cosmospub1addwnpepqduxp90pt6ez3a8p26fwmfhqvparz0xqsxk4f4564hg46527xpzeq82cerm \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 -->
 
 ```javascript
 /* gRPC message */
 AddVerification(
     MsgAddVerification(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
         {
             "relationships": ["authentication"],
             {
-                "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-                "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
+                "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+                "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
                 "publicKeyHex": "03786095e15eb228f4e15692eda6e0607a313cc081ad54d69aadd15d515e304590",
                 "type": "EcdsaSecp256k1VerificationKey2019"
             },
@@ -280,28 +280,28 @@ AddVerification(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       },
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
         "publicKeyHex": "03786095e15eb228f4e15692eda6e0607a313cc081ad54d69aadd15d515e304590",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
@@ -328,10 +328,10 @@ The operation will fail if:
 
 <!--
 
-mantrachaind tx did revoke-verification-method \
+aumegad tx did revoke-verification-method \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2 \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 
 -->
 
@@ -339,8 +339,8 @@ mantrachaind tx did revoke-verification-method \
 /* gRPC message */
 RevokeVerification(
     MsgRevokeVerification(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2",
         "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka" // signer
     )
 )
@@ -351,21 +351,21 @@ RevokeVerification(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
@@ -396,11 +396,11 @@ The operation will fail if:
 
 <!--
 
-mantrachaind tx did set-verification-relationships \
+aumegad tx did set-verification-relationships \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka \
  --relationship capabilityInvocation \
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 
 -->
 
@@ -408,8 +408,8 @@ mantrachaind tx did set-verification-relationships \
 /* gRPC message */
 SetVerificationRelationships(
     MsgSetVerificationRelationships(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         ["authentication", "capabilityInvocation"]
         "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka" // signer
     )
@@ -421,26 +421,26 @@ SetVerificationRelationships(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
     "capabilityInvocation": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "capabilityDelegation": []
   },
@@ -465,12 +465,12 @@ The operation will fail if:
 
 <!--
 
-mantrachaind tx did add-service \
+aumegad tx did add-service \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  
 TODO
 
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 
 -->
 
@@ -478,7 +478,7 @@ TODO
 /* gRPC message */
 AddService(
     MsgAddService(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
         {
             "agent:xyz",
             "DIDCommMessaging",
@@ -494,14 +494,14 @@ AddService(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
@@ -514,12 +514,12 @@ AddService(
         }
     ],
     "authentication": [
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
     "capabilityInvocation": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "capabilityDelegation": []
   },
@@ -542,12 +542,12 @@ The operation will fail if:
 - the service id does not match any service in the did document
 <!--
 
-mantrachaind tx did add-service \
+aumegad tx did add-service \
  900d82bc-2bfe-45a7-ab22-a8d11773568e \
  
 TODO
 
- --from vasp --node https://127.0.0.1:443 --chain-id mantrachain
+ --from vasp --node https://127.0.0.1:443 --chain-id aumega
 
 -->
 
@@ -555,7 +555,7 @@ TODO
 /* gRPC message */
 DeleteService(
     MsgDeleteService(
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
         "agent:xyz",
         "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka" // signer
     )
@@ -567,26 +567,26 @@ DeleteService(
     "context": [
       "https://www.w3.org/ns/did/v1"
     ],
-    "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+    "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
     "controller": [
       "did:cosmos:key:mantra19xvxf55pzvs8ayeuce843sp3rjgmssh77e83fq"
     ],
     "verificationMethod": [
       {
-        "controller": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e",
-        "id": "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+        "controller": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e",
+        "id": "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
         "publicKeyHex": "0248a5178d7a90ec187b3c3d533a4385db905f6fcdaac5026859ca5ef7b0b1c3b5",
         "type": "EcdsaSecp256k1VerificationKey2019"
       }
     ],
     "service": [],
     "authentication": [
-        "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+        "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "assertionMethod": [],
     "keyAgreement": [],
     "capabilityInvocation": [
-      "did:cosmos:mantrachain:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+      "did:cosmos:aumega:900d82bc-2bfe-45a7-ab22-a8d11773568e#mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
     ],
     "capabilityDelegation": []
   },

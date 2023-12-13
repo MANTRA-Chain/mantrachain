@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	keepertest "github.com/MANTRA-Finance/aumega/testutil/keeper"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 )
 
 func TestSnapshotQuerySingle(t *testing.T) {
@@ -51,7 +51,7 @@ func TestSnapshotQuerySingle(t *testing.T) {
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
-			    require.NoError(t, err)
+				require.NoError(t, err)
 				require.Equal(t,
 					nullify.Fill(tc.response),
 					nullify.Fill(response),
@@ -84,8 +84,8 @@ func TestSnapshotQueryPaginated(t *testing.T) {
 			require.LessOrEqual(t, len(resp.Snapshot), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-            	nullify.Fill(resp.Snapshot),
-            )
+				nullify.Fill(resp.Snapshot),
+			)
 		}
 	})
 	t.Run("ByKey", func(t *testing.T) {
@@ -97,8 +97,8 @@ func TestSnapshotQueryPaginated(t *testing.T) {
 			require.LessOrEqual(t, len(resp.Snapshot), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-            	nullify.Fill(resp.Snapshot),
-            )
+				nullify.Fill(resp.Snapshot),
+			)
 			next = resp.Pagination.NextKey
 		}
 	})

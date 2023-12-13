@@ -1,14 +1,14 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { AumegaSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom, mintCoins } from '../helpers/coinfactory'
 import { createNftCollectionIfNotExists, mintGuardSoulBondNft, burnGuardSoulBondNft } from '../helpers/token'
 import { setGuardTransferCoins, updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 import { queryBalance, sendCoins } from '../helpers/bank'
 
-let sdk: MantrachainSdk
+let sdk: AumegaSdk
 
 describe('Guard module', () => {
   beforeAll(async () => {
-    sdk = new MantrachainSdk()
+    sdk = new AumegaSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
   })
 
@@ -38,7 +38,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update account privileges with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateAccountPrivileges({
         value: {
           creator: sdk.recipientAddress,
           account: sdk.recipientAddress,
@@ -48,7 +48,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update account privileges batch with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesBatch({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateAccountPrivilegesBatch({
         value: {
           creator: sdk.recipientAddress,
           accountsPrivileges: {
@@ -62,7 +62,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update account privileges grouped batch with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivilegesGroupedBatch({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateAccountPrivilegesGroupedBatch({
         value: {
           creator: sdk.recipientAddress,
           accountsPrivilegesGrouped: {
@@ -78,7 +78,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update required privileges with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateRequiredPrivileges({
         value: {
           creator: sdk.recipientAddress,
           index: new Uint8Array(1),
@@ -91,7 +91,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update required privileges batch with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesBatch({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateRequiredPrivilegesBatch({
         value: {
           creator: sdk.recipientAddress,
           requiredPrivileges: {
@@ -106,7 +106,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update required privileges grouped batch with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivilegesGroupedBatch({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateRequiredPrivilegesGroupedBatch({
         value: {
           creator: sdk.recipientAddress,
           requiredPrivilegesGrouped: {
@@ -123,7 +123,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update guard transfer coins with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateGuardTransferCoins({
         value: {
           creator: sdk.recipientAddress,
           enabled: true
@@ -134,13 +134,13 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update authz grants with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainGuardV1.tx.sendMsgUpdateAuthzGenericGrantRevokeBatch({
+      await expect(sdk.clientRecipient.AumegaGuardV1.tx.sendMsgUpdateAuthzGenericGrantRevokeBatch({
         value: {
           creator: sdk.recipientAddress,
           grantee: sdk.adminAddress,
           authzGrantRevokeMsgsTypes: {
             msgs: [
-              { typeUrl: '/mantrachain.coinfactory.v1beta1.MsgCreateDenom', grant: true }
+              { typeUrl: '/aumega.coinfactory.v1beta1.MsgCreateDenom', grant: true }
             ],
           }
         }
@@ -150,7 +150,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create denom with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+      await expect(sdk.clientRecipient.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
         value: {
           sender: sdk.recipientAddress,
           subdenom: 'guard4'
@@ -161,7 +161,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when force transfer with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+      await expect(sdk.clientRecipient.AumegaCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
         value: {
           sender: sdk.recipientAddress,
           amount: {
@@ -177,7 +177,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create pair with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      await expect(sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, 'guard2'),
@@ -189,7 +189,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create fee token with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgCreateFeeToken({
+      await expect(sdk.clientRecipient.AumegaTxfeesV1.tx.sendMsgCreateFeeToken({
         value: {
           creator: sdk.recipientAddress,
           denom: genCoinDenom(sdk.adminAddress, 'guard4'),
@@ -201,7 +201,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when update fee token with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgUpdateFeeToken({
+      await expect(sdk.clientRecipient.AumegaTxfeesV1.tx.sendMsgUpdateFeeToken({
         value: {
           creator: sdk.recipientAddress,
           denom: genCoinDenom(sdk.adminAddress, 'guard4'),
@@ -213,7 +213,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when delete fee token with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTxfeesV1.tx.sendMsgDeleteFeeToken({
+      await expect(sdk.clientRecipient.AumegaTxfeesV1.tx.sendMsgDeleteFeeToken({
         value: {
           creator: sdk.recipientAddress,
           denom: genCoinDenom(sdk.adminAddress, 'guard4'),
@@ -226,7 +226,7 @@ describe('Guard module', () => {
     test('Should return error when create pool with account with no permission', async () => {
       let baseCoinDenom = 'guard' + new Date().getTime().toString();
       let quoteCoinDenom = 'guard' + new Date().getTime().toString() + 1;
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.adminAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
@@ -234,11 +234,11 @@ describe('Guard module', () => {
         }
       })
 
-      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
+      const allPairs = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPairs();
       const lastPair = allPairs.data.pairs.pop();
       const pairId = lastPair.id
 
-      await expect(sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
+      await expect(sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreatePool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
@@ -256,11 +256,11 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create ranged pool with account with no permission', async () => {
-      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
+      const allPairs = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPairs();
       const lastPair = allPairs.data.pairs.pop();
       const pairId = lastPair.id
 
-      await expect(sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
+      await expect(sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreateRangedPool({
         value: {
           creator: sdk.recipientAddress,
           pairId,
@@ -281,7 +281,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create private plan with account with no permission', async () => {
-      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs();
+      const allPairs = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPairs();
       const lastPair = allPairs.data.pairs.pop();
       const pairId = lastPair.id
 
@@ -289,7 +289,7 @@ describe('Guard module', () => {
       const endTime = new Date()
       endTime.setMinutes(endTime.getMinutes() + 30)
 
-      await expect(sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
+      await expect(sdk.clientRecipient.AumegaLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
           creator: sdk.recipientAddress,
           description: 'test plan',
@@ -309,7 +309,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when create restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgCreateNftCollection({
         value: {
           creator: sdk.recipientAddress,
           collection: {
@@ -334,7 +334,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when mint nft for restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNft({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgMintNft({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
@@ -358,7 +358,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when mint nfts for restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgMintNfts({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgMintNfts({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.recipientAddress,
@@ -385,7 +385,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when burn nft from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNft({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgBurnNft({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
@@ -399,7 +399,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when burn nfts from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgBurnNfts({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgBurnNfts({
         value: {
           creator: sdk.recipientAddress,
           collectionCreator: sdk.adminAddress,
@@ -415,7 +415,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when approve nft from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNft({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgApproveNft({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -431,7 +431,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when approve nfts from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgApproveNfts({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgApproveNfts({
         value: {
           creator: sdk.recipientAddress,
           receiver: sdk.adminAddress,
@@ -449,7 +449,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when transfer nft from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNft({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgTransferNft({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,
@@ -465,7 +465,7 @@ describe('Guard module', () => {
     })
 
     test('Should return error when transfer nfts from restricted nft collection with account with no permission', async () => {
-      await expect(sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgTransferNfts({
+      await expect(sdk.clientRecipient.AumegaTokenV1.tx.sendMsgTransferNfts({
         value: {
           creator: sdk.recipientAddress,
           owner: sdk.recipientAddress,

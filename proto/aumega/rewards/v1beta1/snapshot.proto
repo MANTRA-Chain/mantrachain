@@ -1,0 +1,11 @@
+syntax = "proto3";
+package aumega.rewards.v1beta1;
+
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+
+message Snapshot {
+  uint64 id = 1;
+  string cumulativeTotalSupply = 2; 
+  string feesPerToken = 3; 
+  
+}

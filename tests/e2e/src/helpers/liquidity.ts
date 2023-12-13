@@ -1,4 +1,4 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { AumegaSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 
 const getPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.find((pair: any) => pair.base_coin_denom === baseCoinDenom && pair.quote_coin_denom === quoteCoinDenom)
@@ -8,13 +8,13 @@ const existsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string)
 const notExistsPair = (pairs: any[], baseCoinDenom: string, quoteCoinDenom: string) => pairs.every((pair: any) => pair.base_coin_denom !== baseCoinDenom || pair.quote_coin_denom !== quoteCoinDenom)
 
 const queryPairs = async (client: any) => {
-  const res = await client.MantrachainLiquidityV1Beta1.query.queryPairs()
+  const res = await client.AumegaLiquidityV1Beta1.query.queryPairs()
   return res?.data?.pairs || []
 }
 
-export const createPairIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 2) => {
+export const createPairIfNotExists = async (sdk: AumegaSdk, client: any, account: string, baseCoinDenom: string, quoteCoinDenom: string, numAttempts = 2) => {
   if (notExistsPair(await queryPairs(client), baseCoinDenom, quoteCoinDenom)) {
-    const res = await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+    const res = await client.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
       value: {
         creator: account,
         baseCoinDenom,
@@ -54,15 +54,15 @@ const existsPool = (pools: any[], pairId: string) => pools.some((pair: any) => p
 const notExistsPool = (pools: any[], pairId: string) => pools.every((pair: any) => pair.pair_id !== pairId)
 
 const queryPools = async (client: any, pairId: string) => {
-  const res = await client.MantrachainLiquidityV1Beta1.query.queryPools({
+  const res = await client.AumegaLiquidityV1Beta1.query.queryPools({
     pair_id: pairId
   })
   return res?.data?.pools || []
 }
 
-export const createPoolIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, pairId: string, baseCoinDenom: string, baseCoinAmount: string, quoteCoinDenom: string, quoteCoinAmount: string, numAttempts = 2) => {
+export const createPoolIfNotExists = async (sdk: AumegaSdk, client: any, account: string, pairId: string, baseCoinDenom: string, baseCoinAmount: string, quoteCoinDenom: string, quoteCoinAmount: string, numAttempts = 2) => {
   if (notExistsPool(await queryPools(client, pairId), pairId)) {
-    const res = await client.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool({
+    const res = await client.AumegaLiquidityV1Beta1.tx.sendMsgCreatePool({
       value: {
         creator: account,
         pairId,

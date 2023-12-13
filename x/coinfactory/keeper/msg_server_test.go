@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"fmt"
 
-	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"

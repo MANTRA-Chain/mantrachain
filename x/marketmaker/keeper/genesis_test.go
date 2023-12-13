@@ -4,7 +4,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

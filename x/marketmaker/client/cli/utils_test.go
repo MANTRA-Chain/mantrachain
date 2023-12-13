@@ -9,8 +9,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/testutil"
 
-	mantratestutil "github.com/MANTRA-Finance/mantrachain/testutil"
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/client/cli"
+	mantratestutil "github.com/MANTRA-Finance/aumega/testutil"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/client/cli"
 )
 
 func TestParseMarketMakerProposal(t *testing.T) {

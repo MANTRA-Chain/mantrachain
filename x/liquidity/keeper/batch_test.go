@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"time"
 
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	"github.com/MANTRA-Finance/aumega/x/liquidity"
+	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
 
 	"cosmossdk.io/math"
 	_ "github.com/stretchr/testify/suite"

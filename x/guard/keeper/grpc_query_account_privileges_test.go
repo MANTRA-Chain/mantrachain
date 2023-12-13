@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/aumega/x/guard/types"
 )
 
 func TestGRPCQueryAccountPrivileges(t *testing.T) {

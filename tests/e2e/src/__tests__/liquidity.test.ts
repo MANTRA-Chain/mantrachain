@@ -1,4 +1,4 @@
-import { MantrachainSdk } from "../helpers/sdk"
+import { AumegaSdk } from "../helpers/sdk"
 import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory"
 import { mintGuardSoulBondNft } from '../helpers/token'
 import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
@@ -15,7 +15,7 @@ export enum OrderDirection {
 }
 
 describe('Liquidity module', () => {
-  let sdk: MantrachainSdk
+  let sdk: AumegaSdk
 
   let baseCoinDenom = 'atom' + new Date().getTime().toString()
   // with this we manipulate the time and space
@@ -27,13 +27,13 @@ describe('Liquidity module', () => {
   let poolId = 0
 
   beforeAll(async () => {
-    sdk = new MantrachainSdk()
+    sdk = new AumegaSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, baseCoinDenom)
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, quoteCoinDenom)
 
-    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -43,7 +43,7 @@ describe('Liquidity module', () => {
       }
     })
 
-    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -56,7 +56,7 @@ describe('Liquidity module', () => {
 
   describe('Admin', () => {
     test('should be able to create pair for existing denoms', async () => {
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.adminAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
@@ -64,7 +64,7 @@ describe('Liquidity module', () => {
         }
       })
 
-      const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs()
+      const allPairs = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPairs()
       const lastPair = allPairs.data.pairs.pop()
       pairId = lastPair.id
 
@@ -72,7 +72,7 @@ describe('Liquidity module', () => {
     })
 
     test('should throw when trying to create already existing pair for existing denoms', async () => {
-      await expect(sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      await expect(sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.adminAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
@@ -82,7 +82,7 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to create pool for existing pair', async () => {
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePool(
         {
           value: {
             creator: sdk.adminAddress,
@@ -101,7 +101,7 @@ describe('Liquidity module', () => {
         }
       )
 
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
+      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPools({
         pair_id: String(pairId)
       })
 
@@ -119,7 +119,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgDeposit(
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgDeposit(
         {
           value: {
             depositor: sdk.adminAddress,
@@ -147,7 +147,7 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to withdraw liquidity from existing pool', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
       const pool = resp.data.pool
 
       const balanceOfBaseCoinsBefore = await sdk.clientAdmin.CosmosBankV1Beta1.query.queryBalance(
@@ -156,7 +156,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgWithdraw(
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgWithdraw(
         {
           value: {
             withdrawer: sdk.adminAddress,
@@ -178,7 +178,7 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to create rangedPool for existing pair', async () => {
-      await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool(
+      await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreateRangedPool(
         {
           value: {
             creator: sdk.adminAddress,
@@ -200,7 +200,7 @@ describe('Liquidity module', () => {
         }
       )
 
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
+      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPools({
         pair_id: pairId.toString()
       })
 
@@ -213,7 +213,7 @@ describe('Liquidity module', () => {
 
   describe('User', () => {
     test('should throw when trying to create pairs', async () => {
-      await expect(sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
+      await expect(sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
         value: {
           creator: sdk.recipientAddress,
           baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
@@ -223,7 +223,7 @@ describe('Liquidity module', () => {
     })
 
     test('should throw when trying to create pools', async () => {
-      const res = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
+      const res = sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreatePool(
         {
           value: {
             creator: sdk.recipientAddress,
@@ -246,7 +246,7 @@ describe('Liquidity module', () => {
     })
 
     test('should throw when trying to create rangedPools', async () => {
-      const res = sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCreateRangedPool(
+      const res = sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCreateRangedPool(
         {
           value: {
             creator: sdk.recipientAddress,
@@ -300,7 +300,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgDeposit({
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgDeposit({
         value: {
           depositor: sdk.recipientAddress,
           poolId: poolId,
@@ -327,7 +327,7 @@ describe('Liquidity module', () => {
     })
 
     test('should be able to withdraw liquidity from existing pool after deposit', async () => {
-      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
 
       const pool = resp.data.pool
 
@@ -337,7 +337,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgWithdraw(
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgWithdraw(
         {
           value: {
             withdrawer: sdk.recipientAddress,
@@ -366,7 +366,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgLimitOrder({
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder({
         value: {
           orderer: sdk.recipientAddress,
           pairId: pairId,
@@ -398,7 +398,7 @@ describe('Liquidity module', () => {
       }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgMarketOrder(
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgMarketOrder(
         {
           value: {
             orderer: sdk.recipientAddress,
@@ -426,7 +426,7 @@ describe('Liquidity module', () => {
 
     test('should be able to cancel order', async () => {
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgLimitOrder({
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder({
         value: {
           orderer: sdk.recipientAddress,
           pairId: pairId,
@@ -442,12 +442,12 @@ describe('Liquidity module', () => {
         }
       }
       )
-      const orders = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
+      const orders = await sdk.clientRecipient.AumegaLiquidityV1Beta1.query.queryOrders(pairId.toString())
 
       // const order = orders.data.orders.find(o => o.type == 'ORDER_TYPE_MM')
       const order = orders.data.orders.pop()
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCancelOrder({
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCancelOrder({
         value: {
           orderer: sdk.recipientAddress,
           pairId: pairId,
@@ -457,12 +457,12 @@ describe('Liquidity module', () => {
 
       await new Promise((r) => setTimeout(r, 7000))
 
-      const ordersAfter = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
+      const ordersAfter = await sdk.clientRecipient.AumegaLiquidityV1Beta1.query.queryOrders(pairId.toString())
       expect(ordersAfter.data.orders.length).toBe(0)
     })
 
     test('should be able to cancel all orders', async () => {
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgLimitOrder(
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder(
         {
           value: {
             orderer: sdk.recipientAddress,
@@ -480,7 +480,7 @@ describe('Liquidity module', () => {
         }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgMarketOrder(
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgMarketOrder(
         {
           value: {
             orderer: sdk.recipientAddress,
@@ -497,7 +497,7 @@ describe('Liquidity module', () => {
         }
       )
 
-      await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgCancelAllOrders({
+      await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgCancelAllOrders({
         value: {
           orderer: sdk.recipientAddress
         }
@@ -505,7 +505,7 @@ describe('Liquidity module', () => {
 
       await new Promise((r) => setTimeout(r, 7000))
 
-      const ordersAfter = await sdk.clientRecipient.MantrachainLiquidityV1Beta1.query.queryOrders(pairId.toString())
+      const ordersAfter = await sdk.clientRecipient.AumegaLiquidityV1Beta1.query.queryOrders(pairId.toString())
 
       expect(ordersAfter.data.orders.length).toBe(0)
     })

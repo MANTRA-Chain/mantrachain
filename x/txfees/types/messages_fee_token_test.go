@@ -3,7 +3,7 @@ package types
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil/sample"
+	"github.com/MANTRA-Finance/aumega/testutil/sample"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )

@@ -1,16 +1,16 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { AumegaSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { utils, Privileges } from '@mantrachain/sdk'
 
 const queryGuardTransferCoins = async (client: any) => {
-  const res = await client.MantrachainGuardV1.query.queryGuardTransferCoins()
+  const res = await client.AumegaGuardV1.query.queryGuardTransferCoins()
   return res?.data?.guard_transfer_coins || false
 }
 
 const notSetGuardTransferCoins = (expected: boolean, actual: boolean) => expected !== actual
 
 const queryDefaultPrivileges = async (client: any): Promise<Buffer> => {
-  const res = await client.MantrachainGuardV1.query.queryParams()
+  const res = await client.AumegaGuardV1.query.queryParams()
   return utils.base64ToBytes(
     res.data.params.default_privileges
   )
@@ -18,7 +18,7 @@ const queryDefaultPrivileges = async (client: any): Promise<Buffer> => {
 
 const queryCoinRequiredPrivileges = async (client: any, denom: string) => {
   try {
-    const res = await client.MantrachainGuardV1.query.queryRequiredPrivileges(
+    const res = await client.AumegaGuardV1.query.queryRequiredPrivileges(
       utils.strToBase64(denom),
       {
         kind: "coin",
@@ -34,13 +34,13 @@ const queryCoinRequiredPrivileges = async (client: any, denom: string) => {
 }
 
 const queryAccountPrivileges = async (client: any, account: string) => {
-  const res = await client.MantrachainGuardV1.query.queryAccountPrivileges(account)
+  const res = await client.AumegaGuardV1.query.queryAccountPrivileges(account)
   return utils.base64ToBytes(res.data.privileges)
 }
 
-export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, account: string, enabled: boolean, numAttempts = 2) => {
+export const setGuardTransferCoins = async (sdk: AumegaSdk, client: any, account: string, enabled: boolean, numAttempts = 2) => {
   if (notSetGuardTransferCoins(await queryGuardTransferCoins(client), enabled)) {
-    const res = await client.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+    const res = await client.AumegaGuardV1.tx.sendMsgUpdateGuardTransferCoins({
       value: {
         creator: account,
         enabled
@@ -62,7 +62,7 @@ export const setGuardTransferCoins = async (sdk: MantrachainSdk, client: any, ac
   )
 }
 
-export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, account: string, receiver: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
+export const updateAccountPrivileges = async (sdk: AumegaSdk, client: any, account: string, receiver: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
   const accountPrivileges: any = await queryAccountPrivileges(client, receiver)
   const defaultPrivileges = await queryDefaultPrivileges(client)
   let newAccountPrivileges: any = Buffer.from([])
@@ -87,7 +87,7 @@ export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, 
     return
   }
 
-  const res = await client.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
+  const res = await client.AumegaGuardV1.tx.sendMsgUpdateAccountPrivileges({
     value: {
       creator: account,
       account: receiver,
@@ -113,7 +113,7 @@ export const updateAccountPrivileges = async (sdk: MantrachainSdk, client: any, 
   )
 }
 
-export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: any, account: string, denom: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
+export const updateCoinRequiredPrivileges = async (sdk: AumegaSdk, client: any, account: string, denom: string, setBits?: number[], unsetBits?: number[], numAttempts = 2) => {
   const requiredPrivileges: any = await queryCoinRequiredPrivileges(client, denom)
   const hasRequiredPrivileges = !!requiredPrivileges.length
   let newRequiredPrivileges: any = Buffer.from([])
@@ -144,7 +144,7 @@ export const updateCoinRequiredPrivileges = async (sdk: MantrachainSdk, client: 
     newRequiredPrivileges = newRequiredPrivileges.toBuffer()
   }
 
-  const res = await client.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+  const res = await client.AumegaGuardV1.tx.sendMsgUpdateRequiredPrivileges({
     value: {
       creator: account,
       index: utils.strToIndex(denom),

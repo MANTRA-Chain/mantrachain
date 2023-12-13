@@ -8,8 +8,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	didtestutil "github.com/MANTRA-Finance/mantrachain/x/did/testutil"
-	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+	didtestutil "github.com/MANTRA-Finance/aumega/x/did/testutil"
+	"github.com/MANTRA-Finance/aumega/x/did/types"
 
 	"github.com/cometbft/cometbft/libs/log"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -80,7 +80,7 @@ func (suite *KeeperTestSuite) TestGenericKeeperSetAndGet() {
 			"data stored successfully",
 			func() types.DidDocument {
 				dd, _ := types.NewDidDocument(
-					"did:mantrachain:subject",
+					"did:aumega:subject",
 				)
 				return dd
 			},
@@ -140,7 +140,7 @@ func (suite *KeeperTestSuite) TestGenericKeeperDelete() {
 			"data stored successfully",
 			func() types.DidDocument {
 				dd, _ := types.NewDidDocument(
-					"did:mantrachain:subject",
+					"did:aumega:subject",
 				)
 				return dd
 			},

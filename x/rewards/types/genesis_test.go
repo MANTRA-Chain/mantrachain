@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,71 +19,71 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
 				SnapshotList: []types.Snapshot{
-	{
-		Id: 0,
-	},
-	{
-		Id: 1,
-	},
-},
-SnapshotCount: 2,
-ProviderList: []types.Provider{
-	{
-		Index: "0",
-},
-	{
-		Index: "1",
-},
-},
-// this line is used by starport scaffolding # types/genesis/validField
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				SnapshotCount: 2,
+				ProviderList: []types.Provider{
+					{
+						Index: "0",
+					},
+					{
+						Index: "1",
+					},
+				},
+				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
 		},
 		{
-	desc:     "duplicated snapshot",
-	genState: &types.GenesisState{
-		SnapshotList: []types.Snapshot{
-			{
-				Id: 0,
+			desc: "duplicated snapshot",
+			genState: &types.GenesisState{
+				SnapshotList: []types.Snapshot{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
 			},
-			{
-				Id: 0,
+			valid: false,
+		},
+		{
+			desc: "invalid snapshot count",
+			genState: &types.GenesisState{
+				SnapshotList: []types.Snapshot{
+					{
+						Id: 1,
+					},
+				},
+				SnapshotCount: 0,
 			},
+			valid: false,
 		},
-	},
-	valid:    false,
-},
-{
-	desc:     "invalid snapshot count",
-	genState: &types.GenesisState{
-		SnapshotList: []types.Snapshot{
-			{
-				Id: 1,
+		{
+			desc: "duplicated provider",
+			genState: &types.GenesisState{
+				ProviderList: []types.Provider{
+					{
+						Index: "0",
+					},
+					{
+						Index: "0",
+					},
+				},
 			},
+			valid: false,
 		},
-		SnapshotCount: 0,
-	},
-	valid:    false,
-},
-{
-	desc:     "duplicated provider",
-	genState: &types.GenesisState{
-		ProviderList: []types.Provider{
-			{
-				Index: "0",
-},
-			{
-				Index: "0",
-},
-		},
-	},
-	valid:    false,
-},
-// this line is used by starport scaffolding # types/genesis/testcase
+		// this line is used by starport scaffolding # types/genesis/testcase
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {

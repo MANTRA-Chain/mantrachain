@@ -3,8 +3,8 @@ package keeper
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/keeper"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"

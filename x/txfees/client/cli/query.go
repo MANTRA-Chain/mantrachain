@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/aumega/x/txfees/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

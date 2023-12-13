@@ -12,13 +12,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "github.com/MANTRA-Finance/mantrachain/app"
-	"github.com/MANTRA-Finance/mantrachain/testutil"
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm"
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	chain "github.com/MANTRA-Finance/aumega/app"
+	"github.com/MANTRA-Finance/aumega/testutil"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	liquiditytypes "github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/MANTRA-Finance/aumega/x/lpfarm"
+	"github.com/MANTRA-Finance/aumega/x/lpfarm/keeper"
+	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )

@@ -65,10 +65,10 @@ yarn test
 
 ## Learn more
 
-### Mantrachain
+### Aumega
 
 - [Docs](./spec/README.md)
-- [SDK](https://github.com/MANTRA-Finance/mantrachain-sdk.git)
+- [SDK](https://github.com/MANTRA-Finance/aumega-sdk.git)
 
 ### Cosmos SDK
 

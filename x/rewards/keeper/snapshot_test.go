@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"testing"
 
-    "github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
-    "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	keepertest "github.com/MANTRA-Finance/aumega/testutil/keeper"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/keeper"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	keepertest "github.com/MANTRA-Finance/aumega/testutil/keeper"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/keeper"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +19,7 @@ func createNProvider(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Prov
 	items := make([]types.Provider, n)
 	for i := range items {
 		items[i].Index = strconv.Itoa(i)
-        
+
 		keeper.SetProvider(ctx, items[i])
 	}
 	return items
@@ -30,8 +30,7 @@ func TestProviderGet(t *testing.T) {
 	items := createNProvider(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetProvider(ctx,
-		    item.Index,
-            
+			item.Index,
 		)
 		require.True(t, found)
 		require.Equal(t,
@@ -45,12 +44,10 @@ func TestProviderRemove(t *testing.T) {
 	items := createNProvider(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveProvider(ctx,
-		    item.Index,
-            
+			item.Index,
 		)
 		_, found := keeper.GetProvider(ctx,
-		    item.Index,
-            
+			item.Index,
 		)
 		require.False(t, found)
 	}

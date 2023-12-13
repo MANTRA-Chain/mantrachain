@@ -1,14 +1,14 @@
 {
   "name": "e2e",
   "version": "0.0.0",
-  "description": "Mantrachain e2e tests",
+  "description": "Aumega e2e tests",
   "main": "index.js",
   "scripts": {
     "test": "jest -i -b --runtTestsByPath=./src/__tests__/",
     "lint": "eslint ./src",
     "fmt": "eslint ./src --fix"
   },
-  "author": "Mantrachain",
+  "author": "Aumega",
   "license": "ISC",
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "7.23.0",

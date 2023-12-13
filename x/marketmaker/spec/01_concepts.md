@@ -12,4 +12,4 @@ Market makers can earn AUM as incentives for providing liquidity. These incentiv
 
 ## Inclusion of Market Maker
 
-Any Mantrachain address can apply as a market maker for selected market pairs. A governance process decides inclusion, rejection and exclusion of registered market makers.
+Any Aumega address can apply as a market maker for selected market pairs. A governance process decides inclusion, rejection and exclusion of registered market makers.

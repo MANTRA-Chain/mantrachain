@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/aumega/x/token/types"
 )
 
 func (k Keeper) CheckSoulBondedNftsCollection(ctx sdk.Context, collectionCreator string, collectionId string) error {

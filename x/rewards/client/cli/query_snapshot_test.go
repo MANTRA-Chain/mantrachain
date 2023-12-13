@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"testing"
 
+	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
-	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil/network"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/client/cli"
-    "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/testutil/network"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 )
 
 func networkWithSnapshotObjects(t *testing.T, n int) (*network.Network, []types.Snapshot) {
@@ -23,8 +23,8 @@ func networkWithSnapshotObjects(t *testing.T, n int) (*network.Network, []types.
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		snapshot := types.Snapshot{
-    		Id: uint64(i),
-    	}
+			Id: uint64(i),
+		}
 		nullify.Fill(&snapshot)
 		state.SnapshotList = append(state.SnapshotList, snapshot)
 	}
@@ -76,9 +76,9 @@ func TestShowSnapshot(t *testing.T) {
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 				require.NotNil(t, resp.Snapshot)
 				require.Equal(t,
-                	nullify.Fill(&tc.obj),
-                	nullify.Fill(&resp.Snapshot),
-                )
+					nullify.Fill(&tc.obj),
+					nullify.Fill(&resp.Snapshot),
+				)
 			}
 		})
 	}
@@ -113,9 +113,9 @@ func TestListSnapshot(t *testing.T) {
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.LessOrEqual(t, len(resp.Snapshot), step)
 			require.Subset(t,
-            	nullify.Fill(objs),
-            	nullify.Fill(resp.Snapshot),
-            )
+				nullify.Fill(objs),
+				nullify.Fill(resp.Snapshot),
+			)
 		}
 	})
 	t.Run("ByKey", func(t *testing.T) {
@@ -130,8 +130,8 @@ func TestListSnapshot(t *testing.T) {
 			require.LessOrEqual(t, len(resp.Snapshot), step)
 			require.Subset(t,
 				nullify.Fill(objs),
-            	nullify.Fill(resp.Snapshot),
-            )
+				nullify.Fill(resp.Snapshot),
+			)
 			next = resp.Pagination.NextKey
 		}
 	})

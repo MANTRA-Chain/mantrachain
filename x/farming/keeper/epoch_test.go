@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/MANTRA-Finance/mantrachain/x/farming"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/aumega/x/farming"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

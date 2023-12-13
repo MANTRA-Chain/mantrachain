@@ -1,4 +1,4 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { AumegaSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 
 export const queryBalance = async (client: any, account: string, denom: string) => {
@@ -6,7 +6,7 @@ export const queryBalance = async (client: any, account: string, denom: string) 
   return !!res?.data?.balance?.amount ? parseInt(res.data.balance.amount) : 0
 }
 
-export const sendCoins = async (sdk: MantrachainSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: number, minBalance?: number, numAttempts = 2) => {
+export const sendCoins = async (sdk: AumegaSdk, client: any, fromAddress: string, toAddress: string, denom: string, amount: number, minBalance?: number, numAttempts = 2) => {
   const privBalance = await queryBalance(client, toAddress, denom)
 
   if (!!minBalance && privBalance >= minBalance) {

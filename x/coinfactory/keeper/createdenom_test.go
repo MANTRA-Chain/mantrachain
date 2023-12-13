@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgCreateDenom() {
@@ -42,7 +42,7 @@ func (suite *KeeperTestSuite) TestMsgCreateDenom() {
 	suite.Require().Error(err)
 
 	// Make sure that an address with a "/" in it can't create denoms
-	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom("mantrachain.eth/creator", "bitcoin"))
+	_, err = suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom("aumega.eth/creator", "bitcoin"))
 	suite.Require().Error(err)
 }
 
