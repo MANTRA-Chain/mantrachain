@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -27,9 +27,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdQueryParams())
 	cmd.AddCommand(CmdListSnapshot())
 	cmd.AddCommand(CmdShowSnapshot())
-cmd.AddCommand(CmdListProvider())
+	cmd.AddCommand(CmdListProvider())
 	cmd.AddCommand(CmdShowProvider())
-// this line is used by starport scaffolding # 1
+	// this line is used by starport scaffolding # 1
 
 	return cmd
 }

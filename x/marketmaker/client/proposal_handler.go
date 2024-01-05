@@ -3,7 +3,7 @@ package client
 import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/client/cli"
 )
 
 // ProposalHandler is the market maker proposal command handler.

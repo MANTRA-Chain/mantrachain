@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -46,11 +46,11 @@ func (k Keeper) Provider(goCtx context.Context, req *types.QueryGetProviderReque
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	val, found := k.GetProvider(
-	    ctx,
-	    req.Index,
-        )
+		ctx,
+		req.Index,
+	)
 	if !found {
-	    return nil, status.Error(codes.NotFound, "not found")
+		return nil, status.Error(codes.NotFound, "not found")
 	}
 
 	return &types.QueryGetProviderResponse{Provider: val}, nil

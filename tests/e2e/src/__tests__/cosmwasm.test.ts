@@ -1,17 +1,17 @@
-import { MantrachainSdk } from '../helpers/sdk'
+import { AumegaSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom, mintCoins } from '../helpers/coinfactory'
 import { setGuardTransferCoins, updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 import { burnGuardSoulBondNft, mintGuardSoulBondNft } from '../helpers/token'
 import { queryBalance, sendCoins } from '../helpers/bank'
 
 describe('Cosm Wasm module', () => {
-  let sdk: MantrachainSdk
+  let sdk: AumegaSdk
   const amount = 1000
   const subdenom = 'cosmwasm0'
   let contractAddress = ''
 
   beforeAll(async () => {
-    sdk = new MantrachainSdk()
+    sdk = new AumegaSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
     const denom = genCoinDenom(sdk.adminAddress, subdenom)

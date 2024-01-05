@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
 )
 
 func TestPoolReserveAddress(t *testing.T) {

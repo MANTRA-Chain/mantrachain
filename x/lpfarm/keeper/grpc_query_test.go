@@ -3,8 +3,8 @@ package keeper_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

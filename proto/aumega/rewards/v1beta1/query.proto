@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package aumega.rewards.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "aumega/rewards/v1beta1/params.proto";
+import "aumega/rewards/v1beta1/snapshot.proto";
+import "aumega/rewards/v1beta1/provider.proto";
+
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/MANTRA-Finance/aumega/rewards/v1beta1/params";
+  
+  }
+  
+  // Queries a list of Snapshot items.
+  rpc Snapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
+    option (google.api.http).get = "/MANTRA-Finance/aumega/rewards/snapshot/{id}";
+  
+  }
+  rpc SnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
+    option (google.api.http).get = "/MANTRA-Finance/aumega/rewards/snapshot";
+  
+  }
+  
+  // Queries a list of Provider items.
+  rpc Provider    (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
+    option (google.api.http).get = "/MANTRA-Finance/aumega/rewards/provider/{index}";
+  
+  }
+  rpc ProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
+    option (google.api.http).get = "/MANTRA-Finance/aumega/rewards/provider";
+  
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetSnapshotRequest {
+  uint64 id = 1;
+}
+
+message QueryGetSnapshotResponse {
+  Snapshot Snapshot = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllSnapshotRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllSnapshotResponse {
+  repeated Snapshot                               Snapshot   = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetProviderRequest {
+  string index = 1;
+}
+
+message QueryGetProviderResponse {
+  Provider provider = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllProviderRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllProviderResponse {
+  repeated Provider                               provider   = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+

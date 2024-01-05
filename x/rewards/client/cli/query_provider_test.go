@@ -5,17 +5,17 @@ import (
 	"strconv"
 	"testing"
 
+	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
-	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil/network"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/client/cli"
-    "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/testutil/network"
+	"github.com/MANTRA-Finance/aumega/testutil/nullify"
+	"github.com/MANTRA-Finance/aumega/x/rewards/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 )
 
 // Prevent strconv unused error
@@ -26,9 +26,8 @@ func networkWithProviderObjects(t *testing.T, n int) (*network.Network, []types.
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
-	provider := types.Provider{
+		provider := types.Provider{
 			Index: strconv.Itoa(i),
-			
 		}
 		nullify.Fill(&provider)
 		state.ProviderList = append(state.ProviderList, provider)
@@ -47,24 +46,24 @@ func TestShowProvider(t *testing.T) {
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 	tests := []struct {
-		desc string
+		desc    string
 		idIndex string
-        
+
 		args []string
 		err  error
 		obj  types.Provider
 	}{
 		{
-			desc: "found",
+			desc:    "found",
 			idIndex: objs[0].Index,
-            
+
 			args: common,
 			obj:  objs[0],
 		},
 		{
-			desc: "not found",
+			desc:    "not found",
 			idIndex: strconv.Itoa(100000),
-            
+
 			args: common,
 			err:  status.Error(codes.NotFound, "not found"),
 		},
@@ -72,8 +71,7 @@ func TestShowProvider(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
-			    tc.idIndex,
-                
+				tc.idIndex,
 			}
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowProvider(), args)
@@ -124,9 +122,9 @@ func TestListProvider(t *testing.T) {
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.LessOrEqual(t, len(resp.Provider), step)
 			require.Subset(t,
-            	nullify.Fill(objs),
-            	nullify.Fill(resp.Provider),
-            )
+				nullify.Fill(objs),
+				nullify.Fill(resp.Provider),
+			)
 		}
 	})
 	t.Run("ByKey", func(t *testing.T) {
@@ -140,9 +138,9 @@ func TestListProvider(t *testing.T) {
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.LessOrEqual(t, len(resp.Provider), step)
 			require.Subset(t,
-            	nullify.Fill(objs),
-            	nullify.Fill(resp.Provider),
-            )
+				nullify.Fill(objs),
+				nullify.Fill(resp.Provider),
+			)
 			next = resp.Pagination.NextKey
 		}
 	})

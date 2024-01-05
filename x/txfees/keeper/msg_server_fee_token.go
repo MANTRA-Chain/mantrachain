@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/aumega/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

@@ -1,7 +1,7 @@
 package bindings
 
-type MantrachainQuery struct {
-	/// Given a subdenom minted by a contract via `MantrachainMsg::MintTokens`,
+type AumegaQuery struct {
+	/// Given a subdenom minted by a contract via `AumegaMsg::MintTokens`,
 	/// returns the full denom as used by `BankMsg::Send`.
 	FullDenom *FullDenom `json:"full_denom,omitempty"`
 	/// Returns the admin of a denom, if the denom is a Token Factory denom.

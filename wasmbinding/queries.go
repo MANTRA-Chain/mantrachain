@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/wasmbinding/bindings"
-	coinfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	"github.com/MANTRA-Finance/aumega/wasmbinding/bindings"
+	coinfactorykeeper "github.com/MANTRA-Finance/aumega/x/coinfactory/keeper"
 )
 
 type QueryPlugin struct {

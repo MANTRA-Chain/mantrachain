@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	farmingtypes "github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 func (pair Pair) GetEscrowAddress() sdk.AccAddress {

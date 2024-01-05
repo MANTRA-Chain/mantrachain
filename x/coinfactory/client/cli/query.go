@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 )

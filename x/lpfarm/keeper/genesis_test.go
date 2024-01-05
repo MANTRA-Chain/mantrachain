@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
 )
 
 func (s *KeeperTestSuite) TestImportExportGenesis() {

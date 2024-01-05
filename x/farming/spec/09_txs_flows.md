@@ -25,7 +25,7 @@ The plan will be terminated if the `termination_address` calls the `Remove Plan`
 CLI command:
 
 ```bash
-mantrachaind tx farming create-private-fixed-plan [plan-file] [flags]
+aumegad tx farming create-private-fixed-plan [plan-file] [flags]
 ```
 
 ## Create Ratio Plan
@@ -66,7 +66,7 @@ Stake coins to a farming plan.
 CLI command:
 
 ```bash
-mantrachaind tx farming stake [amount] [flags]
+aumegad tx farming stake [amount] [flags]
 ```
 
 ## Untake
@@ -85,7 +85,7 @@ Unstake coins from a farming plan.
 CLI command:
 
 ```bash
-mantrachaind tx farming unstake [amount] [flags]
+aumegad tx farming unstake [amount] [flags]
 ```
 
 ## Harvest
@@ -103,7 +103,7 @@ Harvest farming rewards from a farming plan.
 CLI command:
 
 ```bash
-mantrachaind tx farming harvest [staking-coin-denoms] [flags]
+aumegad tx farming harvest [staking-coin-denoms] [flags]
 ```
 
 ## Remove Plan
@@ -121,7 +121,7 @@ Remove a farming plan.
 CLI command:
 
 ```bash
-mantrachaind tx farming remove-plan [plan-id] [flags]
+aumegad tx farming remove-plan [plan-id] [flags]
 ```
 
 ## Advance Epoch

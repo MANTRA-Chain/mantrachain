@@ -18,7 +18,7 @@ client:
   openapi:
     path: docs/static/openapi.yml
 genesis:
-  chain_id: "mantrachain-9001"
+  chain_id: "aumega-9001"
   app_state:
     bank:
       denom_metadata:
@@ -34,7 +34,7 @@ genesis:
           exponent: 3
         - denom: aum
           exponent: 6
-        description: The native staking token of the Mantrachain.
+        description: The native staking token of the Aumega.
         display: aum
         name: aum
         symbol: AUM
@@ -48,9 +48,9 @@ genesis:
           denom: uaum
     guard:
       params:
-        account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+        account_privileges_token_collection_creator: aumega1axznhnm82lah8qqvp9hxdad49yx3s5dcc5a9ra
         account_privileges_token_collection_id: account_privileges_guard_nft_collection
-        admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+        admin_account: aumega1axznhnm82lah8qqvp9hxdad49yx3s5dcc5a9ra
         base_denom: uaum
     txfees:
       params:
@@ -106,7 +106,7 @@ validators:
     consensus:
       timeout_commit: "6s"
       timeout_propose: "6s"
-    moniker: mantra-dev-01
+    moniker: aumega-dev-01
     proxy_app: tcp://0.0.0.0:26658
   client:
     node: tcp://0.0.0.0:26657

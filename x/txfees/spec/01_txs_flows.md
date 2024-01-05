@@ -23,7 +23,7 @@ Creates a mapping between a fee token and a liquidity pair. The fee token is use
 CLI command:
 
 ```bash
-mantrachaind tx txfees create-fee-token [denom] [pair-id] [flags]
+aumegad tx txfees create-fee-token [denom] [pair-id] [flags]
 ```
 
 ## Update Fee Token
@@ -47,7 +47,7 @@ Updates a mapping between a fee token and a liquidity pair.
 CLI command:
 
 ```bash
-mantrachaind tx txfees update-fee-token [denom] [pair-id] [flags]
+aumegad tx txfees update-fee-token [denom] [pair-id] [flags]
 ```
 
 ## Delete Fee Token
@@ -71,5 +71,5 @@ Deletes a mapping between a fee token and a liquidity pair.
 CLI command:
 
 ```bash
-mantrachaind tx txfees delete-fee-token [denom] [flags]
+aumegad tx txfees delete-fee-token [denom] [flags]
 ```

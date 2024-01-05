@@ -12,9 +12,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/client/cli"
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/aumega/x/txfees/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/txfees/keeper"
+	"github.com/MANTRA-Finance/aumega/x/txfees/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

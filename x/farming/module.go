@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/MANTRA-Finance/mantrachain/x/farming/client/cli"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/aumega/x/farming/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/farming/keeper"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 var (

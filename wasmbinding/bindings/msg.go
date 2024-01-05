@@ -2,7 +2,7 @@ package bindings
 
 import "cosmossdk.io/math"
 
-type MantrachainMsg struct {
+type AumegaMsg struct {
 	/// Contracts can create denoms, namespaced under the contract's address.
 	/// A contract may create any number of independent sub-denoms.
 	CreateDenom *CreateDenom `json:"create_denom,omitempty"`

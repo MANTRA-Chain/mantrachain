@@ -12,7 +12,7 @@ import (
 
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
 )
 
 func TestParams(t *testing.T) {

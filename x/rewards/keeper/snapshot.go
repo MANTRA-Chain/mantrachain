@@ -3,14 +3,14 @@ package keeper
 import (
 	"encoding/binary"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // GetSnapshotCount get the total number of snapshot
 func (k Keeper) GetSnapshotCount(ctx sdk.Context) uint64 {
-	store :=  prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	byteKey := types.KeyPrefix(types.SnapshotCountKey)
 	bz := store.Get(byteKey)
 
@@ -24,8 +24,8 @@ func (k Keeper) GetSnapshotCount(ctx sdk.Context) uint64 {
 }
 
 // SetSnapshotCount set the total number of snapshot
-func (k Keeper) SetSnapshotCount(ctx sdk.Context, count uint64)  {
-	store :=  prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+func (k Keeper) SetSnapshotCount(ctx sdk.Context, count uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	byteKey := types.KeyPrefix(types.SnapshotCountKey)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
@@ -34,28 +34,28 @@ func (k Keeper) SetSnapshotCount(ctx sdk.Context, count uint64)  {
 
 // AppendSnapshot appends a snapshot in the store with a new id and update the count
 func (k Keeper) AppendSnapshot(
-    ctx sdk.Context,
-    snapshot types.Snapshot,
+	ctx sdk.Context,
+	snapshot types.Snapshot,
 ) uint64 {
 	// Create the snapshot
-    count := k.GetSnapshotCount(ctx)
+	count := k.GetSnapshotCount(ctx)
 
-    // Set the ID of the appended value
-    snapshot.Id = count
+	// Set the ID of the appended value
+	snapshot.Id = count
 
-    store :=  prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
-    appendedValue := k.cdc.MustMarshal(&snapshot)
-    store.Set(GetSnapshotIDBytes(snapshot.Id), appendedValue)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
+	appendedValue := k.cdc.MustMarshal(&snapshot)
+	store.Set(GetSnapshotIDBytes(snapshot.Id), appendedValue)
 
-    // Update snapshot count
-    k.SetSnapshotCount(ctx, count+1)
+	// Update snapshot count
+	k.SetSnapshotCount(ctx, count+1)
 
-    return count
+	return count
 }
 
 // SetSnapshot set a specific snapshot in the store
 func (k Keeper) SetSnapshot(ctx sdk.Context, snapshot types.Snapshot) {
-	store :=  prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
 	b := k.cdc.MustMarshal(&snapshot)
 	store.Set(GetSnapshotIDBytes(snapshot.Id), b)
 }
@@ -79,7 +79,7 @@ func (k Keeper) RemoveSnapshot(ctx sdk.Context, id uint64) {
 
 // GetAllSnapshot returns all snapshot
 func (k Keeper) GetAllSnapshot(ctx sdk.Context) (list []types.Snapshot) {
-    store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SnapshotKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -87,10 +87,10 @@ func (k Keeper) GetAllSnapshot(ctx sdk.Context) (list []types.Snapshot) {
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.Snapshot
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-        list = append(list, val)
+		list = append(list, val)
 	}
 
-    return
+	return
 }
 
 // GetSnapshotIDBytes returns the byte representation of the ID

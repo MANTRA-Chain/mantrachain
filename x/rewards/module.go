@@ -11,9 +11,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/client/cli"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/client/cli"
+	"github.com/MANTRA-Finance/aumega/x/rewards/keeper"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

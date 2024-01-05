@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/aumega/x/txfees/types"
 )
 
 func CmdQueryParams() *cobra.Command {

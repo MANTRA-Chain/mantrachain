@@ -3,8 +3,8 @@ package keeper
 import (
 	"strings"
 
-	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
+	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/MANTRA-Finance/aumega/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 )

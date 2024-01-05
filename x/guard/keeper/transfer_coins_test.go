@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"math/big"
 
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/aumega/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/golang/mock/gomock"
@@ -30,7 +30,7 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.addrs[0].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	}, nil)
 	s.Require().Contains(err.Error(), "inputs and outputs length not equal")
@@ -38,7 +38,7 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, nil, []banktypes.Output{
 		{
 			Address: s.addrs[0].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	})
 	s.Require().Contains(err.Error(), "inputs and outputs length not equal")
@@ -46,12 +46,12 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.testAdminAccount,
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	}, []banktypes.Output{
 		{
 			Address: s.addrs[0].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	})
 	s.Require().NoError(err)
@@ -73,12 +73,12 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.addrs[0].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	}, []banktypes.Output{
 		{
 			Address: s.addrs[1].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)),
 		},
 	})
 	s.Require().NoError(err)
@@ -294,7 +294,7 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	s.Require().NoError(err)
 
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin("mantra", 1000000000000000000)))
+	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin("aumega", 1000000000000000000)))
 	s.Require().Contains(err.Error(), "coin required privileges not found")
 
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(types.DefaultBaseDenom, 1000000000000000000)))

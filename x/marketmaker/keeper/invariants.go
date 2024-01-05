@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
 )
 
 // RegisterInvariants registers all marketmaker invariants.

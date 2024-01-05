@@ -37,7 +37,7 @@ The Guard module defines several concepts:
 To install the Guard module, you can use the following command:
 
 ```bash
-go get mantrachain/x/guard
+go get aumega/x/guard
 ```
 
 ## State
@@ -132,7 +132,7 @@ Queries the parameters of the Guard module.
 - Response Type: `QueryParamsResponse`
 
 HTTP GET Path:
-`/mantrachain/guard/v1/params`
+`/aumega/guard/v1/params`
 
 ##### AccountPrivileges
 
@@ -142,7 +142,7 @@ Queries an AccountPrivileges item by account.
 - Response Type: `QueryGetAccountPrivilegesResponse`
 
 HTTP GET Path:
-`/mantrachain/guard/v1/account_privileges/{account}`
+`/aumega/guard/v1/account_privileges/{account}`
 
 ##### AccountPrivilegesAll
 
@@ -152,7 +152,7 @@ Queries a list of AccountPrivileges items.
 - Response Type: `QueryAllAccountPrivilegesResponse`
 
 HTTP GET Path:
-`/mantrachain/guard/v1/account_privileges`
+`/aumega/guard/v1/account_privileges`
 
 ##### GuardTransferCoins
 
@@ -162,7 +162,7 @@ Queries a GuardTransferCoins item.
 - Response Type: `QueryGetGuardTransferCoinsResponse`
 
 HTTP GET Path
-`/mantrachain/guard/v1/guard_transfer_coins`
+`/aumega/guard/v1/guard_transfer_coins`
 
 ##### RequiredPrivileges
 
@@ -172,7 +172,7 @@ Queries a RequiredPrivileges item by index.
 - Response Type: `QueryGetRequiredPrivilegesResponse`
 
 HTTP GET Path
-`/mantrachain/guard/v1/required_privileges/{index}`
+`/aumega/guard/v1/required_privileges/{index}`
 
 ##### RequiredPrivilegesAll
 
@@ -182,7 +182,7 @@ Queries a list of RequiredPrivileges items.
 - Response Type: `QueryAllRequiredPrivilegesResponse`
 
 HTTP GET Path
-`/mantrachain/guard/v1/required_privileges`
+`/aumega/guard/v1/required_privileges`
 
 #### Message Types
 

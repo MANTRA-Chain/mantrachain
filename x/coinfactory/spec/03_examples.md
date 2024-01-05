@@ -9,7 +9,7 @@ To create a new token, use the create-denom command from the tokenfactory module
 To create a new token we can use the create-denom command.
 
 ```sh
-mantrachaind tx tokenfactory create-denom ufoo --keyring-backend=test --from mylocalwallet
+aumegad tx tokenfactory create-denom ufoo --keyring-backend=test --from mylocalwallet
 ```
 
 ## Mint a new token
@@ -17,7 +17,7 @@ mantrachaind tx tokenfactory create-denom ufoo --keyring-backend=test --from myl
 Once a new token is created, it can be minted using the mint command in the tokenfactory module. Note that the complete tokenfactory address, in the format of factory/{creator address}/{subdenom}, must be used to mint the token.
 
 ```sh
-mantrachaind tx tokenfactory mint 100000000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/ufoo --keyring-backend=test --from mylocalwallet
+aumegad tx tokenfactory mint 100000000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/ufoo --keyring-backend=test --from mylocalwallet
 ```
 
 ## Checking Token metadata
@@ -25,7 +25,7 @@ mantrachaind tx tokenfactory mint 100000000000factory/mantra1axznhnm82lah8qqvp9h
 To view a token's metadata, use the denom-metadata command in the bank module. The following example queries the metadata for the token factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/ufoo:
 
 ```sh
-mantrachaind query bank denom-metadata --denom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/ufoo
+aumegad query bank denom-metadata --denom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/ufoo
 ```
 
 ## Check the tokens created by an account
@@ -33,5 +33,5 @@ mantrachaind query bank denom-metadata --denom factory/mantra1axznhnm82lah8qqvp9
 To see a list of tokens created by a specific account, use the denoms-from-creator command in the tokenfactory module. The following example shows tokens created by the account mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka:
 
 ```sh
-mantrachaind query tokenfactory denoms-from-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+aumegad query tokenfactory denoms-from-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
 ```

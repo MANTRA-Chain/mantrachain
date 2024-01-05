@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/MANTRA-Finance/mantrachain/types"
+	utils "github.com/MANTRA-Finance/aumega/types"
 )
 
 func newOrder(dir OrderDirection, price sdk.Dec, amt math.Int) *BaseOrder {

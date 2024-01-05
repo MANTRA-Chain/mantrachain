@@ -29,7 +29,7 @@ Creates a new nft collection.
 CLI command:
 
 ```bash
-mantrachaind tx token create-nft-collection [payload-json] [flags]
+aumegad tx token create-nft-collection [payload-json] [flags]
 ```
 
 Example:
@@ -37,7 +37,7 @@ Example:
 ```bash
 NFT_COLLECTION_JSON='{"id":"0","name":"nfts","description":"sample nfts collection","soul_bonded_nfts":false,"restricted_nfts":false,"category":"utility"}'
 
-mantrachaind tx token create-nft-collection $NFT_COLLECTION_JSON --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token create-nft-collection $NFT_COLLECTION_JSON --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Mint Nft/Batch Mint Nfts
@@ -74,7 +74,7 @@ Mints a new nft.
 CLI command:
 
 ```bash
-mantrachaind tx token mint-nft [payload-json] [flags]
+aumegad tx token mint-nft [payload-json] [flags]
 ```
 
 Example:
@@ -82,7 +82,7 @@ Example:
 ```bash
 NFT_JSON='{"id":"0","title":"nft","description":"sample nft"}'
 
-mantrachaind tx token mint-nft $NFT_JSON --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token mint-nft $NFT_JSON --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Burn Nft/Batch Burn Nfts
@@ -121,13 +121,13 @@ Burns an existing nft.
 CLI command:
 
 ```bash
-mantrachaind tx token burn-nft [nft-id] [flags]
+aumegad tx token burn-nft [nft-id] [flags]
 ```
 
 Example:
 
 ```bash
-mantrachaind tx token burn-nft 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token burn-nft 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Approve Nft/Batch Approve Nfts
@@ -160,13 +160,13 @@ Adds/removes an approval for an existing nft.
 CLI command:
 
 ```bash
-mantrachaind tx token approve-nft [operator] [approved] [nft-id] [flags]
+aumegad tx token approve-nft [operator] [approved] [nft-id] [flags]
 ```
 
 Example:
 
 ```bash
-mantrachaind tx token approve-nft mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 true 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token approve-nft mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 true 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Approve All Nfts
@@ -183,13 +183,13 @@ Adds/removes an approval for all nfts.
 CLI command:
 
 ```bash
-mantrachaind tx token approve-all-nfts [operator] [approved] [flags]
+aumegad tx token approve-all-nfts [operator] [approved] [flags]
 ```
 
 Example:
 
 ```bash
-mantrachaind tx token approve-all-nfts mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 true --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token approve-all-nfts mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 true --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Transfer Nft/Batch Transfer Nfts
@@ -229,13 +229,13 @@ Transfers an existing nft.
 CLI command:
 
 ```bash
-mantrachaind tx token transfer-nft [from] [to] [nft-id] [flags]
+aumegad tx token transfer-nft [from] [to] [nft-id] [flags]
 ```
 
 Example:
 
 ```bash
-mantrachaind tx token transfer-nft mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+aumegad tx token transfer-nft mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 0 --collection-creator mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka --collection-id 0 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
 ```
 
 ## Update Guard Soul Bond Nft Image

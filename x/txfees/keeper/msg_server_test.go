@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/MANTRA-Finance/aumega/x/txfees/keeper"
+	"github.com/MANTRA-Finance/aumega/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

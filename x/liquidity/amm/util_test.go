@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	"github.com/MANTRA-Finance/aumega/x/liquidity/amm"
 )
 
 func TestMatchableAmount(t *testing.T) {

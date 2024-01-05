@@ -5,7 +5,7 @@ import { BlockWaiter } from './wait'
 
 dotenv.config()
 
-export class MantrachainSdk {
+export class AumegaSdk {
   clientValidator: any
   clientRecipient: any
   clientAdmin: any
@@ -19,13 +19,13 @@ export class MantrachainSdk {
 
   async init(host = 'http://127.0.0.1:1317', rpc = 'http://127.0.0.1:26657', ws = 'ws://127.0.0.1:26657') {
     this.validatorWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.VALIDATOR_MNEMONIC!, {
-      prefix: "mantra",
+      prefix: "aumega",
     })
     this.recipientWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.RECIPIENT_MNEMONIC!, {
-      prefix: "mantra",
+      prefix: "aumega",
     })
     this.adminWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.ADMIN_MNEMONIC!, {
-      prefix: "mantra",
+      prefix: "aumega",
     })
 
     this.validatorAddress = (await this.validatorWallet.getAccounts())[0].address

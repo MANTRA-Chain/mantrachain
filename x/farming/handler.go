@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/aumega/x/farming/keeper"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 func NewHandler(_ keeper.Keeper) sdk.Handler {

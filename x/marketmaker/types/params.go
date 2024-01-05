@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	farmingtypes "github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 const (

@@ -1,4 +1,4 @@
-module github.com/MANTRA-Finance/mantrachain
+module github.com/MANTRA-Finance/aumega
 
 go 1.19
 

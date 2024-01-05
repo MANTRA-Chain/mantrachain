@@ -19,7 +19,7 @@ Apply market maker for a list of pairs.
 CLI command:
 
 ```bash
-mantrachaind tx marketmaker apply [pool-ids] [flags]
+aumegad tx marketmaker apply [pool-ids] [flags]
 ```
 
 ## Claim Incentives
@@ -38,5 +38,5 @@ Claim incentives.
 CLI command:
 
 ```bash
-mantrachaind tx liquidfarming claim [flags]
+aumegad tx liquidfarming claim [flags]
 ```

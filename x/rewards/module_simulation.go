@@ -3,9 +3,9 @@ package rewards
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil/sample"
-	rewardssimulation "github.com/MANTRA-Finance/mantrachain/x/rewards/simulation"
-	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/testutil/sample"
+	rewardssimulation "github.com/MANTRA-Finance/aumega/x/rewards/simulation"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"

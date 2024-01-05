@@ -14,7 +14,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	coinfactorytypes "github.com/MANTRA-Finance/aumega/x/coinfactory/types"
 )
 
 // stargateWhitelist keeps whitelist and its deterministic
@@ -63,11 +63,11 @@ func init() {
 	setWhitelistedQuery("/cosmos.staking.v1beta1.Query/Params", &stakingtypes.QueryParamsResponse{})
 	setWhitelistedQuery("/cosmos.staking.v1beta1.Query/Validator", &stakingtypes.QueryValidatorResponse{})
 
-	// mantrachain queries
+	// aumega queries
 
 	// coinfactory
-	setWhitelistedQuery("/mantrachain.coinfactory.v1beta1.Query/Params", &coinfactorytypes.QueryParamsResponse{})
-	setWhitelistedQuery("/mantrachain.coinfactory.v1beta1.Query/DenomAuthorityMetadata", &coinfactorytypes.QueryDenomAuthorityMetadataResponse{})
+	setWhitelistedQuery("/aumega.coinfactory.v1beta1.Query/Params", &coinfactorytypes.QueryParamsResponse{})
+	setWhitelistedQuery("/aumega.coinfactory.v1beta1.Query/DenomAuthorityMetadata", &coinfactorytypes.QueryDenomAuthorityMetadataResponse{})
 	// Does not include denoms_from_creator, TBD if this is the index we want contracts to use instead of admin
 }
 

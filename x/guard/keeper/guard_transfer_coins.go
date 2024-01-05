@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"github.com/MANTRA-Finance/aumega/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

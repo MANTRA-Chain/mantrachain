@@ -14,11 +14,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "github.com/MANTRA-Finance/mantrachain/app"
-	"github.com/MANTRA-Finance/mantrachain/testutil"
-	"github.com/MANTRA-Finance/mantrachain/x/farming"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	chain "github.com/MANTRA-Finance/aumega/app"
+	"github.com/MANTRA-Finance/aumega/testutil"
+	"github.com/MANTRA-Finance/aumega/x/farming"
+	"github.com/MANTRA-Finance/aumega/x/farming/keeper"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
 )
 
 func TestMsgApplyMarketMaker(t *testing.T) {

@@ -7,10 +7,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil"
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/farming"
-	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	"github.com/MANTRA-Finance/aumega/testutil"
+	utils "github.com/MANTRA-Finance/aumega/types"
+	"github.com/MANTRA-Finance/aumega/x/farming"
+	"github.com/MANTRA-Finance/aumega/x/farming/types"
 
 	"cosmossdk.io/math"
 
