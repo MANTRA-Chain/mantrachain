@@ -677,7 +677,7 @@ func New(
 		&app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
 	)
 
-	// Create Transfer Keepers
+	// Create Transfer KeeperWithGuard
 	app.TransferKeeper = ibctransferkeeper.NewKeeperWithGuard(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
