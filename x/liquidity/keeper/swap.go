@@ -21,6 +21,10 @@ func (k Keeper) PriceLimits(ctx sdk.Context, lastPrice sdk.Dec) (lowest, highest
 // ValidateMsgLimitOrder validates types.MsgLimitOrder with state and returns
 // calculated offer coin and price that is fit into ticks.
 func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
+	// Guard: check cah transfer
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+		return sdk.Coin{}, sdk.Dec{}, err
+	}
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -137,6 +141,10 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 // ValidateMsgMarketOrder validates types.MsgMarketOrder with state and returns
 // calculated offer coin and price.
 func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
+	// Guard: check cah transfer
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+		return sdk.Coin{}, sdk.Dec{}, err
+	}
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
