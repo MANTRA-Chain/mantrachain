@@ -22,9 +22,10 @@ func (k Keeper) PriceLimits(ctx sdk.Context, lastPrice sdk.Dec) (lowest, highest
 // calculated offer coin and price that is fit into ticks.
 func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
-	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
 		return sdk.Coin{}, sdk.Dec{}, err
 	}
+
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -142,9 +143,10 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 // calculated offer coin and price.
 func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (offerCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
-	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{offerCoin}); err != nil {
+	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
 		return sdk.Coin{}, sdk.Dec{}, err
 	}
+
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
