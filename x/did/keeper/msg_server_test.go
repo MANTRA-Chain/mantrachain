@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	"github.com/AumegaChain/aumega/x/did/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"

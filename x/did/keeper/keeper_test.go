@@ -8,8 +8,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	didtestutil "github.com/MANTRA-Finance/aumega/x/did/testutil"
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	didtestutil "github.com/AumegaChain/aumega/x/did/testutil"
+	"github.com/AumegaChain/aumega/x/did/types"
 
 	"github.com/cometbft/cometbft/libs/log"
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"

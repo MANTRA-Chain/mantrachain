@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/x/farming/types"
+	"github.com/AumegaChain/aumega/x/farming/types"
 )
 
 // GetLastEpochTime returns the last time the epoch ended.

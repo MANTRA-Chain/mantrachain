@@ -3,7 +3,7 @@ package keeper
 import (
 	"encoding/binary"
 
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/MANTRA-Finance/aumega/wasmbinding/bindings"
+	"github.com/AumegaChain/aumega/wasmbinding/bindings"
 
-	coinfactorykeeper "github.com/MANTRA-Finance/aumega/x/coinfactory/keeper"
-	coinfactorytypes "github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	coinfactorykeeper "github.com/AumegaChain/aumega/x/coinfactory/keeper"
+	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages

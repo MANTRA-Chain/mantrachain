@@ -3,8 +3,8 @@ package keeper
 import (
 	"math"
 
-	liquiditytypes "github.com/MANTRA-Finance/aumega/x/liquidity/types"
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	liquiditytypes "github.com/AumegaChain/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

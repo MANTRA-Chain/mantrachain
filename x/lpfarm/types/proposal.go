@@ -20,7 +20,7 @@ var (
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypeFarmingPlan)
-	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&FarmingPlanProposal{}, "github.com/MANTRA-Finance/aumega/FarmingPlanProposal", nil)
+	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&FarmingPlanProposal{}, "github.com/AumegaChain/aumega/FarmingPlanProposal", nil)
 }
 
 func NewFarmingPlanProposal(

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
+	utils "github.com/AumegaChain/aumega/types"
 )
 
 func Test_findFirstTrueCondition(t *testing.T) {

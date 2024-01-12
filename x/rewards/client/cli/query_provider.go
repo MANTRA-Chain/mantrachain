@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 )
 
 func CmdListProvider() *cobra.Command {

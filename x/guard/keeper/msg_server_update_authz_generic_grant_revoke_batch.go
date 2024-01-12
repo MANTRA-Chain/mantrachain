@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/MANTRA-Finance/aumega/x/guard/types"
+	"github.com/AumegaChain/aumega/x/guard/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"

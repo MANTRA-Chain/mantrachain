@@ -5,8 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/keeper"
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	"github.com/AumegaChain/aumega/x/coinfactory/keeper"
+	"github.com/AumegaChain/aumega/x/coinfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

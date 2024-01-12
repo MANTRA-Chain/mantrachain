@@ -3,10 +3,10 @@ package rewards_test
 import (
 	"testing"
 
-	keepertest "github.com/MANTRA-Finance/aumega/testutil/keeper"
-	"github.com/MANTRA-Finance/aumega/testutil/nullify"
-	"github.com/MANTRA-Finance/aumega/x/rewards"
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	keepertest "github.com/AumegaChain/aumega/testutil/keeper"
+	"github.com/AumegaChain/aumega/testutil/nullify"
+	"github.com/AumegaChain/aumega/x/rewards"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	"github.com/stretchr/testify/require"
 )
 

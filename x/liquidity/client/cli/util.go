@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 )
 
 // excConditions returns true when exactly one condition is true.

@@ -46,7 +46,7 @@ curl https://get.ignite.com/cli!  |  bash
 Clone the chain:
 
 ```bash
-git clone https://github.com/MANTRA-Finance/aumega
+git clone https://github.com/AumegaChain/aumega
 ```
 
 Build the chain:

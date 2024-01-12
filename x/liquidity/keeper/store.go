@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 )
 
 // GetLastPairId returns the last pair id.

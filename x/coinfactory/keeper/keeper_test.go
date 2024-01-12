@@ -12,11 +12,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/exp/slices"
 
-	"github.com/MANTRA-Finance/aumega/app"
-	"github.com/MANTRA-Finance/aumega/testutil"
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/keeper"
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	"github.com/AumegaChain/aumega/app"
+	"github.com/AumegaChain/aumega/testutil"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/coinfactory/keeper"
+	"github.com/AumegaChain/aumega/x/coinfactory/types"
 )
 
 type KeeperTestSuite struct {

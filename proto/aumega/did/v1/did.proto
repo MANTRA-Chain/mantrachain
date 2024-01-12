@@ -1,7 +1,7 @@
 syntax = "proto3";
 package aumega.did.v1;
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/did/types";
+option go_package = "github.com/AumegaChain/aumega/x/did/types";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";

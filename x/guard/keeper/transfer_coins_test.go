@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"math/big"
 
-	"github.com/MANTRA-Finance/aumega/x/guard/types"
+	"github.com/AumegaChain/aumega/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/golang/mock/gomock"

@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
-	"github.com/MANTRA-Finance/aumega/app"
-	"github.com/MANTRA-Finance/aumega/cmd/aumegad/cmd"
+	"github.com/AumegaChain/aumega/app"
+	"github.com/AumegaChain/aumega/cmd/aumegad/cmd"
 )
 
 func main() {

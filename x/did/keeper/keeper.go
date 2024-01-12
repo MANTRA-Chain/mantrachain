@@ -8,7 +8,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	"github.com/AumegaChain/aumega/x/did/types"
 )
 
 // UnmarshalFn is a generic function to unmarshal bytes

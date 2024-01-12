@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/MANTRA-Finance/aumega/internal/conv"
+	"github.com/AumegaChain/aumega/internal/conv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"

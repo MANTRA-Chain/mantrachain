@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/guard/types"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/guard/types"
 )
 
 func TestMsgUpdateAccountPrivileges(t *testing.T) {

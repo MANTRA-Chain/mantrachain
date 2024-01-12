@@ -3,7 +3,7 @@ package aumega.token.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/token/types";
+option go_package = "github.com/AumegaChain/aumega/x/token/types";
 option (gogoproto.equal_all) = true;
 
 message TokenOption {

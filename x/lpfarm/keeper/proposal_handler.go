@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 // HandleFarmingPlanProposal is a handler for executing a farming plan proposal.

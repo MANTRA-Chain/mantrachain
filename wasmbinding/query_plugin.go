@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/wasmbinding/bindings"
+	"github.com/AumegaChain/aumega/wasmbinding/bindings"
 )
 
 // StargateQuerier dispatches whitelisted stargate queries

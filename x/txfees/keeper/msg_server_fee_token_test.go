@@ -8,8 +8,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MANTRA-Finance/aumega/x/txfees/keeper"
-	"github.com/MANTRA-Finance/aumega/x/txfees/types"
+	"github.com/AumegaChain/aumega/x/txfees/keeper"
+	"github.com/AumegaChain/aumega/x/txfees/types"
 )
 
 // Prevent strconv unused error

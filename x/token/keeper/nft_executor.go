@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nft "github.com/cosmos/cosmos-sdk/x/nft"

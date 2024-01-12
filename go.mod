@@ -1,4 +1,4 @@
-module github.com/MANTRA-Finance/aumega
+module github.com/AumegaChain/aumega
 
 go 1.19
 
@@ -211,7 +211,7 @@ require (
 )
 
 replace (
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20230714123823-81be22fdc71b
-	github.com/cosmos/ibc-go/v7 => github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20230809125311-661414db5696
+	github.com/cosmos/cosmos-sdk => github.com/AumegaChain/cosmos-sdk v0.47.2-0.20230714123823-81be22fdc71b
+	github.com/cosmos/ibc-go/v7 => github.com/AumegaChain/ibc-go/v7 v7.0.0-rc0.0.20230809125311-661414db5696
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )

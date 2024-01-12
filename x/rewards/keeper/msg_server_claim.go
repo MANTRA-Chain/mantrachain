@@ -6,7 +6,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

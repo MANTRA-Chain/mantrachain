@@ -14,7 +14,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 )
 
 // GetTxCmd returns the transaction commands for the module

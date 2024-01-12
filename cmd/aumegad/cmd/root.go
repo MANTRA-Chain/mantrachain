@@ -40,8 +40,8 @@ import (
 
 	// this line is used by starport scaffolding # root/moduleImport
 
-	"github.com/MANTRA-Finance/aumega/app"
-	appparams "github.com/MANTRA-Finance/aumega/app/params"
+	"github.com/AumegaChain/aumega/app"
+	appparams "github.com/AumegaChain/aumega/app/params"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"

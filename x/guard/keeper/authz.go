@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/guard/types"
+	"github.com/AumegaChain/aumega/x/guard/types"
 )
 
 func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) error {

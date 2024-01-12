@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/MANTRA-Finance/aumega/testutil/nullify"
-	"github.com/MANTRA-Finance/aumega/x/txfees/keeper"
-	"github.com/MANTRA-Finance/aumega/x/txfees/types"
+	"github.com/AumegaChain/aumega/testutil/nullify"
+	"github.com/AumegaChain/aumega/x/txfees/keeper"
+	"github.com/AumegaChain/aumega/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

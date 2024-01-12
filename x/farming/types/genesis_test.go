@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/farming/types"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/farming/types"
 )
 
 func TestValidateGenesis(t *testing.T) {

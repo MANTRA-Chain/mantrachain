@@ -9,7 +9,7 @@ import "aumega/token/v1/params.proto";
 
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/token/types";
+option go_package = "github.com/AumegaChain/aumega/x/token/types";
 
 // GenesisState defines the token module's genesis state.
 message GenesisState {

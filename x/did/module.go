@@ -15,9 +15,9 @@ import ( // this line is used by starport scaffolding # 1
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/aumega/x/did/client/cli"
-	"github.com/MANTRA-Finance/aumega/x/did/keeper"
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	"github.com/AumegaChain/aumega/x/did/client/cli"
+	"github.com/AumegaChain/aumega/x/did/keeper"
+	"github.com/AumegaChain/aumega/x/did/types"
 )
 
 var (

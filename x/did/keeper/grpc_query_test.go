@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	"github.com/AumegaChain/aumega/x/did/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryDidDocuments() {

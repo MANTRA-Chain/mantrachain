@@ -1,7 +1,7 @@
 syntax = "proto3";
 package aumega.token.v1;
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/token/types";
+option go_package = "github.com/AumegaChain/aumega/x/token/types";
 
 // Params defines the parameters for the module.
 message Params {

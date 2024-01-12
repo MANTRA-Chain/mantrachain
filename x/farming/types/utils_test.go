@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/MANTRA-Finance/aumega/x/farming/types"
+	"github.com/AumegaChain/aumega/x/farming/types"
 )
 
 func TestParseTime(t *testing.T) {

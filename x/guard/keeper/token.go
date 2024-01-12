@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/types"
 )
 
 func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts bool, account string) error {

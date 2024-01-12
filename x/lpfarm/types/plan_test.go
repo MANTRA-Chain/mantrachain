@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 func TestPlan_Validate(t *testing.T) {
