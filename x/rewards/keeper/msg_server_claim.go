@@ -6,7 +6,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -63,7 +63,7 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 		endClaimedSnapshotId = startClaimedSnapshotId + conf.MaxClaimedRangeLength - 1
 	}
 
-	provider = k.CalculateRewards(ctx, msg.PairId, provider, &types.ClaimParams{
+	provider = k.CalculateRewards(ctx, creator.String(), msg.PairId, provider, &types.ClaimParams{
 		StartClaimedSnapshotId: &startClaimedSnapshotId,
 		EndClaimedSnapshotId:   &endClaimedSnapshotId,
 		IsQuery:                false,

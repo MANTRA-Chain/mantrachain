@@ -33,6 +33,6 @@ type GuardKeeper interface {
 }
 
 type LiquidityHooks interface {
-	AfterPoolCoinMinted(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
-	AfterPoolCoinBurned(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
+	OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
+	OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin)
 }

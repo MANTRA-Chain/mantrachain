@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -39,7 +39,7 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryGetRewardsRequest
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	provider = k.CalculateRewards(ctx, req.PairId, provider, &types.ClaimParams{EndClaimedSnapshotId: &endClaimedSnapshotId, IsQuery: true})
+	k.CalculateRewards(ctx, creator.String(), req.PairId, provider, &types.ClaimParams{EndClaimedSnapshotId: &endClaimedSnapshotId, IsQuery: true})
 
 	pair, found := k.liquidityKeeper.GetPair(ctx, req.PairId)
 

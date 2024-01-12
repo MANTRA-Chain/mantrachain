@@ -1,6 +1,7 @@
 package types
 
 import (
+	"cosmossdk.io/math"
 	liquiditytypes "github.com/AumegaChain/aumega/x/liquidity/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -14,8 +15,8 @@ type AccountKeeper interface {
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
@@ -25,6 +26,8 @@ type BankKeeper interface {
 type LiquidityKeeper interface {
 	GetPair(ctx sdk.Context, id uint64) (pair liquiditytypes.Pair, found bool)
 	GetAllPairsIds(ctx sdk.Context) (pairsIds []uint64)
+	GetPool(ctx sdk.Context, id uint64) (pool liquiditytypes.Pool, found bool)
+	GetPoolCoinSupply(ctx sdk.Context, pool liquiditytypes.Pool) math.Int
 }
 
 type GuardKeeper interface {

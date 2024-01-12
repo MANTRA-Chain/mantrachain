@@ -7,11 +7,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.Provider, params *types.ClaimParams) types.Provider {
+func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64, provider types.Provider, params *types.ClaimParams) types.Provider {
+	logger := k.Logger(ctx)
 	conf := k.GetParams(ctx)
 	minDepositTime := conf.MinDepositTime
 	startClaimedSnapshotId := uint64(0)
 	endClaimedSnapshotId := uint64(0)
+
+	receiverAcc, err := sdk.AccAddressFromBech32(receiver)
+	if err != nil {
+		return types.Provider{}
+	}
 
 	if params != nil && params.EndClaimedSnapshotId != nil {
 		endClaimedSnapshotId = *params.EndClaimedSnapshotId
@@ -70,24 +76,27 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.
 		}
 
 		for _, pool := range snapshot.Pools {
-			// Calculate the rewards per token
-			if pool.CumulativeTotalSupply.IsPositive() {
-				balanceIdx, found := providerPair.PoolIdToBalanceIdx[pool.PoolId]
-				if !found {
-					continue
-				}
+			liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
 
-				balance := providerPair.Balances[balanceIdx]
+			if !found {
+				logger.Error("No pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+				continue
+			}
 
-				if balance.IsPositive() {
-					for _, rewardPerToken := range pool.RewardsPerToken {
-						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)))
-						providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
+			if liquidityPool.Disabled {
+				continue
+			}
 
-						if params != nil && !params.IsQuery {
-							snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoinsFromCoins(sdk.NewCoin(reward.Denom, reward.Amount.TruncateInt())))
-							k.SetSnapshot(ctx, snapshot)
-						}
+			balance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
+
+			if balance.IsPositive() {
+				for _, rewardPerToken := range pool.RewardsPerToken {
+					reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)))
+					providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
+
+					if params != nil && !params.IsQuery {
+						snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoinsFromCoins(sdk.NewCoin(reward.Denom, reward.Amount.TruncateInt())))
+						k.SetSnapshot(ctx, snapshot)
 					}
 				}
 			}

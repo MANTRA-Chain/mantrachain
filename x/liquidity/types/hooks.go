@@ -12,14 +12,14 @@ func NewMultiLiquidityHooks(hooks ...LiquidityHooks) MultiLiquidityHooks {
 	return hooks
 }
 
-func (h MultiLiquidityHooks) AfterPoolCoinMinted(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
+func (h MultiLiquidityHooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
 	for i := range h {
-		h[i].AfterPoolCoinMinted(ctx, receiver, pairId, poolId, poolCoin)
+		h[i].OnProvideLiquidity(ctx, receiver, pairId, poolId, poolCoin)
 	}
 }
 
-func (h MultiLiquidityHooks) AfterPoolCoinBurned(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
+func (h MultiLiquidityHooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
 	for i := range h {
-		h[i].AfterPoolCoinBurned(ctx, receiver, pairId, poolId, poolCoin)
+		h[i].OnWithdrawLiquidity(ctx, receiver, pairId, poolId, poolCoin)
 	}
 }

@@ -148,14 +148,15 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	// Minimum minting amount is params.MinInitialPoolCoinSupply.
 	ps := sdk.MaxInt(ammPool.PoolCoinSupply(), k.GetMinInitialPoolCoinSupply(ctx))
 	poolCoin := sdk.NewCoin(pool.PoolCoinDenom, ps)
+
+	k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
+
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
-
-	k.Hooks().AfterPoolCoinMinted(ctx, creator, pair.Id, pool.Id, poolCoin)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -261,14 +262,15 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	// Minimum minting amount is params.MinInitialPoolCoinSupply.
 	ps := sdk.MaxInt(ammPool.PoolCoinSupply(), k.GetMinInitialPoolCoinSupply(ctx))
 	poolCoin := sdk.NewCoin(pool.PoolCoinDenom, ps)
+
+	k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
+
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
-
-	k.Hooks().AfterPoolCoinMinted(ctx, creator, pair.Id, pool.Id, poolCoin)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -372,6 +374,9 @@ func (k Keeper) Withdraw(ctx sdk.Context, msg *types.MsgWithdraw) (types.Withdra
 	}
 
 	pool, _ := k.GetPool(ctx, msg.PoolId)
+
+	k.Hooks().OnWithdrawLiquidity(ctx, msg.GetWithdrawer(), pool.PairId, pool.Id, msg.PoolCoin)
+
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetWithdrawer(), types.GlobalEscrowAddress, sdk.NewCoins(msg.PoolCoin)); err != nil {
 		return types.WithdrawRequest{}, err
 	}
@@ -435,14 +440,15 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 	}
 
 	acceptedCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
+
+	k.Hooks().OnProvideLiquidity(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
+
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, pool.GetReserveAddress(), acceptedCoins)
 	bulkOp.QueueSendCoins(k.accountKeeper.GetModuleAddress(types.ModuleName), req.GetDepositor(), mintingCoins)
 	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
 		return err
 	}
-
-	k.Hooks().AfterPoolCoinMinted(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
 
 	req.AcceptedCoins = acceptedCoins
 	req.MintedPoolCoin = mintedPoolCoin
@@ -530,8 +536,6 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burningCoins); err != nil {
 		return err
 	}
-
-	k.Hooks().AfterPoolCoinBurned(ctx, req.GetWithdrawer(), pair.Id, pool.Id, req.PoolCoin)
 
 	// If the pool coin supply becomes 0, disable the pool.
 	if req.PoolCoin.Amount.Equal(ps) {
