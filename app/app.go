@@ -120,7 +120,6 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
-	marketmakerclient "github.com/AumegaChain/
 	"github.com/AumegaChain/aumega/x/coinfactory"
 	coinfactorykeeper "github.com/AumegaChain/aumega/x/coinfactory/keeper"
 	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
@@ -142,6 +141,7 @@ import (
 	lpfarmkeeper "github.com/AumegaChain/aumega/x/lpfarm/keeper"
 	lpfarmtypes "github.com/AumegaChain/aumega/x/lpfarm/types"
 	"github.com/AumegaChain/aumega/x/marketmaker"
+	marketmakerclient "github.com/AumegaChain/aumega/x/marketmaker/client"
 	marketmakerkeeper "github.com/AumegaChain/aumega/x/marketmaker/keeper"
 	marketmakertypes "github.com/AumegaChain/aumega/x/marketmaker/types"
 	"github.com/AumegaChain/aumega/x/token"
@@ -766,7 +766,7 @@ func New(
 
 	app.GovKeeper = *govKeeper.SetHooks(
 		govtypes.NewMultiGovHooks(
-			// register the governance hooks
+		// register the governance hooks
 		),
 	)
 
