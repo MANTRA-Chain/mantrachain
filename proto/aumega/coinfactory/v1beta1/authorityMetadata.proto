@@ -3,7 +3,7 @@ package aumega.coinfactory.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/coinfactory/types";
+option go_package = "github.com/AumegaChain/aumega/x/coinfactory/types";
 
 // DenomAuthorityMetadata specifies metadata for addresses that have specific
 // capabilities over a token factory denom. Right now there is only one Admin

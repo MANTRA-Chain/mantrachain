@@ -7,8 +7,8 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/token/types"
-	"github.com/MANTRA-Finance/aumega/x/token/utils"
+	"github.com/AumegaChain/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/utils"
 
 	nft "github.com/cosmos/cosmos-sdk/x/nft"
 

@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 // Keeper of the module's store.

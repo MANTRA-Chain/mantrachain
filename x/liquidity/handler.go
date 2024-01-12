@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/liquidity/keeper"
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/liquidity/keeper"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 )
 
 // NewHandler returns a new msg handler.

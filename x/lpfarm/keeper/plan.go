@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 // CreatePrivatePlan creates a new private farming plan.

@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/farming/types";
+option go_package = "github.com/AumegaChain/aumega/x/farming/types";
 
 // PublicPlanProposal defines a public farming plan governance proposal that receives one of the following requests:
 // A request that creates a public farming plan, a request that updates the plan, and a request that deletes the plan.

@@ -3,7 +3,7 @@ package keeper
 import (
 	"math"
 
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

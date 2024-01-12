@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
+	"github.com/AumegaChain/aumega/x/marketmaker/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCParams() {

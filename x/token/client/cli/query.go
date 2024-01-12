@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 )
 

@@ -11,7 +11,7 @@ import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/marketmaker/types";
+option go_package = "github.com/AumegaChain/aumega/x/marketmaker/types";
 
 // Query defines the gRPC query service for the marketmaker module.
 service Query {

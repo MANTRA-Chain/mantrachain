@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 )
 
 func (s *KeeperTestSuite) TestGetBatchSize() {

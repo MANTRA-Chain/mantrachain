@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "aumega/coinfactory/v1beta1/authorityMetadata.proto";
 import "aumega/coinfactory/v1beta1/params.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/coinfactory/types";
+option go_package = "github.com/AumegaChain/aumega/x/coinfactory/types";
 
 // GenesisState defines the coinfactory module's genesis state.
 message GenesisState {

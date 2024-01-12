@@ -14,7 +14,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-	coinfactorytypes "github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
 )
 
 // stargateWhitelist keeps whitelist and its deterministic

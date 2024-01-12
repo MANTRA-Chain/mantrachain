@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/x/marketmaker/keeper"
-	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
+	"github.com/AumegaChain/aumega/x/marketmaker/keeper"
+	"github.com/AumegaChain/aumega/x/marketmaker/types"
 )
 
 func (suite *KeeperTestSuite) TestDepositReservedAmountInvariant() {

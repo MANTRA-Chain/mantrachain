@@ -68,7 +68,7 @@ yarn test
 ### Aumega
 
 - [Docs](./spec/README.md)
-- [SDK](https://github.com/MANTRA-Finance/aumega-sdk.git)
+- [SDK](https://github.com/AumegaChain/aumega-sdk.git)
 
 ### Cosmos SDK
 

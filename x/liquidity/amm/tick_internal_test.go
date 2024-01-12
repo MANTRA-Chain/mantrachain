@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
+	utils "github.com/AumegaChain/aumega/types"
 )
 
 func Test_char(t *testing.T) {

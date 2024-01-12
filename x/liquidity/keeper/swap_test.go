@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/liquidity"
-	"github.com/MANTRA-Finance/aumega/x/liquidity/amm"
-	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/liquidity"
+	"github.com/AumegaChain/aumega/x/liquidity/amm"
+	"github.com/AumegaChain/aumega/x/liquidity/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

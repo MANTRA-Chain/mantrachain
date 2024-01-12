@@ -3,7 +3,7 @@ package cli
 import (
 	"context"
 
-	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"

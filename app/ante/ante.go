@@ -1,8 +1,8 @@
 package ante
 
 import (
-	txfeeskeeper "github.com/MANTRA-Finance/aumega/x/txfees/keeper"
-	txfeestypes "github.com/MANTRA-Finance/aumega/x/txfees/types"
+	txfeeskeeper "github.com/AumegaChain/aumega/x/txfees/keeper"
+	txfeestypes "github.com/AumegaChain/aumega/x/txfees/types"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"

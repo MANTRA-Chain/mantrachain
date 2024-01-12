@@ -15,7 +15,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
+	"github.com/AumegaChain/aumega/x/marketmaker/types"
 )
 
 // GetQueryCmd returns a root CLI command handler for all x/marketmaker query commands.

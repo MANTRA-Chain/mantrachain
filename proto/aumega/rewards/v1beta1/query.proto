@@ -10,7 +10,7 @@ import "aumega/rewards/v1beta1/params.proto";
 import "aumega/rewards/v1beta1/snapshot.proto";
 import "aumega/rewards/v1beta1/provider.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+option go_package = "github.com/AumegaChain/aumega/x/rewards/types";
 
 // Query defines the gRPC querier service.
 service Query {

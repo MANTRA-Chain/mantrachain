@@ -3,8 +3,8 @@ package cmd
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/AumegaChain/aumega/app"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Finance/aumega/app"
 )
 
 func initSDKConfig() {

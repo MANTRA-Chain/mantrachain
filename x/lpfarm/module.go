@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/client/cli"
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/keeper"
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/client/cli"
+	"github.com/AumegaChain/aumega/x/lpfarm/keeper"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 var (

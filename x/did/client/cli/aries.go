@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/aumega/x/did/types"
+	"github.com/AumegaChain/aumega/x/did/types"
 )
 
 // request send a json http request

@@ -1,8 +1,8 @@
 package token
 
 import (
-	"github.com/MANTRA-Finance/aumega/x/token/keeper"
-	"github.com/MANTRA-Finance/aumega/x/token/types"
+	"github.com/AumegaChain/aumega/x/token/keeper"
+	"github.com/AumegaChain/aumega/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

@@ -3,7 +3,7 @@ package aumega.rewards.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+option go_package = "github.com/AumegaChain/aumega/x/rewards/types";
 
 // Params defines the parameters for the module.
 message Params {

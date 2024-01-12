@@ -1,7 +1,7 @@
 package types
 
 import (
-	liquiditytypes "github.com/MANTRA-Finance/aumega/x/liquidity/types"
+	liquiditytypes "github.com/AumegaChain/aumega/x/liquidity/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )

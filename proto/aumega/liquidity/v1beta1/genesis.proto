@@ -4,7 +4,7 @@ package aumega.liquidity.v1beta1;
 import "gogoproto/gogo.proto";
 import "aumega/liquidity/v1beta1/liquidity.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/liquidity/types";
+option go_package = "github.com/AumegaChain/aumega/x/liquidity/types";
 option (gogoproto.goproto_getters_all) = false;
 
 // GenesisState defines the liquidity module's genesis state.

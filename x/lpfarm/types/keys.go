@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
+	utils "github.com/AumegaChain/aumega/types"
 )
 
 const (

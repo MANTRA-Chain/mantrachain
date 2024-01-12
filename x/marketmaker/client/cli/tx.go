@@ -18,7 +18,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/MANTRA-Finance/aumega/x/marketmaker/types"
+	"github.com/AumegaChain/aumega/x/marketmaker/types"
 )
 
 // GetTxCmd returns a root CLI command handler for all x/marketmaker transaction commands.

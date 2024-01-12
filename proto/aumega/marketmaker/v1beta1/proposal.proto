@@ -8,7 +8,7 @@ import "cosmos/base/v1beta1/coin.proto";
 import "aumega/marketmaker/v1beta1/marketmaker.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/marketmaker/types";
+option go_package = "github.com/AumegaChain/aumega/x/marketmaker/types";
 
 message MarketMakerProposal {
   option (gogoproto.goproto_getters)  = false;

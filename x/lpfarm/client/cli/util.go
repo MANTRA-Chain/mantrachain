@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	"github.com/MANTRA-Finance/aumega/x/lpfarm/types"
+	"github.com/AumegaChain/aumega/x/lpfarm/types"
 )
 
 func ParseFarmingPlanProposal(cdc codec.JSONCodec, proposalFile string) (types.FarmingPlanProposal, error) {

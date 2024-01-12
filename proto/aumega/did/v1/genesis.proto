@@ -4,7 +4,7 @@ package aumega.did.v1;
 import "gogoproto/gogo.proto";
 import "aumega/did/v1/did.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/did/types";
+option go_package = "github.com/AumegaChain/aumega/x/did/types";
 
 // GenesisState defines the did module's genesis state.
 message GenesisState {

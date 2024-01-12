@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 )
 
 type msgServer struct {

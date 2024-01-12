@@ -9,7 +9,7 @@ import (
 
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	coinfactorykeeper "github.com/MANTRA-Finance/aumega/x/coinfactory/keeper"
+	coinfactorykeeper "github.com/AumegaChain/aumega/x/coinfactory/keeper"
 )
 
 func RegisterCustomPlugins(

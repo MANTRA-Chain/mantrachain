@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	"github.com/AumegaChain/aumega/x/coinfactory/types"
 )
 
 var _ types.QueryServer = Keeper{}

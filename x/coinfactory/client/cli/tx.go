@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/MANTRA-Finance/aumega/x/coinfactory/types"
+	"github.com/AumegaChain/aumega/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 )
 

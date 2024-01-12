@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "aumega/txfees/v1/params.proto";
 import "aumega/txfees/v1/fee_token.proto";
 
-option go_package = "github.com/MANTRA-Finance/aumega/x/txfees/types";
+option go_package = "github.com/AumegaChain/aumega/x/txfees/types";
 
 // GenesisState defines the txfees module's genesis state.
 message GenesisState {
