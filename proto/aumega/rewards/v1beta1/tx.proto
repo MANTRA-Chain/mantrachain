@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package aumega.rewards.v1beta1;
+
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc Claim (MsgClaim) returns (MsgClaimResponse);
+}
+message MsgClaim {
+  string creator = 1;
+  uint64 pairId  = 2;
+}
+
+message MsgClaimResponse {}

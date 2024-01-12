@@ -14,6 +14,10 @@ import (
 )
 
 func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error {
+	if !k.HasGuardTransferCoins(ctx) {
+		return nil
+	}
+
 	conf := k.GetParams(ctx)
 
 	var indexes [][]byte

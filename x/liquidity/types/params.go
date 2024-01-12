@@ -34,6 +34,7 @@ var (
 	DefaultDepositExtraGas          = sdk.Gas(60000)
 	DefaultWithdrawExtraGas         = sdk.Gas(64000)
 	DefaultOrderExtraGas            = sdk.Gas(37000)
+	DefaultPairCreatorSwapFeeRatio  = sdk.ZeroDec()
 )
 
 // General constants
@@ -68,6 +69,7 @@ var (
 	KeyWithdrawExtraGas             = []byte("WithdrawExtraGas")
 	KeyOrderExtraGas                = []byte("OrderExtraGas")
 	KeyMaxNumActivePoolsPerPair     = []byte("MaxNumActivePoolsPerPair")
+	KeyPairCreatorSwapFeeRatio      = []byte("PairCreatorSwapFeeRatio")
 )
 
 var _ paramstypes.ParamSet = (*Params)(nil)
@@ -96,6 +98,7 @@ func DefaultParams() Params {
 		WithdrawExtraGas:             DefaultWithdrawExtraGas,
 		OrderExtraGas:                DefaultOrderExtraGas,
 		MaxNumActivePoolsPerPair:     DefaultMaxNumActivePoolsPerPair,
+		PairCreatorSwapFeeRatio:      DefaultPairCreatorSwapFeeRatio,
 	}
 }
 
@@ -119,6 +122,7 @@ func (params *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyWithdrawExtraGas, &params.WithdrawExtraGas, validateExtraGas),
 		paramstypes.NewParamSetPair(KeyOrderExtraGas, &params.OrderExtraGas, validateExtraGas),
 		paramstypes.NewParamSetPair(KeyMaxNumActivePoolsPerPair, &params.MaxNumActivePoolsPerPair, validateMaxNumActivePoolsPerPair),
+		paramstypes.NewParamSetPair(KeyPairCreatorSwapFeeRatio, &params.PairCreatorSwapFeeRatio, validatePairCreatorSwapFeeRatio),
 	}
 }
 
@@ -145,6 +149,7 @@ func (params Params) Validate() error {
 		{params.WithdrawExtraGas, validateExtraGas},
 		{params.OrderExtraGas, validateExtraGas},
 		{params.MaxNumActivePoolsPerPair, validateMaxNumActivePoolsPerPair},
+		{params.PairCreatorSwapFeeRatio, validatePairCreatorSwapFeeRatio},
 	} {
 		if err := field.validateFunc(field.val); err != nil {
 			return err
@@ -304,6 +309,19 @@ func validateSwapFeeRate(i interface{}) error {
 
 	if v.IsNegative() {
 		return fmt.Errorf("swap fee rate must not be negative: %s", v)
+	}
+
+	return nil
+}
+
+func validatePairCreatorSwapFeeRatio(i interface{}) error {
+	v, ok := i.(sdk.Dec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if v.IsNegative() {
+		return fmt.Errorf("pair creator swap fee ratio must not be negative: %s", v)
 	}
 
 	return nil

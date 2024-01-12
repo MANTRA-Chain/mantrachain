@@ -14,6 +14,10 @@ import (
 	"github.com/MANTRA-Finance/aumega/x/liquidity/types"
 )
 
+func CalculatePairCreatorSwapFeeAmount(ctx sdk.Context, pairCreatorSwapFeeRatio sdk.Dec, accumulatedSwapFee math.Int) math.Int {
+	return sdk.NewDecFromInt(accumulatedSwapFee).MulTruncate(pairCreatorSwapFeeRatio).TruncateInt()
+}
+
 func CalculateSwapFeeAmount(ctx sdk.Context, swapFeeRate sdk.Dec, calculatedOfferCoinAmt math.Int) math.Int {
 	return sdk.NewDecFromInt(calculatedOfferCoinAmt).MulTruncate(swapFeeRate).TruncateInt()
 }
@@ -813,6 +817,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 	pair, _ := k.GetPair(ctx, order.PairId)
 	swapFeeRate := k.GetSwapFeeRate(ctx)
+	pairCreatorSwapFeeRatio := k.GetPairCreatorSwapFeeRatio(ctx)
 
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, sdk.NewInt(0))
 	collectedSwapFeeAmountFromOrderer := CalculateSwapFeeAmount(ctx, swapFeeRate, order.OfferCoin.Amount)
@@ -846,13 +851,34 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	}
 
 	if accumulatedSwapFee.IsPositive() {
-		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(accumulatedSwapFee)); err != nil {
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
-			return err
+		if pairCreatorSwapFeeRatio.IsPositive() {
+			pairCreatorSwapFeeAmt := CalculatePairCreatorSwapFeeAmount(ctx, pairCreatorSwapFeeRatio, accumulatedSwapFee.Amount)
+			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Sub(pairCreatorSwapFeeAmt)
+			pairCreatorSwapFeeCoin := sdk.NewCoin(accumulatedSwapFee.Denom, pairCreatorSwapFeeAmt)
+
+			if pairCreatorSwapFeeCoin.IsPositive() {
+				// Guard: whitelist account address
+				pairCreator, err := sdk.AccAddressFromBech32(pair.Creator)
+				if err != nil {
+					return err
+				}
+				whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
+				if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pairCreator, sdk.NewCoins(pairCreatorSwapFeeCoin)); err != nil {
+					k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+					return err
+				}
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			}
 		}
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+
+		if accumulatedSwapFee.IsPositive() {
+			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
+			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(accumulatedSwapFee)); err != nil {
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				return err
+			}
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		}
 	}
 
 	order.SetStatus(status)

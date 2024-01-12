@@ -27,6 +27,12 @@ func (k Keeper) GetSwapFeeRate(ctx sdk.Context) (swapFeeRate sdk.Dec) {
 	return
 }
 
+// GetSwapFeeRate returns the current swap fee rate parameter.
+func (k Keeper) GetPairCreatorSwapFeeRatio(ctx sdk.Context) (pairCreatorSwapFeeRatio sdk.Dec) {
+	k.paramSpace.Get(ctx, types.KeyPairCreatorSwapFeeRatio, &pairCreatorSwapFeeRatio)
+	return
+}
+
 // GetFeeCollector returns the current fee collector address parameter.
 func (k Keeper) GetFeeCollector(ctx sdk.Context) sdk.AccAddress {
 	var feeCollectorAddr string

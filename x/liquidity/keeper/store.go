@@ -102,6 +102,16 @@ func (k Keeper) GetAllPairs(ctx sdk.Context) (pairs []types.Pair) {
 	return pairs
 }
 
+// GetAllPairs returns all pairs ids in the store.
+func (k Keeper) GetAllPairsIds(ctx sdk.Context) (pairsIds []uint64) {
+	pairsIds = []uint64{}
+	_ = k.IterateAllPairs(ctx, func(pair types.Pair) (stop bool, err error) {
+		pairsIds = append(pairsIds, pair.Id)
+		return false, nil
+	})
+	return pairsIds
+}
+
 // GetLastPoolId returns the last pool id.
 func (k Keeper) GetLastPoolId(ctx sdk.Context) (id uint64) {
 	store := ctx.KVStore(k.storeKey)

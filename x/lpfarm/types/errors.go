@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	ErrPlanAlreadyTerminated = sdkerrors.Register(ModuleName, 2, "plan is already terminated")
+	ErrPlanAlreadyTerminated = sdkerrors.Register(ModuleName, 1601, "plan is already terminated")
 )

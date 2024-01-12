@@ -1,0 +1,37 @@
+syntax = "proto3";
+package aumega.rewards.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "aumega/rewards/v1beta1/common.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+
+message Snapshot {
+  uint64 id = 1;
+  uint64 pairId = 2;
+  repeated SnapshotPool pools = 3;
+  map<uint64, uint64> poolIdToIdx = 4;
+  bool distributed = 5;
+  google.protobuf.Timestamp distributedAt = 6 [
+    (gogoproto.moretags)     = "yaml:\"distributed_at\"",
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
+  ];
+  repeated cosmos.base.v1beta1.DecCoin remaining = 7 [
+    (gogoproto.moretags)     = "yaml:\"remaining\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable)     = false
+  ];
+}
+
+message SnapshotCount {
+  uint64 pairId = 1;
+  uint64 count = 2;
+}
+
+message SnapshotStartId {
+  uint64 pairId = 1;
+  uint64 snapshotId = 2;
+}

@@ -290,6 +290,8 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	goCtx := sdk.WrapSDKContext(s.ctx)
 
+	s.guardKeeper.SetGuardTransferCoins(s.ctx)
+
 	err := s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], nil)
 	s.Require().NoError(err)
 

@@ -107,6 +107,13 @@ func TestParams_Validate(t *testing.T) {
 			"swap fee rate must not be negative: -1.000000000000000000",
 		},
 		{
+			"negative PairCreatorSwapFeeRate",
+			func(params *types.Params) {
+				params.PairCreatorSwapFeeRatio = sdk.NewDec(-1)
+			},
+			"pair creator swap fee ratio must not be negative: -1.000000000000000000",
+		},
+		{
 			"negative WithdrawFeeRate",
 			func(params *types.Params) {
 				params.WithdrawFeeRate = sdk.NewDec(-1)

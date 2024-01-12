@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -10,6 +11,7 @@ import (
 )
 
 func TestPair_Validate(t *testing.T) {
+	creator := sdk.AccAddress(crypto.AddressHash([]byte("creator"))).String()
 	for _, tc := range []struct {
 		name        string
 		malleate    func(pair *types.Pair)
@@ -65,7 +67,7 @@ func TestPair_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2")
+			pair := types.NewPair(1, "denom1", "denom2", creator)
 			tc.malleate(&pair)
 			err := pair.Validate()
 			if tc.expectedErr == "" {

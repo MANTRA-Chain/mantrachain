@@ -1,0 +1,49 @@
+syntax = "proto3";
+package aumega.rewards.v1beta1;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+option (gogoproto.equal_all) = true;
+
+message ProviderPair {
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 pairId = 1;
+  uint64 lastClaimedSnapshotId = 2; 
+  repeated cosmos.base.v1beta1.DecCoin owedRewards = 3 [
+    (gogoproto.moretags)     = "yaml:\"owed_rewards\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable)     = false
+  ];
+  repeated cosmos.base.v1beta1.Coin balances = 4 [
+    (gogoproto.moretags)     = "yaml:\"owed_rewards\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable)     = false
+  ];
+  map<uint64, uint64> poolIdToBalanceIdx = 5;
+  google.protobuf.Timestamp lastDepositTime = 6 [
+    (gogoproto.moretags)     = "yaml:\"last_deposit_time\"",
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
+  ];
+}
+
+message SnapshotPool {
+  option (gogoproto.goproto_getters) = false;
+
+  uint64 poolId = 1;
+  string cumulativeTotalSupply = 2 [
+    (gogoproto.moretags)   = "yaml:\"cumulative_total_supply\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; 
+  repeated cosmos.base.v1beta1.DecCoin rewardsPerToken = 3 [
+    (gogoproto.moretags)     = "yaml:\"rewards_per_token\"",
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable)     = false
+  ];
+}

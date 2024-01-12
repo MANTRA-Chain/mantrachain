@@ -6,8 +6,8 @@ require (
 	cosmossdk.io/api v0.3.1
 	cosmossdk.io/errors v1.0.0
 	cosmossdk.io/math v1.0.1
-	github.com/CosmWasm/wasmd v0.40.1
-	github.com/CosmWasm/wasmvm v1.3.0
+	github.com/CosmWasm/wasmd v0.41.0
+	github.com/CosmWasm/wasmvm v1.3.1
 	github.com/bufbuild/buf v1.9.0
 	github.com/cometbft/cometbft v0.37.2
 	github.com/cometbft/cometbft-db v0.8.0

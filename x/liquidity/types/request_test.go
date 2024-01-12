@@ -224,6 +224,7 @@ func TestWithdrawRequest_Validate(t *testing.T) {
 }
 
 func TestOrder_Validate(t *testing.T) {
+	creator := sdk.AccAddress(crypto.AddressHash([]byte("creator"))).String()
 	for _, tc := range []struct {
 		name        string
 		malleate    func(order *types.Order)
@@ -363,7 +364,7 @@ func TestOrder_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2")
+			pair := types.NewPair(1, "denom1", "denom2", creator)
 			orderer := sdk.AccAddress(crypto.AddressHash([]byte("orderer")))
 			msg := types.NewMsgLimitOrder(
 				orderer, pair.Id, types.OrderDirectionBuy, utils.ParseCoin("1000000denom2"),

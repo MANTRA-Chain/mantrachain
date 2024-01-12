@@ -54,6 +54,9 @@ message Params {
       [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Gas", (gogoproto.nullable) = false];
 
   uint32 max_num_active_pools_per_pair = 17;
+
+  string pair_creator_swap_fee_ratio = 18
+      [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // Pair defines a coin pair.
@@ -73,6 +76,8 @@ message Pair {
   uint64 current_batch_id = 7;
 
   string swap_fee_collector_address = 8;
+
+  string creator = 9;
 }
 
 // Pool defines generic liquidity pool object which can be either a basic pool or a

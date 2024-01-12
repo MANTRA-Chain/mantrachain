@@ -1,0 +1,12 @@
+syntax = "proto3";
+package aumega.rewards.v1beta1;
+
+import "aumega/rewards/v1beta1/common.proto";
+option go_package = "github.com/MANTRA-Finance/aumega/x/rewards/types";
+
+message Provider {
+  string index = 1; 
+  repeated ProviderPair pairs = 2; 
+  map<uint64, uint64> pairIdToIdx = 3;
+}
+

@@ -13,14 +13,15 @@ import (
 )
 
 func TestGenesisState_Validate(t *testing.T) {
+	depositor := sdk.AccAddress(crypto.AddressHash([]byte("depositor"))).String()
 	// Valid structs.
-	pair := types.NewPair(1, "denom1", "denom2")
+	pair := types.NewPair(1, "denom1", "denom2", depositor)
 	pool := types.NewBasicPool(1, 1, testAddr)
 	depositReq := types.DepositRequest{
 		Id:             1,
 		PoolId:         1,
 		MsgHeight:      1,
-		Depositor:      sdk.AccAddress(crypto.AddressHash([]byte("depositor"))).String(),
+		Depositor:      depositor,
 		DepositCoins:   utils.ParseCoins("1000000denom1,1000000denom2"),
 		MintedPoolCoin: sdk.NewInt64Coin("pool1", 0),
 		Status:         types.RequestStatusNotExecuted,
