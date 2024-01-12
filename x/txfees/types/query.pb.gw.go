@@ -323,9 +323,9 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"aumega", "txfees", "v1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_FeeToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"MANTRA-Finance", "aumega", "txfees", "v1", "fee_token", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_FeeToken_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"AumegaChain", "aumega", "txfees", "v1", "fee_token", "denom"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_FeeTokenAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"MANTRA-Finance", "aumega", "txfees", "v1", "fee_token"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_FeeTokenAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"AumegaChain", "aumega", "txfees", "v1", "fee_token"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

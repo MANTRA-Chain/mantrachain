@@ -7,8 +7,8 @@ import (
 	"math"
 	"math/rand"
 
-	utils "github.com/MANTRA-Finance/aumega/types"
-	"github.com/MANTRA-Finance/aumega/x/rewards/types"
+	utils "github.com/AumegaChain/aumega/types"
+	"github.com/AumegaChain/aumega/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

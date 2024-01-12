@@ -11926,7 +11926,7 @@ paths:
           format: byte
       tags:
         - Query
-  /MANTRA-Finance/aumega/txfees/v1/fee_token:
+  /AumegaChain/aumega/txfees/v1/fee_token:
     get:
       operationId: AumegaTxfeesV1FeeTokenAll
       responses:
@@ -12050,7 +12050,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /MANTRA-Finance/aumega/txfees/v1/fee_token/{denom}:
+  /AumegaChain/aumega/txfees/v1/fee_token/{denom}:
     get:
       summary: Queries a list of FeeToken items.
       operationId: AumegaTxfeesV1FeeToken
