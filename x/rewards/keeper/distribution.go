@@ -134,7 +134,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 	pair, found := k.liquidityKeeper.GetPair(ctx, pairId)
 
 	if !found {
-		logger.Error("No pair found for pair", "pair_id", pairId)
+		logger.Error("No pair found", "pair_id", pairId)
 		return nil
 	}
 
