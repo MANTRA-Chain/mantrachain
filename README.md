@@ -5,7 +5,8 @@
     Aumega is a blockchain built using Cosmos SDK and Tendermint and created with Ignite CLI
 </div>
 <div align="center">
-    ![unit tests](https://github.com/AumegaChain/aumega/actions/workflows/tests-unit.yml/badge.svg)
+    <img src="https://github.com/AumegaChain/aumega/actions/workflows/tests-unit.yml/badge.svg?event=push" loading="lazy" class="omni3">
+
 </div>
 
 ## Pre-requisites
