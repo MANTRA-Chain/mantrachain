@@ -25,5 +25,5 @@ jobs:
         run: go mod tidy
       - name: Build chain
         run: make build
-      - name: Run unit tests
+      - name: Run unit test
         run: make test-unit
