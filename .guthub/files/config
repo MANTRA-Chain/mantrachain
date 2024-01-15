@@ -1,0 +1,8 @@
+Host aumega-cosmos-sdk.github.com
+        HostName github.com
+        IdentityFile ~/.ssh/cosmos-sdk
+        IdentitiesOnly yes
+Host aumega-ibc-go.github.com
+        HostName github.com
+        IdentityFile ~/.ssh/ibc-go
+        IdentitiesOnly yes

@@ -1,10 +1,8 @@
-<img src="https://global-uploads.webflow.com/62ed98169164a3b640e4a87c/62ee38047fea4e239903f8be_m-chain.svg" loading="lazy" alt="MANTRA Chain logo" class="omni3">
-
 <h1 align="center">
-    MANTRACHAIN
+    Aumega
 </h1>
 <div align="center">
-    MANTRACHAIN is a blockchain built using Cosmos SDK and Tendermint and created with Ignite CLI
+    Aumega is a blockchain built using Cosmos SDK and Tendermint and created with Ignite CLI
 </div>
 
 ## Pre-requisites
@@ -29,7 +27,7 @@ Your blockchain in development can be configured with [config.yml](./config.yml)
 
 `validator` - used for bootstrapping the blockchain logic (the chain will be started with only one validator)
 
-`admin` - Genesis Admin for MANTRACHAIN, set during the genesis initialization, holding the initial control of
+`admin` - Genesis Admin for aumega, set during the genesis initialization, holding the initial control of
 guard module and admin for the soul bound nft collection
 
 `recipient` - used for various transactions once the chain is started

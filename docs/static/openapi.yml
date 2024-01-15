@@ -8858,6 +8858,687 @@ paths:
                         }
       tags:
         - Query
+  /AumegaChain/aumega/rewards/v1beta1/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: AumegaRewardsV1Beta1Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  max_claimed_range_length:
+                    type: string
+                    format: uint64
+                  min_deposit_time:
+                    type: string
+                    format: uint64
+                  distribution_period:
+                    type: string
+                    format: uint64
+                  pairs_cycle_max_count:
+                    type: string
+                    format: uint64
+                  distribution_fee_rate:
+                    type: string
+                  max_snapshots_count:
+                    type: string
+                    format: uint64
+                  max_purged_range_length:
+                    type: string
+                    format: uint64
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/provider:
+    get:
+      operationId: AumegaRewardsV1Beta1ProviderAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              provider:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                    pairs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          pairId:
+                            type: string
+                            format: uint64
+                          lastClaimedSnapshotId:
+                            type: string
+                            format: uint64
+                          owedRewards:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                denom:
+                                  type: string
+                                amount:
+                                  type: string
+                              description: >-
+                                DecCoin defines a token with a denomination and
+                                a decimal amount.
+
+
+                                NOTE: The amount field is an Dec which
+                                implements the custom method
+
+                                signatures required by gogoproto.
+                          lastDepositTime:
+                            type: string
+                            format: date-time
+                    pairIdToIdx:
+                      type: object
+                      additionalProperties:
+                        type: string
+                        format: uint64
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/provider-pairs/{provider}:
+    get:
+      operationId: AumegaRewardsV1Beta1ProviderPairs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              provider:
+                type: string
+              pairsIds:
+                type: array
+                items:
+                  type: string
+                  format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/provider/{provider}:
+    get:
+      summary: Queries a list of Provider pairs ids.
+      operationId: AumegaRewardsV1Beta1Provider
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              provider:
+                type: object
+                properties:
+                  index:
+                    type: string
+                  pairs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pairId:
+                          type: string
+                          format: uint64
+                        lastClaimedSnapshotId:
+                          type: string
+                          format: uint64
+                        owedRewards:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              denom:
+                                type: string
+                              amount:
+                                type: string
+                            description: >-
+                              DecCoin defines a token with a denomination and a
+                              decimal amount.
+
+
+                              NOTE: The amount field is an Dec which implements
+                              the custom method
+
+                              signatures required by gogoproto.
+                        lastDepositTime:
+                          type: string
+                          format: date-time
+                  pairIdToIdx:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/rewards/{provider}/{pairId}:
+    get:
+      summary: Queries a list of Claim items.
+      operationId: AumegaRewardsV1Beta1Rewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pairId:
+                type: string
+                format: uint64
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          type: string
+        - name: pairId
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}:
+    get:
+      operationId: AumegaRewardsV1Beta1SnapshotAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Snapshot:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    pairId:
+                      type: string
+                      format: uint64
+                    pools:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          poolId:
+                            type: string
+                            format: uint64
+                          rewardsPerToken:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                denom:
+                                  type: string
+                                amount:
+                                  type: string
+                              description: >-
+                                DecCoin defines a token with a denomination and
+                                a decimal amount.
+
+
+                                NOTE: The amount field is an Dec which
+                                implements the custom method
+
+                                signatures required by gogoproto.
+                    poolIdToIdx:
+                      type: object
+                      additionalProperties:
+                        type: string
+                        format: uint64
+                    distributed:
+                      type: boolean
+                    distributedAt:
+                      type: string
+                      format: date-time
+                    remaining:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          amount:
+                            type: string
+                        description: >-
+                          DecCoin defines a token with a denomination and a
+                          decimal amount.
+
+
+                          NOTE: The amount field is an Dec which implements the
+                          custom method
+
+                          signatures required by gogoproto.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pairId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}/{id}:
+    get:
+      summary: Queries a list of Snapshot items.
+      operationId: AumegaRewardsV1Beta1Snapshot
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Snapshot:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  pairId:
+                    type: string
+                    format: uint64
+                  pools:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        poolId:
+                          type: string
+                          format: uint64
+                        rewardsPerToken:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              denom:
+                                type: string
+                              amount:
+                                type: string
+                            description: >-
+                              DecCoin defines a token with a denomination and a
+                              decimal amount.
+
+
+                              NOTE: The amount field is an Dec which implements
+                              the custom method
+
+                              signatures required by gogoproto.
+                  poolIdToIdx:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      format: uint64
+                  distributed:
+                    type: boolean
+                  distributedAt:
+                    type: string
+                    format: date-time
+                  remaining:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pairId
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /aumega/token/v1/nft-collection:
     get:
       operationId: AumegaTokenV1AllNftCollections
@@ -69545,6 +70226,515 @@ definitions:
               variables used in market maker scoring system
         description: Params defines the set of params for the marketmaker module.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
+  aumega.rewards.v1beta1.MsgClaimResponse:
+    type: object
+  aumega.rewards.v1beta1.Params:
+    type: object
+    properties:
+      max_claimed_range_length:
+        type: string
+        format: uint64
+      min_deposit_time:
+        type: string
+        format: uint64
+      distribution_period:
+        type: string
+        format: uint64
+      pairs_cycle_max_count:
+        type: string
+        format: uint64
+      distribution_fee_rate:
+        type: string
+      max_snapshots_count:
+        type: string
+        format: uint64
+      max_purged_range_length:
+        type: string
+        format: uint64
+    description: Params defines the parameters for the module.
+  aumega.rewards.v1beta1.Provider:
+    type: object
+    properties:
+      index:
+        type: string
+      pairs:
+        type: array
+        items:
+          type: object
+          properties:
+            pairId:
+              type: string
+              format: uint64
+            lastClaimedSnapshotId:
+              type: string
+              format: uint64
+            owedRewards:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+            lastDepositTime:
+              type: string
+              format: date-time
+      pairIdToIdx:
+        type: object
+        additionalProperties:
+          type: string
+          format: uint64
+  aumega.rewards.v1beta1.ProviderPair:
+    type: object
+    properties:
+      pairId:
+        type: string
+        format: uint64
+      lastClaimedSnapshotId:
+        type: string
+        format: uint64
+      owedRewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+      lastDepositTime:
+        type: string
+        format: date-time
+  aumega.rewards.v1beta1.QueryAllProviderResponse:
+    type: object
+    properties:
+      provider:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+            pairs:
+              type: array
+              items:
+                type: object
+                properties:
+                  pairId:
+                    type: string
+                    format: uint64
+                  lastClaimedSnapshotId:
+                    type: string
+                    format: uint64
+                  owedRewards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  lastDepositTime:
+                    type: string
+                    format: date-time
+            pairIdToIdx:
+              type: object
+              additionalProperties:
+                type: string
+                format: uint64
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  aumega.rewards.v1beta1.QueryAllSnapshotResponse:
+    type: object
+    properties:
+      Snapshot:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            pairId:
+              type: string
+              format: uint64
+            pools:
+              type: array
+              items:
+                type: object
+                properties:
+                  poolId:
+                    type: string
+                    format: uint64
+                  rewardsPerToken:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        DecCoin defines a token with a denomination and a
+                        decimal amount.
+
+
+                        NOTE: The amount field is an Dec which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+            poolIdToIdx:
+              type: object
+              additionalProperties:
+                type: string
+                format: uint64
+            distributed:
+              type: boolean
+            distributedAt:
+              type: string
+              format: date-time
+            remaining:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  aumega.rewards.v1beta1.QueryGetProviderPairsResponse:
+    type: object
+    properties:
+      provider:
+        type: string
+      pairsIds:
+        type: array
+        items:
+          type: string
+          format: uint64
+  aumega.rewards.v1beta1.QueryGetProviderResponse:
+    type: object
+    properties:
+      provider:
+        type: object
+        properties:
+          index:
+            type: string
+          pairs:
+            type: array
+            items:
+              type: object
+              properties:
+                pairId:
+                  type: string
+                  format: uint64
+                lastClaimedSnapshotId:
+                  type: string
+                  format: uint64
+                owedRewards:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      DecCoin defines a token with a denomination and a decimal
+                      amount.
+
+
+                      NOTE: The amount field is an Dec which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                lastDepositTime:
+                  type: string
+                  format: date-time
+          pairIdToIdx:
+            type: object
+            additionalProperties:
+              type: string
+              format: uint64
+  aumega.rewards.v1beta1.QueryGetRewardsResponse:
+    type: object
+    properties:
+      pairId:
+        type: string
+        format: uint64
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  aumega.rewards.v1beta1.QueryGetSnapshotResponse:
+    type: object
+    properties:
+      Snapshot:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          pairId:
+            type: string
+            format: uint64
+          pools:
+            type: array
+            items:
+              type: object
+              properties:
+                poolId:
+                  type: string
+                  format: uint64
+                rewardsPerToken:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      DecCoin defines a token with a denomination and a decimal
+                      amount.
+
+
+                      NOTE: The amount field is an Dec which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+          poolIdToIdx:
+            type: object
+            additionalProperties:
+              type: string
+              format: uint64
+          distributed:
+            type: boolean
+          distributedAt:
+            type: string
+            format: date-time
+          remaining:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                DecCoin defines a token with a denomination and a decimal
+                amount.
+
+
+                NOTE: The amount field is an Dec which implements the custom
+                method
+
+                signatures required by gogoproto.
+  aumega.rewards.v1beta1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          max_claimed_range_length:
+            type: string
+            format: uint64
+          min_deposit_time:
+            type: string
+            format: uint64
+          distribution_period:
+            type: string
+            format: uint64
+          pairs_cycle_max_count:
+            type: string
+            format: uint64
+          distribution_fee_rate:
+            type: string
+          max_snapshots_count:
+            type: string
+            format: uint64
+          max_purged_range_length:
+            type: string
+            format: uint64
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  aumega.rewards.v1beta1.Snapshot:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      pairId:
+        type: string
+        format: uint64
+      pools:
+        type: array
+        items:
+          type: object
+          properties:
+            poolId:
+              type: string
+              format: uint64
+            rewardsPerToken:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  DecCoin defines a token with a denomination and a decimal
+                  amount.
+
+
+                  NOTE: The amount field is an Dec which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+      poolIdToIdx:
+        type: object
+        additionalProperties:
+          type: string
+          format: uint64
+      distributed:
+        type: boolean
+      distributedAt:
+        type: string
+        format: date-time
+      remaining:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
+  aumega.rewards.v1beta1.SnapshotPool:
+    type: object
+    properties:
+      poolId:
+        type: string
+        format: uint64
+      rewardsPerToken:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            DecCoin defines a token with a denomination and a decimal amount.
+
+            NOTE: The amount field is an Dec which implements the custom method
+            signatures required by gogoproto.
   aumega.token.v1.MsgApproveAllNftsResponse:
     type: object
     properties:

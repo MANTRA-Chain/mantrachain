@@ -1,0 +1,29 @@
+name: Run unit tests
+
+on:
+  push:
+    branches:
+      - aumega-github-pipelines
+
+env:
+  COSMOS_SDK: ${{ secrets.COSMOS_SDK }}
+  IBC_GO: ${{ secrets.IBC_GO }}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+      - name: Create Configs
+        run: bash .github/scripts/setup-go-private.sh
+      - name: Tidy go dependencies
+        run: go mod tidy
+      - name: Build chain
+        run: make build
+      - name: Run unit tests
+        run: make test-unit
