@@ -177,7 +177,10 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 
 		if !liquidityPool.Disabled {
 			poolCoinSupply := k.liquidityKeeper.GetPoolCoinSupply(ctx, liquidityPool)
-			pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(sdk.NewDecFromInt(poolCoinSupply))
+
+			if poolCoinSupply.IsPositive() {
+				pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(sdk.NewDecFromInt(poolCoinSupply))
+			}
 		}
 	}
 
@@ -229,9 +232,12 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 			}
 
 			poolCoinSupply := k.liquidityKeeper.GetPoolCoinSupply(ctx, liquidityPool)
-			requestedPoolShare := sdk.NewDecFromInt(poolCoinSupply).Quo(pairCummulativeTotalSupply)
-			rewardAmount := requestedPoolShare.Mul(availableBalance)
-			pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(sdk.NewDecFromInt(poolCoinSupply))))
+
+			if poolCoinSupply.IsPositive() {
+				requestedPoolShare := sdk.NewDecFromInt(poolCoinSupply).Quo(pairCummulativeTotalSupply)
+				rewardAmount := requestedPoolShare.Mul(availableBalance)
+				pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(sdk.NewDecFromInt(poolCoinSupply))))
+			}
 		}
 
 		if !balance.IsZero() {
