@@ -21,11 +21,11 @@ service Query {
   
   // Queries a list of FeeToken items.
   rpc FeeToken    (QueryGetFeeTokenRequest) returns (QueryGetFeeTokenResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/txfees/v1/fee_token/{denom}";
+    option (google.api.http).get = "/aumega/txfees/v1/fee_token/{denom}";
   
   }
   rpc FeeTokenAll (QueryAllFeeTokenRequest) returns (QueryAllFeeTokenResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/txfees/v1/fee_token";
+    option (google.api.http).get = "/aumega/txfees/v1/fee_token";
   
   }
 }

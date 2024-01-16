@@ -17,34 +17,34 @@ service Query {
   
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/params";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/params";
 
   }
   
   // Queries a list of Snapshot items.
   rpc Snapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}/{id}";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/snapshot/{pairId}/{id}";
   
   }
   rpc SnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/snapshot/{pairId}";
 
   }
   
   // Queries a list of Provider pairs ids.
   rpc Provider (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/provider/{provider}";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/provider/{provider}";
   }
   rpc ProviderPairs (QueryGetProviderPairsRequest) returns (QueryGetProviderPairsResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/provider-pairs/{provider}";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/provider-pairs/{provider}";
   }
   rpc ProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/provider";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/provider";
   }
   
   // Queries a list of Claim items.
   rpc Rewards (QueryGetRewardsRequest) returns (QueryGetRewardsResponse) {
-    option (google.api.http).get = "/AumegaChain/aumega/rewards/v1beta1/rewards/{provider}/{pairId}";
+    option (google.api.http).get = "/aumega/rewards/v1beta1/rewards/{provider}/{pairId}";
   
   }
 }
