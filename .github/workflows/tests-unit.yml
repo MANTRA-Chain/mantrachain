@@ -3,7 +3,7 @@ name: Run unit tests
 on:
   push:
     branches:
-      - aumega-github-pipelines
+      - develop
 
 env:
   COSMOS_SDK: ${{ secrets.COSMOS_SDK }}
