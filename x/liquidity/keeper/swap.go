@@ -822,8 +822,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, sdk.NewInt(0))
 	collectedSwapFeeAmountFromOrderer := CalculateSwapFeeAmount(ctx, swapFeeRate, order.OfferCoin.Amount)
 
+	var pairCreatorSwapFeeCoin sdk.Coin
+	var rewardsSwapFeeCoin sdk.Coin
+	var refundCoin sdk.Coin
+
 	if order.RemainingOfferCoin.IsPositive() {
-		refundCoin := order.RemainingOfferCoin
+		refundCoin = order.RemainingOfferCoin
 
 		if order.RemainingOfferCoin.IsEqual(order.OfferCoin) {
 			// refund full swap fees back to orderer
@@ -850,11 +854,13 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 		accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(collectedSwapFeeAmountFromOrderer)
 	}
 
+	totalSwapFeeAmt := sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
+
 	if accumulatedSwapFee.IsPositive() {
 		if pairCreatorSwapFeeRatio.IsPositive() {
 			pairCreatorSwapFeeAmt := CalculatePairCreatorSwapFeeAmount(ctx, pairCreatorSwapFeeRatio, accumulatedSwapFee.Amount)
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Sub(pairCreatorSwapFeeAmt)
-			pairCreatorSwapFeeCoin := sdk.NewCoin(accumulatedSwapFee.Denom, pairCreatorSwapFeeAmt)
+			pairCreatorSwapFeeCoin = sdk.NewCoin(accumulatedSwapFee.Denom, pairCreatorSwapFeeAmt)
 
 			if pairCreatorSwapFeeCoin.IsPositive() {
 				// Guard: whitelist account address
@@ -873,7 +879,8 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 		if accumulatedSwapFee.IsPositive() {
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(accumulatedSwapFee)); err != nil {
+			rewardsSwapFeeCoin = accumulatedSwapFee
+			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(rewardsSwapFeeCoin)); err != nil {
 				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return err
 			}
@@ -896,6 +903,10 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			sdk.NewAttribute(types.AttributeKeyOfferCoin, order.OfferCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyRemainingOfferCoin, order.RemainingOfferCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyReceivedCoin, order.ReceivedCoin.String()),
+			sdk.NewAttribute(types.AttributeKeyRefundedCoins, refundCoin.String()),
+			sdk.NewAttribute(types.AttributeKeySwapFeeCoins, totalSwapFeeAmt.String()),
+			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeCoins, pairCreatorSwapFeeCoin.String()),
+			sdk.NewAttribute(types.AttributeKeyRewardsSwapFeeCoins, rewardsSwapFeeCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyStatus, order.Status.String()),
 		),
 	})
