@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHAINID="aumega-9001"
+CHAINID="aumega-testnet-9001"
 HOMEDIR="$HOME/.aumega"
 
 KEYS[0]="validator"

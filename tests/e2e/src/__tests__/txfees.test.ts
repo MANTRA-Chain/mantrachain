@@ -13,6 +13,8 @@ describe('Txfees module', () => {
   let pairId1 = 0
   let pairId2 = 0
 
+  let swapFeeRate = 0
+
   beforeAll(async () => {
     sdk = new AumegaSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
@@ -56,6 +58,11 @@ describe('Txfees module', () => {
     pairId2 = await getPairId(sdk.clientAdmin, "uaum", genCoinDenom(sdk.adminAddress, gasFeesDenom2))
     await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId2), genCoinDenom(sdk.adminAddress, gasFeesDenom2), "100000000", "uaum", "10000000")
 
+
+    const re = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryParams();
+
+    swapFeeRate = Number(re.data.params.swap_fee_rate)
+
     // To set the last price of the pair
     let res = await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder({
       value: {
@@ -64,7 +71,7 @@ describe('Txfees module', () => {
         direction: 1,
         offerCoin: {
           denom: "uaum",
-          amount: "1000000"
+          amount: (1000000 + (1000000 * swapFeeRate)).toString()
         },
         demandCoinDenom: genCoinDenom(sdk.adminAddress, gasFeesDenom1),
         price: '140000000000000000',
@@ -83,7 +90,7 @@ describe('Txfees module', () => {
         direction: 2,
         offerCoin: {
           denom: "uaum",
-          amount: "1000000"
+          amount: (1000000 + (1000000 * swapFeeRate)).toString()
         },
         demandCoinDenom: genCoinDenom(sdk.adminAddress, gasFeesDenom2),
         price: '140000000000000000',

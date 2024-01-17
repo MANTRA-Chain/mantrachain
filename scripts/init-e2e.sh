@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHAINID="aumega-9001"
+CHAINID="aumega-testnet-9001"
 HOMEDIR="$HOME/.aumega"
 KEYRING="test"
 GAS_ADJ=2

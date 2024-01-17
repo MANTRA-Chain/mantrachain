@@ -1,4 +1,4 @@
-import { Client } from '@mantrachain/sdk'
+import { Client } from '@aumega/sdk'
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 import * as dotenv from 'dotenv'
 import { BlockWaiter } from './wait'

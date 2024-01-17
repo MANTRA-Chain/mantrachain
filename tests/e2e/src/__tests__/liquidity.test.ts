@@ -26,6 +26,8 @@ describe('Liquidity module', () => {
   let pairId = 0
   let poolId = 0
 
+  let swapFeeRate = 0
+
   beforeAll(async () => {
     sdk = new AumegaSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
@@ -52,6 +54,10 @@ describe('Liquidity module', () => {
         }
       }
     })
+
+    const re = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryParams();
+
+    swapFeeRate = Number(re.data.params.swap_fee_rate)
   })
 
   describe('Admin', () => {
@@ -373,7 +379,7 @@ describe('Liquidity module', () => {
           direction: OrderDirection.ORDER_DIRECTION_SELL,
           offerCoin: {
             denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
-            amount: "1000000"
+            amount: (1000000 + (1000000 * swapFeeRate)).toString()
           },
           demandCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
           price: '1400000000000000000',
@@ -406,7 +412,7 @@ describe('Liquidity module', () => {
             direction: OrderDirection.ORDER_DIRECTION_SELL,
             offerCoin: {
               denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
-              amount: "1000000"
+              amount: (1000000 + (1000000 * swapFeeRate)).toString()
             },
             demandCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
             amount: '1000000',
@@ -433,7 +439,7 @@ describe('Liquidity module', () => {
           direction: OrderDirection.ORDER_DIRECTION_SELL,
           offerCoin: {
             denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
-            amount: "1000000"
+            amount: (1000000 + (1000000 * swapFeeRate)).toString()
           },
           demandCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
           price: '1500000000000000000',
@@ -470,7 +476,7 @@ describe('Liquidity module', () => {
             direction: OrderDirection.ORDER_DIRECTION_SELL,
             offerCoin: {
               denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
-              amount: "1000000"
+              amount: (1000000 + (1000000 * swapFeeRate)).toString()
             },
             demandCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
             price: '1500000000000000000',
@@ -488,7 +494,7 @@ describe('Liquidity module', () => {
             direction: OrderDirection.ORDER_DIRECTION_SELL,
             offerCoin: {
               denom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
-              amount: "1000000"
+              amount: (1000000 + (1000000 * swapFeeRate)).toString()
             },
             demandCoinDenom: genCoinDenom(sdk.adminAddress, quoteCoinDenom),
             amount: '1000000',

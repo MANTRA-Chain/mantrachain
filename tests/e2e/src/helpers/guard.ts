@@ -1,6 +1,6 @@
 import { AumegaSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
-import { utils, Privileges } from '@mantrachain/sdk'
+import { utils, Privileges } from '@aumega/sdk'
 
 const queryGuardTransferCoins = async (client: any) => {
   const res = await client.AumegaGuardV1.query.queryGuardTransferCoins()

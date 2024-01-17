@@ -8858,7 +8858,7 @@ paths:
                         }
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/params:
+  /aumega/rewards/v1beta1/params:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: AumegaRewardsV1Beta1Params
@@ -8915,7 +8915,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/provider:
+  /aumega/rewards/v1beta1/provider:
     get:
       operationId: AumegaRewardsV1Beta1ProviderAll
       responses:
@@ -9073,7 +9073,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/provider-pairs/{provider}:
+  /aumega/rewards/v1beta1/provider-pairs/{provider}:
     get:
       operationId: AumegaRewardsV1Beta1ProviderPairs
       responses:
@@ -9114,7 +9114,7 @@ paths:
           type: string
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/provider/{provider}:
+  /aumega/rewards/v1beta1/provider/{provider}:
     get:
       summary: Queries a list of Provider pairs ids.
       operationId: AumegaRewardsV1Beta1Provider
@@ -9191,7 +9191,7 @@ paths:
           type: string
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/rewards/{provider}/{pairId}:
+  /aumega/rewards/v1beta1/rewards/{provider}/{pairId}:
     get:
       summary: Queries a list of Claim items.
       operationId: AumegaRewardsV1Beta1Rewards
@@ -9251,7 +9251,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}:
+  /aumega/rewards/v1beta1/snapshot/{pairId}:
     get:
       operationId: AumegaRewardsV1Beta1SnapshotAll
       responses:
@@ -9435,7 +9435,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /AumegaChain/aumega/rewards/v1beta1/snapshot/{pairId}/{id}:
+  /aumega/rewards/v1beta1/snapshot/{pairId}/{id}:
     get:
       summary: Queries a list of Snapshot items.
       operationId: AumegaRewardsV1Beta1Snapshot
@@ -12607,7 +12607,7 @@ paths:
           format: byte
       tags:
         - Query
-  /AumegaChain/aumega/txfees/v1/fee_token:
+  /aumega/txfees/v1/fee_token:
     get:
       operationId: AumegaTxfeesV1FeeTokenAll
       responses:
@@ -12731,7 +12731,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /AumegaChain/aumega/txfees/v1/fee_token/{denom}:
+  /aumega/txfees/v1/fee_token/{denom}:
     get:
       summary: Queries a list of FeeToken items.
       operationId: AumegaTxfeesV1FeeToken
