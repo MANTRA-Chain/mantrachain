@@ -64,11 +64,11 @@ genesis:
         pool_creation_fee:
           - amount: "1000000"
             denom: uaum
-        swap_fee_rate: "0.3"
+        swap_fee_rate: "0.03"
         pair_creator_swap_fee_ratio: "0.66"
     rewards:
       params:
-        distribution_period: 120
+        distribution_period: 60
     lpfarm:
       params:
         private_plan_creation_fee:
