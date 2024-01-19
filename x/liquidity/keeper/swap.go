@@ -835,12 +835,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	if order.RemainingOfferCoin.IsPositive() {
 		refundCoin = sdk.NewCoin(order.RemainingOfferCoin.Denom, order.RemainingOfferCoin.Amount)
 
-		if order.RemainingOfferCoin.IsEqual(order.OfferCoin) {
+		if refundCoin.IsEqual(order.OfferCoin) {
 			// refund full swap fees back to orderer
 			refundCoin.Amount = refundCoin.Amount.Add(collectedSwapFeeAmountFromOrderer)
 		} else {
 			// refund partial swap fees back to orderer and transfer remaining to to swap fee collector address
-			swappedCoin := order.OfferCoin.Sub(order.RemainingOfferCoin)
+			swappedCoin := order.OfferCoin.Sub(refundCoin)
 			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount.Add(collectedSwapFeeAmountFromOrderer))
 
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
