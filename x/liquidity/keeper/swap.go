@@ -231,6 +231,12 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error) {
 	maxPriceLimitRatio := k.GetMaxPriceLimitRatio(ctx)
 	tickPrec := k.GetTickPrecision(ctx)
+	swapFeeRate := k.GetSwapFeeRate(ctx)
+
+	if swapFeeRate.IsPositive() {
+		swapFeeCoin := sdk.NewCoin(swapCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, swapCoin.Amount))
+		swapCoin.Amount = swapCoin.Amount.Sub(swapFeeCoin.Amount)
+	}
 
 	pair, found := k.GetPair(ctx, pairId)
 	if !found {
