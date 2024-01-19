@@ -827,7 +827,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	var refundCoin sdk.Coin
 
 	if order.RemainingOfferCoin.IsPositive() {
-		refundCoin = order.RemainingOfferCoin
+		refundCoin = sdk.NewCoin(order.RemainingOfferCoin.Denom, order.RemainingOfferCoin.Amount)
 
 		if order.RemainingOfferCoin.IsEqual(order.OfferCoin) {
 			// refund full swap fees back to orderer
