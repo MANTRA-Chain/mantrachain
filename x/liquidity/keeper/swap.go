@@ -79,6 +79,7 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 		price = amm.PriceToDownTick(msg.Price, int(tickPrec))
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, msg.Amount))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
+		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
 
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
 			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
@@ -93,10 +94,11 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 		price = amm.PriceToUpTick(msg.Price, int(tickPrec))
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
+		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
 
 		if msg.OfferCoin.Amount.LT(swapFeeCoin.Amount.Add(offerCoin.Amount)) {
 			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
-				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, sdk.NewCoin(msg.OfferCoin.Denom, swapFeeCoin.Amount.Add(offerCoin.Amount)))
+				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
 		}
 	}
 	if types.IsTooSmallOrderAmount(msg.Amount, price) {
@@ -197,6 +199,8 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 		price = amm.PriceToDownTick(lastPrice.Mul(sdk.OneDec().Add(maxPriceLimitRatio)), int(tickPrec))
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, msg.Amount))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
+		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
+
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
 			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
@@ -210,9 +214,11 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 		price = amm.PriceToUpTick(lastPrice.Mul(sdk.OneDec().Sub(maxPriceLimitRatio)), int(tickPrec))
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
+		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
+
 		if msg.OfferCoin.Amount.LT(swapFeeCoin.Amount.Add(offerCoin.Amount)) {
 			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
-				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, sdk.NewCoin(msg.OfferCoin.Denom, swapFeeCoin.Amount.Add(offerCoin.Amount)))
+				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
 		}
 	}
 	if types.IsTooSmallOrderAmount(msg.Amount, price) {
@@ -820,7 +826,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	pairCreatorSwapFeeRatio := k.GetPairCreatorSwapFeeRatio(ctx)
 
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, sdk.NewInt(0))
-	collectedSwapFeeAmountFromOrderer := CalculateSwapFeeAmount(ctx, swapFeeRate, order.OfferCoin.Amount)
+	collectedSwapFeeAmountFromOrderer := CalculateSwapFeeAmount(ctx, swapFeeRate, order.Amount)
 
 	var pairCreatorSwapFeeCoin sdk.Coin
 	var rewardsSwapFeeCoin sdk.Coin
@@ -835,7 +841,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 		} else {
 			// refund partial swap fees back to orderer and transfer remaining to to swap fee collector address
 			swappedCoin := order.OfferCoin.Sub(order.RemainingOfferCoin)
-			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount)
+			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount.Add(collectedSwapFeeAmountFromOrderer))
 
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
 
@@ -843,18 +849,20 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			refundCoin.Amount = refundCoin.Amount.Add(refundableSwapFeeAmt)
 		}
 
-		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(refundCoin)); err != nil {
+		if refundCoin.IsPositive() {
+			// Guard: whitelist account address
+			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
+			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(refundCoin)); err != nil {
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				return err
+			}
 			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
-			return err
 		}
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	} else {
 		accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(collectedSwapFeeAmountFromOrderer)
 	}
 
-	totalSwapFeeAmt := sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
+	totalSwapFeeCoin := sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
 
 	if accumulatedSwapFee.IsPositive() {
 		if pairCreatorSwapFeeRatio.IsPositive() {
@@ -904,7 +912,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			sdk.NewAttribute(types.AttributeKeyRemainingOfferCoin, order.RemainingOfferCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyReceivedCoin, order.ReceivedCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyRefundedCoins, refundCoin.String()),
-			sdk.NewAttribute(types.AttributeKeySwapFeeCoins, totalSwapFeeAmt.String()),
+			sdk.NewAttribute(types.AttributeKeySwapFeeCoins, totalSwapFeeCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeCoins, pairCreatorSwapFeeCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyRewardsSwapFeeCoins, rewardsSwapFeeCoin.String()),
 			sdk.NewAttribute(types.AttributeKeyStatus, order.Status.String()),
