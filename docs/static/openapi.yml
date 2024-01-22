@@ -4919,6 +4919,21 @@ paths:
                          - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
                          - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
                          - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+                    swap_fee_coin:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   description: Order defines an order.
               pagination:
                 type: object
@@ -5403,6 +5418,21 @@ paths:
                          - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
                          - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
                          - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+                    swap_fee_coin:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
                   description: Order defines an order.
               pagination:
                 type: object
@@ -5667,6 +5697,21 @@ paths:
                        - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
                        - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
                        - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+                  swap_fee_coin:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
                 description: Order defines an order.
             description: >-
               QueryOrderResponse is response type for the Query/Order RPC
@@ -67691,6 +67736,18 @@ definitions:
            - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
            - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
            - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+      swap_fee_coin:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
     description: Order defines an order.
   aumega.liquidity.v1beta1.OrderBookPairResponse:
     type: object
@@ -68424,6 +68481,21 @@ definitions:
                - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
                - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
                - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+          swap_fee_coin:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
         description: Order defines an order.
     description: QueryOrderResponse is response type for the Query/Order RPC method.
   aumega.liquidity.v1beta1.QueryOrdersResponse:
@@ -68565,6 +68637,21 @@ definitions:
                  - ORDER_STATUS_COMPLETED: ORDER_STATUS_COMPLETED indicates the order has been fully matched and completed
                  - ORDER_STATUS_CANCELED: ORDER_STATUS_CANCELED indicates the order has been canceled
                  - ORDER_STATUS_EXPIRED: ORDER_STATUS_EXPIRED indicates the order has been expired
+            swap_fee_coin:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
           description: Order defines an order.
       pagination:
         type: object

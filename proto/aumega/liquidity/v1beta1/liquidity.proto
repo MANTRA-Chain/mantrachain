@@ -199,6 +199,8 @@ message Order {
   google.protobuf.Timestamp expire_at = 14 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   OrderStatus status = 15;
+
+  cosmos.base.v1beta1.Coin swap_fee_coin = 16 [(gogoproto.nullable) = false];
 }
 
 // MMOrderIndex defines an index type to quickly find market making orders

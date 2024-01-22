@@ -28,31 +28,32 @@ func (k Keeper) PriceLimits(ctx sdk.Context, lastPrice sdk.Dec) (lowest, highest
 
 // ValidateMsgLimitOrder validates types.MsgLimitOrder with state and returns
 // calculated offer coin and price that is fit into ticks.
-func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
+func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (amt math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
 	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
 	}
 
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInsufficientFunds, "%s is smaller than %s",
 			sdk.NewCoin(msg.OfferCoin.Denom, spendableAmt), msg.OfferCoin)
 	}
 
+	amt = msg.Amount
 	tickPrec := k.GetTickPrecision(ctx)
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
 	swapFeeRate := k.GetSwapFeeRate(ctx)
 
 	if msg.OrderLifespan > maxOrderLifespan {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 			sdkerrors.Wrapf(types.ErrTooLongOrderLifespan, "%s is longer than %s", msg.OrderLifespan, maxOrderLifespan)
 	}
 
 	pair, found := k.GetPair(ctx, msg.PairId)
 	if !found {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
 	}
 
 	var upperPriceLimit, lowerPriceLimit sdk.Dec
@@ -64,57 +65,59 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 	}
 	switch {
 	case msg.Price.GT(upperPriceLimit):
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is higher than %s", msg.Price, upperPriceLimit)
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is higher than %s", msg.Price, upperPriceLimit)
 	case msg.Price.LT(lowerPriceLimit):
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is lower than %s", msg.Price, lowerPriceLimit)
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(types.ErrPriceOutOfRange, "%s is lower than %s", msg.Price, lowerPriceLimit)
 	}
 
 	switch msg.Direction {
 	case types.OrderDirectionBuy:
 		if msg.OfferCoin.Denom != pair.QuoteCoinDenom || msg.DemandCoinDenom != pair.BaseCoinDenom {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					msg.DemandCoinDenom, msg.OfferCoin.Denom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		price = amm.PriceToDownTick(msg.Price, int(tickPrec))
-		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, msg.Amount))
+		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, amt))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
 		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
+		amt = sdk.NewDecFromInt(offerCoin.Amount).Quo(price).Ceil().TruncateInt()
 
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
 		}
 	case types.OrderDirectionSell:
 		if msg.OfferCoin.Denom != pair.BaseCoinDenom || msg.DemandCoinDenom != pair.QuoteCoinDenom {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					msg.OfferCoin.Denom, msg.DemandCoinDenom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		price = amm.PriceToUpTick(msg.Price, int(tickPrec))
-		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
+		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amt)
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
 		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
 
 		if msg.OfferCoin.Amount.LT(swapFeeCoin.Amount.Add(offerCoin.Amount)) {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
-				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, sdk.NewCoin(msg.OfferCoin.Denom, swapFeeCoin.Amount.Add(offerCoin.Amount)))
 		}
 	}
-	if types.IsTooSmallOrderAmount(msg.Amount, price) {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrTooSmallOrder
+	if types.IsTooSmallOrderAmount(amt, price) {
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrTooSmallOrder
 	}
 
-	return offerCoin, swapFeeCoin, price, nil
+	return amt, offerCoin, swapFeeCoin, price, nil
 }
 
 // LimitOrder handles types.MsgLimitOrder and stores types.Order.
 func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Order, error) {
-	offerCoin, swapFeeCoin, price, err := k.ValidateMsgLimitOrder(ctx, msg)
+	amt, offerCoin, swapFeeCoin, price, err := k.ValidateMsgLimitOrder(ctx, msg)
 	if err != nil {
 		return types.Order{}, err
 	}
 
+	msg.Amount = amt
 	refundedCoin := msg.OfferCoin.Sub(offerCoin.Add(swapFeeCoin))
 	pair, _ := k.GetPair(ctx, msg.PairId)
 
@@ -128,7 +131,7 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
-	order := types.NewOrderForLimitOrder(msg, requestId, pair, offerCoin, price, expireAt, ctx.BlockHeight(), msg.Amount.Sub(swapFeeCoin.Amount))
+	order := types.NewOrderForLimitOrder(msg, requestId, pair, offerCoin, price, expireAt, ctx.BlockHeight(), swapFeeCoin)
 	k.SetOrder(ctx, order)
 	k.SetOrderIndex(ctx, order)
 
@@ -148,6 +151,7 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 			sdk.NewAttribute(types.AttributeKeyBatchId, strconv.FormatUint(order.BatchId, 10)),
 			sdk.NewAttribute(types.AttributeKeyExpireAt, order.ExpireAt.Format(time.RFC3339)),
 			sdk.NewAttribute(types.AttributeKeyRefundedCoins, refundedCoin.String()),
+			sdk.NewAttribute(types.AttributeKeySwapFeeCoins, swapFeeCoin.String()),
 		),
 	})
 
@@ -156,76 +160,78 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 
 // ValidateMsgMarketOrder validates types.MsgMarketOrder with state and returns
 // calculated offer coin and price.
-func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
+func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (amt math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
 	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
 	}
 
 	spendable := k.bankKeeper.SpendableCoins(ctx, msg.GetOrderer())
 	if spendableAmt := spendable.AmountOf(msg.OfferCoin.Denom); spendableAmt.LT(msg.OfferCoin.Amount) {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 			sdkerrors.ErrInsufficientFunds, "%s is smaller than %s",
 			sdk.NewCoin(msg.OfferCoin.Denom, spendableAmt), msg.OfferCoin)
 	}
 
+	amt = msg.Amount
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
 	maxPriceLimitRatio := k.GetMaxPriceLimitRatio(ctx)
 	tickPrec := k.GetTickPrecision(ctx)
 	swapFeeRate := k.GetSwapFeeRate(ctx)
 
 	if msg.OrderLifespan > maxOrderLifespan {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 			sdkerrors.Wrapf(types.ErrTooLongOrderLifespan, "%s is longer than %s", msg.OrderLifespan, maxOrderLifespan)
 	}
 
 	pair, found := k.GetPair(ctx, msg.PairId)
 	if !found {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
 	}
 
 	if pair.LastPrice == nil {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrNoLastPrice
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrNoLastPrice
 	}
 	lastPrice := *pair.LastPrice
 
 	switch msg.Direction {
 	case types.OrderDirectionBuy:
 		if msg.OfferCoin.Denom != pair.QuoteCoinDenom || msg.DemandCoinDenom != pair.BaseCoinDenom {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					msg.DemandCoinDenom, msg.OfferCoin.Denom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		price = amm.PriceToDownTick(lastPrice.Mul(sdk.OneDec().Add(maxPriceLimitRatio)), int(tickPrec))
-		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, msg.Amount))
+		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, amt))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
 		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
+		amt = sdk.NewDecFromInt(offerCoin.Amount).Quo(price).Ceil().TruncateInt()
 
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
 		}
 	case types.OrderDirectionSell:
 		if msg.OfferCoin.Denom != pair.BaseCoinDenom || msg.DemandCoinDenom != pair.QuoteCoinDenom {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
 				sdkerrors.Wrapf(types.ErrWrongPair, "denom pair (%s, %s) != (%s, %s)",
 					msg.OfferCoin.Denom, msg.DemandCoinDenom, pair.BaseCoinDenom, pair.QuoteCoinDenom)
 		}
 		price = amm.PriceToUpTick(lastPrice.Mul(sdk.OneDec().Sub(maxPriceLimitRatio)), int(tickPrec))
-		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
+		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amt)
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
 		offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
 
 		if msg.OfferCoin.Amount.LT(swapFeeCoin.Amount.Add(offerCoin.Amount)) {
-			return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
-				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
+			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
+				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, sdk.NewCoin(msg.OfferCoin.Denom, swapFeeCoin.Amount.Add(offerCoin.Amount)))
 		}
 	}
-	if types.IsTooSmallOrderAmount(msg.Amount, price) {
-		return sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrTooSmallOrder
+	if types.IsTooSmallOrderAmount(amt, price) {
+		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, types.ErrTooSmallOrder
 	}
 
-	return offerCoin, swapFeeCoin, price, nil
+	return amt, offerCoin, swapFeeCoin, price, nil
 }
 
 func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error) {
@@ -233,14 +239,14 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin)
 	tickPrec := k.GetTickPrecision(ctx)
 	swapFeeRate := k.GetSwapFeeRate(ctx)
 
-	if swapFeeRate.IsPositive() {
-		swapFeeCoin := sdk.NewCoin(swapCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, swapCoin.Amount))
-		swapCoin.Amount = swapCoin.Amount.Sub(swapFeeCoin.Amount)
-	}
-
 	pair, found := k.GetPair(ctx, pairId)
 	if !found {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
+	}
+
+	if swapFeeRate.IsPositive() {
+		swapFeeCoin := sdk.NewCoin(swapCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, swapCoin.Amount))
+		swapCoin.Amount = swapCoin.Amount.Sub(swapFeeCoin.Amount)
 	}
 
 	if swapCoin.Denom != pair.QuoteCoinDenom && swapCoin.Denom != pair.BaseCoinDenom {
@@ -266,11 +272,12 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin)
 
 // MarketOrder handles types.MsgMarketOrder and stores types.Order.
 func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.Order, error) {
-	offerCoin, swapFeeCoin, price, err := k.ValidateMsgMarketOrder(ctx, msg)
+	amt, offerCoin, swapFeeCoin, price, err := k.ValidateMsgMarketOrder(ctx, msg)
 	if err != nil {
 		return types.Order{}, err
 	}
 
+	msg.Amount = amt
 	refundedCoin := msg.OfferCoin.Sub(offerCoin.Add(swapFeeCoin))
 	pair, _ := k.GetPair(ctx, msg.PairId)
 	// Guard: whitelist account address
@@ -283,7 +290,7 @@ func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.O
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
-	order := types.NewOrderForMarketOrder(msg, requestId, pair, offerCoin, price, expireAt, ctx.BlockHeight(), msg.Amount.Sub(swapFeeCoin.Amount))
+	order := types.NewOrderForMarketOrder(msg, requestId, pair, offerCoin, price, expireAt, ctx.BlockHeight(), swapFeeCoin)
 	k.SetOrder(ctx, order)
 	k.SetOrderIndex(ctx, order)
 
@@ -303,6 +310,7 @@ func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.O
 			sdk.NewAttribute(types.AttributeKeyBatchId, strconv.FormatUint(order.BatchId, 10)),
 			sdk.NewAttribute(types.AttributeKeyExpireAt, order.ExpireAt.Format(time.RFC3339)),
 			sdk.NewAttribute(types.AttributeKeyRefundedCoins, refundedCoin.String()),
+			sdk.NewAttribute(types.AttributeKeySwapFeeCoins, swapFeeCoin.String()),
 		),
 	})
 
@@ -832,7 +840,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	pairCreatorSwapFeeRatio := k.GetPairCreatorSwapFeeRatio(ctx)
 
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, sdk.NewInt(0))
-	collectedSwapFeeAmountFromOrderer := CalculateSwapFeeAmount(ctx, swapFeeRate, order.Amount)
+	collectedSwapFeeAmountFromOrderer := order.SwapFeeCoin.Amount
 
 	var pairCreatorSwapFeeCoin sdk.Coin
 	var rewardsSwapFeeCoin sdk.Coin
