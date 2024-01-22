@@ -81,11 +81,6 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, amount))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
 
-		if swapFeeCoin.IsPositive() {
-			offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
-			amount = sdk.NewDecFromInt(offerCoin.Amount).Quo(price).Ceil().TruncateInt()
-		}
-
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
 			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
 				types.ErrInsufficientOfferCoin, "%s is smaller than %s", msg.OfferCoin, offerCoin.Add(swapFeeCoin))
@@ -211,11 +206,6 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 		price = amm.PriceToDownTick(lastPrice.Mul(sdk.OneDec().Add(maxPriceLimitRatio)), int(tickPrec))
 		offerCoin = sdk.NewCoin(msg.OfferCoin.Denom, amm.OfferCoinAmount(amm.Buy, price, amount))
 		swapFeeCoin = sdk.NewCoin(msg.OfferCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
-
-		if swapFeeCoin.IsPositive() {
-			offerCoin.Amount = offerCoin.Amount.Sub(swapFeeCoin.Amount)
-			amount = sdk.NewDecFromInt(offerCoin.Amount).Quo(price).Ceil().TruncateInt()
-		}
 
 		if msg.OfferCoin.IsLT(offerCoin.Add(swapFeeCoin)) {
 			return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(
