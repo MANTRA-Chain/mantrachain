@@ -137,7 +137,7 @@ func (req *WithdrawRequest) SetStatus(status RequestStatus) {
 }
 
 // NewOrderForLimitOrder returns a new Order from MsgLimitOrder.
-func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64) Order {
+func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64, oamt math.Int) Order {
 	return Order{
 		Type:               OrderTypeLimit,
 		Id:                 id,
@@ -150,7 +150,7 @@ func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin s
 		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, sdk.ZeroInt()),
 		Price:              price,
 		Amount:             msg.Amount,
-		OpenAmount:         msg.Amount,
+		OpenAmount:         oamt,
 		BatchId:            pair.CurrentBatchId,
 		ExpireAt:           expireAt,
 		Status:             OrderStatusNotExecuted,
@@ -158,7 +158,7 @@ func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin s
 }
 
 // NewOrderForMarketOrder returns a new Order from MsgMarketOrder.
-func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64) Order {
+func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64, oamt math.Int) Order {
 	return Order{
 		Type:               OrderTypeMarket,
 		Id:                 id,
@@ -171,7 +171,7 @@ func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin
 		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, sdk.ZeroInt()),
 		Price:              price,
 		Amount:             msg.Amount,
-		OpenAmount:         msg.Amount,
+		OpenAmount:         oamt,
 		BatchId:            pair.CurrentBatchId,
 		ExpireAt:           expireAt,
 		Status:             OrderStatusNotExecuted,

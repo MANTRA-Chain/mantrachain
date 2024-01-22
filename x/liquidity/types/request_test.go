@@ -370,7 +370,7 @@ func TestOrder_Validate(t *testing.T) {
 				orderer, pair.Id, types.OrderDirectionBuy, utils.ParseCoin("1000000denom2"),
 				"denom1", utils.ParseDec("1.0"), newInt(1000000), types.DefaultMaxOrderLifespan)
 			expireAt := utils.ParseTime("2022-01-01T00:00:00Z")
-			order := types.NewOrderForLimitOrder(msg, 1, pair, utils.ParseCoin("1000000denom2"), msg.Price, expireAt, 1)
+			order := types.NewOrderForLimitOrder(msg, 1, pair, utils.ParseCoin("1000000denom2"), msg.Price, expireAt, 1, msg.Amount)
 			tc.malleate(&order)
 			err := order.Validate()
 			if tc.expectedErr == "" {
