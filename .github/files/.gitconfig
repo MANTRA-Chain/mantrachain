@@ -1,5 +1,5 @@
-[url "git@mantrachain-cosmos-sdk.github.com:MantrachainChain/cosmos-sdk"]
-        insteadOf = https://github.com/MantrachainChain/cosmos-sdk
+[url "git@mantra-cosmos-sdk.github.com:MANTRA-Finance/cosmos-sdk"]
+        insteadOf = https://github.com/MANTRA-Finance/cosmos-sdk
 
-[url "git@mantrachain-ibc-go.github.com:MantrachainChain/ibc-go"]
-        insteadOf = https://github.com/MantrachainChain/ibc-go
+[url "git@mantra-ibc-go.github.com:MANTRA-Finance/ibc-go"]
+        insteadOf = https://github.com/MANTRA-Finance/ibc-go

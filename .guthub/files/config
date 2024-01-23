@@ -1,8 +1,0 @@
-Host mantrachain-cosmos-sdk.github.com
-        HostName github.com
-        IdentityFile ~/.ssh/cosmos-sdk
-        IdentitiesOnly yes
-Host mantrachain-ibc-go.github.com
-        HostName github.com
-        IdentityFile ~/.ssh/ibc-go
-        IdentitiesOnly yes
