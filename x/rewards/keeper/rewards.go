@@ -95,7 +95,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 					providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
 
 					if params != nil && !params.IsQuery {
-						snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoinsFromCoins(sdk.NewCoin(reward.Denom, reward.Amount.TruncateInt())))
+						snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoins(reward))
 						k.SetSnapshot(ctx, snapshot)
 					}
 				}
