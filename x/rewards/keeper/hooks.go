@@ -57,10 +57,10 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 	}
 
 	// Update the snapshot pools
-	poolIdx, found := lastSnapshot.PoolIdToIdx[poolId]
+	_, found = lastSnapshot.PoolIdToIdx[poolId]
 	if !found {
 		// Create a new snapshot pool
-		poolIdx = uint64(len(lastSnapshot.Pools))
+		poolIdx := uint64(len(lastSnapshot.Pools))
 		lastSnapshot.Pools = append(lastSnapshot.Pools, &types.SnapshotPool{
 			PoolId:          poolId,
 			RewardsPerToken: sdk.NewDecCoins(),
