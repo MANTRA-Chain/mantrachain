@@ -857,9 +857,9 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			// refund full swap fees back to orderer
 			refundCoin.Amount = refundCoin.Amount.Add(collectedSwapFeeAmountFromOrderer)
 		} else {
-			// refund partial swap fees back to orderer and transfer remaining to to swap fee collector address
+			// refund partial swap fees back to orderer and transfer remaining to swap fee collector address
 			swappedCoin := order.OfferCoin.Sub(refundCoin)
-			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount.Add(collectedSwapFeeAmountFromOrderer))
+			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount)
 
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
 
@@ -905,8 +905,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 		if accumulatedSwapFee.IsPositive() {
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-			rewardsSwapFeeCoin = accumulatedSwapFee
-			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(rewardsSwapFeeCoin)); err != nil {
+			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(accumulatedSwapFee)); err != nil {
 				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return err
 			}
