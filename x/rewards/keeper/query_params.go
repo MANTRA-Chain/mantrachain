@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

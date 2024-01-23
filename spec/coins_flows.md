@@ -1,4 +1,4 @@
-# Aumega Coins Flows
+# Mantrachain Coins Flows
 
 ## Tx Fees
 
@@ -332,7 +332,7 @@ When a validator receives rewards, the number of tokens is increased by the rewa
 
 For more information on the staking mechanism, see the [Cosmos SDK docs](https://docs.cosmos.network/v0.47/modules/staking).
 
-## Aumega Additional Modules
+## Mantrachain Additional Modules
 
 ### TxFees Module
 

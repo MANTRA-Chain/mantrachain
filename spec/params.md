@@ -1,4 +1,4 @@
-# Aumega Modules Params
+# Mantrachain Modules Params
 
 ## Guard Module
 
@@ -298,7 +298,7 @@ The `x/bank` contains the following parameters:
 ### Distribution
 
 - `community_tax` - the tax that gets allocated to the community pool // 2%
-- `withdra_addr_enabled` - probably related to aumegad tx distribution set-withdraw-addr // true
+- `withdra_addr_enabled` - probably related to mantrachaind tx distribution set-withdraw-addr // true
 
 ### gov
 

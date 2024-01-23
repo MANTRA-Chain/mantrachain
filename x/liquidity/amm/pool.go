@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/AumegaChain/aumega/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 )
 
 var (

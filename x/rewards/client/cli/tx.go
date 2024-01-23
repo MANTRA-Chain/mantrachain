@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 )
 
 var (

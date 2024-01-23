@@ -13,9 +13,9 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/AumegaChain/aumega/x/token/client/cli"
-	"github.com/AumegaChain/aumega/x/token/keeper"
-	"github.com/AumegaChain/aumega/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/token/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"

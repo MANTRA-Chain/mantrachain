@@ -10,8 +10,8 @@ import (
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/AumegaChain/aumega/types"
-	"github.com/AumegaChain/aumega/x/liquidity/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func TestMsgCreatePair(t *testing.T) {

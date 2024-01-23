@@ -1,11 +1,11 @@
-import { Client } from '@aumega/sdk'
+import { Client } from '@mantrachain/sdk'
 import { DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 import * as dotenv from 'dotenv'
 import { BlockWaiter } from './wait'
 
 dotenv.config()
 
-export class AumegaSdk {
+export class MantrachainSdk {
   clientValidator: any
   clientRecipient: any
   clientAdmin: any
@@ -19,13 +19,13 @@ export class AumegaSdk {
 
   async init(host = 'http://127.0.0.1:1317', rpc = 'http://127.0.0.1:26657', ws = 'ws://127.0.0.1:26657') {
     this.validatorWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.VALIDATOR_MNEMONIC!, {
-      prefix: "aumega",
+      prefix: "mantrachain",
     })
     this.recipientWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.RECIPIENT_MNEMONIC!, {
-      prefix: "aumega",
+      prefix: "mantrachain",
     })
     this.adminWallet = await DirectSecp256k1HdWallet.fromMnemonic(process.env.ADMIN_MNEMONIC!, {
-      prefix: "aumega",
+      prefix: "mantrachain",
     })
 
     this.validatorAddress = (await this.validatorWallet.getAccounts())[0].address

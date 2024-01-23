@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/AumegaChain/aumega/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 func (suite *KeeperTestSuite) TestDidDocumentKeeperSetAndGet() {
@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestDidDocumentKeeperSetAndGet() {
 		{
 			"data stored successfully",
 			func() types.DidDocument {
-				dd, _ := types.NewDidDocument("did:aumega:subject")
+				dd, _ := types.NewDidDocument("did:mantrachain:subject")
 				return dd
 			},
 			true,

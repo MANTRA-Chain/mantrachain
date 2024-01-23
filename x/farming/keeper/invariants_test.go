@@ -4,10 +4,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/AumegaChain/aumega/types"
-	"github.com/AumegaChain/aumega/x/farming"
-	farmingkeeper "github.com/AumegaChain/aumega/x/farming/keeper"
-	"github.com/AumegaChain/aumega/x/farming/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming"
+	farmingkeeper "github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 func (suite *KeeperTestSuite) TestPositiveStakingAmountInvariant() {

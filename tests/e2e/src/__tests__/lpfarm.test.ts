@@ -1,10 +1,10 @@
-import { AumegaSdk } from '../helpers/sdk'
+import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory"
 import { mintGuardSoulBondNft } from '../helpers/token'
 import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 
 describe('Lpfarm module', () => {
-  let sdk: AumegaSdk
+  let sdk: MantrachainSdk
 
   let baseCoinDenom = 'liquidity' + new Date().getTime().toString()
   // with this we manipulate the time and space
@@ -17,13 +17,13 @@ describe('Lpfarm module', () => {
   let poolId
 
   beforeAll(async () => {
-    sdk = new AumegaSdk()
+    sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, baseCoinDenom)
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, quoteCoinDenom)
 
-    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -33,7 +33,7 @@ describe('Lpfarm module', () => {
       }
     })
 
-    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -66,7 +66,7 @@ describe('Lpfarm module', () => {
     })
 
 
-    await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePair({
+    await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePair({
       value: {
         creator: sdk.adminAddress,
         baseCoinDenom: genCoinDenom(sdk.adminAddress, baseCoinDenom),
@@ -74,11 +74,11 @@ describe('Lpfarm module', () => {
       }
     })
 
-    const allPairs = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPairs()
+    const allPairs = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPairs()
     const lastPair = allPairs.data.pairs.pop()
     pairId = lastPair.id
 
-    await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgCreatePool(
+    await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgCreatePool(
       {
         value: {
           creator: sdk.adminAddress,
@@ -97,14 +97,14 @@ describe('Lpfarm module', () => {
       }
     )
 
-    const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPools({
+    const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPools({
       pair_id: pairId.toString()
     })
 
     const poolIndex = resp.data.pools.length - 1
     poolId = resp.data.pools[poolIndex].id
 
-    await sdk.clientRecipient.AumegaLiquidityV1Beta1.tx.sendMsgDeposit(
+    await sdk.clientRecipient.MantrachainLiquidityV1Beta1.tx.sendMsgDeposit(
       {
         value: {
           depositor: sdk.recipientAddress,
@@ -126,11 +126,11 @@ describe('Lpfarm module', () => {
 
   describe('User', () => {
     test('should throw when trying to create private farming plan', async () => {
-      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
 
       const pool = resp.data.pool
 
-      const res = sdk.clientRecipient.AumegaLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
+      const res = sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
           creator: sdk.recipientAddress,
           description: 'money',
@@ -155,10 +155,10 @@ describe('Lpfarm module', () => {
     })
 
     test('should be able to stake its pool coins', async () => {
-      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
       const pool = resp.data.pool
 
-      await sdk.clientAdmin.AumegaLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
+      await sdk.clientAdmin.MantrachainLpfarmV1Beta1.tx.sendMsgCreatePrivatePlan({
         value: {
           creator: sdk.adminAddress,
           description: 'money',
@@ -179,7 +179,7 @@ describe('Lpfarm module', () => {
         }
       })
 
-      const plan = await sdk.clientAdmin.AumegaLpfarmV1Beta1.query.queryPlans()
+      const plan = await sdk.clientAdmin.MantrachainLpfarmV1Beta1.query.queryPlans()
       const lastPlan = plan.data.plans.pop()
       const planFarmingPoolAddress = lastPlan.farming_pool_address
 
@@ -194,7 +194,7 @@ describe('Lpfarm module', () => {
         }
       })
 
-      await sdk.clientRecipient.AumegaLpfarmV1Beta1.tx.sendMsgFarm({
+      await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgFarm({
         value: {
           farmer: sdk.recipientAddress,
           coin: {
@@ -204,7 +204,7 @@ describe('Lpfarm module', () => {
         }
       })
 
-      const position = await sdk.clientRecipient.AumegaLpfarmV1Beta1.query.queryPosition(
+      const position = await sdk.clientRecipient.MantrachainLpfarmV1Beta1.query.queryPosition(
         sdk.recipientAddress, pool.pool_coin_denom
       )
 
@@ -216,12 +216,12 @@ describe('Lpfarm module', () => {
         sdk.recipientAddress, { denom: 'uaum' }
       )
 
-      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
       const pool = resp.data.pool
 
       await new Promise((r) => setTimeout(r, 7000))
 
-      await sdk.clientRecipient.AumegaLpfarmV1Beta1.tx.sendMsgHarvest({
+      await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgHarvest({
         value: {
           farmer: sdk.recipientAddress,
           denom: pool.pool_coin_denom
@@ -237,10 +237,10 @@ describe('Lpfarm module', () => {
     })
 
     test('should be able to unfarm his pool tokens', async () => {
-      const resp = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryPool(poolId)
+      const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
       const pool = resp.data.pool
 
-      await sdk.clientRecipient.AumegaLpfarmV1Beta1.tx.sendMsgUnfarm({
+      await sdk.clientRecipient.MantrachainLpfarmV1Beta1.tx.sendMsgUnfarm({
         value: {
           farmer: sdk.recipientAddress,
           coin: {

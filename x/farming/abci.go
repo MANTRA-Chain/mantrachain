@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/x/farming/keeper"
-	"github.com/AumegaChain/aumega/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {

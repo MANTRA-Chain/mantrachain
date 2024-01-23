@@ -1,4 +1,4 @@
-# Aumega Transactions Flows
+# Mantrachain Transactions Flows
 
 ```mermaid
 sequenceDiagram

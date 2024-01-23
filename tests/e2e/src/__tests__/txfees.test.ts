@@ -1,10 +1,10 @@
-import { AumegaSdk } from '../helpers/sdk'
+import { MantrachainSdk } from '../helpers/sdk'
 import { createDenomIfNotExists, genCoinDenom } from "../helpers/coinfactory"
 import { createPairIfNotExists, createPoolIfNotExists, getPairId, getPoolId } from "../helpers/liquidity"
 import { queryBalance, sendCoins } from '../helpers/bank'
 
 describe('Txfees module', () => {
-  let sdk: AumegaSdk
+  let sdk: MantrachainSdk
 
   let testDenom = 'txfees' + new Date().getTime().toString()
   let gasFeesDenom1 = 'txfees' + new Date().getTime().toString() + 1
@@ -16,10 +16,10 @@ describe('Txfees module', () => {
   let swapFeeRate = 0
 
   beforeAll(async () => {
-    sdk = new AumegaSdk()
+    sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
-    await sdk.clientAdmin.AumegaGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+    await sdk.clientAdmin.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
       value: {
         creator: sdk.adminAddress,
         enabled: false
@@ -30,7 +30,7 @@ describe('Txfees module', () => {
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, gasFeesDenom1)
     await createDenomIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, gasFeesDenom2)
 
-    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -40,7 +40,7 @@ describe('Txfees module', () => {
       }
     })
 
-    await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -59,12 +59,12 @@ describe('Txfees module', () => {
     await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId2), genCoinDenom(sdk.adminAddress, gasFeesDenom2), "100000000", "uaum", "10000000")
 
 
-    const re = await sdk.clientAdmin.AumegaLiquidityV1Beta1.query.queryParams();
+    const re = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryParams();
 
     swapFeeRate = Number(re.data.params.swap_fee_rate)
 
     // To set the last price of the pair
-    let res = await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder({
+    let res = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgLimitOrder({
       value: {
         orderer: sdk.adminAddress,
         pairId: pairId1,
@@ -83,7 +83,7 @@ describe('Txfees module', () => {
     expect(res.code).toBe(0)
 
     // To set the last price of the pair
-    res = await sdk.clientAdmin.AumegaLiquidityV1Beta1.tx.sendMsgLimitOrder({
+    res = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.tx.sendMsgLimitOrder({
       value: {
         orderer: sdk.adminAddress,
         pairId: pairId2,
@@ -106,7 +106,7 @@ describe('Txfees module', () => {
   })
 
   afterAll(async () => {
-    await sdk.clientAdmin.AumegaGuardV1.tx.sendMsgUpdateGuardTransferCoins({
+    await sdk.clientAdmin.MantrachainGuardV1.tx.sendMsgUpdateGuardTransferCoins({
       value: {
         creator: sdk.adminAddress,
         enabled: true
@@ -115,7 +115,7 @@ describe('Txfees module', () => {
   })
 
   test('Should return error when try to pay gas fees with non-native token', async () => {
-    await expect(sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -136,7 +136,7 @@ describe('Txfees module', () => {
   })
 
   test('Should pay gas fees with non-native token for pair: non native coin/native coin', async () => {
-    let res = await sdk.clientAdmin.AumegaTxfeesV1.tx.sendMsgCreateFeeToken({
+    let res = await sdk.clientAdmin.MantrachainTxfeesV1.tx.sendMsgCreateFeeToken({
       value: {
         creator: sdk.adminAddress,
         denom: genCoinDenom(sdk.adminAddress, gasFeesDenom1),
@@ -149,7 +149,7 @@ describe('Txfees module', () => {
     const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
     const currNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom1))
 
-    res = await sdk.clientRecipient.AumegaTokenV1.tx.sendMsgCreateNftCollection({
+    res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
       value: {
         creator: sdk.recipientAddress,
         collection: {
@@ -187,7 +187,7 @@ describe('Txfees module', () => {
   })
 
   test('Should pay gas fees with non-native token for pair: native coin/non native coin', async () => {
-    let res = await sdk.clientAdmin.AumegaTxfeesV1.tx.sendMsgCreateFeeToken({
+    let res = await sdk.clientAdmin.MantrachainTxfeesV1.tx.sendMsgCreateFeeToken({
       value: {
         creator: sdk.adminAddress,
         denom: genCoinDenom(sdk.adminAddress, gasFeesDenom2),
@@ -200,7 +200,7 @@ describe('Txfees module', () => {
     const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
     const currNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom2))
 
-    res = await sdk.clientRecipient.AumegaTokenV1.tx.sendMsgCreateNftCollection({
+    res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
       value: {
         creator: sdk.recipientAddress,
         collection: {

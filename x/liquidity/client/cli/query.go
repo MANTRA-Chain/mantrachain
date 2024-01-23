@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/AumegaChain/aumega/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -314,7 +314,7 @@ func NewQueryPoolCmd() *cobra.Command {
 Example:
 $ %s query %s pool 1
 $ %s query %s pool --pool-coin-denom=pool1
-$ %s query %s pool --reserve-address=aumega...
+$ %s query %s pool --reserve-address=mantrachain...
 `,
 				version.AppName, types.ModuleName,
 				version.AppName, types.ModuleName,
@@ -596,8 +596,8 @@ func NewQueryOrdersCmd() *cobra.Command {
 			fmt.Sprintf(`Query for all orders in the pair.
 
 Example:
-$ %s query %s orders aumega...
-$ %s query %s orders --pair-id=1 aumega...
+$ %s query %s orders mantrachain...
+$ %s query %s orders --pair-id=1 mantrachain...
 $ %s query %s orders --pair-id=1
 `,
 				version.AppName, types.ModuleName,

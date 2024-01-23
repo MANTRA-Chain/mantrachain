@@ -8,14 +8,14 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/AumegaChain/aumega/app/params"
-	"github.com/AumegaChain/aumega/x/guard/keeper"
-	guardtestutil "github.com/AumegaChain/aumega/x/guard/testutil"
-	"github.com/AumegaChain/aumega/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/app/params"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
+	guardtestutil "github.com/MANTRA-Finance/mantrachain/x/guard/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/AumegaChain/aumega/testutil"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"

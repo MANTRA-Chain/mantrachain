@@ -15,9 +15,9 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@aumega/sdk@file:../../../aumega-js-sdk":
+"@mantrachain/sdk@file:../../../mantrachain-js-sdk":
   version "1.0.0"
-  resolved "file:../../../aumega-js-sdk"
+  resolved "file:../../../mantrachain-js-sdk"
   dependencies:
     "@cosmjs/launchpad" "0.27.0"
     "@cosmjs/proto-signing" "0.27.0"

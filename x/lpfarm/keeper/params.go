@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // GetParams returns the parameters for the module.

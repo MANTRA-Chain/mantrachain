@@ -29,7 +29,7 @@ The plan's termination address is set to the plan creator.
 CLI command:
 
 ```bash
-aumegad tx lpfarm create-private-plan [description] [start-time] [end-time] [reward-allocations...] [flags]
+mantrachaind tx lpfarm create-private-plan [description] [start-time] [end-time] [reward-allocations...] [flags]
 ```
 
 ## Terminate Private Plan
@@ -51,7 +51,7 @@ Terminate a private farming plan.
 CLI command:
 
 ```bash
-aumegad tx lpfarm terminate-private-plan [plan-id] [flags]
+mantrachaind tx lpfarm terminate-private-plan [plan-id] [flags]
 ```
 
 ## Farm
@@ -70,7 +70,7 @@ Add a new farming position to an existing farming plan.
 CLI command:
 
 ```bash
-aumegad tx lpfarm farm [coin] [flags]
+mantrachaind tx lpfarm farm [coin] [flags]
 ```
 
 ## Unfarm
@@ -91,7 +91,7 @@ Remove an existing farming position from an existing farming plan.
 CLI command:
 
 ```bash
-aumegad tx lpfarm unfarm [coin] [flags]
+mantrachaind tx lpfarm unfarm [coin] [flags]
 ```
 
 ## Harvest
@@ -109,5 +109,5 @@ Withdraw farming rewards from an existing farming plan.
 CLI command:
 
 ```bash
-aumegad tx lpfarm harvest [denom] [flags]
+mantrachaind tx lpfarm harvest [denom] [flags]
 ```

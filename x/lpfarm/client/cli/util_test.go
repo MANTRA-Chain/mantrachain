@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil"
 	"github.com/stretchr/testify/require"
 
-	mantratestutil "github.com/AumegaChain/aumega/testutil"
-	"github.com/AumegaChain/aumega/x/lpfarm/client/cli"
+	mantratestutil "github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/client/cli"
 )
 
 func TestParseFarmingPlanProposal(t *testing.T) {

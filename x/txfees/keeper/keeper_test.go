@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/AumegaChain/aumega/testutil"
-	"github.com/AumegaChain/aumega/x/txfees/keeper"
-	txfeestestutil "github.com/AumegaChain/aumega/x/txfees/testutil"
-	"github.com/AumegaChain/aumega/x/txfees/types"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	txfeestestutil "github.com/MANTRA-Finance/mantrachain/x/txfees/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"

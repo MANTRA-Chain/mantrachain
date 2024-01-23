@@ -34,10 +34,10 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
 
-	chain "github.com/AumegaChain/aumega/app"
-	"github.com/AumegaChain/aumega/app/params"
-	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
-	guardtypes "github.com/AumegaChain/aumega/x/guard/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/app/params"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 const (
