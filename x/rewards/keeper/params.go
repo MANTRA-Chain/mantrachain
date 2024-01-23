@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/AumegaChain/aumega/testutil/nullify"
-	"github.com/AumegaChain/aumega/x/txfees/types"
+	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 )
 
 // Prevent strconv unused error

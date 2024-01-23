@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/AumegaChain/aumega/x/txfees/types"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

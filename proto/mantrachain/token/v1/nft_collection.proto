@@ -1,0 +1,22 @@
+syntax = "proto3";
+package mantrachain.token.v1;
+
+import "gogoproto/gogo.proto";
+import "mantrachain/token/v1/common.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
+option (gogoproto.equal_all) = true;
+
+message NftCollection {
+  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""];
+  string id = 2 [(gogoproto.moretags) = "yaml:\"id\""];
+  repeated TokenImage images = 3 [(gogoproto.moretags) = "yaml:\"images\""];
+  string url = 4 [(gogoproto.moretags) = "yaml:\"url\""];
+  repeated TokenLink links = 5 [(gogoproto.moretags) = "yaml:\"links\""];
+  repeated TokenOption options = 6 [(gogoproto.moretags) = "yaml:\"options\""];
+  string category = 7 [(gogoproto.moretags) = "yaml:\"category\""];
+  bytes creator = 8 [
+    (gogoproto.moretags) = "yaml:\"creator\"",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}

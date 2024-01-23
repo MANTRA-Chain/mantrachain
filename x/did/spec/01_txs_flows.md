@@ -24,7 +24,7 @@ Creates a new did document and metadata.
 CLI command:
 
 ```bash
-aumegad tx did create-did [id] [flags]
+mantrachaind tx did create-did [id] [flags]
 ```
 
 ## Update Did Document
@@ -62,7 +62,7 @@ Adds a new verification method and related verification relationships to a did d
 CLI command:
 
 ```bash
-aumegad tx did add-verification-method [id] [pubkey] [flags]
+mantrachaind tx did add-verification-method [id] [pubkey] [flags]
 ```
 
 ## Revoke Verification
@@ -84,7 +84,7 @@ Removes a verification method and related verification relationships from a did 
 CLI command:
 
 ```bash
-aumegad tx did revoke-verification-method [did_id] [verification_method_id_fragment] [flags]
+mantrachaind tx did revoke-verification-method [did_id] [verification_method_id_fragment] [flags]
 ```
 
 ## Set Verification Relationships
@@ -106,7 +106,7 @@ Overwrites the verification relationships for a verification methods of a did do
 CLI command:
 
 ```bash
-aumegad tx did set-verification-relationship [did_id] [verification_method_id_fragment] --relationship NAME [--relationship NAME ...] [flags]
+mantrachaind tx did set-verification-relationship [did_id] [verification_method_id_fragment] --relationship NAME [--relationship NAME ...] [flags]
 ```
 
 ## Add Service
@@ -128,7 +128,7 @@ Adds a new service to a did document.
 CLI command:
 
 ```bash
-aumegad tx did add-service [id] [service_id] [type] [endpoint] [flags]
+mantrachaind tx did add-service [id] [service_id] [type] [endpoint] [flags]
 ```
 
 ## Delete Service
@@ -150,7 +150,7 @@ Removes a service from a did document.
 CLI command:
 
 ```bash
-aumegad tx did delete-service [id] [service-id] [flags]
+mantrachaind tx did delete-service [id] [service-id] [flags]
 ```
 
 ## Add Controller
@@ -172,7 +172,7 @@ Adds a new controller to a did document.
 CLI command:
 
 ```bash
-aumegad tx did add-controller [id] [controllerAddress] [flags]
+mantrachaind tx did add-controller [id] [controllerAddress] [flags]
 ```
 
 ## Delete Controller
@@ -194,5 +194,5 @@ Removes a controller from a did document.
 CLI command:
 
 ```bash
-aumegad tx did delete-controller [id] [controllerAddress] [flags]
+mantrachaind tx did delete-controller [id] [controllerAddress] [flags]
 ```

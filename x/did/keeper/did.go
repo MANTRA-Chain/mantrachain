@@ -7,7 +7,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 func (k Keeper) SetDidDocument(ctx sdk.Context, key []byte, document types.DidDocument) {

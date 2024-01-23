@@ -10,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/AumegaChain/aumega/x/liquidity/amm"
-	"github.com/AumegaChain/aumega/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func CalculatePairCreatorSwapFeeAmount(ctx sdk.Context, pairCreatorSwapFeeRatio sdk.Dec, accumulatedSwapFee math.Int) math.Int {

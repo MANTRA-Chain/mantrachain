@@ -20,13 +20,13 @@ end
 CLI command:
 
 ```bash
-aumegad tx liquidity create-pair [base-coin-denom] [quote-coin-denom] [flags]
+mantrachaind tx liquidity create-pair [base-coin-denom] [quote-coin-denom] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx liquidity create-pair factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx liquidity create-pair factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Create Basic Pool/Create Ranged Pool
@@ -54,21 +54,21 @@ end
 CLI commands:
 
 ```bash
-aumegad tx liquidity create-pool [pair-id] [deposit-coins] [flags]
+mantrachaind tx liquidity create-pool [pair-id] [deposit-coins] [flags]
 ```
 
 ```bash
-aumegad tx liquidity create-ranged-pool [pair-id] [deposit-coins] [min-price] [max-price] [initial-price] [flags]
+mantrachaind tx liquidity create-ranged-pool [pair-id] [deposit-coins] [min-price] [max-price] [initial-price] [flags]
 ```
 
 Examples:
 
 ```bash
-aumegad tx liquidity create-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx liquidity create-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ```bash
-aumegad tx liquidity create-ranged-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc 0.9 1.1 1 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx liquidity create-ranged-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc 0.9 1.1 1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Deposit
@@ -87,13 +87,13 @@ Liquidity module-->>-Creator: Success
 CLI command:
 
 ```bash
-aumegad tx liquidity deposit [pool-id] [deposit-coins] [flags]
+mantrachaind tx liquidity deposit [pool-id] [deposit-coins] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx liquidity deposit 1 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx liquidity deposit 1 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Withdraw
@@ -112,13 +112,13 @@ Liquidity module-->>-Creator: Success
 CLI command:
 
 ```bash
-aumegad tx liquidity withdraw [pool-id] [pool-coin] [flags]
+mantrachaind tx liquidity withdraw [pool-id] [pool-coin] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx liquidity withdraw 1 1000pool1 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx liquidity withdraw 1 1000pool1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Limit Order
@@ -138,7 +138,7 @@ Create limit order.
 CLI command:
 
 ```bash
-aumegad tx liquidity limit-order [pair-id] [direction] [offer-coin] [demand-coin-denom] [price] [amount] [flags]
+mantrachaind tx liquidity limit-order [pair-id] [direction] [offer-coin] [demand-coin-denom] [price] [amount] [flags]
 ```
 
 ## Market Order
@@ -158,7 +158,7 @@ Create market order.
 CLI command:
 
 ```bash
-aumegad tx liquidity market-order [pair-id] [direction] [offer-coin] [demand-coin-denom] [amount] [flags]
+mantrachaind tx liquidity market-order [pair-id] [direction] [offer-coin] [demand-coin-denom] [amount] [flags]
 ```
 
 ## MM Order
@@ -178,7 +178,7 @@ Create mm order.
 CLI command:
 
 ```bash
-aumegad tx liquidity mm-order [pair-id] [max-sell-price] [min-sell-price] [sell-amount] [max-buy-price] [min-buy-price] [buy-amount] [flags]
+mantrachaind tx liquidity mm-order [pair-id] [max-sell-price] [min-sell-price] [sell-amount] [max-buy-price] [min-buy-price] [buy-amount] [flags]
 ```
 
 ## Cancel Order
@@ -195,7 +195,7 @@ Cancel order.
 CLI command:
 
 ```bash
-aumegad tx liquidity cancel-order [pair-id] [order-id] [flags]
+mantrachaind tx liquidity cancel-order [pair-id] [order-id] [flags]
 ```
 
 ## Cancel All Orders
@@ -213,7 +213,7 @@ Cancel all orders.
 CLI command:
 
 ```bash
-aumegad tx liquidity cancel-all-orders [pair-ids] [flags]
+mantrachaind tx liquidity cancel-all-orders [pair-ids] [flags]
 ```
 
 ## Cancel MM Order
@@ -231,5 +231,5 @@ Cancel mm order.
 CLI command:
 
 ```bash
-aumegad tx liquidity cancel-mm-order [pair-id] [flags]
+mantrachaind tx liquidity cancel-mm-order [pair-id] [flags]
 ```

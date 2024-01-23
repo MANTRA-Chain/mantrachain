@@ -1,4 +1,4 @@
-# CosmWasm & Aumega Tutorial
+# CosmWasm & Mantrachain Tutorial
 
 ## Setup
 
@@ -46,13 +46,13 @@ curl https://get.ignite.com/cli!  |  bash
 Clone the chain:
 
 ```bash
-git clone https://github.com/AumegaChain/aumega
+git clone https://github.com/MANTRA-Finance/mantrachain
 ```
 
 Build the chain:
 
 ```bash
-cd aumega
+cd mantrachain
 make build
 ```
 
@@ -68,7 +68,7 @@ If you have issues with the chain not finding `libwasmvm.x86_64.so` you can inst
 sudo wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v1.3.0/libwasmvm.x86_64.so
 ```
 
-(Optionally) You can enable the aumega guard module:
+(Optionally) You can enable the mantrachain guard module:
 
 ```bash
 ./scripts/init-guard.sh
@@ -136,19 +136,19 @@ cd ..
 Set some environment variables:
 
 ```bash
-CHAINID="aumega-9001"
-HOMEDIR="$HOME/.aumega"
+CHAINID="mantrachain-9001"
+HOMEDIR="$HOME/.mantrachain"
 KEYRING="test"
 GAS_ADJ=2
 GAS_PRICE=0.0002uaum
 ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID="account_privileges_guard_nft_collection"
-ADMIN_WALLET=$(./build/aumegad keys show admin -a --keyring-backend $KEYRING --home "$HOMEDIR")
+ADMIN_WALLET=$(./build/mantrachaind keys show admin -a --keyring-backend $KEYRING --home "$HOMEDIR")
 ```
 
 Deploy the contract code on chain:
 
 ```bash
-./build/aumegad tx wasm store ./$CW_PROJECT_NAME/artifacts/$CW_PROJECT_NAME.wasm --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+./build/mantrachaind tx wasm store ./$CW_PROJECT_NAME/artifacts/$CW_PROJECT_NAME.wasm --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 ```
 
 You should see the tx hash output, e.g.
@@ -161,7 +161,7 @@ txhash: 76D3AFAC4382D3ACA42854C859360FBCED8DFF58FFD062DBE07CE1A4BEACD60C
 Store your contract code-id in an environment variable where `TX_HASH` should be the tx hash from the previous step:
 
 ```bash
-CODE_ID=$(./build/aumega query tx {TX_HASH} --output json | jq -r '.logs[0].events[-1].attributes[0].value')
+CODE_ID=$(./build/mantrachain query tx {TX_HASH} --output json | jq -r '.logs[0].events[-1].attributes[0].value')
 ```
 
 Set the init contract params:
@@ -173,13 +173,13 @@ INIT={\"count\":0}
 Instantiate the contract where `SOME_LABEL` should be your smart contract label, e.g. cw-20:
 
 ```bash
-./build/aumegad tx wasm instantiate $CODE_ID "$INIT" --label "{SOME_LABEL}" --admin admin --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+./build/mantrachaind tx wasm instantiate $CODE_ID "$INIT" --label "{SOME_LABEL}" --admin admin --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 ```
 
 Set the contract address to environment variable:
 
 ```bash
-CONTRACT_ADDRESS=$(./build/aumegad query wasm list-contract-by-code $CODE_ID --output json | jq -r '.contracts[0]')
+CONTRACT_ADDRESS=$(./build/mantrachaind query wasm list-contract-by-code $CODE_ID --output json | jq -r '.contracts[0]')
 ```
 
 ## Send some amount of custom coin to the contract
@@ -193,13 +193,13 @@ Create a denom where `CUSTOM_COIN_SUBDENOM` should be the subdenom of your custo
 ```bash
 CUSTOM_COIN_SUBDENOM={CUSTOM_COIN_SUBDENOM} # e.g. CUSTOM_COIN_SUBDENOM=usdc
 
-./build/aumegad tx coinfactory create-denom $CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+./build/mantrachaind tx coinfactory create-denom $CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 ```
 
 Mint some amount of coins:
 
 ```bash
-./build/aumegad tx coinfactory mint 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+./build/mantrachaind tx coinfactory mint 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 ```
 
 #### Give the smart contract guard privileges, so it can send/receive the custom coin **_(Note: skip this step if the guard module hasn't been enabled earlier in this tutorial)._**
@@ -213,10 +213,10 @@ ACCOUNT_PRIVILEGES_GUARD_NFT_CONTRACT_JSON=$(echo '{"id":"{id}","title":"Account
 Mint the soul-bond nft:
 
 ```bash
-./build/aumegad tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_CONTRACT_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from admin --receiver $CONTRACT_ADDRESS --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
+./build/mantrachaind tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_CONTRACT_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from admin --receiver $CONTRACT_ADDRESS --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 ```
 
-In the next examples we will use the aumega-sdk.
+In the next examples we will use the mantrachain-sdk.
 
 ### Important: **_Skip them if the guard module hasn't been enabled earlier in this tutorial._**
 
@@ -243,7 +243,7 @@ touch app.js
 Install the needed dependencies:
 
 ```bash
-npm i --save @aumega/sdk @cosmjs/proto-signing
+npm i --save @mantrachain/sdk @cosmjs/proto-signing
 ```
 
 Open the app.js in a code editor e.g. in a [Visual Studio Code](https://code.visualstudio.com/download):
@@ -255,13 +255,13 @@ code .
 Add the following lines in `app.js` so you can initialize the sdk:
 
 ```js
-const { Client } = require("@aumega/sdk");
+const { Client } = require("@mantrachain/sdk");
 const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
 
 (async () => {
   const mnemonic = "..."; // MNEMONIC
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
-    prefix: "aumega",
+    prefix: "mantrachain",
   });
 
   const creator = (await wallet.getAccounts())[0];
@@ -293,12 +293,12 @@ const coinDenom = `factory/${creator.address}/{CUSTOM_COIN_SUBDENOM}`;
 Next, add the required privilejes and account privileges resectively to the custom coin and the smart contract:
 
 ```js
-const { Client, Privileges, utils } =  require("@aumega/sdk");
+const { Client, Privileges, utils } =  require("@mantrachain/sdk");
 ...
 (async () => {
 ...
   const coinPrivileges = Privileges.Empty().set(64).toBuffer();
-  await client.AumegaGuardV1.tx.sendMsgUpdateRequiredPrivileges({
+  await client.MantrachainGuardV1.tx.sendMsgUpdateRequiredPrivileges({
     value: {
       creator: creator.address,
       index: utils.strToIndex(coinDenom),
@@ -307,7 +307,7 @@ const { Client, Privileges, utils } =  require("@aumega/sdk");
     },
   });
 
-  const res = await client.AumegaGuardV1.query.queryParams();
+  const res = await client.MantrachainGuardV1.query.queryParams();
   const defaultPrivileges = utils.base64ToBytes(
     res.data.params.default_privileges
   );
@@ -315,7 +315,7 @@ const { Client, Privileges, utils } =  require("@aumega/sdk");
     .set(64)
     .toBuffer();
 
-  await client.AumegaGuardV1.tx.sendMsgUpdateAccountPrivileges({
+  await client.MantrachainGuardV1.tx.sendMsgUpdateAccountPrivileges({
     value: {
       creator: creator.address,
       account: contractAddress,
@@ -339,13 +339,13 @@ Now you can send some amount of the custom coin to the smart contract:
 ```bash
 cd .. # navigate back to the chain directory
 
-./build/aumegad tx bank send $ADMIN_WALLET $CONTRACT_ADDRESS 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR"
+./build/mantrachaind tx bank send $ADMIN_WALLET $CONTRACT_ADDRESS 1000000factory/$ADMIN_WALLET/$CUSTOM_COIN_SUBDENOM --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR"
 ```
 
 Check the contract balance:
 
 ```bash
-./build/aumegad q bank balances $CONTRACT_ADDRESS
+./build/mantrachaind q bank balances $CONTRACT_ADDRESS
 ```
 
 You should see the following output in the console:

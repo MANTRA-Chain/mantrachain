@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	"github.com/stretchr/testify/require"
 )
 

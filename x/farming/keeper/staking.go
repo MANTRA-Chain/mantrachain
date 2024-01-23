@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/AumegaChain/aumega/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 // GetStaking returns a staking for given staking denom and farmer.

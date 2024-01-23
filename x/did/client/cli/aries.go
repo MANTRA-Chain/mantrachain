@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 
-	"github.com/AumegaChain/aumega/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 // request send a json http request
@@ -150,7 +150,7 @@ func NewLinkAriesAgentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "link-aries-agent [id] [aries-agent-api-url] [service-endpoint]",
 		Short:   "create a service and add a keyExchange method and relationship from an aries agent",
-		Example: `aumegad tx link-aries-agent alice http://localhost:7090 http://localhost:7091`,
+		Example: `mantrachaind tx link-aries-agent alice http://localhost:7090 http://localhost:7091`,
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

@@ -4,8 +4,8 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	liquiditytypes "github.com/AumegaChain/aumega/x/liquidity/types"
-	"github.com/AumegaChain/aumega/x/lpfarm/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // cachingKeeper acts like a proxy to keeper methods,

@@ -1,5 +1,5 @@
-[url "git@aumega-cosmos-sdk.github.com:AumegaChain/cosmos-sdk"]
-        insteadOf = https://github.com/AumegaChain/cosmos-sdk
+[url "git@mantrachain-cosmos-sdk.github.com:MantrachainChain/cosmos-sdk"]
+        insteadOf = https://github.com/MantrachainChain/cosmos-sdk
 
-[url "git@aumega-ibc-go.github.com:AumegaChain/ibc-go"]
-        insteadOf = https://github.com/AumegaChain/ibc-go
+[url "git@mantrachain-ibc-go.github.com:MantrachainChain/ibc-go"]
+        insteadOf = https://github.com/MantrachainChain/ibc-go

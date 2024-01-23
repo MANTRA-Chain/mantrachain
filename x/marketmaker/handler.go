@@ -5,8 +5,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/AumegaChain/aumega/x/marketmaker/keeper"
-	"github.com/AumegaChain/aumega/x/marketmaker/types"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

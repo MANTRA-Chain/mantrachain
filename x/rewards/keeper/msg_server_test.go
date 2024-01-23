@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	keepertest "github.com/AumegaChain/aumega/testutil/keeper"
-	"github.com/AumegaChain/aumega/x/rewards/keeper"
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )

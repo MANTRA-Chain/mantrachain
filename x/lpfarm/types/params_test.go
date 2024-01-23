@@ -7,8 +7,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	utils "github.com/AumegaChain/aumega/types"
-	"github.com/AumegaChain/aumega/x/lpfarm/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 func TestParams_Validate(t *testing.T) {

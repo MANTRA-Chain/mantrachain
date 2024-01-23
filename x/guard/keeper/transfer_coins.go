@@ -4,13 +4,13 @@ import (
 	"math/big"
 	"strings"
 
-	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
-	tokentypes "github.com/AumegaChain/aumega/x/token/types"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/AumegaChain/aumega/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error {

@@ -3,8 +3,8 @@ package guard
 import (
 	"fmt"
 
-	"github.com/AumegaChain/aumega/x/guard/keeper"
-	"github.com/AumegaChain/aumega/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"

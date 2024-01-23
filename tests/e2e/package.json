@@ -1,7 +1,7 @@
 {
   "name": "e2e",
   "version": "0.0.0",
-  "description": "Aumega e2e tests",
+  "description": "Mantrachain e2e tests",
   "main": "index.js",
   "scripts": {
     "test": "jest -i -b --runtTestsByPath=./src/__tests__/",
@@ -9,10 +9,10 @@
     "lint": "eslint ./src",
     "fmt": "eslint ./src --fix"
   },
-  "author": "Aumega",
+  "author": "Mantrachain",
   "license": "ISC",
   "dependencies": {
-    "@aumega/sdk": "file:../../../aumega-js-sdk",
+    "@mantrachain/sdk": "file:../../../mantrachain-js-sdk",
     "@babel/plugin-transform-modules-commonjs": "7.23.0",
     "@cosmjs/proto-signing": "0.31.0",
     "@cosmos-client/core": "0.46.1",

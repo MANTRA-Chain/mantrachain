@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 // InitGenesis initializes the coinfactory module's state from a provided genesis

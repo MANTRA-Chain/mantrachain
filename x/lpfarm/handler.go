@@ -5,8 +5,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/AumegaChain/aumega/x/lpfarm/keeper"
-	"github.com/AumegaChain/aumega/x/lpfarm/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // NewHandler returns a new msg handler.

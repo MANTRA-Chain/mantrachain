@@ -1,4 +1,4 @@
-# Aumega
+# Mantrachain
 
 ## Basic
 

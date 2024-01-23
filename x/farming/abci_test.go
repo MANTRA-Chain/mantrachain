@@ -3,8 +3,8 @@ package farming_test
 import (
 	"time"
 
-	"github.com/AumegaChain/aumega/x/farming"
-	"github.com/AumegaChain/aumega/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 
 	_ "github.com/stretchr/testify/suite"
 )

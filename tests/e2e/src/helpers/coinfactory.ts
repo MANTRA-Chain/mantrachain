@@ -1,14 +1,14 @@
-import { AumegaSdk } from '../helpers/sdk'
+import { MantrachainSdk } from '../helpers/sdk'
 import { getWithAttempts } from './wait'
 import { queryBalance } from './bank'
 
 export const queryDenomsFromCreator = async (client: any, account: string) => {
-  const res = await client.AumegaCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
+  const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomsFromCreator(account)
   return res?.data?.denoms || []
 }
 
 export const queryAdmin = async (client: any, denom: string) => {
-  const res = await client.AumegaCoinfactoryV1Beta1.query.queryDenomAuthorityMetadata(denom)
+  const res = await client.MantrachainCoinfactoryV1Beta1.query.queryDenomAuthorityMetadata(denom)
   return res?.data?.authority_metadata?.admin || null
 }
 
@@ -18,9 +18,9 @@ export const existsDenom = (denoms: string[], account: string, subdenom: string)
 
 export const genCoinDenom = (account: string, subdenom: string) => `factory/${account}/${subdenom}`
 
-export const createDenomIfNotExists = async (sdk: AumegaSdk, client: any, account: string, subdenom: string, numAttempts = 2) => {
+export const createDenomIfNotExists = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, numAttempts = 2) => {
   if (notExistsDenom(await queryDenomsFromCreator(client, account), account, subdenom)) {
-    const res = await client.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    const res = await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: account,
         subdenom
@@ -42,7 +42,7 @@ export const createDenomIfNotExists = async (sdk: AumegaSdk, client: any, accoun
   )
 }
 
-export const mintCoins = async (sdk: AumegaSdk, client: any, account: string, subdenom: string, amount: number, minBalance?: number, numAttempts = 2) => {
+export const mintCoins = async (sdk: MantrachainSdk, client: any, account: string, subdenom: string, amount: number, minBalance?: number, numAttempts = 2) => {
   const denom = genCoinDenom(account, subdenom)
   const privBalance = await queryBalance(client, account, denom)
 
@@ -50,7 +50,7 @@ export const mintCoins = async (sdk: AumegaSdk, client: any, account: string, su
     return privBalance
   }
 
-  const res = await client.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+  const res = await client.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
     value: {
       sender: account,
       amount: {

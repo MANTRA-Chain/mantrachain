@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/x/farming/types"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 // RegisterInvariants registers all farming invariants.

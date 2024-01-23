@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AumegaChain/aumega/wasmbinding/bindings"
+	"github.com/MANTRA-Finance/mantrachain/wasmbinding/bindings"
 )
 
 // StargateQuerier dispatches whitelisted stargate queries
@@ -47,9 +47,9 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 // CustomQuerier dispatches custom CosmWasm bindings queries.
 func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
 	return func(ctx sdk.Context, request json.RawMessage) ([]byte, error) {
-		var contractQuery bindings.AumegaQuery
+		var contractQuery bindings.MantrachainQuery
 		if err := json.Unmarshal(request, &contractQuery); err != nil {
-			return nil, errorsmod.Wrap(err, "aumega query")
+			return nil, errorsmod.Wrap(err, "mantrachain query")
 		}
 
 		switch {
@@ -59,7 +59,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 
 			fullDenom, err := GetFullDenom(creator, subdenom)
 			if err != nil {
-				return nil, errorsmod.Wrap(err, "aumega full denom query")
+				return nil, errorsmod.Wrap(err, "mantrachain full denom query")
 			}
 
 			res := bindings.FullDenomResponse{
@@ -68,7 +68,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 
 			bz, err := json.Marshal(res)
 			if err != nil {
-				return nil, errorsmod.Wrap(err, "aumega full denom query response")
+				return nil, errorsmod.Wrap(err, "mantrachain full denom query response")
 			}
 
 			return bz, nil
@@ -87,7 +87,7 @@ func CustomQuerier(qp *QueryPlugin) func(ctx sdk.Context, request json.RawMessag
 			return bz, nil
 
 		default:
-			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown aumega query variant"}
+			return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown mantrachain query variant"}
 		}
 	}
 }

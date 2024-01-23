@@ -25,13 +25,13 @@ Creates new denom with the name `factory/{creator address}/{subdenom}`. The crea
 CLI command:
 
 ```bash
-aumegad tx coinfactory create-denom [subdenom] [flags]
+mantrachaind tx coinfactory create-denom [subdenom] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx coinfactory create-denom usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx coinfactory create-denom usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Mint
@@ -56,13 +56,13 @@ Mints coins to the creator of the denom. The creator is the account that created
 CLI command:
 
 ```bash
-aumegad tx coinfactory mint [amount] [flags]
+mantrachaind tx coinfactory mint [amount] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx coinfactory mint 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx coinfactory mint 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Burn
@@ -87,13 +87,13 @@ Burns coins from the creator of the denom. The creator is the account that creat
 CLI command:
 
 ```bash
-aumegad tx coinfactory burn [amount] [flags]
+mantrachaind tx coinfactory burn [amount] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx coinfactory burn 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx coinfactory burn 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Change Coin Admin
@@ -117,13 +117,13 @@ Changes the coin admin of the denom. The creator is the account that created the
 CLI command:
 
 ```bash
-aumegad tx coinfactory change-admin [denom] [new-admin-address] [flags]
+mantrachaind tx coinfactory change-admin [denom] [new-admin-address] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx coinfactory change-admin factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx coinfactory change-admin factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Set Denom Metadata
@@ -140,7 +140,7 @@ else Not a coin admin
 end
 ```
 
-**Note**: This type of transaction can be executed only via the aumega-sdk.
+**Note**: This type of transaction can be executed only via the mantrachain-sdk.
 
 Sets the denom metadata. The creator is the account that created the denom. The coin admin is the only account that can set the denom metadata for the denom.
 
@@ -164,11 +164,11 @@ Force transfer coins from a wallet to the chain admin. Only the  `chain admin` c
 CLI command:
 
 ```bash
-aumegad tx coinfactory force-transfer [from] [to] [amount] [flags]
+mantrachaind tx coinfactory force-transfer [from] [to] [amount] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx coinfactory force-transfer mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx coinfactory force-transfer mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```

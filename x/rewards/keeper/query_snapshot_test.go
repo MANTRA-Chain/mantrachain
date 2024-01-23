@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "github.com/AumegaChain/aumega/testutil/keeper"
-	"github.com/AumegaChain/aumega/testutil/nullify"
-	"github.com/AumegaChain/aumega/x/rewards/types"
+	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 )
 
 func TestSnapshotQuerySingle(t *testing.T) {

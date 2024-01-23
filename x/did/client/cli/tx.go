@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
-	"github.com/AumegaChain/aumega/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -223,10 +223,10 @@ func NewRevokeVerificationCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "revoke-verification-method [did_id] [verification_method_id_fragment]",
 		Short: "revoke a verification method from a decentralized did (did) document",
-		Example: `aumegad tx did revoke-verification-method 575d062c-d110-42a9-9c04-cb1ff8c01f06 \
+		Example: `mantrachaind tx did revoke-verification-method 575d062c-d110-42a9-9c04-cb1ff8c01f06 \
  Z46DAL1MrJlVW_WmJ19WY8AeIpGeFOWl49Qwhvsnn2M \
  --from alice \
- --node https://rpc.aumega.app.beta.starport.cloud:443 --chain-id aumega-testnet`,
+ --node https://rpc.mantrachain.app.beta.starport.cloud:443 --chain-id mantrachain-testnet`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

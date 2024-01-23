@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	utils "github.com/AumegaChain/aumega/types"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/stretchr/testify/suite"
@@ -11,10 +11,10 @@ import (
 	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	chain "github.com/AumegaChain/aumega/app"
-	"github.com/AumegaChain/aumega/testutil"
-	"github.com/AumegaChain/aumega/x/token/keeper"
-	"github.com/AumegaChain/aumega/x/token/types"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/token/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 )
 
 type KeeperTestSuite struct {

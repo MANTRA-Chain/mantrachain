@@ -17,7 +17,7 @@ var _ govv1beta1.Content = &MarketMakerProposal{}
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypeMarketMaker)
-	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&MarketMakerProposal{}, "github.com/AumegaChain/aumega/MarketMakerProposal", nil)
+	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&MarketMakerProposal{}, "github.com/MANTRA-Finance/mantrachain/MarketMakerProposal", nil)
 }
 
 // NewMarketMakerProposal creates a new MarketMakerProposal object.

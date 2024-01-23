@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AumegaChain/aumega/testutil"
-	"github.com/AumegaChain/aumega/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"

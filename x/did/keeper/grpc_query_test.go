@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/AumegaChain/aumega/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryDidDocuments() {
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocument() {
 			"Fail: will fail because no did is found",
 			func() {
 				req = &types.QueryDidDocumentRequest{
-					Id: "did:cosmos:aumega:1234",
+					Id: "did:cosmos:mantrachain:1234",
 				}
 			},
 			false,
@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocument() {
 			"Pass: will pass because a did is found",
 			func() {
 
-				dd, _ := types.NewDidDocument("did:cosmos:aumega:1234")
+				dd, _ := types.NewDidDocument("did:cosmos:mantrachain:1234")
 
 				suite.keeper.SetDidDocument(
 					suite.ctx,
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocument() {
 					dd,
 				)
 				req = &types.QueryDidDocumentRequest{
-					Id: "did:cosmos:aumega:1234",
+					Id: "did:cosmos:mantrachain:1234",
 				}
 			},
 			true,

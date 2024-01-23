@@ -22,7 +22,7 @@ Update account privileges for an account. The account can be a user account or a
 CLI command:
 
 ```bash
-aumegad tx guard update-account-privileges [account] [privileges] [flags]
+mantrachaind tx guard update-account-privileges [account] [privileges] [flags]
 ```
 
 ## Update Required Privileges/Update Required Privileges Batch/Update Required Privileges Grouped Batch
@@ -45,7 +45,7 @@ Update required privileges for a entity. Currently, the only entity that can hav
 CLI command:
 
 ```bash
-aumegad tx guard update-required-privileges [index] [privileges] [kind] [flags]
+mantrachaind tx guard update-required-privileges [index] [privileges] [kind] [flags]
 ```
 
 ## Update Guard Transfer Coins
@@ -68,13 +68,13 @@ Sets the flag to enable/disable the guard module to restrict the `bank -> transf
 CLI command:
 
 ```bash
-aumegad tx guard update-guard-transfer-coins [enabled] [flags]
+mantrachaind tx guard update-guard-transfer-coins [enabled] [flags]
 ```
 
 Example:
 
 ```bash
-aumegad tx guard update-guard-transfer-coins true --chain-id aumega-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.aumega
+mantrachaind tx guard update-guard-transfer-coins true --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
 ```
 
 ## Update Authz Generic Grant Revoke Batch
@@ -97,5 +97,5 @@ Adds or removes generic authorization(s) for an account. The generic authorizati
 CLI command:
 
 ```bash
-aumegad tx guard update-authz-generic-grant-revoke-batch [grantee] [payload-json] [flags]
+mantrachaind tx guard update-authz-generic-grant-revoke-batch [grantee] [payload-json] [flags]
 ```

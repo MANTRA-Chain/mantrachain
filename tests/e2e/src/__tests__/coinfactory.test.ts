@@ -1,14 +1,14 @@
-import { AumegaSdk } from '../helpers/sdk'
+import { MantrachainSdk } from '../helpers/sdk'
 import { existsDenom, queryDenomsFromCreator, genCoinDenom } from '../helpers/coinfactory'
 import { queryBalance, sendCoins } from '../helpers/bank'
 import { updateCoinRequiredPrivileges, updateAccountPrivileges } from '../helpers/guard'
 
 describe('Coinfactory module', () => {
-  let sdk: AumegaSdk
+  let sdk: MantrachainSdk
   const subdenom = `cf${new Date().getTime()}`
 
   beforeAll(async () => {
-    sdk = new AumegaSdk()
+    sdk = new MantrachainSdk()
     await sdk.init(process.env.API_URL, process.env.RPC_URL, process.env.WS_URL)
 
     // Adds permission and allows for the recipient to be able to create denoms
@@ -21,7 +21,7 @@ describe('Coinfactory module', () => {
   })
 
   test('Should create denom', async () => {
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.adminAddress,
         subdenom
@@ -38,7 +38,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
 
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -60,7 +60,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientAdmin, sdk.adminAddress, denom)
 
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgBurn({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgBurn({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -86,7 +86,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -107,7 +107,7 @@ describe('Coinfactory module', () => {
   test('Should change admin', async () => {
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgChangeAdmin({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgChangeAdmin({
       value: {
         sender: sdk.adminAddress,
         denom,
@@ -128,7 +128,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-    const res = await sdk.clientValidator.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    const res = await sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.validatorAddress,
         amount: {
@@ -150,7 +150,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-    const res = await sdk.clientValidator.AumegaCoinfactoryV1Beta1.tx.sendMsgBurn({
+    const res = await sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgBurn({
       value: {
         sender: sdk.validatorAddress,
         amount: {
@@ -170,7 +170,7 @@ describe('Coinfactory module', () => {
     const amount = 500
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    await expect(sdk.clientValidator.AumegaCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+    await expect(sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
       value: {
         sender: sdk.validatorAddress,
         amount: {
@@ -193,7 +193,7 @@ describe('Coinfactory module', () => {
 
     const privBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
-    const res = await sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
+    const res = await sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgForceTransfer({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -215,7 +215,7 @@ describe('Coinfactory module', () => {
     const amount = 1000
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    await expect(sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgMint({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgMint({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -232,7 +232,7 @@ describe('Coinfactory module', () => {
     const amount = 500
     const denom = genCoinDenom(sdk.adminAddress, subdenom)
 
-    await expect(sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgBurn({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgBurn({
       value: {
         sender: sdk.adminAddress,
         amount: {
@@ -246,7 +246,7 @@ describe('Coinfactory module', () => {
   })
 
   test('Should return error when create denom with account with no permission', async () => {
-    await expect(sdk.clientValidator.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    await expect(sdk.clientValidator.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.validatorAddress,
         subdenom: 'cf0'
@@ -257,7 +257,7 @@ describe('Coinfactory module', () => {
   })
 
   test('Should create denom with account with permission', async () => {
-    const res = await sdk.clientRecipient.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    const res = await sdk.clientRecipient.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.recipientAddress,
         subdenom
@@ -269,7 +269,7 @@ describe('Coinfactory module', () => {
   })
 
   test('Should return error when create existing denom', async () => {
-    await expect(sdk.clientAdmin.AumegaCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
+    await expect(sdk.clientAdmin.MantrachainCoinfactoryV1Beta1.tx.sendMsgCreateDenom({
       value: {
         sender: sdk.adminAddress,
         subdenom

@@ -9,10 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	"github.com/AumegaChain/aumega/wasmbinding/bindings"
+	"github.com/MANTRA-Finance/mantrachain/wasmbinding/bindings"
 
-	coinfactorykeeper "github.com/AumegaChain/aumega/x/coinfactory/keeper"
-	coinfactorytypes "github.com/AumegaChain/aumega/x/coinfactory/types"
+	coinfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
@@ -39,9 +39,9 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 	if msg.Custom != nil {
 		// only handle the happy path where this is really creating / minting / swapping ...
 		// leave everything else for the wrapped version
-		var contractMsg bindings.AumegaMsg
+		var contractMsg bindings.MantrachainMsg
 		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
-			return nil, nil, errorsmod.Wrap(err, "aumega msg")
+			return nil, nil, errorsmod.Wrap(err, "mantrachain msg")
 		}
 		if contractMsg.CreateDenom != nil {
 			return m.createDenom(ctx, contractAddr, contractMsg.CreateDenom)

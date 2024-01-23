@@ -3,7 +3,7 @@ package client
 import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/AumegaChain/aumega/x/farming/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/farming/client/cli"
 )
 
 // ProposalHandler is the public plan command handler.

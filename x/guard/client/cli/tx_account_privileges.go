@@ -3,7 +3,7 @@ package cli
 import (
 	"encoding/base64"
 
-	"github.com/AumegaChain/aumega/x/guard/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
