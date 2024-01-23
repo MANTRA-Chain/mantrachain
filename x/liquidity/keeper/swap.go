@@ -238,7 +238,7 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 	return amount, offerCoin, swapFeeCoin, price, nil
 }
 
-func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error) {
+func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, demandCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error) {
 	maxPriceLimitRatio := k.GetMaxPriceLimitRatio(ctx)
 	tickPrec := k.GetTickPrecision(ctx)
 	swapFeeRate := k.GetSwapFeeRate(ctx)
@@ -248,14 +248,9 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin)
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
 	}
 
-	if swapFeeRate.IsPositive() {
-		swapFeeCoin := sdk.NewCoin(swapCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, swapCoin.Amount))
-		swapCoin.Amount = swapCoin.Amount.Sub(swapFeeCoin.Amount)
-	}
-
-	if swapCoin.Denom != pair.QuoteCoinDenom && swapCoin.Denom != pair.BaseCoinDenom {
+	if demandCoin.Denom != pair.QuoteCoinDenom && demandCoin.Denom != pair.BaseCoinDenom {
 		return sdk.Coin{}, sdk.Dec{},
-			sdkerrors.Wrapf(types.ErrWrongPair, "pair denom %s not exist, pair %d", swapCoin.Denom, pairId)
+			sdkerrors.Wrapf(types.ErrWrongPair, "pair denom %s not exist, pair %d", demandCoin.Denom, pairId)
 	}
 
 	if pair.LastPrice == nil {
@@ -263,12 +258,17 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin)
 	}
 	lastPrice := *pair.LastPrice
 
-	if swapCoin.Denom == pair.QuoteCoinDenom { // Buy
+	if demandCoin.Denom == pair.BaseCoinDenom { // Buy
 		price = amm.PriceToDownTick(lastPrice.Mul(sdk.OneDec().Add(maxPriceLimitRatio)), int(tickPrec))
-		offerCoin = sdk.NewCoin(pair.BaseCoinDenom, amm.OfferCoinAmount(amm.Buy, price, swapCoin.Amount))
-	} else if swapCoin.Denom == pair.BaseCoinDenom { // Sell
+		offerCoin = sdk.NewCoin(pair.QuoteCoinDenom, amm.OfferCoinAmount(amm.Buy, price, demandCoin.Amount))
+	} else if demandCoin.Denom == pair.QuoteCoinDenom { // Sell
 		price = amm.PriceToUpTick(lastPrice.Mul(sdk.OneDec().Sub(maxPriceLimitRatio)), int(tickPrec))
-		offerCoin = sdk.NewCoin(pair.QuoteCoinDenom, sdk.NewDecFromInt(swapCoin.Amount).Quo(price).Ceil().TruncateInt())
+		offerCoin = sdk.NewCoin(pair.BaseCoinDenom, sdk.NewDecFromInt(demandCoin.Amount).Quo(price).Ceil().TruncateInt())
+	}
+
+	if swapFeeRate.IsPositive() {
+		swapFeeCoin := sdk.NewCoin(offerCoin.Denom, CalculateSwapFeeAmount(ctx, swapFeeRate, offerCoin.Amount))
+		offerCoin.Amount = offerCoin.Amount.Add(swapFeeCoin.Amount)
 	}
 
 	return offerCoin, price, nil
