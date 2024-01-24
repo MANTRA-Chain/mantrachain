@@ -905,7 +905,8 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 		if accumulatedSwapFee.IsPositive() {
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(accumulatedSwapFee)); err != nil {
+			rewardsSwapFeeCoin = sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
+			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(rewardsSwapFeeCoin)); err != nil {
 				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return err
 			}
