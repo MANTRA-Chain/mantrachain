@@ -65,10 +65,17 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 				return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
 			}
 
-			nftImageIndex := msg.NftsImagesGrouped.ImagesIndexes[i].Indexes[k]
+			nftImageIndex := 0
+			if msg.NftsImagesGrouped.ImagesIndexes != nil && msg.NftsImagesGrouped.ImagesIndexes[i].Indexes != nil && len(msg.NftsImagesGrouped.ImagesIndexes[i].Indexes) > k {
+				nftImageIndex = int(msg.NftsImagesGrouped.ImagesIndexes[i].Indexes[k])
+			}
 
 			if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
 				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+			}
+
+			if msg.NftsImagesGrouped.Images == nil || len(msg.NftsImagesGrouped.Images) <= i {
+				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 			}
 
 			nftImage := msg.NftsImagesGrouped.Images[i]
@@ -156,10 +163,17 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 			return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
 		}
 
-		nftImageIndex := msg.NftsImages.ImagesIndexes[i]
+		nftImageIndex := 0
+		if msg.NftsImages.ImagesIndexes != nil && len(msg.NftsImages.ImagesIndexes) > i {
+			nftImageIndex = int(msg.NftsImages.ImagesIndexes[i])
+		}
 
 		if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
 			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+		}
+
+		if msg.NftsImages.Images == nil || len(msg.NftsImages.Images) <= i {
+			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 		}
 
 		nftImage := msg.NftsImages.Images[i]
