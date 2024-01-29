@@ -20,12 +20,77 @@ service Msg {
   rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
   rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
   rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
+
   rpc UpdateGuardSoulBondNftImage(MsgUpdateGuardSoulBondNftImage) returns (MsgUpdateGuardSoulBondNftImageResponse);
+  rpc UpdateRestrictedCollectionNftImage(MsgUpdateRestrictedCollectionNftImage) returns (MsgUpdateRestrictedCollectionNftImageResponse);
+  rpc UpdateRestrictedCollectionNftImageBatch(MsgUpdateRestrictedCollectionNftImageBatch) returns (MsgUpdateRestrictedCollectionNftImageBatchResponse);
+  rpc UpdateRestrictedCollectionNftImageGroupedBatch(MsgUpdateRestrictedCollectionNftImageGroupedBatch) returns (MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
 }
 
 message MsgNftImageMetadata {
   TokenImage image = 1;
+}
+
+message MsgNftsImagesMetadata {
+  repeated TokenImage images = 1;
+  repeated string nfts_ids = 2;
+  repeated uint64 images_indexes = 3;
+}
+
+message MsgNftsImagesIndexes {
+  repeated uint64 indexes = 1;
+}
+
+message MsgNftsImagesGroupedMetadata {
+  repeated TokenImage images = 1;
+  repeated MsgNftsIds nfts_ids_grouped = 2;
+  repeated MsgNftsImagesIndexes images_indexes = 3;
+}
+
+message MsgUpdateRestrictedCollectionNftImage {
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string collection_creator = 3;
+  string collection_id = 4;
+  string nft_id = 5;
+  uint64 index = 6;
+  MsgNftImageMetadata image = 7;
+}
+
+message MsgUpdateRestrictedCollectionNftImageResponse {
+  string nft_id = 1;
+  string owner = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
+message MsgUpdateRestrictedCollectionNftImageBatch {
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string collection_creator = 2;
+  string collection_id = 3;
+  MsgNftsImagesMetadata nfts_images = 4;
+}
+
+message MsgUpdateRestrictedCollectionNftImageBatchResponse {
+  repeated string nfts_ids = 1;
+  uint32 nfts_count = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
+}
+
+message MsgUpdateRestrictedCollectionNftImageGroupedBatch {
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string collection_creator = 2;
+  string collection_id = 3;
+  MsgNftsImagesGroupedMetadata nfts_images_grouped = 4;
+}
+
+message MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse {
+  repeated string nfts_ids = 1;
+  uint32 nfts_count = 2;
+  string collection_creator = 3;
+  string collection_id = 4;
 }
 
 message MsgUpdateGuardSoulBondNftImage {

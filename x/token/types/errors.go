@@ -52,4 +52,6 @@ var (
 	ErrInvalidNftImageIndex = errors.Register(ModuleName, 1941, "nft image index provided is invalid")
 	ErrInvalidDid           = errors.Register(ModuleName, 1942, "did provided is invalid")
 	ErrInvalidAccount       = errors.Register(ModuleName, 1943, "account provided is invalid")
+
+	ErrNftCollectionNotRestricted = errors.Register(ModuleName, 1944, "nft collection is not restricted")
 )

@@ -19,6 +19,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgTransferNft{}, "token/TransferNft", nil)
 	cdc.RegisterConcrete(&MsgApproveNft{}, "token/ApproveNft", nil)
 	cdc.RegisterConcrete(&MsgUpdateGuardSoulBondNftImage{}, "token/UpdateGuardSoulBondNftImage", nil)
+	cdc.RegisterConcrete(&MsgUpdateRestrictedCollectionNftImage{}, "token/UpdateRestrictedCollectionNftImage", nil)
+	cdc.RegisterConcrete(&MsgUpdateRestrictedCollectionNftImageBatch{}, "token/UpdateRestrictedCollectionNftImageBatch", nil)
+	cdc.RegisterConcrete(&MsgUpdateRestrictedCollectionNftImageGroupedBatch{}, "token/UpdateRestrictedCollectionNftImageGroupedBatch", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -35,6 +38,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgTransferNft{},
 		&MsgApproveNft{},
 		&MsgUpdateGuardSoulBondNftImage{},
+		&MsgUpdateRestrictedCollectionNftImage{},
+		&MsgUpdateRestrictedCollectionNftImageBatch{},
+		&MsgUpdateRestrictedCollectionNftImageGroupedBatch{},
 	)
 	// this line is used by starport scaffolding # 3
 

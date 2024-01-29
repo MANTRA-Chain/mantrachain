@@ -17,6 +17,281 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.Context, msg *types.MsgUpdateRestrictedCollectionNftImageGroupedBatch) (*types.MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+	}
+
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+	}
+
+	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
+	restrictedCollection := k.HasRestrictedNftsCollection(
+		ctx,
+		collectionIndex,
+	)
+
+	if !restrictedCollection {
+		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+	}
+
+	var updated []string
+	var cnt int
+
+	for i, nftsIds := range msg.NftsImagesGrouped.NftsIdsGrouped {
+		var nftsIndexes [][]byte
+		for _, nftId := range nftsIds.NftsIds {
+			nftIndex := types.GetNftIndex(collectionIndex, nftId)
+			nftsIndexes = append(nftsIndexes, nftIndex)
+		}
+
+		nfts := k.GetNftsByIndexes(ctx, collectionIndex, nftsIndexes)
+
+		for k, nft := range nfts {
+			if strings.TrimSpace(nft.Id) == "" {
+				continue
+			}
+
+			if nft.CollectionCreator.String() != msg.CollectionCreator {
+				return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
+			}
+
+			nftImageIndex := msg.NftsImagesGrouped.ImagesIndexes[i].Indexes[k]
+
+			if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
+				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+			}
+
+			nftImage := msg.NftsImagesGrouped.Images[i]
+
+			if nftImage.Type == "" || int32(len(nftImage.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
+				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
+			}
+
+			if !utils.IsUrl(nftImage.Url) {
+				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
+			}
+
+			if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+				nft.Images = []*types.TokenImage{
+					{
+						Type: nftImage.Type,
+						Url:  nftImage.Url,
+					},
+				}
+			} else {
+				nft.Images[nftImageIndex] = &types.TokenImage{
+					Type: nftImage.Type,
+					Url:  nftImage.Url,
+				}
+			}
+
+			updated = append(updated, nft.Id)
+			cnt++
+		}
+
+	}
+
+	return &types.MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse{
+		NftsIds:           updated,
+		NftsCount:         uint32(cnt),
+		CollectionCreator: msg.CollectionCreator,
+		CollectionId:      msg.CollectionId,
+	}, nil
+
+}
+
+func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context, msg *types.MsgUpdateRestrictedCollectionNftImageBatch) (*types.MsgUpdateRestrictedCollectionNftImageBatchResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+	}
+
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+	}
+
+	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
+	restrictedCollection := k.HasRestrictedNftsCollection(
+		ctx,
+		collectionIndex,
+	)
+
+	if !restrictedCollection {
+		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+	}
+
+	var nftsIndexes [][]byte
+	for _, nftId := range msg.NftsImages.NftsIds {
+		nftIndex := types.GetNftIndex(collectionIndex, nftId)
+		nftsIndexes = append(nftsIndexes, nftIndex)
+	}
+
+	nfts := k.GetNftsByIndexes(ctx, collectionIndex, nftsIndexes)
+	var updated []string
+	var cnt int
+
+	for i, nft := range nfts {
+		if strings.TrimSpace(nft.Id) == "" {
+			continue
+		}
+
+		if nft.CollectionCreator.String() != msg.CollectionCreator {
+			return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
+		}
+
+		nftImageIndex := msg.NftsImages.ImagesIndexes[i]
+
+		if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
+			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+		}
+
+		nftImage := msg.NftsImages.Images[i]
+
+		if nftImage.Type == "" || int32(len(nftImage.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
+			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
+		}
+
+		if !utils.IsUrl(nftImage.Url) {
+			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
+		}
+
+		if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+			nft.Images = []*types.TokenImage{
+				{
+					Type: nftImage.Type,
+					Url:  nftImage.Url,
+				},
+			}
+		} else {
+			nft.Images[nftImageIndex] = &types.TokenImage{
+				Type: nftImage.Type,
+				Url:  nftImage.Url,
+			}
+		}
+
+		updated = append(updated, nft.Id)
+		cnt++
+
+		k.SetNft(ctx, nft)
+	}
+
+	return &types.MsgUpdateRestrictedCollectionNftImageBatchResponse{
+		NftsIds:           updated,
+		NftsCount:         uint32(cnt),
+		CollectionCreator: msg.CollectionCreator,
+		CollectionId:      msg.CollectionId,
+	}, nil
+}
+
+func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg *types.MsgUpdateRestrictedCollectionNftImage) (*types.MsgUpdateRestrictedCollectionNftImageResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	conf := k.GetParams(ctx)
+
+	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, sdkerrors.Wrap(err, "unauthorized")
+	}
+
+	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid collection creator")
+	}
+
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+	}
+
+	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
+	restrictedCollection := k.HasRestrictedNftsCollection(
+		ctx,
+		collectionIndex,
+	)
+
+	if !restrictedCollection {
+		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+	}
+
+	nftIndex := types.GetNftIndex(collectionIndex, msg.NftId)
+	nft, found := k.GetNft(ctx, collectionIndex, nftIndex)
+
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft not found")
+	}
+
+	owner, err := sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	nftOwner := k.nftKeeper.GetOwner(ctx, string(collectionIndex), string(nftIndex))
+
+	if nftOwner.Empty() || !owner.Equals(nftOwner) {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft owner invalid")
+	}
+
+	if msg.Index > 0 && (nft.Images == nil || int(msg.Index) >= len(nft.Images)) {
+		return nil, sdkerrors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
+	}
+
+	if msg.Image.Image.Type == "" || int32(len(msg.Image.Image.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
+	}
+
+	if !utils.IsUrl(msg.Image.Image.Url) {
+		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
+	}
+
+	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+		nft.Images = []*types.TokenImage{
+			{
+				Type: msg.Image.Image.Type,
+				Url:  msg.Image.Image.Url,
+			},
+		}
+	} else {
+		nft.Images[msg.Index] = &types.TokenImage{
+			Type: msg.Image.Image.Type,
+			Url:  msg.Image.Image.Url,
+		}
+	}
+
+	k.SetNft(ctx, nft)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.TypeMsgUpdateRestrictedCollectionNftImage),
+			sdk.NewAttribute(types.AttributeKeyNftCollectionCreator, msg.CollectionCreator),
+			sdk.NewAttribute(types.AttributeKeyNftCollectionId, msg.CollectionId),
+			sdk.NewAttribute(types.AttributeKeyNftId, msg.NftId),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+		),
+	)
+
+	return &types.MsgUpdateRestrictedCollectionNftImageResponse{
+		NftId:             msg.NftId,
+		Owner:             owner.String(),
+		CollectionCreator: msg.CollectionCreator,
+		CollectionId:      msg.CollectionId,
+	}, nil
+}
+
 func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types.MsgUpdateGuardSoulBondNftImage) (*types.MsgUpdateGuardSoulBondNftImageResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
@@ -38,7 +313,6 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, collectionId)
 	nftIndex := types.GetNftIndex(collectionIndex, msg.NftId)
-
 	nft, found := k.GetNft(ctx, collectionIndex, nftIndex)
 
 	if !found {

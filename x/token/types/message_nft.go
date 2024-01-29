@@ -8,16 +8,19 @@ import (
 )
 
 const (
-	TypeMsgMintNfts                    = "mint_nfts"
-	TypeMsgBurnNfts                    = "burn_nfts"
-	TypeMsgTransferNfts                = "transfer_nfts"
-	TypeMsgApproveNfts                 = "approve_nfts"
-	TypeMsgApproveAllNfts              = "approve_all_nfts"
-	TypeMsgMintNft                     = "mint_nft"
-	TypeMsgBurnNft                     = "burn_nft"
-	TypeMsgTransferNft                 = "transfer_nft"
-	TypeMsgApproveNft                  = "approve_nft"
-	TypeMsgUpdateGuardSoulBondNftImage = "update_guard_soul_bond_nft_image"
+	TypeMsgMintNfts                                       = "mint_nfts"
+	TypeMsgBurnNfts                                       = "burn_nfts"
+	TypeMsgTransferNfts                                   = "transfer_nfts"
+	TypeMsgApproveNfts                                    = "approve_nfts"
+	TypeMsgApproveAllNfts                                 = "approve_all_nfts"
+	TypeMsgMintNft                                        = "mint_nft"
+	TypeMsgBurnNft                                        = "burn_nft"
+	TypeMsgTransferNft                                    = "transfer_nft"
+	TypeMsgApproveNft                                     = "approve_nft"
+	TypeMsgUpdateGuardSoulBondNftImage                    = "update_guard_soul_bond_nft_image"
+	TypeMsgUpdateRestrictedCollectionNftImage             = "update_restricted_collection_nft_image"
+	TypeMsgUpdateRestrictedCollectionNftImageBatch        = "update_restricted_collection_nft_image_batch"
+	TypeMsgUpdateRestrictedCollectionNftImageGroupedBatch = "update_restricted_collection_nft_image_grouped_batch"
 )
 
 var (
@@ -31,7 +34,222 @@ var (
 	_ sdk.Msg = &MsgTransferNft{}
 	_ sdk.Msg = &MsgApproveNft{}
 	_ sdk.Msg = &MsgUpdateGuardSoulBondNftImage{}
+	_ sdk.Msg = &MsgUpdateRestrictedCollectionNftImage{}
+	_ sdk.Msg = &MsgUpdateRestrictedCollectionNftImageBatch{}
+	_ sdk.Msg = &MsgUpdateRestrictedCollectionNftImageGroupedBatch{}
 )
+
+func NewMsgUpdateRestrictedCollectionNftImageGroupedBatch(
+	creator string, collectionCreator string, collectionId string, nftsImagesGrouped MsgNftsImagesGroupedMetadata,
+) *MsgUpdateRestrictedCollectionNftImageGroupedBatch {
+	return &MsgUpdateRestrictedCollectionNftImageGroupedBatch{
+		Creator:           creator,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftsImagesGrouped: &nftsImagesGrouped,
+	}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) Type() string {
+	return TypeMsgUpdateRestrictedCollectionNftImageGroupedBatch
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if strings.TrimSpace(msg.CollectionCreator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+	}
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+	}
+	if msg.NftsImagesGrouped == nil ||
+		len(msg.NftsImagesGrouped.NftsIdsGrouped) == 0 ||
+		msg.NftsImagesGrouped.Images == nil ||
+		len(msg.NftsImagesGrouped.Images) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids/nfts images are empty")
+	}
+	if len(msg.NftsImagesGrouped.NftsIdsGrouped) != len(msg.NftsImagesGrouped.Images) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
+	}
+	for i := range msg.NftsImagesGrouped.NftsIdsGrouped {
+		if msg.NftsImagesGrouped.NftsIdsGrouped[i] == nil || len(msg.NftsImagesGrouped.NftsIdsGrouped[i].NftsIds) == 0 {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		}
+		if msg.NftsImagesGrouped.Images[i] == nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		}
+		if strings.TrimSpace(msg.NftsImagesGrouped.Images[i].Type) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+		}
+		if strings.TrimSpace(msg.NftsImagesGrouped.Images[i].Url) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+		}
+	}
+	return nil
+}
+
+func NewMsgUpdateRestrictedCollectionNftImageBatch(
+	creator string, collectionCreator string, collectionId string, nftsImages MsgNftsImagesMetadata,
+) *MsgUpdateRestrictedCollectionNftImageBatch {
+	return &MsgUpdateRestrictedCollectionNftImageBatch{
+		Creator:           creator,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+		NftsImages:        &nftsImages,
+	}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageBatch) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageBatch) Type() string {
+	return TypeMsgUpdateRestrictedCollectionNftImageBatch
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageBatch) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageBatch) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImageBatch) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	if strings.TrimSpace(msg.CollectionCreator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+	}
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+	}
+	if msg.NftsImages == nil ||
+		len(msg.NftsImages.NftsIds) == 0 ||
+		msg.NftsImages.Images == nil ||
+		len(msg.NftsImages.Images) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids/nfts images are empty")
+	}
+	if len(msg.NftsImages.NftsIds) != len(msg.NftsImages.Images) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
+	}
+	for i := range msg.NftsImages.NftsIds {
+		if strings.TrimSpace(msg.NftsImages.NftsIds[i]) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		}
+		if msg.NftsImages.Images[i] == nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		}
+		if strings.TrimSpace(msg.NftsImages.Images[i].Type) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+		}
+		if strings.TrimSpace(msg.NftsImages.Images[i].Url) == "" {
+			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+		}
+	}
+	return nil
+}
+
+func NewMsgUpdateRestrictedCollectionNftImage(
+	creator string,
+	owner string,
+	collectionCreator string,
+	collectionId string,
+	nftId string,
+	index uint64,
+	image *MsgNftImageMetadata,
+) *MsgUpdateRestrictedCollectionNftImage {
+	return &MsgUpdateRestrictedCollectionNftImage{
+		Creator:           creator,
+		Owner:             owner,
+		NftId:             nftId,
+		Index:             index,
+		Image:             image,
+		CollectionCreator: collectionCreator,
+		CollectionId:      collectionId,
+	}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImage) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImage) Type() string {
+	return TypeMsgUpdateRestrictedCollectionNftImage
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImage) GetSigners() []sdk.AccAddress {
+	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{creator}
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImage) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+func (msg *MsgUpdateRestrictedCollectionNftImage) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	_, err = sdk.AccAddressFromBech32(msg.Owner)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+	}
+	if strings.TrimSpace(msg.CollectionCreator) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+	}
+	if strings.TrimSpace(msg.CollectionId) == "" {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+	}
+	if msg.Image == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+	}
+	if msg.Image.Image == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+	}
+	if strings.TrimSpace(msg.Image.Image.Type) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+	}
+	if strings.TrimSpace(msg.Image.Image.Url) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+	}
+	if strings.TrimSpace(msg.NftId) == "" {
+		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+	}
+	return nil
+}
 
 func NewMsgUpdateGuardSoulBondNftImage(creator string, owner string, nftId string, index uint64,
 	image *MsgNftImageMetadata,
