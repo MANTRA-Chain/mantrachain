@@ -63,6 +63,10 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 		}
 	}
 
+	if conf.MaxClaimedRangeLength > 0 && endClaimedSnapshotId-startClaimedSnapshotId >= conf.MaxClaimedRangeLength {
+		endClaimedSnapshotId = startClaimedSnapshotId + conf.MaxClaimedRangeLength - 1
+	}
+
 	// If the provider has never claimed rewards then we need to start from the first snapshot
 	snapshots := k.GetSnapshotsInRange(ctx, pairId, startClaimedSnapshotId, endClaimedSnapshotId)
 
