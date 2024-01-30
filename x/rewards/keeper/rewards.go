@@ -83,7 +83,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 			liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
 
 			if !found {
-				logger.Error("No pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+				logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
 				continue
 			}
 

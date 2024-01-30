@@ -106,7 +106,7 @@ func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
 		pairsIds = append(pairsIds[:pairIdIndex], pairsIds[pairIdIndex+1:]...)
 		err := k.PurgeSnapshotsForPair(ctx, pairId)
 		if err != nil {
-			logger.Error("Error purge snapshots for pair", "pair_id", pairId, "error", err.Error())
+			logger.Error("fail to purge snapshots for pair", "pair_id", pairId, "error", err.Error())
 		}
 	}
 
@@ -145,13 +145,13 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 	admin := k.gk.GetAdmin(ctx)
 	remaining := sdk.NewCoins()
 
-	logger.Info("Purge snapshots for pair", "pair_id", pairId, "snapshots_count", snapshotEndId-snapshotStartId.SnapshotId+1)
+	logger.Info("purge snapshots for pair", "pair_id", pairId, "snapshots_count", snapshotEndId-snapshotStartId.SnapshotId+1)
 
 	for i := snapshotStartId.SnapshotId; i <= snapshotEndId; i++ {
 		snapshot, found := k.GetSnapshot(ctx, pairId, i)
 
 		if !found {
-			logger.Error("No snapshot found for pair", "pair_id", pairId, "snapshot_id", i)
+			logger.Error("no snapshot found for pair", "pair_id", pairId, "snapshot_id", i)
 			continue
 		}
 

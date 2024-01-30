@@ -101158,6 +101158,66 @@ definitions:
         type: array
         items:
           type: string
+  mantrachain.token.v1.MsgNftsImagesGroupedMetadata:
+    type: object
+    properties:
+      images:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            url:
+              type: string
+      nfts_ids_grouped:
+        type: array
+        items:
+          type: object
+          properties:
+            nfts_ids:
+              type: array
+              items:
+                type: string
+      images_indexes:
+        type: array
+        items:
+          type: object
+          properties:
+            indexes:
+              type: array
+              items:
+                type: string
+                format: uint64
+  mantrachain.token.v1.MsgNftsImagesIndexes:
+    type: object
+    properties:
+      indexes:
+        type: array
+        items:
+          type: string
+          format: uint64
+  mantrachain.token.v1.MsgNftsImagesMetadata:
+    type: object
+    properties:
+      images:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            url:
+              type: string
+      nfts_ids:
+        type: array
+        items:
+          type: string
+      images_indexes:
+        type: array
+        items:
+          type: string
+          format: uint64
   mantrachain.token.v1.MsgNftsMetadata:
     type: object
     properties:
@@ -101406,6 +101466,45 @@ definitions:
       collection_id:
         type: string
   mantrachain.token.v1.MsgUpdateGuardSoulBondNftImageResponse:
+    type: object
+    properties:
+      nft_id:
+        type: string
+      owner:
+        type: string
+      collection_creator:
+        type: string
+      collection_id:
+        type: string
+  mantrachain.token.v1.MsgUpdateRestrictedCollectionNftImageBatchResponse:
+    type: object
+    properties:
+      nfts_ids:
+        type: array
+        items:
+          type: string
+      nfts_count:
+        type: integer
+        format: int64
+      collection_creator:
+        type: string
+      collection_id:
+        type: string
+  mantrachain.token.v1.MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse:
+    type: object
+    properties:
+      nfts_ids:
+        type: array
+        items:
+          type: string
+      nfts_count:
+        type: integer
+        format: int64
+      collection_creator:
+        type: string
+      collection_id:
+        type: string
+  mantrachain.token.v1.MsgUpdateRestrictedCollectionNftImageResponse:
     type: object
     properties:
       nft_id:

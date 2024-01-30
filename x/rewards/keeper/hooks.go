@@ -115,7 +115,7 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	lastSnapshot, found := h.k.GetLastSnapshot(ctx, pairId)
 
 	if !found {
-		logger.Error("No snapshot found for pair", "pair_id", pairId)
+		logger.Error("no snapshot found for pair", "pair_id", pairId)
 		return
 	} else if lastSnapshot.Distributed {
 		// Create a new snapshot for the pair
@@ -149,7 +149,7 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	provider, found := h.k.GetProvider(ctx, receiver.String())
 
 	if !found {
-		logger.Error("No provider found for address", "receiver", receiver.String())
+		logger.Error("no provider found for address", "receiver", receiver.String())
 		return
 	}
 

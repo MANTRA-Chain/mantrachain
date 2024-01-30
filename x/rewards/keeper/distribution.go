@@ -111,7 +111,7 @@ func (k Keeper) DistributeRewards(ctx sdk.Context) {
 			pairsIds = append(pairsIds[:pairIdIndex], pairsIds[pairIdIndex+1:]...)
 			err := k.DistributeRewardsForPair(ctx, pairId)
 			if err != nil {
-				logger.Error("Error distributing rewards for pair", "pair_id", pairId, "error", err.Error())
+				logger.Error("error distributing rewards for pair", "pair_id", pairId, "error", err.Error())
 			}
 		}
 
@@ -134,7 +134,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 	pair, found := k.liquidityKeeper.GetPair(ctx, pairId)
 
 	if !found {
-		logger.Error("No pair found", "pair_id", pairId)
+		logger.Error("no pair found", "pair_id", pairId)
 		return nil
 	}
 
@@ -171,7 +171,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
 
 		if !found {
-			logger.Error("No pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+			logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
 			continue
 		}
 
@@ -196,7 +196,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		return nil
 	}
 
-	logger.Info("Distributing rewards for pair", "pair_id", pairId)
+	logger.Info("distributing rewards for pair", "pair_id", pairId)
 
 	for _, balance := range balances {
 		availableBalance := sdk.NewDecFromInt(balance.Amount)
@@ -223,7 +223,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 			liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
 
 			if !found {
-				logger.Error("No pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+				logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
 				continue
 			}
 
