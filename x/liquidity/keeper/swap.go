@@ -874,8 +874,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(refundCoin)); err != nil {
 				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
-				logger.Error("fail to refund coins", "err", err)
-				return nil
+				return err
 			}
 			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
@@ -948,8 +947,6 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 }
 
 func (k Keeper) FinishMMOrder(ctx sdk.Context, order types.Order, status types.OrderStatus) error {
-	logger := k.Logger(ctx)
-
 	if order.Status == types.OrderStatusCompleted || order.Status.IsCanceledOrExpired() { // sanity check
 		return nil
 	}
@@ -960,8 +957,7 @@ func (k Keeper) FinishMMOrder(ctx sdk.Context, order types.Order, status types.O
 		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
 			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
-			logger.Error("fail to refund coins", "err", err)
-			return nil
+			return err
 		}
 		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
