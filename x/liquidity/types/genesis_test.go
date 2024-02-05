@@ -15,7 +15,7 @@ import (
 func TestGenesisState_Validate(t *testing.T) {
 	depositor := sdk.AccAddress(crypto.AddressHash([]byte("depositor"))).String()
 	// Valid structs.
-	pair := types.NewPair(1, "denom1", "denom2", depositor)
+	pair := types.NewPair(1, "denom1", "denom2", depositor, &sdk.Dec{}, &sdk.Dec{})
 	pool := types.NewBasicPool(1, 1, testAddr)
 	depositReq := types.DepositRequest{
 		Id:             1,

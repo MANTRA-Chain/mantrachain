@@ -55,6 +55,16 @@ message MsgCreatePair {
 
   // quote_coin_denom specifies the quote coin denom of the pair.
   string quote_coin_denom = 3;
+
+  string swap_fee_rate = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = true
+  ];
+
+  string pair_creator_swap_fee_ratio = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = true
+  ];
 }
 
 message MsgCreatePairResponse {}

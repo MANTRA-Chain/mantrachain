@@ -47,7 +47,7 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 	}
 
 	id := k.getNextPairIdWithUpdate(ctx)
-	pair := types.NewPair(id, msg.BaseCoinDenom, msg.QuoteCoinDenom, msg.Creator)
+	pair := types.NewPair(id, msg.BaseCoinDenom, msg.QuoteCoinDenom, msg.Creator, msg.SwapFeeRate, msg.PairCreatorSwapFeeRatio)
 	k.SetPair(ctx, pair)
 	k.SetPairIndex(ctx, pair.BaseCoinDenom, pair.QuoteCoinDenom, pair.Id)
 	k.SetPairLookupIndex(ctx, pair.BaseCoinDenom, pair.QuoteCoinDenom, pair.Id)
@@ -60,6 +60,8 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 			sdk.NewAttribute(types.AttributeKeyBaseCoinDenom, msg.BaseCoinDenom),
 			sdk.NewAttribute(types.AttributeKeyQuoteCoinDenom, msg.QuoteCoinDenom),
 			sdk.NewAttribute(types.AttributeKeyPairId, strconv.FormatUint(pair.Id, 10)),
+			sdk.NewAttribute(types.AttributeKeySwapFeeRate, pair.SwapFeeRate.String()),
+			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeRatio, pair.PairCreatorSwapFeeRatio.String()),
 			sdk.NewAttribute(types.AttributeKeyEscrowAddress, pair.EscrowAddress),
 		),
 	})

@@ -55,7 +55,7 @@ func TestMsgCreatePair(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			msg := types.NewMsgCreatePair(testAddr, "denom1", "denom2")
+			msg := types.NewMsgCreatePair(testAddr, "denom1", "denom2", sdk.NewDec(0), sdk.NewDec(0))
 			tc.malleate(msg)
 			require.Equal(t, types.TypeMsgCreatePair, msg.Type())
 			require.Equal(t, types.RouterKey, msg.Route())

@@ -364,7 +364,7 @@ func TestOrder_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2", creator)
+			pair := types.NewPair(1, "denom1", "denom2", creator, &sdk.Dec{}, &sdk.Dec{})
 			orderer := sdk.AccAddress(crypto.AddressHash([]byte("orderer")))
 			msg := types.NewMsgLimitOrder(
 				orderer, pair.Id, types.OrderDirectionBuy, utils.ParseCoin("1000000denom2"),

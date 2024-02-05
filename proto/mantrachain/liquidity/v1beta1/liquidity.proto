@@ -78,6 +78,10 @@ message Pair {
   string swap_fee_collector_address = 8;
 
   string creator = 9;
+
+  string swap_fee_rate = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = true];
+
+  string pair_creator_swap_fee_ratio = 11 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = true];
 }
 
 // Pool defines generic liquidity pool object which can be either a basic pool or a

@@ -28,7 +28,7 @@ func (k Keeper) PriceLimits(ctx sdk.Context, lastPrice sdk.Dec) (lowest, highest
 
 // ValidateMsgLimitOrder validates types.MsgLimitOrder with state and returns
 // calculated offer coin and price that is fit into ticks.
-func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (amount math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
+func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder, pair types.Pair) (amount math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
 	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
 		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
@@ -44,7 +44,13 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 	amount = msg.Amount
 	tickPrec := k.GetTickPrecision(ctx)
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
-	swapFeeRate := k.GetSwapFeeRate(ctx)
+
+	var swapFeeRate sdk.Dec
+	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
+	}
 
 	if msg.OrderLifespan > maxOrderLifespan {
 		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
@@ -114,14 +120,18 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder)
 
 // LimitOrder handles types.MsgLimitOrder and stores types.Order.
 func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Order, error) {
-	amount, offerCoin, swapFeeCoin, price, err := k.ValidateMsgLimitOrder(ctx, msg)
+	pair, found := k.GetPair(ctx, msg.PairId)
+	if !found {
+		return types.Order{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+	}
+
+	amount, offerCoin, swapFeeCoin, price, err := k.ValidateMsgLimitOrder(ctx, msg, pair)
 	if err != nil {
 		return types.Order{}, err
 	}
 
 	msg.Amount = amount
 	refundedCoin := msg.OfferCoin.Sub(offerCoin.Add(swapFeeCoin))
-	pair, _ := k.GetPair(ctx, msg.PairId)
 
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
@@ -162,7 +172,7 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 
 // ValidateMsgMarketOrder validates types.MsgMarketOrder with state and returns
 // calculated offer coin and price.
-func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (amount math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
+func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder, pair types.Pair) (amount math.Int, offerCoin sdk.Coin, swapFeeCoin sdk.Coin, price sdk.Dec, err error) {
 	// Guard: check cah transfer
 	if err := k.gk.CheckCanTransferCoins(ctx, msg.GetOrderer(), sdk.Coins{sdk.NewCoin(msg.OfferCoin.Denom, math.ZeroInt()), sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt())}); err != nil {
 		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{}, err
@@ -179,7 +189,13 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
 	maxPriceLimitRatio := k.GetMaxPriceLimitRatio(ctx)
 	tickPrec := k.GetTickPrecision(ctx)
-	swapFeeRate := k.GetSwapFeeRate(ctx)
+
+	var swapFeeRate sdk.Dec
+	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
+	}
 
 	if msg.OrderLifespan > maxOrderLifespan {
 		return math.NewInt(0), sdk.Coin{}, sdk.Coin{}, sdk.Dec{},
@@ -241,11 +257,17 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, demandCoin sdk.Coin) (offerCoin sdk.Coin, price sdk.Dec, err error) {
 	maxPriceLimitRatio := k.GetMaxPriceLimitRatio(ctx)
 	tickPrec := k.GetTickPrecision(ctx)
-	swapFeeRate := k.GetSwapFeeRate(ctx)
 
 	pair, found := k.GetPair(ctx, pairId)
 	if !found {
 		return sdk.Coin{}, sdk.Dec{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", pairId)
+	}
+
+	var swapFeeRate sdk.Dec
+	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
 	}
 
 	if demandCoin.Denom != pair.QuoteCoinDenom && demandCoin.Denom != pair.BaseCoinDenom {
@@ -276,14 +298,18 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, demandCoin sdk.Coi
 
 // MarketOrder handles types.MsgMarketOrder and stores types.Order.
 func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.Order, error) {
-	amount, offerCoin, swapFeeCoin, price, err := k.ValidateMsgMarketOrder(ctx, msg)
+	pair, found := k.GetPair(ctx, msg.PairId)
+	if !found {
+		return types.Order{}, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+	}
+
+	amount, offerCoin, swapFeeCoin, price, err := k.ValidateMsgMarketOrder(ctx, msg, pair)
 	if err != nil {
 		return types.Order{}, err
 	}
 
 	msg.Amount = amount
 	refundedCoin := msg.OfferCoin.Sub(offerCoin.Add(swapFeeCoin))
-	pair, _ := k.GetPair(ctx, msg.PairId)
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin.Add(swapFeeCoin))); err != nil {
@@ -842,8 +868,13 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	}
 
 	pair, _ := k.GetPair(ctx, order.PairId)
-	swapFeeRate := k.GetSwapFeeRate(ctx)
-	pairCreatorSwapFeeRatio := k.GetPairCreatorSwapFeeRatio(ctx)
+
+	var swapFeeRate sdk.Dec
+	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
+	}
 
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, sdk.NewInt(0))
 	collectedSwapFeeAmountFromOrderer := order.SwapFeeCoin.Amount
@@ -865,7 +896,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
 
-			refundableSwapFeeAmt := collectedSwapFeeAmountFromOrderer.Sub(swapFeeAmt)
+			var refundableSwapFeeAmt sdk.Int
+			if swapFeeAmt.GT(collectedSwapFeeAmountFromOrderer) {
+				refundableSwapFeeAmt = math.ZeroInt()
+			} else {
+				refundableSwapFeeAmt = collectedSwapFeeAmountFromOrderer.Sub(swapFeeAmt)
+			}
 			refundCoin.Amount = refundCoin.Amount.Add(refundableSwapFeeAmt)
 		}
 
@@ -885,6 +921,13 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	totalSwapFeeCoin := sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
 
 	if accumulatedSwapFee.IsPositive() {
+		var pairCreatorSwapFeeRatio sdk.Dec
+		if pair.PairCreatorSwapFeeRatio != nil && !pair.PairCreatorSwapFeeRatio.IsNil() {
+			pairCreatorSwapFeeRatio = *pair.PairCreatorSwapFeeRatio
+		} else {
+			pairCreatorSwapFeeRatio = k.GetPairCreatorSwapFeeRatio(ctx)
+		}
+
 		if pairCreatorSwapFeeRatio.IsPositive() {
 			pairCreatorSwapFeeAmt := CalculatePairCreatorSwapFeeAmount(ctx, pairCreatorSwapFeeRatio, accumulatedSwapFee.Amount)
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Sub(pairCreatorSwapFeeAmt)

@@ -56,4 +56,6 @@ const (
 	AttributeKeySwapFeeCoins            = "swap_fee_coins"
 	AttributeKeyPairCreatorSwapFeeCoins = "pair_creator_swap_fee_coins"
 	AttributeKeyRewardsSwapFeeCoins     = "rewards_swap_fee_coins"
+	AttributeKeySwapFeeRate             = "swap_fee_rate"
+	AttributeKeyPairCreatorSwapFeeRatio = "pair_creator_swap_fee_ratio"
 )

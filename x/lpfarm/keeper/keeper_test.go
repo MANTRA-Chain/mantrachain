@@ -116,7 +116,7 @@ func (s *KeeperTestSuite) createPair(baseCoinDenom, quoteCoinDenom string) liqui
 	s.T().Helper()
 	s.fundAddr(helperAddr, s.app.LiquidityKeeper.GetPairCreationFee(s.ctx))
 	pair, err := s.app.LiquidityKeeper.CreatePair(
-		s.ctx, liquiditytypes.NewMsgCreatePair(helperAddr, baseCoinDenom, quoteCoinDenom))
+		s.ctx, liquiditytypes.NewMsgCreatePair(helperAddr, baseCoinDenom, quoteCoinDenom, sdk.Dec{}, sdk.Dec{}))
 	s.Require().NoError(err)
 	return pair
 }

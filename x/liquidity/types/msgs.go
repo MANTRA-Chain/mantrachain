@@ -40,11 +40,13 @@ const (
 )
 
 // NewMsgCreatePair returns a new MsgCreatePair.
-func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string) *MsgCreatePair {
+func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, swapFeeRate sdk.Dec, pairCreatorSwapFeeRatio sdk.Dec) *MsgCreatePair {
 	return &MsgCreatePair{
-		Creator:        creator.String(),
-		BaseCoinDenom:  baseCoinDenom,
-		QuoteCoinDenom: quoteCoinDenom,
+		Creator:                 creator.String(),
+		BaseCoinDenom:           baseCoinDenom,
+		QuoteCoinDenom:          quoteCoinDenom,
+		SwapFeeRate:             &swapFeeRate,
+		PairCreatorSwapFeeRatio: &pairCreatorSwapFeeRatio,
 	}
 }
 
@@ -64,6 +66,12 @@ func (msg MsgCreatePair) ValidateBasic() error {
 	}
 	if msg.BaseCoinDenom == msg.QuoteCoinDenom {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot use same denom for both base coin and quote coin")
+	}
+	if msg.SwapFeeRate != nil && msg.SwapFeeRate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be negative")
+	}
+	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
 	}
 	return nil
 }

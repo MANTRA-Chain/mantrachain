@@ -28,7 +28,7 @@ func (pair Pair) GetSwapFeeCollectorAddress() sdk.AccAddress {
 }
 
 // NewPair returns a new pair object.
-func NewPair(id uint64, baseCoinDenom, quoteCoinDenom string, creator string) Pair {
+func NewPair(id uint64, baseCoinDenom, quoteCoinDenom string, creator string, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) Pair {
 	return Pair{
 		Id:                      id,
 		BaseCoinDenom:           baseCoinDenom,
@@ -38,6 +38,8 @@ func NewPair(id uint64, baseCoinDenom, quoteCoinDenom string, creator string) Pa
 		LastPrice:               nil,
 		CurrentBatchId:          1,
 		SwapFeeCollectorAddress: PairSwapFeeCollectorAddress(id).String(),
+		SwapFeeRate:             swapFeeRate,
+		PairCreatorSwapFeeRatio: pairCreatorSwapFeeRatio,
 		Creator:                 creator,
 	}
 }

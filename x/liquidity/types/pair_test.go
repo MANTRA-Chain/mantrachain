@@ -67,7 +67,7 @@ func TestPair_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2", creator)
+			pair := types.NewPair(1, "denom1", "denom2", creator, &sdk.Dec{}, &sdk.Dec{})
 			tc.malleate(&pair)
 			err := pair.Validate()
 			if tc.expectedErr == "" {

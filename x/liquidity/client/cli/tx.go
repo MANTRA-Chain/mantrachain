@@ -46,14 +46,14 @@ func GetTxCmd() *cobra.Command {
 
 func NewCreatePairCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pair [base-coin-denom] [quote-coin-denom]",
-		Args:  cobra.ExactArgs(2),
+		Use:   "create-pair [base-coin-denom] [quote-coin-denom] [swap-fee-rate] [pair-creator-swap-fee-ratio]",
+		Args:  cobra.ExactArgs(4),
 		Short: "Create a pair(market) for trading",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a pair(market) for trading.
 
 Example:
-$ %s tx %s create-pair uatom stake --from mykey
+$ %s tx %s create-pair uatom stake "" "" --from mykey
 `,
 				version.AppName, types.ModuleName,
 			),
@@ -67,7 +67,24 @@ $ %s tx %s create-pair uatom stake --from mykey
 			baseCoinDenom := args[0]
 			quoteCoinDenom := args[1]
 
-			msg := types.NewMsgCreatePair(clientCtx.GetFromAddress(), baseCoinDenom, quoteCoinDenom)
+			var swapFeeRate sdk.Dec
+			var pairCreatorSwapFeeRatio sdk.Dec
+
+			if args[2] != "" {
+				swapFeeRate, err = sdk.NewDecFromStr(args[2])
+				if err != nil {
+					return fmt.Errorf("invalid swap fee rate: %w", err)
+				}
+			}
+
+			if args[3] != "" {
+				pairCreatorSwapFeeRatio, err = sdk.NewDecFromStr(args[3])
+				if err != nil {
+					return fmt.Errorf("invalid pair creator swap fee ratio: %w", err)
+				}
+			}
+
+			msg := types.NewMsgCreatePair(clientCtx.GetFromAddress(), baseCoinDenom, quoteCoinDenom, swapFeeRate, pairCreatorSwapFeeRatio)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
