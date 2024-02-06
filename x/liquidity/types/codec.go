@@ -12,6 +12,7 @@ import (
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreatePair{}, "liquidity/MsgCreatePair", nil)
+	cdc.RegisterConcrete(&MsgUpdatePairSwapFee{}, "liquidity/MsgUpdatePairSwapFee", nil)
 	cdc.RegisterConcrete(&MsgCreatePool{}, "liquidity/MsgCreatePool", nil)
 	cdc.RegisterConcrete(&MsgCreateRangedPool{}, "liquidity/MsgCreateRangedPool", nil)
 	cdc.RegisterConcrete(&MsgDeposit{}, "liquidity/MsgDeposit", nil)
@@ -30,6 +31,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgCreatePair{},
+		&MsgUpdatePairSwapFee{},
 		&MsgCreatePool{},
 		&MsgCreateRangedPool{},
 		&MsgDeposit{},

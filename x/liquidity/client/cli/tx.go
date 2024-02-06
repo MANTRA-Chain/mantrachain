@@ -29,6 +29,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		NewCreatePairCmd(),
+		NewUpdatePairSwapFeeCmd(),
 		NewCreatePoolCmd(),
 		NewCreateRangedPoolCmd(),
 		NewDepositCmd(),
@@ -84,8 +85,59 @@ $ %s tx %s create-pair uatom stake "" "" --from mykey
 				}
 			}
 
-			msg := types.NewMsgCreatePair(clientCtx.GetFromAddress(), baseCoinDenom, quoteCoinDenom, swapFeeRate, pairCreatorSwapFeeRatio)
+			msg := types.NewMsgCreatePair(clientCtx.GetFromAddress(), baseCoinDenom, quoteCoinDenom, &swapFeeRate, &pairCreatorSwapFeeRatio)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewUpdatePairSwapFeeCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-pair-swap-fee [pair-id] [swap-fee-rate] [pair-creator-swap-fee-ratio]",
+		Args:  cobra.ExactArgs(3),
+		Short: "Update pair swap fee",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Update pair swap fee rate and pair creator swap fee ratio.
+
+Example:
+$ %s tx %s update-pair-swap-fee 1 "" "" --from mykey
+`,
+				version.AppName, types.ModuleName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			pairId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("parse pair id: %w", err)
+			}
+
+			var swapFeeRate sdk.Dec
+			var pairCreatorSwapFeeRatio sdk.Dec
+
+			if args[1] != "" {
+				swapFeeRate, err = sdk.NewDecFromStr(args[1])
+				if err != nil {
+					return fmt.Errorf("invalid swap fee rate: %w", err)
+				}
+			}
+
+			if args[2] != "" {
+				pairCreatorSwapFeeRatio, err = sdk.NewDecFromStr(args[2])
+				if err != nil {
+					return fmt.Errorf("invalid pair creator swap fee ratio: %w", err)
+				}
+			}
+
+			msg := types.NewMsgUpdatePairSwapFee(clientCtx.GetFromAddress(), pairId, &swapFeeRate, &pairCreatorSwapFeeRatio)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}

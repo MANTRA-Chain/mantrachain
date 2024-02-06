@@ -29,6 +29,27 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 	if _, found := k.GetPairByDenoms(ctx, msg.BaseCoinDenom, msg.QuoteCoinDenom); found {
 		return types.ErrPairAlreadyExists
 	}
+	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
+	return nil
+}
+
+// ValidateMsgUpdatePairSwapFee validates types.MsgUpdatePairSwapFee.
+func (k Keeper) ValidateMsgUpdatePairSwapFee(ctx sdk.Context, msg *types.MsgUpdatePairSwapFee) error {
+	_, found := k.GetPair(ctx, msg.PairId)
+	if !found {
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+	}
+	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
 	return nil
 }
 
@@ -53,6 +74,20 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 	k.SetPairLookupIndex(ctx, pair.BaseCoinDenom, pair.QuoteCoinDenom, pair.Id)
 	k.SetPairLookupIndex(ctx, pair.QuoteCoinDenom, pair.BaseCoinDenom, pair.Id)
 
+	var swapFeeRate sdk.Dec
+	if msg.SwapFeeRate != nil {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
+	}
+
+	var pairCreatorSwapFeeRatio sdk.Dec
+	if msg.PairCreatorSwapFeeRatio != nil {
+		pairCreatorSwapFeeRatio = *pair.PairCreatorSwapFeeRatio
+	} else {
+		pairCreatorSwapFeeRatio = k.GetPairCreatorSwapFeeRatio(ctx)
+	}
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeCreatePair,
@@ -60,9 +95,49 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 			sdk.NewAttribute(types.AttributeKeyBaseCoinDenom, msg.BaseCoinDenom),
 			sdk.NewAttribute(types.AttributeKeyQuoteCoinDenom, msg.QuoteCoinDenom),
 			sdk.NewAttribute(types.AttributeKeyPairId, strconv.FormatUint(pair.Id, 10)),
-			sdk.NewAttribute(types.AttributeKeySwapFeeRate, pair.SwapFeeRate.String()),
-			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeRatio, pair.PairCreatorSwapFeeRatio.String()),
+			sdk.NewAttribute(types.AttributeKeySwapFeeRate, swapFeeRate.String()),
+			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeRatio, pairCreatorSwapFeeRatio.String()),
 			sdk.NewAttribute(types.AttributeKeyEscrowAddress, pair.EscrowAddress),
+		),
+	})
+
+	return pair, nil
+}
+
+// UpdatePairSwapFee handles types.MsgUpdatePairSwapFee and creates a pair.
+func (k Keeper) UpdatePairSwapFee(ctx sdk.Context, msg *types.MsgUpdatePairSwapFee) (types.Pair, error) {
+	if err := k.ValidateMsgUpdatePairSwapFee(ctx, msg); err != nil {
+		return types.Pair{}, err
+	}
+
+	pair, _ := k.GetPair(ctx, msg.PairId)
+
+	var swapFeeRate sdk.Dec
+	if msg.SwapFeeRate != nil {
+		swapFeeRate = *msg.SwapFeeRate
+	} else {
+		swapFeeRate = sdk.Dec{}
+	}
+
+	var pairCreatorSwapFeeRatio sdk.Dec
+	if msg.PairCreatorSwapFeeRatio != nil {
+		pairCreatorSwapFeeRatio = *msg.PairCreatorSwapFeeRatio
+	} else {
+		pairCreatorSwapFeeRatio = sdk.Dec{}
+	}
+
+	pair.SwapFeeRate = msg.SwapFeeRate
+	pair.PairCreatorSwapFeeRatio = msg.PairCreatorSwapFeeRatio
+
+	k.SetPair(ctx, pair)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeUpdatePairSwapFee,
+			sdk.NewAttribute(types.AttributeKeyCreator, msg.Creator),
+			sdk.NewAttribute(types.AttributeKeyPairId, strconv.FormatUint(pair.Id, 10)),
+			sdk.NewAttribute(types.AttributeKeySwapFeeRate, swapFeeRate.String()),
+			sdk.NewAttribute(types.AttributeKeyPairCreatorSwapFeeRatio, pairCreatorSwapFeeRatio.String()),
 		),
 	})
 

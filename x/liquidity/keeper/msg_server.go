@@ -36,6 +36,21 @@ func (m msgServer) CreatePair(goCtx context.Context, msg *types.MsgCreatePair) (
 	return &types.MsgCreatePairResponse{}, nil
 }
 
+// UpdatePairSwapFee defines a method to update pair swap fee.
+func (m msgServer) UpdatePairSwapFee(goCtx context.Context, msg *types.MsgUpdatePairSwapFee) (*types.MsgUpdatePairSwapFeeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := m.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
+	}
+
+	if _, err := m.Keeper.UpdatePairSwapFee(ctx, msg); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdatePairSwapFeeResponse{}, nil
+}
+
 // CreatePool defines a method to create a liquidity pool.
 func (m msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

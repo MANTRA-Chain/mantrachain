@@ -63,6 +63,12 @@ func (pair Pair) Validate() error {
 			return fmt.Errorf("last price must be positive: %s", pair.LastPrice)
 		}
 	}
+	if pair.SwapFeeRate != nil && pair.SwapFeeRate.IsNegative() {
+		return fmt.Errorf("swap fee rate must not be negative: %s", pair.SwapFeeRate)
+	}
+	if pair.PairCreatorSwapFeeRatio != nil && pair.PairCreatorSwapFeeRatio.IsNegative() {
+		return fmt.Errorf("pair creator swap fee ration must not be negative: %s", pair.PairCreatorSwapFeeRatio)
+	}
 	if pair.CurrentBatchId == 0 {
 		return fmt.Errorf("current batch id must not be 0")
 	}

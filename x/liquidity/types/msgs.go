@@ -26,27 +26,41 @@ var (
 
 // Message types for the liquidity module
 const (
-	TypeMsgCreatePair       = "create_pair"
-	TypeMsgCreatePool       = "create_pool"
-	TypeMsgCreateRangedPool = "create_ranged_pool"
-	TypeMsgDeposit          = "deposit"
-	TypeMsgWithdraw         = "withdraw"
-	TypeMsgLimitOrder       = "limit_order"
-	TypeMsgMarketOrder      = "market_order"
-	TypeMsgMMOrder          = "mm_order"
-	TypeMsgCancelOrder      = "cancel_order"
-	TypeMsgCancelAllOrders  = "cancel_all_orders"
-	TypeMsgCancelMMOrder    = "cancel_mm_order"
+	TypeMsgCreatePair        = "create_pair"
+	TypeMsgUpdatePairSwapFee = "update_pair_swap_fee"
+	TypeMsgCreatePool        = "create_pool"
+	TypeMsgCreateRangedPool  = "create_ranged_pool"
+	TypeMsgDeposit           = "deposit"
+	TypeMsgWithdraw          = "withdraw"
+	TypeMsgLimitOrder        = "limit_order"
+	TypeMsgMarketOrder       = "market_order"
+	TypeMsgMMOrder           = "mm_order"
+	TypeMsgCancelOrder       = "cancel_order"
+	TypeMsgCancelAllOrders   = "cancel_all_orders"
+	TypeMsgCancelMMOrder     = "cancel_mm_order"
 )
 
 // NewMsgCreatePair returns a new MsgCreatePair.
-func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, swapFeeRate sdk.Dec, pairCreatorSwapFeeRatio sdk.Dec) *MsgCreatePair {
+func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) *MsgCreatePair {
+	if swapFeeRate.IsNil() && !pairCreatorSwapFeeRatio.IsNil() {
+		panic("swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if !swapFeeRate.IsNil() && pairCreatorSwapFeeRatio.IsNil() {
+		panic("pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
+	if swapFeeRate.IsNil() || pairCreatorSwapFeeRatio.IsNil() {
+		return &MsgCreatePair{
+			Creator:        creator.String(),
+			BaseCoinDenom:  baseCoinDenom,
+			QuoteCoinDenom: quoteCoinDenom,
+		}
+	}
 	return &MsgCreatePair{
 		Creator:                 creator.String(),
 		BaseCoinDenom:           baseCoinDenom,
 		QuoteCoinDenom:          quoteCoinDenom,
-		SwapFeeRate:             &swapFeeRate,
-		PairCreatorSwapFeeRatio: &pairCreatorSwapFeeRatio,
+		SwapFeeRate:             swapFeeRate,
+		PairCreatorSwapFeeRatio: pairCreatorSwapFeeRatio,
 	}
 }
 
@@ -73,6 +87,12 @@ func (msg MsgCreatePair) ValidateBasic() error {
 	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.IsNegative() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
 	}
+	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
 	return nil
 }
 
@@ -89,6 +109,71 @@ func (msg MsgCreatePair) GetSigners() []sdk.AccAddress {
 }
 
 func (msg MsgCreatePair) GetCreator() sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return addr
+}
+
+// NewMsgUpdatePairSwapFee returns a new MsgUpdatePairSwapFee.
+func NewMsgUpdatePairSwapFee(creator sdk.AccAddress, pairId uint64, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) *MsgUpdatePairSwapFee {
+	if swapFeeRate.IsNil() && !pairCreatorSwapFeeRatio.IsNil() {
+		panic("swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if !swapFeeRate.IsNil() && pairCreatorSwapFeeRatio.IsNil() {
+		panic("pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
+	if swapFeeRate.IsNil() || pairCreatorSwapFeeRatio.IsNil() {
+		return &MsgUpdatePairSwapFee{
+			Creator: creator.String(),
+			PairId:  pairId,
+		}
+	}
+	return &MsgUpdatePairSwapFee{
+		Creator:                 creator.String(),
+		PairId:                  pairId,
+		SwapFeeRate:             swapFeeRate,
+		PairCreatorSwapFeeRatio: pairCreatorSwapFeeRatio,
+	}
+}
+
+func (msg MsgUpdatePairSwapFee) Route() string { return RouterKey }
+
+func (msg MsgUpdatePairSwapFee) Type() string { return TypeMsgUpdatePairSwapFee }
+
+func (msg MsgUpdatePairSwapFee) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+	}
+	if msg.SwapFeeRate != nil && msg.SwapFeeRate.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be negative")
+	}
+	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.IsNegative() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
+	}
+	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+	}
+	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
+	return nil
+}
+
+func (msg MsgUpdatePairSwapFee) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+}
+
+func (msg MsgUpdatePairSwapFee) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+func (msg MsgUpdatePairSwapFee) GetCreator() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)

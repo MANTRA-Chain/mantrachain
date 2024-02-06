@@ -46,7 +46,7 @@ func (k Keeper) ValidateMsgLimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder,
 	maxOrderLifespan := k.GetMaxOrderLifespan(ctx)
 
 	var swapFeeRate sdk.Dec
-	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+	if pair.SwapFeeRate != nil {
 		swapFeeRate = *pair.SwapFeeRate
 	} else {
 		swapFeeRate = k.GetSwapFeeRate(ctx)
@@ -191,7 +191,7 @@ func (k Keeper) ValidateMsgMarketOrder(ctx sdk.Context, msg *types.MsgMarketOrde
 	tickPrec := k.GetTickPrecision(ctx)
 
 	var swapFeeRate sdk.Dec
-	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+	if pair.SwapFeeRate != nil {
 		swapFeeRate = *pair.SwapFeeRate
 	} else {
 		swapFeeRate = k.GetSwapFeeRate(ctx)
@@ -264,7 +264,7 @@ func (k Keeper) GetSwapAmount(ctx sdk.Context, pairId uint64, demandCoin sdk.Coi
 	}
 
 	var swapFeeRate sdk.Dec
-	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+	if pair.SwapFeeRate != nil {
 		swapFeeRate = *pair.SwapFeeRate
 	} else {
 		swapFeeRate = k.GetSwapFeeRate(ctx)
@@ -870,7 +870,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	pair, _ := k.GetPair(ctx, order.PairId)
 
 	var swapFeeRate sdk.Dec
-	if pair.SwapFeeRate != nil && !pair.SwapFeeRate.IsNil() {
+	if pair.SwapFeeRate != nil {
 		swapFeeRate = *pair.SwapFeeRate
 	} else {
 		swapFeeRate = k.GetSwapFeeRate(ctx)
@@ -896,11 +896,9 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
 
-			var refundableSwapFeeAmt sdk.Int
-			if swapFeeAmt.GT(collectedSwapFeeAmountFromOrderer) {
+			refundableSwapFeeAmt := collectedSwapFeeAmountFromOrderer.Sub(swapFeeAmt)
+			if refundableSwapFeeAmt.IsNegative() {
 				refundableSwapFeeAmt = math.ZeroInt()
-			} else {
-				refundableSwapFeeAmt = collectedSwapFeeAmountFromOrderer.Sub(swapFeeAmt)
 			}
 			refundCoin.Amount = refundCoin.Amount.Add(refundableSwapFeeAmt)
 		}
@@ -922,7 +920,7 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 
 	if accumulatedSwapFee.IsPositive() {
 		var pairCreatorSwapFeeRatio sdk.Dec
-		if pair.PairCreatorSwapFeeRatio != nil && !pair.PairCreatorSwapFeeRatio.IsNil() {
+		if pair.PairCreatorSwapFeeRatio != nil {
 			pairCreatorSwapFeeRatio = *pair.PairCreatorSwapFeeRatio
 		} else {
 			pairCreatorSwapFeeRatio = k.GetPairCreatorSwapFeeRatio(ctx)

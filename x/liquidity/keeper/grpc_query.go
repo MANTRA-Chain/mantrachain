@@ -175,6 +175,24 @@ func (k Querier) Pair(c context.Context, req *types.QueryPairRequest) (*types.Qu
 		return nil, status.Errorf(codes.NotFound, "pair %d doesn't exist", req.PairId)
 	}
 
+	var swapFeeRate sdk.Dec
+	if pair.SwapFeeRate != nil {
+		swapFeeRate = *pair.SwapFeeRate
+	} else {
+		swapFeeRate = k.GetSwapFeeRate(ctx)
+	}
+
+	pair.SwapFeeRate = &swapFeeRate
+
+	var pairCreatorSwapFeeRatio sdk.Dec
+	if pair.PairCreatorSwapFeeRatio != nil {
+		pairCreatorSwapFeeRatio = *pair.PairCreatorSwapFeeRatio
+	} else {
+		pairCreatorSwapFeeRatio = k.GetPairCreatorSwapFeeRatio(ctx)
+	}
+
+	pair.PairCreatorSwapFeeRatio = &pairCreatorSwapFeeRatio
+
 	return &types.QueryPairResponse{Pair: pair}, nil
 }
 

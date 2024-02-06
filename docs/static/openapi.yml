@@ -57258,6 +57258,10 @@ paths:
                       type: string
                     creator:
                       type: string
+                    swap_fee_rate:
+                      type: string
+                    pair_creator_swap_fee_ratio:
+                      type: string
                   description: Pair defines a coin pair.
               pagination:
                 type: object
@@ -57407,6 +57411,10 @@ paths:
                   swap_fee_collector_address:
                     type: string
                   creator:
+                    type: string
+                  swap_fee_rate:
+                    type: string
+                  pair_creator_swap_fee_ratio:
                     type: string
                 description: Pair defines a coin pair.
             description: QueryPairResponse is response type for the Query/Pair RPC method.
@@ -57952,6 +57960,10 @@ paths:
                     swap_fee_collector_address:
                       type: string
                     creator:
+                      type: string
+                    swap_fee_rate:
+                      type: string
+                    pair_creator_swap_fee_ratio:
                       type: string
                   description: Pair defines a coin pair.
               pagination:
@@ -97416,6 +97428,8 @@ definitions:
   mantrachain.liquidity.v1beta1.MsgMarketOrderResponse:
     type: object
     description: MsgMarketOrderResponse defines the Msg/MarketOrder response type.
+  mantrachain.liquidity.v1beta1.MsgUpdatePairSwapFeeResponse:
+    type: object
   mantrachain.liquidity.v1beta1.MsgWithdrawResponse:
     type: object
     description: MsgWithdrawResponse defines the Msg/Withdraw response type.
@@ -97700,6 +97714,10 @@ definitions:
       swap_fee_collector_address:
         type: string
       creator:
+        type: string
+      swap_fee_rate:
+        type: string
+      pair_creator_swap_fee_ratio:
         type: string
     description: Pair defines a coin pair.
   mantrachain.liquidity.v1beta1.Params:
@@ -98513,6 +98531,10 @@ definitions:
             type: string
           creator:
             type: string
+          swap_fee_rate:
+            type: string
+          pair_creator_swap_fee_ratio:
+            type: string
         description: Pair defines a coin pair.
     description: QueryPairResponse is response type for the Query/Pair RPC method.
   mantrachain.liquidity.v1beta1.QueryPairsByDenomsResponse:
@@ -98543,6 +98565,10 @@ definitions:
             swap_fee_collector_address:
               type: string
             creator:
+              type: string
+            swap_fee_rate:
+              type: string
+            pair_creator_swap_fee_ratio:
               type: string
           description: Pair defines a coin pair.
       pagination:
@@ -98602,6 +98628,10 @@ definitions:
             swap_fee_collector_address:
               type: string
             creator:
+              type: string
+            swap_fee_rate:
+              type: string
+            pair_creator_swap_fee_ratio:
               type: string
           description: Pair defines a coin pair.
       pagination:

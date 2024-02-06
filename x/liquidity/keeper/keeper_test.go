@@ -96,7 +96,7 @@ func (s *KeeperTestSuite) createPair(creator sdk.AccAddress, baseCoinDenom, quot
 	if fund {
 		s.fundAddr(creator, s.keeper.GetPairCreationFee(s.ctx))
 	}
-	msg := types.NewMsgCreatePair(creator, baseCoinDenom, quoteCoinDenom, sdk.Dec{}, sdk.Dec{})
+	msg := types.NewMsgCreatePair(creator, baseCoinDenom, quoteCoinDenom, &sdk.Dec{}, &sdk.Dec{})
 	s.Require().NoError(msg.ValidateBasic())
 	pair, err := s.keeper.CreatePair(s.ctx, msg)
 	s.Require().NoError(err)
