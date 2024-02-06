@@ -894,12 +894,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			swappedCoin := order.OfferCoin.Sub(refundCoin)
 			swapFeeAmt := CalculateSwapFeeAmount(ctx, swapFeeRate, swappedCoin.Amount)
 
-			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
-
 			refundableSwapFeeAmt := collectedSwapFeeAmountFromOrderer.Sub(swapFeeAmt)
-			if refundableSwapFeeAmt.IsNegative() {
+			if refundableSwapFeeAmt.IsNegative() { // refundable swap fee amount shouldn't be negative, edge case
 				refundableSwapFeeAmt = math.ZeroInt()
+				swapFeeAmt = collectedSwapFeeAmountFromOrderer
 			}
+			accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(swapFeeAmt)
 			refundCoin.Amount = refundCoin.Amount.Add(refundableSwapFeeAmt)
 		}
 
