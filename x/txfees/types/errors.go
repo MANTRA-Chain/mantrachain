@@ -17,4 +17,5 @@ var (
 	ErrLiquidityPoolPairFeeDenomNotMatch      = sdkerrors.Register(ModuleName, 2006, "Liquidity pool pair fee denom not match")
 	ErrTooManyGasPricesCoins                  = sdkerrors.Register(ModuleName, 2007, "too many gas prices coins")
 	ErrZeroFee                                = sdkerrors.Register(ModuleName, 2008, "zero fee")
+	ErrInvalidAmount                          = sdkerrors.Register(ModuleName, 2009, "invalid amount")
 )

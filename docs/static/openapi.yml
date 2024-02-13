@@ -64958,6 +64958,64 @@ paths:
           type: boolean
       tags:
         - Query
+  /mantrachain/txfees/v1/fee_token/gas_estimation:
+    get:
+      summary: Queries a list of FeeToken items.
+      operationId: MantrachainTxfeesV1GasEstimation
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: amount.denom
+          in: query
+          required: false
+          type: string
+        - name: amount.amount
+          in: query
+          required: false
+          type: string
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /mantrachain/txfees/v1/fee_token/{denom}:
     get:
       summary: Queries a list of FeeToken items.
@@ -102320,6 +102378,21 @@ definitions:
           pairId:
             type: string
             format: uint64
+  mantrachain.txfees.v1.QueryGetGasEstimationResponse:
+    type: object
+    properties:
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   mantrachain.txfees.v1.QueryParamsResponse:
     type: object
     properties:

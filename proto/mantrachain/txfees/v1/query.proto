@@ -3,6 +3,7 @@ syntax = "proto3";
 package mantrachain.txfees.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/txfees/v1/params.proto";
@@ -26,6 +27,11 @@ service Query {
   }
   rpc FeeTokenAll (QueryAllFeeTokenRequest) returns (QueryAllFeeTokenResponse) {
     option (google.api.http).get = "/mantrachain/txfees/v1/fee_token";
+  }
+  
+  // Queries a list of FeeToken items.
+  rpc GasEstimation    (QueryGetGasEstimationRequest) returns (QueryGetGasEstimationResponse) {
+    option (google.api.http).get = "/mantrachain/txfees/v1/fee_token/gas_estimation";
   
   }
 }
@@ -45,6 +51,15 @@ message QueryGetFeeTokenRequest {
 
 message QueryGetFeeTokenResponse {
   FeeToken feeToken = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetGasEstimationRequest {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  string denom = 2;
+}
+
+message QueryGetGasEstimationResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllFeeTokenRequest {

@@ -778,6 +778,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		&app.GuardKeeper,
+		liquidityKeeper,
 	)
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
