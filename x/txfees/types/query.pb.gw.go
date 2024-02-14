@@ -406,7 +406,7 @@ var (
 
 	pattern_Query_FeeTokenAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "txfees", "v1", "fee_token"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_GasEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"mantrachain", "txfees", "v1", "fee_token", "gas_estimation"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_GasEstimation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "txfees", "v1", "gas_estimation"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

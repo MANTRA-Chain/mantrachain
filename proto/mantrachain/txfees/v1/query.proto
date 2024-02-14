@@ -31,8 +31,7 @@ service Query {
   
   // Queries a list of FeeToken items.
   rpc GasEstimation    (QueryGetGasEstimationRequest) returns (QueryGetGasEstimationResponse) {
-    option (google.api.http).get = "/mantrachain/txfees/v1/fee_token/gas_estimation";
-  
+    option (google.api.http).get = "/mantrachain/txfees/v1/gas_estimation";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
