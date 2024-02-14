@@ -53,7 +53,7 @@ message QueryGetFeeTokenResponse {
 }
 
 message QueryGetGasEstimationRequest {
-  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  string amount = 1;
   string denom = 2;
 }
 

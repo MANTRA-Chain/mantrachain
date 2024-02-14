@@ -64958,7 +64958,50 @@ paths:
           type: boolean
       tags:
         - Query
-  /mantrachain/txfees/v1/fee_token/gas_estimation:
+  /mantrachain/txfees/v1/fee_token/{denom}:
+    get:
+      summary: Queries a list of FeeToken items.
+      operationId: MantrachainTxfeesV1FeeToken
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              feeToken:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  pairId:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /mantrachain/txfees/v1/gas_estimation:
     get:
       summary: Queries a list of FeeToken items.
       operationId: MantrachainTxfeesV1GasEstimation
@@ -65002,60 +65045,13 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: amount.denom
-          in: query
-          required: false
-          type: string
-        - name: amount.amount
+        - name: amount
           in: query
           required: false
           type: string
         - name: denom
           in: query
           required: false
-          type: string
-      tags:
-        - Query
-  /mantrachain/txfees/v1/fee_token/{denom}:
-    get:
-      summary: Queries a list of FeeToken items.
-      operationId: MantrachainTxfeesV1FeeToken
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              feeToken:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  pairId:
-                    type: string
-                    format: uint64
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: denom
-          in: path
-          required: true
           type: string
       tags:
         - Query

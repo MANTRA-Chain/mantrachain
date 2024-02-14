@@ -21,7 +21,12 @@ func (k Keeper) GasEstimation(goCtx context.Context, req *types.QueryGetGasEstim
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	swapAmount, _, err := k.lk.GetSwapAmount(ctx, val.PairId, req.Amount)
+	coin, err := sdk.ParseCoinNormalized(req.Amount)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	swapAmount, _, err := k.lk.GetSwapAmount(ctx, val.PairId, coin)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

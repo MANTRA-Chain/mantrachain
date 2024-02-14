@@ -22,13 +22,9 @@ func CmdGasEstimation() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			coins, err := sdk.ParseCoinsNormalized(args[0])
+			coin, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
 				return err
-			}
-
-			if len(coins) != 1 {
-				return types.ErrInvalidAmount
 			}
 
 			if args[1] == "" {
@@ -36,7 +32,7 @@ func CmdGasEstimation() *cobra.Command {
 			}
 
 			params := &types.QueryGetGasEstimationRequest{
-				Amount: coins[0],
+				Amount: coin.String(),
 				Denom:  args[1],
 			}
 
