@@ -75,10 +75,22 @@ func (k Querier) Pairs(c context.Context, req *types.QueryPairsRequest) (*types.
 		}
 	}
 	pairStore := prefix.NewStore(store, keyPrefix)
+	swapFeeRate := k.GetSwapFeeRate(ctx)
+	pairCreatorSwapFeeRatio := k.GetPairCreatorSwapFeeRatio(ctx)
 
 	var pairs []types.Pair
 	pageRes, err := query.FilteredPaginate(pairStore, req.Pagination, func(key, value []byte, accumulate bool) (bool, error) {
 		pair := pairGetter(key, value)
+
+		if pair.Id != 0 {
+			if pair.SwapFeeRate == nil {
+				pair.SwapFeeRate = &swapFeeRate
+			}
+
+			if pair.PairCreatorSwapFeeRatio == nil {
+				pair.PairCreatorSwapFeeRatio = &pairCreatorSwapFeeRatio
+			}
+		}
 
 		if accumulate {
 			pairs = append(pairs, pair)
