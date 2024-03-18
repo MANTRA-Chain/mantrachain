@@ -19,7 +19,9 @@ func (k Keeper) Hooks() Hooks {
 	return Hooks{k}
 }
 
-func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
+func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) error {
+	logger := h.k.Logger(ctx)
+	var err error
 	lastSnapshot, found := h.k.GetLastSnapshot(ctx, pairId)
 	lastClaimedSnapshotId := uint64(math.MaxUint64)
 
@@ -95,28 +97,50 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 		provider.Pairs = append(provider.Pairs, &types.ProviderPair{
 			PairId:                pairId,
 			LastClaimedSnapshotId: lastClaimedSnapshotId,
+			Balances:              sdk.NewCoins(),
+			PoolIdToIdx:           map[uint64]uint64{},
 			OwedRewards:           sdk.NewDecCoins(),
 		})
 		provider.PairIdToIdx[pairId] = pairIdx
 	} else {
-		provider = h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{IsQuery: false})
+		provider, err = h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{
+			IsQuery:    false,
+			IsWithdraw: false,
+		})
+		if err != nil {
+			logger.Error("failed to calculate rewards", "error", err)
+			return err
+		}
 	}
 
-	blockTime := ctx.BlockTime()
+	poolIdx, found := provider.Pairs[pairIdx].PoolIdToIdx[poolId]
+
+	if !found {
+		// Create a new provider pair pool
+		poolIdx = uint64(len(provider.Pairs[pairIdx].Balances))
+		provider.Pairs[pairIdx].Balances = append(provider.Pairs[pairIdx].Balances, sdk.NewCoin(poolCoin.Denom, sdk.ZeroInt()))
+		provider.Pairs[pairIdx].PoolIdToIdx[poolId] = poolIdx
+	}
+
 	// Update the provider pair
+	provider.Pairs[pairIdx].Balances[poolIdx] = provider.Pairs[pairIdx].Balances[poolIdx].Add(sdk.NewCoin(poolCoin.Denom, poolCoin.Amount))
+
+	blockTime := ctx.BlockTime()
 	provider.Pairs[pairIdx].LastDepositTime = &blockTime
 
 	// Update the provider
 	h.k.SetProvider(ctx, provider)
+
+	return nil
 }
 
-func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) {
+func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) error {
 	logger := h.k.Logger(ctx)
 	lastSnapshot, found := h.k.GetLastSnapshot(ctx, pairId)
 
 	if !found {
 		logger.Error("no snapshot found for pair", "pair_id", pairId)
-		return
+		return types.ErrSnapshotNotFound
 	} else if lastSnapshot.Distributed {
 		// Create a new snapshot for the pair
 		newSnapshot := types.Snapshot{
@@ -150,12 +174,43 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 
 	if !found {
 		logger.Error("no provider found for address", "receiver", receiver.String())
-		return
+		return types.ErrProviderNotFound
+	}
+
+	pairIdx, found := provider.PairIdToIdx[pairId]
+
+	if !found {
+		logger.Error("No provider pair found for pair", "pair_id", pairId)
+		return types.ErrProviderPairNotFound
 	}
 
 	// Update the provider pair
-	provider = h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{IsQuery: false})
+	provider, err := h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{
+		IsQuery:    false,
+		IsWithdraw: true,
+	})
+	if err != nil {
+		logger.Error("failed to calculate rewards", "error", err)
+		return err
+	}
+
+	if !found {
+		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		return types.ErrProviderPoolNotFound
+	}
+
+	poolIdx, found := provider.Pairs[pairIdx].PoolIdToIdx[poolId]
+
+	if !found {
+		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		return types.ErrProviderPoolNotFound
+	}
+
+	// Update the provider pair pool
+	provider.Pairs[pairIdx].Balances[poolIdx] = provider.Pairs[pairIdx].Balances[poolIdx].Sub(sdk.NewCoin(poolCoin.Denom, poolCoin.Amount))
 
 	// Update the provider
 	h.k.SetProvider(ctx, provider)
+
+	return nil
 }

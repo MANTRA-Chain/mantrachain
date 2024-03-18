@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64, provider types.Provider, params *types.ClaimParams) types.Provider {
+func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64, provider types.Provider, params *types.ClaimParams) (types.Provider, error) {
 	logger := k.Logger(ctx)
 	conf := k.GetParams(ctx)
 	minDepositTime := conf.MinDepositTime
@@ -16,7 +16,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 
 	receiverAcc, err := sdk.AccAddressFromBech32(receiver)
 	if err != nil {
-		return types.Provider{}
+		return types.Provider{}, err
 	}
 
 	if params != nil && params.EndClaimedSnapshotId != nil {
@@ -27,13 +27,13 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 
 	pairIdx, found := provider.PairIdToIdx[pairId]
 	if !found {
-		return provider
+		return provider, nil
 	}
 
 	providerPair := provider.Pairs[pairIdx]
 
 	if providerPair == nil {
-		return provider
+		return provider, nil
 	}
 
 	if params != nil && params.StartClaimedSnapshotId != nil {
@@ -91,7 +91,19 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 				continue
 			}
 
-			balance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
+			balanceIdx, found := providerPair.PoolIdToIdx[pool.PoolId]
+			if !found {
+				continue
+			}
+
+			balance := providerPair.Balances[balanceIdx]
+
+			if params != nil && params.IsWithdraw {
+				realBalance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
+				if !balance.IsLT(realBalance) {
+					return provider, types.ErrBalanceMismatch
+				}
+			}
 
 			if balance.IsPositive() {
 				for _, rewardPerToken := range pool.RewardsPerToken {
@@ -109,5 +121,5 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 
 	provider.Pairs[pairIdx].LastClaimedSnapshotId = endClaimedSnapshotId
 
-	return provider
+	return provider, nil
 }

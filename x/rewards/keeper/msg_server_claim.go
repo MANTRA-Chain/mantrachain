@@ -63,11 +63,15 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 		endClaimedSnapshotId = startClaimedSnapshotId + conf.MaxClaimedRangeLength - 1
 	}
 
-	provider = k.CalculateRewards(ctx, creator.String(), msg.PairId, provider, &types.ClaimParams{
+	provider, err = k.CalculateRewards(ctx, creator.String(), msg.PairId, provider, &types.ClaimParams{
 		StartClaimedSnapshotId: &startClaimedSnapshotId,
 		EndClaimedSnapshotId:   &endClaimedSnapshotId,
 		IsQuery:                false,
+		IsWithdraw:             false,
 	})
+	if err != nil {
+		return nil, err
+	}
 
 	pair, found := k.liquidityKeeper.GetPair(ctx, msg.PairId)
 
