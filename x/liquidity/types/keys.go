@@ -34,7 +34,7 @@ var (
 	PoolsByPairIndexKeyPrefix          = []byte{0xad}
 
 	DepositRequestKeyPrefix       = []byte{0xb0}
-	DepositRequestIndexKeyPrefix  = []byte{0xb4} // TODO: rearrange prefixes
+	DepositRequestIndexKeyPrefix  = []byte{0xb4}
 	WithdrawRequestKeyPrefix      = []byte{0xb1}
 	WithdrawRequestIndexKeyPrefix = []byte{0xb5}
 	OrderKeyPrefix                = []byte{0xb2}

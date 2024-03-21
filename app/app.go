@@ -160,6 +160,10 @@ import (
 	rewardsmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
 	rewardsmoduletypes "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 
+	airdropmodule "github.com/MANTRA-Finance/mantrachain/x/airdrop"
+	airdropmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
+	airdropmoduletypes "github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
@@ -268,6 +272,7 @@ var (
 		txfeesmodule.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
 		rewardsmodule.AppModuleBasic{},
+		airdropmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -294,6 +299,7 @@ var (
 		wasmtypes.ModuleName:           {authtypes.Burner},
 		ibcfeetypes.ModuleName:         nil,
 		rewardsmoduletypes.ModuleName:  nil,
+		airdropmoduletypes.ModuleName:  nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -372,6 +378,8 @@ type App struct {
 	TxfeesKeeper txfeesmodulekeeper.Keeper
 
 	RewardsKeeper rewardsmodulekeeper.Keeper
+
+	AirdropKeeper airdropmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -450,6 +458,7 @@ func New(
 		tokentypes.StoreKey,
 		txfeesmoduletypes.StoreKey,
 		rewardsmoduletypes.StoreKey,
+		airdropmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -822,6 +831,17 @@ func New(
 	)
 	rewardsModule := rewardsmodule.NewAppModule(appCodec, app.RewardsKeeper, app.AccountKeeper, app.BankKeeper, liquidityKeeper, app.GuardKeeper)
 
+	app.AirdropKeeper = *airdropmodulekeeper.NewKeeper(
+		appCodec,
+		keys[airdropmoduletypes.StoreKey],
+		keys[airdropmoduletypes.MemStoreKey],
+		app.GetSubspace(airdropmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.GuardKeeper,
+	)
+	airdropModule := airdropmodule.NewAppModule(appCodec, app.AirdropKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -926,6 +946,7 @@ func New(
 		ica.NewAppModule(&icaControllerKeeper, &app.ICAHostKeeper),
 		txfeesmodule.NewAppModule(appCodec, app.TxfeesKeeper, app.AccountKeeper, app.BankKeeper),
 		rewardsModule,
+		airdropModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -972,6 +993,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		airdropmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -1011,6 +1033,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		airdropmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -1055,6 +1078,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
+		airdropmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1306,6 +1330,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokentypes.ModuleName)
 	paramsKeeper.Subspace(txfeesmoduletypes.ModuleName)
 	paramsKeeper.Subspace(rewardsmoduletypes.ModuleName)
+	paramsKeeper.Subspace(airdropmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
