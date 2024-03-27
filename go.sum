@@ -220,8 +220,8 @@ github.com/CosmWasm/wasmvm v1.3.1 h1:EdDItqJalI+n2HQUA6XGFOSSaYsCoqJtiRzlja54jVI
 github.com/CosmWasm/wasmvm v1.3.1/go.mod h1:vW/E3h8j9xBQs9bCoijDuawKo9kCtxOaS8N8J7KFtkc=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20240111125213-4fa1e40a1c63 h1:HeZ5EHQV8b4xFmtELDvI7dbsOoSCBEL8L02teYEYXBE=
-github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20240111125213-4fa1e40a1c63/go.mod h1:c4OfLdAykA9zsj1CqrxBRqXzVz48I++JSvIMPSPcEmk=
+github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20240327113733-1d2c3e905390 h1:w4Z9fG4LEtwSmW5NgWH/aoEsUsUyMeveRGEf8h5kb34=
+github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20240327113733-1d2c3e905390/go.mod h1:c4OfLdAykA9zsj1CqrxBRqXzVz48I++JSvIMPSPcEmk=
 github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20230809125311-661414db5696 h1:+l0WWiosxwpr0/ns8ajD4AHau5HtF97Oz0rxoFKzHog=
 github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20230809125311-661414db5696/go.mod h1:i4ZKMbiC+VGpRw129VgiOUyzbgYjKDI/Q+hYwdKs1rs=
 github.com/Microsoft/go-winio v0.6.0 h1:slsWYD/zyx7lCXoZVlvQrj0hPTM1HI4+v1sIda2yDvg=

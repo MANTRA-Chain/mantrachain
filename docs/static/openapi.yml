@@ -52227,6 +52227,8 @@ paths:
                           signatures required by gogoproto.
                     is_paused:
                       type: boolean
+                    is_terminated:
+                      type: boolean
                     campaign_address:
                       type: string
                     creator:
@@ -52386,6 +52388,8 @@ paths:
 
                         signatures required by gogoproto.
                   is_paused:
+                    type: boolean
+                  is_terminated:
                     type: boolean
                   campaign_address:
                     type: string
@@ -61466,6 +61470,29 @@ paths:
                                 implements the custom method
 
                                 signatures required by gogoproto.
+                          balances:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                denom:
+                                  type: string
+                                amount:
+                                  type: string
+                              description: >-
+                                Coin defines a token with a denomination and an
+                                amount.
+
+
+                                NOTE: The amount field is an Int which
+                                implements the custom method
+
+                                signatures required by gogoproto.
+                          poolIdToIdx:
+                            type: object
+                            additionalProperties:
+                              type: string
+                              format: uint64
                           lastDepositTime:
                             type: string
                             format: date-time
@@ -61664,6 +61691,29 @@ paths:
                               the custom method
 
                               signatures required by gogoproto.
+                        balances:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              denom:
+                                type: string
+                              amount:
+                                type: string
+                            description: >-
+                              Coin defines a token with a denomination and an
+                              amount.
+
+
+                              NOTE: The amount field is an Int which implements
+                              the custom method
+
+                              signatures required by gogoproto.
+                        poolIdToIdx:
+                          type: object
+                          additionalProperties:
+                            type: string
+                            format: uint64
                         lastDepositTime:
                           type: string
                           format: date-time
@@ -95754,6 +95804,8 @@ definitions:
             signatures required by gogoproto.
       is_paused:
         type: boolean
+      is_terminated:
+        type: boolean
       campaign_address:
         type: string
       creator:
@@ -95822,6 +95874,8 @@ definitions:
 
                   signatures required by gogoproto.
             is_paused:
+              type: boolean
+            is_terminated:
               type: boolean
             campaign_address:
               type: string
@@ -95896,6 +95950,8 @@ definitions:
 
                 signatures required by gogoproto.
           is_paused:
+            type: boolean
+          is_terminated:
             type: boolean
           campaign_address:
             type: string
@@ -100734,6 +100790,28 @@ definitions:
                   method
 
                   signatures required by gogoproto.
+            balances:
+              type: array
+              items:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+            poolIdToIdx:
+              type: object
+              additionalProperties:
+                type: string
+                format: uint64
             lastDepositTime:
               type: string
               format: date-time
@@ -100765,6 +100843,25 @@ definitions:
 
             NOTE: The amount field is an Dec which implements the custom method
             signatures required by gogoproto.
+      balances:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+      poolIdToIdx:
+        type: object
+        additionalProperties:
+          type: string
+          format: uint64
       lastDepositTime:
         type: string
         format: date-time
@@ -100807,6 +100904,28 @@ definitions:
                         custom method
 
                         signatures required by gogoproto.
+                  balances:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                  poolIdToIdx:
+                    type: object
+                    additionalProperties:
+                      type: string
+                      format: uint64
                   lastDepositTime:
                     type: string
                     format: date-time
@@ -100982,6 +101101,28 @@ definitions:
                       custom method
 
                       signatures required by gogoproto.
+                balances:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                poolIdToIdx:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    format: uint64
                 lastDepositTime:
                   type: string
                   format: date-time

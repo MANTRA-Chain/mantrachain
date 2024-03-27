@@ -2,15 +2,15 @@ version: 1
 accounts:
   - name: validator
     coins:
-      - 10000000000000000uaum
+      - 10000000000000000uom
     mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
   - name: admin
     coins:
-      - 10000000000000000uaum
+      - 10000000000000000uom
     mnemonic: border expire liar nurse pulse code network nut solution juice rate cloth bread broom total lobster clog response ill before acoustic wasp club clump
   - name: recipient
     coins:
-      - 10000000000000000uaum
+      - 10000000000000000uom
     mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
 client:
   typescript:
@@ -18,52 +18,52 @@ client:
   openapi:
     path: docs/static/openapi.yml
 genesis:
-  chain_id: "mantrachain-testnet-9001"
+  chain_id: "mantrachain-devnet-9001"
   app_state:
     bank:
       denom_metadata:
-        - base: uaum
+        - base: uom
           denom_units:
             - aliases:
-                - microaum
-              denom: uaum
+                - microom
+              denom: uom
               exponent: 0
             - aliases:
-                - milliaum
-              denom: maum
+                - milliom
+              denom: mom
               exponent: 3
-            - denom: aum
+            - denom: om
               exponent: 6
           description: The native staking token of the Mantrachain.
-          display: aum
-          name: aum
-          symbol: AUM
+          display: om
+          name: om
+          symbol: om
     crisis:
       constant_fee:
-        denom: uaum
+        denom: uom
     gov:
       params:
         min_deposit:
           - amount: "10000000"
-            denom: uaum
+            denom: uom
         voting_period: "60s"
     guard:
       params:
         account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
         account_privileges_token_collection_id: account_privileges_guard_nft_collection
         admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
-        base_denom: uaum
+        base_denom: uom
     txfees:
       params:
-        base_denom: uaum
+        base_denom: uom
     liquidity:
       params:
         pair_creation_fee:
           - amount: "1000000"
-            denom: uaum
+            denom: uom
         pool_creation_fee:
           - amount: "1000000"
-            denom: uaum
+            denom: uom
         swap_fee_rate: "0.03"
         pair_creator_swap_fee_ratio: "0.66"
     rewards:
@@ -73,46 +73,46 @@ genesis:
       params:
         private_plan_creation_fee:
           - amount: "1000000"
-            denom: uaum
+            denom: uom
     farming:
       params:
         private_plan_creation_fee:
           - amount: "1000000000"
-            denom: uaum
+            denom: uom
     marketmaker:
       params:
         deposit_amount:
           - amount: "1000000000"
-            denom: uaum
+            denom: uom
     mint:
       params:
         # inflation_min: "0"
         # inflation_max: "0"
         # inflation_rate_change: "0"
-        mint_denom: uaum
+        mint_denom: uom
     staking:
       params:
-        bond_denom: uaum
+        bond_denom: uom
     coinfactory:
       params:
         denom_creation_fee:
           - amount: "10"
-            denom: uaum
+            denom: uom
 validators:
   - name: validator
-    bonded: 100000000uaum
+    bonded: 100000000uom
     app:
       grpc:
         address: 0.0.0.0:9090
       grpc-web:
         address: 0.0.0.0:9091
-      minimum-gas-prices: 0.0001uaum
+      minimum-gas-prices: 0.0001uom
       pruning: nothing
     config:
       consensus:
         timeout_commit: "6s"
         timeout_propose: "6s"
-      moniker: mantrachain-dev-01
+      moniker: mantrachain-dev-local
       proxy_app: tcp://0.0.0.0:26658
     client:
       node: tcp://0.0.0.0:26657
