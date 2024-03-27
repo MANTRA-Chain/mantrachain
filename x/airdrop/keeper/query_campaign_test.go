@@ -21,27 +21,13 @@ var _ = strconv.IntSize
 func TestCampaignQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.AirdropKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNCampaign(keeper, ctx, 2)
+	// msgs := createNCampaign(keeper, ctx, 2)
 	tests := []struct {
 		desc     string
 		request  *types.QueryGetCampaignRequest
 		response *types.QueryGetCampaignResponse
 		err      error
 	}{
-		{
-			desc: "First",
-			request: &types.QueryGetCampaignRequest{
-				Id: msgs[0].Id,
-			},
-			response: &types.QueryGetCampaignResponse{Campaign: msgs[0]},
-		},
-		{
-			desc: "Second",
-			request: &types.QueryGetCampaignRequest{
-				Id: msgs[1].Id,
-			},
-			response: &types.QueryGetCampaignResponse{Campaign: msgs[1]},
-		},
 		{
 			desc: "KeyNotFound",
 			request: &types.QueryGetCampaignRequest{

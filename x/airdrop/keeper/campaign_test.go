@@ -19,6 +19,7 @@ func createNCampaign(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Camp
 	items := make([]types.Campaign, n)
 	for i := range items {
 		items[i].Index = []byte(strconv.Itoa(i))
+		items[i].Id = uint64(i)
 
 		keeper.SetCampaign(ctx, items[i])
 	}

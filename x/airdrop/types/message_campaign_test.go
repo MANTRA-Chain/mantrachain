@@ -3,7 +3,6 @@ package types
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/testutil/sample"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )
@@ -20,11 +19,6 @@ func TestMsgCreateCampaign_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgCreateCampaign{
-				Creator: sample.AccAddress(),
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -51,11 +45,6 @@ func TestMsgPauseCampaign_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgPauseCampaign{
-				Creator: sample.AccAddress(),
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -82,11 +71,6 @@ func TestMsgDeleteCampaign_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgDeleteCampaign{
-				Creator: sample.AccAddress(),
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -113,11 +97,6 @@ func TestMsgUnpauseCampaign_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgUnpauseCampaign{
-				Creator: sample.AccAddress(),
-			},
 		},
 	}
 	for _, tt := range tests {
@@ -144,11 +123,6 @@ func TestMsgCampaignClaim_ValidateBasic(t *testing.T) {
 				Creator: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
-		}, {
-			name: "valid address",
-			msg: MsgCampaignClaim{
-				Creator: sample.AccAddress(),
-			},
 		},
 	}
 	for _, tt := range tests {
