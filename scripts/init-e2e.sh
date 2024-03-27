@@ -4,7 +4,7 @@ CHAINID="mantrachain-testnet-9001"
 HOMEDIR="$HOME/.mantrachain"
 KEYRING="test"
 GAS_ADJ=2
-GAS_PRICE=0.0002uaum
+GAS_PRICE=0.0002uom
 ADMIN_WALLET=$(./build/mantrachaind keys show admin -a --keyring-backend $KEYRING --home "$HOMEDIR")
 
 source "$PWD"/scripts/common.sh

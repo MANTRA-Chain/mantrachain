@@ -22,7 +22,7 @@ var (
 			),
 		big.NewInt(1),
 	).Bytes()[:]...)
-	DefaultBaseDenom = "uaum"
+	DefaultBaseDenom = "uom"
 )
 
 var (

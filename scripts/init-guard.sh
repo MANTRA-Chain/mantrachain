@@ -12,7 +12,7 @@ KEYRING="test"
 LOGLEVEL="info"
 
 GAS_ADJ=2
-GAS_PRICE=0.0002uaum
+GAS_PRICE=0.0002uom
 
 source "$PWD"/scripts/common.sh
 

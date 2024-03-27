@@ -50,13 +50,13 @@ describe('Txfees module', () => {
       }
     })
 
-    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom1), "uaum")
-    pairId1 = await getPairId(sdk.clientAdmin, genCoinDenom(sdk.adminAddress, gasFeesDenom1), "uaum")
-    await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId1), genCoinDenom(sdk.adminAddress, gasFeesDenom1), "100000000", "uaum", "10000000")
+    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom1), "uom")
+    pairId1 = await getPairId(sdk.clientAdmin, genCoinDenom(sdk.adminAddress, gasFeesDenom1), "uom")
+    await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId1), genCoinDenom(sdk.adminAddress, gasFeesDenom1), "100000000", "uom", "10000000")
 
-    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, "uaum", genCoinDenom(sdk.adminAddress, gasFeesDenom2))
-    pairId2 = await getPairId(sdk.clientAdmin, "uaum", genCoinDenom(sdk.adminAddress, gasFeesDenom2))
-    await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId2), genCoinDenom(sdk.adminAddress, gasFeesDenom2), "100000000", "uaum", "10000000")
+    await createPairIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, "uom", genCoinDenom(sdk.adminAddress, gasFeesDenom2))
+    pairId2 = await getPairId(sdk.clientAdmin, "uom", genCoinDenom(sdk.adminAddress, gasFeesDenom2))
+    await createPoolIfNotExists(sdk, sdk.clientAdmin, sdk.adminAddress, String(pairId2), genCoinDenom(sdk.adminAddress, gasFeesDenom2), "100000000", "uom", "10000000")
 
 
     const re = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryParams();
@@ -70,7 +70,7 @@ describe('Txfees module', () => {
         pairId: pairId1,
         direction: 1,
         offerCoin: {
-          denom: "uaum",
+          denom: "uom",
           amount: (1000000 + (1000000 * swapFeeRate)).toString()
         },
         demandCoinDenom: genCoinDenom(sdk.adminAddress, gasFeesDenom1),
@@ -89,7 +89,7 @@ describe('Txfees module', () => {
         pairId: pairId2,
         direction: 2,
         offerCoin: {
-          denom: "uaum",
+          denom: "uom",
           amount: (1000000 + (1000000 * swapFeeRate)).toString()
         },
         demandCoinDenom: genCoinDenom(sdk.adminAddress, gasFeesDenom2),
@@ -146,7 +146,7 @@ describe('Txfees module', () => {
 
     expect(res.code).toBe(0)
 
-    const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
+    const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uom")
     const currNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom1))
 
     res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
@@ -179,7 +179,7 @@ describe('Txfees module', () => {
 
     expect(res.code).toBe(0)
 
-    const latestNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
+    const latestNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uom")
     const latestNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom1))
 
     expect(currNativeBalance).toEqual(latestNativeBalance);
@@ -197,7 +197,7 @@ describe('Txfees module', () => {
 
     expect(res.code).toBe(0)
 
-    const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
+    const currNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uom")
     const currNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom2))
 
     res = await sdk.clientRecipient.MantrachainTokenV1.tx.sendMsgCreateNftCollection({
@@ -230,7 +230,7 @@ describe('Txfees module', () => {
 
     expect(res.code).toBe(0)
 
-    const latestNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uaum")
+    const latestNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, "uom")
     const latestNonNativeBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, genCoinDenom(sdk.adminAddress, gasFeesDenom2))
 
     expect(currNativeBalance).toEqual(latestNativeBalance);

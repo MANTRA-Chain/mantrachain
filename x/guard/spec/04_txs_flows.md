@@ -74,7 +74,7 @@ mantrachaind tx guard update-guard-transfer-coins [enabled] [flags]
 Example:
 
 ```bash
-mantrachaind tx guard update-guard-transfer-coins true --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx guard update-guard-transfer-coins true --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ## Update Authz Generic Grant Revoke Batch

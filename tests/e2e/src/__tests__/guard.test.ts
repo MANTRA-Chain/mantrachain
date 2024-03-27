@@ -165,7 +165,7 @@ describe('Guard module', () => {
         value: {
           sender: sdk.recipientAddress,
           amount: {
-            denom: 'uaum',
+            denom: 'uom',
             amount: '1000000000000000000'
           },
           transferFromAddress: sdk.recipientAddress,

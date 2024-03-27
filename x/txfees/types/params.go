@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	DefaultBaseDenom = "uaum"
+	DefaultBaseDenom = "uom"
 )
 
 var (

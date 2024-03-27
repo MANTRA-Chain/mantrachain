@@ -140,7 +140,7 @@ CHAINID="mantrachain-9001"
 HOMEDIR="$HOME/.mantrachain"
 KEYRING="test"
 GAS_ADJ=2
-GAS_PRICE=0.0002uaum
+GAS_PRICE=0.0002uom
 ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID="account_privileges_guard_nft_collection"
 ADMIN_WALLET=$(./build/mantrachaind keys show admin -a --keyring-backend $KEYRING --home "$HOMEDIR")
 ```

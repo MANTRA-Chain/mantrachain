@@ -18,7 +18,7 @@ The `x/guard` module contains the following params:
 
 `DefaultPrivileges` is the default privileges for the guard module.
 
-`BaseDenom` is the native token(`uaum`) in which the gas fees are paid.
+`BaseDenom` is the native token(`uom`) in which the gas fees are paid.
 
 The `guard` module params can be updated with governance.
 
@@ -50,7 +50,7 @@ The `x/txfees` module contains the following params:
 
 - base_denom
 
-`BaseDenom` param, which is the native token(`uaum`) in which the gas fees are paid.
+`BaseDenom` param, which is the native token(`uom`) in which the gas fees are paid.
 
 The `txfees` module params can be updated with governance.
 
@@ -293,7 +293,7 @@ The `x/bank` contains the following parameters:
 
 ### Crisis
 
-- `constant_fee` -  // 1000uaum
+- `constant_fee` -  // 1000uom
 
 ### Distribution
 
@@ -303,7 +303,7 @@ The `x/bank` contains the following parameters:
 ### gov
 
 - `max_deposit_period` - maximum deposit period 172800s
-- `min_deposit` - minimum deposit // 10000000uaum
+- `min_deposit` - minimum deposit // 10000000uom
 - `burn_proposal_deposit_prevote` - burn the prevote deposits // false
 - `burn_vote_quorum` -  burn the // false
 - `burn_vote_veto`- burn the // true
@@ -320,7 +320,7 @@ The `x/bank` contains the following parameters:
 
 ### Mint
 
-- `mint_denom` - which denom is minted // "uaum"
+- `mint_denom` - which denom is minted // "uom"
 - `inflation_rate_change` - the inflation rate change over year // "0.130000000000000000"
 - `inflation_max` - max annual inflation // "0.200000000000000000"
 - `inflation_min` - min annual inflation // "0.070000000000000000"
@@ -341,7 +341,7 @@ The `x/bank` contains the following parameters:
 - `max_validators` - maximum number of validators // 100
 - `key_max_entries` - max entries for either unbonding delegation or redelegation (per pair/trio).// 7
 - `historical_entries` - number historical entries to persist in store. //3
-- `bond_denom string` - bondable coin denomination // "uaum"
+- `bond_denom string` - bondable coin denomination // "uom"
 - `min_commission_rate` - chain-wide minimum commission rate that a validator can charge their delegators. // "0.000000000000000000"
 
 

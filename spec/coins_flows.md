@@ -8,7 +8,7 @@ There are several flags users can use to indicate how much they are willing to p
 
 `--gas-adjustment` (optional) can be used to scale gas up in order to avoid underestimating. For example, users can specify their gas adjustment as 1.5 to use 1.5 times the estimated gas.
 
-`--gas-prices` specifies how much the user is willing to pay per unit of gas, which can be one or multiple denominations of tokens. For example, --gas-prices=0.025uaum means the user is willing to pay 0.025uaum per unit of gas.
+`--gas-prices` specifies how much the user is willing to pay per unit of gas, which can be one or multiple denominations of tokens. For example, --gas-prices=0.025uom means the user is willing to pay 0.025uom per unit of gas.
 
 `--fees` specifies how much in fees the user is willing to pay in total.
 
@@ -54,7 +54,7 @@ The minting module contains the following parameters:
 
 |Key|Type|Example|
 |-|-|-|
-|MintDenom|string|"uaum"|
+|MintDenom|string|"uom"|
 |InflationRateChange|string (dec)|"0.130000000000000000"|
 |InflationMax|string (dec)|"0.200000000000000000"|
 |InflationMin|string (dec)|"0.070000000000000000"|
@@ -107,7 +107,7 @@ Example Output:
 ```js
 {
   "params": {
-    "mintDenom": "uaum",
+    "mintDenom": "uom",
     "inflationRateChange": "130000000000000000",
     "inflationMax": "200000000000000000",
     "inflationMin": "70000000000000000",
@@ -264,7 +264,7 @@ The `staking` module params can be updated with governance.
 |MaxValidators|string (uint64)|"100"|
 |MaxEntries|string (uint64)|"7"|
 |HistoricalEntries|string (uint64)|"10000"|
-|BondDenom|string|"uaum"|
+|BondDenom|string|"uom"|
 |MinCommisionRate|string (uint64)|"0.010000000000000000"|
 
 - unbonding_time is the time duration of unbonding.

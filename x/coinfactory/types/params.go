@@ -31,7 +31,7 @@ func NewParams(denomCreationFee sdk.Coins, denomCreationGasConsume uint64) Param
 // default gamm module parameters.
 func DefaultParams() Params {
 	return Params{
-		DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))), // 10 UAUM
+		DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))), // 10 uom
 		DenomCreationGasConsume: uint64(DefaultCreationGasFee),
 	}
 }

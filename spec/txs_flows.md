@@ -547,6 +547,6 @@ mm-->>-cr: Success
 
 ```
 
-## ***Note***: All the restricted transfers by the ***guard module*** ONLY apply if the guard for transfers is enabled and if the transfer is not with the chain's default denom, i.e. `uaum`
+## ***Note***: All the restricted transfers by the ***guard module*** ONLY apply if the guard for transfers is enabled and if the transfer is not with the chain's default denom, i.e. `uom`
 
-## ***Note***: All fee charge operations ARE NOT restricted by the ***guard module*** because they are with the chain's default denom, i.e. `uaum`
+## ***Note***: All fee charge operations ARE NOT restricted by the ***guard module*** because they are with the chain's default denom, i.e. `uom`

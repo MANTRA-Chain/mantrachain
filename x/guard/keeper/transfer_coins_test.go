@@ -59,12 +59,12 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.addrs[0].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("uaum", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("uom", 1000000000000000000)),
 		},
 	}, []banktypes.Output{
 		{
 			Address: s.addrs[1].String(),
-			Coins:   sdk.NewCoins(sdk.NewInt64Coin("uaum", 1000000000000000000)),
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin("uom", 1000000000000000000)),
 		},
 	})
 	s.Require().NoError(err)

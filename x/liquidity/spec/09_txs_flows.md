@@ -26,7 +26,7 @@ mantrachaind tx liquidity create-pair [base-coin-denom] [quote-coin-denom] [flag
 Example:
 
 ```bash
-mantrachaind tx liquidity create-pair factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx liquidity create-pair factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ## Create Basic Pool/Create Ranged Pool
@@ -64,11 +64,11 @@ mantrachaind tx liquidity create-ranged-pool [pair-id] [deposit-coins] [min-pric
 Examples:
 
 ```bash
-mantrachaind tx liquidity create-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx liquidity create-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ```bash
-mantrachaind tx liquidity create-ranged-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc 0.9 1.1 1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx liquidity create-ranged-pool 1 1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc 0.9 1.1 1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ## Deposit
@@ -93,7 +93,7 @@ mantrachaind tx liquidity deposit [pool-id] [deposit-coins] [flags]
 Example:
 
 ```bash
-mantrachaind tx liquidity deposit 1 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx liquidity deposit 1 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/atom,1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ## Withdraw
@@ -118,7 +118,7 @@ mantrachaind tx liquidity withdraw [pool-id] [pool-coin] [flags]
 Example:
 
 ```bash
-mantrachaind tx liquidity withdraw 1 1000pool1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx liquidity withdraw 1 1000pool1 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uom --home $HOME/.mantrachain
 ```
 
 ## Limit Order

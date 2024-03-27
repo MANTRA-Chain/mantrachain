@@ -31,7 +31,7 @@ mantrachaind tx coinfactory create-denom [subdenom] [flags]
 Example:
 
 ```bash
-mantrachaind tx coinfactory create-denom usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx coinfactory create-denom usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.uom --home $HOME/.mantrachain
 ```
 
 ## Mint
@@ -62,7 +62,7 @@ mantrachaind tx coinfactory mint [amount] [flags]
 Example:
 
 ```bash
-mantrachaind tx coinfactory mint 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx coinfactory mint 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.uom --home $HOME/.mantrachain
 ```
 
 ## Burn
@@ -93,7 +93,7 @@ mantrachaind tx coinfactory burn [amount] [flags]
 Example:
 
 ```bash
-mantrachaind tx coinfactory burn 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx coinfactory burn 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.uom --home $HOME/.mantrachain
 ```
 
 ## Change Coin Admin
@@ -123,7 +123,7 @@ mantrachaind tx coinfactory change-admin [denom] [new-admin-address] [flags]
 Example:
 
 ```bash
-mantrachaind tx coinfactory change-admin factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx coinfactory change-admin factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.uom --home $HOME/.mantrachain
 ```
 
 ## Set Denom Metadata
@@ -170,5 +170,5 @@ mantrachaind tx coinfactory force-transfer [from] [to] [amount] [flags]
 Example:
 
 ```bash
-mantrachaind tx coinfactory force-transfer mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.0002uaum --home $HOME/.mantrachain
+mantrachaind tx coinfactory force-transfer mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka mantra1t3g4vylrgun8k4wm5dlw8hmcn5x0p6jvknh550 1000factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/usdc --chain-id mantrachain-9001 --from admin --keyring-backend test --gas auto --gas-adjustment 2 --gas-prices 0.uom --home $HOME/.mantrachain
 ```

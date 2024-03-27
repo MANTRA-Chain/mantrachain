@@ -140,7 +140,7 @@ describe('Lpfarm module', () => {
               denom: pool.pool_coin_denom,
               rewardsPerDay: [
                 {
-                  denom: 'uaum',
+                  denom: 'uom',
                   value: '100000000000'
                 }
               ]
@@ -168,7 +168,7 @@ describe('Lpfarm module', () => {
               denom: pool.pool_coin_denom,
               rewardsPerDay: [
                 {
-                  denom: 'uaum',
+                  denom: 'uom',
                   amount: '1000000'
                 }
               ]
@@ -188,7 +188,7 @@ describe('Lpfarm module', () => {
           fromAddress: sdk.adminAddress,
           toAddress: planFarmingPoolAddress,
           amount: [{
-            denom: 'uaum',
+            denom: 'uom',
             amount: '100000000000'
           }]
         }
@@ -213,7 +213,7 @@ describe('Lpfarm module', () => {
 
     test('should be able to claim accumulated staking rewards', async () => {
       const balanceOfRewardCoinBefore = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
-        sdk.recipientAddress, { denom: 'uaum' }
+        sdk.recipientAddress, { denom: 'uom' }
       )
 
       const resp = await sdk.clientAdmin.MantrachainLiquidityV1Beta1.query.queryPool(poolId)
@@ -230,7 +230,7 @@ describe('Lpfarm module', () => {
 
 
       const balanceOfRewardCoinAfter = await sdk.clientRecipient.CosmosBankV1Beta1.query.queryBalance(
-        sdk.recipientAddress, { denom: 'uaum' }
+        sdk.recipientAddress, { denom: 'uom' }
       )
 
       expect(Number(balanceOfRewardCoinAfter.data.balance.amount)).toBeGreaterThan(Number(balanceOfRewardCoinBefore.data.balance.amount))
