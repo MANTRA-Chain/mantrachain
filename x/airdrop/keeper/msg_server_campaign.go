@@ -87,7 +87,7 @@ func (k msgServer) DeleteCampaign(goCtx context.Context, msg *types.MsgDeleteCam
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "unauthorized")
 	}
 
-	coins := k.bankKeeper.GetAllBalances(ctx, campaign.GetReserveAddress())
+	coins := k.bankKeeper.SpendableCoins(ctx, campaign.GetReserveAddress())
 
 	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
 	if err := k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, coins); err != nil {
