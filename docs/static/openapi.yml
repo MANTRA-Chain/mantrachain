@@ -52174,7 +52174,7 @@ paths:
                         }
       tags:
         - Query
-  /MANTRA-Finance/mantrachain/airdrop/v1beta1/campaign:
+  /mantrachain/airdrop/v1beta1/campaign:
     get:
       operationId: MantrachainAirdropV1Beta1CampaignAll
       responses:
@@ -52338,7 +52338,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /MANTRA-Finance/mantrachain/airdrop/v1beta1/campaign/{id}:
+  /mantrachain/airdrop/v1beta1/campaign/{id}:
     get:
       summary: Queries a list of Campaign items.
       operationId: MantrachainAirdropV1Beta1Campaign
@@ -52421,7 +52421,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /MANTRA-Finance/mantrachain/airdrop/v1beta1/params:
+  /mantrachain/airdrop/v1beta1/params:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: MantrachainAirdropV1Beta1Params

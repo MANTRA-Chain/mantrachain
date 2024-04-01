@@ -15,17 +15,17 @@ service Query {
   
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/MANTRA-Finance/mantrachain/airdrop/v1beta1/params";
+    option (google.api.http).get = "/mantrachain/airdrop/v1beta1/params";
   
   }
   
   // Queries a list of Campaign items.
   rpc Campaign    (QueryGetCampaignRequest) returns (QueryGetCampaignResponse) {
-    option (google.api.http).get = "/MANTRA-Finance/mantrachain/airdrop/v1beta1/campaign/{id}";
+    option (google.api.http).get = "/mantrachain/airdrop/v1beta1/campaign/{id}";
   
   }
   rpc CampaignAll (QueryAllCampaignRequest) returns (QueryAllCampaignResponse) {
-    option (google.api.http).get = "/MANTRA-Finance/mantrachain/airdrop/v1beta1/campaign";
+    option (google.api.http).get = "/mantrachain/airdrop/v1beta1/campaign";
   
   }
 }

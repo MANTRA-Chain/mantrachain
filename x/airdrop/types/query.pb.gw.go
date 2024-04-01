@@ -321,11 +321,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"MANTRA-Finance", "mantrachain", "airdrop", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "airdrop", "v1beta1", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Campaign_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"MANTRA-Finance", "mantrachain", "airdrop", "v1beta1", "campaign", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Campaign_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"mantrachain", "airdrop", "v1beta1", "campaign", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CampaignAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"MANTRA-Finance", "mantrachain", "airdrop", "v1beta1", "campaign"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CampaignAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"mantrachain", "airdrop", "v1beta1", "campaign"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
