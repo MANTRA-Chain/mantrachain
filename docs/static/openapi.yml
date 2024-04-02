@@ -61835,6 +61835,8 @@ paths:
                           poolId:
                             type: string
                             format: uint64
+                          cumulativeTotalSupply:
+                            type: string
                           rewardsPerToken:
                             type: array
                             items:
@@ -62018,6 +62020,8 @@ paths:
                         poolId:
                           type: string
                           format: uint64
+                        cumulativeTotalSupply:
+                          type: string
                         rewardsPerToken:
                           type: array
                           items:
@@ -100982,6 +100986,8 @@ definitions:
                   poolId:
                     type: string
                     format: uint64
+                  cumulativeTotalSupply:
+                    type: string
                   rewardsPerToken:
                     type: array
                     items:
@@ -101171,6 +101177,8 @@ definitions:
                 poolId:
                   type: string
                   format: uint64
+                cumulativeTotalSupply:
+                  type: string
                 rewardsPerToken:
                   type: array
                   items:
@@ -101262,6 +101270,8 @@ definitions:
             poolId:
               type: string
               format: uint64
+            cumulativeTotalSupply:
+              type: string
             rewardsPerToken:
               type: array
               items:
@@ -101310,6 +101320,8 @@ definitions:
       poolId:
         type: string
         format: uint64
+      cumulativeTotalSupply:
+        type: string
       rewardsPerToken:
         type: array
         items:

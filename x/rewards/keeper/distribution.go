@@ -156,8 +156,9 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:          pool.PoolId,
-				RewardsPerToken: sdk.NewDecCoins(),
+				PoolId:                pool.PoolId,
+				CumulativeTotalSupply: pool.CumulativeTotalSupply,
+				RewardsPerToken:       sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
@@ -168,20 +169,7 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 	pairCummulativeTotalSupply := sdk.ZeroDec()
 
 	for _, pool := range lastSnapshot.Pools {
-		liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
-
-		if !found {
-			logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
-			continue
-		}
-
-		if !liquidityPool.Disabled {
-			poolCoinSupply := k.liquidityKeeper.GetPoolCoinSupply(ctx, liquidityPool)
-
-			if poolCoinSupply.IsPositive() {
-				pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(sdk.NewDecFromInt(poolCoinSupply))
-			}
-		}
+		pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(pool.CumulativeTotalSupply)
 	}
 
 	if pairCummulativeTotalSupply.IsZero() {
@@ -220,24 +208,13 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		}
 
 		for _, pool := range lastSnapshot.Pools {
-			liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
-
-			if !found {
-				logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+			if pool.CumulativeTotalSupply.IsZero() {
 				continue
 			}
 
-			if liquidityPool.Disabled {
-				continue
-			}
-
-			poolCoinSupply := k.liquidityKeeper.GetPoolCoinSupply(ctx, liquidityPool)
-
-			if poolCoinSupply.IsPositive() {
-				requestedPoolShare := sdk.NewDecFromInt(poolCoinSupply).Quo(pairCummulativeTotalSupply)
-				rewardAmount := requestedPoolShare.Mul(availableBalance)
-				pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(sdk.NewDecFromInt(poolCoinSupply))))
-			}
+			requestedPoolShare := pool.CumulativeTotalSupply.Quo(pairCummulativeTotalSupply)
+			rewardAmount := requestedPoolShare.Mul(availableBalance)
+			pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(pool.CumulativeTotalSupply)))
 		}
 
 		if !balance.IsZero() {

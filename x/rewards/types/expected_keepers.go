@@ -1,7 +1,6 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -27,7 +26,6 @@ type LiquidityKeeper interface {
 	GetPair(ctx sdk.Context, id uint64) (pair liquiditytypes.Pair, found bool)
 	GetAllPairsIds(ctx sdk.Context) (pairsIds []uint64)
 	GetPool(ctx sdk.Context, id uint64) (pool liquiditytypes.Pool, found bool)
-	GetPoolCoinSupply(ctx sdk.Context, pool liquiditytypes.Pool) math.Int
 }
 
 type GuardKeeper interface {

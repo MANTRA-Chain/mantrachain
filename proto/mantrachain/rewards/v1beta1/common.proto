@@ -36,7 +36,12 @@ message SnapshotPool {
   option (gogoproto.goproto_getters) = false;
 
   uint64 poolId = 1;
-  repeated cosmos.base.v1beta1.DecCoin rewardsPerToken = 2 [
+  string cumulativeTotalSupply = 2 [
+    (gogoproto.moretags)   = "yaml:\"cumulative_total_supply\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; 
+  repeated cosmos.base.v1beta1.DecCoin rewardsPerToken = 3 [
     (gogoproto.moretags)     = "yaml:\"rewards_per_token\"",
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable)     = false

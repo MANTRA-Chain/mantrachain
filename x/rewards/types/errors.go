@@ -15,4 +15,5 @@ var (
 	ErrInvalidPairId        = sdkerrors.Register(ModuleName, 1805, "invalid pair id")
 	ErrSnapshotNotFound     = sdkerrors.Register(ModuleName, 1806, "snapshot not found")
 	ErrBalanceMismatch      = sdkerrors.Register(ModuleName, 1807, "balance mismatch")
+	ErrSnapshotPoolNotFound = sdkerrors.Register(ModuleName, 1808, "snapshot pool not found")
 )

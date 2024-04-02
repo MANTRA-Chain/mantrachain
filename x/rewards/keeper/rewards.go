@@ -80,42 +80,41 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 		}
 
 		for _, pool := range snapshot.Pools {
-			liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
-
-			if !found {
-				logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
-				continue
-			}
-
-			if liquidityPool.Disabled {
-				continue
-			}
-
-			balanceIdx, found := providerPair.PoolIdToIdx[pool.PoolId]
-			if !found {
-				continue
-			}
-
-			balance := providerPair.Balances[balanceIdx]
-
-			if params != nil && params.IsWithdraw {
-				realBalance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
-				if !balance.IsLT(realBalance) {
-					return provider, types.ErrBalanceMismatch
+			if pool.CumulativeTotalSupply.IsPositive() {
+				poolIdx, found := providerPair.PoolIdToIdx[pool.PoolId]
+				if !found {
+					continue
 				}
-			}
 
-			if balance.IsPositive() {
-				for _, rewardPerToken := range pool.RewardsPerToken {
-					reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)))
-					providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
+				balance := providerPair.Balances[poolIdx]
 
-					if params != nil && !params.IsQuery {
-						snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoins(reward))
-						k.SetSnapshot(ctx, snapshot)
+				if balance.IsPositive() {
+					if params != nil && params.IsWithdraw {
+						liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
+
+						if !found {
+							logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
+							continue
+						}
+
+						realBalance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
+						if !balance.IsLT(realBalance) {
+							return provider, types.ErrBalanceMismatch
+						}
+					}
+
+					for _, rewardPerToken := range pool.RewardsPerToken {
+						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)))
+						providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
+
+						if params != nil && !params.IsQuery {
+							snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoins(reward))
+							k.SetSnapshot(ctx, snapshot)
+						}
 					}
 				}
 			}
+
 		}
 	}
 

@@ -46,8 +46,9 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:          pool.PoolId,
-				RewardsPerToken: sdk.NewDecCoins(),
+				PoolId:                pool.PoolId,
+				CumulativeTotalSupply: pool.CumulativeTotalSupply,
+				RewardsPerToken:       sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
@@ -59,16 +60,20 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 	}
 
 	// Update the snapshot pools
-	_, found = lastSnapshot.PoolIdToIdx[poolId]
+	poolIdx, found := lastSnapshot.PoolIdToIdx[poolId]
 	if !found {
 		// Create a new snapshot pool
 		poolIdx := uint64(len(lastSnapshot.Pools))
 		lastSnapshot.Pools = append(lastSnapshot.Pools, &types.SnapshotPool{
-			PoolId:          poolId,
-			RewardsPerToken: sdk.NewDecCoins(),
+			PoolId:                poolId,
+			CumulativeTotalSupply: sdk.NewDec(0),
+			RewardsPerToken:       sdk.NewDecCoins(),
 		})
 		lastSnapshot.PoolIdToIdx[poolId] = poolIdx
 	}
+
+	// Update the last snapshot
+	lastSnapshot.Pools[poolIdx].CumulativeTotalSupply = lastSnapshot.Pools[poolIdx].CumulativeTotalSupply.Add(sdk.NewDecFromInt(poolCoin.Amount))
 
 	if lastSnapshot.Id == uint64(math.MaxUint64) {
 		// Create a new snapshot
@@ -113,7 +118,7 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 		}
 	}
 
-	poolIdx, found := provider.Pairs[pairIdx].PoolIdToIdx[poolId]
+	poolIdx, found = provider.Pairs[pairIdx].PoolIdToIdx[poolId]
 
 	if !found {
 		// Create a new provider pair pool
@@ -153,14 +158,25 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:          pool.PoolId,
-				RewardsPerToken: sdk.NewDecCoins(),
+				PoolId:                pool.PoolId,
+				CumulativeTotalSupply: pool.CumulativeTotalSupply,
+				RewardsPerToken:       sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
 
 		lastSnapshot = newSnapshot
 	}
+
+	poolIdx, found := lastSnapshot.PoolIdToIdx[poolId]
+
+	if !found {
+		logger.Error("No snapshot pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		return types.ErrSnapshotPoolNotFound
+	}
+
+	// Update the last snapshot
+	lastSnapshot.Pools[poolIdx].CumulativeTotalSupply = lastSnapshot.Pools[poolIdx].CumulativeTotalSupply.Sub(sdk.NewDecFromInt(poolCoin.Amount))
 
 	if lastSnapshot.Id == uint64(math.MaxUint64) {
 		// Create a new snapshot
@@ -199,7 +215,7 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 		return types.ErrProviderPoolNotFound
 	}
 
-	poolIdx, found := provider.Pairs[pairIdx].PoolIdToIdx[poolId]
+	poolIdx, found = provider.Pairs[pairIdx].PoolIdToIdx[poolId]
 
 	if !found {
 		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
