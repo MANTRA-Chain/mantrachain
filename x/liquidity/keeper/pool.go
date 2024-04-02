@@ -155,15 +155,14 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	ps := sdk.MaxInt(ammPool.PoolCoinSupply(), k.GetMinInitialPoolCoinSupply(ctx))
 	poolCoin := sdk.NewCoin(pool.PoolCoinDenom, ps)
 
+	err = k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
+	if err != nil {
+		return types.Pool{}, err
+	}
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.NewCoins(poolCoin)); err != nil {
-		return types.Pool{}, err
-	}
-
-	err = k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
-	if err != nil {
 		return types.Pool{}, err
 	}
 
@@ -279,15 +278,14 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	ps := sdk.MaxInt(ammPool.PoolCoinSupply(), k.GetMinInitialPoolCoinSupply(ctx))
 	poolCoin := sdk.NewCoin(pool.PoolCoinDenom, ps)
 
+	err = k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
+	if err != nil {
+		return types.Pool{}, err
+	}
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(poolCoin)); err != nil {
 		return types.Pool{}, err
 	}
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, sdk.NewCoins(poolCoin)); err != nil {
-		return types.Pool{}, err
-	}
-
-	err = k.Hooks().OnProvideLiquidity(ctx, creator, pair.Id, pool.Id, poolCoin)
-	if err != nil {
 		return types.Pool{}, err
 	}
 
@@ -463,6 +461,8 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 
 	acceptedCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
 
+	k.Hooks().OnProvideLiquidity(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
+
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, pool.GetReserveAddress(), acceptedCoins)
 	bulkOp.QueueSendCoins(k.accountKeeper.GetModuleAddress(types.ModuleName), req.GetDepositor(), mintingCoins)
@@ -475,8 +475,6 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 	if err := k.FinishDepositRequest(ctx, req, types.RequestStatusSucceeded); err != nil {
 		return err
 	}
-
-	k.Hooks().OnProvideLiquidity(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
 
 	return nil
 }
@@ -580,11 +578,11 @@ func (k Keeper) FinishWithdrawRequest(ctx sdk.Context, req types.WithdrawRequest
 
 	var refundingCoins sdk.Coins
 	if status == types.RequestStatusFailed {
+		k.Hooks().OnProvideLiquidity(ctx, req.GetWithdrawer(), pairId, req.PoolId, req.PoolCoin)
 		refundingCoins = sdk.NewCoins(req.PoolCoin)
 		if err := k.bankKeeper.SendCoins(ctx, types.GlobalEscrowAddress, req.GetWithdrawer(), refundingCoins); err != nil {
 			return err
 		}
-		k.Hooks().OnProvideLiquidity(ctx, req.GetWithdrawer(), pairId, req.PoolId, req.PoolCoin)
 	}
 	req.SetStatus(status)
 	k.SetWithdrawRequest(ctx, req)

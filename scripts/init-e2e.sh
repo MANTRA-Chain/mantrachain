@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHAINID="mantrachain-testnet-9001"
+CHAINID="mantrachain-devnet-9001"
 HOMEDIR="$HOME/.mantrachain"
 KEYRING="test"
 GAS_ADJ=2
