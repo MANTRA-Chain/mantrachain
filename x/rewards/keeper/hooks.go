@@ -63,7 +63,7 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 	poolIdx, found := lastSnapshot.PoolIdToIdx[poolId]
 	if !found {
 		// Create a new snapshot pool
-		poolIdx := uint64(len(lastSnapshot.Pools))
+		poolIdx = uint64(len(lastSnapshot.Pools))
 		lastSnapshot.Pools = append(lastSnapshot.Pools, &types.SnapshotPool{
 			PoolId:                poolId,
 			CumulativeTotalSupply: sdk.NewDec(0),

@@ -97,6 +97,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 							continue
 						}
 
+						// Check if the provider has enough balance to withdraw
 						realBalance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
 						if !balance.IsLT(realBalance) {
 							return provider, types.ErrBalanceMismatch
@@ -104,9 +105,16 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 					}
 
 					for _, rewardPerToken := range pool.RewardsPerToken {
-						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)))
+						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)).TruncateDec())
+						// In case of a mismatch between the rewards and the remaining rewards, we need to adjust the rewards
+						for _, remaining := range snapshot.Remaining {
+							if remaining.Denom == reward.Denom && remaining.IsLT(reward) {
+								reward.Amount = remaining.Amount
+							}
+						}
 						providerPair.OwedRewards = providerPair.OwedRewards.Add(reward)
 
+						// If the provider is claiming rewards then we need to update the snapshot
 						if params != nil && !params.IsQuery {
 							snapshot.Remaining = snapshot.Remaining.Sub(sdk.NewDecCoins(reward))
 							k.SetSnapshot(ctx, snapshot)
