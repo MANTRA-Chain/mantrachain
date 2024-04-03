@@ -39,7 +39,7 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryGetRewardsRequest
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	k.CalculateRewards(ctx, creator.String(), req.PairId, provider, &types.ClaimParams{EndClaimedSnapshotId: &endClaimedSnapshotId, IsQuery: true, IsWithdraw: false})
+	k.CalculateRewards(ctx, req.PairId, provider, &types.ClaimParams{EndClaimedSnapshotId: &endClaimedSnapshotId, IsQuery: true})
 
 	pair, found := k.liquidityKeeper.GetPair(ctx, req.PairId)
 

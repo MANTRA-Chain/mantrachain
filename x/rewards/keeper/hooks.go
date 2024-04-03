@@ -108,9 +108,8 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 		})
 		provider.PairIdToIdx[pairId] = pairIdx
 	} else {
-		provider, err = h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{
-			IsQuery:    false,
-			IsWithdraw: false,
+		provider, err = h.k.CalculateRewards(ctx, pairId, provider, &types.ClaimParams{
+			IsQuery: false,
 		})
 		if err != nil {
 			logger.Error("failed to calculate rewards", "error", err)
@@ -201,9 +200,8 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	}
 
 	// Update the provider pair
-	provider, err := h.k.CalculateRewards(ctx, receiver.String(), pairId, provider, &types.ClaimParams{
-		IsQuery:    false,
-		IsWithdraw: true,
+	provider, err := h.k.CalculateRewards(ctx, pairId, provider, &types.ClaimParams{
+		IsQuery: false,
 	})
 	if err != nil {
 		logger.Error("failed to calculate rewards", "error", err)
@@ -220,6 +218,11 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	if !found {
 		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
 		return types.ErrProviderPoolNotFound
+	}
+
+	if provider.Pairs[pairIdx].Balances[poolIdx].IsLT(sdk.NewCoin(poolCoin.Denom, poolCoin.Amount)) {
+		logger.Error("balance mismatch", "balance", provider.Pairs[pairIdx].Balances[poolIdx], "pool_coin", poolCoin)
+		return types.ErrBalanceMismatch
 	}
 
 	// Update the provider pair pool

@@ -7,17 +7,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64, provider types.Provider, params *types.ClaimParams) (types.Provider, error) {
-	logger := k.Logger(ctx)
+func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.Provider, params *types.ClaimParams) (types.Provider, error) {
 	conf := k.GetParams(ctx)
 	minDepositTime := conf.MinDepositTime
 	startClaimedSnapshotId := uint64(0)
 	endClaimedSnapshotId := uint64(0)
-
-	receiverAcc, err := sdk.AccAddressFromBech32(receiver)
-	if err != nil {
-		return types.Provider{}, err
-	}
 
 	if params != nil && params.EndClaimedSnapshotId != nil {
 		endClaimedSnapshotId = *params.EndClaimedSnapshotId
@@ -89,21 +83,6 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, receiver string, pairId uint64
 				balance := providerPair.Balances[poolIdx]
 
 				if balance.IsPositive() {
-					if params != nil && params.IsWithdraw {
-						liquidityPool, found := k.liquidityKeeper.GetPool(ctx, pool.PoolId)
-
-						if !found {
-							logger.Error("no pool found for pair", "pair_id", pairId, "pool_id", pool.PoolId)
-							continue
-						}
-
-						// Check if the provider has enough balance to withdraw
-						realBalance := k.bankKeeper.GetBalance(ctx, receiverAcc, liquidityPool.PoolCoinDenom)
-						if !balance.IsLT(realBalance) {
-							return provider, types.ErrBalanceMismatch
-						}
-					}
-
 					for _, rewardPerToken := range pool.RewardsPerToken {
 						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)).TruncateDec())
 						// In case of a mismatch between the rewards and the remaining rewards, we need to adjust the rewards
