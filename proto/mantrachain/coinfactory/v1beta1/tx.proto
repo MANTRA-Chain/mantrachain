@@ -47,6 +47,10 @@ message MsgMint {
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false
   ];
+  string mintToAddress = 3 [
+    (gogoproto.moretags) = "yaml:\"mint_to_address\"",
+    (gogoproto.nullable) = true
+  ];
 }
 
 message MsgMintResponse {}
@@ -58,6 +62,10 @@ message MsgBurn {
   cosmos.base.v1beta1.Coin amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false
+  ];
+  string burnFromAddress = 3 [
+    (gogoproto.moretags) = "yaml:\"burn_from_address\"",
+    (gogoproto.nullable) = true
   ];
 }
 

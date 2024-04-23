@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"strings"
+
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -25,7 +27,17 @@ func CmdBurn() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgBurn(clientCtx.GetFromAddress().String(), amount)
+			burnFrom, err := cmd.Flags().GetString(FlagBurnFrom)
+			if err != nil {
+				return err
+			}
+
+			burnFromStr := strings.TrimSpace(burnFrom)
+			if len(burnFromStr) == 0 {
+				burnFrom = clientCtx.GetFromAddress().String()
+			}
+
+			msg := types.NewMsgBurnFrom(clientCtx.GetFromAddress().String(), amount, burnFrom)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -33,6 +45,7 @@ func CmdBurn() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().AddFlagSet(FsBurnFrom)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

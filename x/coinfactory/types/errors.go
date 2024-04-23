@@ -19,4 +19,5 @@ var (
 	ErrSubdenomTooLong          = errors.Register(ModuleName, 1107, fmt.Sprintf("subdenom too long, max length is %d bytes", MaxSubdenomLength))
 	ErrCreatorTooLong           = errors.Register(ModuleName, 1108, fmt.Sprintf("creator too long, max length is %d bytes", MaxCreatorLength))
 	ErrDenomDoesNotExist        = errors.Register(ModuleName, 1109, "denom does not exist")
+	ErrBurnFromModuleAccount    = errors.Register(ModuleName, 1110, "cannot burn from module account")
 )

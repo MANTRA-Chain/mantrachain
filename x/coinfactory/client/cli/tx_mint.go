@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"strings"
+
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -25,7 +27,17 @@ func CmdMint() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgMint(clientCtx.GetFromAddress().String(), amount)
+			mintTo, err := cmd.Flags().GetString(FlagMintTo)
+			if err != nil {
+				return err
+			}
+
+			mintToStr := strings.TrimSpace(mintTo)
+			if len(mintToStr) == 0 {
+				mintTo = clientCtx.GetFromAddress().String()
+			}
+
+			msg := types.NewMsgMintTo(clientCtx.GetFromAddress().String(), amount, mintTo)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -33,6 +45,7 @@ func CmdMint() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().AddFlagSet(FsMintTo)
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

@@ -25,6 +25,7 @@ type BankKeeper interface {
 }
 
 type AccountKeeper interface {
+	GetAccount(sdk.Context, sdk.AccAddress) authtypes.AccountI
 	SetModuleAccount(ctx sdk.Context, macc authtypes.ModuleAccountI)
 }
 
@@ -33,6 +34,7 @@ type GuardKeeper interface {
 	GetAdmin(ctx sdk.Context) sdk.AccAddress
 	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
 	CheckHasAuthz(ctx sdk.Context, address string, authz string) error
+	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 }
 
 // CommunityPoolKeeper defines the contract needed to be fulfilled for community pool interactions.

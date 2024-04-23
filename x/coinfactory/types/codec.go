@@ -15,6 +15,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBurn{}, "coinfactory/burn", nil)
 	cdc.RegisterConcrete(&MsgForceTransfer{}, "coinfactory/force-transfer", nil)
 	cdc.RegisterConcrete(&MsgChangeAdmin{}, "coinfactory/change-admin", nil)
+	cdc.RegisterConcrete(&MsgSetDenomMetadata{}, "coinfactory/set-denom-metadata", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -25,6 +26,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBurn{},
 		&MsgForceTransfer{},
 		&MsgChangeAdmin{},
+		&MsgSetDenomMetadata{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

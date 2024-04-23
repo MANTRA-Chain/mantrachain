@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -63,6 +65,14 @@ func NewMsgMint(sender string, amount sdk.Coin) *MsgMint {
 	}
 }
 
+func NewMsgMintTo(sender string, amount sdk.Coin, mintToAddress string) *MsgMint {
+	return &MsgMint{
+		Sender:        sender,
+		Amount:        amount,
+		MintToAddress: mintToAddress,
+	}
+}
+
 func (m MsgMint) Route() string { return RouterKey }
 func (m MsgMint) Type() string  { return TypeMsgMint }
 func (m MsgMint) ValidateBasic() error {
@@ -73,6 +83,13 @@ func (m MsgMint) ValidateBasic() error {
 
 	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	}
+
+	if strings.TrimSpace(m.MintToAddress) != "" {
+		_, err = sdk.AccAddressFromBech32(m.MintToAddress)
+		if err != nil {
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid mint to address (%s)", err)
+		}
 	}
 
 	return nil
@@ -97,6 +114,14 @@ func NewMsgBurn(sender string, amount sdk.Coin) *MsgBurn {
 	}
 }
 
+func NewMsgBurnFrom(sender string, amount sdk.Coin, burnFromAddress string) *MsgBurn {
+	return &MsgBurn{
+		Sender:          sender,
+		Amount:          amount,
+		BurnFromAddress: burnFromAddress,
+	}
+}
+
 func (m MsgBurn) Route() string { return RouterKey }
 func (m MsgBurn) Type() string  { return TypeMsgBurn }
 func (m MsgBurn) ValidateBasic() error {
@@ -107,6 +132,13 @@ func (m MsgBurn) ValidateBasic() error {
 
 	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	}
+
+	if strings.TrimSpace(m.BurnFromAddress) != "" {
+		_, err = sdk.AccAddressFromBech32(m.BurnFromAddress)
+		if err != nil {
+			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid burn from address (%s)", err)
+		}
 	}
 
 	return nil
