@@ -62154,6 +62154,9 @@ paths:
                     creator:
                       type: string
                       format: byte
+                    test1:
+                      type: integer
+                      format: int64
               pagination:
                 type: object
                 properties:
@@ -62483,6 +62486,9 @@ paths:
                     creator:
                       type: string
                       format: byte
+                    test1:
+                      type: integer
+                      format: int64
               pagination:
                 type: object
                 properties:
@@ -62812,6 +62818,9 @@ paths:
                   creator:
                     type: string
                     format: byte
+                  test1:
+                    type: integer
+                    format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -102323,6 +102332,9 @@ definitions:
       creator:
         type: string
         format: byte
+      test1:
+        type: integer
+        format: int64
   mantrachain.token.v1.Params:
     type: object
     properties:
@@ -102547,6 +102559,9 @@ definitions:
             creator:
               type: string
               format: byte
+            test1:
+              type: integer
+              format: int64
       pagination:
         type: object
         properties:
@@ -102648,6 +102663,9 @@ definitions:
           creator:
             type: string
             format: byte
+          test1:
+            type: integer
+            format: int64
   mantrachain.token.v1.QueryGetNftCollectionsByCreatorResponse:
     type: object
     properties:
@@ -102699,6 +102717,9 @@ definitions:
             creator:
               type: string
               format: byte
+            test1:
+              type: integer
+              format: int64
       pagination:
         type: object
         properties:

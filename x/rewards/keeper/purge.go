@@ -5,9 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
-	rand "math/rand"
 
-	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -83,7 +81,6 @@ func (k Keeper) SetPurgePairsIds(ctx sdk.Context, pairsIds []uint64) {
 func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
 	logger := k.Logger(ctx)
 	params := k.GetParams(ctx)
-	r := rand.New(rand.NewSource(0))
 
 	pairsIds := k.GetPurgePairsIds(ctx)
 
@@ -95,22 +92,21 @@ func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
 		return
 	}
 
-	cnt := uint64(len(pairsIds))
-	if cnt > params.PairsCycleMaxCount {
-		cnt = params.PairsCycleMaxCount
+	current := pairsIds
+	rest := []uint64{}
+	if params.PairsCycleMaxCount < uint64(len(pairsIds))-1 {
+		current = pairsIds[:params.PairsCycleMaxCount]
+		rest = pairsIds[params.PairsCycleMaxCount:]
 	}
 
-	for range make([]struct{}, cnt) {
-		pairIdIndex := utils.RandomUint(r, 0, uint64(len(pairsIds)-1))
-		pairId := pairsIds[pairIdIndex]
-		pairsIds = append(pairsIds[:pairIdIndex], pairsIds[pairIdIndex+1:]...)
+	for _, pairId := range current {
 		err := k.PurgeSnapshotsForPair(ctx, pairId)
 		if err != nil {
 			logger.Error("fail to purge snapshots for pair", "pair_id", pairId, "error", err.Error())
 		}
 	}
 
-	k.SetPurgePairsIds(ctx, pairsIds)
+	k.SetPurgePairsIds(ctx, rest)
 }
 
 func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {

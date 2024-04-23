@@ -160,18 +160,6 @@ func LengthPrefixString(s string) []byte {
 	return append([]byte{byte(bzLen)}, bz...)
 }
 
-func RandomUint(r *rand.Rand, min, max uint64) uint64 {
-	// Convert min and max to *big.Int
-	bigMin := big.NewInt(int64(min))
-	bigMax := new(big.Int).SetUint64(uint64(max))
-
-	// Generate a random *big.Int in the range [0, max - min)
-	randomBig := new(big.Int).Rand(r, new(big.Int).Sub(bigMax, bigMin))
-
-	// Convert the result back to uint and add min
-	return uint64(randomBig.Uint64()) + min
-}
-
 // RandomInt returns a random integer in the half-open interval [min, max).
 func RandomInt(r *rand.Rand, min, max math.Int) math.Int {
 	return min.Add(math.NewIntFromBigInt(new(big.Int).Rand(r, max.Sub(min).BigInt())))
