@@ -20,7 +20,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 	conf := k.GetParams(ctx)
 
-	var indexes [][]byte
+	var coinIndexes [][]byte
 
 	for _, coin := range coins {
 		denom := coin.GetDenom()
@@ -49,42 +49,28 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			}
 		}
 
-		indexes = append(indexes, denomBytes)
+		coinIndexes = append(coinIndexes, denomBytes)
 	}
 
-	if len(indexes) > 0 {
-		conf := k.GetParams(ctx)
+	if len(coinIndexes) > 0 {
+		nftCollectionCreator := sdk.MustAccAddressFromBech32(conf.AccountPrivilegesTokenCollectionCreator)
+		nftCollectionIndex := tokentypes.GetNftCollectionIndex(nftCollectionCreator, conf.AccountPrivilegesTokenCollectionId)
+		nftIndex := tokentypes.GetNftIndex(nftCollectionIndex, address.String())
+		nftOwner := k.nk.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
 
-		collectionCreator := conf.AccountPrivilegesTokenCollectionCreator
-		collectionId := conf.AccountPrivilegesTokenCollectionId
-
-		if strings.TrimSpace(collectionId) == "" {
-			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionId, "nft collection id should not be empty")
-		}
-
-		creator, err := sdk.AccAddressFromBech32(collectionCreator)
-
-		if err != nil {
-			return sdkerrors.Wrap(types.ErrInvalidTokenCollectionCreator, "collection creator should not be empty")
-		}
-
-		collectionIndex := tokentypes.GetNftCollectionIndex(creator, collectionId)
-		index := tokentypes.GetNftIndex(collectionIndex, address.String())
-		owner := k.nk.GetOwner(ctx, string(collectionIndex), string(index))
-
-		if owner.Empty() || !address.Equals(owner) {
+		if nftOwner.Empty() || !address.Equals(nftOwner) {
 			return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
 		}
 
-		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, indexes, types.RequiredPrivilegesCoin)
+		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, coinIndexes, types.RequiredPrivilegesCoin)
 
-		if len(requiredPrivilegesList) != len(indexes) {
+		if len(requiredPrivilegesList) != len(coinIndexes) {
 			return sdkerrors.Wrapf(types.ErrCoinsRequiredPrivilegesNotFound, "coins required privileges not found")
 		}
 
 		for i, privileges := range requiredPrivilegesList {
 			if privileges == nil {
-				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(indexes[i]))
+				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(coinIndexes[i]))
 			}
 
 			defaultPrivileges := big.NewInt(0).SetBytes(conf.DefaultPrivileges)
@@ -93,7 +79,7 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
 
 			if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
-				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(indexes[i]))
+				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(coinIndexes[i]))
 			}
 
 			hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
@@ -103,8 +89,8 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			}
 
 			if !hasPrivileges {
-				k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(indexes[i]))
-				return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(indexes[i]))
+				k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(coinIndexes[i]))
+				return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(coinIndexes[i]))
 			}
 		}
 	}

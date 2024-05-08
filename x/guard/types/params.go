@@ -146,6 +146,11 @@ func validateAccountPrivilegesTokenCollectionCreator(i interface{}) error {
 		return fmt.Errorf("valid account privileges token collection creator param should not be empty")
 	}
 
+	_, err := sdk.AccAddressFromBech32(v)
+	if err != nil {
+		return fmt.Errorf("invalid account privileges token collection creator account address (%s)", err)
+	}
+
 	return nil
 }
 
