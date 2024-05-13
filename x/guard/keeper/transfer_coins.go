@@ -20,7 +20,11 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 	conf := k.GetParams(ctx)
 
-	var coinIndexes [][]byte
+	defaultPrivileges := big.NewInt(0).SetBytes(conf.DefaultPrivileges)
+	inverseDefaultPrilileges := big.NewInt(0).Not(defaultPrivileges)
+
+	nftCollectionCreator := sdk.MustAccAddressFromBech32(conf.AccountPrivilegesTokenCollectionCreator)
+	nftCollectionIndex := tokentypes.GetNftCollectionIndex(nftCollectionCreator, conf.AccountPrivilegesTokenCollectionId)
 
 	for _, coin := range coins {
 		denom := coin.GetDenom()
@@ -49,50 +53,46 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 			}
 		}
 
-		coinIndexes = append(coinIndexes, denomBytes)
+		err := k.CheckCanTransferCoin(ctx, nftCollectionCreator, nftCollectionIndex, inverseDefaultPrilileges, address, denomBytes)
+
+		if err != nil {
+			return err
+		}
 	}
 
-	if len(coinIndexes) > 0 {
-		nftCollectionCreator := sdk.MustAccAddressFromBech32(conf.AccountPrivilegesTokenCollectionCreator)
-		nftCollectionIndex := tokentypes.GetNftCollectionIndex(nftCollectionCreator, conf.AccountPrivilegesTokenCollectionId)
-		nftIndex := tokentypes.GetNftIndex(nftCollectionIndex, address.String())
-		nftOwner := k.nk.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
+	return nil
+}
 
-		if nftOwner.Empty() || !address.Equals(nftOwner) {
-			return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
-		}
+func (k Keeper) CheckCanTransferCoin(ctx sdk.Context, nftCollectionCreator sdk.AccAddress, nftCollectionIndex []byte, inverseDefaultPrilileges *big.Int, address sdk.AccAddress, denom []byte) error {
+	nftIndex := tokentypes.GetNftIndex(nftCollectionIndex, address.String())
+	nftOwner := k.nk.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
 
-		requiredPrivilegesList := k.GetRequiredPrivilegesMany(ctx, coinIndexes, types.RequiredPrivilegesCoin)
+	if nftOwner.Empty() || !address.Equals(nftOwner) {
+		return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
+	}
 
-		if len(requiredPrivilegesList) != len(coinIndexes) {
-			return sdkerrors.Wrapf(types.ErrCoinsRequiredPrivilegesNotFound, "coins required privileges not found")
-		}
+	privileges, found := k.GetRequiredPrivileges(ctx, denom, types.RequiredPrivilegesCoin)
 
-		for i, privileges := range requiredPrivilegesList {
-			if privileges == nil {
-				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(coinIndexes[i]))
-			}
+	if !found || privileges == nil {
+		return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(denom))
+	}
 
-			defaultPrivileges := big.NewInt(0).SetBytes(conf.DefaultPrivileges)
-			inverseDefaultPrilileges := big.NewInt(0).Not(defaultPrivileges)
-			requiredPrivileges := types.PrivilegesFromBytes(privileges)
-			requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
+	requiredPrivileges := types.PrivilegesFromBytes(privileges)
+	requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
 
-			if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
-				return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(coinIndexes[i]))
-			}
+	if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
+		return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(denom))
+	}
 
-			hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
+	hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
 
-			if err != nil {
-				return err
-			}
+	if err != nil {
+		return err
+	}
 
-			if !hasPrivileges {
-				k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(coinIndexes[i]))
-				return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(coinIndexes[i]))
-			}
-		}
+	if !hasPrivileges {
+		k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(denom))
+		return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(denom))
 	}
 
 	return nil

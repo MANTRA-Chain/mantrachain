@@ -12,11 +12,10 @@
   "author": "Mantrachain",
   "license": "ISC",
   "dependencies": {
-    "@mantrachain/sdk": "file:../../../mantrachain-js-sdk",
     "@babel/plugin-transform-modules-commonjs": "7.23.0",
     "@cosmjs/proto-signing": "0.31.0",
     "@cosmos-client/core": "0.46.1",
-    "@mantrachain/sdk": "13.0.0",
+    "@mantrachain/sdk": "14.0.0",
     "axios": "1.6.0",
     "babel-jest": "29.7.0",
     "dotenv": "16.3.1",
