@@ -158,11 +158,10 @@ func (k Keeper) DistributeMarketMakerIncentives(ctx sdk.Context, proposals []typ
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{budgetAcc.String()}, true)
 	err := k.bankKeeper.SendCoins(ctx, budgetAcc, types.ClaimableIncentiveReserveAcc, totalIncentives)
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	if err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		return err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	for _, p := range proposals {
 		incentive, found := k.GetIncentive(ctx, p.GetAccAddress())

@@ -135,11 +135,11 @@ func (k Keeper) LimitOrder(ctx sdk.Context, msg *types.MsgLimitOrder) (types.Ord
 
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin.Add(swapFeeCoin))); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin.Add(swapFeeCoin)))
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return types.Order{}, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
@@ -312,11 +312,11 @@ func (k Keeper) MarketOrder(ctx sdk.Context, msg *types.MsgMarketOrder) (types.O
 	refundedCoin := msg.OfferCoin.Sub(offerCoin.Add(swapFeeCoin))
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin.Add(swapFeeCoin))); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, msg.GetOrderer(), pair.GetEscrowAddress(), sdk.NewCoins(offerCoin.Add(swapFeeCoin)))
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return types.Order{}, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	requestId := k.getNextOrderIdWithUpdate(ctx, pair)
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
@@ -444,11 +444,11 @@ func (k Keeper) MMOrder(ctx sdk.Context, msg *types.MsgMMOrder) (orders []types.
 
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, orderer, pair.GetEscrowAddress(), sdk.NewCoins(offerBaseCoin, offerQuoteCoin)); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, orderer, pair.GetEscrowAddress(), sdk.NewCoins(offerBaseCoin, offerQuoteCoin))
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	expireAt := ctx.BlockTime().Add(msg.OrderLifespan)
 	lastOrderId := pair.LastOrderId
@@ -750,11 +750,11 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 		whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{order.ReserveAddress.String()}, true)...)
 		bulkOp.QueueSendCoins(order.ReserveAddress, pair.GetEscrowAddress(), sdk.NewCoins(paidCoin))
 	}
-	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err := bulkOp.Run(ctx, k.bankKeeper)
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	bulkOp = types.NewBulkSendCoinsOperation()
 	type PoolMatchResult struct {
 		PoolId         uint64
@@ -836,11 +836,11 @@ func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.
 	// Guard: whitelist account address
 	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 	bulkOp.QueueSendCoins(pair.GetEscrowAddress(), k.GetDustCollector(ctx), sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, quoteCoinDiff)))
-	if err := bulkOp.Run(ctx, k.bankKeeper); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = bulkOp.Run(ctx, k.bankKeeper)
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	for _, r := range poolMatchResults {
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
@@ -906,11 +906,11 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 		if refundCoin.IsPositive() {
 			// Guard: whitelist account address
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(refundCoin)); err != nil {
-				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(refundCoin))
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			if err != nil {
 				return err
 			}
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 	} else {
 		accumulatedSwapFee.Amount = accumulatedSwapFee.Amount.Add(collectedSwapFeeAmountFromOrderer)
@@ -939,12 +939,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 				}
 				// Guard: whitelist account address
 				whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-				if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pairCreator, sdk.NewCoins(pairCreatorSwapFeeCoin)); err != nil {
-					k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				err = k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pairCreator, sdk.NewCoins(pairCreatorSwapFeeCoin))
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				if err != nil {
 					logger.Error("fail to send coins to pair creator", "err", err)
 					return nil
 				}
-				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			}
 		}
 
@@ -952,12 +952,12 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 			// Guard: whitelist account address
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
 			rewardsSwapFeeCoin = sdk.NewCoin(accumulatedSwapFee.Denom, accumulatedSwapFee.Amount)
-			if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(rewardsSwapFeeCoin)); err != nil {
-				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), pair.GetSwapFeeCollectorAddress(), sdk.NewCoins(rewardsSwapFeeCoin))
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			if err != nil {
 				logger.Error("fail to send coins to swap fee collector", "err", err)
 				return nil
 			}
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 	}
 
@@ -996,11 +996,11 @@ func (k Keeper) FinishMMOrder(ctx sdk.Context, order types.Order, status types.O
 		pair, _ := k.GetPair(ctx, order.PairId)
 		// Guard: whitelist account address
 		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pair.GetEscrowAddress().String()}, true)
-		if err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin)); err != nil {
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		err := k.bankKeeper.SendCoins(ctx, pair.GetEscrowAddress(), order.GetOrderer(), sdk.NewCoins(order.RemainingOfferCoin))
+		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		if err != nil {
 			return err
 		}
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 
 	order.SetStatus(status)

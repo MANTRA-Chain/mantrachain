@@ -31,11 +31,11 @@ func (k msgServer) CreateCampaign(goCtx context.Context, msg *types.MsgCreateCam
 	}
 
 	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, creator, campaign.GetReserveAddress(), campaign.Amounts); err != nil {
-		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, creator, campaign.GetReserveAddress(), campaign.Amounts)
+	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
 
 	k.Keeper.SetCampaign(ctx, campaign)
 	k.Keeper.SetLastCampaignId(ctx, nextId)
@@ -90,11 +90,11 @@ func (k msgServer) DeleteCampaign(goCtx context.Context, msg *types.MsgDeleteCam
 	coins := k.bankKeeper.SpendableCoins(ctx, campaign.GetReserveAddress())
 
 	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, coins); err != nil {
-		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, coins)
+	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
 
 	k.Keeper.RemoveCampaign(ctx, campaignIndex)
 
@@ -274,11 +274,11 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 	})
 
 	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, sdk.NewCoins(reward)); err != nil {
-		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, sdk.NewCoins(reward))
+	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -316,12 +316,11 @@ func (k Keeper) TerminateCampaign(ctx sdk.Context, campaign types.Campaign) erro
 	if !balances.IsZero() {
 		// Guard: whitelist account address
 		whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaignAddr.String()}, true)
-		if err := k.bankKeeper.SendCoins(
-			ctx, campaignAddr, campaign.GetCampaignCreator(), balances); err != nil {
-			k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+		err := k.bankKeeper.SendCoins(ctx, campaignAddr, campaign.GetCampaignCreator(), balances)
+		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+		if err != nil {
 			return err
 		}
-		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
 	}
 	campaign.IsTerminated = true
 	k.SetCampaign(ctx, campaign)

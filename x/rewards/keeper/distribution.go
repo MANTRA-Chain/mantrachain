@@ -193,11 +193,11 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 
 			if !distributionFeeRateCoin.IsZero() {
 				whitelisted := k.gk.WhitelistTransferAccAddresses([]string{swapFeeCollectorAddress.String()}, true)
-				if err := k.bankKeeper.SendCoins(ctx, swapFeeCollectorAddress, admin, sdk.NewCoins(distributionFeeRateCoin)); err != nil {
-					k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				err := k.bankKeeper.SendCoins(ctx, swapFeeCollectorAddress, admin, sdk.NewCoins(distributionFeeRateCoin))
+				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+				if err != nil {
 					return err
 				}
-				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			}
 
 			availableBalance = rewardsBalance
@@ -218,11 +218,10 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		if !balance.IsZero() {
 			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{swapFeeCollectorAddress.String()}, true)
 			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, swapFeeCollectorAddress, types.ModuleName, sdk.NewCoins(balance))
+			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 			if err != nil {
-				k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 				return err
 			}
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 		}
 
 		lastSnapshot.Remaining = lastSnapshot.Remaining.Add(sdk.NewDecCoinFromDec(balance.Denom, sdk.NewDecFromInt(balance.Amount)))

@@ -15,12 +15,11 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
-	if err := k.bankKeeper.SendCoins(
-		ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin)); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin))
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	_, found := k.GetFarm(ctx, coin.Denom)
 	if !found {
@@ -95,11 +94,11 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 	// Guard: whitelist account address
 	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingReserveAddr.String()}, true)
-	if err := k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin)); err != nil {
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	err = k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin))
+	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	if err != nil {
 		return nil, err
 	}
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventUnfarm{
 		Farmer:           farmerAddr.String(),
