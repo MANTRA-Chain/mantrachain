@@ -212,6 +212,6 @@ require (
 
 replace (
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Finance/cosmos-sdk v0.47.2-0.20240327113733-1d2c3e905390
-	github.com/cosmos/ibc-go/v7 => github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20230809125311-661414db5696
+	github.com/cosmos/ibc-go/v7 => github.com/MANTRA-Finance/ibc-go/v7 v7.0.0-rc0.0.20240520102158-3a07e0533ccc
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )

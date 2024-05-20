@@ -39,13 +39,7 @@ func NewKeeper(
 	}
 
 	// Guard: whitelist account address
-	gk.WhitelistTransferAccAddresses(
-		[]string{
-			types.DefaultFeeCollector.String(),
-			sdk.AccAddress(types.RewardsPoolAddress).String(),
-		},
-		true,
-	)
+	gk.AddTransferAccAddressesWhitelist([]string{types.DefaultFeeCollector.String(), sdk.AccAddress(types.RewardsPoolAddress).String()})
 
 	return Keeper{
 		cdc:             cdc,

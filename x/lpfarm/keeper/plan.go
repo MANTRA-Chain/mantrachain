@@ -27,9 +27,9 @@ func (k Keeper) CreatePrivatePlan(
 	}
 
 	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAddr.String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAddr.String()})
 	err = k.bankKeeper.SendCoins(ctx, creatorAddr, feeCollectorAddr, fee)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Plan{}, err
 	}
@@ -136,9 +136,9 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.Plan) error {
 		balances := k.bankKeeper.SpendableCoins(ctx, farmingPoolAddr)
 		if !balances.IsZero() {
 			// Guard: whitelist account address
-			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingPoolAddr.String()}, true)
+			whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
 			err := k.bankKeeper.SendCoins(ctx, farmingPoolAddr, plan.GetTerminationAddress(), balances)
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 			if err != nil {
 				return err
 			}
@@ -213,9 +213,9 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 			continue
 		}
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{farmingPoolAddr.String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
 		err := k.bankKeeper.SendCoins(ctx, farmingPoolAddr, types.RewardsPoolAddress, totalRewards)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

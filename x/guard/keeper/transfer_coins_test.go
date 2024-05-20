@@ -69,7 +69,7 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	})
 	s.Require().NoError(err)
 
-	whitelisted := s.guardKeeper.WhitelistTransferAccAddresses([]string{s.addrs[0].String()}, true)
+	whitelisted := s.guardKeeper.AddTransferAccAddressesWhitelist([]string{s.addrs[0].String()})
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.addrs[0].String(),
@@ -82,11 +82,11 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 		},
 	})
 	s.Require().NoError(err)
-	_ = s.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	s.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[2], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
-	whitelisted = s.guardKeeper.WhitelistTransferAccAddresses([]string{s.addrs[1].String()}, true)
+	whitelisted = s.guardKeeper.AddTransferAccAddressesWhitelist([]string{s.addrs[1].String()})
 	privileges := types.PrivilegesFromBytes(s.defaultPrivileges).SwitchOn([]*big.Int{big.NewInt(64)})
 	_, err = s.msgServer.UpdateRequiredPrivileges(goCtx, &types.MsgUpdateRequiredPrivileges{
 		Creator:    s.testAdminAccount,
@@ -113,7 +113,7 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 		},
 	})
 	s.Require().NoError(err)
-	_ = s.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	s.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)

@@ -151,7 +151,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	return nil
 }
 
-func (k Keeper) WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string {
+func (k Keeper) AddTransferAccAddressesWhitelist(addresses []string) []string {
 	updated := make([]string, 0)
 
 	if len(addresses) == 0 {
@@ -161,14 +161,21 @@ func (k Keeper) WhitelistTransferAccAddresses(addresses []string, isWhitelisted 
 	for _, address := range addresses {
 		val, ok := k.whitelistTransfersAccAddrs[address]
 
-		if ok && !isWhitelisted {
-			delete(k.whitelistTransfersAccAddrs, address)
-			updated = append(updated, address)
-		} else if !val && isWhitelisted {
-			k.whitelistTransfersAccAddrs[address] = isWhitelisted
+		if !ok || !val {
+			k.whitelistTransfersAccAddrs[address] = true
 			updated = append(updated, address)
 		}
 	}
 
 	return updated
+}
+
+func (k Keeper) RemoveTransferAccAddressesWhitelist(addresses []string) {
+	for _, address := range addresses {
+		_, ok := k.whitelistTransfersAccAddrs[address]
+
+		if ok {
+			delete(k.whitelistTransfersAccAddrs, address)
+		}
+	}
 }

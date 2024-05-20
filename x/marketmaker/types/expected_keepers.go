@@ -23,5 +23,6 @@ type AccountKeeper interface {
 }
 
 type GuardKeeper interface {
-	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	AddTransferAccAddressesWhitelist(addresses []string) []string
+	RemoveTransferAccAddressesWhitelist(addresses []string)
 }

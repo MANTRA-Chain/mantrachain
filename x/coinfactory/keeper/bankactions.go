@@ -63,9 +63,9 @@ func (k Keeper) forceTransfer(ctx sdk.Context, amount sdk.Coin, fromAddr string,
 	}
 
 	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{from.String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{from.String()})
 	err = k.bankKeeper.SendCoins(ctx, from, to, sdk.NewCoins(amount))
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return err
 	}

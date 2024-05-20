@@ -570,9 +570,9 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 
 		rewardsReserveAcc := types.RewardsReserveAcc
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{allocInfo.Plan.GetFarmingPoolAddress().String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{allocInfo.Plan.GetFarmingPoolAddress().String()})
 		err := k.bankKeeper.SendCoins(ctx, allocInfo.Plan.GetFarmingPoolAddress(), rewardsReserveAcc, totalAllocCoins)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

@@ -30,9 +30,9 @@ func (k msgServer) CreateCampaign(goCtx context.Context, msg *types.MsgCreateCam
 		return nil, err
 	}
 
-	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaign.GetReserveAddress().String()})
 	err = k.bankKeeper.SendCoins(ctx, creator, campaign.GetReserveAddress(), campaign.Amounts)
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -89,9 +89,9 @@ func (k msgServer) DeleteCampaign(goCtx context.Context, msg *types.MsgDeleteCam
 
 	coins := k.bankKeeper.SpendableCoins(ctx, campaign.GetReserveAddress())
 
-	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaign.GetReserveAddress().String()})
 	err = k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, coins)
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -273,9 +273,9 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 		Amounts:     sdk.NewCoins(reward),
 	})
 
-	whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaign.GetReserveAddress().String()}, true)
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaign.GetReserveAddress().String()})
 	err = k.bankKeeper.SendCoins(ctx, campaign.GetReserveAddress(), creator, sdk.NewCoins(reward))
-	k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -315,9 +315,9 @@ func (k Keeper) TerminateCampaign(ctx sdk.Context, campaign types.Campaign) erro
 	balances := k.bankKeeper.SpendableCoins(ctx, campaignAddr)
 	if !balances.IsZero() {
 		// Guard: whitelist account address
-		whitelisted := k.guardKeeper.WhitelistTransferAccAddresses([]string{campaignAddr.String()}, true)
+		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaignAddr.String()})
 		err := k.bankKeeper.SendCoins(ctx, campaignAddr, campaign.GetCampaignCreator(), balances)
-		k.guardKeeper.WhitelistTransferAccAddresses(whitelisted, false)
+		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

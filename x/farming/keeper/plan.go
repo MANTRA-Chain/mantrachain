@@ -186,9 +186,9 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAcc.String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
 		err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
 		}
@@ -260,9 +260,9 @@ func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, 
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAcc.String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
 		err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
 		}
@@ -306,9 +306,9 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.PlanI) error {
 		balances := k.bankKeeper.SpendableCoins(ctx, plan.GetFarmingPoolAddress())
 		if !balances.IsZero() {
 			// Guard: whitelist account address
-			whitelisted := k.gk.WhitelistTransferAccAddresses([]string{plan.GetFarmingPoolAddress().String()}, true)
+			whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{plan.GetFarmingPoolAddress().String()})
 			err := k.bankKeeper.SendCoins(ctx, plan.GetFarmingPoolAddress(), plan.GetTerminationAddress(), balances)
-			k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+			k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 			if err != nil {
 				return err
 			}
@@ -372,9 +372,9 @@ func (k Keeper) RemovePlan(ctx sdk.Context, creator sdk.AccAddress, planId uint6
 	params := k.GetParams(ctx)
 	feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
 	// Guard: whitelist account address
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{feeCollectorAcc.String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
 	err := k.bankKeeper.SendCoins(ctx, feeCollectorAcc, creator, params.PrivatePlanCreationFee)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return sdkerrors.Wrap(err, "failed to refund private plan creation fee")
 	}

@@ -134,17 +134,17 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 
 	// Send deposit coins to the pool's reserve account.
 	creator := msg.GetCreator()
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{pool.GetReserveAddress().String()})
 	err = k.bankKeeper.SendCoins(ctx, creator, pool.GetReserveAddress(), msg.DepositCoins)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Pool{}, err
 	}
 
 	// Send the pool creation fee to the fee collector.
-	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{k.GetFeeCollector(ctx).String()}, true)
+	whitelisted = k.gk.AddTransferAccAddressesWhitelist([]string{k.GetFeeCollector(ctx).String()})
 	err = k.bankKeeper.SendCoins(ctx, creator, k.GetFeeCollector(ctx), k.GetPoolCreationFee(ctx))
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Pool{}, sdkerrors.Wrap(err, "insufficient pool creation fee")
 	}
@@ -256,9 +256,9 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	depositCoins := sdk.NewCoins(
 		sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
 
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{pool.GetReserveAddress().String()})
 	err = k.bankKeeper.SendCoins(ctx, creator, pool.GetReserveAddress(), depositCoins)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Pool{}, err
 	}
@@ -266,9 +266,9 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	// Send the pool creation fee to the fee collector.
 	feeCollector := k.GetFeeCollector(ctx)
 	poolCreationFee := k.GetPoolCreationFee(ctx)
-	whitelisted = k.gk.WhitelistTransferAccAddresses([]string{feeCollector.String()}, true)
+	whitelisted = k.gk.AddTransferAccAddressesWhitelist([]string{feeCollector.String()})
 	err = k.bankKeeper.SendCoins(ctx, creator, feeCollector, poolCreationFee)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Pool{}, sdkerrors.Wrap(err, "insufficient pool creation fee")
 	}
@@ -544,12 +544,12 @@ func (k Keeper) ExecuteWithdrawRequest(ctx sdk.Context, req types.WithdrawReques
 	withdrawnCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, x), sdk.NewCoin(pair.BaseCoinDenom, y))
 	burningCoins := sdk.NewCoins(req.PoolCoin)
 
-	whitelisted := k.gk.WhitelistTransferAccAddresses([]string{pool.GetReserveAddress().String()}, true)
+	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{pool.GetReserveAddress().String()})
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, k.accountKeeper.GetModuleAddress(types.ModuleName), burningCoins)
 	bulkOp.QueueSendCoins(pool.GetReserveAddress(), req.GetWithdrawer(), withdrawnCoins)
 	err := bulkOp.Run(ctx, k.bankKeeper)
-	k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return err
 	}

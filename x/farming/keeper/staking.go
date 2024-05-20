@@ -302,9 +302,9 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 	if stakingCoins.Len() == 1 {
 		reserveAcc := types.StakingReserveAcc(stakingCoins[0].Denom)
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{reserveAcc.String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{reserveAcc.String()})
 		err := k.bankKeeper.SendCoins(ctx, farmerAcc, reserveAcc, stakingCoins)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}
@@ -317,10 +317,10 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			inputs = append(inputs, banktypes.NewInput(farmerAcc, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(reserveAcc, sdk.Coins{coin}))
 			// Guard: whitelist account address
-			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{reserveAcc.String()}, true)...)
+			whitelisted = append(whitelisted, k.gk.AddTransferAccAddressesWhitelist([]string{reserveAcc.String()})...)
 		}
 		err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}
@@ -332,9 +332,9 @@ func (k Keeper) ReserveStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 func (k Keeper) ReleaseStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoins sdk.Coins) error {
 	if stakingCoins.Len() == 1 {
 		// Guard: whitelist account address
-		whitelisted := k.gk.WhitelistTransferAccAddresses([]string{types.StakingReserveAcc(stakingCoins[0].Denom).String()}, true)
+		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{types.StakingReserveAcc(stakingCoins[0].Denom).String()})
 		err := k.bankKeeper.SendCoins(ctx, types.StakingReserveAcc(stakingCoins[0].Denom), farmerAcc, stakingCoins)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}
@@ -347,10 +347,10 @@ func (k Keeper) ReleaseStakingCoins(ctx sdk.Context, farmerAcc sdk.AccAddress, s
 			inputs = append(inputs, banktypes.NewInput(reservAddr, sdk.Coins{coin}))
 			outputs = append(outputs, banktypes.NewOutput(farmerAcc, sdk.Coins{coin}))
 			// Guard: whitelist account address
-			whitelisted = append(whitelisted, k.gk.WhitelistTransferAccAddresses([]string{reservAddr.String()}, true)...)
+			whitelisted = append(whitelisted, k.gk.AddTransferAccAddressesWhitelist([]string{reservAddr.String()})...)
 		}
 		err := k.bankKeeper.InputOutputCoins(ctx, inputs, outputs)
-		k.gk.WhitelistTransferAccAddresses(whitelisted, false)
+		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

@@ -70,14 +70,7 @@ func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramt
 	}
 
 	// Guard: whitelist account address
-	gk.WhitelistTransferAccAddresses(
-		[]string{
-			types.DefaultFarmingFeeCollector.String(),
-			types.RewardsReserveAcc.String(),
-			types.UnharvestedRewardsReserveAcc.String(),
-		},
-		true,
-	)
+	gk.AddTransferAccAddressesWhitelist([]string{types.DefaultFarmingFeeCollector.String(), types.RewardsReserveAcc.String(), types.UnharvestedRewardsReserveAcc.String()})
 
 	return Keeper{
 		storeKey:      key,

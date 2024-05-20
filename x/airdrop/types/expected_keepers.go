@@ -7,7 +7,8 @@ import (
 
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
-	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	AddTransferAccAddressesWhitelist(addresses []string) []string
+	RemoveTransferAccAddressesWhitelist(addresses []string)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

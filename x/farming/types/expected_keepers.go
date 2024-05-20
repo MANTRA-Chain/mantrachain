@@ -29,5 +29,6 @@ type AccountKeeper interface {
 
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
-	WhitelistTransferAccAddresses(addresses []string, isWhitelisted bool) []string
+	AddTransferAccAddressesWhitelist(addresses []string) []string
+	RemoveTransferAccAddressesWhitelist(addresses []string)
 }
