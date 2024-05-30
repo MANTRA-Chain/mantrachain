@@ -103,6 +103,10 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		return nil
 	}
 
+	if len(inputs) == 0 {
+		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "no senders")
+	}
+
 	if len(inputs) != 1 {
 		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "multiple senders not allowed")
 	}
