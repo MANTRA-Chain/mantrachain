@@ -19,6 +19,7 @@ describe('Cosm Wasm module', () => {
     await mintCoins(sdk, sdk.clientAdmin, sdk.adminAddress, subdenom, amount, amount)
     await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
     await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
+    await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
     await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, [64])
     await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount)
     contractAddress = (await sdk.clientAdmin.CosmwasmWasmV1.query.queryContractsByCode("1"))["data"]["contracts"][0]

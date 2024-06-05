@@ -27,14 +27,13 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 	})
 	s.Require().NoError(err)
 
-	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
 			Address: s.addrs[0].String(),
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantrachain", 1000000000000000000)),
 		},
 	}, nil)
-	s.Require().Contains(err.Error(), "coin required privileges not found")
+	s.Require().NoError(err)
 
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, nil, []banktypes.Output{
 		{
@@ -42,7 +41,7 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin("mantrachain", 1000000000000000000)),
 		},
 	})
-	s.Require().Contains(err.Error(), "no senders")
+	s.Require().NoError(err)
 
 	err = s.guardKeeper.ValidateCoinsTransfers(s.ctx, []banktypes.Input{
 		{
@@ -233,9 +232,17 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 			Address: s.addrs[0].String(),
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
 		},
+		{
+			Address: s.testAdminAccount,
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
+		},
 	}, []banktypes.Output{
 		{
 			Address: s.testAdminAccount,
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
+		},
+		{
+			Address: s.addrs[0].String(),
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
 		},
 	})
@@ -263,9 +270,17 @@ func (s *KeeperTestSuite) TestValidateCoinsTransfers() {
 			Address: s.addrs[0].String(),
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
 		},
+		{
+			Address: s.testAdminAccount,
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
+		},
 	}, []banktypes.Output{
 		{
 			Address: s.testAdminAccount,
+			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
+		},
+		{
+			Address: s.addrs[0].String(),
 			Coins:   sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)),
 		},
 	})

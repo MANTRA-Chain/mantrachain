@@ -104,44 +104,47 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 	}
 
 	if len(inputs) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "no senders")
-	}
-
-	if len(inputs) != 1 {
-		return sdkerrors.Wrapf(sdkerrors.ErrLogic, "multiple senders not allowed")
+		return nil
 	}
 
 	conf := k.GetParams(ctx)
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
-	in := inputs[0]
+	for i, out := range outputs {
+		var in banktypes.Input
+		if len(inputs) == 1 {
+			in = inputs[0]
+		} else {
+			in = inputs[i]
+		}
 
-	inAddress, err := sdk.AccAddressFromBech32(in.Address)
-	if err != nil {
-		return err
-	}
+		inAddress, err := sdk.AccAddressFromBech32(in.Address)
+		if err != nil {
+			return err
+		}
 
-	// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
-	// the account privileges and no matter of the coin required privileges
-	if k.whitelistTransfersAccAddrs[in.Address] ||
-		admin.Equals(inAddress) {
-		return nil
-	}
+		// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
+		// the account privileges and no matter of the coin required privileges
+		if k.whitelistTransfersAccAddrs[in.Address] || admin.Equals(inAddress) {
+			if len(inputs) == 1 {
+				return nil
+			} else {
+				continue
+			}
+		}
 
-	err = k.CheckCanTransferCoins(ctx, inAddress, in.Coins)
+		err = k.CheckCanTransferCoins(ctx, inAddress, in.Coins)
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
 
-	for _, out := range outputs {
 		outAddress, err := sdk.AccAddressFromBech32(out.Address)
 		if err != nil {
 			return err
 		}
 
-		if k.whitelistTransfersAccAddrs[out.Address] ||
-			admin.Equals(outAddress) {
+		if k.whitelistTransfersAccAddrs[out.Address] || admin.Equals(outAddress) {
 			continue
 		}
 
