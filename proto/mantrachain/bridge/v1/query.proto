@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package mantrachain.bridge.v1;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/bridge/v1/params.proto";
+import "mantrachain/bridge/v1/bridged.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/bridge/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/mantrachain/bridge/v1/params";
+  
+  }
+  
+  // Queries a list of Bridged items.
+  rpc Bridged    (QueryGetBridgedRequest) returns (QueryGetBridgedResponse) {
+    option (google.api.http).get = "/mantrachain/bridge/v1/bridged/{ethTxHash}";
+  
+  }
+  rpc BridgedAll (QueryAllBridgedRequest) returns (QueryAllBridgedResponse) {
+    option (google.api.http).get = "/mantrachain/bridge/v1/bridged";
+  
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetBridgedRequest {
+  string ethTxHash = 1;
+}
+
+message QueryGetBridgedResponse {
+  Bridged bridged = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllBridgedRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllBridgedResponse {
+  repeated Bridged                                bridged    = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
