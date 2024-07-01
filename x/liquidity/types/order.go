@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -39,9 +40,9 @@ func NewUserOrder(order Order) *UserOrder {
 	case OrderDirectionBuy:
 		dir = amm.Buy
 		utils.SafeMath(func() {
-			amt = sdk.MinInt(
+			amt = math.MinInt(
 				order.OpenAmount,
-				sdk.NewDecFromInt(order.RemainingOfferCoin.Amount).QuoTruncate(order.Price).TruncateInt(),
+				math.LegacyNewDecFromInt(order.RemainingOfferCoin.Amount).QuoTruncate(order.Price).TruncateInt(),
 			)
 		}, func() {
 			amt = order.OpenAmount
@@ -91,7 +92,7 @@ type PoolOrder struct {
 }
 
 func NewPoolOrder(
-	poolId uint64, reserveAddr sdk.AccAddress, dir amm.OrderDirection, price sdk.Dec, amt math.Int,
+	poolId uint64, reserveAddr sdk.AccAddress, dir amm.OrderDirection, price sdkmath.LegacyDec, amt math.Int,
 	offerCoinDenom, demandCoinDenom string) *PoolOrder {
 	return &PoolOrder{
 		BaseOrder:       amm.NewBaseOrder(dir, price, amt, amm.OfferCoinAmount(dir, price, amt)),

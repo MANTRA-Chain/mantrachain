@@ -3,8 +3,8 @@ package keeper
 import (
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 
+	nft "cosmossdk.io/x/nft"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 type NftExecutor struct {

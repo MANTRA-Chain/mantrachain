@@ -6,13 +6,15 @@ import (
 	"fmt"
 	"math"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) GetPurgePairsIdsBytes(ctx sdk.Context) []byte {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.PurgePairsIdsKey)
 	bz := store.Get(byteKey)
 
@@ -50,7 +52,8 @@ func (k Keeper) GetPurgePairsIds(ctx sdk.Context) []uint64 {
 }
 
 func (k Keeper) SetPurgePairsIdsBytes(ctx sdk.Context, pairsIds []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.PurgePairsIdsKey)
 
 	if len(pairsIds) == 0 {
@@ -79,7 +82,6 @@ func (k Keeper) SetPurgePairsIds(ctx sdk.Context, pairsIds []uint64) {
 }
 
 func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
-	logger := k.Logger(ctx)
 	params := k.GetParams(ctx)
 
 	pairsIds := k.GetPurgePairsIds(ctx)
@@ -102,7 +104,7 @@ func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
 	for _, pairId := range current {
 		err := k.PurgeSnapshotsForPair(ctx, pairId)
 		if err != nil {
-			logger.Error("fail to purge snapshots for pair", "pair_id", pairId, "error", err.Error())
+			k.logger.Error("fail to purge snapshots for pair", "pair_id", pairId, "error", err.Error())
 		}
 	}
 
@@ -110,7 +112,6 @@ func (k Keeper) PurgeSnapshots(ctx sdk.Context) {
 }
 
 func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
-	logger := k.Logger(ctx)
 	conf := k.GetParams(ctx)
 	maxSnapshotsCount := conf.MaxSnapshotsCount
 	lastSnapshot, found := k.GetLastSnapshot(ctx, pairId)
@@ -138,16 +139,16 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 		snapshotEndId = snapshotStartId.SnapshotId + conf.MaxPurgedRangeLength
 	}
 
-	admin := k.gk.GetAdmin(ctx)
+	admin := k.guardKeeper.GetAdmin(ctx)
 	remaining := sdk.NewCoins()
 
-	logger.Info("purge snapshots for pair", "pair_id", pairId, "snapshots_count", snapshotEndId-snapshotStartId.SnapshotId+1)
+	k.logger.Info("purge snapshots for pair", "pair_id", pairId, "snapshots_count", snapshotEndId-snapshotStartId.SnapshotId+1)
 
 	for i := snapshotStartId.SnapshotId; i <= snapshotEndId; i++ {
 		snapshot, found := k.GetSnapshot(ctx, pairId, i)
 
 		if !found {
-			logger.Error("no snapshot found for pair", "pair_id", pairId, "snapshot_id", i)
+			k.logger.Error("no snapshot found for pair", "pair_id", pairId, "snapshot_id", i)
 			continue
 		}
 
@@ -163,7 +164,6 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 	}
 
 	if !remaining.IsZero() {
-		// TODO: maybe we should keep the remaining coins in the rewards module account and redistribute them later?
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, admin, remaining)
 		if err != nil {
 			return err

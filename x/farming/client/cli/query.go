@@ -4,16 +4,18 @@ package cli
 // client is excluded from test coverage in MVP version
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
 
+	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
@@ -30,7 +32,6 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	farmingQueryCmd.AddCommand(
-		GetCmdQueryParams(),
 		GetCmdQueryPlans(),
 		GetCmdQueryPlan(),
 		GetCmdQueryPosition(),
@@ -43,42 +44,6 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryHistoricalRewards(),
 	)
 	return farmingQueryCmd
-}
-
-// GetCmdQueryParams implements the query params command.
-func GetCmdQueryParams() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "params",
-		Args:  cobra.NoArgs,
-		Short: "Query the current farming parameters information",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query values set as farming parameters.
-Example:
-$ %s query %s params
-`,
-				version.AppName, types.ModuleName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(&resp.Params)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
 }
 
 // GetCmdQueryPlans implements the query all plans command.
@@ -104,10 +69,7 @@ $ %s query %s plans --staking-coin-denom pool1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			planType, _ := cmd.Flags().GetString(FlagPlanType)
 			farmingPoolAddr, _ := cmd.Flags().GetString(FlagFarmingPoolAddr)
@@ -134,11 +96,11 @@ $ %s query %s plans --staking-coin-denom pool1
 				if planType == types.PlanTypePublic.String() || planType == types.PlanTypePrivate.String() {
 					req.Type = planType
 				} else {
-					return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "plan type must be either public or private")
+					return errors.Wrap(errorstypes.ErrInvalidRequest, "plan type must be either public or private")
 				}
 			}
 
-			resp, err = queryClient.Plans(cmd.Context(), req)
+			resp, err = queryClient.QueryPlans(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -169,19 +131,16 @@ $ %s query %s plan
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			planId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan-id %s is not valid", args[0])
+				return errors.Wrapf(errorstypes.ErrInvalidRequest, "plan-id %s is not valid", args[0])
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			resp, err := queryClient.Plan(cmd.Context(), &types.QueryPlanRequest{
+			resp, err := queryClient.QueryPlan(context.Background(), &types.QueryPlanRequest{
 				PlanId: planId,
 			})
 			if err != nil {
@@ -219,10 +178,7 @@ $ %s query %s position %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			farmerAcc, err := sdk.AccAddressFromBech32(args[0])
@@ -232,7 +188,7 @@ $ %s query %s position %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.Position(cmd.Context(), &types.QueryPositionRequest{
+			resp, err := queryClient.QueryPosition(context.Background(), &types.QueryPositionRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -272,10 +228,7 @@ $ %s query %s stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			farmerAcc, err := sdk.AccAddressFromBech32(args[0])
@@ -285,7 +238,7 @@ $ %s query %s stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.Stakings(cmd.Context(), &types.QueryStakingsRequest{
+			resp, err := queryClient.QueryStakings(context.Background(), &types.QueryStakingsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -325,10 +278,7 @@ $ %s query %s queued-stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --stakin
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			farmerAcc, err := sdk.AccAddressFromBech32(args[0])
@@ -338,7 +288,7 @@ $ %s query %s queued-stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --stakin
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueuedStakings(cmd.Context(), &types.QueryQueuedStakingsRequest{
+			resp, err := queryClient.QueryQueuedStakings(context.Background(), &types.QueryQueuedStakingsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -372,10 +322,7 @@ $ %s query %s total-stakings pool1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			stakingCoinDenom := args[0]
@@ -383,7 +330,7 @@ $ %s query %s total-stakings pool1
 				return err
 			}
 
-			resp, err := queryClient.TotalStakings(cmd.Context(), &types.QueryTotalStakingsRequest{
+			resp, err := queryClient.QueryTotalStakings(context.Background(), &types.QueryTotalStakingsRequest{
 				StakingCoinDenom: stakingCoinDenom,
 			})
 			if err != nil {
@@ -421,10 +368,7 @@ $ %s query %s rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-d
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			farmerAcc, err := sdk.AccAddressFromBech32(args[0])
@@ -434,7 +378,7 @@ $ %s query %s rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-d
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.Rewards(cmd.Context(), &types.QueryRewardsRequest{
+			resp, err := queryClient.QueryRewards(context.Background(), &types.QueryRewardsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -475,10 +419,7 @@ $ %s query %s unharvested-rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --st
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			farmerAcc, err := sdk.AccAddressFromBech32(args[0])
@@ -488,7 +429,7 @@ $ %s query %s unharvested-rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --st
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.UnharvestedRewards(cmd.Context(), &types.QueryUnharvestedRewardsRequest{
+			resp, err := queryClient.QueryUnharvestedRewards(context.Background(), &types.QueryUnharvestedRewardsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -522,14 +463,11 @@ $ %s query %s current-epoch-days
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			resp, err := queryClient.CurrentEpochDays(cmd.Context(), &types.QueryCurrentEpochDaysRequest{})
+			resp, err := queryClient.QueryCurrentEpochDays(context.Background(), &types.QueryCurrentEpochDaysRequest{})
 			if err != nil {
 				return err
 			}
@@ -559,15 +497,12 @@ $ %s query %s historical-rewards pool1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
 			stakingCoinDenom := args[0]
 
-			resp, err := queryClient.HistoricalRewards(cmd.Context(), &types.QueryHistoricalRewardsRequest{
+			resp, err := queryClient.QueryHistoricalRewards(context.Background(), &types.QueryHistoricalRewardsRequest{
 				StakingCoinDenom: stakingCoinDenom,
 			})
 			if err != nil {

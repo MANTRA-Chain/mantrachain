@@ -1,26 +1,41 @@
 syntax = "proto3";
 package mantrachain.did.v1;
 
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/did/v1/params.proto";
 import "mantrachain/did/v1/did.proto";
-import "gogoproto/gogo.proto";
-// this line is used by starport scaffolding # 1
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
-// this line is used by starport scaffolding # 1
-
 // Query defines the gRPC querier service.
 service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/mantrachain/did/v1/params";
+  }
+
   // DidDocuments queries all did documents that match the given status.
-  rpc DidDocuments(QueryDidDocumentsRequest) returns (QueryDidDocumentsResponse) {
+  rpc QueryDidDocuments(QueryDidDocumentsRequest)
+      returns (QueryDidDocumentsResponse) {
     option (google.api.http).get = "/mantrachain/did/v1/dids";
   }
   // DidDocument queries a did documents with an id.
-  rpc DidDocument(QueryDidDocumentRequest) returns (QueryDidDocumentResponse) {
+  rpc QueryDidDocument(QueryDidDocumentRequest) returns (QueryDidDocumentResponse) {
     option (google.api.http).get = "/mantrachain/did/v1/dids/{id}";
   }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // QueryDidDocumentsRequest is request type for Query/DidDocuments RPC method.
@@ -32,10 +47,11 @@ message QueryDidDocumentsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-// QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC method
+// QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC
+// method
 message QueryDidDocumentsResponse {
   // validators contains all the queried validators.
-  repeated DidDocument didDocuments = 1  [(gogoproto.nullable) = false];
+  repeated DidDocument did_documents = 1 [ (gogoproto.nullable) = false ];
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
@@ -47,10 +63,11 @@ message QueryDidDocumentRequest {
   string id = 1;
 }
 
-// QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC method
+// QueryDidDocumentsResponse is response type for the Query/DidDocuments RPC
+// method
 message QueryDidDocumentResponse {
   // validators contains all the queried validators.
-  DidDocument didDocument = 1  [(gogoproto.nullable) = false];
-  DidMetadata didMetadata = 2  [(gogoproto.nullable) = false];
+  DidDocument did_document = 1 [ (gogoproto.nullable) = false ];
+  DidMetadata did_metadata = 2 [ (gogoproto.nullable) = false ];
 }
 // this line is used by starport scaffolding # 3

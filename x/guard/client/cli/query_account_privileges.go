@@ -28,7 +28,7 @@ func CmdListAccountPrivileges() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.AccountPrivilegesAll(context.Background(), params)
+			res, err := queryClient.QueryAccountPrivilegesAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -59,7 +59,7 @@ func CmdShowAccountPrivileges() *cobra.Command {
 				Account: argAccount,
 			}
 
-			res, err := queryClient.AccountPrivileges(context.Background(), params)
+			res, err := queryClient.QueryAccountPrivileges(context.Background(), params)
 			if err != nil {
 				return err
 			}

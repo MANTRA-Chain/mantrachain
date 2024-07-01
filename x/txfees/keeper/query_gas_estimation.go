@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GasEstimation(goCtx context.Context, req *types.QueryGetGasEstimationRequest) (*types.QueryGetGasEstimationResponse, error) {
+func (k Keeper) QueryGasEstimation(goCtx context.Context, req *types.QueryGetGasEstimationRequest) (*types.QueryGetGasEstimationResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -26,7 +26,7 @@ func (k Keeper) GasEstimation(goCtx context.Context, req *types.QueryGetGasEstim
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	swapAmount, _, err := k.lk.GetSwapAmount(ctx, val.PairId, coin)
+	swapAmount, _, err := k.liquidityKeeper.GetSwapAmount(ctx, val.PairId, coin)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

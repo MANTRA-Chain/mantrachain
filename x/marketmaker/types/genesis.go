@@ -4,56 +4,50 @@ import (
 	"fmt"
 )
 
-// NewGenesisState returns new GenesisState.
-func NewGenesisState(
-	params Params, marketMakers []MarketMaker, incentives []Incentive, depositRecords []DepositRecord,
-) *GenesisState {
+// this line is used by starport scaffolding # genesis/types/import
+
+// DefaultIndex is the default global index
+const DefaultIndex uint64 = 1
+
+// DefaultGenesis returns the default genesis state
+func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Params:         params,
-		MarketMakers:   marketMakers,
-		Incentives:     incentives,
-		DepositRecords: depositRecords,
+		// this line is used by starport scaffolding # genesis/types/default
+		Params:         DefaultParams(),
+		MarketMakers:   []MarketMaker{},
+		Incentives:     []Incentive{},
+		DepositRecords: []DepositRecord{},
 	}
 }
 
-// DefaultGenesisState returns the default genesis state.
-func DefaultGenesisState() *GenesisState {
-	return NewGenesisState(
-		DefaultParams(),
-		[]MarketMaker{},
-		[]Incentive{},
-		[]DepositRecord{},
-	)
-}
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
+func (gs GenesisState) Validate() error {
+	// this line is used by starport scaffolding # genesis/types/validate
 
-// ValidateGenesis validates GenesisState.
-func ValidateGenesis(data GenesisState) error {
-	if err := data.Params.Validate(); err != nil {
+	for _, record := range gs.MarketMakers {
+		if err := record.Validate(); err != nil {
+			return err
+		}
+	}
+
+	for _, record := range gs.Incentives {
+		if err := record.Validate(); err != nil {
+			return err
+		}
+	}
+
+	for _, record := range gs.DepositRecords {
+		if err := record.Validate(); err != nil {
+			return err
+		}
+	}
+
+	if err := ValidateDepositRecords(gs.MarketMakers, gs.DepositRecords); err != nil {
 		return err
 	}
 
-	for _, record := range data.MarketMakers {
-		if err := record.Validate(); err != nil {
-			return err
-		}
-	}
-
-	for _, record := range data.Incentives {
-		if err := record.Validate(); err != nil {
-			return err
-		}
-	}
-
-	for _, record := range data.DepositRecords {
-		if err := record.Validate(); err != nil {
-			return err
-		}
-	}
-
-	if err := ValidateDepositRecords(data.MarketMakers, data.DepositRecords); err != nil {
-		return err
-	}
-	return nil
+	return gs.Params.Validate()
 }
 
 func ValidateDepositRecords(mms []MarketMaker, DepositRecords []DepositRecord) error {

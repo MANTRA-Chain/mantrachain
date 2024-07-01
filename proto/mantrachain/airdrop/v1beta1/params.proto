@@ -1,12 +1,13 @@
 syntax = "proto3";
 package mantrachain.airdrop.v1beta1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/airdrop/types";
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-  
+  option (amino.name) = "mantrachain/x/airdrop/Params";
+  option (gogoproto.equal) = true;
 }

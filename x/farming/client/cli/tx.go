@@ -10,11 +10,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -102,7 +103,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateFixedPlan(args[0])
 			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return errors.Wrapf(errorstypes.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateFixedAmountPlan(
@@ -170,7 +171,7 @@ Description for the parameters:
 
 			plan, err := ParsePrivateRatioPlan(args[0])
 			if err != nil {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
+				return errors.Wrapf(errorstypes.ErrInvalidRequest, "failed to parse %s file due to %v", args[0], err)
 			}
 
 			msg := types.NewMsgCreateRatioPlan(
@@ -320,7 +321,7 @@ $ %s tx %s harvest --all --from mykey
 				}
 
 				queryClient := types.NewQueryClient(clientCtx)
-				resp, err := queryClient.Position(cmd.Context(), &types.QueryPositionRequest{
+				resp, err := queryClient.QueryPosition(cmd.Context(), &types.QueryPositionRequest{
 					Farmer: farmer.String(),
 				})
 				if err != nil {

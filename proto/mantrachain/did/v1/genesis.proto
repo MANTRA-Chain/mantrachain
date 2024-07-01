@@ -1,17 +1,21 @@
 syntax = "proto3";
 package mantrachain.did.v1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "mantrachain/did/v1/params.proto";
 import "mantrachain/did/v1/did.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
 // GenesisState defines the did module's genesis state.
 message GenesisState {
-  repeated GenesisDidDocument did_documents = 1 [
-    (gogoproto.moretags) = "yaml:\"did_documents\"",
-    (gogoproto.nullable) = false
-  ];
+  // params defines all the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  repeated GenesisDidDocument did_documents = 2
+      [ (gogoproto.nullable) = false ];
 }
 
 // GenesisDidDocument defines a did that is defined within genesis
@@ -19,13 +23,6 @@ message GenesisState {
 message GenesisDidDocument {
   option (gogoproto.equal) = true;
 
-  DidDocument did_document = 1 [
-    (gogoproto.moretags) = "yaml:\"did_document\"",
-    (gogoproto.nullable) = false
-  ];
-
-  DidMetadata did_metadata = 2 [
-    (gogoproto.moretags) = "yaml:\"did_metadata\"",
-    (gogoproto.nullable) = false
-  ];
+  DidDocument did_document = 1 [ (gogoproto.nullable) = false ];
+  DidMetadata did_metadata = 2 [ (gogoproto.nullable) = false ];
 }

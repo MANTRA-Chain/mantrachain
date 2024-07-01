@@ -1,13 +1,16 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) SetClaimed(ctx sdk.Context, claimed types.Claimed) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ClaimedStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.ClaimedStoreKey())
 	b := k.cdc.MustMarshal(&claimed)
 	store.Set(claimed.Index, b)
 }
@@ -18,7 +21,8 @@ func (k Keeper) GetClaimed(
 	index []byte,
 
 ) (val types.Claimed, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ClaimedStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.ClaimedStoreKey())
 
 	b := store.Get(index)
 	if b == nil {
@@ -31,8 +35,9 @@ func (k Keeper) GetClaimed(
 
 // GetAllClaimed returns all campaign
 func (k Keeper) GetAllClaimed(ctx sdk.Context) (list []types.Claimed) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ClaimedStoreKey())
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.ClaimedStoreKey())
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -46,7 +51,7 @@ func (k Keeper) GetAllClaimed(ctx sdk.Context) (list []types.Claimed) {
 }
 
 func (k Keeper) GetLastCampaignId(ctx sdk.Context) (id uint64, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.KeyPrefix(types.LastCampaignIdKey))
 	if bz == nil {
 		return
@@ -55,13 +60,14 @@ func (k Keeper) GetLastCampaignId(ctx sdk.Context) (id uint64, found bool) {
 }
 
 func (k Keeper) SetLastCampaignId(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(types.KeyPrefix(types.LastCampaignIdKey), sdk.Uint64ToBigEndian(id))
 }
 
 // SetCampaign set a specific campaign in the store from its index
 func (k Keeper) SetCampaign(ctx sdk.Context, campaign types.Campaign) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CampaignStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
 	b := k.cdc.MustMarshal(&campaign)
 	store.Set(campaign.Index, b)
 }
@@ -72,7 +78,8 @@ func (k Keeper) GetCampaign(
 	index []byte,
 
 ) (val types.Campaign, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CampaignStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
 
 	b := store.Get(index)
 	if b == nil {
@@ -89,14 +96,16 @@ func (k Keeper) RemoveCampaign(
 	index []byte,
 
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CampaignStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
 	store.Delete(index)
 }
 
 // GetAllCampaign returns all campaign
 func (k Keeper) GetAllCampaign(ctx sdk.Context) (list []types.Campaign) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CampaignStoreKey())
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -110,8 +119,9 @@ func (k Keeper) GetAllCampaign(ctx sdk.Context) (list []types.Campaign) {
 }
 
 func (k Keeper) IterateAllCampaigns(ctx sdk.Context, cb func(plan types.Campaign) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CampaignStoreKey())
-	iter := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
+	iter := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iter.Close()
 

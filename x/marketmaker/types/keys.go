@@ -8,23 +8,20 @@ import (
 )
 
 const (
-	// ModuleName is the name of the marketmaker module
+	// ModuleName defines the module name
 	ModuleName = "marketmaker"
 
 	// RouterKey is the message router key for the marketmaker module
 	RouterKey = ModuleName
-
-	// StoreKey is the default store key for the marketmaker module
-	StoreKey = ModuleName
 )
 
-// keys for marketmaker store prefixes
 var (
+	ParamsKey = []byte("p_marketmaker")
+
 	MarketMakerKeyPrefix              = []byte{0xc0}
 	MarketMakerIndexByPairIdKeyPrefix = []byte{0xc1}
 	DepositKeyPrefix                  = []byte{0xc2}
-
-	IncentiveKeyPrefix = []byte{0xc5}
+	IncentiveKeyPrefix                = []byte{0xc5}
 )
 
 // GetMarketMakerKey returns a key for a market maker record.

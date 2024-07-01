@@ -1,29 +1,25 @@
 package types
 
 import (
+	"context"
 	"time"
 
+	"cosmossdk.io/core/address"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
-// AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	HasAccount(ctx sdk.Context, addr sdk.AccAddress) bool
-}
-
-type BankKeeper interface {
-	GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)
+	AddressCodec() address.Codec
 }
 
 type AuthzKeeper interface {
-	SaveGrant(ctx sdk.Context, grantee, granter sdk.AccAddress, authorization authz.Authorization, expiration *time.Time) error
-	DeleteGrant(ctx sdk.Context, grantee sdk.AccAddress, granter sdk.AccAddress, msgType string) error
+	SaveGrant(ctx context.Context, grantee, granter sdk.AccAddress, authorization authz.Authorization, expiration *time.Time) error
+	DeleteGrant(ctx context.Context, grantee sdk.AccAddress, granter sdk.AccAddress, msgType string) error
 }
 
 type NFTKeeper interface {
-	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
+	GetOwner(ctx context.Context, classID string, nftID string) sdk.AccAddress
 }
 
 type TokenKeeper interface {

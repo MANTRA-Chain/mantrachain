@@ -5,15 +5,16 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"cosmossdk.io/errors"
+
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // hash concatenates and hashes two byte slices.
 func hash(left, right []byte) ([]byte, error) {
 	hasher := sha256.New()
 	if len(left) != 32 || len(right) != 32 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
+		return nil, errors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
 	}
 	_, err := hasher.Write(left)
 	if err != nil {
@@ -30,7 +31,7 @@ func hash(left, right []byte) ([]byte, error) {
 func verifyMerklePath(leafHash []byte, merklePath [][]byte, rootHash []byte, leafIndex uint64) (bool, error) {
 	var err error
 	if len(merklePath) == 0 {
-		return false, sdkerrors.Wrap(types.ErrInvalidMerklePath, "empty merkle path")
+		return false, errors.Wrap(types.ErrInvalidMerklePath, "empty merkle path")
 	}
 
 	calculatedHash := leafHash
@@ -55,7 +56,7 @@ func verifyMerklePath(leafHash []byte, merklePath [][]byte, rootHash []byte, lea
 func pathToChunks(path []byte) ([][]byte, error) {
 	chunkSize := 32
 	if len(path)%chunkSize != 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
+		return nil, errors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
 	}
 	merklePath := make([][]byte, 0)
 	for i := 0; i < len(path); i += chunkSize {
@@ -63,7 +64,7 @@ func pathToChunks(path []byte) ([][]byte, error) {
 
 		// Make sure not to exceed the slice bounds
 		if end > len(path) {
-			return nil, sdkerrors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
+			return nil, errors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path length")
 		}
 
 		merklePath = append(merklePath, path[i:end])

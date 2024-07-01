@@ -1,0 +1,31 @@
+syntax = "proto3";
+package mantrachain.farming.v1beta1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "mantrachain/x/farming/Params";
+  option (gogoproto.equal) = false;
+
+  // private_plan_creation_fee specifies the fee for plan creation
+  // this fee prevents from spamming and is collected in the community pool
+  repeated cosmos.base.v1beta1.Coin private_plan_creation_fee = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable)     = false
+  ];
+  // next_epoch_days is the epoch length in number of days
+  // it updates internal state called CurrentEpochDays that is used to process
+  // staking and reward distribution in end blocker
+  uint32 next_epoch_days = 2;
+  // farming_fee_collector is the module account address to collect fees within the farming module
+  string farming_fee_collector = 3;
+  // delayed_staking_gas_fee is used to impose gas fee for the delayed staking
+  uint64 delayed_staking_gas_fee = 4;
+  // max_num_private_plans is the maximum number of active private plans
+  uint32 max_num_private_plans = 5;
+}

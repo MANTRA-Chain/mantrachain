@@ -14,29 +14,28 @@ const (
 	// RouterKey defines the module's message routing key
 	RouterKey = ModuleName
 
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_rewards"
-)
-
-func KeyPrefix(p string) []byte {
-	return []byte(p)
-}
-
-const (
 	SnapshotCountKey              = "Snapshot/count/"
 	SnapshotStartIdKey            = "Snapshot/startId/"
 	SnapshotsLastDistributedAtKey = "Snapshots/lastDistributedAt/"
 	DistributionPairsIdsKey       = "Distribution/pairsIds/"
 	PurgePairsIdsKey              = "Purge/pairsIds/"
+	ProviderKeyPrefix             = "Provider/value/"
 )
 
 var (
+	ParamsKey = []byte("p_rewards")
+
 	snapshotStoreKey        = "snapshot-store"
 	snapshotCountStoreKey   = "snapshot-count-store"
 	snapshotStartIdStoreKey = "snapshot-start-id-store"
-	Delimiter               = []byte{0x00}
-	Placeholder             = []byte{0x01}
+
+	Delimiter   = []byte{0x00}
+	Placeholder = []byte{0x01}
 )
+
+func KeyPrefix(p string) []byte {
+	return []byte(p)
+}
 
 func SnapshotStoreKey(pairId uint64) []byte {
 	var key []byte
@@ -94,6 +93,19 @@ func SnapshotStartIdStoreKey(pairId uint64) []byte {
 		copy(key[len(snapshotStartIdStoreKey)+len(Delimiter):], pairIdBytes)
 		copy(key[len(snapshotStartIdStoreKey)+len(Delimiter)+len(pairIdBytes):], Delimiter)
 	}
+
+	return key
+}
+
+// ProviderKey returns the store key to retrieve a Provider from the index fields
+func ProviderKey(
+	index string,
+) []byte {
+	var key []byte
+
+	indexBytes := []byte(index)
+	key = append(key, indexBytes...)
+	key = append(key, []byte("/")...)
 
 	return key
 }

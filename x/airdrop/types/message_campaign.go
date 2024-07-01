@@ -3,8 +3,10 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 const (
@@ -16,11 +18,16 @@ const (
 )
 
 var (
-	_ sdk.Msg = &MsgCreateCampaign{}
-	_ sdk.Msg = &MsgDeleteCampaign{}
-	_ sdk.Msg = &MsgPauseCampaign{}
-	_ sdk.Msg = &MsgUnpauseCampaign{}
-	_ sdk.Msg = &MsgCampaignClaim{}
+	_ legacytx.LegacyMsg = &MsgCreateCampaign{}
+	_ legacytx.LegacyMsg = &MsgDeleteCampaign{}
+	_ legacytx.LegacyMsg = &MsgPauseCampaign{}
+	_ legacytx.LegacyMsg = &MsgUnpauseCampaign{}
+	_ legacytx.LegacyMsg = &MsgCampaignClaim{}
+	_ sdk.Msg            = &MsgCreateCampaign{}
+	_ sdk.Msg            = &MsgDeleteCampaign{}
+	_ sdk.Msg            = &MsgPauseCampaign{}
+	_ sdk.Msg            = &MsgUnpauseCampaign{}
+	_ sdk.Msg            = &MsgCampaignClaim{}
 )
 
 func NewMsgCreateCampaign(creator string, name string, desc string, startTime time.Time, endTime time.Time, mtRoot []byte, amount sdk.Coin) *MsgCreateCampaign {
@@ -43,38 +50,30 @@ func (msg *MsgCreateCampaign) Type() string {
 	return TypeMsgCreateCampaign
 }
 
-func (msg *MsgCreateCampaign) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgCreateCampaign) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateCampaign) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if len(msg.Name) > MaxCampaignNameLen {
-		return sdkerrors.Wrapf(ErrCampaignNameTooLong, "too long campaign name, maximum %d", MaxCampaignNameLen)
+		return errors.Wrapf(ErrCampaignNameTooLong, "too long campaign name, maximum %d", MaxCampaignNameLen)
 	}
 	if len(msg.Desc) > MaxCampaignDescriptionLen {
-		return sdkerrors.Wrapf(ErrCampaignDescTooLong, "too long campaign description, maximum %d", MaxCampaignDescriptionLen)
+		return errors.Wrapf(ErrCampaignDescTooLong, "too long campaign description, maximum %d", MaxCampaignDescriptionLen)
 	}
 	if len(msg.MtRoot) != 32 {
-		return sdkerrors.Wrap(ErrCampaignMtRootInvalid, "merkle tree root hash must be 32 bytes")
+		return errors.Wrap(ErrCampaignMtRootInvalid, "merkle tree root hash must be 32 bytes")
 	}
 	if msg.Amount.IsZero() || !msg.Amount.IsValid() {
-		return sdkerrors.Wrapf(ErrCampaignInvalidAmount, "invalid amount: %s", msg.Amount)
+		return errors.Wrapf(ErrCampaignInvalidAmount, "invalid amount: %s", msg.Amount)
 	}
 	if !msg.StartTime.Before(msg.EndTime) {
-		return sdkerrors.Wrap(ErrCampaignStartTimeInvalid, "end time must be after start time")
+		return errors.Wrap(ErrCampaignStartTimeInvalid, "end time must be after start time")
 	}
 	return nil
 }
@@ -94,26 +93,18 @@ func (msg *MsgDeleteCampaign) Type() string {
 	return TypeMsgDeleteCampaign
 }
 
-func (msg *MsgDeleteCampaign) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgDeleteCampaign) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDeleteCampaign) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Id == 0 {
-		return sdkerrors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
+		return errors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
 	}
 	return nil
 }
@@ -133,26 +124,18 @@ func (msg *MsgPauseCampaign) Type() string {
 	return TypeMsgPauseCampaign
 }
 
-func (msg *MsgPauseCampaign) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgPauseCampaign) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgPauseCampaign) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Id == 0 {
-		return sdkerrors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
+		return errors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
 	}
 	return nil
 }
@@ -172,26 +155,18 @@ func (msg *MsgUnpauseCampaign) Type() string {
 	return TypeMsgUnpauseCampaign
 }
 
-func (msg *MsgUnpauseCampaign) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUnpauseCampaign) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUnpauseCampaign) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Id == 0 {
-		return sdkerrors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
+		return errors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
 	}
 	return nil
 }
@@ -214,38 +189,30 @@ func (msg *MsgCampaignClaim) Type() string {
 	return TypeMsgCampaignClaim
 }
 
-func (msg *MsgCampaignClaim) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgCampaignClaim) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCampaignClaim) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if len(msg.Mip) == 0 {
-		return sdkerrors.Wrap(ErrInvalidMerklePath, "empty merkle path")
+		return errors.Wrap(ErrInvalidMerklePath, "empty merkle path")
 	}
 	if len(msg.Mip)%32 != 0 {
-		return sdkerrors.Wrap(ErrInvalidMerklePath, "invalid merkle path length")
+		return errors.Wrap(ErrInvalidMerklePath, "invalid merkle path length")
 	}
 	if msg.Amount == nil || msg.Amount.IsZero() || !msg.Amount.IsValid() {
-		return sdkerrors.Wrapf(ErrCampaignInvalidAmount, "invalid amount: %s", msg.Amount)
+		return errors.Wrapf(ErrCampaignInvalidAmount, "invalid amount: %s", msg.Amount)
 	}
 	if msg.Id == 0 {
-		return sdkerrors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
+		return errors.Wrap(ErrCampaignInvalidId, "campaign id cannot be 0")
 	}
 	if msg.Index == 0 {
-		return sdkerrors.Wrap(ErrInvalidMerklePathIndex, "invalid merkle path index")
+		return errors.Wrap(ErrInvalidMerklePathIndex, "invalid merkle path index")
 	}
 	return nil
 }

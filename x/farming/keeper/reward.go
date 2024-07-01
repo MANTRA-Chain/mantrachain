@@ -5,6 +5,10 @@ import (
 	"strconv"
 	"strings"
 
+	sdkmath "cosmossdk.io/math"
+
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	gogotypes "github.com/gogo/protobuf/types"
 
@@ -14,7 +18,7 @@ import (
 // GetHistoricalRewards returns historical rewards for a given
 // staking coin denom and an epoch number.
 func (k Keeper) GetHistoricalRewards(ctx sdk.Context, stakingCoinDenom string, epoch uint64) (rewards types.HistoricalRewards, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetHistoricalRewardsKey(stakingCoinDenom, epoch))
 	if bz == nil {
 		return
@@ -27,7 +31,7 @@ func (k Keeper) GetHistoricalRewards(ctx sdk.Context, stakingCoinDenom string, e
 // SetHistoricalRewards sets historical rewards for a given
 // staking coin denom and an epoch number.
 func (k Keeper) SetHistoricalRewards(ctx sdk.Context, stakingCoinDenom string, epoch uint64, rewards types.HistoricalRewards) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&rewards)
 	store.Set(types.GetHistoricalRewardsKey(stakingCoinDenom, epoch), bz)
 }
@@ -35,15 +39,15 @@ func (k Keeper) SetHistoricalRewards(ctx sdk.Context, stakingCoinDenom string, e
 // DeleteHistoricalRewards deletes historical rewards for a given
 // staking coin denom and an epoch number.
 func (k Keeper) DeleteHistoricalRewards(ctx sdk.Context, stakingCoinDenom string, epoch uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetHistoricalRewardsKey(stakingCoinDenom, epoch))
 }
 
 // DeleteAllHistoricalRewards deletes all historical rewards for a
 // staking coin denom.
 func (k Keeper) DeleteAllHistoricalRewards(ctx sdk.Context, stakingCoinDenom string) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.GetHistoricalRewardsPrefix(stakingCoinDenom))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.GetHistoricalRewardsPrefix(stakingCoinDenom))
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		store.Delete(iter.Key())
@@ -54,8 +58,8 @@ func (k Keeper) DeleteAllHistoricalRewards(ctx sdk.Context, stakingCoinDenom str
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateHistoricalRewards(ctx sdk.Context, cb func(stakingCoinDenom string, epoch uint64, rewards types.HistoricalRewards) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.HistoricalRewardsKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.HistoricalRewardsKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var rewards types.HistoricalRewards
@@ -70,7 +74,7 @@ func (k Keeper) IterateHistoricalRewards(ctx sdk.Context, cb func(stakingCoinDen
 // GetCurrentEpoch returns the current epoch number for a given
 // staking coin denom.
 func (k Keeper) GetCurrentEpoch(ctx sdk.Context, stakingCoinDenom string) uint64 {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetCurrentEpochKey(stakingCoinDenom))
 	var val gogotypes.UInt64Value
 	k.cdc.MustUnmarshal(bz, &val)
@@ -80,7 +84,7 @@ func (k Keeper) GetCurrentEpoch(ctx sdk.Context, stakingCoinDenom string) uint64
 // SetCurrentEpoch sets the current epoch number for a given
 // staking coin denom.
 func (k Keeper) SetCurrentEpoch(ctx sdk.Context, stakingCoinDenom string, currentEpoch uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	val := gogotypes.UInt64Value{Value: currentEpoch}
 	bz := k.cdc.MustMarshal(&val)
 	store.Set(types.GetCurrentEpochKey(stakingCoinDenom), bz)
@@ -89,7 +93,7 @@ func (k Keeper) SetCurrentEpoch(ctx sdk.Context, stakingCoinDenom string, curren
 // DeleteCurrentEpoch deletes current epoch info for a given
 // staking coin denom.
 func (k Keeper) DeleteCurrentEpoch(ctx sdk.Context, stakingCoinDenom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetCurrentEpochKey(stakingCoinDenom))
 }
 
@@ -97,8 +101,8 @@ func (k Keeper) DeleteCurrentEpoch(ctx sdk.Context, stakingCoinDenom string) {
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateCurrentEpochs(ctx sdk.Context, cb func(stakingCoinDenom string, currentEpoch uint64) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.CurrentEpochKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.CurrentEpochKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var val gogotypes.UInt64Value
@@ -113,7 +117,7 @@ func (k Keeper) IterateCurrentEpochs(ctx sdk.Context, cb func(stakingCoinDenom s
 // GetOutstandingRewards returns outstanding rewards for a given
 // staking coin denom.
 func (k Keeper) GetOutstandingRewards(ctx sdk.Context, stakingCoinDenom string) (rewards types.OutstandingRewards, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetOutstandingRewardsKey(stakingCoinDenom))
 	if bz == nil {
 		return
@@ -126,7 +130,7 @@ func (k Keeper) GetOutstandingRewards(ctx sdk.Context, stakingCoinDenom string) 
 // SetOutstandingRewards sets outstanding rewards for a given
 // staking coin denom.
 func (k Keeper) SetOutstandingRewards(ctx sdk.Context, stakingCoinDenom string, rewards types.OutstandingRewards) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&rewards)
 	store.Set(types.GetOutstandingRewardsKey(stakingCoinDenom), bz)
 }
@@ -134,7 +138,7 @@ func (k Keeper) SetOutstandingRewards(ctx sdk.Context, stakingCoinDenom string, 
 // DeleteOutstandingRewards deletes outstanding rewards for a given
 // staking coin denom.
 func (k Keeper) DeleteOutstandingRewards(ctx sdk.Context, stakingCoinDenom string) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetOutstandingRewardsKey(stakingCoinDenom))
 }
 
@@ -142,8 +146,8 @@ func (k Keeper) DeleteOutstandingRewards(ctx sdk.Context, stakingCoinDenom strin
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateOutstandingRewards(ctx sdk.Context, cb func(stakingCoinDenom string, rewards types.OutstandingRewards) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.OutstandingRewardsKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.OutstandingRewardsKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var rewards types.OutstandingRewards
@@ -179,7 +183,7 @@ func (k Keeper) DecreaseOutstandingRewards(ctx sdk.Context, stakingCoinDenom str
 
 // GetUnharvestedRewards returns unharvested rewards of the farmer.
 func (k Keeper) GetUnharvestedRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) (rewards types.UnharvestedRewards, found bool) {
-	bz := ctx.KVStore(k.storeKey).Get(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom))
+	bz := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Get(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom))
 	if bz == nil {
 		return
 	}
@@ -190,19 +194,19 @@ func (k Keeper) GetUnharvestedRewards(ctx sdk.Context, farmerAcc sdk.AccAddress,
 // SetUnharvestedRewards sets unharvested rewards of the farmer.
 func (k Keeper) SetUnharvestedRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string, rewards types.UnharvestedRewards) {
 	bz := k.cdc.MustMarshal(&rewards)
-	ctx.KVStore(k.storeKey).Set(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom), bz)
+	runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Set(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom), bz)
 }
 
 // DeleteUnharvestedRewards deletes unharvested rewards of the farmer.
 func (k Keeper) DeleteUnharvestedRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) {
-	ctx.KVStore(k.storeKey).Delete(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom))
+	runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)).Delete(types.GetUnharvestedRewardsKey(farmerAcc, stakingCoinDenom))
 }
 
 // IterateAllUnharvestedRewards iterates through all unharvested rewards
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateAllUnharvestedRewards(ctx sdk.Context, cb func(farmerAcc sdk.AccAddress, stakingCoinDenom string, rewards types.UnharvestedRewards) (stop bool)) {
-	iter := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.UnharvestedRewardsKeyPrefix)
+	iter := storetypes.KVStorePrefixIterator(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.UnharvestedRewardsKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var rewards types.UnharvestedRewards
@@ -218,7 +222,7 @@ func (k Keeper) IterateAllUnharvestedRewards(ctx sdk.Context, cb func(farmerAcc 
 // by a farmer and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateUnharvestedRewardsByFarmer(ctx sdk.Context, farmerAcc sdk.AccAddress, cb func(stakingCoinDenom string, rewards types.UnharvestedRewards) (stop bool)) {
-	iter := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.GetUnharvestedRewardsPrefix(farmerAcc))
+	iter := storetypes.KVStorePrefixIterator(runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx)), types.GetUnharvestedRewardsPrefix(farmerAcc))
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var rewards types.UnharvestedRewards
@@ -255,7 +259,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stak
 		panic("historical rewards for ending epoch not found")
 	}
 	diff := ending.CumulativeUnitRewards.Sub(starting.CumulativeUnitRewards)
-	rewards = diff.MulDecTruncate(sdk.NewDecFromInt(staking.Amount))
+	rewards = diff.MulDecTruncate(sdkmath.LegacyNewDecFromInt(staking.Amount))
 	return
 }
 
@@ -555,7 +559,7 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 
 			// Multiple plans can have same denom in their staking coin weights,
 			// so we accumulate all unit rewards for this denom in the table.
-			unitRewardsByDenom[weight.Denom] = unitRewardsByDenom[weight.Denom].Add(allocCoinsDec.QuoDecTruncate(sdk.NewDecFromInt(totalStakings.Amount))...)
+			unitRewardsByDenom[weight.Denom] = unitRewardsByDenom[weight.Denom].Add(allocCoinsDec.QuoDecTruncate(sdkmath.LegacyNewDecFromInt(totalStakings.Amount))...)
 
 			k.IncreaseOutstandingRewards(ctx, weight.Denom, allocCoinsDec)
 
@@ -569,10 +573,10 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 		}
 
 		rewardsReserveAcc := types.RewardsReserveAcc
-		// Guard: whitelist account address
-		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{allocInfo.Plan.GetFarmingPoolAddress().String()})
+
+		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{allocInfo.Plan.GetFarmingPoolAddress().String()})
 		err := k.bankKeeper.SendCoins(ctx, allocInfo.Plan.GetFarmingPoolAddress(), rewardsReserveAcc, totalAllocCoins)
-		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

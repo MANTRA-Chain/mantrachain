@@ -3,10 +3,12 @@ package types
 import (
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
@@ -20,7 +22,10 @@ const (
 	TypeMsgSetDenomMetadata = "set_denom_metadata"
 )
 
-var _ sdk.Msg = &MsgCreateDenom{}
+var (
+	_ legacytx.LegacyMsg = &MsgCreateDenom{}
+	_ sdk.Msg            = &MsgCreateDenom{}
+)
 
 // NewMsgCreateDenom creates a msg to create a new denom
 func NewMsgCreateDenom(sender, subdenom string) *MsgCreateDenom {
@@ -46,16 +51,15 @@ func (m MsgCreateDenom) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgCreateDenom) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+func (msg *MsgCreateDenom) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgCreateDenom) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
-}
-
-var _ sdk.Msg = &MsgMint{}
+var (
+	_ legacytx.LegacyMsg = &MsgMint{}
+	_ sdk.Msg            = &MsgMint{}
+)
 
 // NewMsgMint creates a message to mint tokens
 func NewMsgMint(sender string, amount sdk.Coin) *MsgMint {
@@ -81,7 +85,7 @@ func (m MsgMint) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
+	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
@@ -95,16 +99,15 @@ func (m MsgMint) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgMint) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+func (msg *MsgMint) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgMint) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
-}
-
-var _ sdk.Msg = &MsgBurn{}
+var (
+	_ legacytx.LegacyMsg = &MsgBurn{}
+	_ sdk.Msg            = &MsgBurn{}
+)
 
 // NewMsgBurn creates a message to burn tokens
 func NewMsgBurn(sender string, amount sdk.Coin) *MsgBurn {
@@ -130,7 +133,7 @@ func (m MsgBurn) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(sdk.ZeroInt()) {
+	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
 		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
@@ -144,16 +147,15 @@ func (m MsgBurn) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgBurn) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+func (msg *MsgBurn) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgBurn) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
-}
-
-var _ sdk.Msg = &MsgForceTransfer{}
+var (
+	_ legacytx.LegacyMsg = &MsgForceTransfer{}
+	_ sdk.Msg            = &MsgForceTransfer{}
+)
 
 // NewMsgForceTransfer creates a transfer funds from one account to another
 func NewMsgForceTransfer(sender string, amount sdk.Coin, fromAddr, toAddr string) *MsgForceTransfer {
@@ -189,16 +191,15 @@ func (m MsgForceTransfer) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgForceTransfer) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+func (msg *MsgForceTransfer) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgForceTransfer) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
-}
-
-var _ sdk.Msg = &MsgChangeAdmin{}
+var (
+	_ legacytx.LegacyMsg = &MsgChangeAdmin{}
+	_ sdk.Msg            = &MsgChangeAdmin{}
+)
 
 // NewMsgChangeAdmin creates a message to burn tokens
 func NewMsgChangeAdmin(sender, denom, newAdmin string) *MsgChangeAdmin {
@@ -230,16 +231,15 @@ func (m MsgChangeAdmin) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgChangeAdmin) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+func (msg *MsgChangeAdmin) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgChangeAdmin) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
-}
-
-var _ sdk.Msg = &MsgSetDenomMetadata{}
+var (
+	_ legacytx.LegacyMsg = &MsgSetDenomMetadata{}
+	_ sdk.Msg            = &MsgSetDenomMetadata{}
+)
 
 // NewMsgChangeAdmin creates a message to burn tokens
 func NewMsgSetDenomMetadata(sender string, metadata banktypes.Metadata) *MsgSetDenomMetadata {
@@ -270,11 +270,7 @@ func (m MsgSetDenomMetadata) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgSetDenomMetadata) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
-}
-
-func (m MsgSetDenomMetadata) GetSigners() []sdk.AccAddress {
-	sender, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{sender}
+func (msg *MsgSetDenomMetadata) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }

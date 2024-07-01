@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
@@ -12,7 +14,7 @@ import (
 // GetMarketMaker returns market maker object for a given
 // address and pair id.
 func (k Keeper) GetMarketMaker(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64) (mm types.MarketMaker, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetMarketMakerKey(mmAddr, pairId))
 	if bz == nil {
 		return
@@ -24,7 +26,7 @@ func (k Keeper) GetMarketMaker(ctx sdk.Context, mmAddr sdk.AccAddress, pairId ui
 
 // SetMarketMaker sets a market maker.
 func (k Keeper) SetMarketMaker(ctx sdk.Context, mm types.MarketMaker) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&mm)
 	mmAddr := mm.GetAccAddress()
 	store.Set(types.GetMarketMakerKey(mmAddr, mm.PairId), bz)
@@ -33,7 +35,7 @@ func (k Keeper) SetMarketMaker(ctx sdk.Context, mm types.MarketMaker) {
 
 // DeleteMarketMaker deletes market maker for a given address and pair id.
 func (k Keeper) DeleteMarketMaker(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetMarketMakerKey(mmAddr, pairId))
 	store.Delete(types.GetMarketMakerIndexByPairIdKey(pairId, mmAddr))
 }
@@ -41,7 +43,7 @@ func (k Keeper) DeleteMarketMaker(ctx sdk.Context, mmAddr sdk.AccAddress, pairId
 // GetDeposit returns market maker deposit object for a given
 // address and pair id.
 func (k Keeper) GetDeposit(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64) (mm types.Deposit, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetDepositKey(mmAddr, pairId))
 	if bz == nil {
 		return
@@ -55,14 +57,14 @@ func (k Keeper) GetDeposit(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64
 func (k Keeper) SetDeposit(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64, amount sdk.Coins) {
 	var deposit types.Deposit
 	deposit.Amount = amount
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&deposit)
 	store.Set(types.GetDepositKey(mmAddr, pairId), bz)
 }
 
 // DeleteDeposit deletes deposit object for a given address and pair id.
 func (k Keeper) DeleteDeposit(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetDepositKey(mmAddr, pairId))
 }
 
@@ -70,8 +72,8 @@ func (k Keeper) DeleteDeposit(ctx sdk.Context, mmAddr sdk.AccAddress, pairId uin
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateMarketMakers(ctx sdk.Context, cb func(mm types.MarketMaker) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.MarketMakerKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.MarketMakerKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var record types.MarketMaker
@@ -86,7 +88,8 @@ func (k Keeper) IterateMarketMakers(ctx sdk.Context, cb func(mm types.MarketMake
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateMarketMakersByAddr(ctx sdk.Context, mmAddr sdk.AccAddress, cb func(mm types.MarketMaker) (stop bool)) {
-	iter := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.GetMarketMakerByAddrPrefix(mmAddr))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.GetMarketMakerByAddrPrefix(mmAddr))
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var record types.MarketMaker
@@ -101,7 +104,8 @@ func (k Keeper) IterateMarketMakersByAddr(ctx sdk.Context, mmAddr sdk.AccAddress
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateMarketMakersByPairId(ctx sdk.Context, pairId uint64, cb func(mm types.MarketMaker) (stop bool)) {
-	iter := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.GetMarketMakerByPairIdPrefix(pairId))
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.GetMarketMakerByPairIdPrefix(pairId))
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		pairId, mmAddr := types.ParseMarketMakerIndexByPairIdKey(iter.Key())
@@ -126,8 +130,8 @@ func (k Keeper) GetAllMarketMakers(ctx sdk.Context) []types.MarketMaker {
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateDeposits(ctx sdk.Context, cb func(id types.Deposit) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.DepositKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.DepositKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var record types.Deposit
@@ -142,8 +146,8 @@ func (k Keeper) IterateDeposits(ctx sdk.Context, cb func(id types.Deposit) (stop
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateDepositRecords(ctx sdk.Context, cb func(idr types.DepositRecord) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.DepositKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.DepositKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var id types.Deposit
@@ -182,7 +186,7 @@ func (k Keeper) GetAllDepositRecords(ctx sdk.Context) []types.DepositRecord {
 
 // GetIncentive returns claimable incentive object for a given address.
 func (k Keeper) GetIncentive(ctx sdk.Context, mmAddr sdk.AccAddress) (incentive types.Incentive, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetIncentiveKey(mmAddr))
 	if bz == nil {
 		return
@@ -194,14 +198,14 @@ func (k Keeper) GetIncentive(ctx sdk.Context, mmAddr sdk.AccAddress) (incentive 
 
 // SetIncentive sets claimable incentive.
 func (k Keeper) SetIncentive(ctx sdk.Context, incentive types.Incentive) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&incentive)
 	store.Set(types.GetIncentiveKey(incentive.GetAccAddress()), bz)
 }
 
 // DeleteIncentive deletes market maker claimable incentive for a given address.
 func (k Keeper) DeleteIncentive(ctx sdk.Context, mmAddr sdk.AccAddress) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetIncentiveKey(mmAddr))
 }
 
@@ -209,8 +213,8 @@ func (k Keeper) DeleteIncentive(ctx sdk.Context, mmAddr sdk.AccAddress) {
 // stored in the store and invokes callback function for each item.
 // Stops the iteration when the callback function returns true.
 func (k Keeper) IterateIncentives(ctx sdk.Context, cb func(incentive types.Incentive) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.IncentiveKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iter := storetypes.KVStorePrefixIterator(store, types.IncentiveKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var record types.Incentive

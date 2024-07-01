@@ -4,10 +4,10 @@ import (
 	"math/big"
 	"strings"
 
+	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
@@ -41,10 +41,10 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 				return err
 			}
 
-			coinAdmin, found := k.ck.GetAdmin(ctx, denom)
+			coinAdmin, found := k.coinFactoryKeeper.GetAdmin(ctx, denom)
 
 			if !found {
-				return sdkerrors.Wrapf(types.ErrCoinAdminNotFound, "missing coin admin, denom %s", denom)
+				return errors.Wrapf(types.ErrCoinAdminNotFound, "missing coin admin, denom %s", denom)
 			}
 
 			// The coin admin should be able to transfer without checking the privileges
@@ -65,23 +65,23 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 
 func (k Keeper) CheckCanTransferCoin(ctx sdk.Context, nftCollectionCreator sdk.AccAddress, nftCollectionIndex []byte, inverseDefaultPrilileges *big.Int, address sdk.AccAddress, denom []byte) error {
 	nftIndex := tokentypes.GetNftIndex(nftCollectionIndex, address.String())
-	nftOwner := k.nk.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
+	nftOwner := k.nftKeeper.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
 
 	if nftOwner.Empty() || !address.Equals(nftOwner) {
-		return sdkerrors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
+		return errors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
 	}
 
 	privileges, found := k.GetRequiredPrivileges(ctx, denom, types.RequiredPrivilegesCoin)
 
 	if !found || privileges == nil {
-		return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(denom))
+		return errors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(denom))
 	}
 
 	requiredPrivileges := types.PrivilegesFromBytes(privileges)
 	requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
 
 	if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
-		return sdkerrors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(denom))
+		return errors.Wrapf(types.ErrCoinRequiredPrivilegesNotSet, "coin required privileges not set, denom %s", string(denom))
 	}
 
 	hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
@@ -91,8 +91,8 @@ func (k Keeper) CheckCanTransferCoin(ctx sdk.Context, nftCollectionCreator sdk.A
 	}
 
 	if !hasPrivileges {
-		k.Logger(ctx).Error("insufficient privileges", "address", address, "denom", string(denom))
-		return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(denom))
+		k.logger.Error("insufficient privileges", "address", address, "denom", string(denom))
+		return errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, denom %s", address, string(denom))
 	}
 
 	return nil

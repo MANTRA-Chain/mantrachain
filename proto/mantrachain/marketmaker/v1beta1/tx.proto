@@ -1,36 +1,68 @@
 syntax = "proto3";
-
 package mantrachain.marketmaker.v1beta1;
 
-import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+import "mantrachain/marketmaker/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types";
 
-// Msg defines the marketmaker Msg service.
+// Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
 
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // ApplyMarketMaker
   rpc ApplyMarketMaker(MsgApplyMarketMaker) returns (MsgApplyMarketMakerResponse);
-
+  // ClaimIncentives
   rpc ClaimIncentives(MsgClaimIncentives) returns (MsgClaimIncentivesResponse);
 }
 
-message MsgApplyMarketMaker {
-  option (gogoproto.goproto_getters) = false;
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "mantrachain/x/marketmaker/MsgUpdateParams";
 
-  string address = 1;
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  repeated uint64 pair_ids = 2 [(gogoproto.moretags) = "yaml:\"pair_ids\""];
+  // params defines the module parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgApplyMarketMaker
+message MsgApplyMarketMaker {
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "mantrachain/x/marketmaker/MsgApplyMarketMaker";
+
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated uint64 pair_ids = 2;
+}
+
+// MsgApplyMarketMakerResponse
 message MsgApplyMarketMakerResponse {}
 
+// MsgClaimIncentives
 message MsgClaimIncentives {
-  option (gogoproto.goproto_getters) = false;
+  option (cosmos.msg.v1.signer) = "address";
+  option (amino.name) = "mantrachain/x/marketmaker/MsgClaimIncentives";
 
-  string address = 1;
+  string address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
+// MsgClaimIncentivesResponse
 message MsgClaimIncentivesResponse {}

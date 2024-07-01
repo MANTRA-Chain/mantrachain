@@ -1,8 +1,10 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -12,7 +14,8 @@ func (k Keeper) SetRequiredPrivileges(
 	kind types.RequiredPrivilegesKind,
 	privileges []byte,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
 	store.Set(index, privileges)
 }
 
@@ -21,7 +24,8 @@ func (k Keeper) HasRequiredPrivileges(
 	index []byte,
 	kind types.RequiredPrivilegesKind,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
 	return store.Has(index)
 }
 
@@ -30,7 +34,8 @@ func (k Keeper) GetRequiredPrivileges(
 	index []byte,
 	kind types.RequiredPrivilegesKind,
 ) (val []byte, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
 
 	if !k.HasRequiredPrivileges(ctx, index, kind) {
 		return []byte{}, false
@@ -50,7 +55,8 @@ func (k Keeper) GetRequiredPrivilegesMany(
 	indexes [][]byte,
 	kind types.RequiredPrivilegesKind,
 ) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
 
 	for _, index := range indexes {
 		bz := store.Get(index)
@@ -66,13 +72,15 @@ func (k Keeper) RemoveRequiredPrivileges(
 	index []byte,
 	kind types.RequiredPrivilegesKind,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
 	store.Delete(index)
 }
 
 func (k Keeper) GetAllRequiredPrivileges(ctx sdk.Context, kind types.RequiredPrivilegesKind) (list []*types.RequiredPrivileges) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.RequiredPrivilegesStoreKey(kind.Bytes()))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.RequiredPrivilegesStoreKey(kind.Bytes()))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

@@ -4,17 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type msgServer struct {
 	Keeper
 }
 
-// NewMsgServerImpl returns an implementation of the identity MsgServer interface
+// NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{Keeper: keeper}
@@ -29,17 +29,17 @@ func (k msgServer) CreateDidDocument(
 ) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.Signer); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Signer); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
-	k.Logger(ctx).Info("request to create a did document", "target did", msg.Id)
+	k.logger.Info("request to create a did document", "target did", msg.Id)
 
 	// check that the did is not already taken
 	found := k.Keeper.HasDidDocument(ctx, []byte(msg.Id))
 	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", msg.Id)
-		k.Logger(ctx).Error(err.Error())
+		err := errors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", msg.Id)
+		k.logger.Error(err.Error())
 		return nil, err
 	}
 
@@ -50,7 +50,7 @@ func (k msgServer) CreateDidDocument(
 		types.WithControllers(msg.Controllers...),
 	)
 	if err != nil {
-		k.Logger(ctx).Error(err.Error())
+		k.logger.Error(err.Error())
 		return nil, err
 	}
 
@@ -61,11 +61,11 @@ func (k msgServer) CreateDidDocument(
 	didM := types.NewDidMetadata(ctx.TxBytes(), ctx.BlockTime())
 	k.Keeper.SetDidMetadata(ctx, []byte(msg.Id), didM)
 
-	k.Logger(ctx).Info("created did document", "did", msg.Id, "controller", msg.Signer)
+	k.logger.Info("created did document", "did", msg.Id, "controller", msg.Signer)
 
 	// emit the event
 	if err := ctx.EventManager().EmitTypedEvents(types.NewDidDocumentCreatedEvent(msg.Id, msg.Signer)); err != nil {
-		k.Logger(ctx).Error("failed to emit DidDocumentCreatedEvent", "did", msg.Id, "signer", msg.Signer, "err", err)
+		k.logger.Error("failed to emit DidDocumentCreatedEvent", "did", msg.Id, "signer", msg.Signer, "err", err)
 	}
 
 	return &types.MsgCreateDidDocumentResponse{}, nil
@@ -85,7 +85,7 @@ func (k msgServer) UpdateDidDocument(
 		//nolint
 		func(didDoc *types.DidDocument) error {
 			if !types.IsValidDIDDocument(msg.Doc) {
-				return sdkerrors.Wrapf(types.ErrInvalidDIDFormat, "invalid did document")
+				return errors.Wrapf(types.ErrInvalidDIDFormat, "invalid did document")
 			}
 			didDoc = msg.Doc
 			return nil
@@ -164,7 +164,7 @@ func (k msgServer) DeleteService(
 		func(didDoc *types.DidDocument) error {
 			// Only try to remove service if there are services
 			if len(didDoc.Service) == 0 {
-				return sdkerrors.Wrapf(types.ErrInvalidState, "the did document doesn't have services associated")
+				return errors.Wrapf(types.ErrInvalidState, "the did document doesn't have services associated")
 			}
 			// delete service
 			didDoc.DeleteService(msg.ServiceId)
@@ -251,15 +251,15 @@ func newConstraints(relationships ...string) VerificationRelationships {
 
 func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints VerificationRelationships, did, signer string, update func(document *types.DidDocument) error) (err error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.Logger(ctx).Info("request to update a did document", "target did", did)
+	k.logger.Info("request to update a did document", "target did", did)
 	// TODO: fail if the input did is of type KEY (immutable)
 	// eg: ErrInvalidState, "did document key is immutable"
 
 	// get the did document
 	didDoc, found := k.GetDidDocument(ctx, []byte(did))
 	if !found {
-		err = sdkerrors.Wrapf(types.ErrDidDocumentNotFound, "did document at %s not found", did)
-		k.Logger(ctx).Error(err.Error())
+		err = errors.Wrapf(types.ErrDidDocumentNotFound, "did document at %s not found", did)
+		k.logger.Error(err.Error())
 		return
 	}
 
@@ -269,12 +269,12 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 		signerDID := types.NewKeyDID(signer)
 		if !didDoc.HasController(signerDID) {
 			// if also the controller was not set the error
-			err = sdkerrors.Wrapf(
+			err = errors.Wrapf(
 				types.ErrUnauthorized,
 				"signer account %s not authorized to update the target did document at %s",
 				signer, did,
 			)
-			k.Logger(ctx).Error(err.Error())
+			k.logger.Error(err.Error())
 			return
 		}
 	}
@@ -282,23 +282,23 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 	// apply the update
 	err = update(&didDoc)
 	if err != nil {
-		k.Logger(ctx).Error(err.Error())
+		k.logger.Error(err.Error())
 		return
 	}
 
 	// persist the did document
 	k.SetDidDocument(ctx, []byte(did), didDoc)
-	k.Logger(ctx).Info("Set verification relationship from did document for", "did", did, "controller", signer)
+	k.logger.Info("Set verification relationship from did document for", "did", did, "controller", signer)
 
 	// update the Metadata
 	if err = updateDidMetadata(k, ctx, didDoc.Id); err != nil {
-		k.Logger(ctx).Error(err.Error(), "did", didDoc.Id)
+		k.logger.Error(err.Error(), "did", didDoc.Id)
 		return
 	}
 	// fire the event
 	if err := ctx.EventManager().EmitTypedEvent(types.NewDidDocumentUpdatedEvent(did, signer)); err != nil {
-		k.Logger(ctx).Error("failed to emit DidDocumentUpdatedEvent", "did", did, "signer", signer, "err", err)
+		k.logger.Error("failed to emit DidDocumentUpdatedEvent", "did", did, "signer", signer, "err", err)
 	}
-	k.Logger(ctx).Info("request to update did document success", "did", didDoc.Id)
+	k.logger.Info("request to update did document success", "did", didDoc.Id)
 	return
 }

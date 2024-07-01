@@ -3,71 +3,83 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 type (
 	Keeper struct {
-		cdc                        codec.BinaryCodec
-		storeKey                   storetypes.StoreKey
-		paramstore                 paramtypes.Subspace
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
+
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority                  string
 		whitelistTransfersAccAddrs map[string]bool
 		router                     *baseapp.MsgServiceRouter
-		ak                         types.AccountKeeper
-		bk                         types.BankKeeper
-		azk                        types.AuthzKeeper
-		tk                         types.TokenKeeper
-		nk                         types.NFTKeeper
-		ck                         types.CoinFactoryKeeper
+
+		authzKeeper       types.AuthzKeeper
+		nftKeeper         types.NFTKeeper
+		tokenKeeper       types.TokenKeeper
+		coinFactoryKeeper types.CoinFactoryKeeper
 	}
 )
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
-	modAccAddrs map[string]bool,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
+	whitelistedTransferAccAddrs map[string]bool,
 	router *baseapp.MsgServiceRouter,
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	azk types.AuthzKeeper,
-	tk types.TokenKeeper,
-	nk types.NFTKeeper,
-	ck types.CoinFactoryKeeper,
-) Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
+
+	authzKeeper types.AuthzKeeper,
+	nftKeeper types.NFTKeeper,
+
+) *Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	modAccAddrsCopy := make(map[string]bool)
-	for k, v := range modAccAddrs {
-		modAccAddrsCopy[k] = v
+	whitelistedTransferAccAddrsCopy := make(map[string]bool)
+	for k, v := range whitelistedTransferAccAddrs {
+		whitelistedTransferAccAddrsCopy[k] = v
 	}
 
-	return Keeper{
+	return &Keeper{
 		cdc:                        cdc,
-		storeKey:                   storeKey,
-		paramstore:                 ps,
-		whitelistTransfersAccAddrs: modAccAddrsCopy,
+		storeService:               storeService,
+		authority:                  authority,
+		logger:                     logger,
+		whitelistTransfersAccAddrs: whitelistedTransferAccAddrsCopy,
 		router:                     router,
-		ak:                         ak,
-		bk:                         bk,
-		azk:                        azk,
-		tk:                         tk,
-		nk:                         nk,
-		ck:                         ck,
+
+		authzKeeper: authzKeeper,
+		nftKeeper:   nftKeeper,
 	}
 }
 
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+func SetCoinFactoryKeeper(k *Keeper, coinFactoryKeeper types.CoinFactoryKeeper) {
+	k.coinFactoryKeeper = coinFactoryKeeper
+}
+
+func SetTokenKeeper(k *Keeper, tokenKeeper types.TokenKeeper) {
+	k.tokenKeeper = tokenKeeper
+}
+
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

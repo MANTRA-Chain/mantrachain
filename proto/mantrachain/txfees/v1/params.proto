@@ -1,13 +1,15 @@
 syntax = "proto3";
 package mantrachain.txfees.v1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
+  option (amino.name) = "mantrachain/x/txfees/Params";
+  option (gogoproto.equal) = true;
 
   string base_denom = 1;
 }

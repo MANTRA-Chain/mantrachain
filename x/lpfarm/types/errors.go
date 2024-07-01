@@ -1,9 +1,13 @@
 package types
 
+// DONTCOVER
+
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 )
 
+// x/lpfarm module sentinel errors
 var (
-	ErrPlanAlreadyTerminated = sdkerrors.Register(ModuleName, 2, "plan is already terminated")
+	ErrInvalidSigner         = errors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
+	ErrPlanAlreadyTerminated = errors.Register(ModuleName, 1101, "plan is already terminated")
 )

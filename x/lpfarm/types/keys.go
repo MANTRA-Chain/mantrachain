@@ -13,17 +13,13 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "lpfarm"
 
-	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
-
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
-
-	// QuerierRoute defines the module's query routing key
-	QuerierRoute = ModuleName
 )
 
 var (
+	ParamsKey = []byte("p_lpfarm")
+
 	LastBlockTimeKey           = []byte{0xd0}
 	LastPlanIdKey              = []byte{0xd1}
 	NumPrivatePlansKey         = []byte{0xd2}

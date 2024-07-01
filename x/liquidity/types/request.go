@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,7 +19,7 @@ func NewDepositRequest(msg *MsgDeposit, pool Pool, id uint64, msgHeight int64) D
 		Depositor:      msg.Depositor,
 		DepositCoins:   msg.DepositCoins,
 		AcceptedCoins:  nil,
-		MintedPoolCoin: sdk.NewCoin(pool.PoolCoinDenom, sdk.ZeroInt()),
+		MintedPoolCoin: sdk.NewCoin(pool.PoolCoinDenom, math.ZeroInt()),
 		Status:         RequestStatusNotExecuted,
 	}
 }
@@ -137,7 +138,7 @@ func (req *WithdrawRequest) SetStatus(status RequestStatus) {
 }
 
 // NewOrderForLimitOrder returns a new Order from MsgLimitOrder.
-func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64, swapFeeCoin sdk.Coin) Order {
+func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdkmath.LegacyDec, expireAt time.Time, msgHeight int64, swapFeeCoin sdk.Coin) Order {
 	return Order{
 		Type:               OrderTypeLimit,
 		Id:                 id,
@@ -147,7 +148,7 @@ func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin s
 		Direction:          msg.Direction,
 		OfferCoin:          offerCoin,
 		RemainingOfferCoin: offerCoin,
-		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, sdk.ZeroInt()),
+		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt()),
 		Price:              price,
 		Amount:             msg.Amount,
 		OpenAmount:         msg.Amount,
@@ -159,7 +160,7 @@ func NewOrderForLimitOrder(msg *MsgLimitOrder, id uint64, pair Pair, offerCoin s
 }
 
 // NewOrderForMarketOrder returns a new Order from MsgMarketOrder.
-func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdk.Dec, expireAt time.Time, msgHeight int64, swapFeeCoin sdk.Coin) Order {
+func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin sdk.Coin, price sdkmath.LegacyDec, expireAt time.Time, msgHeight int64, swapFeeCoin sdk.Coin) Order {
 	return Order{
 		Type:               OrderTypeMarket,
 		Id:                 id,
@@ -169,7 +170,7 @@ func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin
 		Direction:          msg.Direction,
 		OfferCoin:          offerCoin,
 		RemainingOfferCoin: offerCoin,
-		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, sdk.ZeroInt()),
+		ReceivedCoin:       sdk.NewCoin(msg.DemandCoinDenom, math.ZeroInt()),
 		Price:              price,
 		Amount:             msg.Amount,
 		OpenAmount:         msg.Amount,
@@ -182,7 +183,7 @@ func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin
 
 func NewOrder(
 	typ OrderType, id uint64, pair Pair, orderer sdk.AccAddress,
-	offerCoin sdk.Coin, price sdk.Dec, amt math.Int, expireAt time.Time, msgHeight int64) Order {
+	offerCoin sdk.Coin, price sdkmath.LegacyDec, amt math.Int, expireAt time.Time, msgHeight int64) Order {
 	var (
 		dir             OrderDirection
 		demandCoinDenom string
@@ -203,7 +204,7 @@ func NewOrder(
 		Direction:          dir,
 		OfferCoin:          offerCoin,
 		RemainingOfferCoin: offerCoin,
-		ReceivedCoin:       sdk.NewCoin(demandCoinDenom, sdk.ZeroInt()),
+		ReceivedCoin:       sdk.NewCoin(demandCoinDenom, math.ZeroInt()),
 		Price:              price,
 		Amount:             amt,
 		OpenAmount:         amt,

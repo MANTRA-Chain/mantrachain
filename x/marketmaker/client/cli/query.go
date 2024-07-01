@@ -4,6 +4,7 @@ package cli
 // client is excluded from test coverage in MVP version
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -29,48 +30,10 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	mmQueryCmd.AddCommand(
-		GetCmdQueryParams(),
 		GetQueryMarketMakersCmd(),
 		GetCmdQueryIncentive(),
 	)
 	return mmQueryCmd
-}
-
-// GetCmdQueryParams implements the query params command.
-func GetCmdQueryParams() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "params",
-		Args:  cobra.NoArgs,
-		Short: "Query the current market maker parameters information",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query values set as market maker parameters.
-
-Example:
-$ %s query %s params
-`,
-				version.AppName, types.ModuleName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(&resp.Params)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
 }
 
 // GetQueryMarketMakersCmd implements the market maker query command.
@@ -93,10 +56,7 @@ $ %s query %s marketmakers --eligible=true...
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pairIdStr, _ := cmd.Flags().GetString(FlagPairId)
 			mmAddr, _ := cmd.Flags().GetString(FlagAddress)
@@ -128,7 +88,7 @@ $ %s query %s marketmakers --eligible=true...
 				req.Eligible = eligibleStr
 			}
 
-			res, err := queryClient.MarketMakers(cmd.Context(), req)
+			res, err := queryClient.QueryMarketMakers(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -162,10 +122,8 @@ $ %s query %s incentive %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			mmAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -173,7 +131,7 @@ $ %s query %s incentive %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 				return err
 			}
 
-			resp, err := queryClient.Incentive(cmd.Context(), &types.QueryIncentiveRequest{
+			resp, err := queryClient.QueryIncentive(context.Background(), &types.QueryIncentiveRequest{
 				Address: mmAddr.String(),
 			})
 			if err != nil {

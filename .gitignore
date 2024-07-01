@@ -4,6 +4,7 @@ release/
 .idea/
 .vscode/
 .DS_Store
-.history/
+*.dot
+*.log
+*.ign
 build/
-coverage.txt

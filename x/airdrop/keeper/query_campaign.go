@@ -4,15 +4,16 @@ import (
 	"context"
 	"strconv"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) CampaignAll(goCtx context.Context, req *types.QueryAllCampaignRequest) (*types.QueryAllCampaignResponse, error) {
+func (k Keeper) QueryCampaignAll(goCtx context.Context, req *types.QueryAllCampaignRequest) (*types.QueryAllCampaignResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -20,10 +21,10 @@ func (k Keeper) CampaignAll(goCtx context.Context, req *types.QueryAllCampaignRe
 	var campaigns []types.Campaign
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
-	campaignStore := prefix.NewStore(store, types.CampaignStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
 
-	pageRes, err := query.Paginate(campaignStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value []byte) error {
 		var campaign types.Campaign
 		if err := k.cdc.Unmarshal(value, &campaign); err != nil {
 			return err
@@ -40,7 +41,7 @@ func (k Keeper) CampaignAll(goCtx context.Context, req *types.QueryAllCampaignRe
 	return &types.QueryAllCampaignResponse{Campaign: campaigns, Pagination: pageRes}, nil
 }
 
-func (k Keeper) Campaign(goCtx context.Context, req *types.QueryGetCampaignRequest) (*types.QueryGetCampaignResponse, error) {
+func (k Keeper) QueryCampaign(goCtx context.Context, req *types.QueryGetCampaignRequest) (*types.QueryGetCampaignResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

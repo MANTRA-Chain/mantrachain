@@ -5,12 +5,11 @@ import (
 	"strconv"
 	"strings"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
+	"cosmossdk.io/errors"
+	nft "cosmossdk.io/x/nft"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -21,8 +20,8 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -31,7 +30,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 	}
 
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
@@ -41,7 +40,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 	)
 
 	if !restrictedCollection {
-		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+		return nil, errors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
 	}
 
 	var updated []string
@@ -62,7 +61,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 			}
 
 			if nft.CollectionCreator.String() != msg.CollectionCreator {
-				return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
+				return nil, errors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
 			}
 
 			nftImageIndex := 0
@@ -71,21 +70,21 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 			}
 
 			if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
-				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+				return nil, errors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 			}
 
 			if msg.NftsImagesGrouped.Images == nil || len(msg.NftsImagesGrouped.Images) <= i {
-				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+				return nil, errors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 			}
 
 			nftImage := msg.NftsImagesGrouped.Images[i]
 
 			if nftImage.Type == "" || int32(len(nftImage.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
-				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
+				return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
 			}
 
 			if !utils.IsUrl(nftImage.Url) {
-				return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
+				return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
 			}
 
 			if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
@@ -121,8 +120,8 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -131,7 +130,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 	}
 
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
@@ -141,7 +140,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 	)
 
 	if !restrictedCollection {
-		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+		return nil, errors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
 	}
 
 	var nftsIndexes [][]byte
@@ -160,7 +159,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 		}
 
 		if nft.CollectionCreator.String() != msg.CollectionCreator {
-			return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
+			return nil, errors.Wrap(types.ErrInvalidNft, "nft collection creator invalid")
 		}
 
 		nftImageIndex := 0
@@ -169,21 +168,21 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 		}
 
 		if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+			return nil, errors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 		}
 
 		if msg.NftsImages.Images == nil || len(msg.NftsImages.Images) <= i {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
+			return nil, errors.Wrapf(types.ErrInvalidNftImage, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 		}
 
 		nftImage := msg.NftsImages.Images[i]
 
 		if nftImage.Type == "" || int32(len(nftImage.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
+			return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", nft.Id, conf.ValidNftMetadataImagesTypeMaxLength, nftImageIndex)
 		}
 
 		if !utils.IsUrl(nftImage.Url) {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
+			return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
 		}
 
 		if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
@@ -218,8 +217,8 @@ func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	collectionCreatorAddr, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
@@ -228,7 +227,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg
 	}
 
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, msg.CollectionId)
@@ -238,14 +237,14 @@ func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg
 	)
 
 	if !restrictedCollection {
-		return nil, sdkerrors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
+		return nil, errors.Wrap(types.ErrNftCollectionNotRestricted, "nft collection is not restricted")
 	}
 
 	nftIndex := types.GetNftIndex(collectionIndex, msg.NftId)
 	nft, found := k.GetNft(ctx, collectionIndex, nftIndex)
 
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft not found")
+		return nil, errors.Wrap(types.ErrInvalidNft, "nft not found")
 	}
 
 	owner, err := sdk.AccAddressFromBech32(msg.Owner)
@@ -256,19 +255,19 @@ func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg
 	nftOwner := k.nftKeeper.GetOwner(ctx, string(collectionIndex), string(nftIndex))
 
 	if nftOwner.Empty() || !owner.Equals(nftOwner) {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft owner invalid")
+		return nil, errors.Wrap(types.ErrInvalidNft, "nft owner invalid")
 	}
 
 	if msg.Index > 0 && (nft.Images == nil || int(msg.Index) >= len(nft.Images)) {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
+		return nil, errors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
 	}
 
 	if msg.Image.Image.Type == "" || int32(len(msg.Image.Image.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
+		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
 	}
 
 	if !utils.IsUrl(msg.Image.Image.Url) {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
+		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
 	}
 
 	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
@@ -310,11 +309,11 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	conf := k.GetParams(ctx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
-	collectionCreator, collectionId := k.gk.GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx)
+	collectionCreator, collectionId := k.guardKeeper.GetAccountPrivilegesTokenCollectionCreatorAndCollectionId(ctx)
 
 	collectionCreatorAddr, err := sdk.AccAddressFromBech32(collectionCreator)
 	if err != nil {
@@ -322,7 +321,7 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	}
 
 	if strings.TrimSpace(collectionId) == "" {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return nil, errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	collectionIndex := types.GetNftCollectionIndex(collectionCreatorAddr, collectionId)
@@ -330,7 +329,7 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	nft, found := k.GetNft(ctx, collectionIndex, nftIndex)
 
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft not found")
+		return nil, errors.Wrap(types.ErrInvalidNft, "nft not found")
 	}
 
 	owner, err := sdk.AccAddressFromBech32(msg.Owner)
@@ -341,19 +340,19 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 	nftOwner := k.nftKeeper.GetOwner(ctx, string(collectionIndex), string(nftIndex))
 
 	if nftOwner.Empty() || !owner.Equals(nftOwner) {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "nft owner invalid")
+		return nil, errors.Wrap(types.ErrInvalidNft, "nft owner invalid")
 	}
 
 	if msg.Index > 0 && (nft.Images == nil || int(msg.Index) >= len(nft.Images)) {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
+		return nil, errors.Wrap(types.ErrInvalidNftImageIndex, "invalid nft image index")
 	}
 
 	if msg.Image.Image.Type == "" || int32(len(msg.Image.Image.Type)) > conf.ValidNftMetadataImagesTypeMaxLength {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
+		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image type empty or too long, max %d, image index %d", msg.NftId, conf.ValidNftMetadataImagesTypeMaxLength, msg.Index)
 	}
 
 	if !utils.IsUrl(msg.Image.Image.Url) {
-		return nil, sdkerrors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
+		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
 	}
 
 	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
@@ -451,8 +450,8 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	if msg.Did {
@@ -462,7 +461,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 		)
 
 		if !restrictedCollection || !soulBondNftsCollection {
-			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nfts for collection which is not restricted and/or not for soul-bond nfts")
+			return nil, errors.Wrap(types.ErrInvalidDid, "cannot use did for nfts for collection which is not restricted and/or not for soul-bond nfts")
 		}
 	}
 
@@ -481,14 +480,14 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 
 	nftsMetadata := nftController.getMetadata()
 	if len(nftsMetadata) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
+		return nil, errors.Wrap(types.ErrInvalidNftsCount, "existing nfts")
 	}
 
 	var newNfts []nft.NFT
 	var newNftsMetadata []types.Nft
 	var nftsIds []string
 
-	didExecutor := NewDidExecutor(ctx, receiver.String(), k.dk)
+	didExecutor := NewDidExecutor(ctx, receiver.String(), k.didKeeper)
 
 	for _, nftMetadata := range nftsMetadata {
 		nftIndex := types.GetNftIndex(collectionIndex, nftMetadata.Id)
@@ -591,8 +590,8 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -618,7 +617,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
+		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -628,7 +627,7 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, "", k.dk)
+	didExecutor := NewDidExecutor(ctx, "", k.didKeeper)
 	for _, nftIndex := range nftsIndexes {
 		didExecutor.ForceDeleteDidOfNftIfExists(nftIndex)
 	}
@@ -695,11 +694,11 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	collectionId := collectionController.getId()
 
 	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
+		return nil, errors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -725,7 +724,7 @@ func (k msgServer) ApproveNfts(goCtx context.Context, msg *types.MsgApproveNfts)
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
+		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -800,11 +799,11 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	collectionId := collectionController.getId()
 
 	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
+		return nil, errors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -830,7 +829,7 @@ func (k msgServer) TransferNfts(goCtx context.Context, msg *types.MsgTransferNft
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or no transfer permission")
+		return nil, errors.Wrap(types.ErrInvalidNftsCount, "not existing nfts or no transfer permission")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -959,8 +958,8 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	if msg.Did {
@@ -970,7 +969,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 		)
 
 		if !restrictedCollection || !soulBondNftsCollection {
-			return nil, sdkerrors.Wrap(types.ErrInvalidDid, "cannot use did for nft for collection which is not restricted and/or not for soul-bond nfts")
+			return nil, errors.Wrap(types.ErrInvalidDid, "cannot use did for nft for collection which is not restricted and/or not for soul-bond nfts")
 		}
 	}
 
@@ -990,7 +989,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	nftsMetadata := nftController.getMetadata()
 
 	if len(nftsMetadata) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "existing or invalid nft")
+		return nil, errors.Wrap(types.ErrInvalidNft, "existing or invalid nft")
 	}
 
 	nftMetadata := nftsMetadata[0]
@@ -1007,7 +1006,7 @@ func (k msgServer) MintNft(goCtx context.Context, msg *types.MsgMintNft) (*types
 	var did string
 
 	if msg.Did {
-		didExecutor := NewDidExecutor(ctx, receiver.String(), k.dk)
+		didExecutor := NewDidExecutor(ctx, receiver.String(), k.didKeeper)
 		did, err = didExecutor.CreateDidForNft(nftIndex)
 		if err != nil {
 			return nil, err
@@ -1092,8 +1091,8 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	collectionIndex := collectionController.getIndex()
 	collectionId := collectionController.getId()
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -1115,7 +1114,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
+		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -1125,7 +1124,7 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 		return nil, err
 	}
 
-	didExecutor := NewDidExecutor(ctx, "", k.dk)
+	didExecutor := NewDidExecutor(ctx, "", k.didKeeper)
 	didExecutor.ForceDeleteDidOfNftIfExists(nftsIndexes[0])
 
 	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])
@@ -1188,11 +1187,11 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	collectionId := collectionController.getId()
 
 	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
+		return nil, errors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -1214,7 +1213,7 @@ func (k msgServer) ApproveNft(goCtx context.Context, msg *types.MsgApproveNft) (
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
+		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or not an owner")
 	}
 
 	nftsIndexes := nftController.getIndexes()
@@ -1288,11 +1287,11 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	collectionId := collectionController.getId()
 
 	if err := k.CheckSoulBondedNftsCollection(ctx, collectionCreator.String(), collectionId); err != nil {
-		return nil, sdkerrors.Wrap(err, "invalid operation on soul-bonded nfts collection")
+		return nil, errors.Wrap(err, "invalid operation on soul-bonded nfts collection")
 	}
 
-	if err := k.gk.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckRestrictedNftsCollection(ctx, collectionCreator.String(), collectionId, msg.GetCreator()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	nftController := NewNftController(ctx, collectionIndex).
@@ -1314,7 +1313,7 @@ func (k msgServer) TransferNft(goCtx context.Context, msg *types.MsgTransferNft)
 	nftsIds := nftController.getNftsIds()
 
 	if len(nftsIds) == 0 {
-		return nil, sdkerrors.Wrap(types.ErrInvalidNft, "not existing nft or no transfer permission")
+		return nil, errors.Wrap(types.ErrInvalidNft, "not existing nft or no transfer permission")
 	}
 
 	nftsIndexes := nftController.getIndexes()

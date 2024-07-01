@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	"cosmossdk.io/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
@@ -47,11 +48,11 @@ func (k Keeper) IncludeMarketMakers(ctx sdk.Context, proposals []types.MarketMak
 		}
 		mm, found := k.GetMarketMaker(ctx, mmAddr, p.PairId)
 		if !found {
-			return sdkerrors.Wrapf(types.ErrNotExistMarketMaker, "%s is not a applied market maker", p.Address)
+			return errors.Wrapf(types.ErrNotExistMarketMaker, "%s is not a applied market maker", p.Address)
 		}
 		// fail when already eligible market maker
 		if mm.Eligible {
-			return sdkerrors.Wrapf(types.ErrInvalidInclusion, "%s is already eligible market maker", p.Address)
+			return errors.Wrapf(types.ErrInvalidInclusion, "%s is already eligible market maker", p.Address)
 		}
 		mm.Eligible = true
 		k.SetMarketMaker(ctx, mm)
@@ -82,11 +83,11 @@ func (k Keeper) ExcludeMarketMakers(ctx sdk.Context, proposals []types.MarketMak
 		}
 		mm, found := k.GetMarketMaker(ctx, mmAddr, p.PairId)
 		if !found {
-			return sdkerrors.Wrapf(types.ErrNotExistMarketMaker, "%s is not market maker", p.Address)
+			return errors.Wrapf(types.ErrNotExistMarketMaker, "%s is not market maker", p.Address)
 		}
 
 		if !mm.Eligible {
-			return sdkerrors.Wrapf(types.ErrInvalidExclusion, "%s is not eligible market maker", p.Address)
+			return errors.Wrapf(types.ErrInvalidExclusion, "%s is not eligible market maker", p.Address)
 		}
 
 		k.DeleteMarketMaker(ctx, mmAddr, p.PairId)
@@ -112,11 +113,11 @@ func (k Keeper) RejectMarketMakers(ctx sdk.Context, proposals []types.MarketMake
 
 		mm, found := k.GetMarketMaker(ctx, mmAddr, p.PairId)
 		if !found {
-			return sdkerrors.Wrapf(types.ErrNotExistMarketMaker, "%s is not market maker", p.Address)
+			return errors.Wrapf(types.ErrNotExistMarketMaker, "%s is not market maker", p.Address)
 		}
 
 		if mm.Eligible {
-			return sdkerrors.Wrapf(types.ErrInvalidRejection, "%s is eligible market maker", p.Address)
+			return errors.Wrapf(types.ErrInvalidRejection, "%s is eligible market maker", p.Address)
 		}
 
 		k.DeleteMarketMaker(ctx, mmAddr, p.PairId)
@@ -155,10 +156,10 @@ func (k Keeper) DistributeMarketMakerIncentives(ctx sdk.Context, proposals []typ
 	}
 
 	budgetAcc := params.IncentiveBudgetAcc()
-	// Guard: whitelist account address
-	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{budgetAcc.String()})
+
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{budgetAcc.String()})
 	err := k.bankKeeper.SendCoins(ctx, budgetAcc, types.ClaimableIncentiveReserveAcc, totalIncentives)
-	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return err
 	}

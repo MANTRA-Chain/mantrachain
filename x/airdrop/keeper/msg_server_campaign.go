@@ -4,16 +4,17 @@ import (
 	"context"
 	"strconv"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreateCampaign(goCtx context.Context, msg *types.MsgCreateCampaign) (*types.MsgCreateCampaignResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -63,14 +64,14 @@ func (k msgServer) DeleteCampaign(goCtx context.Context, msg *types.MsgDeleteCam
 
 	id, _ := k.GetLastCampaignId(ctx)
 	if msg.Id > id {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
 	}
 
 	campaignIndex := types.GetCampaignIndex(strconv.FormatUint(msg.Id, 10))
 
 	campaign, found := k.GetCampaign(ctx, campaignIndex)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -84,7 +85,7 @@ func (k msgServer) DeleteCampaign(goCtx context.Context, msg *types.MsgDeleteCam
 	}
 
 	if !campaignCreator.Equals(creator) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "unauthorized")
+		return nil, errors.Wrap(errorstypes.ErrUnauthorized, "unauthorized")
 	}
 
 	coins := k.bankKeeper.SpendableCoins(ctx, campaign.GetReserveAddress())
@@ -117,12 +118,12 @@ func (k msgServer) PauseCampaign(goCtx context.Context, msg *types.MsgPauseCampa
 
 	id, _ := k.GetLastCampaignId(ctx)
 	if msg.Id > id {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
 	}
 
 	campaign, found := k.GetCampaign(ctx, types.GetCampaignIndex(strconv.FormatUint(msg.Id, 10)))
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -136,7 +137,7 @@ func (k msgServer) PauseCampaign(goCtx context.Context, msg *types.MsgPauseCampa
 	}
 
 	if !campaignCreator.Equals(creator) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "unauthorized")
+		return nil, errors.Wrap(errorstypes.ErrUnauthorized, "unauthorized")
 	}
 
 	campaign.IsPaused = true
@@ -162,12 +163,12 @@ func (k msgServer) UnpauseCampaign(goCtx context.Context, msg *types.MsgUnpauseC
 
 	id, _ := k.GetLastCampaignId(ctx)
 	if msg.Id > id {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
 	}
 
 	campaign, found := k.GetCampaign(ctx, types.GetCampaignIndex(strconv.FormatUint(msg.Id, 10)))
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -181,7 +182,7 @@ func (k msgServer) UnpauseCampaign(goCtx context.Context, msg *types.MsgUnpauseC
 	}
 
 	if !campaignCreator.Equals(creator) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "unauthorized")
+		return nil, errors.Wrap(errorstypes.ErrUnauthorized, "unauthorized")
 	}
 
 	campaign.IsPaused = false
@@ -205,7 +206,7 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 
 	id, _ := k.GetLastCampaignId(ctx)
 	if msg.Id > id {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "invalid campaign id")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -215,23 +216,23 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 
 	campaign, found := k.GetCampaign(ctx, types.GetCampaignIndex(strconv.FormatUint(msg.Id, 10)))
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
+		return nil, errors.Wrap(types.ErrCampaignInvalidId, "campaign not found")
 	}
 
 	if campaign.IsTerminated {
-		return nil, sdkerrors.Wrap(types.ErrCampaignTerminated, "campaign has been terminated")
+		return nil, errors.Wrap(types.ErrCampaignTerminated, "campaign has been terminated")
 	}
 
 	if campaign.GetStartTime().After(ctx.BlockTime()) {
-		return nil, sdkerrors.Wrap(types.ErrCampaignNotStarted, "campaign has not started")
+		return nil, errors.Wrap(types.ErrCampaignNotStarted, "campaign has not started")
 	}
 
 	if campaign.GetEndTime().Before(ctx.BlockTime()) {
-		return nil, sdkerrors.Wrap(types.ErrCampaignHasEnded, "campaign has ended")
+		return nil, errors.Wrap(types.ErrCampaignHasEnded, "campaign has ended")
 	}
 
 	if campaign.IsPaused {
-		return nil, sdkerrors.Wrap(types.ErrCampaignPaused, "campaign is paused")
+		return nil, errors.Wrap(types.ErrCampaignPaused, "campaign is paused")
 	}
 
 	claimedIndex := types.GetClaimedIndex(creator, campaign.Id)
@@ -239,7 +240,7 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 	_, found = k.GetClaimed(ctx, claimedIndex)
 
 	if found {
-		return nil, sdkerrors.Wrap(types.ErrAlreadyClaimed, "already claimed")
+		return nil, errors.Wrap(types.ErrAlreadyClaimed, "already claimed")
 	}
 
 	leafHash, err := genLeafHash(creator.String(), msg.Amount.String())
@@ -260,7 +261,7 @@ func (k msgServer) CampaignClaim(goCtx context.Context, msg *types.MsgCampaignCl
 	}
 
 	if !valid {
-		return nil, sdkerrors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path")
+		return nil, errors.Wrap(types.ErrInvalidMerklePath, "invalid merkle path")
 	}
 
 	reward := sdk.NewCoin(msg.Amount.Denom, msg.Amount.Amount)
@@ -314,7 +315,6 @@ func (k Keeper) TerminateCampaign(ctx sdk.Context, campaign types.Campaign) erro
 	campaignAddr := campaign.GetReserveAddress()
 	balances := k.bankKeeper.SpendableCoins(ctx, campaignAddr)
 	if !balances.IsZero() {
-		// Guard: whitelist account address
 		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaignAddr.String()})
 		err := k.bankKeeper.SendCoins(ctx, campaignAddr, campaign.GetCampaignCreator(), balances)
 		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)

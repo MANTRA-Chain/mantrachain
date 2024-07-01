@@ -14,7 +14,7 @@ import (
 )
 
 // GetQueryCmd returns the cli query commands for this module
-func GetQueryCmd(queryRoute string) *cobra.Command {
+func GetQueryCmd() *cobra.Command {
 	// Group txfees queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -24,7 +24,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQueryParams())
 	cmd.AddCommand(CmdListFeeToken())
 	cmd.AddCommand(CmdShowFeeToken())
 	cmd.AddCommand(CmdGasEstimation())

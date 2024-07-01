@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
@@ -20,7 +20,6 @@ var (
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypeFarmingPlan)
-	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&FarmingPlanProposal{}, "github.com/MANTRA-Finance/mantrachain/FarmingPlanProposal", nil)
 }
 
 func NewFarmingPlanProposal(
@@ -84,7 +83,7 @@ func (req CreatePlanRequest) Validate() error {
 		1, req.Description, farmingPoolAddr, farmingPoolAddr,
 		req.RewardAllocations, req.StartTime, req.EndTime, false)
 	if err := dummyPlan.Validate(); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(errorstypes.ErrInvalidRequest, err.Error())
 	}
 	return nil
 }
@@ -95,7 +94,7 @@ func NewTerminatePlanRequest(planId uint64) TerminatePlanRequest {
 
 func (req TerminatePlanRequest) Validate() error {
 	if req.PlanId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "plan id must not be zero")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "plan id must not be zero")
 	}
 	return nil
 }

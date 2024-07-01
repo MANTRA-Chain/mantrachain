@@ -3,13 +3,16 @@ package keeper
 import (
 	"encoding/binary"
 
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) GetSnapshotStartId(ctx sdk.Context, pairId uint64) (val types.SnapshotStartId, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStartIdStoreKey(pairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStartIdStoreKey(pairId))
 	byteKey := types.KeyPrefix(types.SnapshotStartIdKey)
 	bz := store.Get(byteKey)
 
@@ -22,15 +25,17 @@ func (k Keeper) GetSnapshotStartId(ctx sdk.Context, pairId uint64) (val types.Sn
 }
 
 func (k Keeper) SetSnapshotStartId(ctx sdk.Context, snapshotStartId types.SnapshotStartId) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStartIdStoreKey(snapshotStartId.PairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStartIdStoreKey(snapshotStartId.PairId))
 	byteKey := types.KeyPrefix(types.SnapshotStartIdKey)
 	b := k.cdc.MustMarshal(&snapshotStartId)
 	store.Set(byteKey, b)
 }
 
 func (k Keeper) GetAllSnapshotStartId(ctx sdk.Context) (list []types.SnapshotStartId) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStartIdStoreKey(0))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStartIdStoreKey(0))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -44,7 +49,8 @@ func (k Keeper) GetAllSnapshotStartId(ctx sdk.Context) (list []types.SnapshotSta
 }
 
 func (k Keeper) GetSnapshotsLastDistributedAt(ctx sdk.Context) uint64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.SnapshotsLastDistributedAtKey)
 	bz := store.Get(byteKey)
 
@@ -58,7 +64,8 @@ func (k Keeper) GetSnapshotsLastDistributedAt(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) SetSnapshotsLastDistributedAt(ctx sdk.Context, count uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.SnapshotsLastDistributedAtKey)
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
@@ -66,7 +73,8 @@ func (k Keeper) SetSnapshotsLastDistributedAt(ctx sdk.Context, count uint64) {
 }
 
 func (k Keeper) GetSnapshotCount(ctx sdk.Context, pairId uint64) (val types.SnapshotCount, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotCountStoreKey(pairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotCountStoreKey(pairId))
 	byteKey := types.KeyPrefix(types.SnapshotCountKey)
 	bz := store.Get(byteKey)
 
@@ -79,15 +87,17 @@ func (k Keeper) GetSnapshotCount(ctx sdk.Context, pairId uint64) (val types.Snap
 }
 
 func (k Keeper) SetSnapshotCount(ctx sdk.Context, snapshotCount types.SnapshotCount) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotCountStoreKey(snapshotCount.PairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotCountStoreKey(snapshotCount.PairId))
 	byteKey := types.KeyPrefix(types.SnapshotCountKey)
 	b := k.cdc.MustMarshal(&snapshotCount)
 	store.Set(byteKey, b)
 }
 
 func (k Keeper) GetAllSnapshotCount(ctx sdk.Context) (list []types.SnapshotCount) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotCountStoreKey(0))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotCountStoreKey(0))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -115,7 +125,8 @@ func (k Keeper) AppendSnapshot(
 	// Set the ID of the appended value
 	snapshot.Id = snapshotCount.Count
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(snapshot.PairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(snapshot.PairId))
 	appendedValue := k.cdc.MustMarshal(&snapshot)
 	store.Set(GetSnapshotIDBytes(snapshot.Id), appendedValue)
 
@@ -128,14 +139,16 @@ func (k Keeper) AppendSnapshot(
 
 // SetSnapshot set a specific snapshot in the store
 func (k Keeper) SetSnapshot(ctx sdk.Context, snapshot types.Snapshot) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(snapshot.PairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(snapshot.PairId))
 	b := k.cdc.MustMarshal(&snapshot)
 	store.Set(GetSnapshotIDBytes(snapshot.Id), b)
 }
 
 // GetSnapshot returns a snapshot from its id
 func (k Keeper) GetSnapshot(ctx sdk.Context, pairId uint64, id uint64) (val types.Snapshot, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(pairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
 	b := store.Get(GetSnapshotIDBytes(id))
 	if b == nil {
 		return val, false
@@ -145,7 +158,8 @@ func (k Keeper) GetSnapshot(ctx sdk.Context, pairId uint64, id uint64) (val type
 }
 
 func (k Keeper) GetLastSnapshot(ctx sdk.Context, pairId uint64) (val types.Snapshot, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(pairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
 	snapshotCount, found := k.GetSnapshotCount(ctx, pairId)
 
 	if !found {
@@ -162,14 +176,16 @@ func (k Keeper) GetLastSnapshot(ctx sdk.Context, pairId uint64) (val types.Snaps
 
 // RemoveSnapshot removes a snapshot from the store
 func (k Keeper) RemoveSnapshot(ctx sdk.Context, pairId uint64, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(pairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
 	store.Delete(GetSnapshotIDBytes(id))
 }
 
 // GetAllSnapshot returns all snapshot
 func (k Keeper) GetAllSnapshot(ctx sdk.Context, pairId uint64) (list []types.Snapshot) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(pairId))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -183,8 +199,9 @@ func (k Keeper) GetAllSnapshot(ctx sdk.Context, pairId uint64) (list []types.Sna
 }
 
 func (k Keeper) GetSnapshotsInRange(ctx sdk.Context, pairId uint64, startId uint64, endId uint64) (list []types.Snapshot) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.SnapshotStoreKey(pairId))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

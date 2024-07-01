@@ -3,25 +3,39 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 var (
-	_ sdk.Msg = (*MsgCreatePair)(nil)
-	_ sdk.Msg = (*MsgCreatePool)(nil)
-	_ sdk.Msg = (*MsgCreateRangedPool)(nil)
-	_ sdk.Msg = (*MsgDeposit)(nil)
-	_ sdk.Msg = (*MsgWithdraw)(nil)
-	_ sdk.Msg = (*MsgLimitOrder)(nil)
-	_ sdk.Msg = (*MsgMarketOrder)(nil)
-	_ sdk.Msg = (*MsgMMOrder)(nil)
-	_ sdk.Msg = (*MsgCancelOrder)(nil)
-	_ sdk.Msg = (*MsgCancelAllOrders)(nil)
-	_ sdk.Msg = (*MsgCancelMMOrder)(nil)
+	_ sdk.Msg = &MsgCreatePair{}
+	_ sdk.Msg = &MsgCreatePool{}
+	_ sdk.Msg = &MsgCreateRangedPool{}
+	_ sdk.Msg = &MsgDeposit{}
+	_ sdk.Msg = &MsgWithdraw{}
+	_ sdk.Msg = &MsgLimitOrder{}
+	_ sdk.Msg = &MsgMarketOrder{}
+	_ sdk.Msg = &MsgMMOrder{}
+	_ sdk.Msg = &MsgCancelOrder{}
+	_ sdk.Msg = &MsgCancelAllOrders{}
+	_ sdk.Msg = &MsgCancelMMOrder{}
+
+	_ legacytx.LegacyMsg = &MsgCreatePair{}
+	_ legacytx.LegacyMsg = &MsgCreatePool{}
+	_ legacytx.LegacyMsg = &MsgCreateRangedPool{}
+	_ legacytx.LegacyMsg = &MsgDeposit{}
+	_ legacytx.LegacyMsg = &MsgLimitOrder{}
+	_ legacytx.LegacyMsg = &MsgMarketOrder{}
+	_ legacytx.LegacyMsg = &MsgMMOrder{}
+	_ legacytx.LegacyMsg = &MsgCancelOrder{}
+	_ legacytx.LegacyMsg = &MsgCancelAllOrders{}
+	_ legacytx.LegacyMsg = &MsgCancelMMOrder{}
 )
 
 // Message types for the liquidity module
@@ -41,7 +55,7 @@ const (
 )
 
 // NewMsgCreatePair returns a new MsgCreatePair.
-func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) *MsgCreatePair {
+func NewMsgCreatePair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, swapFeeRate *sdkmath.LegacyDec, pairCreatorSwapFeeRatio *sdkmath.LegacyDec) *MsgCreatePair {
 	if swapFeeRate.IsNil() && !pairCreatorSwapFeeRatio.IsNil() {
 		panic("swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
@@ -70,45 +84,38 @@ func (msg MsgCreatePair) Type() string { return TypeMsgCreatePair }
 
 func (msg MsgCreatePair) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if err := sdk.ValidateDenom(msg.BaseCoinDenom); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(errorstypes.ErrInvalidRequest, err.Error())
 	}
 	if err := sdk.ValidateDenom(msg.QuoteCoinDenom); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(errorstypes.ErrInvalidRequest, err.Error())
 	}
 	if msg.BaseCoinDenom == msg.QuoteCoinDenom {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot use same denom for both base coin and quote coin")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "cannot use same denom for both base coin and quote coin")
 	}
 	if msg.SwapFeeRate != nil && msg.SwapFeeRate.IsNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be negative")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be negative")
 	}
 	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.IsNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
 	}
 	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
 	}
 	return nil
 }
 
-func (msg MsgCreatePair) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCreatePair) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCreatePair) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCreatePair) GetCreator() sdk.AccAddress {
+func (msg MsgCreatePair) GetAccCreator() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -117,7 +124,7 @@ func (msg MsgCreatePair) GetCreator() sdk.AccAddress {
 }
 
 // NewMsgUpdatePairSwapFee returns a new MsgUpdatePairSwapFee.
-func NewMsgUpdatePairSwapFee(creator sdk.AccAddress, pairId uint64, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) *MsgUpdatePairSwapFee {
+func NewMsgUpdatePairSwapFee(creator sdk.AccAddress, pairId uint64, swapFeeRate *sdkmath.LegacyDec, pairCreatorSwapFeeRatio *sdkmath.LegacyDec) *MsgUpdatePairSwapFee {
 	if swapFeeRate.IsNil() && !pairCreatorSwapFeeRatio.IsNil() {
 		panic("swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
@@ -144,36 +151,29 @@ func (msg MsgUpdatePairSwapFee) Type() string { return TypeMsgUpdatePairSwapFee 
 
 func (msg MsgUpdatePairSwapFee) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.SwapFeeRate != nil && msg.SwapFeeRate.IsNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be negative")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be negative")
 	}
 	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.IsNegative() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be negative")
 	}
 	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
 	}
 	return nil
 }
 
-func (msg MsgUpdatePairSwapFee) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgUpdatePairSwapFee) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgUpdatePairSwapFee) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgUpdatePairSwapFee) GetCreator() sdk.AccAddress {
+func (msg MsgUpdatePairSwapFee) GetAccCreator() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -200,38 +200,31 @@ func (msg MsgCreatePool) Type() string { return TypeMsgCreatePool }
 
 func (msg MsgCreatePool) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) != 2 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.GT(amm.MaxCoinAmount) {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
 		}
 	}
 	return nil
 }
 
-func (msg MsgCreatePool) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCreatePool) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCreatePool) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCreatePool) GetCreator() sdk.AccAddress {
+func (msg MsgCreatePool) GetAccCreator() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -244,9 +237,9 @@ func NewMsgCreateRangedPool(
 	creator sdk.AccAddress,
 	pairId uint64,
 	depositCoins sdk.Coins,
-	minPrice sdk.Dec,
-	maxPrice sdk.Dec,
-	initialPrice sdk.Dec,
+	minPrice sdkmath.LegacyDec,
+	maxPrice sdkmath.LegacyDec,
+	initialPrice sdkmath.LegacyDec,
 ) *MsgCreateRangedPool {
 	return &MsgCreateRangedPool{
 		Creator:      creator.String(),
@@ -264,41 +257,34 @@ func (msg MsgCreateRangedPool) Type() string { return TypeMsgCreateRangedPool }
 
 func (msg MsgCreateRangedPool) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) == 0 || len(msg.DepositCoins) > 2 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	for _, coin := range msg.DepositCoins {
 		if coin.Amount.GT(amm.MaxCoinAmount) {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "deposit coin %s is bigger than the max amount %s", coin, amm.MaxCoinAmount)
 		}
 	}
 	if err := amm.ValidateRangedPoolParams(msg.MinPrice, msg.MaxPrice, msg.InitialPrice); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(errorstypes.ErrInvalidRequest, err.Error())
 	}
 	return nil
 }
 
-func (msg MsgCreateRangedPool) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCreateRangedPool) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCreateRangedPool) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCreateRangedPool) GetCreator() sdk.AccAddress {
+func (msg MsgCreateRangedPool) GetAccCreator() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -325,33 +311,26 @@ func (msg MsgDeposit) Type() string { return TypeMsgDeposit }
 
 func (msg MsgDeposit) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid depositor address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid depositor address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pool id must not be 0")
 	}
 	if err := msg.DepositCoins.Validate(); err != nil {
 		return err
 	}
 	if len(msg.DepositCoins) == 0 || len(msg.DepositCoins) > 2 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "wrong number of deposit coins: %d", len(msg.DepositCoins))
 	}
 	return nil
 }
 
-func (msg MsgDeposit) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgDeposit) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgDeposit) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Depositor)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgDeposit) GetDepositor() sdk.AccAddress {
+func (msg MsgDeposit) GetAccDepositor() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Depositor)
 	if err != nil {
 		panic(err)
@@ -378,33 +357,26 @@ func (msg MsgWithdraw) Type() string { return TypeMsgWithdraw }
 
 func (msg MsgWithdraw) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Withdrawer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid withdrawer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid withdrawer address: %v", err)
 	}
 	if msg.PoolId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pool id must not be 0")
 	}
 	if err := msg.PoolCoin.Validate(); err != nil {
 		return err
 	}
 	if !msg.PoolCoin.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pool coin must be positive")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pool coin must be positive")
 	}
 	return nil
 }
 
-func (msg MsgWithdraw) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgWithdraw) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgWithdraw) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Withdrawer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgWithdraw) GetWithdrawer() sdk.AccAddress {
+func (msg MsgWithdraw) GetAccWithdrawer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Withdrawer)
 	if err != nil {
 		panic(err)
@@ -419,7 +391,7 @@ func NewMsgLimitOrder(
 	dir OrderDirection,
 	offerCoin sdk.Coin,
 	demandCoinDenom string,
-	price sdk.Dec,
+	price sdkmath.LegacyDec,
 	amt math.Int,
 	orderLifespan time.Duration,
 ) *MsgLimitOrder {
@@ -441,34 +413,34 @@ func (msg MsgLimitOrder) Type() string { return TypeMsgLimitOrder }
 
 func (msg MsgLimitOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.Direction != OrderDirectionBuy && msg.Direction != OrderDirectionSell {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
 	}
 	if err := sdk.ValidateDenom(msg.DemandCoinDenom); err != nil {
-		return sdkerrors.Wrap(err, "invalid demand coin denom")
+		return errors.Wrap(err, "invalid demand coin denom")
 	}
 	if !msg.Price.IsPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "price must be positive")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "price must be positive")
 	}
 	if err := msg.OfferCoin.Validate(); err != nil {
-		return sdkerrors.Wrap(err, "invalid offer coin")
+		return errors.Wrap(err, "invalid offer coin")
 	}
 	if msg.OfferCoin.Amount.LT(amm.MinCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
 	}
 	if msg.OfferCoin.Amount.GT(amm.MaxCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
 	}
 	if msg.Amount.LT(amm.MinCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
 	}
 	if msg.Amount.GT(amm.MaxCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
 	}
 	var minOfferCoin sdk.Coin
 	switch msg.Direction {
@@ -478,30 +450,23 @@ func (msg MsgLimitOrder) ValidateBasic() error {
 		minOfferCoin = sdk.NewCoin(msg.OfferCoin.Denom, msg.Amount)
 	}
 	if msg.OfferCoin.IsLT(minOfferCoin) {
-		return sdkerrors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
+		return errors.Wrapf(ErrInsufficientOfferCoin, "%s is less than %s", msg.OfferCoin, minOfferCoin)
 	}
 	if msg.OfferCoin.Denom == msg.DemandCoinDenom {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
 	}
 	if msg.OrderLifespan < 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
 
-func (msg MsgLimitOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgLimitOrder) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgLimitOrder) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgLimitOrder) GetOrderer() sdk.AccAddress {
+func (msg MsgLimitOrder) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)
@@ -536,54 +501,47 @@ func (msg MsgMarketOrder) Type() string { return TypeMsgMarketOrder }
 
 func (msg MsgMarketOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.Direction != OrderDirectionBuy && msg.Direction != OrderDirectionSell {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid order direction: %s", msg.Direction)
 	}
 	if err := sdk.ValidateDenom(msg.DemandCoinDenom); err != nil {
-		return sdkerrors.Wrap(err, "invalid demand coin denom")
+		return errors.Wrap(err, "invalid demand coin denom")
 	}
 	if err := msg.OfferCoin.Validate(); err != nil {
-		return sdkerrors.Wrap(err, "invalid offer coin")
+		return errors.Wrap(err, "invalid offer coin")
 	}
 	if msg.OfferCoin.Amount.LT(amm.MinCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "offer coin %s is smaller than the min amount %s", msg.OfferCoin, amm.MinCoinAmount)
 	}
 	if msg.OfferCoin.Amount.GT(amm.MaxCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "offer coin %s is bigger than the max amount %s", msg.OfferCoin, amm.MaxCoinAmount)
 	}
 	if msg.Amount.LT(amm.MinCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order amount %s is smaller than the min amount %s", msg.Amount, amm.MinCoinAmount)
 	}
 	if msg.Amount.GT(amm.MaxCoinAmount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order amount %s is bigger than the max amount %s", msg.Amount, amm.MaxCoinAmount)
 	}
 	if msg.OfferCoin.Denom == msg.DemandCoinDenom {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "offer coin denom and demand coin denom must not be same")
 	}
 	if msg.OrderLifespan < 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
 
-func (msg MsgMarketOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgMarketOrder) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgMarketOrder) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgMarketOrder) GetOrderer() sdk.AccAddress {
+func (msg MsgMarketOrder) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)
@@ -595,8 +553,8 @@ func (msg MsgMarketOrder) GetOrderer() sdk.AccAddress {
 func NewMsgMMOrder(
 	orderer sdk.AccAddress,
 	pairId uint64,
-	maxSellPrice, minSellPrice sdk.Dec, sellAmt math.Int,
-	maxBuyPrice, minBuyPrice sdk.Dec, buyAmt math.Int,
+	maxSellPrice, minSellPrice sdkmath.LegacyDec, sellAmt math.Int,
+	maxBuyPrice, minBuyPrice sdkmath.LegacyDec, buyAmt math.Int,
 	orderLifespan time.Duration,
 ) *MsgMMOrder {
 	return &MsgMMOrder{
@@ -618,61 +576,54 @@ func (msg MsgMMOrder) Type() string { return TypeMsgMMOrder }
 
 func (msg MsgMMOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.SellAmount.IsZero() && msg.BuyAmount.IsZero() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "sell amount and buy amount must not be zero at the same time")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "sell amount and buy amount must not be zero at the same time")
 	}
 	if !msg.SellAmount.IsZero() {
 		if msg.SellAmount.LT(amm.MinCoinAmount) {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "sell amount %s is smaller than the min amount %s", msg.SellAmount, amm.MinCoinAmount)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "sell amount %s is smaller than the min amount %s", msg.SellAmount, amm.MinCoinAmount)
 		}
 		if !msg.MaxSellPrice.IsPositive() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "max sell price must be positive: %s", msg.MaxSellPrice)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "max sell price must be positive: %s", msg.MaxSellPrice)
 		}
 		if !msg.MinSellPrice.IsPositive() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "min sell price must be positive: %s", msg.MinSellPrice)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "min sell price must be positive: %s", msg.MinSellPrice)
 		}
 		if msg.MinSellPrice.GT(msg.MaxSellPrice) {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "max sell price must not be lower than min sell price")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "max sell price must not be lower than min sell price")
 		}
 	}
 	if !msg.BuyAmount.IsZero() {
 		if msg.BuyAmount.LT(amm.MinCoinAmount) {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "buy amount %s is smaller than the min amount %s", msg.BuyAmount, amm.MinCoinAmount)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "buy amount %s is smaller than the min amount %s", msg.BuyAmount, amm.MinCoinAmount)
 		}
 		if !msg.MinBuyPrice.IsPositive() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "min buy price must be positive: %s", msg.MinBuyPrice)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "min buy price must be positive: %s", msg.MinBuyPrice)
 		}
 		if !msg.MaxBuyPrice.IsPositive() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "max buy price must be positive: %s", msg.MaxBuyPrice)
+			return errors.Wrapf(errorstypes.ErrInvalidRequest, "max buy price must be positive: %s", msg.MaxBuyPrice)
 		}
 		if msg.MinBuyPrice.GT(msg.MaxBuyPrice) {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "max buy price must not be lower than min buy price")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "max buy price must not be lower than min buy price")
 		}
 	}
 	if msg.OrderLifespan < 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "order lifespan must not be negative: %s", msg.OrderLifespan)
 	}
 	return nil
 }
 
-func (msg MsgMMOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgMMOrder) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgMMOrder) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgMMOrder) GetOrderer() sdk.AccAddress {
+func (msg MsgMMOrder) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)
@@ -699,30 +650,23 @@ func (msg MsgCancelOrder) Type() string { return TypeMsgCancelOrder }
 
 func (msg MsgCancelOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	if msg.OrderId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "order id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "order id must not be 0")
 	}
 	return nil
 }
 
-func (msg MsgCancelOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCancelOrder) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCancelOrder) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCancelOrder) GetOrderer() sdk.AccAddress {
+func (msg MsgCancelOrder) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)
@@ -747,12 +691,12 @@ func (msg MsgCancelAllOrders) Type() string { return TypeMsgCancelAllOrders }
 
 func (msg MsgCancelAllOrders) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	pairIdSet := map[uint64]struct{}{}
 	for _, pairId := range msg.PairIds {
 		if pairId == 0 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 		}
 		if _, ok := pairIdSet[pairId]; ok {
 			return ErrDuplicatePairId
@@ -762,19 +706,12 @@ func (msg MsgCancelAllOrders) ValidateBasic() error {
 	return nil
 }
 
-func (msg MsgCancelAllOrders) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCancelAllOrders) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCancelAllOrders) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCancelAllOrders) GetOrderer() sdk.AccAddress {
+func (msg MsgCancelAllOrders) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)
@@ -799,27 +736,20 @@ func (msg MsgCancelMMOrder) Type() string { return TypeMsgCancelMMOrder }
 
 func (msg MsgCancelMMOrder) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Orderer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid orderer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid orderer address: %v", err)
 	}
 	if msg.PairId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair id must not be 0")
 	}
 	return nil
 }
 
-func (msg MsgCancelMMOrder) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
+func (msg *MsgCancelMMOrder) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
-func (msg MsgCancelMMOrder) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
-}
-
-func (msg MsgCancelMMOrder) GetOrderer() sdk.AccAddress {
+func (msg MsgCancelMMOrder) GetAccOrderer() sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Orderer)
 	if err != nil {
 		panic(err)

@@ -3,8 +3,10 @@ package types
 import (
 	"strings"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 const (
@@ -24,6 +26,20 @@ const (
 )
 
 var (
+	_ legacytx.LegacyMsg = &MsgMintNfts{}
+	_ legacytx.LegacyMsg = &MsgBurnNfts{}
+	_ legacytx.LegacyMsg = &MsgTransferNfts{}
+	_ legacytx.LegacyMsg = &MsgApproveNfts{}
+	_ legacytx.LegacyMsg = &MsgApproveAllNfts{}
+	_ legacytx.LegacyMsg = &MsgMintNft{}
+	_ legacytx.LegacyMsg = &MsgBurnNft{}
+	_ legacytx.LegacyMsg = &MsgTransferNft{}
+	_ legacytx.LegacyMsg = &MsgApproveNft{}
+	_ legacytx.LegacyMsg = &MsgUpdateGuardSoulBondNftImage{}
+	_ legacytx.LegacyMsg = &MsgUpdateRestrictedCollectionNftImage{}
+	_ legacytx.LegacyMsg = &MsgUpdateRestrictedCollectionNftImageBatch{}
+	_ legacytx.LegacyMsg = &MsgUpdateRestrictedCollectionNftImageGroupedBatch{}
+
 	_ sdk.Msg = &MsgMintNfts{}
 	_ sdk.Msg = &MsgBurnNfts{}
 	_ sdk.Msg = &MsgTransferNfts{}
@@ -58,51 +74,43 @@ func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) Type() string {
 	return TypeMsgUpdateRestrictedCollectionNftImageGroupedBatch
 }
 
-func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateRestrictedCollectionNftImageGroupedBatch) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.CollectionCreator) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty")
 	}
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty")
 	}
 	if msg.NftsImagesGrouped == nil ||
 		len(msg.NftsImagesGrouped.NftsIdsGrouped) == 0 ||
 		msg.NftsImagesGrouped.Images == nil ||
 		len(msg.NftsImagesGrouped.Images) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids/nfts images are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts ids/nfts images are empty")
 	}
 	if len(msg.NftsImagesGrouped.NftsIdsGrouped) != len(msg.NftsImagesGrouped.Images) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
 	}
 	for i := range msg.NftsImagesGrouped.NftsIdsGrouped {
 		if msg.NftsImagesGrouped.NftsIdsGrouped[i] == nil || len(msg.NftsImagesGrouped.NftsIdsGrouped[i].NftsIds) == 0 {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 		}
 		if msg.NftsImagesGrouped.Images[i] == nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 		}
 		if strings.TrimSpace(msg.NftsImagesGrouped.Images[i].Type) == "" {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image type is empty")
 		}
 		if strings.TrimSpace(msg.NftsImagesGrouped.Images[i].Url) == "" {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image url is empty")
 		}
 	}
 	return nil
@@ -127,51 +135,43 @@ func (msg *MsgUpdateRestrictedCollectionNftImageBatch) Type() string {
 	return TypeMsgUpdateRestrictedCollectionNftImageBatch
 }
 
-func (msg *MsgUpdateRestrictedCollectionNftImageBatch) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUpdateRestrictedCollectionNftImageBatch) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateRestrictedCollectionNftImageBatch) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.CollectionCreator) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty")
 	}
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty")
 	}
 	if msg.NftsImages == nil ||
 		len(msg.NftsImages.NftsIds) == 0 ||
 		msg.NftsImages.Images == nil ||
 		len(msg.NftsImages.Images) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids/nfts images are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts ids/nfts images are empty")
 	}
 	if len(msg.NftsImages.NftsIds) != len(msg.NftsImages.Images) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "nfts ids/nfts images length is not equal")
 	}
 	for i := range msg.NftsImages.NftsIds {
 		if strings.TrimSpace(msg.NftsImages.NftsIds[i]) == "" {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 		}
 		if msg.NftsImages.Images[i] == nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 		}
 		if strings.TrimSpace(msg.NftsImages.Images[i].Type) == "" {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image type is empty")
 		}
 		if strings.TrimSpace(msg.NftsImages.Images[i].Url) == "" {
-			return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+			return errors.Wrapf(errorstypes.ErrKeyNotFound, "image url is empty")
 		}
 	}
 	return nil
@@ -205,48 +205,40 @@ func (msg *MsgUpdateRestrictedCollectionNftImage) Type() string {
 	return TypeMsgUpdateRestrictedCollectionNftImage
 }
 
-func (msg *MsgUpdateRestrictedCollectionNftImage) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUpdateRestrictedCollectionNftImage) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateRestrictedCollectionNftImage) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	if strings.TrimSpace(msg.CollectionCreator) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty")
 	}
 	if strings.TrimSpace(msg.CollectionId) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty")
 	}
 	if msg.Image == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 	}
 	if msg.Image.Image == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 	}
 	if strings.TrimSpace(msg.Image.Image.Type) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image type is empty")
 	}
 	if strings.TrimSpace(msg.Image.Image.Url) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image url is empty")
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }
@@ -271,42 +263,34 @@ func (msg *MsgUpdateGuardSoulBondNftImage) Type() string {
 	return TypeMsgUpdateGuardSoulBondNftImage
 }
 
-func (msg *MsgUpdateGuardSoulBondNftImage) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUpdateGuardSoulBondNftImage) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateGuardSoulBondNftImage) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid owner address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid owner address (%s)", err)
 	}
 	if msg.Image == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 	}
 	if msg.Image.Image == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image is empty")
 	}
 	if strings.TrimSpace(msg.Image.Image.Type) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image type is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image type is empty")
 	}
 	if strings.TrimSpace(msg.Image.Image.Url) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "image url is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "image url is empty")
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }
@@ -336,46 +320,38 @@ func (msg *MsgMintNfts) Type() string {
 	return TypeMsgMintNfts
 }
 
-func (msg *MsgMintNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgMintNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgMintNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Receiver) != "" {
 		_, err = sdk.AccAddressFromBech32(msg.Receiver)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if msg.Nfts == nil || len(msg.Nfts.Nfts) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts are empty")
 	}
 	return nil
 }
@@ -401,40 +377,32 @@ func (msg *MsgBurnNfts) Type() string {
 	return TypeMsgBurnNfts
 }
 
-func (msg *MsgBurnNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgBurnNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgBurnNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts ids are empty")
 	}
 	return nil
 }
@@ -464,48 +432,40 @@ func (msg *MsgTransferNfts) Type() string {
 	return TypeMsgTransferNfts
 }
 
-func (msg *MsgTransferNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgTransferNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgTransferNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver owner (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver owner (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts ids are empty")
 	}
 	return nil
 }
@@ -534,44 +494,36 @@ func (msg *MsgApproveNfts) Type() string {
 	return TypeMsgApproveNfts
 }
 
-func (msg *MsgApproveNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgApproveNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgApproveNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if msg.Nfts == nil || len(msg.Nfts.NftsIds) == 0 {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nfts ids are empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nfts ids are empty")
 	}
 	return nil
 }
@@ -593,27 +545,19 @@ func (msg *MsgApproveAllNfts) Type() string {
 	return TypeMsgApproveAllNfts
 }
 
-func (msg *MsgApproveAllNfts) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgApproveAllNfts) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgApproveAllNfts) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	return nil
 }
@@ -643,46 +587,38 @@ func (msg *MsgMintNft) Type() string {
 	return TypeMsgMintNft
 }
 
-func (msg *MsgMintNft) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgMintNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgMintNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if strings.TrimSpace(msg.Receiver) != "" {
 		_, err = sdk.AccAddressFromBech32(msg.Receiver)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 		}
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if msg.Nft == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft is empty")
 	}
 	return nil
 }
@@ -708,40 +644,32 @@ func (msg *MsgBurnNft) Type() string {
 	return TypeMsgBurnNft
 }
 
-func (msg *MsgBurnNft) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgBurnNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgBurnNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }
@@ -771,48 +699,40 @@ func (msg *MsgTransferNft) Type() string {
 	return TypeMsgTransferNft
 }
 
-func (msg *MsgTransferNft) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgTransferNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgTransferNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Owner)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver owner (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver owner (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }
@@ -841,44 +761,36 @@ func (msg *MsgApproveNft) Type() string {
 	return TypeMsgApproveNft
 }
 
-func (msg *MsgApproveNft) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgApproveNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgApproveNft) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	_, err = sdk.AccAddressFromBech32(msg.Receiver)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid receiver address (%s)", err)
 	}
 	if msg.Strict {
 		if strings.TrimSpace(msg.CollectionCreator) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection creator should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection creator should not be empty with strict flag")
 		}
 		if strings.TrimSpace(msg.CollectionId) == "" {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "collection id should not be empty with strict flag")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "collection id should not be empty with strict flag")
 		}
 	}
 	if strings.TrimSpace(msg.CollectionCreator) != "" {
 		_, err := sdk.AccAddressFromBech32(msg.CollectionCreator)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid collection creator address (%s)", err)
+			return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid collection creator address (%s)", err)
 		}
 	}
 	if strings.TrimSpace(msg.NftId) == "" {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft id is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft id is empty")
 	}
 	return nil
 }

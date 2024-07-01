@@ -3,6 +3,7 @@ package keeper
 import (
 	"math"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -74,7 +75,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.
 		}
 
 		for _, pool := range snapshot.Pools {
-			if pool.CumulativeTotalSupply.IsPositive() {
+			if pool.CoinSupply.IsPositive() {
 				poolIdx, found := providerPair.PoolIdToIdx[pool.PoolId]
 				if !found {
 					continue
@@ -84,7 +85,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.
 
 				if balance.IsPositive() {
 					for _, rewardPerToken := range pool.RewardsPerToken {
-						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdk.NewDecFromInt(balance.Amount)).TruncateDec())
+						reward := sdk.NewDecCoinFromDec(rewardPerToken.Denom, rewardPerToken.Amount.Mul(sdkmath.LegacyNewDecFromInt(balance.Amount)).TruncateDec())
 						// In case of a mismatch between the rewards and the remaining rewards, we need to adjust the rewards
 						for _, remaining := range snapshot.Remaining {
 							if remaining.Denom == reward.Denom && remaining.IsLT(reward) {

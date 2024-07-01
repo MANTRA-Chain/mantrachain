@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -22,11 +23,11 @@ type PrivateFixedPlanRequest struct {
 
 // PrivateRatioPlanRequest defines CLI request for a private ratio plan.
 type PrivateRatioPlanRequest struct {
-	Name               string       `json:"name"`
-	StakingCoinWeights sdk.DecCoins `json:"staking_coin_weights"`
-	StartTime          time.Time    `json:"start_time"`
-	EndTime            time.Time    `json:"end_time"`
-	EpochRatio         sdk.Dec      `json:"epoch_ratio"`
+	Name               string         `json:"name"`
+	StakingCoinWeights sdk.DecCoins   `json:"staking_coin_weights"`
+	StartTime          time.Time      `json:"start_time"`
+	EndTime            time.Time      `json:"end_time"`
+	EpochRatio         math.LegacyDec `json:"epoch_ratio"`
 }
 
 // ParsePrivateFixedPlan reads and parses a PrivateFixedPlanRequest from a file.

@@ -3,6 +3,7 @@ package keeper
 import (
 	"math"
 
+	sdkmath "cosmossdk.io/math"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,6 @@ func (k Keeper) Hooks() Hooks {
 }
 
 func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) error {
-	logger := h.k.Logger(ctx)
 	var err error
 	lastSnapshot, found := h.k.GetLastSnapshot(ctx, pairId)
 	lastClaimedSnapshotId := uint64(math.MaxUint64)
@@ -46,9 +46,9 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:                pool.PoolId,
-				CumulativeTotalSupply: pool.CumulativeTotalSupply,
-				RewardsPerToken:       sdk.NewDecCoins(),
+				PoolId:          pool.PoolId,
+				CoinSupply:      pool.CoinSupply,
+				RewardsPerToken: sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
@@ -65,15 +65,15 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 		// Create a new snapshot pool
 		poolIdx = uint64(len(lastSnapshot.Pools))
 		lastSnapshot.Pools = append(lastSnapshot.Pools, &types.SnapshotPool{
-			PoolId:                poolId,
-			CumulativeTotalSupply: sdk.NewDec(0),
-			RewardsPerToken:       sdk.NewDecCoins(),
+			PoolId:          poolId,
+			CoinSupply:      sdkmath.LegacyNewDec(0),
+			RewardsPerToken: sdk.NewDecCoins(),
 		})
 		lastSnapshot.PoolIdToIdx[poolId] = poolIdx
 	}
 
 	// Update the last snapshot
-	lastSnapshot.Pools[poolIdx].CumulativeTotalSupply = lastSnapshot.Pools[poolIdx].CumulativeTotalSupply.Add(sdk.NewDecFromInt(poolCoin.Amount))
+	lastSnapshot.Pools[poolIdx].CoinSupply = lastSnapshot.Pools[poolIdx].CoinSupply.Add(sdkmath.LegacyNewDecFromInt(poolCoin.Amount))
 
 	if lastSnapshot.Id == uint64(math.MaxUint64) {
 		// Create a new snapshot
@@ -112,7 +112,7 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 			IsQuery: false,
 		})
 		if err != nil {
-			logger.Error("failed to calculate rewards", "error", err)
+			h.k.logger.Error("failed to calculate rewards", "error", err)
 			return err
 		}
 	}
@@ -122,7 +122,7 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 	if !found {
 		// Create a new provider pair pool
 		poolIdx = uint64(len(provider.Pairs[pairIdx].Balances))
-		provider.Pairs[pairIdx].Balances = append(provider.Pairs[pairIdx].Balances, sdk.NewCoin(poolCoin.Denom, sdk.ZeroInt()))
+		provider.Pairs[pairIdx].Balances = append(provider.Pairs[pairIdx].Balances, sdk.NewCoin(poolCoin.Denom, sdkmath.ZeroInt()))
 		provider.Pairs[pairIdx].PoolIdToIdx[poolId] = poolIdx
 	}
 
@@ -139,11 +139,10 @@ func (h Hooks) OnProvideLiquidity(ctx sdk.Context, receiver sdk.Address, pairId 
 }
 
 func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId uint64, poolId uint64, poolCoin sdk.Coin) error {
-	logger := h.k.Logger(ctx)
 	lastSnapshot, found := h.k.GetLastSnapshot(ctx, pairId)
 
 	if !found {
-		logger.Error("no snapshot found for pair", "pair_id", pairId)
+		h.k.logger.Error("no snapshot found for pair", "pair_id", pairId)
 		return types.ErrSnapshotNotFound
 	} else if lastSnapshot.Distributed {
 		// Create a new snapshot for the pair
@@ -157,9 +156,9 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:                pool.PoolId,
-				CumulativeTotalSupply: pool.CumulativeTotalSupply,
-				RewardsPerToken:       sdk.NewDecCoins(),
+				PoolId:          pool.PoolId,
+				CoinSupply:      pool.CoinSupply,
+				RewardsPerToken: sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
@@ -170,12 +169,12 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	poolIdx, found := lastSnapshot.PoolIdToIdx[poolId]
 
 	if !found {
-		logger.Error("No snapshot pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		h.k.logger.Error("No snapshot pool found for pair", "pool_id", poolId, "pair_id", pairId)
 		return types.ErrSnapshotPoolNotFound
 	}
 
 	// Update the last snapshot
-	lastSnapshot.Pools[poolIdx].CumulativeTotalSupply = lastSnapshot.Pools[poolIdx].CumulativeTotalSupply.Sub(sdk.NewDecFromInt(poolCoin.Amount))
+	lastSnapshot.Pools[poolIdx].CoinSupply = lastSnapshot.Pools[poolIdx].CoinSupply.Sub(sdkmath.LegacyNewDecFromInt(poolCoin.Amount))
 
 	if lastSnapshot.Id == uint64(math.MaxUint64) {
 		// Create a new snapshot
@@ -188,14 +187,14 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 	provider, found := h.k.GetProvider(ctx, receiver.String())
 
 	if !found {
-		logger.Error("no provider found for address", "receiver", receiver.String())
+		h.k.logger.Error("no provider found for address", "receiver", receiver.String())
 		return types.ErrProviderNotFound
 	}
 
 	pairIdx, found := provider.PairIdToIdx[pairId]
 
 	if !found {
-		logger.Error("No provider pair found for pair", "pair_id", pairId)
+		h.k.logger.Error("No provider pair found for pair", "pair_id", pairId)
 		return types.ErrProviderPairNotFound
 	}
 
@@ -204,24 +203,24 @@ func (h Hooks) OnWithdrawLiquidity(ctx sdk.Context, receiver sdk.Address, pairId
 		IsQuery: false,
 	})
 	if err != nil {
-		logger.Error("failed to calculate rewards", "error", err)
+		h.k.logger.Error("failed to calculate rewards", "error", err)
 		return err
 	}
 
 	if !found {
-		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		h.k.logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
 		return types.ErrProviderPoolNotFound
 	}
 
 	poolIdx, found = provider.Pairs[pairIdx].PoolIdToIdx[poolId]
 
 	if !found {
-		logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
+		h.k.logger.Error("No provider pool found for pair", "pool_id", poolId, "pair_id", pairId)
 		return types.ErrProviderPoolNotFound
 	}
 
 	if provider.Pairs[pairIdx].Balances[poolIdx].IsLT(sdk.NewCoin(poolCoin.Denom, poolCoin.Amount)) {
-		logger.Error("balance mismatch", "balance", provider.Pairs[pairIdx].Balances[poolIdx], "pool_coin", poolCoin)
+		h.k.logger.Error("balance mismatch", "balance", provider.Pairs[pairIdx].Balances[poolIdx], "pool_coin", poolCoin)
 		return types.ErrBalanceMismatch
 	}
 

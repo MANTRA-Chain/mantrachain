@@ -46,7 +46,8 @@ genesis:
         min_deposit:
           - amount: "10000000"
             denom: uom
-        voting_period: "60s"
+        voting_period: "120s"
+        expedited_voting_period: 60s
     guard:
       params:
         account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka

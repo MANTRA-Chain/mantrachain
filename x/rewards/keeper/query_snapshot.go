@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -12,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) SnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRequest) (*types.QueryAllSnapshotResponse, error) {
+func (k Keeper) QuerySnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRequest) (*types.QueryAllSnapshotResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -20,10 +21,10 @@ func (k Keeper) SnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRe
 	var snapshots []types.Snapshot
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
-	snapshotStore := prefix.NewStore(store, types.SnapshotStoreKey(req.PairId))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(req.PairId))
 
-	pageRes, err := query.Paginate(snapshotStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value []byte) error {
 		var snapshot types.Snapshot
 		if err := k.cdc.Unmarshal(value, &snapshot); err != nil {
 			return err
@@ -40,7 +41,7 @@ func (k Keeper) SnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRe
 	return &types.QueryAllSnapshotResponse{Snapshot: snapshots, Pagination: pageRes}, nil
 }
 
-func (k Keeper) Snapshot(goCtx context.Context, req *types.QueryGetSnapshotRequest) (*types.QueryGetSnapshotResponse, error) {
+func (k Keeper) QuerySnapshot(goCtx context.Context, req *types.QueryGetSnapshotRequest) (*types.QueryGetSnapshotResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

@@ -1,9 +1,10 @@
 syntax = "proto3";
 package mantrachain.did.v1;
 
-option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
-
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
 // DidDocumentCreatedEvent is an event triggered on a DID document creation
 message DidDocumentCreatedEvent {
@@ -11,11 +12,10 @@ message DidDocumentCreatedEvent {
   option (gogoproto.goproto_getters) = false;
 
   // the did being created
-  string did  = 1;
+  string did = 1;
 
   // the signer account creating the did
-  string signer = 2;
-
+  string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 // DidDocumentUpdatedEvent is an event triggered on a DID document update
@@ -24,9 +24,8 @@ message DidDocumentUpdatedEvent {
   option (gogoproto.goproto_getters) = false;
 
   // the did being updated
-  string did    = 1;
+  string did = 1;
 
   // the signer account of the change
-  string signer = 2;
-
+  string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

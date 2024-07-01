@@ -1,39 +1,27 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // this line is used by starport scaffolding # genesis/types/import
 
-// DefaultIndex is the default capability global index
+// DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
-// DefaultGenesis returns the default Capability genesis state
+// DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
+		// this line is used by starport scaffolding # genesis/types/default
 		Params:        DefaultParams(),
 		FactoryDenoms: []GenesisDenom{},
-	}
-}
-
-func NewGenesisState(params Params) *GenesisState {
-	return &GenesisState{
-		FactoryDenoms: []GenesisDenom{},
-		Params:        params,
 	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-	err := gs.Params.Validate()
-	if err != nil {
-		return err
-	}
-
 	seenDenoms := map[string]bool{}
 
 	for _, denom := range gs.GetFactoryDenoms() {
@@ -55,5 +43,7 @@ func (gs GenesisState) Validate() error {
 		}
 	}
 
-	return nil
+	// this line is used by starport scaffolding # genesis/types/validate
+
+	return gs.Params.Validate()
 }

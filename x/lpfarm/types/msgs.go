@@ -3,16 +3,23 @@ package types
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 var (
-	_ sdk.Msg = (*MsgCreatePrivatePlan)(nil)
-	_ sdk.Msg = (*MsgTerminatePrivatePlan)(nil)
-	_ sdk.Msg = (*MsgFarm)(nil)
-	_ sdk.Msg = (*MsgUnfarm)(nil)
-	_ sdk.Msg = (*MsgHarvest)(nil)
+	_ sdk.Msg = &MsgCreatePrivatePlan{}
+	_ sdk.Msg = &MsgTerminatePrivatePlan{}
+	_ sdk.Msg = &MsgFarm{}
+	_ sdk.Msg = &MsgUnfarm{}
+	_ sdk.Msg = &MsgHarvest{}
+
+	_ legacytx.LegacyMsg = &MsgCreatePrivatePlan{}
+	_ legacytx.LegacyMsg = &MsgTerminatePrivatePlan{}
+	_ legacytx.LegacyMsg = &MsgFarm{}
+	_ legacytx.LegacyMsg = &MsgHarvest{}
 )
 
 // Message types for the module
@@ -40,21 +47,14 @@ func NewMsgCreatePrivatePlan(
 func (msg MsgCreatePrivatePlan) Route() string { return RouterKey }
 func (msg MsgCreatePrivatePlan) Type() string  { return TypeMsgCreatePrivatePlan }
 
-func (msg MsgCreatePrivatePlan) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgCreatePrivatePlan) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
+func (msg *MsgCreatePrivatePlan) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgCreatePrivatePlan) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	// Create a dummy plan with valid fields and utilize Validate() method
 	// for user-provided data.
@@ -63,7 +63,7 @@ func (msg MsgCreatePrivatePlan) ValidateBasic() error {
 		1, msg.Description, validAddr, validAddr,
 		msg.RewardAllocations, msg.StartTime, msg.EndTime, true)
 	if err := dummyPlan.Validate(); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return errors.Wrap(errorstypes.ErrInvalidRequest, err.Error())
 	}
 	return nil
 }
@@ -88,24 +88,17 @@ func NewMsgTerminatePrivatePlan(
 func (msg MsgTerminatePrivatePlan) Route() string { return RouterKey }
 func (msg MsgTerminatePrivatePlan) Type() string  { return TypeMsgTerminatePrivatePlan }
 
-func (msg MsgTerminatePrivatePlan) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgTerminatePrivatePlan) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
+func (msg *MsgTerminatePrivatePlan) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgTerminatePrivatePlan) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address: %v", err)
 	}
 	if msg.PlanId == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "plan id must not be 0")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "plan id must not be 0")
 	}
 	return nil
 }
@@ -129,27 +122,20 @@ func NewMsgFarm(farmerAddr sdk.AccAddress, coin sdk.Coin) *MsgFarm {
 func (msg MsgFarm) Route() string { return RouterKey }
 func (msg MsgFarm) Type() string  { return TypeMsgFarm }
 
-func (msg MsgFarm) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgFarm) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Farmer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
+func (msg *MsgFarm) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgFarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := msg.Coin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid coin: %v", err)
 	}
 	if !msg.Coin.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
 	}
 	return nil
 }
@@ -173,27 +159,20 @@ func NewMsgUnfarm(farmerAddr sdk.AccAddress, coin sdk.Coin) *MsgUnfarm {
 func (msg MsgUnfarm) Route() string { return RouterKey }
 func (msg MsgUnfarm) Type() string  { return TypeMsgUnfarm }
 
-func (msg MsgUnfarm) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgUnfarm) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Farmer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
+func (msg *MsgUnfarm) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgUnfarm) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := msg.Coin.Validate(); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid coin: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid coin: %v", err)
 	}
 	if !msg.Coin.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "non-positive coin: %s", msg.Coin)
 	}
 	return nil
 }
@@ -217,24 +196,17 @@ func NewMsgHarvest(farmerAddr sdk.AccAddress, denom string) *MsgHarvest {
 func (msg MsgHarvest) Route() string { return RouterKey }
 func (msg MsgHarvest) Type() string  { return TypeMsgHarvest }
 
-func (msg MsgHarvest) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgHarvest) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Farmer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{addr}
+func (msg *MsgHarvest) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg MsgHarvest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Farmer); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid farmer address: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid farmer address: %v", err)
 	}
 	if err := sdk.ValidateDenom(msg.Denom); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid denom: %v", err)
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid denom: %v", err)
 	}
 	return nil
 }

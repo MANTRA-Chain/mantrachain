@@ -1,7 +1,7 @@
 syntax = "proto3";
-
 package mantrachain.airdrop.v1beta1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -12,47 +12,47 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/airdrop/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/airdrop/v1beta1/params";
-  
   }
-  
+
   // Queries a list of Campaign items.
-  rpc Campaign    (QueryGetCampaignRequest) returns (QueryGetCampaignResponse) {
+  rpc QueryCampaign(QueryGetCampaignRequest) returns (QueryGetCampaignResponse) {
     option (google.api.http).get = "/mantrachain/airdrop/v1beta1/campaign/{id}";
-  
   }
-  rpc CampaignAll (QueryAllCampaignRequest) returns (QueryAllCampaignResponse) {
+
+  // Queries a list of Campaign items.
+  rpc QueryCampaignAll(QueryAllCampaignRequest) returns (QueryAllCampaignResponse) {
     option (google.api.http).get = "/mantrachain/airdrop/v1beta1/campaign";
-  
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message QueryGetCampaignRequest {
-  uint64 id = 1;
-}
+// QueryGetCampaignRequest
+message QueryGetCampaignRequest { uint64 id = 1; }
 
+// QueryGetCampaignResponse
 message QueryGetCampaignResponse {
-  Campaign campaign = 1 [(gogoproto.nullable) = false];
+  Campaign campaign = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllCampaignRequest
 message QueryAllCampaignRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllCampaignResponse
 message QueryAllCampaignResponse {
-  repeated Campaign                               campaign   = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated Campaign campaign = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-

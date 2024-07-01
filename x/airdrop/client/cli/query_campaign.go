@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -15,10 +16,7 @@ func CmdListCampaign() *cobra.Command {
 		Use:   "list-campaign",
 		Short: "list all campaign",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -31,7 +29,7 @@ func CmdListCampaign() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.CampaignAll(cmd.Context(), params)
+			res, err := queryClient.QueryCampaignAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -52,10 +50,7 @@ func CmdShowCampaign() *cobra.Command {
 		Short: "shows a campaign",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -68,7 +63,7 @@ func CmdShowCampaign() *cobra.Command {
 				Id: argId,
 			}
 
-			res, err := queryClient.Campaign(cmd.Context(), params)
+			res, err := queryClient.QueryCampaign(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -1,9 +1,10 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
@@ -13,10 +14,10 @@ import (
 // Farm creates a new farm object for the given coin's denom, if there wasn't.
 func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
-	// Guard: whitelist account address
-	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
+
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
 	err = k.bankKeeper.SendCoins(ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin))
-	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +33,7 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 		position = types.Position{
 			Farmer:        farmerAddr.String(),
 			Denom:         coin.Denom,
-			FarmingAmount: sdk.ZeroInt(),
+			FarmingAmount: math.ZeroInt(),
 		}
 	} else {
 		withdrawnRewards, err = k.withdrawRewards(ctx, position)
@@ -66,10 +67,10 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	position, found := k.GetPosition(ctx, farmerAddr, coin.Denom)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "position not found")
+		return nil, errors.Wrap(errorstypes.ErrNotFound, "position not found")
 	}
 	if position.FarmingAmount.LT(coin.Amount) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "not enough farming amount")
+		return nil, errors.Wrapf(errorstypes.ErrInsufficientFunds, "not enough farming amount")
 	}
 
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)
@@ -86,16 +87,16 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 
 	farm, found := k.GetFarm(ctx, coin.Denom)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "farm not found")
+		return nil, errors.Wrap(errorstypes.ErrNotFound, "farm not found")
 	}
 	farm.TotalFarmingAmount = farm.TotalFarmingAmount.Sub(coin.Amount)
 	k.SetFarm(ctx, coin.Denom, farm)
 
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
-	// Guard: whitelist account address
-	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
+
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
 	err = k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin))
-	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +116,7 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 func (k Keeper) Harvest(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string) (withdrawnRewards sdk.Coins, err error) {
 	position, found := k.GetPosition(ctx, farmerAddr, denom)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "position not found")
+		return nil, errors.Wrap(errorstypes.ErrNotFound, "position not found")
 	}
 
 	withdrawnRewards, err = k.withdrawRewards(ctx, position)
@@ -138,7 +139,7 @@ func (k Keeper) Harvest(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string
 
 // Rewards returns the farmer's rewards accrued in the denom so far.
 // Rewards is a convenient query method existing for external modules.
-func (k Keeper) Rewards(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string) sdk.DecCoins {
+func (k Keeper) GetRewards(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string) sdk.DecCoins {
 	position, found := k.GetPosition(ctx, farmerAddr, denom)
 	if !found {
 		return nil
@@ -150,7 +151,7 @@ func (k Keeper) Rewards(ctx sdk.Context, farmerAddr sdk.AccAddress, denom string
 
 // TotalRewards returns the farmer's rewards accrued in all denoms so far.
 // TotalRewards is a convenient query method existing for external modules.
-func (k Keeper) TotalRewards(ctx sdk.Context, farmerAddr sdk.AccAddress) (rewards sdk.DecCoins) {
+func (k Keeper) GetTotalRewards(ctx sdk.Context, farmerAddr sdk.AccAddress) (rewards sdk.DecCoins) {
 	k.IteratePositionsByFarmer(ctx, farmerAddr, func(position types.Position) (stop bool) {
 		cacheCtx, _ := ctx.CacheContext()
 		endPeriod := k.incrementFarmPeriod(cacheCtx, position.Denom)
@@ -173,7 +174,7 @@ func (k Keeper) calculateRewards(ctx sdk.Context, position types.Position, endPe
 // rewards for period 0.
 func (k Keeper) initializeFarm(ctx sdk.Context, denom string) types.Farm {
 	farm := types.Farm{
-		TotalFarmingAmount: sdk.ZeroInt(),
+		TotalFarmingAmount: math.ZeroInt(),
 		CurrentRewards:     sdk.DecCoins{},
 		OutstandingRewards: sdk.DecCoins{},
 		Period:             1,
@@ -208,7 +209,7 @@ func (k Keeper) incrementFarmPeriod(ctx sdk.Context, denom string) (prevPeriod u
 	}
 	unitRewards := sdk.DecCoins{}
 	if farm.TotalFarmingAmount.IsPositive() {
-		unitRewards = farm.CurrentRewards.QuoDecTruncate(sdk.NewDecFromInt(farm.TotalFarmingAmount))
+		unitRewards = farm.CurrentRewards.QuoDecTruncate(math.LegacyNewDecFromInt(farm.TotalFarmingAmount))
 	}
 	hist, found := k.GetHistoricalRewards(ctx, denom, farm.Period-1)
 	if !found { // Sanity check
@@ -269,7 +270,7 @@ func (k Keeper) rewardsBetweenPeriods(ctx sdk.Context, denom string, startPeriod
 		panic("historical rewards not found")
 	}
 	diff := end.CumulativeUnitRewards.Sub(start.CumulativeUnitRewards)
-	return diff.MulDecTruncate(sdk.NewDecFromInt(amt))
+	return diff.MulDecTruncate(math.LegacyNewDecFromInt(amt))
 }
 
 // withdrawRewards withdraws accrued rewards for the position and increments

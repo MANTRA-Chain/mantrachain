@@ -8,30 +8,31 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
 
+// Snapshot
 message Snapshot {
   uint64 id = 1;
-  uint64 pairId = 2;
+  uint64 pair_id = 2;
   repeated SnapshotPool pools = 3;
-  map<uint64, uint64> poolIdToIdx = 4;
+  map<uint64, uint64> pool_id_to_idx = 4;
   bool distributed = 5;
-  google.protobuf.Timestamp distributedAt = 6 [
-    (gogoproto.moretags)     = "yaml:\"distributed_at\"",
+  google.protobuf.Timestamp distributed_at = 6 [
     (gogoproto.stdtime) = true,
     (gogoproto.nullable) = true
   ];
   repeated cosmos.base.v1beta1.DecCoin remaining = 7 [
-    (gogoproto.moretags)     = "yaml:\"remaining\"",
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable)     = false
   ];
 }
 
+// SnapshotCount
 message SnapshotCount {
-  uint64 pairId = 1;
+  uint64 pair_id = 1;
   uint64 count = 2;
 }
 
+// SnapshotStartId
 message SnapshotStartId {
-  uint64 pairId = 1;
-  uint64 snapshotId = 2;
+  uint64 pair_id = 1;
+  uint64 snapshot_id = 2;
 }

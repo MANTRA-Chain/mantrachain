@@ -1,13 +1,16 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) SetNftCollection(ctx sdk.Context, nftCollection types.NftCollection) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(nftCollection.Creator))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftCollectionStoreKey(nftCollection.Creator))
 	b := k.cdc.MustMarshal(&nftCollection)
 	store.Set(nftCollection.Index, b)
 }
@@ -17,7 +20,8 @@ func (k Keeper) GetNftCollection(
 	creator sdk.AccAddress,
 	index []byte,
 ) (val types.NftCollection, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(creator))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftCollectionStoreKey(creator))
 
 	if !k.HasNftCollection(ctx, creator, index) {
 		return types.NftCollection{}, false
@@ -37,13 +41,15 @@ func (k Keeper) HasNftCollection(
 	creator sdk.AccAddress,
 	index []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(creator))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftCollectionStoreKey(creator))
 	return store.Has(index)
 }
 
 func (k Keeper) GetAllNftCollection(ctx sdk.Context) (list []types.NftCollection) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftCollectionStoreKey(nil))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftCollectionStoreKey(nil))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -57,7 +63,8 @@ func (k Keeper) GetAllNftCollection(ctx sdk.Context) (list []types.NftCollection
 }
 
 func (k Keeper) SetNftCollectionOwner(ctx sdk.Context, index []byte, owner sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
 	store.Set(index, owner)
 }
 
@@ -65,7 +72,8 @@ func (k Keeper) GetNftCollectionOwner(
 	ctx sdk.Context,
 	index []byte,
 ) (val []byte, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
 
 	b := store.Get(index)
 	if b == nil {
@@ -76,8 +84,9 @@ func (k Keeper) GetNftCollectionOwner(
 }
 
 func (k Keeper) GetAllNftCollectionOwner(ctx sdk.Context) (list []*types.NftCollectionOwner) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.NftCollectionOwnerKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -92,7 +101,8 @@ func (k Keeper) GetAllNftCollectionOwner(ctx sdk.Context) (list []*types.NftColl
 }
 
 func (k Keeper) SetOpenedNftsCollection(ctx sdk.Context, index []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
 	store.Set(index, types.Placeholder)
 }
 
@@ -100,13 +110,15 @@ func (k Keeper) HasOpenedNftsCollection(
 	ctx sdk.Context,
 	index []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
 	return store.Has(index)
 }
 
 func (k Keeper) GetAllOpenedNftsCollection(ctx sdk.Context) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.OpenedNftsCollectionKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -118,7 +130,8 @@ func (k Keeper) GetAllOpenedNftsCollection(ctx sdk.Context) (list [][]byte) {
 }
 
 func (k Keeper) SetSoulBondedNftsCollection(ctx sdk.Context, index []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
 	store.Set(index, types.Placeholder)
 }
 
@@ -126,13 +139,15 @@ func (k Keeper) HasSoulBondedNftsCollection(
 	ctx sdk.Context,
 	index []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
 	return store.Has(index)
 }
 
 func (k Keeper) GetAllSoulBondedNftsCollection(ctx sdk.Context) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.SoulBondedNftsCollectionKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -144,7 +159,8 @@ func (k Keeper) GetAllSoulBondedNftsCollection(ctx sdk.Context) (list [][]byte) 
 }
 
 func (k Keeper) SetRestrictedNftsCollection(ctx sdk.Context, index []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
 	store.Set(index, types.Placeholder)
 }
 
@@ -152,13 +168,15 @@ func (k Keeper) HasRestrictedNftsCollection(
 	ctx sdk.Context,
 	index []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
 	return store.Has(index)
 }
 
 func (k Keeper) GetAllRestrictedNftsCollection(ctx sdk.Context) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.RestrictedNftsCollectionKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

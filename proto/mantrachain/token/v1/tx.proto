@@ -1,123 +1,187 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
-import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "mantrachain/token/v1/params.proto";
 import "mantrachain/token/v1/common.proto";
-// this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateNftCollection(MsgCreateNftCollection) returns (MsgCreateNftCollectionResponse);
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // CreateNftCollection
+  rpc CreateNftCollection(MsgCreateNftCollection)
+      returns (MsgCreateNftCollectionResponse);
+  // MintNfts
   rpc MintNfts(MsgMintNfts) returns (MsgMintNftsResponse);
+  // BurnNfts
   rpc BurnNfts(MsgBurnNfts) returns (MsgBurnNftsResponse);
+  // TransferNfts
   rpc TransferNfts(MsgTransferNfts) returns (MsgTransferNftsResponse);
+  // ApproveNfts
   rpc ApproveNfts(MsgApproveNfts) returns (MsgApproveNftsResponse);
+  // ApproveAllNfts
   rpc ApproveAllNfts(MsgApproveAllNfts) returns (MsgApproveAllNftsResponse);
+  // MintNft
   rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
+  // BurnNft
   rpc BurnNft(MsgBurnNft) returns (MsgBurnNftResponse);
+  // TransferNft
   rpc TransferNft(MsgTransferNft) returns (MsgTransferNftResponse);
+  // ApproveNft
   rpc ApproveNft(MsgApproveNft) returns (MsgApproveNftResponse);
 
-  rpc UpdateGuardSoulBondNftImage(MsgUpdateGuardSoulBondNftImage) returns (MsgUpdateGuardSoulBondNftImageResponse);
-  rpc UpdateRestrictedCollectionNftImage(MsgUpdateRestrictedCollectionNftImage) returns (MsgUpdateRestrictedCollectionNftImageResponse);
-  rpc UpdateRestrictedCollectionNftImageBatch(MsgUpdateRestrictedCollectionNftImageBatch) returns (MsgUpdateRestrictedCollectionNftImageBatchResponse);
-  rpc UpdateRestrictedCollectionNftImageGroupedBatch(MsgUpdateRestrictedCollectionNftImageGroupedBatch) returns (MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse);
-  // this line is used by starport scaffolding # proto/tx/rpc
+  // UpdateGuardSoulBondNftImage
+  rpc UpdateGuardSoulBondNftImage(MsgUpdateGuardSoulBondNftImage)
+      returns (MsgUpdateGuardSoulBondNftImageResponse);
+  // UpdateRestrictedCollectionNftImage
+  rpc UpdateRestrictedCollectionNftImage(MsgUpdateRestrictedCollectionNftImage)
+      returns (MsgUpdateRestrictedCollectionNftImageResponse);
+  // UpdateRestrictedCollectionNftImageBatch
+  rpc UpdateRestrictedCollectionNftImageBatch(
+      MsgUpdateRestrictedCollectionNftImageBatch)
+      returns (MsgUpdateRestrictedCollectionNftImageBatchResponse);
+  // UpdateRestrictedCollectionNftImageGroupedBatch
+  rpc UpdateRestrictedCollectionNftImageGroupedBatch(
+      MsgUpdateRestrictedCollectionNftImageGroupedBatch)
+      returns (MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse);
 }
 
-message MsgNftImageMetadata {
-  TokenImage image = 1;
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "mantrachain/x/token/MsgUpdateParams";
+
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the module parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message MsgNftsImagesMetadata {
-  repeated TokenImage images = 1;
-  repeated string nfts_ids = 2;
-  repeated uint64 images_indexes = 3;
-}
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
 
-message MsgNftsImagesIndexes {
-  repeated uint64 indexes = 1;
-}
-
-message MsgNftsImagesGroupedMetadata {
-  repeated TokenImage images = 1;
-  repeated MsgNftsIds nfts_ids_grouped = 2;
-  repeated MsgNftsImagesIndexes images_indexes = 3;
-}
-
+// MsgUpdateRestrictedCollectionNftImage
 message MsgUpdateRestrictedCollectionNftImage {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string collection_creator = 3;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) =
+      "mantrachain/x/token/MsgUpdateRestrictedCollectionNftImage";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
   string nft_id = 5;
   uint64 index = 6;
   MsgNftImageMetadata image = 7;
 }
 
+// MsgUpdateRestrictedCollectionNftImageResponse
 message MsgUpdateRestrictedCollectionNftImageResponse {
   string nft_id = 1;
   string owner = 2;
-  string collection_creator = 3;
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
 }
 
+// MsgUpdateRestrictedCollectionNftImageBatch
 message MsgUpdateRestrictedCollectionNftImageBatch {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string collection_creator = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) =
+      "mantrachain/x/token/MsgUpdateRestrictedCollectionNftImageBatch";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 3;
   MsgNftsImagesMetadata nfts_images = 4;
 }
 
+// MsgUpdateRestrictedCollectionNftImageBatchResponse
 message MsgUpdateRestrictedCollectionNftImageBatchResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string collection_creator = 3;
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
 }
 
+// MsgUpdateRestrictedCollectionNftImageGroupedBatch
 message MsgUpdateRestrictedCollectionNftImageGroupedBatch {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string collection_creator = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) =
+      "mantrachain/x/token/MsgUpdateRestrictedCollectionNftImageGroupedBatch";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 3;
   MsgNftsImagesGroupedMetadata nfts_images_grouped = 4;
 }
 
+// MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse
 message MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string collection_creator = 3;
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
 }
 
+// MsgUpdateGuardSoulBondNftImage
 message MsgUpdateGuardSoulBondNftImage {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string owner = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgUpdateGuardSoulBondNftImage";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string nft_id = 3;
   uint64 index = 4;
   MsgNftImageMetadata image = 5;
 }
 
+// MsgUpdateGuardSoulBondNftImageResponse
 message MsgUpdateGuardSoulBondNftImageResponse {
   string nft_id = 1;
-  string owner = 2;
-  string collection_creator = 3;
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
 }
 
+// MsgApproveNft
 message MsgApproveNft {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string receiver = 2;
-  string collection_creator = 3;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgApproveNft";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
   string nft_id = 5;
   bool approved = 6;
   bool strict = 7;
 }
 
+// MsgApproveNftResponse
 message MsgApproveNftResponse {
   string nft_id = 1;
   string owner = 2;
@@ -127,189 +191,212 @@ message MsgApproveNftResponse {
   string collection_id = 6;
 }
 
+// MsgTransferNft
 message MsgTransferNft {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string owner = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgTransferNft";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string receiver = 3;
-  string collection_creator = 4;
+  string collection_creator = 4
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 5;
   string nft_id = 6;
   bool strict = 7;
 }
 
+// MsgTransferNftResponse
 message MsgTransferNftResponse {
   string nft_id = 1;
-  string operator = 2;
-  string owner = 3;
-  string receiver = 4;
-  string collection_creator = 5;
+  string operator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 5
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 6;
 }
 
+// MsgBurnNft
 message MsgBurnNft {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string collection_creator = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgBurnNft";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 3;
   string nft_id = 4;
   bool strict = 5;
 }
 
+// MsgBurnNftResponse
 message MsgBurnNftResponse {
   string nft_id = 1;
   string burner = 2;
-  string collection_creator = 3;
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
 }
 
+// MsgMintNft
 message MsgMintNft {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string receiver = 2;
-  string collection_creator = 3;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgMintNft";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
   MsgNftMetadata nft = 5;
   bool strict = 6;
   bool did = 7;
 }
 
+// MsgMintNftResponse
 message MsgMintNftResponse {
   string nft_id = 1;
-  string creator = 2;
-  string receiver = 3;
-  string collection_creator = 4;
+  string creator = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 4
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 5;
 }
 
+// MsgNftsIds
 message MsgApproveAllNfts {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string receiver = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgApproveAllNfts";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bool approved = 3;
   bool strict = 4;
 }
 
+// MsgApproveAllNftsResponse
 message MsgApproveAllNftsResponse {
-  string owner = 1;
-  string receiver = 2;
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bool approved = 3;
 }
 
+// MsgApproveNfts
 message MsgApproveNfts {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string receiver = 2;
-  string collection_creator = 3;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgApproveNfts";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
   MsgNftsIds nfts = 5;
   bool approved = 6;
   bool strict = 7;
 }
 
+// MsgApproveNftsResponse
 message MsgApproveNftsResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string owner = 3;
-  string receiver = 4;
+  string owner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bool approved = 5;
-  string collection_creator = 6;
+  string collection_creator = 6
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 7;
 }
 
+// MsgTransferNfts
 message MsgTransferNfts {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string owner = 2;
-  string receiver = 3;
-  string collection_creator = 4;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgTransferNfts";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 4
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 5;
   MsgNftsIds nfts = 6;
   bool strict = 7;
 }
 
+// MsgTransferNftsResponse
 message MsgTransferNftsResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string operator = 3;
-  string owner = 4;
-  string receiver = 5;
-  string collection_creator = 6;
+  string operator = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string owner = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 6
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 7;
 }
 
+// MsgCreateNftCollection
 message MsgCreateNftCollection {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgCreateNftCollection";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   MsgCreateNftCollectionMetadata collection = 2;
 }
 
-message MsgCreateNftCollectionMetadata {
-  string id = 1;
-  string name = 2;
-  repeated TokenImage images = 3;
-  string url = 4;
-  string description = 5;
-  repeated TokenLink links = 6;
-  repeated TokenOption options = 7;
-  string category = 8;
-  string symbol = 9;
-  bool opened = 10;
-  bool soul_bonded_nfts = 11;
-  bool restricted_nfts = 12;
-  google.protobuf.Any data = 13;
-}
-
+// MsgCreateNftCollectionResponse
 message MsgCreateNftCollectionResponse {
   string collection_id = 1;
-  string collection_creator = 2;
+  string collection_creator = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
+// MsgMintNfts
 message MsgMintNfts {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string receiver = 2;
-  string collection_creator = 3;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgMintNfts";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 3
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 4;
   MsgNftsMetadata nfts = 5;
   bool strict = 6;
   bool did = 7;
 }
 
-message MsgNftsMetadata {
-  repeated MsgNftMetadata nfts = 1;
-}
-
-message MsgNftMetadata {
-  string id = 1;
-  string title = 2;
-  repeated TokenImage images = 3;
-  string url = 4;
-  string description = 5;
-  repeated TokenLink links = 6;
-  repeated TokenAttribute attributes = 7;
-  google.protobuf.Any data = 8;
-}
-
+// MsgMintNftsResponse
 message MsgMintNftsResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string creator = 3;
-  string receiver = 4;
-  string collection_creator = 5;
+  string creator = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string receiver = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 5
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 6;
 }
 
+// MsgBurnNfts
 message MsgBurnNfts {
-  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string collection_creator = 2;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/token/MsgBurnNfts";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 3;
   MsgNftsIds nfts = 4;
   bool strict = 5;
 }
 
-message MsgNftsIds {
-  repeated string nfts_ids = 1;
-}
-
+// MsgBurnNftsResponse
 message MsgBurnNftsResponse {
   repeated string nfts_ids = 1;
   uint32 nfts_count = 2;
-  string burner = 3;
-  string collection_creator = 4;
+  string burner = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string collection_creator = 4
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string collection_id = 5;
 }
-
-// this line is used by starport scaffolding # proto/tx/message

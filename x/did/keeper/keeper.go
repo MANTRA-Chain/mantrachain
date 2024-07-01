@@ -3,12 +3,28 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+)
+
+type (
+	Keeper struct {
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
+
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority string
+
+		guardKeeper types.GuardKeeper
+	}
 )
 
 // UnmarshalFn is a generic function to unmarshal bytes
@@ -17,25 +33,40 @@ type UnmarshalFn func(value []byte) (interface{}, bool)
 // MarshalFn is a generic function to marshal bytes
 type MarshalFn func(value interface{}) []byte
 
-type Keeper struct {
-	cdc      codec.Codec
-	storeKey storetypes.StoreKey
-	memKey   storetypes.StoreKey
-	gk       types.GuardKeeper
-}
+func NewKeeper(
+	cdc codec.BinaryCodec,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
-	gk types.GuardKeeper) *Keeper {
-	return &Keeper{
-		cdc:      cdc,
-		storeKey: storeKey,
-		memKey:   memKey,
-		gk:       gk,
+	guardKeeper types.GuardKeeper,
+) Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
+	}
+
+	return Keeper{
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
+
+		guardKeeper: guardKeeper,
 	}
 }
 
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+func SetGuardKeeper(k *Keeper, guardKeeper types.GuardKeeper) {
+	k.guardKeeper = guardKeeper
+}
+
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
 // Set sets a value in the db with a prefixed key
@@ -45,7 +76,7 @@ func (k Keeper) Set(ctx sdk.Context,
 	i interface{},
 	marshal MarshalFn,
 ) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Set(append(prefix, key...), marshal(i))
 }
 
@@ -55,7 +86,7 @@ func (k Keeper) Delete(
 	key []byte,
 	prefix []byte,
 ) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(append(prefix, key...))
 }
 
@@ -64,7 +95,7 @@ func (k Keeper) Has(
 	key []byte,
 	prefix []byte,
 ) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	return store.Has(append(prefix, key...))
 }
 
@@ -75,7 +106,7 @@ func (k Keeper) Get(
 	prefix []byte,
 	unmarshal UnmarshalFn,
 ) (i interface{}, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	value := store.Get(append(prefix, key...))
 
 	return unmarshal(value)
@@ -85,7 +116,7 @@ func (k Keeper) Get(
 func (k Keeper) GetAll(
 	ctx sdk.Context,
 	prefix []byte,
-) sdk.Iterator {
-	store := ctx.KVStore(k.storeKey)
-	return sdk.KVStorePrefixIterator(store, prefix)
+) storetypes.Iterator {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return storetypes.KVStorePrefixIterator(store, prefix)
 }

@@ -1,16 +1,25 @@
 syntax = "proto3";
-
 package mantrachain.lpfarm.v1beta1;
 
+import "amino/amino.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
+import "mantrachain/lpfarm/v1beta1/params.proto";
 import "mantrachain/lpfarm/v1beta1/lpfarm.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types";
-option (gogoproto.goproto_getters_all) = false;
 
+// Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
   rpc CreatePrivatePlan(MsgCreatePrivatePlan) returns (MsgCreatePrivatePlanResponse);
   rpc TerminatePrivatePlan(MsgTerminatePrivatePlan) returns (MsgTerminatePrivatePlanResponse);
   rpc Farm(MsgFarm) returns (MsgFarmResponse);
@@ -18,7 +27,31 @@ service Msg {
   rpc Harvest(MsgHarvest) returns (MsgHarvestResponse);
 }
 
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgUpdateParams";
+
+  // authority is the address that controls the module (defaults to x/gov unless overwritten).
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params defines the module parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
 message MsgCreatePrivatePlan {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgCreatePrivatePlan";
+
   string creator = 1;
   string description = 2;
   repeated RewardAllocation reward_allocations = 3 [(gogoproto.nullable) = false];
@@ -38,6 +71,9 @@ message MsgCreatePrivatePlanResponse {
 }
 
 message MsgTerminatePrivatePlan {
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgTerminatePrivatePlan";
+
   string creator = 1;
   uint64 plan_id = 2;
 }
@@ -45,6 +81,9 @@ message MsgTerminatePrivatePlan {
 message MsgTerminatePrivatePlanResponse {}
 
 message MsgFarm {
+  option (cosmos.msg.v1.signer) = "farmer";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgFarm";
+
   string farmer = 1;
   cosmos.base.v1beta1.Coin coin = 2 [(gogoproto.nullable) = false];
 }
@@ -57,6 +96,9 @@ message MsgFarmResponse {
 }
 
 message MsgUnfarm {
+  option (cosmos.msg.v1.signer) = "farmer";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgUnfarm";
+
   string farmer = 1;
   cosmos.base.v1beta1.Coin coin = 2 [(gogoproto.nullable) = false];
 }
@@ -69,6 +111,9 @@ message MsgUnfarmResponse {
 }
 
 message MsgHarvest {
+  option (cosmos.msg.v1.signer) = "farmer";
+  option (amino.name) = "mantrachain/x/lpfarm/MsgHarvest";
+
   string farmer = 1;
   string denom = 2;
 }

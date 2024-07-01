@@ -3,88 +3,85 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
-
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
+	"cosmossdk.io/store/prefix"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 type (
 	Keeper struct {
-		cdc      codec.BinaryCodec
-		storeKey storetypes.StoreKey
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
 
-		paramSpace paramtypes.Subspace
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority string
 
-		accountKeeper types.AccountKeeper
-		bankKeeper    types.BankKeeper
-		gk            types.GuardKeeper
-
+		accountKeeper       types.AccountKeeper
+		bankKeeper          types.BankKeeper
 		communityPoolKeeper types.CommunityPoolKeeper
+		guardKeeper         types.GuardKeeper
 	}
 )
 
-// NewKeeper returns a new instance of the x/coinfactory keeper
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
-	paramSpace paramtypes.Subspace,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
+
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	gk types.GuardKeeper,
 	communityPoolKeeper types.CommunityPoolKeeper,
-) *Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	guardKeeper types.GuardKeeper,
+) Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		paramSpace: paramSpace,
+	return Keeper{
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
 
 		accountKeeper:       accountKeeper,
 		bankKeeper:          bankKeeper,
-		gk:                  gk,
 		communityPoolKeeper: communityPoolKeeper,
+		guardKeeper:         guardKeeper,
 	}
 }
 
-// Logger returns a logger for the x/coinfactory module
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
+}
+
+// Logger returns a module-specific logger.
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
 // GetDenomPrefixStore returns the substore for a specific denom
-func (k Keeper) GetDenomPrefixStore(ctx sdk.Context, denom string) sdk.KVStore {
-	store := ctx.KVStore(k.storeKey)
-	return prefix.NewStore(store, types.GetDenomPrefixStore(denom))
+func (k Keeper) GetDenomPrefixStore(ctx sdk.Context, denom string) prefix.Store {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return prefix.NewStore(storeAdapter, types.GetDenomPrefixStore(denom))
 }
 
 // GetCreatorPrefixStore returns the substore for a specific creator address
-func (k Keeper) GetCreatorPrefixStore(ctx sdk.Context, creator string) sdk.KVStore {
-	store := ctx.KVStore(k.storeKey)
-	return prefix.NewStore(store, types.GetCreatorPrefix(creator))
+func (k Keeper) GetCreatorPrefixStore(ctx sdk.Context, creator string) prefix.Store {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return prefix.NewStore(storeAdapter, types.GetCreatorPrefix(creator))
 }
 
 // GetCreatorsPrefixStore returns the substore that contains a list of creators
-func (k Keeper) GetCreatorsPrefixStore(ctx sdk.Context) sdk.KVStore {
-	store := ctx.KVStore(k.storeKey)
-	return prefix.NewStore(store, types.GetCreatorsPrefix())
-}
-
-// CreateModuleAccount creates a module account with minting and burning capabilities
-// This account isn't intended to store any coins,
-// it purely mints and burns them on behalf of the admin of respective denoms,
-// and sends to the relevant address.
-func (k Keeper) CreateModuleAccount(ctx sdk.Context) {
-	moduleAcc := authtypes.NewEmptyModuleAccount(types.ModuleName, authtypes.Minter, authtypes.Burner)
-	k.accountKeeper.SetModuleAccount(ctx, moduleAcc)
+func (k Keeper) GetCreatorsPrefixStore(ctx sdk.Context) prefix.Store {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	return prefix.NewStore(storeAdapter, types.GetCreatorsPrefix())
 }

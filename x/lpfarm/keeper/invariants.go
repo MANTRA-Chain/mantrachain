@@ -138,7 +138,7 @@ func TotalFarmingAmountInvariant(k Keeper) sdk.Invariant {
 		farmingAmtSumByDenom := map[string]math.Int{}
 		k.IterateAllFarms(ctx, func(denom string, farm types.Farm) (stop bool) {
 			totalFarmingAmtByDenom[denom] = farm.TotalFarmingAmount
-			farmingAmtSumByDenom[denom] = sdk.ZeroInt()
+			farmingAmtSumByDenom[denom] = math.ZeroInt()
 			return false
 		})
 		k.IterateAllPositions(ctx, func(position types.Position) (stop bool) {

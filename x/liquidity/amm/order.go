@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 )
 
 var (
@@ -35,14 +35,14 @@ func (dir OrderDirection) String() string {
 }
 
 type Orderer interface {
-	Order(dir OrderDirection, price sdk.Dec, amt math.Int) Order
+	Order(dir OrderDirection, price sdkmath.LegacyDec, amt math.Int) Order
 }
 
 // BaseOrderer creates new BaseOrder with sufficient offer coin amount
 // considering price and amount.
 type BaseOrderer struct{}
 
-func (orderer BaseOrderer) Order(dir OrderDirection, price sdk.Dec, amt math.Int) Order {
+func (orderer BaseOrderer) Order(dir OrderDirection, price sdkmath.LegacyDec, amt math.Int) Order {
 	return NewBaseOrder(dir, price, amt, OfferCoinAmount(dir, price, amt))
 }
 
@@ -52,7 +52,7 @@ type Order interface {
 	// GetBatchId returns the batch id where the order was created.
 	// Batch id of 0 means the current batch.
 	GetBatchId() uint64
-	GetPrice() sdk.Dec
+	GetPrice() sdkmath.LegacyDec
 	GetAmount() math.Int // The original order amount
 	GetOfferCoinAmount() math.Int
 	GetPaidOfferCoinAmount() math.Int
@@ -71,7 +71,7 @@ type Order interface {
 // BaseOrder is the base struct for an Order.
 type BaseOrder struct {
 	Direction       OrderDirection
-	Price           sdk.Dec
+	Price           sdkmath.LegacyDec
 	Amount          math.Int
 	OfferCoinAmount math.Int
 
@@ -82,15 +82,15 @@ type BaseOrder struct {
 }
 
 // NewBaseOrder returns a new BaseOrder.
-func NewBaseOrder(dir OrderDirection, price sdk.Dec, amt, offerCoinAmt math.Int) *BaseOrder {
+func NewBaseOrder(dir OrderDirection, price sdkmath.LegacyDec, amt, offerCoinAmt math.Int) *BaseOrder {
 	return &BaseOrder{
 		Direction:                dir,
 		Price:                    price,
 		Amount:                   amt,
 		OfferCoinAmount:          offerCoinAmt,
 		OpenAmount:               amt,
-		PaidOfferCoinAmount:      sdk.ZeroInt(),
-		ReceivedDemandCoinAmount: sdk.ZeroInt(),
+		PaidOfferCoinAmount:      math.ZeroInt(),
+		ReceivedDemandCoinAmount: math.ZeroInt(),
 	}
 }
 
@@ -104,7 +104,7 @@ func (order *BaseOrder) GetBatchId() uint64 {
 }
 
 // GetPrice returns the order price.
-func (order *BaseOrder) GetPrice() sdk.Dec {
+func (order *BaseOrder) GetPrice() sdkmath.LegacyDec {
 	return order.Price
 }
 

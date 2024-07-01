@@ -1,16 +1,22 @@
 syntax = "proto3";
-
 package mantrachain.lpfarm.v1beta1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "mantrachain/lpfarm/v1beta1/lpfarm.proto";
+import "mantrachain/lpfarm/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types";
-option (gogoproto.goproto_getters_all) = false;
 
+// GenesisState defines the lpfarm module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
   google.protobuf.Timestamp last_block_time = 2 [(gogoproto.stdtime) = true];
   uint64 last_plan_id = 3;
   uint64 num_private_plans = 4;

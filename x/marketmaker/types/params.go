@@ -5,7 +5,6 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
-	"gopkg.in/yaml.v2"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -78,12 +77,6 @@ func (p Params) IncentivePairsMap() map[uint64]IncentivePair {
 		iMap[pair.PairId] = pair
 	}
 	return iMap
-}
-
-// String returns a human-readable string representation of the parameters.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }
 
 // Validate validates parameters.

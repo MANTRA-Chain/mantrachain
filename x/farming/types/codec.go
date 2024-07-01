@@ -2,16 +2,14 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	// this line is used by starport scaffolding # 1
 )
 
-// RegisterLegacyAminoCodec registers the necessary x/farming interfaces and concrete types
-// on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*PlanI)(nil), nil)
 	cdc.RegisterConcrete(&MsgCreateFixedAmountPlan{}, "farming/MsgCreateFixedAmountPlan", nil)
 	cdc.RegisterConcrete(&MsgCreateRatioPlan{}, "farming/MsgCreateRatioPlan", nil)
@@ -22,12 +20,15 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&FixedAmountPlan{}, "farming/FixedAmountPlan", nil)
 	cdc.RegisterConcrete(&RatioPlan{}, "farming/RatioPlan", nil)
 	cdc.RegisterConcrete(&PublicPlanProposal{}, "farming/PublicPlanProposal", nil)
+	// this line is used by starport scaffolding # 2
 }
 
-// RegisterInterfaces registers the x/farming interfaces types with the interface registry
-func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations(
-		(*sdk.Msg)(nil),
+func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
+	// this line is used by starport scaffolding # 3
+
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateParams{},
+
 		&MsgCreateFixedAmountPlan{},
 		&MsgCreateRatioPlan{},
 		&MsgStake{},
@@ -47,24 +48,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&FixedAmountPlan{},
 		&RatioPlan{},
 	)
-
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
 var (
-	amino = codec.NewLegacyAmino()
-
-	// ModuleCdc references the global x/farming module codec. Note, the codec
-	// should ONLY be used in certain instances of tests and for JSON encoding as Amino
-	// is still used for that purpose.
-	//
-	// The actual codec used for serialization should be provided to x/farming and
-	// defined at the application level.
-	ModuleCdc = codec.NewAminoCodec(amino)
+	Amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
 )
-
-func init() {
-	RegisterLegacyAminoCodec(amino)
-	cryptocodec.RegisterCrypto(amino)
-	amino.Seal()
-}

@@ -1,10 +1,10 @@
 syntax = "proto3";
-
 package mantrachain.rewards.v1beta1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/rewards/v1beta1/params.proto";
 import "mantrachain/rewards/v1beta1/snapshot.proto";
@@ -14,102 +14,114 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/params";
-
   }
-  
+
   // Queries a list of Snapshot items.
-  rpc Snapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pairId}/{id}";
-  
+  rpc QuerySnapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pair_id}/{id}";
   }
-  rpc SnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pairId}";
-
+  // QuerySnapshotAll
+  rpc QuerySnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pair_id}";
   }
   
   // Queries a list of Provider pairs ids.
-  rpc Provider (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
+  rpc QueryProvider (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider/{provider}";
   }
-  rpc ProviderPairs (QueryGetProviderPairsRequest) returns (QueryGetProviderPairsResponse) {
+  // QueryProviderPairs
+  rpc QueryProviderPairs (QueryGetProviderPairsRequest) returns (QueryGetProviderPairsResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider-pairs/{provider}";
   }
-  rpc ProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
+  // QueryProviderAll
+  rpc QueryProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider";
   }
   
   // Queries a list of Claim items.
-  rpc Rewards (QueryGetRewardsRequest) returns (QueryGetRewardsResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/rewards/{provider}/{pairId}";
-  
+  rpc QueryRewards (QueryGetRewardsRequest) returns (QueryGetRewardsResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/rewards/{provider}/{pair_id}";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
+// QueryGetSnapshotRequest
 message QueryGetSnapshotRequest {
-  uint64 pairId = 1;
+  uint64 pair_id = 1;
   uint64 id = 2;
 }
 
+// QueryGetSnapshotResponse
 message QueryGetSnapshotResponse {
-  Snapshot Snapshot = 1 [(gogoproto.nullable) = false];
+  Snapshot snapshot = 1 [(gogoproto.nullable) = false];
 }
 
+// QueryAllSnapshotRequest
 message QueryAllSnapshotRequest {
-  uint64 pairId = 1;
+  uint64 pair_id = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+// QueryAllSnapshotResponse
 message QueryAllSnapshotResponse {
-  repeated Snapshot                               Snapshot   = 1 [(gogoproto.nullable) = false];
+  repeated Snapshot                               snapshot   = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// QueryGetProviderPairsRequest
 message QueryGetProviderPairsRequest {
   string provider = 1;
 }
 
+// QueryGetProviderPairsResponse
 message QueryGetProviderPairsResponse {
   string provider = 1;
   repeated uint64 pairsIds = 2 [(gogoproto.nullable) = false];
 }
 
+// QueryGetProviderRequest
 message QueryGetProviderRequest {
   string provider = 1;
 }
 
+// QueryGetProviderResponse
 message QueryGetProviderResponse {
   Provider provider = 1 [(gogoproto.nullable) = false];
 }
 
+// QueryAllProviderRequest
 message QueryAllProviderRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllProviderResponse
 message QueryAllProviderResponse {
   repeated Provider                               provider   = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// QueryGetRewardsRequest
 message QueryGetRewardsRequest {
   string provider = 1;
-  uint64 pairId = 2;
+  uint64 pair_id = 2;
 }
 
+// QueryGetRewardsResponse
 message QueryGetRewardsResponse {
-  uint64 pairId = 1;
+  uint64 pair_id = 1;
   repeated cosmos.base.v1beta1.Coin rewards = 2;
 }
-

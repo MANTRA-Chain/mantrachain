@@ -1,18 +1,32 @@
 package types
 
-import (
-	"fmt"
-	// this line is used by starport scaffolding # genesis/types/import
-)
+import fmt "fmt"
 
-// DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 2
+// this line is used by starport scaffolding # genesis/types/import
 
-// DefaultGenesis returns the default Capability genesis state
+// DefaultIndex is the default global index
+const DefaultIndex uint64 = 1
+
+// DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
+		// this line is used by starport scaffolding # genesis/types/default
+		Params:       DefaultParams(),
 		DidDocuments: []GenesisDidDocument{},
 	}
+}
+
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
+func (gs GenesisState) Validate() error {
+	// this line is used by starport scaffolding # genesis/types/validate
+
+	err := gs.ValidateDidDocument()
+	if err != nil {
+		return err
+	}
+
+	return gs.Params.Validate()
 }
 
 func (gs GenesisState) ValidateDidDocument() error {
@@ -34,10 +48,4 @@ func (gs GenesisState) ValidateDidDocument() error {
 	}
 
 	return nil
-}
-
-// Validate performs basic genesis state validation returning an error upon any
-// failure.
-func (gs GenesisState) Validate() error {
-	return gs.ValidateDidDocument()
 }

@@ -3,6 +3,7 @@ package keeper
 import (
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/runtime"
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +13,7 @@ import (
 
 // GetLastEpochTime returns the last time the epoch ended.
 func (k Keeper) GetLastEpochTime(ctx sdk.Context) (t time.Time, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.LastEpochTimeKey)
 	if bz == nil {
 		return
@@ -30,7 +31,7 @@ func (k Keeper) GetLastEpochTime(ctx sdk.Context) (t time.Time, found bool) {
 
 // SetLastEpochTime sets the last time the epoch ended.
 func (k Keeper) SetLastEpochTime(ctx sdk.Context, t time.Time) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	ts, err := gogotypes.TimestampProto(t)
 	if err != nil {
 		panic(err)
@@ -40,7 +41,7 @@ func (k Keeper) SetLastEpochTime(ctx sdk.Context, t time.Time) {
 }
 
 func (k Keeper) DeleteLastEpochTime(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.LastEpochTimeKey)
 }
 
@@ -67,7 +68,7 @@ func (k Keeper) AdvanceEpoch(ctx sdk.Context) error {
 // GetCurrentEpochDays returns the current epoch days(period).
 func (k Keeper) GetCurrentEpochDays(ctx sdk.Context) uint32 {
 	var epochDays uint32
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.CurrentEpochDaysKey)
 	if bz == nil {
 		// initialize with next epoch days
@@ -84,12 +85,12 @@ func (k Keeper) GetCurrentEpochDays(ctx sdk.Context) uint32 {
 
 // SetCurrentEpochDays sets the current epoch days(period).
 func (k Keeper) SetCurrentEpochDays(ctx sdk.Context, epochDays uint32) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&gogotypes.UInt32Value{Value: epochDays})
 	store.Set(types.CurrentEpochDaysKey, bz)
 }
 
 func (k Keeper) DeleteCurrentEpochDays(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.CurrentEpochDaysKey)
 }

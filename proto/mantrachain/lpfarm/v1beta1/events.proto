@@ -8,12 +8,14 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types";
 option (gogoproto.goproto_getters_all) = false;
 
+// EventCreatePrivatePlan
 message EventCreatePrivatePlan {
   string creator = 1;
   uint64 plan_id = 2;
   string farming_pool_address = 3;
 }
 
+// EventFarm
 message EventFarm {
   string farmer = 1;
   cosmos.base.v1beta1.Coin coin = 2 [(gogoproto.nullable) = false];
@@ -23,6 +25,7 @@ message EventFarm {
   ];
 }
 
+// EventUnfarm
 message EventUnfarm {
   string farmer = 1;
   cosmos.base.v1beta1.Coin coin = 2 [(gogoproto.nullable) = false];
@@ -32,6 +35,7 @@ message EventUnfarm {
   ];
 }
 
+// EventHarvest
 message EventHarvest {
   string farmer = 1;
   string denom = 2;
@@ -41,6 +45,7 @@ message EventHarvest {
   ];
 }
 
+// EventTerminatePlan
 message EventTerminatePlan {
   uint64 plan_id = 1;
 }

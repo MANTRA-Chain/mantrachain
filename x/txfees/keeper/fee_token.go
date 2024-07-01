@@ -1,14 +1,17 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // SetFeeToken set a specific feeToken in the store from its denom
 func (k Keeper) SetFeeToken(ctx sdk.Context, feeToken types.FeeToken) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FeeTokenKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
 	b := k.cdc.MustMarshal(&feeToken)
 	store.Set(types.FeeTokenKey(
 		feeToken.Denom,
@@ -21,7 +24,8 @@ func (k Keeper) GetFeeToken(
 	denom string,
 
 ) (val types.FeeToken, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FeeTokenKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
 
 	b := store.Get(types.FeeTokenKey(
 		denom,
@@ -40,7 +44,8 @@ func (k Keeper) RemoveFeeToken(
 	denom string,
 
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FeeTokenKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
 	store.Delete(types.FeeTokenKey(
 		denom,
 	))
@@ -48,8 +53,9 @@ func (k Keeper) RemoveFeeToken(
 
 // GetAllFeeToken returns all feeToken
 func (k Keeper) GetAllFeeToken(ctx sdk.Context) (list []types.FeeToken) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FeeTokenKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

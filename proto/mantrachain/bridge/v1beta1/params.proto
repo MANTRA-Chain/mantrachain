@@ -1,0 +1,13 @@
+syntax = "proto3";
+package mantrachain.bridge.v1beta1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/MANTRA-Finance/mantrachain/x/bridge/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "mantrachain/x/bridge/v1beta1/Params";
+  option (gogoproto.equal) = true;
+}

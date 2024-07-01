@@ -6,6 +6,9 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
+	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
+	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -28,6 +31,102 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgUpdateParams is the Msg/UpdateParams request type.
+type MsgUpdateParams struct {
+	// authority is the address that controls the module (defaults to x/gov unless
+	// overwritten).
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	// params defines the module parameters to update.
+	//
+	// NOTE: All parameters must be supplied.
+	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
+}
+
+func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
+func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParams) ProtoMessage()    {}
+func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c0b3f8dc3ad69885, []int{0}
+}
+func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
+}
+func (m *MsgUpdateParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
+
+func (m *MsgUpdateParams) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateParams) GetParams() Params {
+	if m != nil {
+		return m.Params
+	}
+	return Params{}
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+type MsgUpdateParamsResponse struct {
+}
+
+func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
+func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c0b3f8dc3ad69885, []int{1}
+}
+func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
+}
+func (m *MsgUpdateParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
+
 // Verification is a message that allows to assign a verification method
 // to one or more verification relationships
 type Verification struct {
@@ -42,7 +141,7 @@ func (m *Verification) Reset()         { *m = Verification{} }
 func (m *Verification) String() string { return proto.CompactTextString(m) }
 func (*Verification) ProtoMessage()    {}
 func (*Verification) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{0}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{2}
 }
 func (m *Verification) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -105,7 +204,7 @@ func (m *MsgCreateDidDocument) Reset()         { *m = MsgCreateDidDocument{} }
 func (m *MsgCreateDidDocument) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateDidDocument) ProtoMessage()    {}
 func (*MsgCreateDidDocument) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{1}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{3}
 }
 func (m *MsgCreateDidDocument) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -134,6 +233,42 @@ func (m *MsgCreateDidDocument) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateDidDocument proto.InternalMessageInfo
 
+func (m *MsgCreateDidDocument) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgCreateDidDocument) GetControllers() []string {
+	if m != nil {
+		return m.Controllers
+	}
+	return nil
+}
+
+func (m *MsgCreateDidDocument) GetVerifications() []*Verification {
+	if m != nil {
+		return m.Verifications
+	}
+	return nil
+}
+
+func (m *MsgCreateDidDocument) GetServices() []*Service {
+	if m != nil {
+		return m.Services
+	}
+	return nil
+}
+
+func (m *MsgCreateDidDocument) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgCreateDidDocumentResponse
 type MsgCreateDidDocumentResponse struct {
 }
 
@@ -141,7 +276,7 @@ func (m *MsgCreateDidDocumentResponse) Reset()         { *m = MsgCreateDidDocume
 func (m *MsgCreateDidDocumentResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateDidDocumentResponse) ProtoMessage()    {}
 func (*MsgCreateDidDocumentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{2}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{4}
 }
 func (m *MsgCreateDidDocumentResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -173,14 +308,14 @@ var xxx_messageInfo_MsgCreateDidDocumentResponse proto.InternalMessageInfo
 // MsgUpdateDidDocument replace an existing did document with a new version
 type MsgUpdateDidDocument struct {
 	Doc    *DidDocument `protobuf:"bytes,1,opt,name=doc,proto3" json:"doc,omitempty"`
-	Signer string       `protobuf:"bytes,5,opt,name=signer,proto3" json:"signer,omitempty"`
+	Signer string       `protobuf:"bytes,2,opt,name=signer,proto3" json:"signer,omitempty"`
 }
 
 func (m *MsgUpdateDidDocument) Reset()         { *m = MsgUpdateDidDocument{} }
 func (m *MsgUpdateDidDocument) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateDidDocument) ProtoMessage()    {}
 func (*MsgUpdateDidDocument) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{3}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{5}
 }
 func (m *MsgUpdateDidDocument) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -209,6 +344,21 @@ func (m *MsgUpdateDidDocument) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateDidDocument proto.InternalMessageInfo
 
+func (m *MsgUpdateDidDocument) GetDoc() *DidDocument {
+	if m != nil {
+		return m.Doc
+	}
+	return nil
+}
+
+func (m *MsgUpdateDidDocument) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgUpdateDidDocumentResponse
 type MsgUpdateDidDocumentResponse struct {
 }
 
@@ -216,7 +366,7 @@ func (m *MsgUpdateDidDocumentResponse) Reset()         { *m = MsgUpdateDidDocume
 func (m *MsgUpdateDidDocumentResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateDidDocumentResponse) ProtoMessage()    {}
 func (*MsgUpdateDidDocumentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{4}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{6}
 }
 func (m *MsgUpdateDidDocumentResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -245,6 +395,7 @@ func (m *MsgUpdateDidDocumentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateDidDocumentResponse proto.InternalMessageInfo
 
+// MsgAddVerification
 type MsgAddVerification struct {
 	Id           string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Verification *Verification `protobuf:"bytes,2,opt,name=verification,proto3" json:"verification,omitempty"`
@@ -255,7 +406,7 @@ func (m *MsgAddVerification) Reset()         { *m = MsgAddVerification{} }
 func (m *MsgAddVerification) String() string { return proto.CompactTextString(m) }
 func (*MsgAddVerification) ProtoMessage()    {}
 func (*MsgAddVerification) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{5}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{7}
 }
 func (m *MsgAddVerification) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -284,6 +435,28 @@ func (m *MsgAddVerification) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddVerification proto.InternalMessageInfo
 
+func (m *MsgAddVerification) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgAddVerification) GetVerification() *Verification {
+	if m != nil {
+		return m.Verification
+	}
+	return nil
+}
+
+func (m *MsgAddVerification) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgAddVerificationResponse
 type MsgAddVerificationResponse struct {
 }
 
@@ -291,7 +464,7 @@ func (m *MsgAddVerificationResponse) Reset()         { *m = MsgAddVerificationRe
 func (m *MsgAddVerificationResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddVerificationResponse) ProtoMessage()    {}
 func (*MsgAddVerificationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{6}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{8}
 }
 func (m *MsgAddVerificationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -320,6 +493,7 @@ func (m *MsgAddVerificationResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddVerificationResponse proto.InternalMessageInfo
 
+// MsgSetVerificationRelationships
 type MsgSetVerificationRelationships struct {
 	Id            string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	MethodId      string   `protobuf:"bytes,2,opt,name=method_id,json=methodId,proto3" json:"method_id,omitempty"`
@@ -331,7 +505,7 @@ func (m *MsgSetVerificationRelationships) Reset()         { *m = MsgSetVerificat
 func (m *MsgSetVerificationRelationships) String() string { return proto.CompactTextString(m) }
 func (*MsgSetVerificationRelationships) ProtoMessage()    {}
 func (*MsgSetVerificationRelationships) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{7}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{9}
 }
 func (m *MsgSetVerificationRelationships) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -360,6 +534,35 @@ func (m *MsgSetVerificationRelationships) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSetVerificationRelationships proto.InternalMessageInfo
 
+func (m *MsgSetVerificationRelationships) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgSetVerificationRelationships) GetMethodId() string {
+	if m != nil {
+		return m.MethodId
+	}
+	return ""
+}
+
+func (m *MsgSetVerificationRelationships) GetRelationships() []string {
+	if m != nil {
+		return m.Relationships
+	}
+	return nil
+}
+
+func (m *MsgSetVerificationRelationships) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgSetVerificationRelationshipsResponse
 type MsgSetVerificationRelationshipsResponse struct {
 }
 
@@ -369,7 +572,7 @@ func (m *MsgSetVerificationRelationshipsResponse) Reset() {
 func (m *MsgSetVerificationRelationshipsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetVerificationRelationshipsResponse) ProtoMessage()    {}
 func (*MsgSetVerificationRelationshipsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{8}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{10}
 }
 func (m *MsgSetVerificationRelationshipsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -398,6 +601,7 @@ func (m *MsgSetVerificationRelationshipsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSetVerificationRelationshipsResponse proto.InternalMessageInfo
 
+// MsgRevokeVerification
 type MsgRevokeVerification struct {
 	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	MethodId string `protobuf:"bytes,2,opt,name=method_id,json=methodId,proto3" json:"method_id,omitempty"`
@@ -408,7 +612,7 @@ func (m *MsgRevokeVerification) Reset()         { *m = MsgRevokeVerification{} }
 func (m *MsgRevokeVerification) String() string { return proto.CompactTextString(m) }
 func (*MsgRevokeVerification) ProtoMessage()    {}
 func (*MsgRevokeVerification) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{9}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{11}
 }
 func (m *MsgRevokeVerification) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -437,6 +641,28 @@ func (m *MsgRevokeVerification) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRevokeVerification proto.InternalMessageInfo
 
+func (m *MsgRevokeVerification) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgRevokeVerification) GetMethodId() string {
+	if m != nil {
+		return m.MethodId
+	}
+	return ""
+}
+
+func (m *MsgRevokeVerification) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgRevokeVerificationResponse
 type MsgRevokeVerificationResponse struct {
 }
 
@@ -444,7 +670,7 @@ func (m *MsgRevokeVerificationResponse) Reset()         { *m = MsgRevokeVerifica
 func (m *MsgRevokeVerificationResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRevokeVerificationResponse) ProtoMessage()    {}
 func (*MsgRevokeVerificationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{10}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{12}
 }
 func (m *MsgRevokeVerificationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -473,6 +699,7 @@ func (m *MsgRevokeVerificationResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRevokeVerificationResponse proto.InternalMessageInfo
 
+// MsgAddService
 type MsgAddService struct {
 	Id          string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ServiceData *Service `protobuf:"bytes,2,opt,name=service_data,json=serviceData,proto3" json:"service_data,omitempty"`
@@ -483,7 +710,7 @@ func (m *MsgAddService) Reset()         { *m = MsgAddService{} }
 func (m *MsgAddService) String() string { return proto.CompactTextString(m) }
 func (*MsgAddService) ProtoMessage()    {}
 func (*MsgAddService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{11}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{13}
 }
 func (m *MsgAddService) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -512,6 +739,28 @@ func (m *MsgAddService) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddService proto.InternalMessageInfo
 
+func (m *MsgAddService) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgAddService) GetServiceData() *Service {
+	if m != nil {
+		return m.ServiceData
+	}
+	return nil
+}
+
+func (m *MsgAddService) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgAddServiceResponse
 type MsgAddServiceResponse struct {
 }
 
@@ -519,7 +768,7 @@ func (m *MsgAddServiceResponse) Reset()         { *m = MsgAddServiceResponse{} }
 func (m *MsgAddServiceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddServiceResponse) ProtoMessage()    {}
 func (*MsgAddServiceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{12}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{14}
 }
 func (m *MsgAddServiceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -548,6 +797,7 @@ func (m *MsgAddServiceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddServiceResponse proto.InternalMessageInfo
 
+// MsgDeleteService
 type MsgDeleteService struct {
 	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ServiceId string `protobuf:"bytes,2,opt,name=service_id,json=serviceId,proto3" json:"service_id,omitempty"`
@@ -558,7 +808,7 @@ func (m *MsgDeleteService) Reset()         { *m = MsgDeleteService{} }
 func (m *MsgDeleteService) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteService) ProtoMessage()    {}
 func (*MsgDeleteService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{13}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{15}
 }
 func (m *MsgDeleteService) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -587,6 +837,28 @@ func (m *MsgDeleteService) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteService proto.InternalMessageInfo
 
+func (m *MsgDeleteService) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgDeleteService) GetServiceId() string {
+	if m != nil {
+		return m.ServiceId
+	}
+	return ""
+}
+
+func (m *MsgDeleteService) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgDeleteServiceResponse
 type MsgDeleteServiceResponse struct {
 }
 
@@ -594,7 +866,7 @@ func (m *MsgDeleteServiceResponse) Reset()         { *m = MsgDeleteServiceRespon
 func (m *MsgDeleteServiceResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteServiceResponse) ProtoMessage()    {}
 func (*MsgDeleteServiceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{14}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{16}
 }
 func (m *MsgDeleteServiceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -623,6 +895,7 @@ func (m *MsgDeleteServiceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteServiceResponse proto.InternalMessageInfo
 
+// MsgAddController
 type MsgAddController struct {
 	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ControllerDid string `protobuf:"bytes,2,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
@@ -633,7 +906,7 @@ func (m *MsgAddController) Reset()         { *m = MsgAddController{} }
 func (m *MsgAddController) String() string { return proto.CompactTextString(m) }
 func (*MsgAddController) ProtoMessage()    {}
 func (*MsgAddController) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{15}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{17}
 }
 func (m *MsgAddController) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -662,6 +935,28 @@ func (m *MsgAddController) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddController proto.InternalMessageInfo
 
+func (m *MsgAddController) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgAddController) GetControllerDid() string {
+	if m != nil {
+		return m.ControllerDid
+	}
+	return ""
+}
+
+func (m *MsgAddController) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgAddControllerResponse
 type MsgAddControllerResponse struct {
 }
 
@@ -669,7 +964,7 @@ func (m *MsgAddControllerResponse) Reset()         { *m = MsgAddControllerRespon
 func (m *MsgAddControllerResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddControllerResponse) ProtoMessage()    {}
 func (*MsgAddControllerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{16}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{18}
 }
 func (m *MsgAddControllerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -698,6 +993,7 @@ func (m *MsgAddControllerResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddControllerResponse proto.InternalMessageInfo
 
+// MsgDeleteController
 type MsgDeleteController struct {
 	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ControllerDid string `protobuf:"bytes,2,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
@@ -708,7 +1004,7 @@ func (m *MsgDeleteController) Reset()         { *m = MsgDeleteController{} }
 func (m *MsgDeleteController) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteController) ProtoMessage()    {}
 func (*MsgDeleteController) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{17}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{19}
 }
 func (m *MsgDeleteController) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -737,6 +1033,28 @@ func (m *MsgDeleteController) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteController proto.InternalMessageInfo
 
+func (m *MsgDeleteController) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgDeleteController) GetControllerDid() string {
+	if m != nil {
+		return m.ControllerDid
+	}
+	return ""
+}
+
+func (m *MsgDeleteController) GetSigner() string {
+	if m != nil {
+		return m.Signer
+	}
+	return ""
+}
+
+// MsgDeleteControllerResponse
 type MsgDeleteControllerResponse struct {
 }
 
@@ -744,7 +1062,7 @@ func (m *MsgDeleteControllerResponse) Reset()         { *m = MsgDeleteController
 func (m *MsgDeleteControllerResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteControllerResponse) ProtoMessage()    {}
 func (*MsgDeleteControllerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c0b3f8dc3ad69885, []int{18}
+	return fileDescriptor_c0b3f8dc3ad69885, []int{20}
 }
 func (m *MsgDeleteControllerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -774,6 +1092,8 @@ func (m *MsgDeleteControllerResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDeleteControllerResponse proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*MsgUpdateParams)(nil), "mantrachain.did.v1.MsgUpdateParams")
+	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "mantrachain.did.v1.MsgUpdateParamsResponse")
 	proto.RegisterType((*Verification)(nil), "mantrachain.did.v1.Verification")
 	proto.RegisterType((*MsgCreateDidDocument)(nil), "mantrachain.did.v1.MsgCreateDidDocument")
 	proto.RegisterType((*MsgCreateDidDocumentResponse)(nil), "mantrachain.did.v1.MsgCreateDidDocumentResponse")
@@ -798,57 +1118,73 @@ func init() {
 func init() { proto.RegisterFile("mantrachain/did/v1/tx.proto", fileDescriptor_c0b3f8dc3ad69885) }
 
 var fileDescriptor_c0b3f8dc3ad69885 = []byte{
-	// 792 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xb1, 0x6f, 0xda, 0x5a,
-	0x14, 0xc6, 0x31, 0xe4, 0x25, 0xe1, 0x10, 0xf2, 0xf2, 0xee, 0xcb, 0x7b, 0xb5, 0x0c, 0x01, 0x8a,
-	0xd2, 0x84, 0x48, 0x2d, 0x14, 0x32, 0x54, 0x6a, 0xa5, 0x48, 0x69, 0x50, 0xa4, 0xaa, 0x72, 0x07,
-	0xa7, 0xed, 0x90, 0x25, 0x72, 0x7c, 0x6f, 0xcc, 0x55, 0xc0, 0x46, 0xbe, 0x37, 0x28, 0x1d, 0xbb,
-	0x75, 0xa8, 0xaa, 0x4c, 0x9d, 0xf3, 0xe7, 0x74, 0xcc, 0xd8, 0xb1, 0x4a, 0x96, 0x4a, 0x55, 0xff,
-	0x87, 0x0a, 0x63, 0x2e, 0x36, 0xb6, 0xc1, 0xea, 0xd0, 0xcd, 0x5c, 0x7f, 0xe7, 0x7c, 0x3f, 0x8e,
-	0x8f, 0x3f, 0x19, 0x0a, 0x3d, 0xdd, 0xe2, 0x8e, 0x6e, 0x74, 0x74, 0x6a, 0x35, 0x30, 0xc5, 0x8d,
-	0x41, 0xb3, 0xc1, 0x2f, 0xeb, 0x7d, 0xc7, 0xe6, 0x36, 0x42, 0xbe, 0x9b, 0x75, 0x4c, 0x71, 0x7d,
-	0xd0, 0x54, 0x8a, 0x11, 0x05, 0xc3, 0x5b, 0x6e, 0x85, 0xb2, 0x6e, 0xda, 0xa6, 0xed, 0x5e, 0x36,
-	0x86, 0x57, 0xa3, 0xd3, 0xea, 0x27, 0x09, 0x56, 0xde, 0x12, 0x87, 0x9e, 0x51, 0x43, 0xe7, 0xd4,
-	0xb6, 0xd0, 0x26, 0xe4, 0x1d, 0xd2, 0x75, 0xaf, 0x59, 0x87, 0xf6, 0x99, 0x2c, 0x55, 0x32, 0xb5,
-	0xac, 0x16, 0x3c, 0x44, 0x7b, 0xb0, 0xd8, 0x23, 0xbc, 0x63, 0x63, 0x39, 0x5d, 0x91, 0x6a, 0xb9,
-	0xd6, 0x56, 0x3d, 0xcc, 0x53, 0xf7, 0xf7, 0x55, 0x5d, 0xb5, 0xe6, 0x55, 0x21, 0x19, 0x96, 0x0c,
-	0xdb, 0xe2, 0xe4, 0x92, 0xcb, 0x19, 0xb7, 0xff, 0xf8, 0x67, 0xf5, 0x87, 0x04, 0xeb, 0x2a, 0x33,
-	0x0f, 0x1c, 0xa2, 0x73, 0xd2, 0xa6, 0xb8, 0x6d, 0x1b, 0x17, 0x3d, 0x62, 0x71, 0xb4, 0x0a, 0x69,
-	0x8a, 0x65, 0xa9, 0x22, 0xd5, 0xb2, 0x5a, 0x9a, 0x62, 0x54, 0x81, 0xdc, 0xb0, 0xc6, 0xb1, 0xbb,
-	0x5d, 0xe2, 0x30, 0x39, 0xed, 0xb6, 0xf1, 0x1f, 0xa1, 0x43, 0xc8, 0x0f, 0x7c, 0x08, 0xcc, 0xb5,
-	0xca, 0xb5, 0x2a, 0xf3, 0x58, 0xb5, 0x60, 0x19, 0x7a, 0x02, 0xcb, 0x8c, 0x38, 0x03, 0x6a, 0x10,
-	0x26, 0x2f, 0xb8, 0x2d, 0x0a, 0x51, 0x2d, 0x8e, 0x46, 0x1a, 0x4d, 0x88, 0xd1, 0xff, 0xb0, 0xc8,
-	0xa8, 0x69, 0x11, 0x47, 0xfe, 0xcb, 0xc5, 0xf6, 0x7e, 0x3d, 0x5d, 0xfe, 0x70, 0x5d, 0x4e, 0x7d,
-	0xbf, 0x2e, 0xa7, 0xaa, 0x25, 0x28, 0x46, 0xfd, 0x59, 0x8d, 0xb0, 0xbe, 0x6d, 0x31, 0x52, 0x3d,
-	0x77, 0x87, 0xf1, 0xa6, 0x8f, 0xa7, 0x86, 0xd1, 0x84, 0x0c, 0xb6, 0x0d, 0x77, 0x1a, 0xb9, 0x56,
-	0x39, 0x8a, 0xc6, 0xdf, 0x6d, 0xa8, 0x4d, 0x0c, 0x13, 0x32, 0x13, 0x30, 0x1f, 0x25, 0x40, 0x2a,
-	0x33, 0xf7, 0x31, 0x0e, 0x6c, 0xcc, 0xf4, 0x83, 0x69, 0xc3, 0x8a, 0x7f, 0x7e, 0xde, 0x86, 0xcc,
-	0x9f, 0x7a, 0xa0, 0xca, 0x87, 0x9b, 0x89, 0xc1, 0x2d, 0x82, 0x12, 0xa6, 0x11, 0xb0, 0x9f, 0x25,
-	0x28, 0xab, 0xcc, 0x3c, 0x22, 0x3c, 0x78, 0xdb, 0xbf, 0xc5, 0xd3, 0xe4, 0x05, 0xc8, 0x8e, 0xf6,
-	0xf3, 0x84, 0x8e, 0x16, 0x3b, 0xab, 0x2d, 0x8f, 0x0e, 0x5e, 0xe0, 0xf0, 0x8b, 0x91, 0x89, 0x7a,
-	0x31, 0x26, 0xd8, 0x0b, 0x31, 0xd8, 0x3b, 0xb0, 0x3d, 0x87, 0x4b, 0xfc, 0x87, 0x33, 0xf8, 0x4f,
-	0x65, 0xa6, 0x46, 0x06, 0xf6, 0x39, 0x99, 0x39, 0xf2, 0x99, 0xe0, 0xf3, 0x27, 0x59, 0x86, 0x8d,
-	0x48, 0x1f, 0x01, 0xf2, 0x5e, 0x82, 0xfc, 0x68, 0xd6, 0xde, 0x92, 0x87, 0x08, 0xf6, 0x60, 0xc5,
-	0x5b, 0xfb, 0x13, 0xac, 0x73, 0xdd, 0x7b, 0xe8, 0x33, 0xdf, 0x93, 0x9c, 0x57, 0xd0, 0xd6, 0xb9,
-	0x9e, 0x00, 0xf2, 0x9e, 0x3b, 0x8c, 0x09, 0x82, 0x80, 0x33, 0x60, 0x4d, 0x65, 0x66, 0x9b, 0x74,
-	0x09, 0x27, 0x71, 0x78, 0x1b, 0x00, 0x63, 0x3c, 0x31, 0xa1, 0xac, 0x77, 0x92, 0x68, 0x44, 0x0a,
-	0xc8, 0xd3, 0x26, 0xbe, 0x97, 0x74, 0x6d, 0x44, 0x76, 0x20, 0xc2, 0x27, 0x04, 0xf0, 0x00, 0x56,
-	0x27, 0xd1, 0x74, 0x82, 0x05, 0x44, 0x7e, 0x72, 0xda, 0xa6, 0xc9, 0x41, 0x02, 0x66, 0x02, 0xc4,
-	0x82, 0x7f, 0x05, 0xe4, 0x9f, 0x60, 0xd9, 0x80, 0x42, 0x84, 0xdf, 0x18, 0xa7, 0xf5, 0x73, 0x09,
-	0x32, 0x2a, 0x33, 0x91, 0x0d, 0xff, 0x84, 0xe3, 0xbc, 0x16, 0xb5, 0x1a, 0x51, 0x59, 0xa8, 0x3c,
-	0x4e, 0xaa, 0x1c, 0x1b, 0x0f, 0x0d, 0xc3, 0x91, 0x19, 0x67, 0x18, 0x52, 0xc6, 0x1a, 0xc6, 0x26,
-	0x23, 0xa2, 0xf0, 0xf7, 0x74, 0x2a, 0x6e, 0xc5, 0x34, 0x99, 0xd2, 0x29, 0xf5, 0x64, 0x3a, 0x61,
-	0xe5, 0x00, 0x8a, 0x08, 0x84, 0x9d, 0x98, 0x2e, 0x61, 0xa9, 0xd2, 0x4c, 0x2c, 0x15, 0x9e, 0x57,
-	0x12, 0x14, 0x67, 0x06, 0xe9, 0x6e, 0x4c, 0xcf, 0x59, 0x45, 0xca, 0xb3, 0xdf, 0x28, 0x12, 0x48,
-	0xc7, 0x00, 0xbe, 0x34, 0xba, 0x1f, 0x3f, 0x44, 0x4f, 0xa2, 0xec, 0xcc, 0x95, 0x88, 0xde, 0x06,
-	0xe4, 0x83, 0x69, 0xb2, 0x19, 0x53, 0x1b, 0x50, 0x29, 0x0f, 0x93, 0xa8, 0xfc, 0x26, 0xc1, 0xc4,
-	0xd8, 0x8c, 0x07, 0x9c, 0xa8, 0x62, 0x4d, 0x22, 0x03, 0x01, 0x75, 0x61, 0x2d, 0x94, 0x06, 0xdb,
-	0x33, 0x31, 0x7d, 0x56, 0x8d, 0x84, 0xc2, 0xb1, 0xdb, 0xf3, 0x97, 0x5f, 0x6e, 0x4b, 0xd2, 0xcd,
-	0x6d, 0x49, 0xfa, 0x76, 0x5b, 0x92, 0xae, 0xee, 0x4a, 0xa9, 0x9b, 0xbb, 0x52, 0xea, 0xeb, 0x5d,
-	0x29, 0x75, 0xdc, 0x34, 0x29, 0xef, 0x5c, 0x9c, 0xd6, 0x0d, 0xbb, 0xd7, 0x50, 0xf7, 0x5f, 0xbd,
-	0xd6, 0xf6, 0x1f, 0x1d, 0x52, 0x4b, 0xb7, 0x0c, 0xd2, 0xf0, 0x7f, 0xb3, 0x5e, 0xba, 0x5f, 0xad,
-	0xfc, 0x5d, 0x9f, 0xb0, 0xd3, 0x45, 0xf7, 0xfb, 0x74, 0xf7, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0x55, 0xe1, 0x50, 0x95, 0x06, 0x0b, 0x00, 0x00,
+	// 1043 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0xda, 0x6d, 0x88, 0x9f, 0xe3, 0x36, 0x1d, 0x82, 0xe2, 0x6e, 0x12, 0xdb, 0x5d, 0xd2,
+	0xc4, 0x09, 0xd4, 0x5b, 0xbb, 0xa5, 0x95, 0x8a, 0xa8, 0xe4, 0xd4, 0xaa, 0x84, 0x90, 0x11, 0xda,
+	0x00, 0x87, 0x5e, 0xc2, 0x76, 0x77, 0x58, 0x8f, 0xb0, 0x77, 0xac, 0x9d, 0x89, 0x95, 0xde, 0x10,
+	0x47, 0x0e, 0xa8, 0xff, 0x05, 0xdc, 0x88, 0x54, 0xb8, 0x72, 0xe0, 0xd4, 0x63, 0xd5, 0x03, 0xe2,
+	0x84, 0x50, 0x72, 0x88, 0xf8, 0x2f, 0xd0, 0xee, 0x8e, 0xd7, 0xfb, 0xd3, 0x36, 0x11, 0x88, 0x8b,
+	0xe5, 0x7d, 0xf3, 0xbd, 0xf7, 0xbe, 0xef, 0xbd, 0x37, 0x33, 0xbb, 0xb0, 0x3e, 0xd0, 0x6d, 0xee,
+	0xe8, 0x46, 0x4f, 0x27, 0xb6, 0x6a, 0x12, 0x53, 0x1d, 0x35, 0x55, 0x7e, 0xdc, 0x18, 0x3a, 0x94,
+	0x53, 0x84, 0x42, 0x8b, 0x0d, 0x93, 0x98, 0x8d, 0x51, 0x53, 0xbe, 0xa6, 0x0f, 0x88, 0x4d, 0x55,
+	0xef, 0xd7, 0x87, 0xc9, 0x6b, 0x06, 0x65, 0x03, 0xca, 0xd4, 0x01, 0xb3, 0x5c, 0xf7, 0x01, 0xb3,
+	0xc4, 0xc2, 0x75, 0x7f, 0xe1, 0xd0, 0x7b, 0x52, 0xfd, 0x07, 0xb1, 0xb4, 0x6a, 0x51, 0x8b, 0xfa,
+	0x76, 0xf7, 0x9f, 0xb0, 0x56, 0x53, 0xd8, 0x0c, 0x75, 0x47, 0x1f, 0x8c, 0xdd, 0x36, 0x52, 0x00,
+	0x2e, 0x31, 0x6f, 0x55, 0xf9, 0x45, 0x82, 0xab, 0x5d, 0x66, 0x7d, 0x36, 0x34, 0x75, 0x8e, 0x3f,
+	0xf1, 0xfc, 0xd0, 0x3d, 0x28, 0xe8, 0x47, 0xbc, 0x47, 0x1d, 0xc2, 0x9f, 0x95, 0xa5, 0x9a, 0x54,
+	0x2f, 0xec, 0x97, 0x5f, 0xff, 0x74, 0x6b, 0x55, 0xb0, 0x69, 0x9b, 0xa6, 0x83, 0x19, 0x3b, 0xe0,
+	0x0e, 0xb1, 0x2d, 0x6d, 0x02, 0x45, 0x1f, 0xc0, 0xa2, 0x9f, 0xb9, 0x9c, 0xab, 0x49, 0xf5, 0x62,
+	0x4b, 0x6e, 0x24, 0x8b, 0xd1, 0xf0, 0x73, 0xec, 0x17, 0x5e, 0xfe, 0x51, 0x5d, 0xf8, 0xe1, 0xfc,
+	0x64, 0x4f, 0xd2, 0x84, 0xd3, 0x83, 0xbb, 0xdf, 0x9c, 0x9f, 0xec, 0x4d, 0xc2, 0x7d, 0x7b, 0x7e,
+	0xb2, 0x77, 0x23, 0xcc, 0xfd, 0xd8, 0x63, 0x1f, 0x23, 0xab, 0x5c, 0x87, 0xb5, 0x98, 0x49, 0xc3,
+	0x6c, 0x48, 0x6d, 0x86, 0x95, 0xef, 0x24, 0x58, 0xfe, 0x1c, 0x3b, 0xe4, 0x4b, 0x62, 0xe8, 0x9c,
+	0x50, 0x1b, 0x6d, 0x41, 0xc9, 0xc1, 0x7d, 0xef, 0x3f, 0xeb, 0x91, 0x21, 0x2b, 0x4b, 0xb5, 0x7c,
+	0xbd, 0xa0, 0x45, 0x8d, 0xe8, 0x21, 0x2c, 0x0e, 0x30, 0xef, 0x51, 0x53, 0xc8, 0xd8, 0x4e, 0x93,
+	0x11, 0x8e, 0xdb, 0xf5, 0xd0, 0x9a, 0xf0, 0x42, 0x65, 0x78, 0xc3, 0xa0, 0x36, 0xc7, 0xc7, 0xbc,
+	0x9c, 0xf7, 0xe2, 0x8f, 0x1f, 0x95, 0x17, 0x39, 0x58, 0xed, 0x32, 0xeb, 0x91, 0x83, 0x75, 0x8e,
+	0x3b, 0xc4, 0xec, 0x50, 0xe3, 0x68, 0x80, 0x6d, 0x8e, 0xae, 0x40, 0x8e, 0x98, 0x7e, 0xa9, 0xb5,
+	0x1c, 0x31, 0x51, 0x0d, 0x8a, 0xae, 0x8f, 0x43, 0xfb, 0x7d, 0xec, 0xb8, 0xe5, 0x74, 0xc3, 0x84,
+	0x4d, 0xe8, 0x31, 0x94, 0x46, 0x21, 0x0a, 0xcc, 0x4b, 0x55, 0x6c, 0xd5, 0x66, 0x71, 0xd5, 0xa2,
+	0x6e, 0xe8, 0x3e, 0x2c, 0x31, 0xec, 0x8c, 0x88, 0x81, 0x59, 0xf9, 0x92, 0x17, 0x62, 0x3d, 0x2d,
+	0xc4, 0x81, 0x8f, 0xd1, 0x02, 0x30, 0xba, 0x0d, 0x8b, 0x8c, 0x58, 0x36, 0x76, 0xca, 0x97, 0x67,
+	0x4c, 0x88, 0xc0, 0x3d, 0xb8, 0xe7, 0xf6, 0x57, 0x3c, 0xb8, 0xcd, 0xdd, 0x4e, 0x6d, 0x6e, 0xa2,
+	0x38, 0x4a, 0x05, 0x36, 0xd2, 0xec, 0x41, 0x9b, 0x5f, 0x48, 0x5e, 0x55, 0xfd, 0x11, 0x08, 0x57,
+	0xb5, 0x09, 0x79, 0x93, 0x1a, 0x5e, 0x59, 0x8b, 0xad, 0x6a, 0x9a, 0xac, 0x70, 0x38, 0x17, 0x1b,
+	0x52, 0x95, 0xfb, 0x57, 0x55, 0x25, 0xc8, 0x09, 0x55, 0x09, 0x7b, 0xa0, 0xea, 0xb5, 0x04, 0xa8,
+	0xcb, 0xac, 0xb6, 0x69, 0x46, 0x46, 0x38, 0x3e, 0x29, 0x1d, 0x58, 0x0e, 0x37, 0x54, 0x8c, 0xec,
+	0xec, 0x31, 0x88, 0x78, 0x85, 0x64, 0xe7, 0xe7, 0x94, 0x7d, 0x37, 0x26, 0x7b, 0x2b, 0x55, 0x76,
+	0x8c, 0xbd, 0xb2, 0x01, 0x72, 0xd2, 0x1a, 0x48, 0xfe, 0x4b, 0x82, 0x6a, 0x97, 0x59, 0x07, 0x98,
+	0x47, 0x97, 0xc3, 0x9b, 0x33, 0xae, 0x7f, 0x1d, 0x0a, 0xfe, 0xb6, 0x3b, 0x24, 0xfe, 0x7e, 0x2d,
+	0x68, 0x4b, 0xbe, 0xe1, 0x43, 0x33, 0xb9, 0xdf, 0xf3, 0x69, 0xfb, 0x7d, 0x22, 0xfe, 0xd2, 0x9c,
+	0xe2, 0xdb, 0x31, 0xf1, 0xcd, 0x54, 0xf1, 0xd3, 0x74, 0x28, 0xbb, 0xb0, 0x33, 0x03, 0x12, 0x94,
+	0xe5, 0x47, 0x09, 0xde, 0xea, 0x32, 0x4b, 0xc3, 0x23, 0xfa, 0x15, 0x9e, 0x3a, 0x0c, 0x53, 0x8b,
+	0xf1, 0xcf, 0x7b, 0x7c, 0x3f, 0x26, 0x73, 0x27, 0x55, 0x66, 0x92, 0x97, 0x52, 0x85, 0xcd, 0xd4,
+	0x85, 0x40, 0xd2, 0xaf, 0x12, 0x94, 0xfc, 0x41, 0x10, 0x07, 0x4b, 0x42, 0xca, 0x43, 0x58, 0x16,
+	0x47, 0xcd, 0xa1, 0xa9, 0x73, 0x5d, 0xcc, 0xf5, 0xd4, 0xb3, 0xa9, 0x28, 0x1c, 0x3a, 0x3a, 0xd7,
+	0x2f, 0xa0, 0x56, 0x8d, 0xa9, 0xad, 0x66, 0x4d, 0xb4, 0xc8, 0xa7, 0xac, 0x79, 0x6d, 0x99, 0x18,
+	0x02, 0x75, 0xdf, 0x4b, 0xb0, 0xd2, 0x65, 0x56, 0x07, 0xf7, 0x31, 0xc7, 0x59, 0x02, 0x37, 0x01,
+	0xc6, 0x02, 0x83, 0x66, 0x15, 0x84, 0xe5, 0x42, 0xdd, 0x6a, 0xc5, 0xf8, 0x2b, 0xa9, 0xfc, 0x23,
+	0xa4, 0x14, 0x19, 0xca, 0x71, 0x5b, 0x78, 0xec, 0x56, 0x7c, 0x7d, 0x8f, 0x82, 0x7b, 0x27, 0xa1,
+	0xe2, 0x26, 0x5c, 0x99, 0xdc, 0x4a, 0x87, 0x66, 0xa0, 0xa4, 0x34, 0xb1, 0x76, 0xc8, 0x7f, 0xa7,
+	0x26, 0x42, 0x4e, 0xa8, 0x89, 0xd8, 0x02, 0x35, 0x3f, 0x4b, 0xf0, 0x66, 0x20, 0xf5, 0xff, 0x10,
+	0xf4, 0x5e, 0x4c, 0xd0, 0xcd, 0x29, 0xed, 0x09, 0x69, 0xda, 0x84, 0xf5, 0x14, 0xf3, 0x58, 0x56,
+	0xeb, 0xb7, 0x25, 0xc8, 0x77, 0x99, 0x85, 0xbe, 0x80, 0xe5, 0xc8, 0x2b, 0xdc, 0xdb, 0x69, 0x1b,
+	0x25, 0xf6, 0x9e, 0x24, 0xbf, 0x33, 0x07, 0x68, 0x9c, 0x09, 0x51, 0xb8, 0x96, 0x7c, 0x6f, 0xa9,
+	0x67, 0x44, 0x48, 0x20, 0xe5, 0xdb, 0xf3, 0x22, 0xc3, 0x09, 0x93, 0x57, 0x7a, 0x7d, 0x2a, 0xe5,
+	0x79, 0x12, 0x66, 0xde, 0xb8, 0x88, 0xc0, 0xd5, 0xf8, 0x6d, 0xbb, 0x9d, 0x11, 0x24, 0x86, 0x93,
+	0x1b, 0xf3, 0xe1, 0x82, 0x54, 0x0e, 0xa0, 0x94, 0xe3, 0x7c, 0x37, 0x23, 0x4a, 0x12, 0x2a, 0x37,
+	0xe7, 0x86, 0x06, 0x39, 0x9f, 0x4b, 0xb0, 0x31, 0xf5, 0x6a, 0xbd, 0x93, 0x11, 0x73, 0x9a, 0x93,
+	0xfc, 0xfe, 0x05, 0x9c, 0x02, 0x4a, 0x4f, 0x00, 0x42, 0x57, 0xc0, 0x8d, 0xec, 0x22, 0x0a, 0x88,
+	0xbc, 0x3b, 0x13, 0x12, 0xc4, 0x36, 0xa0, 0x14, 0x3d, 0x80, 0xb7, 0x32, 0x7c, 0x23, 0x28, 0xf9,
+	0xdd, 0x79, 0x50, 0xe1, 0x24, 0xd1, 0xf3, 0x71, 0x2b, 0x9b, 0xe0, 0x04, 0x95, 0x99, 0x24, 0xf5,
+	0xe8, 0x42, 0x7d, 0x58, 0x49, 0x1c, 0x5b, 0x3b, 0x53, 0x69, 0x86, 0x52, 0xa9, 0x73, 0x02, 0xc7,
+	0xd9, 0xe4, 0xcb, 0x5f, 0xbb, 0x1f, 0x65, 0xfb, 0x1f, 0xbd, 0x3c, 0xad, 0x48, 0xaf, 0x4e, 0x2b,
+	0xd2, 0x9f, 0xa7, 0x15, 0xe9, 0xf9, 0x59, 0x65, 0xe1, 0xd5, 0x59, 0x65, 0xe1, 0xf7, 0xb3, 0xca,
+	0xc2, 0x93, 0xa6, 0x45, 0x78, 0xef, 0xe8, 0x69, 0xc3, 0xa0, 0x03, 0xb5, 0xdb, 0xfe, 0xf8, 0x53,
+	0xad, 0x7d, 0xeb, 0x31, 0xb1, 0x75, 0xdb, 0xc0, 0x6a, 0xf2, 0x48, 0xe3, 0xcf, 0x86, 0x98, 0x3d,
+	0x5d, 0xf4, 0xbe, 0x35, 0xef, 0xfc, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x30, 0xd4, 0x28, 0xad, 0x3a,
+	0x0f, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -863,13 +1199,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// UpdateParams defines a (governance) operation for updating the module
+	// parameters. The authority defaults to the x/gov module account.
+	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// CreateDidDocument defines a method for creating a new identity.
 	CreateDidDocument(ctx context.Context, in *MsgCreateDidDocument, opts ...grpc.CallOption) (*MsgCreateDidDocumentResponse, error)
 	// UpdateDidDocument defines a method for updating an identity.
 	UpdateDidDocument(ctx context.Context, in *MsgUpdateDidDocument, opts ...grpc.CallOption) (*MsgUpdateDidDocumentResponse, error)
 	// AddVerificationMethod adds a new verification method
 	AddVerification(ctx context.Context, in *MsgAddVerification, opts ...grpc.CallOption) (*MsgAddVerificationResponse, error)
-	// RevokeVerification remove the verification method and all associated verification Relations
+	// RevokeVerification remove the verification method and all associated
+	// verification Relations
 	RevokeVerification(ctx context.Context, in *MsgRevokeVerification, opts ...grpc.CallOption) (*MsgRevokeVerificationResponse, error)
 	// SetVerificationRelationships overwrite current verification relationships
 	SetVerificationRelationships(ctx context.Context, in *MsgSetVerificationRelationships, opts ...grpc.CallOption) (*MsgSetVerificationRelationshipsResponse, error)
@@ -889,6 +1229,15 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
+}
+
+func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.did.v1.Msg/UpdateParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgClient) CreateDidDocument(ctx context.Context, in *MsgCreateDidDocument, opts ...grpc.CallOption) (*MsgCreateDidDocumentResponse, error) {
@@ -974,13 +1323,17 @@ func (c *msgClient) DeleteController(ctx context.Context, in *MsgDeleteControlle
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// UpdateParams defines a (governance) operation for updating the module
+	// parameters. The authority defaults to the x/gov module account.
+	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// CreateDidDocument defines a method for creating a new identity.
 	CreateDidDocument(context.Context, *MsgCreateDidDocument) (*MsgCreateDidDocumentResponse, error)
 	// UpdateDidDocument defines a method for updating an identity.
 	UpdateDidDocument(context.Context, *MsgUpdateDidDocument) (*MsgUpdateDidDocumentResponse, error)
 	// AddVerificationMethod adds a new verification method
 	AddVerification(context.Context, *MsgAddVerification) (*MsgAddVerificationResponse, error)
-	// RevokeVerification remove the verification method and all associated verification Relations
+	// RevokeVerification remove the verification method and all associated
+	// verification Relations
 	RevokeVerification(context.Context, *MsgRevokeVerification) (*MsgRevokeVerificationResponse, error)
 	// SetVerificationRelationships overwrite current verification relationships
 	SetVerificationRelationships(context.Context, *MsgSetVerificationRelationships) (*MsgSetVerificationRelationshipsResponse, error)
@@ -998,6 +1351,9 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
 func (*UnimplementedMsgServer) CreateDidDocument(ctx context.Context, req *MsgCreateDidDocument) (*MsgCreateDidDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDidDocument not implemented")
 }
@@ -1028,6 +1384,24 @@ func (*UnimplementedMsgServer) DeleteController(ctx context.Context, req *MsgDel
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mantrachain.did.v1.Msg/UpdateParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_CreateDidDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1197,6 +1571,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "UpdateParams",
+			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
 			MethodName: "CreateDidDocument",
 			Handler:    _Msg_CreateDidDocument_Handler,
 		},
@@ -1235,6 +1613,69 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "mantrachain/did/v1/tx.proto",
+}
+
+func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
 }
 
 func (m *Verification) Marshal() (dAtA []byte, err error) {
@@ -1412,7 +1853,7 @@ func (m *MsgUpdateDidDocument) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Signer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Signer)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x12
 	}
 	if m.Doc != nil {
 		{
@@ -1951,6 +2392,30 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgUpdateParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Params.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *Verification) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2267,6 +2732,171 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Verification) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -2747,7 +3377,7 @@ func (m *MsgUpdateDidDocument) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signer", wireType)
 			}

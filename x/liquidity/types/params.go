@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -29,12 +31,12 @@ var (
 	DefaultPoolCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
 	DefaultMinInitialDepositAmount  = math.NewInt(1000000)
 	DefaultMaxPriceLimitRatio       = math.LegacyNewDecWithPrec(1, 1) // 10%
-	DefaultSwapFeeRate              = sdk.ZeroDec()
-	DefaultWithdrawFeeRate          = sdk.ZeroDec()
-	DefaultDepositExtraGas          = sdk.Gas(60000)
-	DefaultWithdrawExtraGas         = sdk.Gas(64000)
-	DefaultOrderExtraGas            = sdk.Gas(37000)
-	DefaultPairCreatorSwapFeeRatio  = sdk.ZeroDec()
+	DefaultSwapFeeRate              = math.LegacyZeroDec()
+	DefaultWithdrawFeeRate          = math.LegacyZeroDec()
+	DefaultDepositExtraGas          = storetypes.Gas(60000)
+	DefaultWithdrawExtraGas         = storetypes.Gas(64000)
+	DefaultOrderExtraGas            = storetypes.Gas(37000)
+	DefaultPairCreatorSwapFeeRatio  = math.LegacyZeroDec()
 )
 
 // General constants
@@ -263,7 +265,7 @@ func validateMinInitialDepositAmount(i interface{}) error {
 }
 
 func validateMaxPriceLimitRatio(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -302,7 +304,7 @@ func validateMaxOrderLifespan(i interface{}) error {
 }
 
 func validateSwapFeeRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -315,7 +317,7 @@ func validateSwapFeeRate(i interface{}) error {
 }
 
 func validatePairCreatorSwapFeeRatio(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -328,7 +330,7 @@ func validatePairCreatorSwapFeeRatio(i interface{}) error {
 }
 
 func validateWithdrawFeeRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -341,7 +343,7 @@ func validateWithdrawFeeRate(i interface{}) error {
 }
 
 func validateExtraGas(i interface{}) error {
-	_, ok := i.(sdk.Gas)
+	_, ok := i.(storetypes.Gas)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -48,7 +48,7 @@ func CmdGetNft() *cobra.Command {
 				Id:                reqId,
 			}
 
-			res, err := queryClient.Nft(context.Background(), params)
+			res, err := queryClient.QueryNft(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -68,11 +68,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 		Short: "Query all collection nfts",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			reqCollectionCreator := args[0]
 			reqCollectionId := args[1]
@@ -99,7 +95,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 				Pagination:        pageReq,
 			}
 
-			res, err := queryClient.AllCollectionNfts(cmd.Context(), params)
+			res, err := queryClient.QueryAllCollectionNfts(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -142,7 +138,7 @@ func CmdGetIsApprovedForAllNfts() *cobra.Command {
 				Operator: operator.String(),
 			}
 
-			res, err := queryClient.IsApprovedForAllNfts(context.Background(), params)
+			res, err := queryClient.QueryIsApprovedForAllNfts(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -189,7 +185,7 @@ func CmdGetNftApproved() *cobra.Command {
 				Id:                reqId,
 			}
 
-			res, err := queryClient.NftApproved(context.Background(), params)
+			res, err := queryClient.QueryNftApproved(context.Background(), params)
 			if err != nil {
 				return err
 			}

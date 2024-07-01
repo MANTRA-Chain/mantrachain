@@ -15,13 +15,14 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivileges{}, "guard/UpdateRequiredPrivileges", nil)
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesBatch{}, "guard/UpdateRequiredPrivilegesBatch", nil)
 	cdc.RegisterConcrete(&MsgUpdateRequiredPrivilegesGroupedBatch{}, "guard/UpdateRequiredPrivilegesGroupedBatch", nil)
-
 	cdc.RegisterConcrete(&MsgUpdateAuthzGenericGrantRevokeBatch{}, "guard/UpdateAuthzGenericGrantRevokeBatch", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateParams{},
+
 		&MsgUpdateAccountPrivileges{},
 		&MsgUpdateAccountPrivilegesBatch{},
 		&MsgUpdateAccountPrivilegesGroupedBatch{},
@@ -29,8 +30,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateRequiredPrivilegesBatch{},
 		&MsgUpdateRequiredPrivilegesGroupedBatch{},
 		&MsgUpdateGuardTransferCoins{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpdateAuthzGenericGrantRevokeBatch{},
 	)
 	// this line is used by starport scaffolding # 3

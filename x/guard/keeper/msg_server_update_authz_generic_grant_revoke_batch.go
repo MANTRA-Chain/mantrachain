@@ -5,8 +5,9 @@ import (
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authztypes "github.com/cosmos/cosmos-sdk/x/authz"
 )
 
@@ -14,7 +15,7 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -29,21 +30,18 @@ func (k msgServer) UpdateAuthzGenericGrantRevokeBatch(goCtx context.Context, msg
 
 	for _, msg := range msg.AuthzGrantRevokeMsgsTypes.Msgs {
 		if k.router.HandlerByTypeURL(msg.TypeUrl) == nil {
-			return nil, sdkerrors.ErrInvalidType.Wrapf("%s doesn't exist", msg.TypeUrl)
+			return nil, errorstypes.ErrInvalidType.Wrapf("%s doesn't exist", msg.TypeUrl)
 		}
 
 		if msg.Grant {
 			authorization := authztypes.NewGenericAuthorization(msg.TypeUrl)
-			if err != nil {
-				return nil, err
-			}
 
-			err = k.azk.SaveGrant(ctx, grantee, creator, authorization, nil)
+			err = k.authzKeeper.SaveGrant(ctx, grantee, creator, authorization, nil)
 			if err != nil {
 				return nil, err
 			}
 		} else {
-			err = k.azk.DeleteGrant(ctx, grantee, creator, msg.TypeUrl)
+			err = k.authzKeeper.DeleteGrant(ctx, grantee, creator, msg.TypeUrl)
 			if err != nil {
 				return nil, err
 			}

@@ -1,10 +1,16 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 
 // Params defines the parameters for the module.
 message Params {
+  option (amino.name) = "mantrachain/x/token/Params";
+  option (gogoproto.equal) = true;
+
   string valid_nft_collection_id = 1;
   string nft_collection_default_id = 2;
   string nft_collection_default_name = 3;

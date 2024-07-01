@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -28,7 +29,7 @@ func (pair Pair) GetSwapFeeCollectorAddress() sdk.AccAddress {
 }
 
 // NewPair returns a new pair object.
-func NewPair(id uint64, baseCoinDenom, quoteCoinDenom string, creator string, swapFeeRate *sdk.Dec, pairCreatorSwapFeeRatio *sdk.Dec) Pair {
+func NewPair(id uint64, baseCoinDenom, quoteCoinDenom string, creator string, swapFeeRate *sdkmath.LegacyDec, pairCreatorSwapFeeRatio *sdkmath.LegacyDec) Pair {
 	return Pair{
 		Id:                      id,
 		BaseCoinDenom:           baseCoinDenom,

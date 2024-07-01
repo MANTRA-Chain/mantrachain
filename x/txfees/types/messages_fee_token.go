@@ -1,8 +1,10 @@
 package types
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 const (
@@ -11,6 +13,7 @@ const (
 	TypeMsgDeleteFeeToken = "delete_fee_token"
 )
 
+var _ legacytx.LegacyMsg = &MsgCreateFeeToken{}
 var _ sdk.Msg = &MsgCreateFeeToken{}
 
 func NewMsgCreateFeeToken(
@@ -34,27 +37,20 @@ func (msg *MsgCreateFeeToken) Type() string {
 	return TypeMsgCreateFeeToken
 }
 
-func (msg *MsgCreateFeeToken) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgCreateFeeToken) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateFeeToken) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
 }
 
+var _ legacytx.LegacyMsg = &MsgUpdateFeeToken{}
 var _ sdk.Msg = &MsgUpdateFeeToken{}
 
 func NewMsgUpdateFeeToken(
@@ -78,27 +74,20 @@ func (msg *MsgUpdateFeeToken) Type() string {
 	return TypeMsgUpdateFeeToken
 }
 
-func (msg *MsgUpdateFeeToken) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgUpdateFeeToken) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateFeeToken) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
 }
 
+var _ legacytx.LegacyMsg = &MsgDeleteFeeToken{}
 var _ sdk.Msg = &MsgDeleteFeeToken{}
 
 func NewMsgDeleteFeeToken(
@@ -119,23 +108,15 @@ func (msg *MsgDeleteFeeToken) Type() string {
 	return TypeMsgDeleteFeeToken
 }
 
-func (msg *MsgDeleteFeeToken) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgDeleteFeeToken) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDeleteFeeToken) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	return nil
 }

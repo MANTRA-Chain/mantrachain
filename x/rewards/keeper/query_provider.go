@@ -3,15 +3,16 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) ProviderAll(goCtx context.Context, req *types.QueryAllProviderRequest) (*types.QueryAllProviderResponse, error) {
+func (k Keeper) QueryProviderAll(goCtx context.Context, req *types.QueryAllProviderRequest) (*types.QueryAllProviderResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -19,10 +20,10 @@ func (k Keeper) ProviderAll(goCtx context.Context, req *types.QueryAllProviderRe
 	var providers []types.Provider
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
-	providerStore := prefix.NewStore(store, types.KeyPrefix(types.ProviderKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ProviderKeyPrefix))
 
-	pageRes, err := query.Paginate(providerStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value []byte) error {
 		var provider types.Provider
 		if err := k.cdc.Unmarshal(value, &provider); err != nil {
 			return err
@@ -39,7 +40,7 @@ func (k Keeper) ProviderAll(goCtx context.Context, req *types.QueryAllProviderRe
 	return &types.QueryAllProviderResponse{Provider: providers, Pagination: pageRes}, nil
 }
 
-func (k Keeper) ProviderPairs(goCtx context.Context, req *types.QueryGetProviderPairsRequest) (*types.QueryGetProviderPairsResponse, error) {
+func (k Keeper) QueryProviderPairs(goCtx context.Context, req *types.QueryGetProviderPairsRequest) (*types.QueryGetProviderPairsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -65,7 +66,7 @@ func (k Keeper) ProviderPairs(goCtx context.Context, req *types.QueryGetProvider
 	return &types.QueryGetProviderPairsResponse{Provider: creator.String(), PairsIds: pairsIds}, nil
 }
 
-func (k Keeper) Provider(goCtx context.Context, req *types.QueryGetProviderRequest) (*types.QueryGetProviderResponse, error) {
+func (k Keeper) QueryProvider(goCtx context.Context, req *types.QueryGetProviderRequest) (*types.QueryGetProviderResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

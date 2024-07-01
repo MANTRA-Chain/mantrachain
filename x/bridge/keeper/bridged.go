@@ -1,14 +1,17 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/bridge/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // SetBridged set a specific bridged in the store from its index
 func (k Keeper) SetBridged(ctx sdk.Context, bridged types.Bridged) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BridgedKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.BridgedKeyPrefix))
 	b := k.cdc.MustMarshal(&bridged)
 	store.Set(bridged.Index, b)
 }
@@ -17,7 +20,8 @@ func (k Keeper) HasBridged(
 	ctx sdk.Context,
 	ethTxHash string,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BridgedKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.BridgedKeyPrefix))
 	return store.Has(types.BridgedKey(
 		ethTxHash,
 	))
@@ -29,7 +33,8 @@ func (k Keeper) GetBridged(
 	ethTxHash string,
 
 ) (val types.Bridged, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BridgedKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.BridgedKeyPrefix))
 
 	b := store.Get(types.BridgedKey(
 		ethTxHash,
@@ -44,8 +49,9 @@ func (k Keeper) GetBridged(
 
 // GetAllBridged returns all bridged
 func (k Keeper) GetAllBridged(ctx sdk.Context) (list []types.Bridged) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BridgedKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.BridgedKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

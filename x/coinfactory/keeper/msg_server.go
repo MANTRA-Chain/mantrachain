@@ -3,11 +3,9 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type msgServer struct {
@@ -22,14 +20,14 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (server msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
+func (k msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := server.gk.CheckHasAuthz(ctx, msg.Sender, "module:"+types.ModuleName+":CreateDenom"); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckHasAuthz(ctx, msg.Sender, "module:"+types.ModuleName+":CreateDenom"); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
-	denom, err := server.Keeper.CreateDenom(ctx, msg.Sender, msg.Subdenom)
+	denom, err := k.Keeper.CreateDenom(ctx, msg.Sender, msg.Subdenom)
 	if err != nil {
 		return nil, err
 	}
@@ -47,16 +45,16 @@ func (server msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateD
 	}, nil
 }
 
-func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
+func (k msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// pay some extra gas cost to give a better error here.
-	_, denomExists := server.bankKeeper.GetDenomMetaData(ctx, msg.Amount.Denom)
+	_, denomExists := k.bankKeeper.GetDenomMetaData(ctx, msg.Amount.Denom)
 	if !denomExists {
 		return nil, types.ErrDenomDoesNotExist.Wrapf("denom: %s", msg.Amount.Denom)
 	}
 
-	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
+	authorityMetadata, err := k.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
 	if err != nil {
 		return nil, err
 	}
@@ -74,14 +72,14 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 		return nil, err
 	}
 
-	err = server.gk.CheckIsAdmin(ctx, msg.Sender)
+	err = k.guardKeeper.CheckIsAdmin(ctx, msg.Sender)
 	if err != nil {
-		if err := server.gk.CheckCanTransferCoins(ctx, mintToAddress, sdk.NewCoins(msg.Amount)); err != nil {
+		if err := k.guardKeeper.CheckCanTransferCoins(ctx, mintToAddress, sdk.NewCoins(msg.Amount)); err != nil {
 			return nil, err
 		}
 	}
 
-	err = server.Keeper.mintTo(ctx, msg.Amount, msg.MintToAddress)
+	err = k.Keeper.mintTo(ctx, msg.Amount, msg.MintToAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -97,10 +95,10 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 	return &types.MsgMintResponse{}, nil
 }
 
-func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
+func (k msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
+	authorityMetadata, err := k.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
 	if err != nil {
 		return nil, err
 	}
@@ -118,20 +116,20 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 		return nil, err
 	}
 
-	err = server.gk.CheckIsAdmin(ctx, msg.Sender)
+	err = k.guardKeeper.CheckIsAdmin(ctx, msg.Sender)
 	if err != nil {
-		if err := server.gk.CheckCanTransferCoins(ctx, burnFromAddress, sdk.NewCoins(msg.Amount)); err != nil {
+		if err := k.guardKeeper.CheckCanTransferCoins(ctx, burnFromAddress, sdk.NewCoins(msg.Amount)); err != nil {
 			return nil, err
 		}
 	}
 
-	accountI := server.Keeper.accountKeeper.GetAccount(ctx, burnFromAddress)
-	_, ok := accountI.(authtypes.ModuleAccountI)
+	accountI := k.Keeper.accountKeeper.GetAccount(ctx, burnFromAddress)
+	_, ok := accountI.(sdk.ModuleAccountI)
 	if ok {
 		return nil, types.ErrBurnFromModuleAccount
 	}
 
-	err = server.Keeper.burnFrom(ctx, msg.Amount, msg.BurnFromAddress)
+	err = k.Keeper.burnFrom(ctx, msg.Amount, msg.BurnFromAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -147,14 +145,14 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 	return &types.MsgBurnResponse{}, nil
 }
 
-func (server msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForceTransfer) (*types.MsgForceTransferResponse, error) {
+func (k msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForceTransfer) (*types.MsgForceTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := server.gk.CheckIsAdmin(ctx, msg.Sender); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Sender); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
-	err := server.Keeper.forceTransfer(ctx, msg.Amount, msg.TransferFromAddress, msg.TransferToAddress)
+	err := k.Keeper.forceTransfer(ctx, msg.Amount, msg.TransferFromAddress, msg.TransferToAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -171,10 +169,10 @@ func (server msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForce
 	return &types.MsgForceTransferResponse{}, nil
 }
 
-func (server msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeAdmin) (*types.MsgChangeAdminResponse, error) {
+func (k msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeAdmin) (*types.MsgChangeAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Denom)
+	authorityMetadata, err := k.Keeper.GetAuthorityMetadata(ctx, msg.Denom)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +181,7 @@ func (server msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeA
 		return nil, types.ErrUnauthorized
 	}
 
-	err = server.Keeper.setAdmin(ctx, msg.Denom, msg.NewAdmin)
+	err = k.Keeper.setAdmin(ctx, msg.Denom, msg.NewAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +196,7 @@ func (server msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeA
 	return &types.MsgChangeAdminResponse{}, nil
 }
 
-func (server msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSetDenomMetadata) (*types.MsgSetDenomMetadataResponse, error) {
+func (k msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSetDenomMetadata) (*types.MsgSetDenomMetadataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Defense in depth validation of metadata
@@ -207,7 +205,7 @@ func (server msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSe
 		return nil, err
 	}
 
-	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Metadata.Base)
+	authorityMetadata, err := k.Keeper.GetAuthorityMetadata(ctx, msg.Metadata.Base)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +214,7 @@ func (server msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSe
 		return nil, types.ErrUnauthorized
 	}
 
-	server.Keeper.bankKeeper.SetDenomMetaData(ctx, msg.Metadata)
+	k.Keeper.bankKeeper.SetDenomMetaData(ctx, msg.Metadata)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(

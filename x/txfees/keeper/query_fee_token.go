@@ -3,15 +3,16 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) FeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRequest) (*types.QueryAllFeeTokenResponse, error) {
+func (k Keeper) QueryFeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRequest) (*types.QueryAllFeeTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -19,10 +20,10 @@ func (k Keeper) FeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRe
 	var feeTokens []types.FeeToken
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	store := ctx.KVStore(k.storeKey)
-	feeTokenStore := prefix.NewStore(store, types.KeyPrefix(types.FeeTokenKeyPrefix))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
 
-	pageRes, err := query.Paginate(feeTokenStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value []byte) error {
 		var feeToken types.FeeToken
 		if err := k.cdc.Unmarshal(value, &feeToken); err != nil {
 			return err
@@ -39,7 +40,7 @@ func (k Keeper) FeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRe
 	return &types.QueryAllFeeTokenResponse{FeeToken: feeTokens, Pagination: pageRes}, nil
 }
 
-func (k Keeper) FeeToken(goCtx context.Context, req *types.QueryGetFeeTokenRequest) (*types.QueryGetFeeTokenResponse, error) {
+func (k Keeper) QueryFeeToken(goCtx context.Context, req *types.QueryGetFeeTokenRequest) (*types.QueryGetFeeTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

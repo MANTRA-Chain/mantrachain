@@ -11,8 +11,8 @@
 
 ## Pre-requisites
 
-- [Go](https://golang.org/doc/install) >= 1.19.0
-- [Ignite](https://github.com/ignite/cli) = 0.27.1
+- [Go](https://golang.org/doc/install) >= 1.22.0
+- [Ignite](https://github.com/ignite/cli) = 0.28.0
 
 ## Get started
 

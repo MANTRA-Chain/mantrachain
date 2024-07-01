@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -13,10 +15,7 @@ func CmdListFeeToken() *cobra.Command {
 		Use:   "list-fee-token",
 		Short: "list all fee_token",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -29,7 +28,7 @@ func CmdListFeeToken() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.FeeTokenAll(cmd.Context(), params)
+			res, err := queryClient.QueryFeeTokenAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -50,10 +49,7 @@ func CmdShowFeeToken() *cobra.Command {
 		Short: "shows a fee_token",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -63,7 +59,7 @@ func CmdShowFeeToken() *cobra.Command {
 				Denom: argDenom,
 			}
 
-			res, err := queryClient.FeeToken(cmd.Context(), params)
+			res, err := queryClient.QueryFeeToken(context.Background(), params)
 			if err != nil {
 				return err
 			}

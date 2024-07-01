@@ -3,8 +3,8 @@ package keeper
 import (
 	"math/big"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
@@ -26,7 +26,7 @@ func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) err
 	privileges, found := k.GetRequiredPrivileges(ctx, authzBytes, types.RequiredPrivilegesAuthz)
 
 	if !found || privileges == nil || len(privileges) == 0 {
-		return sdkerrors.Wrapf(types.ErrAuthzRequiredPrivilegesNotFound, "authz required privileges not found, authz %s", authz)
+		return errors.Wrapf(types.ErrAuthzRequiredPrivilegesNotFound, "authz required privileges not found, authz %s", authz)
 	}
 
 	defaultPrivileges := big.NewInt(0).SetBytes(conf.DefaultPrivileges)
@@ -35,7 +35,7 @@ func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) err
 	requiredPrivilegesWithoutDefault := big.NewInt(0).And(inverseDefaultPrilileges, requiredPrivileges.BigInt())
 
 	if requiredPrivilegesWithoutDefault.Cmp(big.NewInt(0)) == 0 {
-		return sdkerrors.Wrapf(types.ErrAuthzRequiredPrivilegesNotSet, "authz required privileges not set, authz %s", authz)
+		return errors.Wrapf(types.ErrAuthzRequiredPrivilegesNotSet, "authz required privileges not set, authz %s", authz)
 	}
 
 	hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, acc, privileges)
@@ -45,8 +45,8 @@ func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) err
 	}
 
 	if !hasPrivileges {
-		k.Logger(ctx).Error("insufficient privileges", "address", address, "authz", authz)
-		return sdkerrors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, authz %s", address, authz)
+		k.logger.Error("insufficient privileges", "address", address, "authz", authz)
+		return errors.Wrapf(types.ErrInsufficientPrivileges, "insufficient privileges, address %s, authz %s", address, authz)
 	}
 
 	return nil

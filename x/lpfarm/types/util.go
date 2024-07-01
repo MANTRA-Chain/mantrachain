@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
@@ -21,20 +22,20 @@ func DeriveFarmingReserveAddress(denom string) sdk.AccAddress {
 
 func RewardsForBlock(rewardsPerDay sdk.Coins, blockDuration time.Duration) sdk.DecCoins {
 	return sdk.NewDecCoinsFromCoins(rewardsPerDay...).
-		MulDecTruncate(sdk.NewDec(blockDuration.Milliseconds())).
-		QuoDecTruncate(sdk.NewDec(day.Milliseconds()))
+		MulDecTruncate(math.LegacyNewDec(blockDuration.Milliseconds())).
+		QuoDecTruncate(math.LegacyNewDec(day.Milliseconds()))
 }
 
 // PoolRewardWeight returns given pool's reward weight.
-func PoolRewardWeight(pool amm.Pool) (weight sdk.Dec) {
+func PoolRewardWeight(pool amm.Pool) (weight math.LegacyDec) {
 	rx, ry := pool.Balances()
 	sqrt := utils.DecApproxSqrt
 	switch pool := pool.(type) {
 	case *amm.BasicPool:
-		weight = sqrt(sdk.NewDecFromInt(rx.Mul(ry)))
+		weight = sqrt(math.LegacyNewDecFromInt(rx.Mul(ry)))
 	case *amm.RangedPool:
 		transX, transY := pool.Translation()
-		weight = sqrt(transX.Add(sdk.NewDecFromInt(rx))).Mul(sqrt(transY.Add(sdk.NewDecFromInt(ry))))
+		weight = sqrt(transX.Add(math.LegacyNewDecFromInt(rx))).Mul(sqrt(transY.Add(math.LegacyNewDecFromInt(ry))))
 	default:
 		panic("invalid pool type")
 	}

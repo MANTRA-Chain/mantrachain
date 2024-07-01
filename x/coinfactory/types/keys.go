@@ -8,20 +8,15 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "coinfactory"
 
-	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
-
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_coinfactory"
 )
 
 // KeySeparator is used to combine parts of the keys in the store
 const KeySeparator = "|"
 
 var (
+	ParamsKey                 = []byte("p_coinfactory")
 	DenomAuthorityMetadataKey = "authoritymetadata"
 	DenomsPrefixKey           = "denoms"
 	CreatorPrefixKey          = "creator"

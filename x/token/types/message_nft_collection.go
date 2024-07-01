@@ -3,8 +3,10 @@ package types
 import (
 	"strings"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 const (
@@ -12,7 +14,8 @@ const (
 )
 
 var (
-	_ sdk.Msg = &MsgCreateNftCollection{}
+	_ sdk.Msg            = &MsgCreateNftCollection{}
+	_ legacytx.LegacyMsg = &MsgCreateNftCollection{}
 )
 
 func NewMsgCreateNftCollection(creator string, collection *MsgCreateNftCollectionMetadata) *MsgCreateNftCollection {
@@ -30,29 +33,21 @@ func (msg *MsgCreateNftCollection) Type() string {
 	return TypeMsgCreateNftCollection
 }
 
-func (msg *MsgCreateNftCollection) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
 func (msg *MsgCreateNftCollection) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateNftCollection) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 	if msg.Collection == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "nft collection is empty")
+		return errors.Wrapf(errorstypes.ErrKeyNotFound, "nft collection is empty")
 	}
 	if strings.TrimSpace(msg.Collection.Id) == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "collection id should not be empty")
+		return errors.Wrap(errorstypes.ErrKeyNotFound, "collection id should not be empty")
 	}
 	return nil
 }

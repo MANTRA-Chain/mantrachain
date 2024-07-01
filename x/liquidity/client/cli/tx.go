@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -68,18 +69,18 @@ $ %s tx %s create-pair uatom stake "" "" --from mykey
 			baseCoinDenom := args[0]
 			quoteCoinDenom := args[1]
 
-			var swapFeeRate sdk.Dec
-			var pairCreatorSwapFeeRatio sdk.Dec
+			var swapFeeRate sdkmath.LegacyDec
+			var pairCreatorSwapFeeRatio sdkmath.LegacyDec
 
 			if args[2] != "" {
-				swapFeeRate, err = sdk.NewDecFromStr(args[2])
+				swapFeeRate, err = math.LegacyNewDecFromStr(args[2])
 				if err != nil {
 					return fmt.Errorf("invalid swap fee rate: %w", err)
 				}
 			}
 
 			if args[3] != "" {
-				pairCreatorSwapFeeRatio, err = sdk.NewDecFromStr(args[3])
+				pairCreatorSwapFeeRatio, err = math.LegacyNewDecFromStr(args[3])
 				if err != nil {
 					return fmt.Errorf("invalid pair creator swap fee ratio: %w", err)
 				}
@@ -120,18 +121,18 @@ $ %s tx %s update-pair-swap-fee 1 "" "" --from mykey
 				return fmt.Errorf("parse pair id: %w", err)
 			}
 
-			var swapFeeRate sdk.Dec
-			var pairCreatorSwapFeeRatio sdk.Dec
+			var swapFeeRate sdkmath.LegacyDec
+			var pairCreatorSwapFeeRatio sdkmath.LegacyDec
 
 			if args[1] != "" {
-				swapFeeRate, err = sdk.NewDecFromStr(args[1])
+				swapFeeRate, err = math.LegacyNewDecFromStr(args[1])
 				if err != nil {
 					return fmt.Errorf("invalid swap fee rate: %w", err)
 				}
 			}
 
 			if args[2] != "" {
-				pairCreatorSwapFeeRatio, err = sdk.NewDecFromStr(args[2])
+				pairCreatorSwapFeeRatio, err = math.LegacyNewDecFromStr(args[2])
 				if err != nil {
 					return fmt.Errorf("invalid pair creator swap fee ratio: %w", err)
 				}
@@ -222,17 +223,17 @@ $ %s tx %s create-ranged-pool 1 1000000000uatom,10000000000stake 1.3 2.5 1.5 --f
 				return fmt.Errorf("invalid deposit coins: %w", err)
 			}
 
-			minPrice, err := sdk.NewDecFromStr(args[2])
+			minPrice, err := math.LegacyNewDecFromStr(args[2])
 			if err != nil {
 				return fmt.Errorf("invalid min price: %w", err)
 			}
 
-			maxPrice, err := sdk.NewDecFromStr(args[3])
+			maxPrice, err := math.LegacyNewDecFromStr(args[3])
 			if err != nil {
 				return fmt.Errorf("invalid max price: %w", err)
 			}
 
-			initialPrice, err := sdk.NewDecFromStr(args[4])
+			initialPrice, err := math.LegacyNewDecFromStr(args[4])
 			if err != nil {
 				return fmt.Errorf("invalid initial price: %w", err)
 			}
@@ -389,7 +390,7 @@ $ %s tx %s limit-order 1 s 10000uatom stake 2.0 10000 --order-lifespan=10m --fro
 				return fmt.Errorf("invalid demand coin denom: %w", err)
 			}
 
-			price, err := sdk.NewDecFromStr(args[4])
+			price, err := math.LegacyNewDecFromStr(args[4])
 			if err != nil {
 				return fmt.Errorf("invalid price: %w", err)
 			}
@@ -540,12 +541,12 @@ $ %s tx %s mm-order 1 102 101 10000 0 0 0 --from mykey
 				return fmt.Errorf("parse pair id: %w", err)
 			}
 
-			maxSellPrice, err := sdk.NewDecFromStr(args[1])
+			maxSellPrice, err := math.LegacyNewDecFromStr(args[1])
 			if err != nil {
 				return fmt.Errorf("invalid max sell price: %w", err)
 			}
 
-			minSellPrice, err := sdk.NewDecFromStr(args[2])
+			minSellPrice, err := math.LegacyNewDecFromStr(args[2])
 			if err != nil {
 				return fmt.Errorf("invalid min sell price: %w", err)
 			}
@@ -555,12 +556,12 @@ $ %s tx %s mm-order 1 102 101 10000 0 0 0 --from mykey
 				return fmt.Errorf("invalid sell amount: %s", args[3])
 			}
 
-			maxBuyPrice, err := sdk.NewDecFromStr(args[4])
+			maxBuyPrice, err := math.LegacyNewDecFromStr(args[4])
 			if err != nil {
 				return fmt.Errorf("invalid max buy price: %w", err)
 			}
 
-			minBuyPrice, err := sdk.NewDecFromStr(args[5])
+			minBuyPrice, err := math.LegacyNewDecFromStr(args[5])
 			if err != nil {
 				return fmt.Errorf("invalid min buy price: %w", err)
 			}

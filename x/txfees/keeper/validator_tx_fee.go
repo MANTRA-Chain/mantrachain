@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // checkTxFeeWithValidatorMinGasPrices implements the default fee logic, where the minimum price per
@@ -12,13 +13,13 @@ import (
 func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom string, txfeesKeeper types.TxfeesKeeper, liquidityKeeper types.LiquidityKeeper) (sdk.Coins, error) {
 	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
+		return nil, errors.Wrap(errorstypes.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	feeCoins := feeTx.GetFee()
 
 	if len(feeCoins) > 1 {
-		return nil, sdkerrors.Wrap(types.ErrTooManyFeeCoins, "Only accepts fees in one denom")
+		return nil, errors.Wrap(types.ErrTooManyFeeCoins, "Only accepts fees in one denom")
 	}
 
 	var pairId uint64
@@ -31,7 +32,7 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom s
 		if feeDenomNotBaseDenom {
 			feeToken, foundFeeToken := txfeesKeeper.GetFeeToken(ctx, feeDenom)
 			if !foundFeeToken {
-				return nil, sdkerrors.Wrap(types.ErrInvalidFeeDenom, "Invalid fee denom")
+				return nil, errors.Wrap(types.ErrInvalidFeeDenom, "Invalid fee denom")
 			}
 
 			pairId = feeToken.PairId
@@ -47,7 +48,7 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom s
 		minGasPrices := ctx.MinGasPrices()
 
 		if len(minGasPrices) > 1 {
-			return nil, sdkerrors.Wrap(types.ErrTooManyGasPricesCoins, "Only accepts min gas prices in one denom")
+			return nil, errors.Wrap(types.ErrTooManyGasPricesCoins, "Only accepts min gas prices in one denom")
 		}
 
 		if !minGasPrices.IsZero() {
@@ -66,7 +67,7 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom s
 					}
 
 					if offerCoin.IsZero() {
-						return nil, sdkerrors.Wrapf(types.ErrZeroFee, "zero fees; required fees: %s", offerCoin)
+						return nil, errors.Wrapf(types.ErrZeroFee, "zero fees; required fees: %s", offerCoin)
 					}
 
 					requiredFees[i] = offerCoin
@@ -76,7 +77,7 @@ func checkTxFeeWithValidatorMinGasPrices(ctx sdk.Context, tx sdk.Tx, baseDenom s
 			}
 
 			if !feeCoins.IsAnyGTE(requiredFees) {
-				return nil, sdkerrors.Wrapf(sdkerrors.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
+				return nil, errors.Wrapf(errorstypes.ErrInsufficientFee, "insufficient fees; got: %s required: %s", feeCoins, requiredFees)
 			}
 		}
 	}

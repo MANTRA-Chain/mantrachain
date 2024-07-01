@@ -1,23 +1,30 @@
 package types
 
 import (
+	"strings"
+
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 const (
 	TypeMsgCreateMultiBridged = "create_multi_bridged"
 )
 
-var _ sdk.Msg = &MsgCreateMultiBridged{}
+var (
+	_ legacytx.LegacyMsg = &MsgCreateMultiBridged{}
+	_ sdk.Msg            = &MsgCreateMultiBridged{}
+)
 
 func NewMsgCreateMultiBridged(
-	inputs []Input,
+	input Input,
 	outputs []Output,
 	ethTxHashes []string,
 ) *MsgCreateMultiBridged {
 	return &MsgCreateMultiBridged{
-		Inputs:      inputs,
+		Input:       input,
 		Outputs:     outputs,
 		EthTxHashes: ethTxHashes,
 	}
@@ -32,44 +39,58 @@ func (msg *MsgCreateMultiBridged) Type() string {
 }
 
 func (msg *MsgCreateMultiBridged) GetSigners() []sdk.AccAddress {
-	addrs := make([]sdk.AccAddress, len(msg.Inputs))
-	for i, in := range msg.Inputs {
-		inAddr, _ := sdk.AccAddressFromBech32(in.Address)
-		addrs[i] = inAddr
+	inAddr, err := sdk.AccAddressFromBech32(msg.Input.Address)
+	if err != nil {
+		panic(err)
 	}
 
-	return addrs
+	return []sdk.AccAddress{inAddr}
 }
 
 func (msg *MsgCreateMultiBridged) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateMultiBridged) ValidateBasic() error {
-	if len(msg.Inputs) == 0 {
-		return ErrNoInputs
+	if strings.TrimSpace(msg.Input.Address) == "" {
+		return ErrNoInput
 	}
 
-	if len(msg.Inputs) != 1 {
-		return ErrMultipleSenders
+	if len(msg.Input.Coins) != 1 {
+		return ErrNoInputCoin
+	}
+
+	if msg.Input.Coins.Empty() {
+		return ErrNoInputCoins
+	}
+
+	if len(msg.EthTxHashes) == 0 {
+		return ErrNoEthTxHashes
 	}
 
 	if len(msg.Outputs) == 0 {
 		return ErrNoOutputs
 	}
 
-	return ValidateInputsOutputs(msg.Inputs, msg.Outputs)
+	if len(msg.Outputs) != len(msg.EthTxHashes) {
+		return ErrOutputEthTxHashMismatch
+	}
+
+	for _, ethTxHash := range msg.EthTxHashes {
+		if strings.TrimSpace(ethTxHash) == "" {
+			return ErrEmptyEthTxHash
+		}
+	}
+
+	return ValidateInputOutputs(msg.Input, msg.Outputs)
 }
 
-func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
-	var totalIn, totalOut sdk.Coins
+func ValidateInputOutputs(input Input, outputs []Output) error {
+	var totalOut sdk.Coins
 
-	for _, in := range inputs {
-		if err := in.ValidateBasic(); err != nil {
-			return err
-		}
-		totalIn = totalIn.Add(in.Coins...)
+	if err := input.ValidateBasic(); err != nil {
+		return err
 	}
 
 	for _, out := range outputs {
@@ -77,12 +98,16 @@ func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
 			return err
 		}
 
+		if len(out.Coins) != 1 {
+			return ErrMultipleOutputCoins
+		}
+
 		totalOut = totalOut.Add(out.Coins...)
 	}
 
-	// make sure inputs and outputs match
-	if !totalIn.IsEqual(totalOut) {
-		return ErrInputOutputMismatch
+	// make sure input and outputs coins are equal
+	if !input.Coins.Equal(totalOut) {
+		return ErrInputOutputsCoinsMismatch
 	}
 
 	return nil
@@ -91,15 +116,15 @@ func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(in.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid input address: %s", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid input address: %s", err)
 	}
 
 	if !in.Coins.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
+		return errors.Wrap(errorstypes.ErrInvalidCoins, in.Coins.String())
 	}
 
 	if !in.Coins.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
+		return errors.Wrap(errorstypes.ErrInvalidCoins, in.Coins.String())
 	}
 
 	return nil
@@ -107,15 +132,15 @@ func (in Input) ValidateBasic() error {
 
 func (out Output) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(out.Address); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid output address: %s", err)
+		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid output address: %s", err)
 	}
 
 	if !out.Coins.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
+		return errors.Wrap(errorstypes.ErrInvalidCoins, out.Coins.String())
 	}
 
 	if !out.Coins.IsAllPositive() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
+		return errors.Wrap(errorstypes.ErrInvalidCoins, out.Coins.String())
 	}
 
 	return nil

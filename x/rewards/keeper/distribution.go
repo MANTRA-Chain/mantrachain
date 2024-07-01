@@ -6,13 +6,17 @@ import (
 	"fmt"
 	"math"
 
+	sdkmath "cosmossdk.io/math"
+
+	"cosmossdk.io/store/prefix"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) GetDistributionPairsIdsBytes(ctx sdk.Context) []byte {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.DistributionPairsIdsKey)
 	bz := store.Get(byteKey)
 
@@ -50,7 +54,8 @@ func (k Keeper) GetDistributionPairsIds(ctx sdk.Context) []uint64 {
 }
 
 func (k Keeper) SetDistributionPairsIdsBytes(ctx sdk.Context, pairsIds []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, []byte{})
 	byteKey := types.KeyPrefix(types.DistributionPairsIdsKey)
 
 	if len(pairsIds) == 0 {
@@ -79,7 +84,6 @@ func (k Keeper) SetDistributionPairsIds(ctx sdk.Context, pairsIds []uint64) {
 }
 
 func (k Keeper) DistributeRewards(ctx sdk.Context) {
-	logger := k.Logger(ctx)
 	params := k.GetParams(ctx)
 
 	snapshotsLastDistributedAt := k.GetSnapshotsLastDistributedAt(ctx)
@@ -110,7 +114,7 @@ func (k Keeper) DistributeRewards(ctx sdk.Context) {
 	for _, pairId := range current {
 		err := k.DistributeRewardsForPair(ctx, pairId)
 		if err != nil {
-			logger.Error("error distributing rewards for pair", "pair_id", pairId, "error", err.Error())
+			k.logger.Error("error distributing rewards for pair", "pair_id", pairId, "error", err.Error())
 		}
 	}
 
@@ -123,16 +127,15 @@ func (k Keeper) DistributeRewards(ctx sdk.Context) {
 }
 
 func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
-	logger := k.Logger(ctx)
 	params := k.GetParams(ctx)
-	admin := k.gk.GetAdmin(ctx)
+	admin := k.guardKeeper.GetAdmin(ctx)
 
 	distributionFeeRate := params.DistributionFeeRate
 
 	pair, found := k.liquidityKeeper.GetPair(ctx, pairId)
 
 	if !found {
-		logger.Error("no pair found", "pair_id", pairId)
+		k.logger.Error("no pair found", "pair_id", pairId)
 		return nil
 	}
 
@@ -154,9 +157,9 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 
 		for _, pool := range lastSnapshot.Pools {
 			newSnapshot.Pools = append(newSnapshot.Pools, &types.SnapshotPool{
-				PoolId:                pool.PoolId,
-				CumulativeTotalSupply: pool.CumulativeTotalSupply,
-				RewardsPerToken:       sdk.NewDecCoins(),
+				PoolId:          pool.PoolId,
+				CoinSupply:      pool.CoinSupply,
+				RewardsPerToken: sdk.NewDecCoins(),
 			})
 			newSnapshot.PoolIdToIdx[pool.PoolId] = uint64(len(newSnapshot.Pools) - 1)
 		}
@@ -164,10 +167,10 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		lastSnapshot = newSnapshot
 	}
 
-	pairCummulativeTotalSupply := sdk.ZeroDec()
+	pairCummulativeTotalSupply := sdkmath.LegacyZeroDec()
 
 	for _, pool := range lastSnapshot.Pools {
-		pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(pool.CumulativeTotalSupply)
+		pairCummulativeTotalSupply = pairCummulativeTotalSupply.Add(pool.CoinSupply)
 	}
 
 	if pairCummulativeTotalSupply.IsZero() {
@@ -182,19 +185,19 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		return nil
 	}
 
-	logger.Info("distributing rewards for pair", "pair_id", pairId)
+	k.logger.Info("distributing rewards for pair", "pair_id", pairId)
 
 	for _, balance := range balances {
-		availableBalance := sdk.NewDecFromInt(balance.Amount)
+		availableBalance := sdkmath.LegacyNewDecFromInt(balance.Amount)
 
 		if distributionFeeRate.IsPositive() {
-			rewardsBalance := availableBalance.Mul(sdk.OneDec().Sub(distributionFeeRate))
+			rewardsBalance := availableBalance.Mul(sdkmath.LegacyOneDec().Sub(distributionFeeRate))
 			distributionFeeRateCoin := sdk.NewCoin(balance.Denom, availableBalance.Sub(rewardsBalance).TruncateInt())
 
 			if !distributionFeeRateCoin.IsZero() {
-				whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
+				whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
 				err := k.bankKeeper.SendCoins(ctx, swapFeeCollectorAddress, admin, sdk.NewCoins(distributionFeeRateCoin))
-				k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+				k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 				if err != nil {
 					return err
 				}
@@ -206,25 +209,25 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		}
 
 		for _, pool := range lastSnapshot.Pools {
-			if pool.CumulativeTotalSupply.IsZero() {
+			if pool.CoinSupply.IsZero() {
 				continue
 			}
 
-			requestedPoolShare := pool.CumulativeTotalSupply.Quo(pairCummulativeTotalSupply)
+			requestedPoolShare := pool.CoinSupply.Quo(pairCummulativeTotalSupply)
 			rewardAmount := requestedPoolShare.Mul(availableBalance)
-			pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(pool.CumulativeTotalSupply)))
+			pool.RewardsPerToken = pool.RewardsPerToken.Add(sdk.NewDecCoinFromDec(balance.Denom, rewardAmount.Quo(pool.CoinSupply)))
 		}
 
 		if !balance.IsZero() {
-			whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
+			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
 			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, swapFeeCollectorAddress, types.ModuleName, sdk.NewCoins(balance))
-			k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+			k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 			if err != nil {
 				return err
 			}
 		}
 
-		lastSnapshot.Remaining = lastSnapshot.Remaining.Add(sdk.NewDecCoinFromDec(balance.Denom, sdk.NewDecFromInt(balance.Amount)))
+		lastSnapshot.Remaining = lastSnapshot.Remaining.Add(sdk.NewDecCoinFromDec(balance.Denom, sdkmath.LegacyNewDecFromInt(balance.Amount)))
 	}
 
 	var distributedAt = ctx.BlockTime()

@@ -1,8 +1,11 @@
 syntax = "proto3";
-
 package mantrachain.airdrop.v1beta1;
 
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "mantrachain/airdrop/v1beta1/params.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -10,66 +13,116 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/airdrop/types";
 
 // Msg defines the Msg service.
 service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters. The authority defaults to the x/gov module account.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // CreateCampaign
   rpc CreateCampaign(MsgCreateCampaign) returns (MsgCreateCampaignResponse);
+  // DeleteCampaign
   rpc DeleteCampaign(MsgDeleteCampaign) returns (MsgDeleteCampaignResponse);
+  // PauseCampaign
   rpc PauseCampaign(MsgPauseCampaign) returns (MsgPauseCampaignResponse);
+  // UnpauseCampaign
   rpc UnpauseCampaign(MsgUnpauseCampaign) returns (MsgUnpauseCampaignResponse);
+  // CampaignClaim
   rpc CampaignClaim(MsgCampaignClaim) returns (MsgCampaignClaimResponse);
 }
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "mantrachain/x/airdrop/MsgUpdateParams";
+
+  // authority is the address that controls the module (defaults to x/gov unless
+  // overwritten).
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // params defines the module parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+message MsgUpdateParamsResponse {}
+
+// MsgCreateCampaign
 message MsgCreateCampaign {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/airdrop/MsgCreateCampaign";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string name = 2;
   string desc = 3;
-  google.protobuf.Timestamp start_time = 4 [
-    (gogoproto.stdtime) = true,
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"start_time\""
-  ];
-  google.protobuf.Timestamp end_time = 5 [
-    (gogoproto.stdtime) = true,
-    (gogoproto.nullable) = false,
-    (gogoproto.moretags) = "yaml:\"end_time\""
-  ];
+  google.protobuf.Timestamp start_time = 4
+      [ (gogoproto.stdtime) = true, (gogoproto.nullable) = false ];
+  google.protobuf.Timestamp end_time = 5
+      [ (gogoproto.stdtime) = true, (gogoproto.nullable) = false ];
   bytes mt_root = 6;
   cosmos.base.v1beta1.Coin amount = 7 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
     (gogoproto.nullable) = false
   ];
 }
 
+// MsgCreateCampaignResponse
 message MsgCreateCampaignResponse {
   uint64 id = 1;
   string campaign_address = 2;
 }
 
+// MsgDeleteCampaign
 message MsgDeleteCampaign {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/airdrop/MsgDeleteCampaign";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
 }
 
+// MsgDeleteCampaignResponse
 message MsgDeleteCampaignResponse {}
 
+// MsgPauseCampaign
 message MsgPauseCampaign {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/airdrop/MsgPauseCampaign";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
 }
 
+// MsgPauseCampaignResponse
 message MsgPauseCampaignResponse {}
 
+// MsgUnpauseCampaign
 message MsgUnpauseCampaign {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/airdrop/MsgUnpauseCampaign";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
 }
 
+// MsgUnpauseCampaignResponse
 message MsgUnpauseCampaignResponse {}
 
+// MsgCampaignClaim
 message MsgCampaignClaim {
-  string creator = 1;
+  option (cosmos.msg.v1.signer) = "creator";
+  option (amino.name) = "mantrachain/x/airdrop/MsgCampaignClaim";
+
+  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   uint64 id = 2;
   cosmos.base.v1beta1.Coin amount = 3;
   bytes mip = 4;
   uint64 index = 5;
 }
 
+// MsgCampaignClaimResponse
 message MsgCampaignClaimResponse {}

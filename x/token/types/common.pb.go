@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
@@ -23,6 +24,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// TokenOption is a key-value pair for token options
 type TokenOption struct {
 	Type     string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Value    string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
@@ -62,6 +64,7 @@ func (m *TokenOption) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TokenOption proto.InternalMessageInfo
 
+// TokenAttribute is a key-value pair for token attributes
 type TokenAttribute struct {
 	Type     string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Value    string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
@@ -101,6 +104,7 @@ func (m *TokenAttribute) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TokenAttribute proto.InternalMessageInfo
 
+// TokenImage is a key-value pair for token images
 type TokenImage struct {
 	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Url  string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
@@ -139,6 +143,7 @@ func (m *TokenImage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TokenImage proto.InternalMessageInfo
 
+// TokenLink is a key-value pair for token links
 type TokenLink struct {
 	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	Url  string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
@@ -177,35 +182,617 @@ func (m *TokenLink) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TokenLink proto.InternalMessageInfo
 
+// MsgNftImageMetadata
+type MsgNftImageMetadata struct {
+	Image *TokenImage `protobuf:"bytes,1,opt,name=image,proto3" json:"image,omitempty"`
+}
+
+func (m *MsgNftImageMetadata) Reset()         { *m = MsgNftImageMetadata{} }
+func (m *MsgNftImageMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgNftImageMetadata) ProtoMessage()    {}
+func (*MsgNftImageMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{4}
+}
+func (m *MsgNftImageMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftImageMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftImageMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftImageMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftImageMetadata.Merge(m, src)
+}
+func (m *MsgNftImageMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftImageMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftImageMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftImageMetadata proto.InternalMessageInfo
+
+func (m *MsgNftImageMetadata) GetImage() *TokenImage {
+	if m != nil {
+		return m.Image
+	}
+	return nil
+}
+
+// MsgNftImagesMetadata
+type MsgNftsImagesMetadata struct {
+	Images        []*TokenImage `protobuf:"bytes,1,rep,name=images,proto3" json:"images,omitempty"`
+	NftsIds       []string      `protobuf:"bytes,2,rep,name=nfts_ids,json=nftsIds,proto3" json:"nfts_ids,omitempty"`
+	ImagesIndexes []uint64      `protobuf:"varint,3,rep,packed,name=images_indexes,json=imagesIndexes,proto3" json:"images_indexes,omitempty"`
+}
+
+func (m *MsgNftsImagesMetadata) Reset()         { *m = MsgNftsImagesMetadata{} }
+func (m *MsgNftsImagesMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgNftsImagesMetadata) ProtoMessage()    {}
+func (*MsgNftsImagesMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{5}
+}
+func (m *MsgNftsImagesMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftsImagesMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftsImagesMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftsImagesMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftsImagesMetadata.Merge(m, src)
+}
+func (m *MsgNftsImagesMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftsImagesMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftsImagesMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftsImagesMetadata proto.InternalMessageInfo
+
+func (m *MsgNftsImagesMetadata) GetImages() []*TokenImage {
+	if m != nil {
+		return m.Images
+	}
+	return nil
+}
+
+func (m *MsgNftsImagesMetadata) GetNftsIds() []string {
+	if m != nil {
+		return m.NftsIds
+	}
+	return nil
+}
+
+func (m *MsgNftsImagesMetadata) GetImagesIndexes() []uint64 {
+	if m != nil {
+		return m.ImagesIndexes
+	}
+	return nil
+}
+
+// MsgNftImageMetadata
+type MsgNftsImagesIndexes struct {
+	Indexes []uint64 `protobuf:"varint,1,rep,packed,name=indexes,proto3" json:"indexes,omitempty"`
+}
+
+func (m *MsgNftsImagesIndexes) Reset()         { *m = MsgNftsImagesIndexes{} }
+func (m *MsgNftsImagesIndexes) String() string { return proto.CompactTextString(m) }
+func (*MsgNftsImagesIndexes) ProtoMessage()    {}
+func (*MsgNftsImagesIndexes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{6}
+}
+func (m *MsgNftsImagesIndexes) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftsImagesIndexes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftsImagesIndexes.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftsImagesIndexes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftsImagesIndexes.Merge(m, src)
+}
+func (m *MsgNftsImagesIndexes) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftsImagesIndexes) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftsImagesIndexes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftsImagesIndexes proto.InternalMessageInfo
+
+func (m *MsgNftsImagesIndexes) GetIndexes() []uint64 {
+	if m != nil {
+		return m.Indexes
+	}
+	return nil
+}
+
+// MsgNftsImagesMetadata
+type MsgNftsImagesGroupedMetadata struct {
+	Images         []*TokenImage           `protobuf:"bytes,1,rep,name=images,proto3" json:"images,omitempty"`
+	NftsIdsGrouped []*MsgNftsIds           `protobuf:"bytes,2,rep,name=nfts_ids_grouped,json=nftsIdsGrouped,proto3" json:"nfts_ids_grouped,omitempty"`
+	ImagesIndexes  []*MsgNftsImagesIndexes `protobuf:"bytes,3,rep,name=images_indexes,json=imagesIndexes,proto3" json:"images_indexes,omitempty"`
+}
+
+func (m *MsgNftsImagesGroupedMetadata) Reset()         { *m = MsgNftsImagesGroupedMetadata{} }
+func (m *MsgNftsImagesGroupedMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgNftsImagesGroupedMetadata) ProtoMessage()    {}
+func (*MsgNftsImagesGroupedMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{7}
+}
+func (m *MsgNftsImagesGroupedMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftsImagesGroupedMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftsImagesGroupedMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftsImagesGroupedMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftsImagesGroupedMetadata.Merge(m, src)
+}
+func (m *MsgNftsImagesGroupedMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftsImagesGroupedMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftsImagesGroupedMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftsImagesGroupedMetadata proto.InternalMessageInfo
+
+func (m *MsgNftsImagesGroupedMetadata) GetImages() []*TokenImage {
+	if m != nil {
+		return m.Images
+	}
+	return nil
+}
+
+func (m *MsgNftsImagesGroupedMetadata) GetNftsIdsGrouped() []*MsgNftsIds {
+	if m != nil {
+		return m.NftsIdsGrouped
+	}
+	return nil
+}
+
+func (m *MsgNftsImagesGroupedMetadata) GetImagesIndexes() []*MsgNftsImagesIndexes {
+	if m != nil {
+		return m.ImagesIndexes
+	}
+	return nil
+}
+
+// MsgNftsIds
+type MsgNftsIds struct {
+	NftsIds []string `protobuf:"bytes,1,rep,name=nfts_ids,json=nftsIds,proto3" json:"nfts_ids,omitempty"`
+}
+
+func (m *MsgNftsIds) Reset()         { *m = MsgNftsIds{} }
+func (m *MsgNftsIds) String() string { return proto.CompactTextString(m) }
+func (*MsgNftsIds) ProtoMessage()    {}
+func (*MsgNftsIds) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{8}
+}
+func (m *MsgNftsIds) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftsIds) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftsIds.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftsIds) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftsIds.Merge(m, src)
+}
+func (m *MsgNftsIds) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftsIds) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftsIds.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftsIds proto.InternalMessageInfo
+
+func (m *MsgNftsIds) GetNftsIds() []string {
+	if m != nil {
+		return m.NftsIds
+	}
+	return nil
+}
+
+// MsgNftsMetadata
+type MsgNftsMetadata struct {
+	Nfts []*MsgNftMetadata `protobuf:"bytes,1,rep,name=nfts,proto3" json:"nfts,omitempty"`
+}
+
+func (m *MsgNftsMetadata) Reset()         { *m = MsgNftsMetadata{} }
+func (m *MsgNftsMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgNftsMetadata) ProtoMessage()    {}
+func (*MsgNftsMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{9}
+}
+func (m *MsgNftsMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftsMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftsMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftsMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftsMetadata.Merge(m, src)
+}
+func (m *MsgNftsMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftsMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftsMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftsMetadata proto.InternalMessageInfo
+
+func (m *MsgNftsMetadata) GetNfts() []*MsgNftMetadata {
+	if m != nil {
+		return m.Nfts
+	}
+	return nil
+}
+
+// MsgCreateNftCollectionMetadata
+type MsgCreateNftCollectionMetadata struct {
+	Id             string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name           string         `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Images         []*TokenImage  `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty"`
+	Url            string         `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	Description    string         `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Links          []*TokenLink   `protobuf:"bytes,6,rep,name=links,proto3" json:"links,omitempty"`
+	Options        []*TokenOption `protobuf:"bytes,7,rep,name=options,proto3" json:"options,omitempty"`
+	Category       string         `protobuf:"bytes,8,opt,name=category,proto3" json:"category,omitempty"`
+	Symbol         string         `protobuf:"bytes,9,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Opened         bool           `protobuf:"varint,10,opt,name=opened,proto3" json:"opened,omitempty"`
+	SoulBondedNfts bool           `protobuf:"varint,11,opt,name=soul_bonded_nfts,json=soulBondedNfts,proto3" json:"soul_bonded_nfts,omitempty"`
+	RestrictedNfts bool           `protobuf:"varint,12,opt,name=restricted_nfts,json=restrictedNfts,proto3" json:"restricted_nfts,omitempty"`
+	Data           *types.Any     `protobuf:"bytes,13,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *MsgCreateNftCollectionMetadata) Reset()         { *m = MsgCreateNftCollectionMetadata{} }
+func (m *MsgCreateNftCollectionMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateNftCollectionMetadata) ProtoMessage()    {}
+func (*MsgCreateNftCollectionMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{10}
+}
+func (m *MsgCreateNftCollectionMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateNftCollectionMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateNftCollectionMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateNftCollectionMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateNftCollectionMetadata.Merge(m, src)
+}
+func (m *MsgCreateNftCollectionMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateNftCollectionMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateNftCollectionMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateNftCollectionMetadata proto.InternalMessageInfo
+
+func (m *MsgCreateNftCollectionMetadata) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetImages() []*TokenImage {
+	if m != nil {
+		return m.Images
+	}
+	return nil
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetLinks() []*TokenLink {
+	if m != nil {
+		return m.Links
+	}
+	return nil
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetOptions() []*TokenOption {
+	if m != nil {
+		return m.Options
+	}
+	return nil
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetCategory() string {
+	if m != nil {
+		return m.Category
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetSymbol() string {
+	if m != nil {
+		return m.Symbol
+	}
+	return ""
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetOpened() bool {
+	if m != nil {
+		return m.Opened
+	}
+	return false
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetSoulBondedNfts() bool {
+	if m != nil {
+		return m.SoulBondedNfts
+	}
+	return false
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetRestrictedNfts() bool {
+	if m != nil {
+		return m.RestrictedNfts
+	}
+	return false
+}
+
+func (m *MsgCreateNftCollectionMetadata) GetData() *types.Any {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+// MsgNftMetadata
+type MsgNftMetadata struct {
+	Id          string            `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title       string            `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Images      []*TokenImage     `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty"`
+	Url         string            `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	Description string            `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Links       []*TokenLink      `protobuf:"bytes,6,rep,name=links,proto3" json:"links,omitempty"`
+	Attributes  []*TokenAttribute `protobuf:"bytes,7,rep,name=attributes,proto3" json:"attributes,omitempty"`
+	Data        *types.Any        `protobuf:"bytes,8,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *MsgNftMetadata) Reset()         { *m = MsgNftMetadata{} }
+func (m *MsgNftMetadata) String() string { return proto.CompactTextString(m) }
+func (*MsgNftMetadata) ProtoMessage()    {}
+func (*MsgNftMetadata) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfe51dd4f4e322d0, []int{11}
+}
+func (m *MsgNftMetadata) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgNftMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgNftMetadata.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgNftMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgNftMetadata.Merge(m, src)
+}
+func (m *MsgNftMetadata) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgNftMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgNftMetadata.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgNftMetadata proto.InternalMessageInfo
+
+func (m *MsgNftMetadata) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MsgNftMetadata) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+func (m *MsgNftMetadata) GetImages() []*TokenImage {
+	if m != nil {
+		return m.Images
+	}
+	return nil
+}
+
+func (m *MsgNftMetadata) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *MsgNftMetadata) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgNftMetadata) GetLinks() []*TokenLink {
+	if m != nil {
+		return m.Links
+	}
+	return nil
+}
+
+func (m *MsgNftMetadata) GetAttributes() []*TokenAttribute {
+	if m != nil {
+		return m.Attributes
+	}
+	return nil
+}
+
+func (m *MsgNftMetadata) GetData() *types.Any {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*TokenOption)(nil), "mantrachain.token.v1.TokenOption")
 	proto.RegisterType((*TokenAttribute)(nil), "mantrachain.token.v1.TokenAttribute")
 	proto.RegisterType((*TokenImage)(nil), "mantrachain.token.v1.TokenImage")
 	proto.RegisterType((*TokenLink)(nil), "mantrachain.token.v1.TokenLink")
+	proto.RegisterType((*MsgNftImageMetadata)(nil), "mantrachain.token.v1.MsgNftImageMetadata")
+	proto.RegisterType((*MsgNftsImagesMetadata)(nil), "mantrachain.token.v1.MsgNftsImagesMetadata")
+	proto.RegisterType((*MsgNftsImagesIndexes)(nil), "mantrachain.token.v1.MsgNftsImagesIndexes")
+	proto.RegisterType((*MsgNftsImagesGroupedMetadata)(nil), "mantrachain.token.v1.MsgNftsImagesGroupedMetadata")
+	proto.RegisterType((*MsgNftsIds)(nil), "mantrachain.token.v1.MsgNftsIds")
+	proto.RegisterType((*MsgNftsMetadata)(nil), "mantrachain.token.v1.MsgNftsMetadata")
+	proto.RegisterType((*MsgCreateNftCollectionMetadata)(nil), "mantrachain.token.v1.MsgCreateNftCollectionMetadata")
+	proto.RegisterType((*MsgNftMetadata)(nil), "mantrachain.token.v1.MsgNftMetadata")
 }
 
 func init() { proto.RegisterFile("mantrachain/token/v1/common.proto", fileDescriptor_cfe51dd4f4e322d0) }
 
 var fileDescriptor_cfe51dd4f4e322d0 = []byte{
-	// 279 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xcc, 0x4d, 0xcc, 0x2b,
-	0x29, 0x4a, 0x4c, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x2f, 0xc9, 0xcf, 0x4e, 0xcd, 0xd3, 0x2f, 0x33,
-	0xd4, 0x4f, 0xce, 0xcf, 0xcd, 0xcd, 0xcf, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x41,
-	0x52, 0xa2, 0x07, 0x56, 0xa2, 0x57, 0x66, 0x28, 0x25, 0x92, 0x9e, 0x9f, 0x9e, 0x0f, 0x56, 0xa0,
-	0x0f, 0x62, 0x41, 0xd4, 0x2a, 0x45, 0x71, 0x71, 0x87, 0x80, 0x54, 0xf8, 0x17, 0x94, 0x64, 0xe6,
-	0xe7, 0x09, 0x09, 0x71, 0xb1, 0x94, 0x54, 0x16, 0xa4, 0x4a, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x06,
-	0x81, 0xd9, 0x42, 0x22, 0x5c, 0xac, 0x65, 0x89, 0x39, 0xa5, 0xa9, 0x12, 0x4c, 0x60, 0x41, 0x08,
-	0x47, 0x48, 0x9a, 0x8b, 0xb3, 0xb8, 0x34, 0x29, 0x1e, 0x22, 0xc3, 0x0c, 0x96, 0xe1, 0x28, 0x2e,
-	0x4d, 0x0a, 0x03, 0xf1, 0xad, 0x58, 0x3a, 0x16, 0xc8, 0x33, 0x28, 0xc5, 0x72, 0xf1, 0x81, 0xcd,
-	0x76, 0x2c, 0x29, 0x29, 0xca, 0x4c, 0x2a, 0x2d, 0x49, 0xa5, 0xae, 0xf1, 0x16, 0x5c, 0x5c, 0x60,
-	0xe3, 0x3d, 0x73, 0x13, 0xd3, 0xb1, 0x1b, 0x2d, 0xc0, 0xc5, 0x5c, 0x5a, 0x94, 0x03, 0x35, 0x18,
-	0xc4, 0x84, 0xea, 0x34, 0xe7, 0xe2, 0x04, 0xeb, 0xf4, 0xc9, 0xcc, 0xcb, 0x26, 0x45, 0xa3, 0x53,
-	0xe0, 0x8a, 0x47, 0x72, 0x8c, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91,
-	0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0x65,
-	0x9c, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0xef, 0xeb, 0xe8, 0x17, 0x12,
-	0xe4, 0xa8, 0xeb, 0x96, 0x99, 0x97, 0x98, 0x97, 0x9c, 0xaa, 0x8f, 0x1c, 0x69, 0x15, 0xd0, 0x68,
-	0x03, 0xd9, 0x54, 0x9c, 0xc4, 0x06, 0x8e, 0x07, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x0f,
-	0xba, 0x64, 0x73, 0xd8, 0x01, 0x00, 0x00,
+	// 768 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0xcd, 0x6e, 0xd3, 0x4a,
+	0x14, 0x8e, 0xe3, 0xfc, 0x9e, 0xdc, 0xa6, 0xd5, 0xdc, 0xdc, 0x2b, 0xb7, 0x20, 0x37, 0xb5, 0x8a,
+	0x1a, 0x21, 0x61, 0xd3, 0x56, 0x40, 0x05, 0xab, 0xb4, 0x08, 0x54, 0x20, 0x45, 0xb5, 0x2a, 0x16,
+	0x95, 0x50, 0xe4, 0x9f, 0x89, 0x6b, 0xd5, 0x99, 0x89, 0x3c, 0xe3, 0xaa, 0x79, 0x03, 0x96, 0x48,
+	0xbc, 0x00, 0x4b, 0x1e, 0x05, 0x89, 0x4d, 0x97, 0x2c, 0x51, 0xfa, 0x00, 0x2c, 0xd9, 0x22, 0x8f,
+	0xed, 0x34, 0x81, 0x12, 0xa8, 0xd4, 0x0d, 0xbb, 0x39, 0xdf, 0x7c, 0xdf, 0x37, 0x33, 0xe7, 0xcc,
+	0x9c, 0x81, 0x95, 0xbe, 0x45, 0x78, 0x68, 0x39, 0x47, 0x96, 0x4f, 0x0c, 0x4e, 0x8f, 0x31, 0x31,
+	0x4e, 0xd6, 0x0d, 0x87, 0xf6, 0xfb, 0x94, 0xe8, 0x83, 0x90, 0x72, 0x8a, 0x1a, 0x13, 0x14, 0x5d,
+	0x50, 0xf4, 0x93, 0xf5, 0xa5, 0x45, 0x8f, 0x52, 0x2f, 0xc0, 0x86, 0xe0, 0xd8, 0x51, 0xcf, 0xb0,
+	0xc8, 0x30, 0x11, 0x2c, 0x35, 0x3c, 0xea, 0x51, 0x31, 0x34, 0xe2, 0x51, 0x82, 0x6a, 0x87, 0x50,
+	0x3b, 0x88, 0xc5, 0x2f, 0x07, 0xdc, 0xa7, 0x04, 0x21, 0x28, 0xf0, 0xe1, 0x00, 0x2b, 0x52, 0x53,
+	0x6a, 0x55, 0x4d, 0x31, 0x46, 0x0d, 0x28, 0x9e, 0x58, 0x41, 0x84, 0x95, 0xbc, 0x00, 0x93, 0x00,
+	0xdd, 0x80, 0x2a, 0x8b, 0xec, 0x6e, 0x32, 0x23, 0x8b, 0x99, 0x0a, 0x8b, 0xec, 0x57, 0x71, 0xfc,
+	0xb0, 0xf0, 0xe6, 0xfd, 0x72, 0x4e, 0x7b, 0x0d, 0x75, 0xe1, 0xdd, 0xe6, 0x3c, 0xf4, 0xed, 0x88,
+	0xe3, 0xeb, 0xb5, 0xdf, 0x02, 0x10, 0xf6, 0xbb, 0x7d, 0xcb, 0xbb, 0xdc, 0x7a, 0x01, 0xe4, 0x28,
+	0x0c, 0x52, 0xe3, 0x78, 0x98, 0x2a, 0x1f, 0x40, 0x55, 0x28, 0x5f, 0xf8, 0xe4, 0xf8, 0x4a, 0xc2,
+	0x0e, 0xfc, 0xdb, 0x61, 0xde, 0x5e, 0x8f, 0x8b, 0x35, 0x3b, 0x98, 0x5b, 0xae, 0xc5, 0x2d, 0x74,
+	0x1f, 0x8a, 0x7e, 0x0c, 0x08, 0x8f, 0xda, 0x46, 0x53, 0xbf, 0xac, 0x36, 0xfa, 0xc5, 0x66, 0xcd,
+	0x84, 0xae, 0xbd, 0x93, 0xe0, 0xbf, 0xc4, 0x8f, 0x09, 0x9c, 0x8d, 0x1d, 0xb7, 0xa0, 0x24, 0x28,
+	0x4c, 0x91, 0x9a, 0xf2, 0x1f, 0x59, 0xa6, 0x7c, 0xb4, 0x08, 0x15, 0xd2, 0xe3, 0xac, 0xeb, 0xbb,
+	0x4c, 0xc9, 0x37, 0xe5, 0x56, 0xd5, 0x2c, 0xc7, 0xf1, 0xae, 0xcb, 0xd0, 0x2d, 0xa8, 0x27, 0xa4,
+	0xae, 0x4f, 0x5c, 0x7c, 0x8a, 0x99, 0x22, 0x37, 0xe5, 0x56, 0xc1, 0x9c, 0x4b, 0xd0, 0xdd, 0x04,
+	0xd4, 0xee, 0x42, 0x63, 0x6a, 0x53, 0x29, 0x8e, 0x14, 0x28, 0x67, 0x3a, 0x49, 0xe8, 0xb2, 0x50,
+	0xfb, 0x26, 0xc1, 0xcd, 0x29, 0xc9, 0xd3, 0x90, 0x46, 0x03, 0xec, 0x5e, 0xc3, 0x71, 0x9e, 0xc1,
+	0x42, 0x76, 0x9c, 0xae, 0x97, 0xb8, 0x8a, 0x63, 0xfd, 0xd2, 0x23, 0xdb, 0x87, 0xcb, 0xcc, 0x7a,
+	0x7a, 0xf0, 0x74, 0x37, 0x68, 0xff, 0xd2, 0xf3, 0xd7, 0x36, 0x6e, 0xcf, 0x76, 0x9a, 0x4c, 0xc2,
+	0x8f, 0xb9, 0x5a, 0x03, 0xb8, 0x58, 0x70, 0x2a, 0xf7, 0xd2, 0x54, 0xee, 0xb5, 0xe7, 0x30, 0x9f,
+	0x12, 0x27, 0x92, 0x52, 0x88, 0x67, 0xd3, 0x94, 0xac, 0xce, 0xda, 0x44, 0xa6, 0x31, 0x85, 0x42,
+	0xfb, 0x2a, 0x83, 0xda, 0x61, 0xde, 0x4e, 0x88, 0x2d, 0x8e, 0xf7, 0x7a, 0x7c, 0x87, 0x06, 0x01,
+	0x76, 0xe2, 0x07, 0x3c, 0x36, 0xaf, 0x43, 0xde, 0x77, 0xd3, 0x3b, 0x9d, 0xf7, 0xdd, 0xf8, 0x96,
+	0x13, 0xab, 0x9f, 0x3d, 0x32, 0x31, 0x9e, 0xa8, 0x8a, 0x7c, 0xc5, 0xaa, 0xa4, 0xef, 0xa3, 0x30,
+	0x7e, 0x1f, 0xa8, 0x09, 0x35, 0x17, 0x33, 0x27, 0xf4, 0x45, 0x1f, 0x51, 0x8a, 0x62, 0x66, 0x12,
+	0x42, 0xf7, 0xa0, 0x18, 0xf8, 0xe4, 0x98, 0x29, 0x25, 0xb1, 0xd8, 0xf2, 0x8c, 0xc5, 0xe2, 0x77,
+	0x69, 0x26, 0x6c, 0xf4, 0x08, 0xca, 0x54, 0x18, 0x30, 0xa5, 0x2c, 0x84, 0x2b, 0x33, 0x84, 0x49,
+	0x17, 0x33, 0x33, 0x05, 0x5a, 0x82, 0x8a, 0x63, 0x71, 0xec, 0xd1, 0x70, 0xa8, 0x54, 0x92, 0x26,
+	0x92, 0xc5, 0xe8, 0x7f, 0x28, 0xb1, 0x61, 0xdf, 0xa6, 0x81, 0x52, 0x15, 0x33, 0x69, 0x14, 0xe3,
+	0x74, 0x80, 0x09, 0x76, 0x15, 0x68, 0x4a, 0xad, 0x8a, 0x99, 0x46, 0xa8, 0x05, 0x0b, 0x8c, 0x46,
+	0x41, 0xd7, 0xa6, 0xc4, 0xc5, 0x6e, 0x57, 0x94, 0xae, 0x26, 0x18, 0xf5, 0x18, 0xdf, 0x16, 0x70,
+	0x5c, 0x60, 0xb4, 0x06, 0xf3, 0x21, 0x66, 0x3c, 0xf4, 0x1d, 0x9e, 0x11, 0xff, 0x49, 0x88, 0x17,
+	0xb0, 0x20, 0xb6, 0xa0, 0x10, 0x17, 0x4b, 0x99, 0x13, 0x6d, 0xa3, 0xa1, 0x27, 0xcd, 0x5b, 0xcf,
+	0x9a, 0xb7, 0xde, 0x26, 0x43, 0x53, 0x30, 0xb4, 0x4f, 0x79, 0xa8, 0x4f, 0x5f, 0x85, 0x9f, 0x2a,
+	0xdc, 0x80, 0x22, 0xf7, 0x79, 0x30, 0xee, 0xa3, 0x22, 0xf8, 0x3b, 0x6a, 0xfc, 0x18, 0xc0, 0xca,
+	0xfe, 0x88, 0xac, 0xcc, 0xab, 0x33, 0xb4, 0xe3, 0x0f, 0xc5, 0x9c, 0xd0, 0x8d, 0xb3, 0x59, 0xf9,
+	0x5d, 0x36, 0xb7, 0xf7, 0x3f, 0x8c, 0x54, 0xe9, 0xe3, 0x48, 0x95, 0xce, 0x46, 0xaa, 0xf4, 0x65,
+	0xa4, 0x4a, 0x6f, 0xcf, 0xd5, 0xdc, 0xd9, 0xb9, 0x9a, 0xfb, 0x7c, 0xae, 0xe6, 0x0e, 0x37, 0x3d,
+	0x9f, 0x1f, 0x45, 0xb6, 0xee, 0xd0, 0xbe, 0xd1, 0x69, 0xef, 0x1d, 0x98, 0xed, 0x3b, 0x4f, 0x7c,
+	0x62, 0x11, 0x07, 0x1b, 0x93, 0xdf, 0xf2, 0x69, 0xfa, 0x31, 0xc7, 0x1f, 0x06, 0xb3, 0x4b, 0x62,
+	0x99, 0xcd, 0xef, 0x01, 0x00, 0x00, 0xff, 0xff, 0xac, 0xb6, 0x85, 0xa0, 0xba, 0x07, 0x00, 0x00,
 }
 
 func (this *TokenOption) Equal(that interface{}) bool {
@@ -318,6 +905,342 @@ func (this *TokenLink) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Url != that1.Url {
+		return false
+	}
+	return true
+}
+func (this *MsgNftImageMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftImageMetadata)
+	if !ok {
+		that2, ok := that.(MsgNftImageMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !this.Image.Equal(that1.Image) {
+		return false
+	}
+	return true
+}
+func (this *MsgNftsImagesMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftsImagesMetadata)
+	if !ok {
+		that2, ok := that.(MsgNftsImagesMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Images) != len(that1.Images) {
+		return false
+	}
+	for i := range this.Images {
+		if !this.Images[i].Equal(that1.Images[i]) {
+			return false
+		}
+	}
+	if len(this.NftsIds) != len(that1.NftsIds) {
+		return false
+	}
+	for i := range this.NftsIds {
+		if this.NftsIds[i] != that1.NftsIds[i] {
+			return false
+		}
+	}
+	if len(this.ImagesIndexes) != len(that1.ImagesIndexes) {
+		return false
+	}
+	for i := range this.ImagesIndexes {
+		if this.ImagesIndexes[i] != that1.ImagesIndexes[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgNftsImagesIndexes) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftsImagesIndexes)
+	if !ok {
+		that2, ok := that.(MsgNftsImagesIndexes)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Indexes) != len(that1.Indexes) {
+		return false
+	}
+	for i := range this.Indexes {
+		if this.Indexes[i] != that1.Indexes[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgNftsImagesGroupedMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftsImagesGroupedMetadata)
+	if !ok {
+		that2, ok := that.(MsgNftsImagesGroupedMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Images) != len(that1.Images) {
+		return false
+	}
+	for i := range this.Images {
+		if !this.Images[i].Equal(that1.Images[i]) {
+			return false
+		}
+	}
+	if len(this.NftsIdsGrouped) != len(that1.NftsIdsGrouped) {
+		return false
+	}
+	for i := range this.NftsIdsGrouped {
+		if !this.NftsIdsGrouped[i].Equal(that1.NftsIdsGrouped[i]) {
+			return false
+		}
+	}
+	if len(this.ImagesIndexes) != len(that1.ImagesIndexes) {
+		return false
+	}
+	for i := range this.ImagesIndexes {
+		if !this.ImagesIndexes[i].Equal(that1.ImagesIndexes[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgNftsIds) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftsIds)
+	if !ok {
+		that2, ok := that.(MsgNftsIds)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.NftsIds) != len(that1.NftsIds) {
+		return false
+	}
+	for i := range this.NftsIds {
+		if this.NftsIds[i] != that1.NftsIds[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgNftsMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftsMetadata)
+	if !ok {
+		that2, ok := that.(MsgNftsMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Nfts) != len(that1.Nfts) {
+		return false
+	}
+	for i := range this.Nfts {
+		if !this.Nfts[i].Equal(that1.Nfts[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgCreateNftCollectionMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgCreateNftCollectionMetadata)
+	if !ok {
+		that2, ok := that.(MsgCreateNftCollectionMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if len(this.Images) != len(that1.Images) {
+		return false
+	}
+	for i := range this.Images {
+		if !this.Images[i].Equal(that1.Images[i]) {
+			return false
+		}
+	}
+	if this.Url != that1.Url {
+		return false
+	}
+	if this.Description != that1.Description {
+		return false
+	}
+	if len(this.Links) != len(that1.Links) {
+		return false
+	}
+	for i := range this.Links {
+		if !this.Links[i].Equal(that1.Links[i]) {
+			return false
+		}
+	}
+	if len(this.Options) != len(that1.Options) {
+		return false
+	}
+	for i := range this.Options {
+		if !this.Options[i].Equal(that1.Options[i]) {
+			return false
+		}
+	}
+	if this.Category != that1.Category {
+		return false
+	}
+	if this.Symbol != that1.Symbol {
+		return false
+	}
+	if this.Opened != that1.Opened {
+		return false
+	}
+	if this.SoulBondedNfts != that1.SoulBondedNfts {
+		return false
+	}
+	if this.RestrictedNfts != that1.RestrictedNfts {
+		return false
+	}
+	if !this.Data.Equal(that1.Data) {
+		return false
+	}
+	return true
+}
+func (this *MsgNftMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgNftMetadata)
+	if !ok {
+		that2, ok := that.(MsgNftMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if this.Title != that1.Title {
+		return false
+	}
+	if len(this.Images) != len(that1.Images) {
+		return false
+	}
+	for i := range this.Images {
+		if !this.Images[i].Equal(that1.Images[i]) {
+			return false
+		}
+	}
+	if this.Url != that1.Url {
+		return false
+	}
+	if this.Description != that1.Description {
+		return false
+	}
+	if len(this.Links) != len(that1.Links) {
+		return false
+	}
+	for i := range this.Links {
+		if !this.Links[i].Equal(that1.Links[i]) {
+			return false
+		}
+	}
+	if len(this.Attributes) != len(that1.Attributes) {
+		return false
+	}
+	for i := range this.Attributes {
+		if !this.Attributes[i].Equal(that1.Attributes[i]) {
+			return false
+		}
+	}
+	if !this.Data.Equal(that1.Data) {
 		return false
 	}
 	return true
@@ -484,6 +1407,534 @@ func (m *TokenLink) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgNftImageMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftImageMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftImageMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Image != nil {
+		{
+			size, err := m.Image.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCommon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftsImagesMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftsImagesMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftsImagesMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ImagesIndexes) > 0 {
+		dAtA3 := make([]byte, len(m.ImagesIndexes)*10)
+		var j2 int
+		for _, num := range m.ImagesIndexes {
+			for num >= 1<<7 {
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j2++
+			}
+			dAtA3[j2] = uint8(num)
+			j2++
+		}
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintCommon(dAtA, i, uint64(j2))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.NftsIds) > 0 {
+		for iNdEx := len(m.NftsIds) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.NftsIds[iNdEx])
+			copy(dAtA[i:], m.NftsIds[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.NftsIds[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Images) > 0 {
+		for iNdEx := len(m.Images) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Images[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftsImagesIndexes) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftsImagesIndexes) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftsImagesIndexes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Indexes) > 0 {
+		dAtA5 := make([]byte, len(m.Indexes)*10)
+		var j4 int
+		for _, num := range m.Indexes {
+			for num >= 1<<7 {
+				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j4++
+			}
+			dAtA5[j4] = uint8(num)
+			j4++
+		}
+		i -= j4
+		copy(dAtA[i:], dAtA5[:j4])
+		i = encodeVarintCommon(dAtA, i, uint64(j4))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftsImagesGroupedMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftsImagesGroupedMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftsImagesGroupedMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ImagesIndexes) > 0 {
+		for iNdEx := len(m.ImagesIndexes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ImagesIndexes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.NftsIdsGrouped) > 0 {
+		for iNdEx := len(m.NftsIdsGrouped) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NftsIdsGrouped[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Images) > 0 {
+		for iNdEx := len(m.Images) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Images[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftsIds) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftsIds) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftsIds) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.NftsIds) > 0 {
+		for iNdEx := len(m.NftsIds) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.NftsIds[iNdEx])
+			copy(dAtA[i:], m.NftsIds[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.NftsIds[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftsMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftsMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftsMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Nfts) > 0 {
+		for iNdEx := len(m.Nfts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Nfts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateNftCollectionMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateNftCollectionMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateNftCollectionMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCommon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x6a
+	}
+	if m.RestrictedNfts {
+		i--
+		if m.RestrictedNfts {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.SoulBondedNfts {
+		i--
+		if m.SoulBondedNfts {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.Opened {
+		i--
+		if m.Opened {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x50
+	}
+	if len(m.Symbol) > 0 {
+		i -= len(m.Symbol)
+		copy(dAtA[i:], m.Symbol)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Symbol)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.Category) > 0 {
+		i -= len(m.Category)
+		copy(dAtA[i:], m.Category)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Category)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Options) > 0 {
+		for iNdEx := len(m.Options) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Options[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if len(m.Links) > 0 {
+		for iNdEx := len(m.Links) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Links[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Images) > 0 {
+		for iNdEx := len(m.Images) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Images[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgNftMetadata) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgNftMetadata) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgNftMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCommon(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Attributes) > 0 {
+		for iNdEx := len(m.Attributes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Attributes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if len(m.Links) > 0 {
+		for iNdEx := len(m.Links) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Links[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Images) > 0 {
+		for iNdEx := len(m.Images) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Images[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Title)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintCommon(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintCommon(dAtA []byte, offset int, v uint64) int {
 	offset -= sovCommon(v)
 	base := offset
@@ -566,6 +2017,231 @@ func (m *TokenLink) Size() (n int) {
 	}
 	l = len(m.Url)
 	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgNftImageMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Image != nil {
+		l = m.Image.Size()
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgNftsImagesMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Images) > 0 {
+		for _, e := range m.Images {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.NftsIds) > 0 {
+		for _, s := range m.NftsIds {
+			l = len(s)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.ImagesIndexes) > 0 {
+		l = 0
+		for _, e := range m.ImagesIndexes {
+			l += sovCommon(uint64(e))
+		}
+		n += 1 + sovCommon(uint64(l)) + l
+	}
+	return n
+}
+
+func (m *MsgNftsImagesIndexes) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Indexes) > 0 {
+		l = 0
+		for _, e := range m.Indexes {
+			l += sovCommon(uint64(e))
+		}
+		n += 1 + sovCommon(uint64(l)) + l
+	}
+	return n
+}
+
+func (m *MsgNftsImagesGroupedMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Images) > 0 {
+		for _, e := range m.Images {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.NftsIdsGrouped) > 0 {
+		for _, e := range m.NftsIdsGrouped {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.ImagesIndexes) > 0 {
+		for _, e := range m.ImagesIndexes {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgNftsIds) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.NftsIds) > 0 {
+		for _, s := range m.NftsIds {
+			l = len(s)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgNftsMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Nfts) > 0 {
+		for _, e := range m.Nfts {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgCreateNftCollectionMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	if len(m.Images) > 0 {
+		for _, e := range m.Images {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	if len(m.Links) > 0 {
+		for _, e := range m.Links {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Options) > 0 {
+		for _, e := range m.Options {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	l = len(m.Category)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Symbol)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	if m.Opened {
+		n += 2
+	}
+	if m.SoulBondedNfts {
+		n += 2
+	}
+	if m.RestrictedNfts {
+		n += 2
+	}
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgNftMetadata) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	if len(m.Images) > 0 {
+		for _, e := range m.Images {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovCommon(uint64(l))
+	}
+	if len(m.Links) > 0 {
+		for _, e := range m.Links {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Attributes) > 0 {
+		for _, e := range m.Attributes {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if m.Data != nil {
+		l = m.Data.Size()
 		n += 1 + l + sovCommon(uint64(l))
 	}
 	return n
@@ -1075,6 +2751,1484 @@ func (m *TokenLink) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftImageMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftImageMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftImageMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Image", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Image == nil {
+				m.Image = &TokenImage{}
+			}
+			if err := m.Image.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftsImagesMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftsImagesMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftsImagesMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Images", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Images = append(m.Images, &TokenImage{})
+			if err := m.Images[len(m.Images)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftsIds", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftsIds = append(m.NftsIds, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 3:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowCommon
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.ImagesIndexes = append(m.ImagesIndexes, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowCommon
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthCommon
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthCommon
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.ImagesIndexes) == 0 {
+					m.ImagesIndexes = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowCommon
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.ImagesIndexes = append(m.ImagesIndexes, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field ImagesIndexes", wireType)
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftsImagesIndexes) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftsImagesIndexes: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftsImagesIndexes: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowCommon
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Indexes = append(m.Indexes, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowCommon
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthCommon
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthCommon
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Indexes) == 0 {
+					m.Indexes = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowCommon
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Indexes = append(m.Indexes, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftsImagesGroupedMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftsImagesGroupedMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftsImagesGroupedMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Images", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Images = append(m.Images, &TokenImage{})
+			if err := m.Images[len(m.Images)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftsIdsGrouped", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftsIdsGrouped = append(m.NftsIdsGrouped, &MsgNftsIds{})
+			if err := m.NftsIdsGrouped[len(m.NftsIdsGrouped)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ImagesIndexes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ImagesIndexes = append(m.ImagesIndexes, &MsgNftsImagesIndexes{})
+			if err := m.ImagesIndexes[len(m.ImagesIndexes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftsIds) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftsIds: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftsIds: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NftsIds", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NftsIds = append(m.NftsIds, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftsMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftsMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftsMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nfts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nfts = append(m.Nfts, &MsgNftMetadata{})
+			if err := m.Nfts[len(m.Nfts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateNftCollectionMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateNftCollectionMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateNftCollectionMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Images", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Images = append(m.Images, &TokenImage{})
+			if err := m.Images[len(m.Images)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Links", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Links = append(m.Links, &TokenLink{})
+			if err := m.Links[len(m.Links)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Options", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Options = append(m.Options, &TokenOption{})
+			if err := m.Options[len(m.Options)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Category", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Category = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Symbol = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Opened", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Opened = bool(v != 0)
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SoulBondedNfts", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.SoulBondedNfts = bool(v != 0)
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RestrictedNfts", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.RestrictedNfts = bool(v != 0)
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &types.Any{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgNftMetadata) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgNftMetadata: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgNftMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Images", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Images = append(m.Images, &TokenImage{})
+			if err := m.Images[len(m.Images)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Links", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Links = append(m.Links, &TokenLink{})
+			if err := m.Links[len(m.Links)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Attributes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Attributes = append(m.Attributes, &TokenAttribute{})
+			if err := m.Attributes[len(m.Attributes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &types.Any{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

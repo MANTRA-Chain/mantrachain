@@ -1,9 +1,10 @@
 syntax = "proto3";
 package mantrachain.coinfactory.v1beta1;
 
-import "cosmos/bank/v1beta1/bank.proto";
-import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/bank/v1beta1/bank.proto";
 import "google/api/annotations.proto";
 import "mantrachain/coinfactory/v1beta1/authorityMetadata.proto";
 import "mantrachain/coinfactory/v1beta1/params.proto";
@@ -12,62 +13,86 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Params defines a gRPC query method that returns the coinfactory module's
-  // parameters.
+  // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/params";
   }
 
   // DenomsFromCreator defines a gRPC query method for fetching all
   // denominations created by a specific admin/creator.
-  rpc DenomsFromCreator(QueryDenomsFromCreatorRequest) returns (QueryDenomsFromCreatorResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms_from_creator/{creator}";
+  rpc QueryDenomsFromCreator(QueryDenomsFromCreatorRequest)
+      returns (QueryDenomsFromCreatorResponse) {
+    option (google.api.http).get =
+        "/mantrachain/coinfactory/v1beta1/denoms_from_creator/{creator}";
   }
 
   // DenomAuthorityMetadata defines a gRPC query method for fetching
   // DenomAuthorityMetadata for a particular denom.
-  rpc DenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest) returns (QueryDenomAuthorityMetadataResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms/{denom}/authority_metadata";
+  rpc QueryDenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest)
+      returns (QueryDenomAuthorityMetadataResponse) {
+    option (google.api.http).get =
+        "/mantrachain/coinfactory/v1beta1/denoms/{denom}/authority_metadata";
   }
 
-  rpc DenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request) returns (QueryDenomAuthorityMetadata2Response) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/{subdenom}/authority_metadata";
+  // QueryDenomAuthorityMetadata2
+  rpc QueryDenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request)
+      returns (QueryDenomAuthorityMetadata2Response) {
+    option (google.api.http).get =
+        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+        "{subdenom}/authority_metadata";
   }
 
-  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/{subdenom}/balances/{address}";
+  // QueryBalance
+  rpc QueryBalance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+    option (google.api.http).get =
+        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+        "{subdenom}/balances/{address}";
   }
 
-  rpc SupplyOf(QuerySupplyOfRequest) returns (QuerySupplyOfResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/{subdenom}/supply";
+  // QuerySupplyOf
+  rpc QuerySupplyOf(QuerySupplyOfRequest) returns (QuerySupplyOfResponse) {
+    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/"
+                                   "{creator}/subdenoms/{subdenom}/supply";
   }
 
-  rpc DenomMetadata(QueryDenomMetadataRequest) returns (QueryDenomMetadataResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/{subdenom}/denoms_metadata";
+  // QueryDenomMetadata
+  rpc QueryDenomMetadata(QueryDenomMetadataRequest)
+      returns (QueryDenomMetadataResponse) {
+    option (google.api.http).get =
+        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+        "{subdenom}/denoms_metadata";
   }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 // QueryDenomAuthorityMetadataRequest defines the request structure for the
 // DenomAuthorityMetadata gRPC query.
 message QueryDenomAuthorityMetadata2Request {
-  string creator = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-  string subdenom = 2 [(gogoproto.moretags) = "yaml:\"subdenom\""];
+  string creator = 1;
+  string subdenom = 2;
 }
 
 // QueryDenomAuthorityMetadataResponse defines the response structure for the
 // DenomAuthorityMetadata gRPC query.
 message QueryDenomAuthorityMetadata2Response {
-  DenomAuthorityMetadata authority_metadata = 1 [
-    (gogoproto.moretags) = "yaml:\"authority_metadata\"",
-    (gogoproto.nullable) = false
-  ];
+  DenomAuthorityMetadata authority_metadata = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method.
 message QueryBalanceRequest {
-  string creator = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-  string subdenom = 2 [(gogoproto.moretags) = "yaml:\"subdenom\""];
-  string address = 3 [(gogoproto.moretags) = "yaml:\"address\""];
+  string creator = 1;
+  string subdenom = 2;
+  string address = 3;
 }
 
 // QueryBalanceResponse is the response type for the Query/Balance RPC method.
@@ -78,61 +103,48 @@ message QueryBalanceResponse {
 
 // QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method.
 message QuerySupplyOfRequest {
-  string creator = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-  string subdenom = 2 [(gogoproto.moretags) = "yaml:\"subdenom\""];
+  string creator = 1;
+  string subdenom = 2;
 }
 
 // QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC method.
 message QuerySupplyOfResponse {
   // amount is the supply of the coin.
-  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin amount = 1 [ (gogoproto.nullable) = false ];
 }
 
-// QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC method.
-message QueryDenomMetadataRequest {
-  string creator = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-  string subdenom = 2 [(gogoproto.moretags) = "yaml:\"subdenom\""];
-}
-
-// QueryDenomMetadataResponse is the response type for the Query/DenomMetadata RPC
+// QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC
 // method.
-message QueryDenomMetadataResponse {
-  // metadata describes and provides all the client information for the requested token.
-  cosmos.bank.v1beta1.Metadata metadata = 1 [(gogoproto.nullable) = false];
+message QueryDenomMetadataRequest {
+  string creator = 1;
+  string subdenom = 2;
 }
 
-// QueryParamsRequest is the request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params defines the parameters of the module.
-  Params params = 1 [(gogoproto.nullable) = false];
+// QueryDenomMetadataResponse is the response type for the Query/DenomMetadata
+// RPC method.
+message QueryDenomMetadataResponse {
+  // metadata describes and provides all the client information for the
+  // requested token.
+  cosmos.bank.v1beta1.Metadata metadata = 1 [ (gogoproto.nullable) = false ];
 }
 
 // QueryDenomAuthorityMetadataRequest defines the request structure for the
 // DenomAuthorityMetadata gRPC query.
-message QueryDenomAuthorityMetadataRequest {
-  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
-}
+message QueryDenomAuthorityMetadataRequest { string denom = 1; }
 
 // QueryDenomAuthorityMetadataResponse defines the response structure for the
 // DenomAuthorityMetadata gRPC query.
 message QueryDenomAuthorityMetadataResponse {
-  DenomAuthorityMetadata authority_metadata = 1 [
-    (gogoproto.moretags) = "yaml:\"authority_metadata\"",
-    (gogoproto.nullable) = false
-  ];
+  DenomAuthorityMetadata authority_metadata = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 // QueryDenomsFromCreatorRequest defines the request structure for the
 // DenomsFromCreator gRPC query.
-message QueryDenomsFromCreatorRequest {
-  string creator = 1 [(gogoproto.moretags) = "yaml:\"creator\""];
-}
+message QueryDenomsFromCreatorRequest { string creator = 1; }
 
 // QueryDenomsFromCreatorRequest defines the response structure for the
 // DenomsFromCreator gRPC query.
 message QueryDenomsFromCreatorResponse {
-  repeated string denoms = 1 [(gogoproto.moretags) = "yaml:\"denoms\""];
+  repeated string denoms = 1;
 }

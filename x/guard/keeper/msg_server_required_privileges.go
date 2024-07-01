@@ -4,25 +4,26 @@ import (
 	"context"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) UpdateRequiredPrivileges(goCtx context.Context, msg *types.MsgUpdateRequiredPrivileges) (*types.MsgUpdateRequiredPrivilegesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	if len(msg.Index) == 0 {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid index")
 	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid kind")
 	}
 
 	isFound := k.HasRequiredPrivileges(ctx, msg.Index, kind)
@@ -57,19 +58,19 @@ func (k msgServer) UpdateRequiredPrivilegesBatch(goCtx context.Context, msg *typ
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid kind")
 	}
 
 	indexes := []string{}
 
 	for i, index := range msg.RequiredPrivileges.Indexes {
 		if len(index) == 0 {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+			return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid index")
 		}
 
 		isFound := k.HasRequiredPrivileges(ctx, index, kind)
@@ -103,12 +104,12 @@ func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, m
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.CheckIsAdmin(ctx, msg.GetCreator()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	kind, err := types.ParseRequiredPrivilegesKind(msg.Kind)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid kind")
+		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid kind")
 	}
 
 	indexes := []string{}
@@ -118,7 +119,7 @@ func (k msgServer) UpdateRequiredPrivilegesGroupedBatch(goCtx context.Context, m
 
 		for _, index := range msg.RequiredPrivilegesGrouped.Indexes[i].Indexes {
 			if len(index) == 0 {
-				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid index")
+				return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "invalid index")
 			}
 
 			isFound := k.HasRequiredPrivileges(ctx, index, kind)

@@ -3,16 +3,17 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreateFeeToken(goCtx context.Context, msg *types.MsgCreateFeeToken) (*types.MsgCreateFeeTokenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	// Check if the value already exists
@@ -21,7 +22,7 @@ func (k msgServer) CreateFeeToken(goCtx context.Context, msg *types.MsgCreateFee
 		msg.Denom,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "index already set")
 	}
 
 	var feeToken = types.FeeToken{
@@ -39,8 +40,8 @@ func (k msgServer) CreateFeeToken(goCtx context.Context, msg *types.MsgCreateFee
 func (k msgServer) UpdateFeeToken(goCtx context.Context, msg *types.MsgUpdateFeeToken) (*types.MsgUpdateFeeTokenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	// Check if the value exists
@@ -49,7 +50,7 @@ func (k msgServer) UpdateFeeToken(goCtx context.Context, msg *types.MsgUpdateFee
 		msg.Denom,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(errorstypes.ErrKeyNotFound, "index not set")
 	}
 
 	var feeToken = types.FeeToken{
@@ -65,8 +66,8 @@ func (k msgServer) UpdateFeeToken(goCtx context.Context, msg *types.MsgUpdateFee
 func (k msgServer) DeleteFeeToken(goCtx context.Context, msg *types.MsgDeleteFeeToken) (*types.MsgDeleteFeeTokenResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.gk.CheckIsAdmin(ctx, msg.Creator); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckIsAdmin(ctx, msg.Creator); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	// Check if the value exists
@@ -75,7 +76,7 @@ func (k msgServer) DeleteFeeToken(goCtx context.Context, msg *types.MsgDeleteFee
 		msg.Denom,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errors.Wrap(errorstypes.ErrKeyNotFound, "index not set")
 	}
 
 	k.RemoveFeeToken(

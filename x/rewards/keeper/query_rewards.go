@@ -3,13 +3,14 @@ package keeper
 import (
 	"context"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Rewards(goCtx context.Context, req *types.QueryGetRewardsRequest) (*types.QueryGetRewardsResponse, error) {
+func (k Keeper) QueryRewards(goCtx context.Context, req *types.QueryGetRewardsRequest) (*types.QueryGetRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -56,7 +57,7 @@ func (k Keeper) Rewards(goCtx context.Context, req *types.QueryGetRewardsRequest
 
 		if reward.Denom == pair.BaseCoinDenom || reward.Denom == pair.QuoteCoinDenom {
 			rewards = rewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.TruncateInt()))
-			reward.Amount = reward.Amount.Sub(sdk.NewDecFromInt(reward.Amount.TruncateInt()))
+			reward.Amount = reward.Amount.Sub(sdkmath.LegacyNewDecFromInt(reward.Amount.TruncateInt()))
 		}
 	}
 

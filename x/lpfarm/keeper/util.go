@@ -71,8 +71,8 @@ type rewardAllocator struct {
 
 type poolInfo struct {
 	poolCoinDenom string
-	rewardWeight  sdk.Dec
-	rewardsShare  sdk.Dec
+	rewardWeight  math.LegacyDec
+	rewardsShare  math.LegacyDec
 }
 
 func newRewardAllocator(ctx sdk.Context, k Keeper, ck *cachingKeeper) *rewardAllocator {
@@ -90,7 +90,7 @@ func newRewardAllocator(ctx sdk.Context, k Keeper, ck *cachingKeeper) *rewardAll
 func (ra *rewardAllocator) allocateRewardsToPair(farmingPoolAddr sdk.AccAddress, pair liquiditytypes.Pair, rewards sdk.Coins) {
 	poolInfos, ok := ra.poolInfosByPairId[pair.Id]
 	if !ok {
-		totalRewardWeight := sdk.ZeroDec()
+		totalRewardWeight := math.LegacyZeroDec()
 		_ = ra.k.liquidityKeeper.IteratePoolsByPair(ra.ctx, pair.Id, func(pool liquiditytypes.Pool) (stop bool, err error) {
 			if pool.Disabled {
 				return false, nil
@@ -158,10 +158,10 @@ func (ra *rewardAllocator) allocateRewardsToDenom(farmingPoolAddr sdk.AccAddress
 }
 
 // PoolRewardWeight returns the pool's reward weight.
-func (k Keeper) PoolRewardWeight(ctx sdk.Context, pool liquiditytypes.Pool, pair liquiditytypes.Pair) sdk.Dec {
+func (k Keeper) PoolRewardWeight(ctx sdk.Context, pool liquiditytypes.Pool, pair liquiditytypes.Pair) math.LegacyDec {
 	if pool.Type == liquiditytypes.PoolTypeRanged &&
 		(pair.LastPrice.LT(*pool.MinPrice) || pair.LastPrice.GT(*pool.MaxPrice)) {
-		return sdk.ZeroDec()
+		return math.LegacyZeroDec()
 	}
 	// TODO: further optimize gas usage by using BankKeeper.SpendableCoin()
 	spendable := k.bankKeeper.SpendableCoins(ctx, pool.GetReserveAddress())

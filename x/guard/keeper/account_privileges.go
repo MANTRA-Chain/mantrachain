@@ -1,13 +1,16 @@
 package keeper
 
 import (
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) SetAccountPrivileges(ctx sdk.Context, account sdk.AccAddress, accountPrivileges []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 	store.Set(account, accountPrivileges)
 }
 
@@ -15,7 +18,8 @@ func (k Keeper) HasAccountPrivileges(
 	ctx sdk.Context,
 	account sdk.AccAddress,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 	return store.Has(account)
 }
 
@@ -24,7 +28,8 @@ func (k Keeper) GetAccountPrivileges(
 	account sdk.AccAddress,
 	defaultAccountPrivileges []byte,
 ) (val []byte, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 
 	if !k.HasAccountPrivileges(ctx, account) {
 		if defaultAccountPrivileges != nil {
@@ -52,7 +57,8 @@ func (k Keeper) GetAccountPrivilegesMany(
 	accounts []sdk.AccAddress,
 	defaultAccountPrivileges []byte,
 ) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 
 	for _, acc := range accounts {
 		bz := store.Get(acc)
@@ -71,13 +77,15 @@ func (k Keeper) RemoveAccountPrivileges(
 	ctx sdk.Context,
 	account []byte,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 	store.Delete(account)
 }
 
 func (k Keeper) GetAllAccountPrivileges(ctx sdk.Context) (list []*types.AccountPrivileges) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AccountPrivilegesStoreKey())
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

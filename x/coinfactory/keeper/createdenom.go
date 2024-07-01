@@ -21,13 +21,13 @@ func (k Keeper) CreateDenom(ctx sdk.Context, creatorAddr string, subdenom string
 		return "", err
 	}
 
-	err = k.createDenomAfterValidation(ctx, creatorAddr, denom)
+	err = k.CreateDenomAfterValidation(ctx, creatorAddr, denom)
 	return denom, err
 }
 
 // Runs CreateDenom logic after the charge and all denom validation has been handled.
 // Made into a second function for genesis initialization.
-func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr string, denom string) (err error) {
+func (k Keeper) CreateDenomAfterValidation(ctx sdk.Context, creatorAddr string, denom string) (err error) {
 	_, exists := k.bankKeeper.GetDenomMetaData(ctx, denom)
 	if !exists {
 		denomMetaData := banktypes.Metadata{
@@ -44,7 +44,7 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr string, 
 	authorityMetadata := types.DenomAuthorityMetadata{
 		Admin: creatorAddr,
 	}
-	err = k.setAuthorityMetadata(ctx, denom, authorityMetadata)
+	err = k.SetAuthorityMetadata(ctx, denom, authorityMetadata)
 	if err != nil {
 		return err
 	}
@@ -84,12 +84,12 @@ func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string) (err e
 			return err
 		}
 
-		// admin := k.gk.GetAdmin(ctx)
+		admin := k.guardKeeper.GetAdmin(ctx)
 
-		// err = k.bankKeeper.SendCoins(ctx, accAddr, admin, params.DenomCreationFee)
-		// if err != nil {
-		// 	return err
-		// }
+		err = k.bankKeeper.SendCoins(ctx, accAddr, admin, params.DenomCreationFee)
+		if err != nil {
+			return err
+		}
 
 		// We use the community pool for denom creation fees
 		if err := k.communityPoolKeeper.FundCommunityPool(ctx, params.DenomCreationFee, accAddr); err != nil {

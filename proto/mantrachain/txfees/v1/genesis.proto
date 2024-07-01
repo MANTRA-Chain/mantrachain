@@ -1,7 +1,7 @@
 syntax = "proto3";
-
 package mantrachain.txfees.v1;
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "mantrachain/txfees/v1/params.proto";
 import "mantrachain/txfees/v1/fee_token.proto";
@@ -10,7 +10,11 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
 // GenesisState defines the txfees module's genesis state.
 message GenesisState {
-           Params   params       = 1 [(gogoproto.nullable) = false];
-  repeated FeeToken feeTokenList = 2 [(gogoproto.nullable) = false];
-}
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 
+  repeated FeeToken fee_token_list = 2 [(gogoproto.nullable) = false];
+}

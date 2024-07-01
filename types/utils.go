@@ -14,8 +14,8 @@ import (
 )
 
 // GetShareValue multiplies with truncation by receiving int amount and decimal ratio and returns int result.
-func GetShareValue(amount math.Int, ratio sdk.Dec) math.Int {
-	return sdk.NewDecFromInt(amount).MulTruncate(ratio).TruncateInt()
+func GetShareValue(amount math.Int, ratio math.LegacyDec) math.Int {
+	return math.LegacyNewDecFromInt(amount).MulTruncate(ratio).TruncateInt()
 }
 
 type StrIntMap map[string]math.Int
@@ -52,12 +52,12 @@ func DateRangeIncludes(startTime, endTime, targetTime time.Time) bool {
 }
 
 // ParseDec is a shortcut for math.LegacyMustNewDecFromStr.
-func ParseDec(s string) sdk.Dec {
+func ParseDec(s string) math.LegacyDec {
 	return math.LegacyMustNewDecFromStr(strings.ReplaceAll(s, "_", ""))
 }
 
-// ParseDecP is like ParseDec, but it returns a pointer to sdk.Dec.
-func ParseDecP(s string) *sdk.Dec {
+// ParseDecP is like ParseDec, but it returns a pointer to math.LegacyDec.
+func ParseDecP(s string) *math.LegacyDec {
 	d := ParseDec(s)
 	return &d
 }
@@ -109,7 +109,7 @@ func ParseTime(s string) time.Time {
 
 // DecApproxEqual returns true if a and b are approximately equal,
 // which means the diff ratio is equal or less than 0.1%.
-func DecApproxEqual(a, b sdk.Dec) bool {
+func DecApproxEqual(a, b math.LegacyDec) bool {
 	if b.GT(a) {
 		a, b = b, a
 	}
@@ -117,7 +117,7 @@ func DecApproxEqual(a, b sdk.Dec) bool {
 }
 
 // DecApproxSqrt returns an approximate estimation of x's square root.
-func DecApproxSqrt(x sdk.Dec) (r sdk.Dec) {
+func DecApproxSqrt(x math.LegacyDec) (r math.LegacyDec) {
 	var err error
 	r, err = x.ApproxSqrt()
 	if err != nil {
@@ -166,8 +166,8 @@ func RandomInt(r *rand.Rand, min, max math.Int) math.Int {
 }
 
 // RandomDec returns a random decimal in the half-open interval [min, max).
-func RandomDec(r *rand.Rand, min, max sdk.Dec) sdk.Dec {
-	return min.Add(sdk.NewDecFromBigIntWithPrec(new(big.Int).Rand(r, max.Sub(min).BigInt()), sdk.Precision))
+func RandomDec(r *rand.Rand, min, max math.LegacyDec) math.LegacyDec {
+	return min.Add(math.LegacyNewDecFromBigIntWithPrec(new(big.Int).Rand(r, max.Sub(min).BigInt()), math.LegacyPrecision))
 }
 
 // TestAddress returns an address for testing purpose.

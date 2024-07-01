@@ -1,92 +1,94 @@
 syntax = "proto3";
 package mantrachain.liquidity.v1beta1;
 
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/liquidity/v1beta1/params.proto";
 import "mantrachain/liquidity/v1beta1/liquidity.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidity/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Params returns parameters of the module.
+  // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/params";
   }
 
   // Pools returns all liquidity pools.
-  rpc Pools(QueryPoolsRequest) returns (QueryPoolsResponse) {
+  rpc QueryPools(QueryPoolsRequest) returns (QueryPoolsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools";
   }
 
   // Pool returns the specific liquidity pool.
-  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
+  rpc QueryPool(QueryPoolRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}";
   }
 
   // PoolByReserveAddress returns all pools that correspond to the reserve account.
-  rpc PoolByReserveAddress(QueryPoolByReserveAddressRequest) returns (QueryPoolResponse) {
+  rpc QueryPoolByReserveAddress(QueryPoolByReserveAddressRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/reserve_address/{reserve_address}";
   }
 
   // PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-  rpc PoolByPoolCoinDenom(QueryPoolByPoolCoinDenomRequest) returns (QueryPoolResponse) {
+  rpc QueryPoolByPoolCoinDenom(QueryPoolByPoolCoinDenomRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/pool_coin_denom/{pool_coin_denom}";
   }
 
   // Pairs returns all liquidity pairs by denoms.
-  rpc PairsByDenoms(QueryPairsByDenomsRequest) returns (QueryPairsByDenomsResponse) {
+  rpc QueryPairsByDenoms(QueryPairsByDenomsRequest) returns (QueryPairsByDenomsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs_by_denoms";
   }
 
   // Pairs returns all liquidity pairs.
-  rpc Pairs(QueryPairsRequest) returns (QueryPairsResponse) {
+  rpc QueryPairs(QueryPairsRequest) returns (QueryPairsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs";
   }
 
   // Pair returns the specific pair.
-  rpc Pair(QueryPairRequest) returns (QueryPairResponse) {
+  rpc QueryPair(QueryPairRequest) returns (QueryPairResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}";
   }
 
   // DepositRequests returns all deposit requests.
-  rpc DepositRequests(QueryDepositRequestsRequest) returns (QueryDepositRequestsResponse) {
+  rpc QueryDepositRequests(QueryDepositRequestsRequest) returns (QueryDepositRequestsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/deposit_requests";
   }
 
   // DepositRequest returns the specific deposit request.
-  rpc DepositRequest(QueryDepositRequestRequest) returns (QueryDepositRequestResponse) {
+  rpc QueryDepositRequest(QueryDepositRequestRequest) returns (QueryDepositRequestResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/deposit_requests/{id}";
   }
 
   // WithdrawRequests returns all withdraw requests.
-  rpc WithdrawRequests(QueryWithdrawRequestsRequest) returns (QueryWithdrawRequestsResponse) {
+  rpc QueryWithdrawRequests(QueryWithdrawRequestsRequest) returns (QueryWithdrawRequestsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/withdraw_requests";
   }
 
   // WithdrawRequest returns the specific withdraw request.
-  rpc WithdrawRequest(QueryWithdrawRequestRequest) returns (QueryWithdrawRequestResponse) {
+  rpc QueryWithdrawRequest(QueryWithdrawRequestRequest) returns (QueryWithdrawRequestResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/withdraw_requests/{id}";
   }
 
   // Orders returns all orders within the pair.
-  rpc Orders(QueryOrdersRequest) returns (QueryOrdersResponse) {
+  rpc QueryOrders(QueryOrdersRequest) returns (QueryOrdersResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}/orders";
   }
 
   // Order returns the specific order.
-  rpc Order(QueryOrderRequest) returns (QueryOrderResponse) {
+  rpc QueryOrder(QueryOrderRequest) returns (QueryOrderResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}/orders/{id}";
   }
 
   // OrdersByOrderer returns orders made by an orderer.
-  rpc OrdersByOrderer(QueryOrdersByOrdererRequest) returns (QueryOrdersResponse) {
+  rpc QueryOrdersByOrderer(QueryOrdersByOrdererRequest) returns (QueryOrdersResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/orders/{orderer}";
   }
 
-  rpc OrderBooks(QueryOrderBooksRequest) returns (QueryOrderBooksResponse) {
+  rpc QueryOrderBooks(QueryOrderBooksRequest) returns (QueryOrderBooksResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/order_books";
   }
 }
@@ -96,7 +98,11 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params holds all the parameters of this module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // QueryPoolsRequest is request type for the Query/Pools RPC method.
@@ -287,15 +293,15 @@ message PoolResponse {
   string pool_coin_denom = 6;
 
   string pool_coin_supply = 7 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 
-  string min_price = 8 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"];
+  string min_price = 8 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
-  string max_price = 9 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"];
+  string max_price = 9 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
-  string price = 10 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"];
+  string price = 10 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];
 
   PoolBalances balances = 11 [(gogoproto.nullable) = false];
 
@@ -315,7 +321,7 @@ message PoolBalances {
 message OrderBookPairResponse {
   uint64 pair_id = 1;
   string base_price = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   repeated OrderBookResponse order_books = 3 [(gogoproto.nullable) = false];
@@ -323,7 +329,7 @@ message OrderBookPairResponse {
 
 message OrderBookResponse {
   string price_unit = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   repeated OrderBookTickResponse sells = 2 [(gogoproto.nullable) = false];
@@ -332,15 +338,15 @@ message OrderBookResponse {
 
 message OrderBookTickResponse {
   string price = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
   string user_order_amount = 2 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
   string pool_order_amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
 }

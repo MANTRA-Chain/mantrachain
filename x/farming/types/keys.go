@@ -10,18 +10,16 @@ import (
 )
 
 const (
-	// ModuleName is the name of the farming module
+	// ModuleName defines the module name
 	ModuleName = "farming"
 
 	// RouterKey is the message router key for the farming module
 	RouterKey = ModuleName
-
-	// StoreKey is the default store key for the farming module
-	StoreKey = ModuleName
 )
 
-// keys for farming store prefixes
 var (
+	ParamsKey = []byte("p_farming")
+
 	GlobalPlanIdKey     = []byte("globalPlanId")
 	LastEpochTimeKey    = []byte("lastEpochTime")
 	CurrentEpochDaysKey = []byte("currentEpochDays")

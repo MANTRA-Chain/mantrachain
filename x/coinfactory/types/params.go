@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
@@ -31,7 +33,7 @@ func NewParams(denomCreationFee sdk.Coins, denomCreationGasConsume uint64) Param
 // default gamm module parameters.
 func DefaultParams() Params {
 	return Params{
-		DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))), // 10 uom
+		DenomCreationFee:        sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(10))), // 10 uom
 		DenomCreationGasConsume: uint64(DefaultCreationGasFee),
 	}
 }

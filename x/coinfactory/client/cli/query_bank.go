@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -45,7 +45,7 @@ func CmdQueryBalance() *cobra.Command {
 				Address:  addr.String(),
 			}
 
-			res, err := queryClient.Balance(context.Background(), params)
+			res, err := queryClient.QueryBalance(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -85,7 +85,7 @@ func CmdQueryDenomMetadata() *cobra.Command {
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.DenomMetadata(context.Background(), params)
+			res, err := queryClient.QueryDenomMetadata(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -125,7 +125,7 @@ func CmdQuerySupplyOf() *cobra.Command {
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.SupplyOf(context.Background(), params)
+			res, err := queryClient.QuerySupplyOf(context.Background(), params)
 			if err != nil {
 				return err
 			}

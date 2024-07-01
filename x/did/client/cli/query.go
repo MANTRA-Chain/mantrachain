@@ -12,7 +12,7 @@ import (
 )
 
 // GetQueryCmd returns the cli query commands for this module
-func GetQueryCmd(queryRoute string) *cobra.Command {
+func GetQueryCmd() *cobra.Command {
 	// Group did queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -37,17 +37,14 @@ func GetCmdQueryIdentifers() *cobra.Command {
 		Short: "Query for all dids",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			result, err := queryClient.DidDocuments(
+			result, err := queryClient.QueryDidDocuments(
 				context.Background(),
 				&types.QueryDidDocumentsRequest{
 					// Leaving status empty on purpose to query all validators.
@@ -73,13 +70,10 @@ func GetCmdQueryIdentifer() *cobra.Command {
 		Short: "Query for an did",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			result, err := queryClient.DidDocument(
+			result, err := queryClient.QueryDidDocument(
 				context.Background(),
 				&types.QueryDidDocumentRequest{
 					Id: args[0],

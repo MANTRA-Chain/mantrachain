@@ -13,27 +13,18 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "airdrop"
 
-	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
-
 	// RouterKey defines the module's message routing key
 	RouterKey = ModuleName
 
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_airdrop"
-)
-
-const (
 	AttributeKeyCampaignId      = "campaign_id"
 	AttributeKeyCampaignAddress = "campaign_address"
 	AttributeKeyCreator         = "creator"
-)
-
-const (
-	LastCampaignIdKey = "Campaign/lastId/"
+	LastCampaignIdKey           = "Campaign/lastId/"
 )
 
 var (
+	ParamsKey = []byte("p_airdrop")
+
 	campaignIndex = "campaign-id"
 	claimedIndex  = "claimed-id"
 
@@ -49,7 +40,7 @@ func KeyPrefix(p string) []byte {
 }
 
 func GetCampaignIndex(id string) []byte {
-	idBz := conv.UnsafeStrToBytes(id)
+	idBz := conv.GetByteKey(id)
 	key := make([]byte, len(campaignIndex)+len(Delimiter)+len(idBz)+len(Delimiter))
 	copy(key, campaignIndex)
 	copy(key[len(campaignIndex):], Delimiter)

@@ -1,42 +1,43 @@
 syntax = "proto3";
-
 package mantrachain.marketmaker.v1beta1;
 
-import "mantrachain/marketmaker/v1beta1/marketmaker.proto";
-import "cosmos_proto/cosmos.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "google/protobuf/any.proto";
-import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/marketmaker/v1beta1/params.proto";
+import "mantrachain/marketmaker/v1beta1/marketmaker.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types";
 
-// Query defines the gRPC query service for the marketmaker module.
+// Query defines the gRPC querier service.
 service Query {
-  // Params returns parameters of the marketmaker module.
+  // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get                                           = "/mantrachain/marketmaker/v1beta1/params";
+    option (google.api.http).get = "/mantrachain/marketmaker/v1beta1/params";
   }
 
   // MarketMakers returns all market makers.
-  rpc MarketMakers(QueryMarketMakersRequest) returns (QueryMarketMakersResponse) {
+  rpc QueryMarketMakers(QueryMarketMakersRequest) returns (QueryMarketMakersResponse) {
     option (google.api.http).get = "/mantrachain/marketmaker/v1beta1/marketmakers";
   }
 
   // Incentive returns a specific incentive.
-  rpc Incentive(QueryIncentiveRequest) returns (QueryIncentiveResponse) {
+  rpc QueryIncentive(QueryIncentiveRequest) returns (QueryIncentiveResponse) {
     option (google.api.http).get = "/mantrachain/marketmaker/v1beta1/incentive/{address}";
   }
 }
 
-// QueryParamsRequest is the request type for the Query/Params RPC method.
+// QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
-// QueryParamsResponse is the response type for the Query/Params RPC method.
+// QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params holds all the parameters of this module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // QueryMarketMakersRequest is the request type for the Query/MarketMakers RPC method.

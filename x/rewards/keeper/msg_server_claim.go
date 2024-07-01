@@ -4,7 +4,7 @@ import (
 	"context"
 	"math"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,20 +22,20 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 	provider, found := k.GetProvider(ctx, msg.GetCreator())
 
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrProviderNotFound, "provider not found")
+		return nil, errors.Wrap(types.ErrProviderNotFound, "provider not found")
 	}
 
 	endClaimedSnapshotId := k.GetEndClaimedSnapshotId(ctx, msg.PairId)
 
 	pairIdx, found := provider.PairIdToIdx[msg.PairId]
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrProviderPairNotFound, "provider pair not found")
+		return nil, errors.Wrap(types.ErrProviderPairNotFound, "provider pair not found")
 	}
 
 	providerPair := provider.Pairs[pairIdx]
 
 	if providerPair == nil {
-		return nil, sdkerrors.Wrap(types.ErrProviderPairNotFound, "provider pair not found")
+		return nil, errors.Wrap(types.ErrProviderPairNotFound, "provider pair not found")
 	}
 
 	startClaimedSnapshotId := providerPair.LastClaimedSnapshotId
@@ -75,7 +75,7 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 	pair, found := k.liquidityKeeper.GetPair(ctx, msg.PairId)
 
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrPairNotFound, "pair not found")
+		return nil, errors.Wrap(types.ErrPairNotFound, "pair not found")
 	}
 
 	rewards := sdk.NewCoins()
@@ -91,7 +91,7 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 	}
 
 	if !rewards.IsZero() {
-		if err := k.gk.CheckCanTransferCoins(ctx, creator, rewards); err != nil {
+		if err := k.guardKeeper.CheckCanTransferCoins(ctx, creator, rewards); err != nil {
 			return nil, err
 		}
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, creator, rewards)

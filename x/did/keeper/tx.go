@@ -1,8 +1,8 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
@@ -24,12 +24,12 @@ func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, controller stri
 	// check that the did is not already taken
 	_, found := k.GetDidDocument(ctx, []byte(id))
 	if found {
-		err := sdkerrors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", id)
-		k.Logger(ctx).Error(err.Error())
+		err := errors.Wrapf(types.ErrDidDocumentFound, "a document with did %s already exists", id)
+		k.logger.Error(err.Error())
 		return "", err
 	}
 
-	k.Logger(ctx).Info("request to create a did document", "target did", id)
+	k.logger.Info("request to create a did document", "target did", id)
 
 	did := types.NewChainDID(ctx.ChainID(), id)
 
@@ -48,18 +48,18 @@ func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, controller stri
 	didM := types.NewDidMetadata(ctx.TxBytes(), ctx.BlockTime())
 	k.SetDidMetadata(ctx, []byte(id), didM)
 
-	k.Logger(ctx).Info("created did document", "did", id, "controller", controller)
+	k.logger.Info("created did document", "did", id, "controller", controller)
 
 	// emit the event
 	if err := ctx.EventManager().EmitTypedEvents(types.NewDidDocumentCreatedEvent(id, controller)); err != nil {
-		k.Logger(ctx).Error("failed to emit DidDocumentCreatedEvent", "did", id, "controller", controller, "err", err)
+		k.logger.Error("failed to emit DidDocumentCreatedEvent", "did", id, "controller", controller, "err", err)
 	}
 
 	return didDocument.Id, nil
 }
 
 func (k Keeper) ForceRemoveDidDocumentIfExists(ctx sdk.Context, id string) (bool, error) {
-	k.Logger(ctx).Info("request to delete a did document if exists", "target did", id)
+	k.logger.Info("request to delete a did document if exists", "target did", id)
 
 	found := k.HasDidDocument(ctx, []byte(id))
 	if !found {

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
@@ -47,25 +47,22 @@ func (op *BulkSendCoinsOperation) QueueSendCoins(fromAddr, toAddr sdk.AccAddress
 	}
 }
 
-// Run runs BankKeeper.InputOutputCoins once for queued operations.
+// Run runs BankKeeper.SendCoins for queued operations.
 func (op *BulkSendCoinsOperation) Run(ctx sdk.Context, bankKeeper BankKeeper) error {
 	if len(op.txs) > 0 {
-		var (
-			inputs  []banktypes.Input
-			outputs []banktypes.Output
-		)
 		for _, tx := range op.txs {
-			inputs = append(inputs, banktypes.NewInput(tx.from, tx.amt))
-			outputs = append(outputs, banktypes.NewOutput(tx.to, tx.amt))
+			err := bankKeeper.SendCoins(ctx, tx.from, tx.to, tx.amt)
+			if err != nil {
+				return err
+			}
 		}
-		return bankKeeper.InputOutputCoins(ctx, inputs, outputs)
 	}
 	return nil
 }
 
 // NewPoolResponse returns a new PoolResponse from given information.
 func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply math.Int) PoolResponse {
-	var price *sdk.Dec
+	var price *sdkmath.LegacyDec
 	if !pool.Disabled {
 		p := pool.AMMPool(rx.Amount, ry.Amount, math.Int{}).Price()
 		price = &p
@@ -93,15 +90,15 @@ func NewPoolResponse(pool Pool, rx, ry sdk.Coin, poolCoinSupply math.Int) PoolRe
 
 // IsTooSmallOrderAmount returns whether the order amount is too small for
 // matching, based on the order price.
-func IsTooSmallOrderAmount(amt math.Int, price sdk.Dec) bool {
-	return amt.LT(amm.MinCoinAmount) || price.MulInt(amt).LT(sdk.NewDecFromInt(amm.MinCoinAmount))
+func IsTooSmallOrderAmount(amt math.Int, price sdkmath.LegacyDec) bool {
+	return amt.LT(amm.MinCoinAmount) || price.MulInt(amt).LT(math.LegacyNewDecFromInt(amm.MinCoinAmount))
 }
 
 // PriceLimits returns the lowest and the highest price limits with given last price
 // and price limit ratio.
-func PriceLimits(lastPrice, priceLimitRatio sdk.Dec, tickPrec int) (lowestPrice, highestPrice sdk.Dec) {
-	lowestPrice = amm.PriceToUpTick(lastPrice.Mul(sdk.OneDec().Sub(priceLimitRatio)), tickPrec)
-	highestPrice = amm.PriceToDownTick(lastPrice.Mul(sdk.OneDec().Add(priceLimitRatio)), tickPrec)
+func PriceLimits(lastPrice, priceLimitRatio sdkmath.LegacyDec, tickPrec int) (lowestPrice, highestPrice sdkmath.LegacyDec) {
+	lowestPrice = amm.PriceToUpTick(lastPrice.Mul(math.LegacyOneDec().Sub(priceLimitRatio)), tickPrec)
+	highestPrice = amm.PriceToDownTick(lastPrice.Mul(math.LegacyOneDec().Add(priceLimitRatio)), tickPrec)
 	return
 }
 
@@ -124,12 +121,12 @@ func (index MMOrderIndex) GetOrderer() sdk.AccAddress {
 // MMOrderTick holds information about each tick's price and amount of an MMOrder.
 type MMOrderTick struct {
 	OfferCoinAmount math.Int
-	Price           sdk.Dec
+	Price           sdkmath.LegacyDec
 	Amount          math.Int
 }
 
 // MMOrderTicks returns fairly distributed tick information with given parameters.
-func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdk.Dec, amt math.Int, maxNumTicks, tickPrec int) (ticks []MMOrderTick) {
+func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdkmath.LegacyDec, amt math.Int, maxNumTicks, tickPrec int) (ticks []MMOrderTick) {
 	ammDir := amm.OrderDirection(dir)
 	if minPrice.Equal(maxPrice) {
 		return []MMOrderTick{{OfferCoinAmount: amm.OfferCoinAmount(ammDir, minPrice, amt), Price: minPrice, Amount: amt}}
@@ -137,7 +134,7 @@ func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdk.Dec, amt math.Int, 
 	gap := maxPrice.Sub(minPrice).QuoInt64(int64(maxNumTicks - 1))
 	switch dir {
 	case OrderDirectionBuy:
-		var prevP sdk.Dec
+		var prevP sdkmath.LegacyDec
 		for i := 0; i < maxNumTicks-1; i++ {
 			p := amm.PriceToDownTick(minPrice.Add(gap.MulInt64(int64(i))), tickPrec)
 			if prevP.IsNil() || !p.Equal(prevP) {
@@ -159,7 +156,7 @@ func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdk.Dec, amt math.Int, 
 			Amount:          amt,
 		})
 	case OrderDirectionSell:
-		var prevP sdk.Dec
+		var prevP sdkmath.LegacyDec
 		for i := 0; i < maxNumTicks-1; i++ {
 			p := amm.PriceToUpTick(maxPrice.Sub(gap.MulInt64(int64(i))), tickPrec)
 			if prevP.IsNil() || !p.Equal(prevP) {

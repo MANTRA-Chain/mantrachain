@@ -1,11 +1,13 @@
 syntax = "proto3";
 package mantrachain.token.v1;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 option (gogoproto.equal_all) = true;
 
+// TokenOption is a key-value pair for token options
 message TokenOption {
   option (gogoproto.goproto_getters) = false;
 
@@ -14,6 +16,7 @@ message TokenOption {
   string sub_value = 3;
 }
 
+// TokenAttribute is a key-value pair for token attributes
 message TokenAttribute {
   option (gogoproto.goproto_getters) = false;
 
@@ -22,6 +25,7 @@ message TokenAttribute {
   string sub_value = 3;
 }
 
+// TokenImage is a key-value pair for token images
 message TokenImage {
   option (gogoproto.goproto_getters) = false;
 
@@ -29,9 +33,65 @@ message TokenImage {
   string url = 2;
 }
 
+// TokenLink is a key-value pair for token links
 message TokenLink {
   option (gogoproto.goproto_getters) = false;
 
   string type = 1;
   string url = 2;
+}
+
+// MsgNftImageMetadata
+message MsgNftImageMetadata { TokenImage image = 1; }
+
+// MsgNftImagesMetadata
+message MsgNftsImagesMetadata {
+  repeated TokenImage images = 1;
+  repeated string nfts_ids = 2;
+  repeated uint64 images_indexes = 3;
+}
+
+// MsgNftImageMetadata
+message MsgNftsImagesIndexes { repeated uint64 indexes = 1; }
+
+// MsgNftsImagesMetadata
+message MsgNftsImagesGroupedMetadata {
+  repeated TokenImage images = 1;
+  repeated MsgNftsIds nfts_ids_grouped = 2;
+  repeated MsgNftsImagesIndexes images_indexes = 3;
+}
+
+// MsgNftsIds
+message MsgNftsIds { repeated string nfts_ids = 1; }
+
+// MsgNftsMetadata
+message MsgNftsMetadata { repeated MsgNftMetadata nfts = 1; }
+
+// MsgCreateNftCollectionMetadata
+message MsgCreateNftCollectionMetadata {
+  string id = 1;
+  string name = 2;
+  repeated TokenImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated TokenLink links = 6;
+  repeated TokenOption options = 7;
+  string category = 8;
+  string symbol = 9;
+  bool opened = 10;
+  bool soul_bonded_nfts = 11;
+  bool restricted_nfts = 12;
+  google.protobuf.Any data = 13;
+}
+
+// MsgNftMetadata
+message MsgNftMetadata {
+  string id = 1;
+  string title = 2;
+  repeated TokenImage images = 3;
+  string url = 4;
+  string description = 5;
+  repeated TokenLink links = 6;
+  repeated TokenAttribute attributes = 7;
+  google.protobuf.Any data = 8;
 }

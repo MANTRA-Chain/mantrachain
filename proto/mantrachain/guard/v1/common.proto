@@ -8,15 +8,14 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
 option (gogoproto.equal_all) = true;
 
 message MsgAccounts {
-  repeated string accounts = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated string accounts = 1
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-message MsgIndexes {
-  repeated bytes indexes = 1;
-}
+message MsgIndexes { repeated bytes indexes = 1; }
 
 message AccountPrivileges {
-  bytes account = 1;
+  bytes account = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   bytes privileges = 2;
 }
 
@@ -31,6 +30,25 @@ message AuthzGrantRevokeMsgType {
   bool grant = 2;
 }
 
-message AuthzGrantRevokeMsgsTypes {
-  repeated AuthzGrantRevokeMsgType msgs = 1;
+message AuthzGrantRevokeMsgsTypes { repeated AuthzGrantRevokeMsgType msgs = 1; }
+
+message MsgAccountsPrivileges {
+  repeated string accounts = 1
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated bytes privileges = 2;
+}
+
+message MsgAccountsPrivilegesGrouped {
+  repeated MsgAccounts accounts = 1;
+  repeated bytes privileges = 2;
+}
+
+message MsgRequiredPrivileges {
+  repeated bytes indexes = 1;
+  repeated bytes privileges = 2;
+}
+
+message MsgRequiredPrivilegesGrouped {
+  repeated MsgIndexes indexes = 1;
+  repeated bytes privileges = 2;
 }

@@ -6,8 +6,11 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
+	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -34,6 +37,101 @@ var _ = time.Kitchen
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgUpdateParams is the Msg/UpdateParams request type.
+type MsgUpdateParams struct {
+	// authority is the address that controls the module (defaults to x/gov unless overwritten).
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	// params defines the module parameters to update.
+	//
+	// NOTE: All parameters must be supplied.
+	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
+}
+
+func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
+func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParams) ProtoMessage()    {}
+func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6e47b23c91728c6f, []int{0}
+}
+func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
+}
+func (m *MsgUpdateParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
+
+func (m *MsgUpdateParams) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateParams) GetParams() Params {
+	if m != nil {
+		return m.Params
+	}
+	return Params{}
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+type MsgUpdateParamsResponse struct {
+}
+
+func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse{} }
+func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateParamsResponse) ProtoMessage()    {}
+func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6e47b23c91728c6f, []int{1}
+}
+func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateParamsResponse.Merge(m, src)
+}
+func (m *MsgUpdateParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
+
 type MsgCreatePrivatePlan struct {
 	Creator           string             `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Description       string             `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
@@ -46,7 +144,7 @@ func (m *MsgCreatePrivatePlan) Reset()         { *m = MsgCreatePrivatePlan{} }
 func (m *MsgCreatePrivatePlan) String() string { return proto.CompactTextString(m) }
 func (*MsgCreatePrivatePlan) ProtoMessage()    {}
 func (*MsgCreatePrivatePlan) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{0}
+	return fileDescriptor_6e47b23c91728c6f, []int{2}
 }
 func (m *MsgCreatePrivatePlan) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -75,6 +173,41 @@ func (m *MsgCreatePrivatePlan) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePrivatePlan proto.InternalMessageInfo
 
+func (m *MsgCreatePrivatePlan) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreatePrivatePlan) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgCreatePrivatePlan) GetRewardAllocations() []RewardAllocation {
+	if m != nil {
+		return m.RewardAllocations
+	}
+	return nil
+}
+
+func (m *MsgCreatePrivatePlan) GetStartTime() time.Time {
+	if m != nil {
+		return m.StartTime
+	}
+	return time.Time{}
+}
+
+func (m *MsgCreatePrivatePlan) GetEndTime() time.Time {
+	if m != nil {
+		return m.EndTime
+	}
+	return time.Time{}
+}
+
 type MsgCreatePrivatePlanResponse struct {
 	PlanId             uint64 `protobuf:"varint,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
 	FarmingPoolAddress string `protobuf:"bytes,2,opt,name=farming_pool_address,json=farmingPoolAddress,proto3" json:"farming_pool_address,omitempty"`
@@ -84,7 +217,7 @@ func (m *MsgCreatePrivatePlanResponse) Reset()         { *m = MsgCreatePrivatePl
 func (m *MsgCreatePrivatePlanResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreatePrivatePlanResponse) ProtoMessage()    {}
 func (*MsgCreatePrivatePlanResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{1}
+	return fileDescriptor_6e47b23c91728c6f, []int{3}
 }
 func (m *MsgCreatePrivatePlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -113,6 +246,20 @@ func (m *MsgCreatePrivatePlanResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreatePrivatePlanResponse proto.InternalMessageInfo
 
+func (m *MsgCreatePrivatePlanResponse) GetPlanId() uint64 {
+	if m != nil {
+		return m.PlanId
+	}
+	return 0
+}
+
+func (m *MsgCreatePrivatePlanResponse) GetFarmingPoolAddress() string {
+	if m != nil {
+		return m.FarmingPoolAddress
+	}
+	return ""
+}
+
 type MsgTerminatePrivatePlan struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	PlanId  uint64 `protobuf:"varint,2,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
@@ -122,7 +269,7 @@ func (m *MsgTerminatePrivatePlan) Reset()         { *m = MsgTerminatePrivatePlan
 func (m *MsgTerminatePrivatePlan) String() string { return proto.CompactTextString(m) }
 func (*MsgTerminatePrivatePlan) ProtoMessage()    {}
 func (*MsgTerminatePrivatePlan) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{2}
+	return fileDescriptor_6e47b23c91728c6f, []int{4}
 }
 func (m *MsgTerminatePrivatePlan) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -151,6 +298,20 @@ func (m *MsgTerminatePrivatePlan) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTerminatePrivatePlan proto.InternalMessageInfo
 
+func (m *MsgTerminatePrivatePlan) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgTerminatePrivatePlan) GetPlanId() uint64 {
+	if m != nil {
+		return m.PlanId
+	}
+	return 0
+}
+
 type MsgTerminatePrivatePlanResponse struct {
 }
 
@@ -158,7 +319,7 @@ func (m *MsgTerminatePrivatePlanResponse) Reset()         { *m = MsgTerminatePri
 func (m *MsgTerminatePrivatePlanResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgTerminatePrivatePlanResponse) ProtoMessage()    {}
 func (*MsgTerminatePrivatePlanResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{3}
+	return fileDescriptor_6e47b23c91728c6f, []int{5}
 }
 func (m *MsgTerminatePrivatePlanResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -196,7 +357,7 @@ func (m *MsgFarm) Reset()         { *m = MsgFarm{} }
 func (m *MsgFarm) String() string { return proto.CompactTextString(m) }
 func (*MsgFarm) ProtoMessage()    {}
 func (*MsgFarm) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{4}
+	return fileDescriptor_6e47b23c91728c6f, []int{6}
 }
 func (m *MsgFarm) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -225,6 +386,20 @@ func (m *MsgFarm) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFarm proto.InternalMessageInfo
 
+func (m *MsgFarm) GetFarmer() string {
+	if m != nil {
+		return m.Farmer
+	}
+	return ""
+}
+
+func (m *MsgFarm) GetCoin() types.Coin {
+	if m != nil {
+		return m.Coin
+	}
+	return types.Coin{}
+}
+
 type MsgFarmResponse struct {
 	WithdrawnRewards github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=withdrawn_rewards,json=withdrawnRewards,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"withdrawn_rewards"`
 }
@@ -233,7 +408,7 @@ func (m *MsgFarmResponse) Reset()         { *m = MsgFarmResponse{} }
 func (m *MsgFarmResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgFarmResponse) ProtoMessage()    {}
 func (*MsgFarmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{5}
+	return fileDescriptor_6e47b23c91728c6f, []int{7}
 }
 func (m *MsgFarmResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -262,6 +437,13 @@ func (m *MsgFarmResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFarmResponse proto.InternalMessageInfo
 
+func (m *MsgFarmResponse) GetWithdrawnRewards() github_com_cosmos_cosmos_sdk_types.Coins {
+	if m != nil {
+		return m.WithdrawnRewards
+	}
+	return nil
+}
+
 type MsgUnfarm struct {
 	Farmer string     `protobuf:"bytes,1,opt,name=farmer,proto3" json:"farmer,omitempty"`
 	Coin   types.Coin `protobuf:"bytes,2,opt,name=coin,proto3" json:"coin"`
@@ -271,7 +453,7 @@ func (m *MsgUnfarm) Reset()         { *m = MsgUnfarm{} }
 func (m *MsgUnfarm) String() string { return proto.CompactTextString(m) }
 func (*MsgUnfarm) ProtoMessage()    {}
 func (*MsgUnfarm) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{6}
+	return fileDescriptor_6e47b23c91728c6f, []int{8}
 }
 func (m *MsgUnfarm) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -300,6 +482,20 @@ func (m *MsgUnfarm) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnfarm proto.InternalMessageInfo
 
+func (m *MsgUnfarm) GetFarmer() string {
+	if m != nil {
+		return m.Farmer
+	}
+	return ""
+}
+
+func (m *MsgUnfarm) GetCoin() types.Coin {
+	if m != nil {
+		return m.Coin
+	}
+	return types.Coin{}
+}
+
 type MsgUnfarmResponse struct {
 	WithdrawnRewards github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=withdrawn_rewards,json=withdrawnRewards,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"withdrawn_rewards"`
 }
@@ -308,7 +504,7 @@ func (m *MsgUnfarmResponse) Reset()         { *m = MsgUnfarmResponse{} }
 func (m *MsgUnfarmResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnfarmResponse) ProtoMessage()    {}
 func (*MsgUnfarmResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{7}
+	return fileDescriptor_6e47b23c91728c6f, []int{9}
 }
 func (m *MsgUnfarmResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -337,6 +533,13 @@ func (m *MsgUnfarmResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnfarmResponse proto.InternalMessageInfo
 
+func (m *MsgUnfarmResponse) GetWithdrawnRewards() github_com_cosmos_cosmos_sdk_types.Coins {
+	if m != nil {
+		return m.WithdrawnRewards
+	}
+	return nil
+}
+
 type MsgHarvest struct {
 	Farmer string `protobuf:"bytes,1,opt,name=farmer,proto3" json:"farmer,omitempty"`
 	Denom  string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
@@ -346,7 +549,7 @@ func (m *MsgHarvest) Reset()         { *m = MsgHarvest{} }
 func (m *MsgHarvest) String() string { return proto.CompactTextString(m) }
 func (*MsgHarvest) ProtoMessage()    {}
 func (*MsgHarvest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{8}
+	return fileDescriptor_6e47b23c91728c6f, []int{10}
 }
 func (m *MsgHarvest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -375,6 +578,20 @@ func (m *MsgHarvest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgHarvest proto.InternalMessageInfo
 
+func (m *MsgHarvest) GetFarmer() string {
+	if m != nil {
+		return m.Farmer
+	}
+	return ""
+}
+
+func (m *MsgHarvest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 type MsgHarvestResponse struct {
 	WithdrawnRewards github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=withdrawn_rewards,json=withdrawnRewards,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"withdrawn_rewards"`
 }
@@ -383,7 +600,7 @@ func (m *MsgHarvestResponse) Reset()         { *m = MsgHarvestResponse{} }
 func (m *MsgHarvestResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgHarvestResponse) ProtoMessage()    {}
 func (*MsgHarvestResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6e47b23c91728c6f, []int{9}
+	return fileDescriptor_6e47b23c91728c6f, []int{11}
 }
 func (m *MsgHarvestResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -412,7 +629,16 @@ func (m *MsgHarvestResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgHarvestResponse proto.InternalMessageInfo
 
+func (m *MsgHarvestResponse) GetWithdrawnRewards() github_com_cosmos_cosmos_sdk_types.Coins {
+	if m != nil {
+		return m.WithdrawnRewards
+	}
+	return nil
+}
+
 func init() {
+	proto.RegisterType((*MsgUpdateParams)(nil), "mantrachain.lpfarm.v1beta1.MsgUpdateParams")
+	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "mantrachain.lpfarm.v1beta1.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgCreatePrivatePlan)(nil), "mantrachain.lpfarm.v1beta1.MsgCreatePrivatePlan")
 	proto.RegisterType((*MsgCreatePrivatePlanResponse)(nil), "mantrachain.lpfarm.v1beta1.MsgCreatePrivatePlanResponse")
 	proto.RegisterType((*MsgTerminatePrivatePlan)(nil), "mantrachain.lpfarm.v1beta1.MsgTerminatePrivatePlan")
@@ -430,52 +656,66 @@ func init() {
 }
 
 var fileDescriptor_6e47b23c91728c6f = []byte{
-	// 718 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x55, 0x4d, 0x6f, 0xd3, 0x4c,
-	0x10, 0x8e, 0xdb, 0x34, 0x69, 0x27, 0x87, 0xf7, 0x8d, 0x15, 0xbd, 0xcd, 0x6b, 0x21, 0x27, 0xb8,
-	0x02, 0x22, 0x41, 0xed, 0x36, 0xe5, 0x80, 0xe0, 0x80, 0xd2, 0x4a, 0x15, 0x48, 0x18, 0x55, 0x56,
-	0x41, 0x15, 0x07, 0xa2, 0x8d, 0xbd, 0x75, 0x2d, 0xec, 0x5d, 0x6b, 0xd7, 0xfd, 0xe0, 0xc4, 0x15,
-	0x09, 0x81, 0xfa, 0x3b, 0x38, 0xf0, 0x07, 0xf8, 0x03, 0x3d, 0xf6, 0xc8, 0x89, 0x42, 0xfb, 0x47,
-	0xd0, 0xae, 0x3f, 0x88, 0x20, 0x6d, 0x52, 0x84, 0x04, 0x27, 0x7b, 0x66, 0x9e, 0xe7, 0xd9, 0x99,
-	0xd9, 0x19, 0x1b, 0x16, 0x22, 0x44, 0x12, 0x86, 0xdc, 0x1d, 0x14, 0x10, 0x2b, 0x8c, 0xb7, 0x11,
-	0x8b, 0xac, 0xbd, 0xe5, 0x01, 0x4e, 0xd0, 0xb2, 0x95, 0x1c, 0x98, 0x31, 0xa3, 0x09, 0x55, 0xb5,
-	0x21, 0x90, 0x99, 0x82, 0xcc, 0x0c, 0xa4, 0xe9, 0x2e, 0xe5, 0x11, 0xe5, 0xd6, 0x00, 0x71, 0x5c,
-	0x30, 0x5d, 0x1a, 0x90, 0x94, 0xab, 0x35, 0x7c, 0xea, 0x53, 0xf9, 0x6a, 0x89, 0xb7, 0xcc, 0xdb,
-	0xf2, 0x29, 0xf5, 0x43, 0x6c, 0x49, 0x6b, 0xb0, 0xbb, 0x6d, 0x25, 0x41, 0x84, 0x79, 0x82, 0xa2,
-	0x38, 0x03, 0xdc, 0xb8, 0x20, 0xaf, 0x2c, 0x03, 0x09, 0x34, 0x3e, 0x4e, 0x41, 0xc3, 0xe6, 0xfe,
-	0x1a, 0xc3, 0x28, 0xc1, 0x1b, 0x2c, 0xd8, 0x13, 0x8f, 0x10, 0x11, 0xb5, 0x09, 0x55, 0x57, 0x38,
-	0x29, 0x6b, 0x2a, 0x6d, 0xa5, 0x33, 0xe7, 0xe4, 0xa6, 0xda, 0x86, 0x9a, 0x87, 0xb9, 0xcb, 0x82,
-	0x38, 0x09, 0x28, 0x69, 0x4e, 0xc9, 0xe8, 0xb0, 0x4b, 0x45, 0xa0, 0x32, 0xbc, 0x8f, 0x98, 0xd7,
-	0x47, 0x61, 0x48, 0x5d, 0x24, 0x9c, 0xbc, 0x39, 0xdd, 0x9e, 0xee, 0xd4, 0xba, 0xb7, 0xcc, 0xf3,
-	0xbb, 0x61, 0x3a, 0x92, 0xd5, 0x2b, 0x48, 0xab, 0xe5, 0xa3, 0xcf, 0xad, 0x92, 0x53, 0x67, 0x3f,
-	0xf8, 0xb9, 0xba, 0x06, 0xc0, 0x13, 0xc4, 0x92, 0xbe, 0xa8, 0xbc, 0x59, 0x6e, 0x2b, 0x9d, 0x5a,
-	0x57, 0x33, 0xd3, 0xb6, 0x98, 0x79, 0x5b, 0xcc, 0xcd, 0xbc, 0x2d, 0xab, 0xb3, 0x42, 0xe8, 0xf0,
-	0xa4, 0xa5, 0x38, 0x73, 0x92, 0x27, 0x22, 0xea, 0x7d, 0x98, 0xc5, 0xc4, 0x4b, 0x25, 0x66, 0x2e,
-	0x21, 0x51, 0xc5, 0xc4, 0x13, 0x7e, 0x23, 0x80, 0x2b, 0xa3, 0x9a, 0xe7, 0x60, 0x1e, 0x53, 0xc2,
-	0xb1, 0x3a, 0x0f, 0xd5, 0x38, 0x44, 0xa4, 0x1f, 0x78, 0xb2, 0x89, 0x65, 0xa7, 0x22, 0xcc, 0x87,
-	0x9e, 0xba, 0x04, 0x0d, 0x51, 0x78, 0x40, 0xfc, 0x7e, 0x4c, 0x69, 0xd8, 0x47, 0x9e, 0xc7, 0x30,
-	0xe7, 0x59, 0x33, 0xd5, 0x2c, 0xb6, 0x41, 0x69, 0xd8, 0x4b, 0x23, 0xc6, 0x23, 0x98, 0xb7, 0xb9,
-	0xbf, 0x89, 0x45, 0x60, 0xe2, 0xab, 0x1a, 0x3a, 0x7f, 0x6a, 0xf8, 0x7c, 0xe3, 0x2a, 0xb4, 0xce,
-	0x51, 0xcb, 0x73, 0x37, 0x9e, 0x42, 0xd5, 0xe6, 0xfe, 0x3a, 0x62, 0x91, 0xfa, 0x1f, 0x54, 0x44,
-	0x46, 0x38, 0xd7, 0xcf, 0x2c, 0x75, 0x05, 0xca, 0x62, 0x54, 0xa5, 0x76, 0xad, 0xfb, 0xbf, 0x99,
-	0xce, 0xb2, 0x29, 0x66, 0xb9, 0xb8, 0xd2, 0x35, 0x1a, 0xe4, 0xd7, 0x28, 0xc1, 0xc6, 0x1b, 0x05,
-	0xfe, 0xc9, 0x84, 0x8b, 0x3e, 0x1d, 0x40, 0x7d, 0x3f, 0x48, 0x76, 0x3c, 0x86, 0xf6, 0x49, 0x3f,
-	0xbd, 0x6c, 0xde, 0x54, 0xe4, 0xbc, 0x5c, 0xa0, 0xba, 0x24, 0x54, 0xdf, 0x9f, 0xb4, 0x3a, 0x7e,
-	0x90, 0xec, 0xec, 0x0e, 0x4c, 0x97, 0x46, 0x56, 0xb6, 0x4e, 0xe9, 0x63, 0x91, 0x7b, 0x2f, 0xac,
-	0xe4, 0x65, 0x8c, 0xb9, 0x24, 0x70, 0xe7, 0xdf, 0xe2, 0x94, 0x74, 0xd2, 0xb8, 0xb1, 0x05, 0x73,
-	0x36, 0xf7, 0x9f, 0x90, 0xed, 0xdf, 0x5e, 0xe7, 0x5b, 0x05, 0xea, 0x85, 0xf4, 0x5f, 0x50, 0xe9,
-	0x5d, 0x00, 0x9b, 0xfb, 0x0f, 0x10, 0xdb, 0xc3, 0x3c, 0x39, 0xb7, 0xd4, 0x06, 0xcc, 0x78, 0x98,
-	0xd0, 0x28, 0x9b, 0xc4, 0xd4, 0x30, 0xde, 0x29, 0xa0, 0x7e, 0x27, 0xff, 0xf9, 0x62, 0xba, 0x1f,
-	0xca, 0x30, 0x6d, 0x73, 0x5f, 0x7d, 0x05, 0xf5, 0x9f, 0x3f, 0x5d, 0x4b, 0x17, 0x7d, 0x62, 0x46,
-	0xed, 0xab, 0x76, 0xe7, 0xb2, 0x8c, 0xa2, 0x05, 0xaf, 0x15, 0x68, 0x8c, 0x5c, 0xca, 0x95, 0x31,
-	0x92, 0xa3, 0x48, 0xda, 0xbd, 0x5f, 0x20, 0x15, 0xa9, 0x6c, 0x41, 0x59, 0x6e, 0xeb, 0xc2, 0x18,
-	0x11, 0x01, 0xd2, 0x6e, 0x4e, 0x00, 0x2a, 0x94, 0x9f, 0x43, 0x25, 0xdb, 0x90, 0x6b, 0x63, 0x68,
-	0x29, 0x4c, 0x5b, 0x9c, 0x08, 0x56, 0xe8, 0x23, 0xa8, 0xe6, 0x73, 0x79, 0x7d, 0x0c, 0x33, 0xc3,
-	0x69, 0xe6, 0x64, 0xb8, 0xfc, 0x88, 0x55, 0xe7, 0xe8, 0xab, 0x5e, 0x3a, 0x3a, 0xd5, 0x95, 0xe3,
-	0x53, 0x5d, 0xf9, 0x72, 0xaa, 0x2b, 0x87, 0x67, 0x7a, 0xe9, 0xf8, 0x4c, 0x2f, 0x7d, 0x3a, 0xd3,
-	0x4b, 0xcf, 0x6e, 0x0f, 0x8d, 0xa2, 0xdd, 0x7b, 0xbc, 0xe9, 0xf4, 0x16, 0xd7, 0x03, 0x82, 0x88,
-	0x8b, 0xad, 0xe1, 0x1f, 0xe9, 0x41, 0xfe, 0x2b, 0x95, 0xc3, 0x39, 0xa8, 0xc8, 0x9f, 0xc4, 0xca,
-	0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf9, 0xa4, 0xee, 0x60, 0x05, 0x08, 0x00, 0x00,
+	// 929 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6f, 0xe3, 0x44,
+	0x14, 0xaf, 0xdb, 0x34, 0xd9, 0xbc, 0x22, 0x2d, 0xb1, 0x22, 0x9a, 0x5a, 0xab, 0xa4, 0x78, 0xf9,
+	0x28, 0xdd, 0xd6, 0xee, 0x07, 0x02, 0x14, 0x84, 0x50, 0x53, 0xb1, 0x82, 0x43, 0x56, 0x2b, 0x53,
+	0x24, 0xc4, 0x81, 0x68, 0x12, 0x4f, 0x5d, 0x6b, 0xe3, 0x19, 0x6b, 0x66, 0xfa, 0xb1, 0x27, 0x10,
+	0xe2, 0xb0, 0x02, 0x81, 0xf6, 0xbf, 0x00, 0x71, 0xea, 0x81, 0x3f, 0x62, 0xb9, 0xad, 0x38, 0x71,
+	0xa2, 0xa8, 0x3d, 0xf4, 0x4f, 0xe0, 0x8a, 0x66, 0x3c, 0x76, 0x43, 0x1a, 0x27, 0x29, 0x42, 0x82,
+	0x4b, 0x9d, 0xf7, 0xde, 0xef, 0xbd, 0x79, 0xbf, 0xf7, 0x31, 0x53, 0xb8, 0x1b, 0x21, 0x22, 0x18,
+	0xea, 0x1d, 0xa0, 0x90, 0xb8, 0xfd, 0x78, 0x1f, 0xb1, 0xc8, 0x3d, 0xda, 0xec, 0x62, 0x81, 0x36,
+	0x5d, 0x71, 0xe2, 0xc4, 0x8c, 0x0a, 0x6a, 0x5a, 0x03, 0x20, 0x27, 0x01, 0x39, 0x1a, 0x64, 0x55,
+	0x50, 0x14, 0x12, 0xea, 0xaa, 0xbf, 0x09, 0xdc, 0xaa, 0xf7, 0x28, 0x8f, 0x28, 0x77, 0xbb, 0x88,
+	0xe3, 0x2c, 0x58, 0x8f, 0x86, 0x44, 0xdb, 0x17, 0xb5, 0x3d, 0xe2, 0x81, 0x7b, 0xb4, 0x29, 0x3f,
+	0xda, 0xb0, 0x94, 0x18, 0x3a, 0x4a, 0x72, 0x13, 0x41, 0x9b, 0xaa, 0x01, 0x0d, 0x68, 0xa2, 0x97,
+	0xbf, 0xb4, 0xf6, 0xf5, 0x31, 0xd9, 0xc7, 0x88, 0xa1, 0x88, 0x4f, 0x01, 0xd4, 0x84, 0x12, 0x60,
+	0x23, 0xa0, 0x34, 0xe8, 0x63, 0x57, 0x49, 0xdd, 0xc3, 0x7d, 0x57, 0x84, 0x11, 0xe6, 0x02, 0x45,
+	0x71, 0x02, 0xb0, 0x7f, 0x31, 0xe0, 0x76, 0x9b, 0x07, 0x9f, 0xc4, 0x3e, 0x12, 0xf8, 0xa1, 0x3a,
+	0xc3, 0x7c, 0x0b, 0xca, 0xe8, 0x50, 0x1c, 0x50, 0x16, 0x8a, 0xc7, 0x35, 0x63, 0xd9, 0x58, 0x29,
+	0xb7, 0x6a, 0xbf, 0xfe, 0xbc, 0x5e, 0xd5, 0x0c, 0x76, 0x7c, 0x9f, 0x61, 0xce, 0x3f, 0x16, 0x2c,
+	0x24, 0x81, 0x77, 0x05, 0x35, 0x3f, 0x80, 0x62, 0x92, 0x65, 0x6d, 0x76, 0xd9, 0x58, 0x59, 0xd8,
+	0xb2, 0x9d, 0xfc, 0x42, 0x3b, 0xc9, 0x59, 0xad, 0xf2, 0xb3, 0xdf, 0x1b, 0x33, 0x3f, 0x5e, 0x9e,
+	0xae, 0x1a, 0x9e, 0x76, 0x6e, 0xbe, 0xfd, 0xd5, 0xe5, 0xe9, 0xea, 0x55, 0xd8, 0x6f, 0x2e, 0x4f,
+	0x57, 0x5f, 0x19, 0xe4, 0x7b, 0x92, 0x32, 0x1e, 0xca, 0xdb, 0x5e, 0x82, 0xc5, 0x21, 0x95, 0x87,
+	0x79, 0x4c, 0x09, 0xc7, 0xf6, 0x9f, 0xb3, 0x50, 0x6d, 0xf3, 0x60, 0x97, 0x61, 0x69, 0x63, 0xe1,
+	0x91, 0xfc, 0xf4, 0x11, 0x31, 0x6b, 0x50, 0xea, 0x49, 0x25, 0x65, 0x09, 0x53, 0x2f, 0x15, 0xcd,
+	0x65, 0x58, 0xf0, 0x31, 0xef, 0xb1, 0x30, 0x16, 0x21, 0x25, 0x8a, 0x52, 0xd9, 0x1b, 0x54, 0x99,
+	0x08, 0x4c, 0x86, 0x8f, 0x11, 0xf3, 0x3b, 0xa8, 0xdf, 0xa7, 0x3d, 0x24, 0x95, 0xbc, 0x36, 0xb7,
+	0x3c, 0xb7, 0xb2, 0xb0, 0xb5, 0x36, 0x8e, 0xbb, 0xa7, 0xbc, 0x76, 0x32, 0xa7, 0x56, 0x41, 0x56,
+	0xc1, 0xab, 0xb0, 0x21, 0x3d, 0x37, 0x77, 0x01, 0xb8, 0x40, 0x4c, 0x74, 0x64, 0xdf, 0x6a, 0x05,
+	0x55, 0x56, 0xcb, 0x49, 0x9a, 0xea, 0xa4, 0x4d, 0x75, 0xf6, 0xd2, 0xa6, 0xb6, 0x6e, 0xc9, 0x40,
+	0x4f, 0xcf, 0x1a, 0x86, 0x57, 0x56, 0x7e, 0xd2, 0x62, 0xbe, 0x0f, 0xb7, 0x30, 0xf1, 0x93, 0x10,
+	0xf3, 0x37, 0x08, 0x51, 0xc2, 0xc4, 0x97, 0xfa, 0x66, 0x53, 0x76, 0x24, 0x2d, 0x8c, 0xec, 0xc7,
+	0x1b, 0x79, 0xfd, 0xb8, 0x56, 0x60, 0x3b, 0x84, 0x3b, 0xa3, 0xf4, 0x69, 0x67, 0xcc, 0x45, 0x28,
+	0xc5, 0x7d, 0x44, 0x3a, 0xa1, 0xaf, 0x1a, 0x50, 0xf0, 0x8a, 0x52, 0xfc, 0xc8, 0x37, 0x37, 0xa0,
+	0x2a, 0xa3, 0x86, 0x24, 0xe8, 0xc4, 0x94, 0xf6, 0x3b, 0x28, 0x19, 0x3b, 0xdd, 0x08, 0x53, 0xdb,
+	0x1e, 0x52, 0xda, 0xd7, 0x03, 0x69, 0x7f, 0x6b, 0xa8, 0x01, 0xd8, 0xc3, 0xd2, 0x32, 0x75, 0x9f,
+	0x07, 0x12, 0x98, 0x1d, 0x4c, 0xa0, 0xf9, 0xde, 0x30, 0xeb, 0xb5, 0x3c, 0xd6, 0xa3, 0x4e, 0xb4,
+	0x5f, 0x86, 0x46, 0x8e, 0x29, 0x9b, 0xca, 0xaf, 0x0d, 0x28, 0xb5, 0x79, 0x70, 0x1f, 0xb1, 0xc8,
+	0x7c, 0x09, 0x8a, 0x32, 0x1c, 0x4e, 0xf3, 0xd3, 0x92, 0xb9, 0x0d, 0x05, 0x79, 0xd7, 0xe8, 0x95,
+	0x5a, 0x72, 0xf4, 0x12, 0xca, 0xcb, 0x28, 0x9b, 0xa7, 0x5d, 0x1a, 0xa6, 0x33, 0xa4, 0xc0, 0xcd,
+	0x35, 0x99, 0xba, 0x8e, 0x20, 0x33, 0xbf, 0x93, 0x97, 0xb9, 0x3c, 0x5a, 0xd6, 0xed, 0xb6, 0xfe,
+	0x9d, 0xb5, 0xe5, 0x04, 0x2a, 0xc7, 0xa1, 0x38, 0xf0, 0x19, 0x3a, 0x26, 0x9d, 0x64, 0x2e, 0x79,
+	0xcd, 0x50, 0xa3, 0x3d, 0x26, 0x87, 0x0d, 0x99, 0xc3, 0x4f, 0x67, 0x8d, 0x95, 0x20, 0x14, 0x07,
+	0x87, 0x5d, 0xa7, 0x47, 0x23, 0x7d, 0xef, 0xe9, 0xcf, 0x3a, 0xf7, 0x1f, 0xb9, 0xe2, 0x71, 0x8c,
+	0xb9, 0x72, 0xe0, 0xde, 0x8b, 0xd9, 0x29, 0xc9, 0x52, 0x70, 0xfb, 0x89, 0x01, 0x65, 0xb9, 0xc6,
+	0x64, 0xff, 0x5f, 0x2f, 0x8b, 0x33, 0x54, 0x96, 0x7a, 0xee, 0xb5, 0xa2, 0x0e, 0xb7, 0xbf, 0x33,
+	0xa0, 0x92, 0x49, 0xff, 0x83, 0xd2, 0x3c, 0x02, 0x68, 0xf3, 0xe0, 0x43, 0xc4, 0x8e, 0x30, 0x17,
+	0xb9, 0xa5, 0xa9, 0xc2, 0xbc, 0x8f, 0x09, 0x8d, 0xf4, 0xa6, 0x24, 0x42, 0xd3, 0x1d, 0xe2, 0xde,
+	0xc8, 0xe3, 0xae, 0xc3, 0xdb, 0xdf, 0x1b, 0x60, 0x5e, 0x89, 0xff, 0x3d, 0xfb, 0xad, 0x1f, 0xe6,
+	0x61, 0xae, 0xcd, 0x03, 0x33, 0x86, 0x17, 0xfe, 0xf6, 0x5c, 0xdd, 0x1b, 0x77, 0xd5, 0x0e, 0x3d,
+	0x08, 0xd6, 0xf6, 0x0d, 0xc0, 0x19, 0xe7, 0x2f, 0xa0, 0x72, 0xfd, 0xe5, 0xd8, 0x98, 0x10, 0xe9,
+	0x9a, 0x87, 0xf5, 0xce, 0x4d, 0x3d, 0xb2, 0x04, 0x9e, 0x18, 0x50, 0x1d, 0x79, 0xad, 0x4d, 0xa2,
+	0x33, 0xca, 0xc9, 0x7a, 0xf7, 0x1f, 0x38, 0x65, 0xa9, 0x7c, 0x0a, 0x05, 0x75, 0x5f, 0xdd, 0x9d,
+	0x10, 0x44, 0x82, 0xac, 0x7b, 0x53, 0x80, 0xb2, 0xc8, 0x9f, 0x43, 0x51, 0x2f, 0xfd, 0xab, 0x93,
+	0x9a, 0xa4, 0x60, 0xd6, 0xfa, 0x54, 0xb0, 0x2c, 0x3e, 0x82, 0x52, 0xba, 0x3a, 0xaf, 0x4d, 0xf0,
+	0xd4, 0x38, 0xcb, 0x99, 0x0e, 0x97, 0x1e, 0x61, 0xcd, 0x7f, 0x29, 0xff, 0x93, 0x69, 0x3d, 0x78,
+	0x76, 0x5e, 0x37, 0x9e, 0x9f, 0xd7, 0x8d, 0x3f, 0xce, 0xeb, 0xc6, 0xd3, 0x8b, 0xfa, 0xcc, 0xf3,
+	0x8b, 0xfa, 0xcc, 0x6f, 0x17, 0xf5, 0x99, 0xcf, 0xde, 0x1c, 0x98, 0xff, 0xf6, 0xce, 0x83, 0x3d,
+	0x6f, 0x67, 0xfd, 0x7e, 0x48, 0x10, 0xe9, 0x61, 0x77, 0xe4, 0x3e, 0xaa, 0x8d, 0xe8, 0x16, 0xd5,
+	0x33, 0xbd, 0xfd, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb3, 0xee, 0x1c, 0x18, 0xde, 0x0a, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -490,6 +730,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// UpdateParams defines a (governance) operation for updating the module
+	// parameters. The authority defaults to the x/gov module account.
+	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CreatePrivatePlan(ctx context.Context, in *MsgCreatePrivatePlan, opts ...grpc.CallOption) (*MsgCreatePrivatePlanResponse, error)
 	TerminatePrivatePlan(ctx context.Context, in *MsgTerminatePrivatePlan, opts ...grpc.CallOption) (*MsgTerminatePrivatePlanResponse, error)
 	Farm(ctx context.Context, in *MsgFarm, opts ...grpc.CallOption) (*MsgFarmResponse, error)
@@ -503,6 +746,15 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
+}
+
+func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.lpfarm.v1beta1.Msg/UpdateParams", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgClient) CreatePrivatePlan(ctx context.Context, in *MsgCreatePrivatePlan, opts ...grpc.CallOption) (*MsgCreatePrivatePlanResponse, error) {
@@ -552,6 +804,9 @@ func (c *msgClient) Harvest(ctx context.Context, in *MsgHarvest, opts ...grpc.Ca
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// UpdateParams defines a (governance) operation for updating the module
+	// parameters. The authority defaults to the x/gov module account.
+	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	CreatePrivatePlan(context.Context, *MsgCreatePrivatePlan) (*MsgCreatePrivatePlanResponse, error)
 	TerminatePrivatePlan(context.Context, *MsgTerminatePrivatePlan) (*MsgTerminatePrivatePlanResponse, error)
 	Farm(context.Context, *MsgFarm) (*MsgFarmResponse, error)
@@ -563,6 +818,9 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
 func (*UnimplementedMsgServer) CreatePrivatePlan(ctx context.Context, req *MsgCreatePrivatePlan) (*MsgCreatePrivatePlanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePrivatePlan not implemented")
 }
@@ -581,6 +839,24 @@ func (*UnimplementedMsgServer) Harvest(ctx context.Context, req *MsgHarvest) (*M
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateParams(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mantrachain.lpfarm.v1beta1.Msg/UpdateParams",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_CreatePrivatePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -678,6 +954,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "UpdateParams",
+			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
 			MethodName: "CreatePrivatePlan",
 			Handler:    _Msg_CreatePrivatePlan_Handler,
 		},
@@ -702,6 +982,69 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "mantrachain/lpfarm/v1beta1/tx.proto",
 }
 
+func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgCreatePrivatePlan) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -722,20 +1065,20 @@ func (m *MsgCreatePrivatePlan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime):])
-	if err1 != nil {
-		return 0, err1
-	}
-	i -= n1
-	i = encodeVarintTx(dAtA, i, uint64(n1))
-	i--
-	dAtA[i] = 0x2a
-	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime):])
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndTime):])
 	if err2 != nil {
 		return 0, err2
 	}
 	i -= n2
 	i = encodeVarintTx(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x2a
+	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartTime):])
+	if err3 != nil {
+		return 0, err3
+	}
+	i -= n3
+	i = encodeVarintTx(dAtA, i, uint64(n3))
 	i--
 	dAtA[i] = 0x22
 	if len(m.RewardAllocations) > 0 {
@@ -1101,6 +1444,30 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgUpdateParams) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Params.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgCreatePrivatePlan) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1266,6 +1633,171 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParams: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParams: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgCreatePrivatePlan) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

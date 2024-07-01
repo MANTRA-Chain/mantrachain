@@ -1,19 +1,22 @@
 package types
 
+// DONTCOVER
+
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 )
 
-// marketmaker module sentinel errors
+// x/marketmaker module sentinel errors
 var (
-	ErrAlreadyExistMarketMaker = sdkerrors.Register(ModuleName, 2, "already exist market maker")
-	ErrEmptyClaimableIncentive = sdkerrors.Register(ModuleName, 3, "empty claimable incentives")
-	ErrNotExistMarketMaker     = sdkerrors.Register(ModuleName, 4, "not exist market maker")
-	ErrInvalidPairId           = sdkerrors.Register(ModuleName, 5, "invalid pair id")
-	ErrUnregisteredPairId      = sdkerrors.Register(ModuleName, 6, "unregistered pair id")
-	ErrInvalidDeposit          = sdkerrors.Register(ModuleName, 7, "invalid apply deposit")
-	ErrInvalidInclusion        = sdkerrors.Register(ModuleName, 8, "invalid inclusion, already eligible")
-	ErrInvalidExclusion        = sdkerrors.Register(ModuleName, 9, "invalid exclusion, not eligible")
-	ErrInvalidRejection        = sdkerrors.Register(ModuleName, 10, "invalid rejection, already eligible")
-	ErrNotEligibleMarketMaker  = sdkerrors.Register(ModuleName, 11, "invalid distribution, not eligible")
+	ErrInvalidSigner           = errors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
+	ErrAlreadyExistMarketMaker = errors.Register(ModuleName, 1101, "already exist market maker")
+	ErrEmptyClaimableIncentive = errors.Register(ModuleName, 1102, "empty claimable incentives")
+	ErrNotExistMarketMaker     = errors.Register(ModuleName, 1103, "not exist market maker")
+	ErrInvalidPairId           = errors.Register(ModuleName, 1104, "invalid pair id")
+	ErrUnregisteredPairId      = errors.Register(ModuleName, 1105, "unregistered pair id")
+	ErrInvalidDeposit          = errors.Register(ModuleName, 1106, "invalid apply deposit")
+	ErrInvalidInclusion        = errors.Register(ModuleName, 1107, "invalid inclusion, already eligible")
+	ErrInvalidExclusion        = errors.Register(ModuleName, 1108, "invalid exclusion, not eligible")
+	ErrInvalidRejection        = errors.Register(ModuleName, 1109, "invalid rejection, already eligible")
+	ErrNotEligibleMarketMaker  = errors.Register(ModuleName, 1110, "invalid distribution, not eligible")
 )

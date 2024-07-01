@@ -3,72 +3,73 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
-// Keeper of the marketmaker store
-type Keeper struct {
-	storeKey   storetypes.StoreKey
-	cdc        codec.BinaryCodec
-	paramSpace paramtypes.Subspace
+type (
+	Keeper struct {
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
 
-	bankKeeper    types.BankKeeper
-	accountKeeper types.AccountKeeper
-	gk            types.GuardKeeper
-}
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority string
 
-// NewKeeper returns a marketmaker keeper. It handles:
-// - creating new ModuleAccounts for each pool ReserveAccount
-// - sending to and from ModuleAccounts
-// - minting, burning PoolCoins
-func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramtypes.Subspace,
-	accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
-	gk types.GuardKeeper,
+		accountKeeper types.AccountKeeper
+		bankKeeper    types.BankKeeper
+		guardKeeper   types.GuardKeeper
+	}
+)
+
+func NewKeeper(
+	cdc codec.BinaryCodec,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
+
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
+	guardKeeper types.GuardKeeper,
+
 ) Keeper {
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
+	}
+
 	// ensure marketmaker module account is set
 	if addr := accountKeeper.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 
-	// set KeyTable if it has not already been set
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
-
-	// Guard: whitelist account address
-	gk.AddTransferAccAddressesWhitelist([]string{types.DefaultIncentiveBudgetAddress.String(), types.ClaimableIncentiveReserveAcc.String(), types.DepositReserveAcc.String()})
+	guardKeeper.AddTransferAccAddressesWhitelist([]string{
+		types.DefaultIncentiveBudgetAddress.String(),
+		types.ClaimableIncentiveReserveAcc.String(),
+		types.DepositReserveAcc.String(),
+	})
 
 	return Keeper{
-		storeKey:      key,
 		cdc:           cdc,
-		paramSpace:    paramSpace,
+		storeService:  storeService,
+		authority:     authority,
+		logger:        logger,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
-		gk:            gk,
+		guardKeeper:   guardKeeper,
 	}
+}
+
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
 }
 
 // Logger returns a module-specific logger.
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", "x/"+types.ModuleName)
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
-
-// GetParams returns the parameters for the marketmaker module.
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramSpace.GetParamSet(ctx, &params)
-	return params
-}
-
-// SetParams sets the parameters for the marketmaker module.
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
-}
-
-// GetCodec returns codec.Codec object used by the keeper>
-func (k Keeper) GetCodec() codec.BinaryCodec { return k.cdc }

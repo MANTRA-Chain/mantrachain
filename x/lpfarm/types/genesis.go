@@ -2,38 +2,38 @@ package types
 
 import (
 	"fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewGenesisState(
-	params Params, lastBlockTime *time.Time, lastPlanId, numPrivatePlans uint64,
-	plans []Plan, farms []FarmRecord, positions []Position, hists []HistoricalRewardsRecord,
-) *GenesisState {
-	return &GenesisState{
-		Params:            params,
-		LastBlockTime:     lastBlockTime,
-		LastPlanId:        lastPlanId,
-		NumPrivatePlans:   numPrivatePlans,
-		Plans:             plans,
-		Farms:             farms,
-		Positions:         positions,
-		HistoricalRewards: hists,
-	}
-}
+// this line is used by starport scaffolding # genesis/types/import
 
-// DefaultGenesis returns the default genesis state for the module.
+// DefaultIndex is the default global index
+const DefaultIndex uint64 = 1
+
+// DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
-	return NewGenesisState(DefaultParams(), nil, 0, 0, nil, nil, nil, nil)
+	return &GenesisState{
+		// this line is used by starport scaffolding # genesis/types/default
+		Params: DefaultParams(),
+
+		LastBlockTime:     nil,
+		LastPlanId:        0,
+		NumPrivatePlans:   0,
+		Plans:             nil,
+		Farms:             nil,
+		Positions:         nil,
+		HistoricalRewards: nil,
+	}
 }
 
-func (genState GenesisState) Validate() error {
-	if err := genState.Params.Validate(); err != nil {
-		return err
-	}
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
+func (gs GenesisState) Validate() error {
+	// this line is used by starport scaffolding # genesis/types/validate
+
 	planIdSet := map[uint64]struct{}{}
-	for _, plan := range genState.Plans {
+	for _, plan := range gs.Plans {
 		if err := plan.Validate(); err != nil {
 			return fmt.Errorf("invalid plan: %w", err)
 		}
@@ -43,7 +43,7 @@ func (genState GenesisState) Validate() error {
 		planIdSet[plan.Id] = struct{}{}
 	}
 	farmDenomSet := map[string]struct{}{}
-	for _, farm := range genState.Farms {
+	for _, farm := range gs.Farms {
 		if err := sdk.ValidateDenom(farm.Denom); err != nil {
 			return fmt.Errorf("invalid farm denom: %s", err)
 		}
@@ -69,7 +69,7 @@ func (genState GenesisState) Validate() error {
 		farmer, denom string
 	}
 	positionKeySet := map[positionKey]struct{}{}
-	for _, position := range genState.Positions {
+	for _, position := range gs.Positions {
 		if _, err := sdk.AccAddressFromBech32(position.Farmer); err != nil {
 			return fmt.Errorf("invalid farmer address: %w", err)
 		}
@@ -94,7 +94,7 @@ func (genState GenesisState) Validate() error {
 		period uint64
 	}
 	histKeySet := map[historicalRewardsKey]struct{}{}
-	for _, hist := range genState.HistoricalRewards {
+	for _, hist := range gs.HistoricalRewards {
 		if err := sdk.ValidateDenom(hist.Denom); err != nil {
 			return fmt.Errorf("invalid historical rewards denom: %s", err)
 		}
@@ -113,5 +113,6 @@ func (genState GenesisState) Validate() error {
 		}
 		histKeySet[key] = struct{}{}
 	}
-	return nil
+
+	return gs.Params.Validate()
 }

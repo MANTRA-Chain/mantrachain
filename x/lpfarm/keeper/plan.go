@@ -3,8 +3,9 @@ package keeper
 import (
 	"time"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
@@ -15,8 +16,8 @@ func (k Keeper) CreatePrivatePlan(
 	rewardAllocs []types.RewardAllocation, startTime, endTime time.Time,
 ) (types.Plan, error) {
 	if !k.CanCreatePrivatePlan(ctx) {
-		return types.Plan{}, sdkerrors.Wrapf(
-			sdkerrors.ErrInvalidRequest,
+		return types.Plan{}, errors.Wrapf(
+			errorstypes.ErrInvalidRequest,
 			"maximum number of active private plans reached")
 	}
 
@@ -26,10 +27,9 @@ func (k Keeper) CreatePrivatePlan(
 		return types.Plan{}, err
 	}
 
-	// Guard: whitelist account address
-	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAddr.String()})
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{feeCollectorAddr.String()})
 	err = k.bankKeeper.SendCoins(ctx, creatorAddr, feeCollectorAddr, fee)
-	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
 		return types.Plan{}, err
 	}
@@ -72,21 +72,21 @@ func (k Keeper) createPlan(
 ) (types.Plan, error) {
 	// Check if end time > block time
 	if !endTime.After(ctx.BlockTime()) {
-		return types.Plan{}, sdkerrors.Wrap(
-			sdkerrors.ErrInvalidRequest, "end time is past")
+		return types.Plan{}, errors.Wrap(
+			errorstypes.ErrInvalidRequest, "end time is past")
 	}
 
 	for _, rewardAlloc := range rewardAllocs {
 		if rewardAlloc.PairId > 0 {
 			_, found := k.liquidityKeeper.GetPair(ctx, rewardAlloc.PairId)
 			if !found {
-				return types.Plan{}, sdkerrors.Wrapf(
-					sdkerrors.ErrNotFound, "pair %d not found", rewardAlloc.PairId)
+				return types.Plan{}, errors.Wrapf(
+					errorstypes.ErrNotFound, "pair %d not found", rewardAlloc.PairId)
 			}
 		} else {
 			if !k.bankKeeper.HasSupply(ctx, rewardAlloc.Denom) {
-				return types.Plan{}, sdkerrors.Wrapf(
-					sdkerrors.ErrInvalidRequest, "denom %s has no supply", rewardAlloc.Denom)
+				return types.Plan{}, errors.Wrapf(
+					errorstypes.ErrInvalidRequest, "denom %s has no supply", rewardAlloc.Denom)
 			}
 		}
 	}
@@ -135,10 +135,10 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.Plan) error {
 	if plan.FarmingPoolAddress != plan.TerminationAddress {
 		balances := k.bankKeeper.SpendableCoins(ctx, farmingPoolAddr)
 		if !balances.IsZero() {
-			// Guard: whitelist account address
-			whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
+
+			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
 			err := k.bankKeeper.SendCoins(ctx, farmingPoolAddr, plan.GetTerminationAddress(), balances)
-			k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+			k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 			if err != nil {
 				return err
 			}
@@ -212,10 +212,10 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 		if !balances.IsAllGTE(totalRewards) {
 			continue
 		}
-		// Guard: whitelist account address
-		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
+
+		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingPoolAddr.String()})
 		err := k.bankKeeper.SendCoins(ctx, farmingPoolAddr, types.RewardsPoolAddress, totalRewards)
-		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
 			return err
 		}

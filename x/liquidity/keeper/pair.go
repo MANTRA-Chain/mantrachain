@@ -3,8 +3,10 @@ package keeper
 import (
 	"strconv"
 
+	"cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
@@ -30,10 +32,10 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 		return types.ErrPairAlreadyExists
 	}
 	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
 	}
 	return nil
 }
@@ -42,13 +44,13 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 func (k Keeper) ValidateMsgUpdatePairSwapFee(ctx sdk.Context, msg *types.MsgUpdatePairSwapFee) error {
 	_, found := k.GetPair(ctx, msg.PairId)
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "pair %d not found", msg.PairId)
+		return errors.Wrapf(errorstypes.ErrNotFound, "pair %d not found", msg.PairId)
 	}
 	if msg.SwapFeeRate == nil && msg.PairCreatorSwapFeeRatio != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "swap fee rate must not be nil when pair creator swap fee ratio is not nil")
 	}
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
 	}
 	return nil
 }
@@ -63,8 +65,8 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 	pairCreationFee := k.GetPairCreationFee(ctx)
 
 	// Send the pair creation fee to the fee collector.
-	if err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollector, pairCreationFee); err != nil {
-		return types.Pair{}, sdkerrors.Wrap(err, "insufficient pair creation fee")
+	if err := k.bankKeeper.SendCoins(ctx, msg.GetAccCreator(), feeCollector, pairCreationFee); err != nil {
+		return types.Pair{}, errors.Wrap(err, "insufficient pair creation fee")
 	}
 
 	id := k.getNextPairIdWithUpdate(ctx)
@@ -74,14 +76,14 @@ func (k Keeper) CreatePair(ctx sdk.Context, msg *types.MsgCreatePair) (types.Pai
 	k.SetPairLookupIndex(ctx, pair.BaseCoinDenom, pair.QuoteCoinDenom, pair.Id)
 	k.SetPairLookupIndex(ctx, pair.QuoteCoinDenom, pair.BaseCoinDenom, pair.Id)
 
-	var swapFeeRate sdk.Dec
+	var swapFeeRate sdkmath.LegacyDec
 	if msg.SwapFeeRate != nil {
 		swapFeeRate = *pair.SwapFeeRate
 	} else {
 		swapFeeRate = k.GetSwapFeeRate(ctx)
 	}
 
-	var pairCreatorSwapFeeRatio sdk.Dec
+	var pairCreatorSwapFeeRatio sdkmath.LegacyDec
 	if msg.PairCreatorSwapFeeRatio != nil {
 		pairCreatorSwapFeeRatio = *pair.PairCreatorSwapFeeRatio
 	} else {
@@ -112,18 +114,18 @@ func (k Keeper) UpdatePairSwapFee(ctx sdk.Context, msg *types.MsgUpdatePairSwapF
 
 	pair, _ := k.GetPair(ctx, msg.PairId)
 
-	var swapFeeRate sdk.Dec
+	var swapFeeRate sdkmath.LegacyDec
 	if msg.SwapFeeRate != nil {
 		swapFeeRate = *msg.SwapFeeRate
 	} else {
-		swapFeeRate = sdk.Dec{}
+		swapFeeRate = sdkmath.LegacyDec{}
 	}
 
-	var pairCreatorSwapFeeRatio sdk.Dec
+	var pairCreatorSwapFeeRatio sdkmath.LegacyDec
 	if msg.PairCreatorSwapFeeRatio != nil {
 		pairCreatorSwapFeeRatio = *msg.PairCreatorSwapFeeRatio
 	} else {
-		pairCreatorSwapFeeRatio = sdk.Dec{}
+		pairCreatorSwapFeeRatio = sdkmath.LegacyDec{}
 	}
 
 	pair.SwapFeeRate = msg.SwapFeeRate

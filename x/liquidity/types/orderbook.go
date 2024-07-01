@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"sort"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
-func OrderBookBasePrice(ov amm.OrderView, tickPrec int) (sdk.Dec, bool) {
+func OrderBookBasePrice(ov amm.OrderView, tickPrec int) (sdkmath.LegacyDec, bool) {
 	highestBuyPrice, foundHighestBuyPrice := ov.HighestBuyPrice()
 	lowestSellPrice, foundLowestSellPrice := ov.LowestSellPrice()
 
@@ -21,7 +22,7 @@ func OrderBookBasePrice(ov amm.OrderView, tickPrec int) (sdk.Dec, bool) {
 	case foundLowestSellPrice:
 		return lowestSellPrice, true
 	default: // not found
-		return sdk.Dec{}, false
+		return sdkmath.LegacyDec{}, false
 	}
 }
 
@@ -31,7 +32,7 @@ type OrderBookConfig struct {
 	MaxNumTicks    int
 }
 
-func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice, highestPrice sdk.Dec, tickPrec int, configs ...OrderBookConfig) OrderBookPairResponse {
+func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice, highestPrice sdkmath.LegacyDec, tickPrec int, configs ...OrderBookConfig) OrderBookPairResponse {
 	resp := OrderBookPairResponse{
 		PairId: pairId,
 	}
@@ -50,7 +51,7 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 	highestBuyPrice, foundHighestBuyPrice := ov.HighestBuyPrice()
 	lowestSellPrice, foundLowestSellPrice := ov.LowestSellPrice()
 
-	var smallestPriceUnit sdk.Dec
+	var smallestPriceUnit sdkmath.LegacyDec
 	if foundLowestSellPrice {
 		currentPrice := lowestSellPrice
 		for i := 0; i < lowestPriceUnitMaxNumTicks && currentPrice.LTE(highestPrice); {
@@ -86,14 +87,14 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 		if foundLowestSellPrice {
 			startPrice := FitPriceToTickGap(lowestSellPrice, priceUnit, false)
 			currentPrice := startPrice
-			accAmt := sdk.ZeroInt()
+			accAmt := math.ZeroInt()
 			for j := 0; j < config.MaxNumTicks && currentPrice.LTE(highestPrice); {
 				amt := ov.SellAmountUnder(currentPrice, true).Sub(accAmt)
 				if amt.IsPositive() {
 					ob.Sells = append(ob.Sells, OrderBookTickResponse{
 						Price:           currentPrice,
 						UserOrderAmount: amt,
-						PoolOrderAmount: sdk.ZeroInt(),
+						PoolOrderAmount: math.ZeroInt(),
 					})
 					accAmt = accAmt.Add(amt)
 					j++
@@ -111,14 +112,14 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 		if foundHighestBuyPrice {
 			startPrice := FitPriceToTickGap(highestBuyPrice, priceUnit, true)
 			currentPrice := startPrice
-			accAmt := sdk.ZeroInt()
+			accAmt := math.ZeroInt()
 			for j := 0; j < config.MaxNumTicks && currentPrice.GTE(lowestPrice) && !currentPrice.IsNegative(); {
 				amt := ov.BuyAmountOver(currentPrice, true).Sub(accAmt)
 				if amt.IsPositive() {
 					ob.Buys = append(ob.Buys, OrderBookTickResponse{
 						Price:           currentPrice,
 						UserOrderAmount: amt,
-						PoolOrderAmount: sdk.ZeroInt(),
+						PoolOrderAmount: math.ZeroInt(),
 					})
 					accAmt = accAmt.Add(amt)
 					j++
@@ -136,7 +137,7 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 }
 
 // PrintOrderBookResponse prints out OrderBookResponse in human-readable form.
-func PrintOrderBookResponse(ob OrderBookResponse, basePrice sdk.Dec) {
+func PrintOrderBookResponse(ob OrderBookResponse, basePrice sdkmath.LegacyDec) {
 	fmt.Println("+------------------------------------------------------------------------+")
 	for _, tick := range ob.Sells {
 		fmt.Printf("| %18s | %28s |                    |\n", tick.UserOrderAmount, tick.Price.String())
@@ -151,10 +152,10 @@ func PrintOrderBookResponse(ob OrderBookResponse, basePrice sdk.Dec) {
 }
 
 // FitPriceToTickGap fits price into given tick gap.
-func FitPriceToTickGap(price, gap sdk.Dec, down bool) sdk.Dec {
+func FitPriceToTickGap(price, gap sdkmath.LegacyDec, down bool) sdkmath.LegacyDec {
 	b := price.BigInt()
 	b.Quo(b, gap.BigInt()).Mul(b, gap.BigInt())
-	tick := sdk.NewDecFromBigIntWithPrec(b, sdk.Precision)
+	tick := math.LegacyNewDecFromBigIntWithPrec(b, sdkmath.LegacyPrecision)
 	if !down && !tick.Equal(price) {
 		tick = tick.Add(gap)
 	}

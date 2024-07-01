@@ -1,11 +1,10 @@
 syntax = "proto3";
 package mantrachain.txfees.v1;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
+// FeeToken
 message FeeToken {
-  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
-  uint64 pairId = 2 [(gogoproto.moretags) = "yaml:\"pair_id\""];
+  string denom = 1;
+  uint64 pair_id = 2;
 }

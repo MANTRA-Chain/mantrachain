@@ -3,55 +3,62 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
-// Keeper of the liquidity store.
-type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	paramSpace paramstypes.Subspace
+type (
+	Keeper struct {
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
 
-	hooks types.LiquidityHooks
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority string
 
-	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
-	gk            types.GuardKeeper
-}
+		accountKeeper types.AccountKeeper
+		bankKeeper    types.BankKeeper
+		guardKeeper   types.GuardKeeper
 
-// NewKeeper creates a new liquidity Keeper instance.
+		hooks types.LiquidityHooks
+	}
+)
+
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
-	paramSpace paramstypes.Subspace,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
+
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	gk types.GuardKeeper,
+	guardKeeper types.GuardKeeper,
+
 ) Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	// Guard: whitelist account address
-	gk.AddTransferAccAddressesWhitelist([]string{types.DefaultFeeCollectorAddress.String(), types.DefaultDustCollectorAddress.String(), types.GlobalEscrowAddress.String()})
-
 	return Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		paramSpace:    paramSpace,
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
+
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
-		gk:            gk,
+		guardKeeper:   guardKeeper,
+
+		hooks: nil,
 	}
 }
 
-func (keeper *Keeper) Hooks() types.LiquidityHooks {
+func (keeper Keeper) Hooks() types.LiquidityHooks {
 	if keeper.hooks == nil {
 		// return a no-op implementation if no hooks are set
 		return types.MultiLiquidityHooks{}
@@ -60,28 +67,20 @@ func (keeper *Keeper) Hooks() types.LiquidityHooks {
 	return keeper.hooks
 }
 
-func (keeper *Keeper) SetHooks(gh types.LiquidityHooks) *Keeper {
+func (keeper Keeper) SetHooks(gh types.LiquidityHooks) {
 	if keeper.hooks != nil {
 		panic("cannot set liquidity hooks twice")
 	}
 
 	keeper.hooks = gh
+}
 
-	return keeper
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
 }
 
 // Logger returns a module-specific logger.
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
-}
-
-// GetParams returns the parameters for the liquidity module.
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramSpace.GetParamSet(ctx, &params)
-	return
-}
-
-// SetParams sets the parameters for the liquidity module.
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

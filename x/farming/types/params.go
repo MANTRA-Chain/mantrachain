@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	"gopkg.in/yaml.v2"
+	storetypes "cosmossdk.io/store/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
@@ -35,7 +35,7 @@ var (
 	DefaultCurrentEpochDays       = uint32(1)
 	DefaultNextEpochDays          = uint32(1)
 	DefaultFarmingFeeCollector    = sdk.AccAddress(address.Module(ModuleName, []byte("FarmingFeeCollectorAcc")))
-	DefaultDelayedStakingGasFee   = sdk.Gas(60000) // See https://github.com/tendermint/farming/issues/102 for details.
+	DefaultDelayedStakingGasFee   = storetypes.Gas(60000) // See https://github.com/tendermint/farming/issues/102 for details.
 	DefaultMaxNumPrivatePlans     = uint32(10000)
 
 	// ReserveAddressType is an address type of reserve accounts for staking or rewards.
@@ -74,12 +74,6 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 		paramstypes.NewParamSetPair(KeyDelayedStakingGasFee, &p.DelayedStakingGasFee, validateDelayedStakingGas),
 		paramstypes.NewParamSetPair(KeyMaxNumPrivatePlans, &p.MaxNumPrivatePlans, validateMaxNumPrivatePlans),
 	}
-}
-
-// String returns a human-readable string representation of the parameters.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
 }
 
 // Validate validates parameters.
@@ -146,7 +140,7 @@ func validateFarmingFeeCollector(i interface{}) error {
 }
 
 func validateDelayedStakingGas(i interface{}) error {
-	_, ok := i.(sdk.Gas)
+	_, ok := i.(storetypes.Gas)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

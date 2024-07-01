@@ -12,15 +12,15 @@ import (
 type DidExecutor struct {
 	controller string
 	ctx        sdk.Context
-	dk         types.DidKeeper
+	didKeeper  types.DidKeeper
 }
 
-func NewDidExecutor(ctx sdk.Context, controller string, dk types.DidKeeper) *DidExecutor {
+func NewDidExecutor(ctx sdk.Context, controller string, didKeeper types.DidKeeper) *DidExecutor {
 
 	return &DidExecutor{
 		controller: controller,
 		ctx:        ctx,
-		dk:         dk,
+		didKeeper:  didKeeper,
 	}
 }
 
@@ -28,7 +28,7 @@ func (c *DidExecutor) CreateDidForNft(id []byte) (string, error) {
 	encoded := sha256.Sum256([]byte(fmt.Sprintf("%s/nft/%s", types.ModuleName, id)))
 	didId := hex.EncodeToString(encoded[:])
 
-	res, err := c.dk.CreateNewDidDocument(c.ctx, didId, c.controller)
+	res, err := c.didKeeper.CreateNewDidDocument(c.ctx, didId, c.controller)
 	if err != nil {
 		return "", err
 	}
@@ -39,5 +39,5 @@ func (c *DidExecutor) ForceDeleteDidOfNftIfExists(id []byte) (bool, error) {
 	encoded := sha256.Sum256([]byte(fmt.Sprintf("%s/nft/%s", types.ModuleName, id)))
 	didId := hex.EncodeToString(encoded[:])
 
-	return c.dk.ForceRemoveDidDocumentIfExists(c.ctx, didId)
+	return c.didKeeper.ForceRemoveDidDocumentIfExists(c.ctx, didId)
 }

@@ -8,6 +8,15 @@ import (
 )
 
 const (
+	// ModuleName defines the module name
+	ModuleName = "token"
+
+	// StoreKey defines the primary module store key
+	StoreKey = ModuleName
+
+	// RouterKey defines the module's message routing key
+	RouterKey = ModuleName
+
 	AttributeKeyNftCollectionId      = "nft_collection_id"
 	AttributeKeyNftCollectionCreator = "nft_collection_creator"
 	AttributeKeyNftsIds              = "nfts_ids"
@@ -20,6 +29,8 @@ const (
 )
 
 var (
+	ParamsKey = []byte("p_token")
+
 	nftIndex            = "nft-id"
 	nftCollectionIndex  = "nft-collection-id"
 	nftApprovedAllIndex = "nft-approved-all-index"
@@ -38,27 +49,13 @@ var (
 	Placeholder = []byte{0x01}
 )
 
-const (
-	// ModuleName defines the module name
-	ModuleName = "token"
-
-	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
-
-	// RouterKey is the message route for slashing
-	RouterKey = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_token"
-)
-
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
 func GetNftCollectionIndex(creator sdk.AccAddress, id string) []byte {
 	creator = address.MustLengthPrefix(creator)
-	idBz := conv.UnsafeStrToBytes(id)
+	idBz := conv.GetByteKey(id)
 
 	key := make([]byte, len(nftCollectionIndex)+len(Delimiter)+len(creator)+len(Delimiter)+len(idBz)+len(Delimiter))
 	copy(key, nftCollectionIndex)
@@ -90,7 +87,7 @@ func NftCollectionStoreKey(creator sdk.AccAddress) []byte {
 }
 
 func GetNftIndex(collectionIndex []byte, id string) []byte {
-	idBz := conv.UnsafeStrToBytes(id)
+	idBz := conv.GetByteKey(id)
 	key := make([]byte, len(nftIndex)+len(Delimiter)+len(collectionIndex)+len(Delimiter)+len(idBz)+len(Delimiter))
 	copy(key, nftIndex)
 	copy(key[len(nftIndex):], Delimiter)

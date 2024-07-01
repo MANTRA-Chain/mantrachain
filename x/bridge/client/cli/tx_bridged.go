@@ -69,11 +69,9 @@ func CmdCreateMultiBridged() *cobra.Command {
 			}
 
 			msg := types.NewMsgCreateMultiBridged(
-				[]types.Input{
-					{
-						Address: clientCtx.FromAddress.String(),
-						Coins:   sdk.NewCoins(amount),
-					},
+				types.Input{
+					Address: clientCtx.FromAddress.String(),
+					Coins:   sdk.NewCoins(amount),
 				},
 				outputs,
 				ethTxHashes,

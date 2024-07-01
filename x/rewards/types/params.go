@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -19,7 +18,7 @@ const (
 )
 
 var (
-	DefaultDistributionFeeRate = sdk.NewDec(0)
+	DefaultDistributionFeeRate = sdkmath.LegacyNewDec(0)
 )
 
 var (
@@ -46,7 +45,7 @@ func NewParams(
 	minDepositTime uint64,
 	distributionPeriod uint64,
 	pairsCycleMaxCount uint64,
-	distributionFeeRate sdk.Dec,
+	distributionFeeRate sdkmath.LegacyDec,
 	maxSnapshotsCount uint64,
 ) Params {
 	return Params{
@@ -119,12 +118,6 @@ func (p Params) Validate() error {
 	return nil
 }
 
-// String implements the Stringer interface.
-func (p Params) String() string {
-	out, _ := yaml.Marshal(p)
-	return string(out)
-}
-
 func validateMaxClaimedRangeLength(i interface{}) error {
 	_, ok := i.(uint64)
 	if !ok {
@@ -171,7 +164,7 @@ func validatePairsCycleMaxCount(i interface{}) error {
 }
 
 func validateDistributionFeeRate(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+	v, ok := i.(sdkmath.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

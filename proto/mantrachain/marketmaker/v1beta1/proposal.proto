@@ -3,13 +3,11 @@ syntax = "proto3";
 package mantrachain.marketmaker.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "mantrachain/marketmaker/v1beta1/marketmaker.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types";
 
+// MarketMakerProposal
 message MarketMakerProposal {
   option (gogoproto.goproto_getters)  = false;
   option (gogoproto.goproto_stringer) = false;
@@ -22,40 +20,38 @@ message MarketMakerProposal {
 
   // set the market makers to eligible, refund deposit
   repeated MarketMakerHandle inclusions = 3
-      [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"inclusions\""];
+      [(gogoproto.nullable) = false];
 
   // delete existing eligible market makers
   repeated MarketMakerHandle exclusions = 4
-      [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"exclusions\""];
+      [(gogoproto.nullable) = false];
 
   // delete the not eligible market makers, refund deposit
   repeated MarketMakerHandle rejections = 5
-      [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"rejections\""];
+      [(gogoproto.nullable) = false];
 
   // distribute claimable incentive to eligible market makers
   repeated IncentiveDistribution distributions = 6
-      [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"distributions\""];
+      [(gogoproto.nullable) = false];
 }
 
+// MarketMakerHandle
 message MarketMakerHandle {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
-
-  uint64 pair_id = 2 [(gogoproto.moretags) = "yaml:\"pair_id\""];
+  string address = 1;
+  uint64 pair_id = 2;
 }
 
+// IncentiveDistribution
 message IncentiveDistribution {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
-
-  uint64 pair_id = 2 [(gogoproto.moretags) = "yaml:\"pair_id\""];
-
+  string address = 1;
+  uint64 pair_id = 2;
   repeated cosmos.base.v1beta1.Coin amount = 3 [
-    (gogoproto.moretags)     = "yaml:\"amount\"",
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
     (gogoproto.nullable)     = false
   ];

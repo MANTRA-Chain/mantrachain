@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+	"cosmossdk.io/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 )
 
@@ -17,7 +17,6 @@ var _ govv1beta1.Content = &MarketMakerProposal{}
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypeMarketMaker)
-	govcodec.ModuleCdc.LegacyAmino.RegisterConcrete(&MarketMakerProposal{}, "github.com/MANTRA-Finance/mantrachain/MarketMakerProposal", nil)
 }
 
 // NewMarketMakerProposal creates a new MarketMakerProposal object.
@@ -49,7 +48,7 @@ func (p *MarketMakerProposal) ProposalType() string { return ProposalTypeMarketM
 
 func (p *MarketMakerProposal) ValidateBasic() error {
 	if len(p.Inclusions) == 0 && len(p.Exclusions) == 0 && len(p.Rejections) == 0 && len(p.Distributions) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "proposal request must not be empty")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "proposal request must not be empty")
 	}
 
 	// checking duplicated market maker for inclusion, exclusion, rejection
@@ -57,7 +56,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Inclusions {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {
@@ -67,7 +66,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Exclusions {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {
@@ -77,7 +76,7 @@ func (p *MarketMakerProposal) ValidateBasic() error {
 
 	for _, mm := range p.Rejections {
 		if _, ok := addrMap[mm]; ok {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "market maker can't be duplicated")
+			return errors.Wrap(errorstypes.ErrInvalidRequest, "market maker can't be duplicated")
 		}
 		addrMap[mm] = struct{}{}
 		if err := mm.Validate(); err != nil {

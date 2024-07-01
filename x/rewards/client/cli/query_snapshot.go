@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
@@ -14,10 +15,7 @@ func CmdListSnapshot() *cobra.Command {
 		Use:   "list-snapshot",
 		Short: "list all snapshot",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -30,7 +28,7 @@ func CmdListSnapshot() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.SnapshotAll(cmd.Context(), params)
+			res, err := queryClient.QuerySnapshotAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -51,10 +49,7 @@ func CmdShowSnapshot() *cobra.Command {
 		Short: "shows a snapshot",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -77,7 +72,7 @@ func CmdShowSnapshot() *cobra.Command {
 				Id:     id,
 			}
 
-			res, err := queryClient.Snapshot(cmd.Context(), params)
+			res, err := queryClient.QuerySnapshot(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -5,10 +5,11 @@ package types
 
 import (
 	context "context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -71,6 +72,7 @@ var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 type QueryParamsResponse struct {
+	// params holds all the parameters of this module.
 	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
 }
 
@@ -1499,20 +1501,20 @@ func (m *QueryOrderBooksResponse) GetPairs() []OrderBookPairResponse {
 
 // PoolResponse defines a custom pool response message.
 type PoolResponse struct {
-	Type                  PoolType                                `protobuf:"varint,1,opt,name=type,proto3,enum=mantrachain.liquidity.v1beta1.PoolType" json:"type,omitempty"`
-	Id                    uint64                                  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	PairId                uint64                                  `protobuf:"varint,3,opt,name=pair_id,json=pairId,proto3" json:"pair_id,omitempty"`
-	Creator               string                                  `protobuf:"bytes,4,opt,name=creator,proto3" json:"creator,omitempty"`
-	ReserveAddress        string                                  `protobuf:"bytes,5,opt,name=reserve_address,json=reserveAddress,proto3" json:"reserve_address,omitempty"`
-	PoolCoinDenom         string                                  `protobuf:"bytes,6,opt,name=pool_coin_denom,json=poolCoinDenom,proto3" json:"pool_coin_denom,omitempty"`
-	PoolCoinSupply        github_com_cosmos_cosmos_sdk_types.Int  `protobuf:"bytes,7,opt,name=pool_coin_supply,json=poolCoinSupply,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"pool_coin_supply"`
-	MinPrice              *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=min_price,json=minPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"min_price,omitempty"`
-	MaxPrice              *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,9,opt,name=max_price,json=maxPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"max_price,omitempty"`
-	Price                 *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,10,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price,omitempty"`
-	Balances              PoolBalances                            `protobuf:"bytes,11,opt,name=balances,proto3" json:"balances"`
-	LastDepositRequestId  uint64                                  `protobuf:"varint,12,opt,name=last_deposit_request_id,json=lastDepositRequestId,proto3" json:"last_deposit_request_id,omitempty"`
-	LastWithdrawRequestId uint64                                  `protobuf:"varint,13,opt,name=last_withdraw_request_id,json=lastWithdrawRequestId,proto3" json:"last_withdraw_request_id,omitempty"`
-	Disabled              bool                                    `protobuf:"varint,14,opt,name=disabled,proto3" json:"disabled,omitempty"`
+	Type                  PoolType                     `protobuf:"varint,1,opt,name=type,proto3,enum=mantrachain.liquidity.v1beta1.PoolType" json:"type,omitempty"`
+	Id                    uint64                       `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	PairId                uint64                       `protobuf:"varint,3,opt,name=pair_id,json=pairId,proto3" json:"pair_id,omitempty"`
+	Creator               string                       `protobuf:"bytes,4,opt,name=creator,proto3" json:"creator,omitempty"`
+	ReserveAddress        string                       `protobuf:"bytes,5,opt,name=reserve_address,json=reserveAddress,proto3" json:"reserve_address,omitempty"`
+	PoolCoinDenom         string                       `protobuf:"bytes,6,opt,name=pool_coin_denom,json=poolCoinDenom,proto3" json:"pool_coin_denom,omitempty"`
+	PoolCoinSupply        cosmossdk_io_math.Int        `protobuf:"bytes,7,opt,name=pool_coin_supply,json=poolCoinSupply,proto3,customtype=cosmossdk.io/math.Int" json:"pool_coin_supply"`
+	MinPrice              *cosmossdk_io_math.LegacyDec `protobuf:"bytes,8,opt,name=min_price,json=minPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"min_price,omitempty"`
+	MaxPrice              *cosmossdk_io_math.LegacyDec `protobuf:"bytes,9,opt,name=max_price,json=maxPrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"max_price,omitempty"`
+	Price                 *cosmossdk_io_math.LegacyDec `protobuf:"bytes,10,opt,name=price,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"price,omitempty"`
+	Balances              PoolBalances                 `protobuf:"bytes,11,opt,name=balances,proto3" json:"balances"`
+	LastDepositRequestId  uint64                       `protobuf:"varint,12,opt,name=last_deposit_request_id,json=lastDepositRequestId,proto3" json:"last_deposit_request_id,omitempty"`
+	LastWithdrawRequestId uint64                       `protobuf:"varint,13,opt,name=last_withdraw_request_id,json=lastWithdrawRequestId,proto3" json:"last_withdraw_request_id,omitempty"`
+	Disabled              bool                         `protobuf:"varint,14,opt,name=disabled,proto3" json:"disabled,omitempty"`
 }
 
 func (m *PoolResponse) Reset()         { *m = PoolResponse{} }
@@ -1671,9 +1673,9 @@ func (m *PoolBalances) GetQuoteCoin() types.Coin {
 }
 
 type OrderBookPairResponse struct {
-	PairId     uint64                                 `protobuf:"varint,1,opt,name=pair_id,json=pairId,proto3" json:"pair_id,omitempty"`
-	BasePrice  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=base_price,json=basePrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"base_price"`
-	OrderBooks []OrderBookResponse                    `protobuf:"bytes,3,rep,name=order_books,json=orderBooks,proto3" json:"order_books"`
+	PairId     uint64                      `protobuf:"varint,1,opt,name=pair_id,json=pairId,proto3" json:"pair_id,omitempty"`
+	BasePrice  cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=base_price,json=basePrice,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"base_price"`
+	OrderBooks []OrderBookResponse         `protobuf:"bytes,3,rep,name=order_books,json=orderBooks,proto3" json:"order_books"`
 }
 
 func (m *OrderBookPairResponse) Reset()         { *m = OrderBookPairResponse{} }
@@ -1724,9 +1726,9 @@ func (m *OrderBookPairResponse) GetOrderBooks() []OrderBookResponse {
 }
 
 type OrderBookResponse struct {
-	PriceUnit github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=price_unit,json=priceUnit,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price_unit"`
-	Sells     []OrderBookTickResponse                `protobuf:"bytes,2,rep,name=sells,proto3" json:"sells"`
-	Buys      []OrderBookTickResponse                `protobuf:"bytes,3,rep,name=buys,proto3" json:"buys"`
+	PriceUnit cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=price_unit,json=priceUnit,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"price_unit"`
+	Sells     []OrderBookTickResponse     `protobuf:"bytes,2,rep,name=sells,proto3" json:"sells"`
+	Buys      []OrderBookTickResponse     `protobuf:"bytes,3,rep,name=buys,proto3" json:"buys"`
 }
 
 func (m *OrderBookResponse) Reset()         { *m = OrderBookResponse{} }
@@ -1777,9 +1779,9 @@ func (m *OrderBookResponse) GetBuys() []OrderBookTickResponse {
 }
 
 type OrderBookTickResponse struct {
-	Price           github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price"`
-	UserOrderAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=user_order_amount,json=userOrderAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"user_order_amount"`
-	PoolOrderAmount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=pool_order_amount,json=poolOrderAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"pool_order_amount"`
+	Price           cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=price,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"price"`
+	UserOrderAmount cosmossdk_io_math.Int       `protobuf:"bytes,2,opt,name=user_order_amount,json=userOrderAmount,proto3,customtype=cosmossdk.io/math.Int" json:"user_order_amount"`
+	PoolOrderAmount cosmossdk_io_math.Int       `protobuf:"bytes,3,opt,name=pool_order_amount,json=poolOrderAmount,proto3,customtype=cosmossdk.io/math.Int" json:"pool_order_amount"`
 }
 
 func (m *OrderBookTickResponse) Reset()         { *m = OrderBookTickResponse{} }
@@ -1857,126 +1859,128 @@ func init() {
 }
 
 var fileDescriptor_55fc6be261160eac = []byte{
-	// 1894 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x59, 0xdd, 0x6f, 0x14, 0x55,
-	0x14, 0xef, 0x6c, 0x77, 0xfb, 0x71, 0x4a, 0xbb, 0xed, 0xa5, 0xd0, 0x65, 0x81, 0xd2, 0x8c, 0xd0,
-	0xd6, 0x42, 0x77, 0xda, 0x2a, 0x54, 0xa0, 0x7c, 0x74, 0x29, 0x2d, 0x8d, 0x16, 0xcb, 0x8a, 0x62,
-	0x1a, 0xe3, 0x66, 0x76, 0x67, 0x52, 0x26, 0xdd, 0x9d, 0xbb, 0x9d, 0x99, 0xa5, 0x6c, 0x6a, 0x35,
-	0x31, 0x3e, 0xfa, 0x40, 0x42, 0x4c, 0x8c, 0x0f, 0x24, 0xfa, 0xe0, 0xa3, 0xfa, 0x6c, 0x7c, 0x97,
-	0xc4, 0x17, 0x12, 0xa2, 0xa0, 0x0f, 0xc4, 0x80, 0x0f, 0xfe, 0x19, 0xe6, 0x7e, 0xcc, 0xec, 0xcc,
-	0x74, 0xdb, 0x9d, 0x19, 0xaa, 0xf1, 0x85, 0xee, 0xdc, 0x7b, 0xcf, 0xb9, 0xbf, 0xdf, 0xef, 0x9c,
-	0x7b, 0xe6, 0xce, 0x01, 0x5e, 0x2d, 0xcb, 0xba, 0x65, 0xc8, 0xc5, 0xdb, 0xb2, 0xa6, 0x4b, 0x25,
-	0x6d, 0xbd, 0xaa, 0x29, 0x9a, 0x55, 0x93, 0xee, 0x4c, 0x16, 0x54, 0x4b, 0x9e, 0x94, 0xd6, 0xab,
-	0xaa, 0x51, 0xcb, 0x54, 0x0c, 0x6c, 0x61, 0x74, 0xd4, 0xb5, 0x34, 0xe3, 0x2c, 0xcd, 0xf0, 0xa5,
-	0xe9, 0xb1, 0x22, 0x36, 0xcb, 0xd8, 0x94, 0x0a, 0xb2, 0xa9, 0x32, 0x3b, 0xc7, 0x4b, 0x45, 0x5e,
-	0xd5, 0x74, 0xd9, 0xd2, 0xb0, 0xce, 0x5c, 0xa5, 0x07, 0xdd, 0x6b, 0xed, 0x55, 0x45, 0xac, 0xd9,
-	0xf3, 0xfd, 0xab, 0x78, 0x15, 0xd3, 0x9f, 0x12, 0xf9, 0xc5, 0x47, 0x8f, 0xac, 0x62, 0xbc, 0x5a,
-	0x52, 0x25, 0xb9, 0xa2, 0x49, 0xb2, 0xae, 0x63, 0x8b, 0xba, 0x34, 0xf9, 0xec, 0xf8, 0xee, 0x4c,
-	0xea, 0x80, 0xe9, 0x72, 0xb1, 0x1f, 0xd0, 0x0d, 0x02, 0x72, 0x59, 0x36, 0xe4, 0xb2, 0x99, 0x53,
-	0xd7, 0xab, 0xaa, 0x69, 0x89, 0x2b, 0xb0, 0xdf, 0x33, 0x6a, 0x56, 0xb0, 0x6e, 0xaa, 0xe8, 0x0a,
-	0xb4, 0x55, 0xe8, 0x48, 0x4a, 0x18, 0x12, 0x46, 0xbb, 0xa6, 0x4e, 0x64, 0x76, 0xd5, 0x22, 0xc3,
-	0xcc, 0xb3, 0xf1, 0x87, 0xcf, 0x8e, 0xb5, 0xe4, 0xb8, 0xa9, 0x78, 0x4f, 0x80, 0x3e, 0xe6, 0x1c,
-	0xe3, 0x92, 0xbd, 0x23, 0x1a, 0x80, 0xf6, 0x8a, 0xac, 0x19, 0x79, 0x4d, 0xa1, 0xbe, 0xe3, 0x64,
-	0xb9, 0x66, 0x2c, 0x2a, 0x28, 0x0d, 0x1d, 0x8a, 0x66, 0xca, 0x85, 0x92, 0xaa, 0xa4, 0x62, 0x43,
-	0xc2, 0x68, 0x67, 0xce, 0x79, 0x46, 0xf3, 0x00, 0x75, 0x4d, 0x53, 0xad, 0x14, 0xd3, 0x70, 0x86,
-	0x89, 0x9a, 0x21, 0xa2, 0x66, 0x58, 0xe0, 0xea, 0x78, 0x56, 0x55, 0xbe, 0x61, 0xce, 0x65, 0x29,
-	0x7e, 0x2b, 0xd8, 0x2a, 0x30, 0x48, 0x9c, 0xee, 0x02, 0x24, 0x2a, 0x64, 0x20, 0x25, 0x0c, 0xb5,
-	0x8e, 0x76, 0x4d, 0x9d, 0x6c, 0xc6, 0x16, 0xe3, 0x92, 0x6d, 0xcb, 0x39, 0x33, 0x7b, 0xb4, 0xe0,
-	0xc1, 0x19, 0xa3, 0x38, 0x47, 0x9a, 0xe2, 0x64, 0x9e, 0x3c, 0x40, 0x4f, 0x42, 0xaf, 0x83, 0xd3,
-	0xad, 0x1c, 0xc6, 0x25, 0xb7, 0x72, 0x18, 0x97, 0x16, 0x15, 0x71, 0xc5, 0xa5, 0xb3, 0xc3, 0xe9,
-	0x2a, 0xc4, 0xc9, 0x34, 0x0f, 0x60, 0x04, 0x4a, 0xd4, 0x5c, 0x7c, 0x13, 0x86, 0x1c, 0xdf, 0xd9,
-	0x5a, 0x4e, 0x35, 0x55, 0xe3, 0x8e, 0x3a, 0xab, 0x28, 0x86, 0x6a, 0x3a, 0x21, 0x1d, 0x81, 0xa4,
-	0xc1, 0x26, 0xf2, 0x32, 0x9b, 0xa1, 0xbb, 0x76, 0xe6, 0x7a, 0x0c, 0xcf, 0x7a, 0x71, 0x11, 0x8e,
-	0xb9, 0x9c, 0x91, 0x7f, 0xaf, 0x60, 0x4d, 0x9f, 0x53, 0x75, 0x5c, 0xb6, 0x7d, 0x0d, 0x43, 0x92,
-	0x92, 0x24, 0x87, 0x23, 0xaf, 0x90, 0x19, 0xee, 0xab, 0xbb, 0xe2, 0x5e, 0x2e, 0xde, 0x17, 0xe0,
-	0x10, 0xcf, 0x5c, 0xcd, 0x30, 0xb3, 0x35, 0x3a, 0xea, 0x20, 0x3a, 0x08, 0x6d, 0xd4, 0x76, 0x92,
-	0x1b, 0xf3, 0x27, 0x67, 0x7c, 0x8a, 0x67, 0x18, 0x7f, 0xda, 0xcb, 0xfc, 0x4a, 0x37, 0x42, 0xc5,
-	0x63, 0x72, 0x09, 0x12, 0x24, 0xd9, 0xed, 0x3c, 0x7b, 0xa5, 0xe9, 0xa9, 0xd2, 0x0c, 0x27, 0xbf,
-	0x88, 0xdd, 0xde, 0xe5, 0x97, 0x69, 0xa7, 0x0c, 0x71, 0xeb, 0x57, 0x8d, 0xe1, 0xb3, 0xd5, 0x31,
-	0x7d, 0xea, 0xc4, 0x22, 0xab, 0xf3, 0xc0, 0x39, 0x7d, 0x6c, 0xd7, 0xff, 0x9d, 0x2a, 0xce, 0xa9,
-	0x93, 0x35, 0xa3, 0x59, 0xbd, 0x12, 0x73, 0x2e, 0x09, 0x1d, 0x2e, 0x17, 0x20, 0x4e, 0xa6, 0xf9,
-	0xa9, 0x0b, 0x41, 0x85, 0x9a, 0x89, 0x1f, 0xc3, 0x61, 0xea, 0x73, 0x4e, 0xad, 0x60, 0x53, 0xb3,
-	0x38, 0x06, 0xb3, 0x59, 0x05, 0xd8, 0xb3, 0x08, 0xfd, 0x2c, 0xc0, 0x91, 0xc6, 0x00, 0x38, 0xbf,
-	0x0f, 0xa1, 0x57, 0x61, 0x53, 0x79, 0x83, 0xcf, 0xf1, 0xb0, 0x8d, 0x37, 0xe1, 0xea, 0xf5, 0xc8,
-	0x59, 0x27, 0x15, 0xef, 0x3e, 0x7b, 0x17, 0xca, 0xab, 0xfc, 0x20, 0x7a, 0xb7, 0x6d, 0x2a, 0x64,
-	0x0f, 0xc4, 0x34, 0xf6, 0xfa, 0x89, 0xe7, 0x62, 0x9a, 0x22, 0x6e, 0x36, 0x0c, 0x88, 0x23, 0xc7,
-	0x07, 0x90, 0xf4, 0xc9, 0xc1, 0x23, 0x1f, 0x49, 0x8d, 0x1e, 0xaf, 0x1a, 0xe2, 0x27, 0x3c, 0x18,
-	0xb7, 0x34, 0xeb, 0xb6, 0x62, 0xc8, 0x1b, 0xff, 0x79, 0x3a, 0xfc, 0x22, 0xc0, 0xd1, 0x1d, 0x10,
-	0x70, 0x01, 0x64, 0xe8, 0xdb, 0xe0, 0x73, 0xfe, 0x84, 0xc8, 0x34, 0x91, 0xc0, 0xe7, 0x93, 0x6b,
-	0xd0, 0xbb, 0xe1, 0xdb, 0x6a, 0xef, 0x52, 0x62, 0x9e, 0xc7, 0xd2, 0xb7, 0x71, 0xe8, 0x9c, 0xd8,
-	0x21, 0x2c, 0x8e, 0x26, 0x79, 0xe8, 0xf5, 0x6b, 0xc2, 0xb3, 0x22, 0x9a, 0x24, 0x49, 0x9f, 0x24,
-	0x62, 0x95, 0x97, 0xd1, 0xb7, 0x0d, 0x45, 0x35, 0x9a, 0x5f, 0xac, 0xf6, 0x2a, 0x1b, 0xbe, 0x11,
-	0xf8, 0x65, 0xd1, 0xde, 0x97, 0xf3, 0xcd, 0x42, 0x1b, 0xa6, 0x23, 0x3c, 0xf0, 0xc7, 0x9b, 0xb0,
-	0xa4, 0xe6, 0xf6, 0x5d, 0x91, 0x59, 0xee, 0x5d, 0x90, 0x67, 0x78, 0x55, 0xa6, 0x9b, 0x34, 0x95,
-	0xc6, 0x1f, 0xda, 0xf7, 0xdc, 0xca, 0x3a, 0x04, 0x2f, 0x43, 0x82, 0xc2, 0xe4, 0x51, 0x0c, 0xc3,
-	0x8f, 0x19, 0x8a, 0x5f, 0x0a, 0x3c, 0xf7, 0x98, 0x74, 0x59, 0xf6, 0xb7, 0x0e, 0x30, 0x05, 0xed,
-	0x98, 0x8d, 0xf0, 0x0b, 0x8b, 0xfd, 0xe8, 0x86, 0x1e, 0xdb, 0x25, 0xaa, 0xd1, 0xaf, 0x2c, 0x1f,
-	0xc1, 0xc1, 0x3a, 0xb2, 0x2c, 0xc6, 0x6b, 0x4e, 0x42, 0x1d, 0x82, 0x0e, 0xbe, 0x35, 0x8b, 0x6c,
-	0x3c, 0xd7, 0xce, 0xf6, 0x36, 0xd1, 0x18, 0xf4, 0x55, 0x0c, 0xad, 0xa8, 0xe6, 0xab, 0xba, 0x66,
-	0xe5, 0x2b, 0x78, 0x83, 0x44, 0x3f, 0x36, 0xd4, 0x3a, 0xda, 0x9d, 0x4b, 0xd2, 0x89, 0x77, 0x75,
-	0xcd, 0x5a, 0xa6, 0xc3, 0xe8, 0x30, 0x74, 0xea, 0xd5, 0x72, 0xde, 0xd2, 0x8a, 0x6b, 0x26, 0xc5,
-	0xd9, 0x9d, 0xeb, 0xd0, 0xab, 0xe5, 0x9b, 0xe4, 0x59, 0x5c, 0x83, 0x81, 0x6d, 0xbb, 0x73, 0xd5,
-	0x97, 0xed, 0x6b, 0x41, 0x8c, 0x66, 0xd5, 0xeb, 0x81, 0x54, 0xc7, 0x78, 0xcd, 0xfd, 0x3e, 0xf6,
-	0xdc, 0x13, 0xc4, 0xbf, 0x13, 0xb0, 0xcf, 0x73, 0x47, 0x3e, 0x0f, 0x71, 0xab, 0x56, 0x51, 0xa9,
-	0xe6, 0x3d, 0x53, 0x23, 0x01, 0xee, 0xc8, 0x37, 0x6b, 0x15, 0x35, 0x47, 0x8d, 0xfc, 0xb9, 0xe3,
-	0x8e, 0x54, 0xab, 0x27, 0x52, 0x29, 0x68, 0x2f, 0x1a, 0xaa, 0x6c, 0x61, 0x23, 0x15, 0x67, 0xc1,
-	0xe5, 0x8f, 0x8d, 0x2e, 0xce, 0x89, 0x46, 0x17, 0xe7, 0x46, 0xb7, 0xe2, 0xb6, 0x06, 0xb7, 0x62,
-	0xf4, 0x3e, 0xf4, 0xd6, 0xd7, 0x99, 0xd5, 0x4a, 0xa5, 0x54, 0x4b, 0xb5, 0x93, 0x85, 0xd9, 0x0c,
-	0x11, 0xe2, 0x8f, 0x67, 0xc7, 0x86, 0x57, 0x35, 0xeb, 0x76, 0xb5, 0x90, 0x29, 0xe2, 0xb2, 0xc4,
-	0x3f, 0x4a, 0xd9, 0x9f, 0x71, 0x53, 0x59, 0x93, 0x08, 0x31, 0x33, 0xb3, 0xa8, 0x5b, 0xb9, 0x1e,
-	0xdb, 0xf1, 0x3b, 0xd4, 0x0b, 0x5a, 0x80, 0xce, 0xb2, 0xa6, 0xe7, 0x69, 0x70, 0x53, 0x1d, 0xd4,
-	0xe5, 0x58, 0x40, 0x77, 0x73, 0x6a, 0x31, 0xd7, 0x51, 0xd6, 0xf4, 0x65, 0x62, 0x4b, 0x1d, 0xc9,
-	0x77, 0xb9, 0xa3, 0xce, 0x08, 0x8e, 0xe4, 0xbb, 0xcc, 0xd1, 0x65, 0x48, 0x30, 0x27, 0x10, 0xda,
-	0x09, 0x33, 0x44, 0x4b, 0xd0, 0x51, 0x90, 0x4b, 0xb2, 0x5e, 0x54, 0xcd, 0x54, 0x57, 0xe0, 0xcf,
-	0xa4, 0x2c, 0x37, 0xe1, 0xb9, 0xe5, 0xb8, 0x40, 0xa7, 0x61, 0xa0, 0x24, 0x9b, 0x56, 0xde, 0x77,
-	0x23, 0x20, 0x09, 0xb1, 0x8f, 0x26, 0x44, 0x3f, 0x99, 0xf6, 0xbe, 0xf9, 0x17, 0x15, 0x34, 0x0d,
-	0x29, 0x6a, 0xe6, 0x7f, 0x67, 0x10, 0xbb, 0x6e, 0x6a, 0x77, 0x80, 0xcc, 0xfb, 0xde, 0x0d, 0xbe,
-	0x0f, 0xe6, 0x9e, 0x21, 0x61, 0xb4, 0xa3, 0xfe, 0xc1, 0x2c, 0x7e, 0x2e, 0xb0, 0x54, 0xb7, 0xc1,
-	0xa2, 0x19, 0xe8, 0x24, 0x45, 0x81, 0x66, 0x06, 0xaf, 0x63, 0x87, 0x3c, 0xd5, 0xc2, 0xa6, 0x48,
-	0x62, 0x5e, 0xa7, 0x66, 0xaa, 0xe4, 0x19, 0x5d, 0x04, 0x58, 0xaf, 0x62, 0x8b, 0x9b, 0xc7, 0x82,
-	0x99, 0x77, 0x52, 0x13, 0x32, 0x20, 0x3e, 0x15, 0xe0, 0x40, 0xc3, 0x03, 0xba, 0x73, 0x69, 0x5e,
-	0x02, 0xa0, 0x80, 0x59, 0x8c, 0x63, 0xa1, 0x93, 0x98, 0xc4, 0x99, 0x52, 0x66, 0xd9, 0x72, 0x0b,
-	0xba, 0x68, 0x49, 0xcd, 0x17, 0x48, 0x91, 0x49, 0xb5, 0xd2, 0x9a, 0x32, 0x11, 0xb4, 0xa6, 0xf8,
-	0xea, 0x09, 0x60, 0xa7, 0x5c, 0x89, 0x9f, 0xc5, 0xa0, 0x6f, 0xdb, 0x3a, 0x82, 0xbe, 0x5e, 0x20,
-	0x59, 0x4d, 0x0f, 0x8f, 0xde, 0xa9, 0xa4, 0xa4, 0x16, 0x9a, 0x6a, 0xa9, 0x14, 0xba, 0x16, 0x92,
-	0x22, 0xeb, 0xaf, 0x85, 0xd4, 0x11, 0xba, 0x0e, 0xf1, 0x42, 0xb5, 0x66, 0x0b, 0xf1, 0x32, 0x0e,
-	0xa9, 0x1f, 0xf1, 0x8b, 0x98, 0x2b, 0xc2, 0xee, 0x55, 0x68, 0xce, 0x3e, 0xa7, 0xd1, 0x54, 0xe0,
-	0x67, 0x75, 0x05, 0xfa, 0xaa, 0xa6, 0x6a, 0xe4, 0x59, 0x10, 0xe5, 0x32, 0xae, 0xea, 0x56, 0x84,
-	0xac, 0x20, 0xa5, 0x2d, 0x49, 0x1c, 0x51, 0xac, 0xb3, 0xd4, 0x0d, 0xf1, 0x4d, 0xab, 0xa6, 0xc7,
-	0x77, 0x6b, 0x34, 0xdf, 0xc4, 0x91, 0xcb, 0xf7, 0xd4, 0x6f, 0x03, 0x90, 0xa0, 0x6f, 0x38, 0xf4,
-	0x40, 0x80, 0x36, 0xd6, 0x27, 0x43, 0x93, 0x4d, 0xe4, 0xde, 0xde, 0xa8, 0x4b, 0x4f, 0x85, 0x31,
-	0x61, 0xca, 0x8b, 0xe3, 0x9f, 0x3e, 0xfe, 0xeb, 0x7e, 0x6c, 0x04, 0x9d, 0x90, 0x76, 0x6f, 0x15,
-	0xb2, 0x7e, 0x1d, 0xfa, 0x4a, 0x80, 0x04, 0xed, 0x8b, 0xa1, 0x89, 0x40, 0x9b, 0xb9, 0xba, 0x7a,
-	0xe9, 0xc9, 0x10, 0x16, 0x1c, 0xdd, 0x29, 0x8a, 0x6e, 0x18, 0x1d, 0x6f, 0x86, 0x8e, 0x42, 0xfa,
-	0x5a, 0x80, 0x38, 0xb1, 0x47, 0x52, 0xd0, 0x9d, 0x6c, 0x68, 0x13, 0xc1, 0x0d, 0x38, 0xb2, 0x33,
-	0x14, 0xd9, 0x04, 0xca, 0x04, 0x41, 0x26, 0x6d, 0xf2, 0xaf, 0x86, 0x2d, 0xf4, 0xbb, 0x00, 0xfd,
-	0x8d, 0xfa, 0x64, 0xe8, 0x52, 0x50, 0x08, 0x3b, 0x74, 0xd8, 0x22, 0x70, 0xb8, 0x4e, 0x39, 0x5c,
-	0x43, 0xf3, 0x81, 0x38, 0xf8, 0x6e, 0x21, 0xd2, 0xa6, 0x6f, 0x60, 0x0b, 0x3d, 0x11, 0x60, 0x7f,
-	0x83, 0xb6, 0x1d, 0xba, 0x18, 0x9c, 0x5a, 0xa3, 0x7e, 0xdf, 0xbf, 0xce, 0xcc, 0x77, 0x6d, 0xe2,
-	0xd1, 0xaa, 0x0f, 0x6c, 0xa1, 0x9f, 0x04, 0xe8, 0xf6, 0xb4, 0xeb, 0xd0, 0x1b, 0xc1, 0xce, 0xda,
-	0xf6, 0xbe, 0x63, 0xfa, 0x6c, 0x04, 0xcb, 0xb0, 0x49, 0x47, 0xac, 0xf3, 0x85, 0x5a, 0x9e, 0x37,
-	0xe7, 0xe8, 0xa9, 0xa5, 0x6d, 0xb0, 0x89, 0xc0, 0x9b, 0x87, 0x3b, 0xb5, 0xee, 0x66, 0x5d, 0xf0,
-	0x53, 0x4b, 0x21, 0xd1, 0x53, 0x2b, 0x6b, 0x46, 0xc0, 0x53, 0x5b, 0x6f, 0xbb, 0xa5, 0x27, 0x82,
-	0x1b, 0x44, 0x11, 0x50, 0xda, 0xe4, 0xb7, 0x8e, 0x2d, 0xf4, 0x58, 0x80, 0xa4, 0xaf, 0xdd, 0x85,
-	0xce, 0x05, 0xd9, 0xbd, 0x71, 0x93, 0x2e, 0x7d, 0x3e, 0x92, 0x2d, 0x27, 0xb1, 0x40, 0x49, 0xcc,
-	0xa2, 0x4b, 0xe1, 0x4a, 0x8f, 0xe4, 0x6f, 0xca, 0xa1, 0x5f, 0x05, 0xe8, 0xf1, 0x6e, 0x82, 0xce,
-	0x86, 0x07, 0x66, 0x73, 0x3a, 0x17, 0xc5, 0x94, 0x53, 0x7a, 0x8b, 0x52, 0x9a, 0x47, 0x73, 0x2f,
-	0x49, 0x49, 0xda, 0x24, 0xd1, 0x7a, 0x22, 0x40, 0xaf, 0xbf, 0x1b, 0x85, 0x02, 0x49, 0xbe, 0x43,
-	0x17, 0x2d, 0x3d, 0x13, 0xcd, 0x98, 0xb3, 0xbb, 0x46, 0xd9, 0x65, 0xd1, 0xe5, 0x90, 0xec, 0xb6,
-	0x75, 0xcd, 0xc8, 0xdb, 0x23, 0xe9, 0xdb, 0x26, 0x58, 0x1e, 0x36, 0xee, 0x67, 0xa5, 0xcf, 0x47,
-	0xb2, 0xe5, 0xb4, 0x96, 0x28, 0xad, 0x05, 0x74, 0xf5, 0x65, 0x69, 0xb1, 0xa8, 0x7d, 0x27, 0x40,
-	0x1b, 0x6b, 0x7d, 0x04, 0xbb, 0xfb, 0x78, 0x3a, 0x5b, 0xc1, 0xee, 0x3e, 0xde, 0xa6, 0x94, 0x78,
-	0x81, 0x12, 0x98, 0x46, 0xa7, 0xc3, 0x55, 0x03, 0x89, 0xf7, 0xa3, 0x7e, 0x10, 0x20, 0x41, 0x3d,
-	0x06, 0xab, 0xaa, 0xee, 0x6e, 0x53, 0x7a, 0x32, 0x84, 0x05, 0x47, 0x9b, 0xa5, 0x68, 0x67, 0xd0,
-	0xb9, 0x48, 0x68, 0x99, 0xc6, 0x3f, 0x0a, 0x90, 0xf4, 0xb5, 0x97, 0x82, 0xe5, 0x4f, 0xe3, 0x9e,
-	0x54, 0x24, 0xd5, 0xa7, 0x29, 0x8f, 0x49, 0x24, 0x35, 0xe1, 0x61, 0xe3, 0xe6, 0x5d, 0xae, 0x2d,
-	0xf4, 0xbd, 0x00, 0x50, 0xef, 0x01, 0xa1, 0xd3, 0x81, 0xf7, 0x76, 0x77, 0xac, 0xd2, 0x67, 0xc2,
-	0x9a, 0x71, 0xd8, 0x53, 0x14, 0xf6, 0x29, 0x34, 0x16, 0x04, 0x36, 0xfb, 0x82, 0xcc, 0xde, 0x78,
-	0xf8, 0x7c, 0x50, 0x78, 0xf4, 0x7c, 0x50, 0xf8, 0xf3, 0xf9, 0xa0, 0x70, 0xef, 0xc5, 0x60, 0xcb,
-	0xa3, 0x17, 0x83, 0x2d, 0x4f, 0x5f, 0x0c, 0xb6, 0xac, 0x4c, 0xbb, 0xbe, 0x15, 0x96, 0x66, 0xaf,
-	0xdf, 0xcc, 0xcd, 0x8e, 0xcf, 0x6b, 0x3a, 0xf9, 0x0c, 0xf7, 0xb8, 0xbf, 0xeb, 0xda, 0x80, 0x7e,
-	0x40, 0x14, 0xda, 0xe8, 0xff, 0xd4, 0xbf, 0xf6, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x54, 0xbf,
-	0x66, 0x37, 0xa4, 0x20, 0x00, 0x00,
+	// 1931 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x59, 0xcf, 0x6f, 0xdc, 0xc6,
+	0x15, 0x36, 0x57, 0xab, 0x1f, 0xfb, 0x14, 0x69, 0xa5, 0xa9, 0x14, 0xaf, 0xd7, 0xb1, 0x24, 0x30,
+	0x89, 0xa5, 0x2a, 0xd1, 0x52, 0x52, 0xab, 0xa8, 0xb6, 0x95, 0x38, 0xda, 0xca, 0x92, 0x85, 0xc6,
+	0xae, 0xc2, 0xba, 0x0d, 0x10, 0x14, 0x5d, 0x70, 0x97, 0xc4, 0x8a, 0xd0, 0x2e, 0x87, 0x22, 0xb9,
+	0x91, 0x17, 0xaa, 0x5a, 0xa0, 0xe7, 0x1e, 0x02, 0xe4, 0xd2, 0x53, 0x8a, 0xf6, 0x10, 0xf4, 0x58,
+	0xa0, 0x3f, 0xae, 0x45, 0x4f, 0x0d, 0x50, 0x14, 0x08, 0xd0, 0x4b, 0x60, 0x18, 0x42, 0x61, 0x17,
+	0x68, 0xff, 0x85, 0xde, 0x8a, 0x99, 0x79, 0xe4, 0x92, 0x14, 0xa5, 0xe5, 0xae, 0xd5, 0x22, 0x17,
+	0x79, 0x39, 0x33, 0xdf, 0x9b, 0xef, 0x7b, 0xef, 0xcd, 0xe3, 0xf0, 0x19, 0xbe, 0xde, 0xd4, 0x2c,
+	0xcf, 0xd1, 0x6a, 0xfb, 0x9a, 0x69, 0x29, 0x0d, 0xf3, 0xb0, 0x65, 0xea, 0xa6, 0xd7, 0x56, 0x3e,
+	0x5a, 0xa9, 0x1a, 0x9e, 0xb6, 0xa2, 0x1c, 0xb6, 0x0c, 0xa7, 0x5d, 0xb2, 0x1d, 0xea, 0x51, 0x72,
+	0x23, 0xb4, 0xb4, 0x14, 0x2c, 0x2d, 0xe1, 0xd2, 0xe2, 0xa4, 0xd6, 0x34, 0x2d, 0xaa, 0xf0, 0xbf,
+	0x02, 0x51, 0x9c, 0xaa, 0xd3, 0x3a, 0xe5, 0x3f, 0x15, 0xf6, 0x0b, 0x47, 0x67, 0x6a, 0xd4, 0x6d,
+	0x52, 0x57, 0xa9, 0x6a, 0xae, 0x11, 0x6c, 0x54, 0xa3, 0xa6, 0x85, 0xf3, 0xaf, 0xd4, 0x29, 0xad,
+	0x37, 0x0c, 0x45, 0xb3, 0x4d, 0x45, 0xb3, 0x2c, 0xea, 0x69, 0x9e, 0x49, 0x2d, 0x17, 0x67, 0x17,
+	0xc3, 0x68, 0x4e, 0x2f, 0xb0, 0x61, 0x6b, 0x75, 0xd3, 0xe2, 0x8b, 0xfd, 0xb5, 0x17, 0x8b, 0xb3,
+	0x35, 0x47, 0x6b, 0xfa, 0x76, 0x97, 0x2e, 0x5e, 0xdb, 0xd1, 0xcb, 0x97, 0xcb, 0x53, 0x40, 0xde,
+	0x67, 0x9b, 0xef, 0x71, 0x1b, 0xaa, 0x71, 0xd8, 0x32, 0x5c, 0x4f, 0xae, 0xc0, 0xd7, 0x22, 0xa3,
+	0xae, 0x4d, 0x2d, 0xd7, 0x20, 0xf7, 0x61, 0x48, 0xec, 0x55, 0x90, 0xe6, 0xa4, 0x85, 0xd1, 0xd5,
+	0xd7, 0x4b, 0x17, 0xba, 0xb2, 0x24, 0xe0, 0xe5, 0xdc, 0xe7, 0xa7, 0xb3, 0x57, 0x7e, 0xf3, 0xaf,
+	0xdf, 0x2e, 0x4a, 0x2a, 0xe2, 0xe5, 0x8f, 0x25, 0x98, 0x14, 0x3b, 0x50, 0xda, 0xf0, 0xb7, 0x25,
+	0x57, 0x61, 0xd8, 0xd6, 0x4c, 0xa7, 0x62, 0xea, 0x7c, 0x83, 0x2c, 0x5b, 0x6e, 0x3a, 0xbb, 0x3a,
+	0x29, 0xc2, 0x88, 0x6e, 0xba, 0x5a, 0xb5, 0x61, 0xe8, 0x85, 0xcc, 0x9c, 0xb4, 0x90, 0x53, 0x83,
+	0x67, 0xb2, 0x0d, 0xd0, 0x71, 0x58, 0x61, 0x80, 0x13, 0xbb, 0x59, 0x12, 0xde, 0x2d, 0x31, 0xef,
+	0x96, 0x44, 0xf0, 0x3b, 0xa4, 0xea, 0x06, 0x6e, 0xa8, 0x86, 0x90, 0xf2, 0x67, 0x92, 0xef, 0x0a,
+	0x41, 0x09, 0x35, 0xef, 0xc0, 0xa0, 0xcd, 0x06, 0x0a, 0xd2, 0xdc, 0xc0, 0xc2, 0xe8, 0xea, 0x1b,
+	0xdd, 0x24, 0x53, 0xda, 0xf0, 0xb1, 0xe5, 0x2c, 0x13, 0xae, 0x0a, 0x3c, 0xd9, 0x89, 0xf0, 0xcc,
+	0x70, 0x9e, 0xf3, 0x5d, 0x79, 0x0a, 0x4b, 0x11, 0xa2, 0x6f, 0xc0, 0x44, 0xc0, 0x33, 0xec, 0x39,
+	0x4a, 0x1b, 0x61, 0xcf, 0x51, 0xda, 0xd8, 0xd5, 0xe5, 0x0f, 0x43, 0x7e, 0x0e, 0x34, 0xdd, 0x83,
+	0x2c, 0x9b, 0xc6, 0x28, 0xf6, 0x21, 0x89, 0xc3, 0xe5, 0xef, 0xc0, 0x5c, 0x60, 0xbb, 0xdc, 0x56,
+	0x0d, 0xd7, 0x70, 0x3e, 0x32, 0x36, 0x75, 0xdd, 0x31, 0xdc, 0x20, 0xa4, 0xf3, 0x90, 0x77, 0xc4,
+	0x44, 0x45, 0x13, 0x33, 0x7c, 0xd7, 0x9c, 0x3a, 0xee, 0x44, 0xd6, 0xcb, 0xbb, 0x30, 0x1b, 0x32,
+	0xc6, 0xfe, 0x7e, 0x9b, 0x9a, 0xd6, 0x96, 0x61, 0xd1, 0xa6, 0x6f, 0xeb, 0x26, 0xe4, 0xb9, 0x48,
+	0x76, 0xc6, 0x2a, 0x3a, 0x9b, 0x41, 0x5b, 0x63, 0x76, 0x78, 0xb9, 0xfc, 0x89, 0x04, 0xd7, 0x30,
+	0x7d, 0x4d, 0xc7, 0x2d, 0xb7, 0xf9, 0x68, 0xc0, 0xe8, 0x65, 0x18, 0xe2, 0xd8, 0x15, 0x04, 0xe3,
+	0x53, 0x30, 0xbe, 0x8a, 0x19, 0x86, 0x4f, 0x97, 0x99, 0x5f, 0xc5, 0x24, 0x56, 0x18, 0x93, 0xbb,
+	0x30, 0xc8, 0x92, 0xdd, 0xcf, 0xb3, 0x57, 0xbb, 0x1e, 0x2d, 0xd3, 0x09, 0xf2, 0x8b, 0xe1, 0x2e,
+	0x2f, 0xbf, 0x5c, 0x3f, 0x65, 0x98, 0xd9, 0xb8, 0xd7, 0x04, 0x3f, 0xdf, 0x3b, 0x6e, 0xcc, 0x3b,
+	0x99, 0xbe, 0xbd, 0xf3, 0x69, 0x70, 0xfa, 0xc4, 0xae, 0x5f, 0x39, 0xaf, 0x04, 0xa7, 0x4e, 0x33,
+	0x9d, 0x6e, 0xf5, 0x4a, 0x56, 0x43, 0x2e, 0x0c, 0xb4, 0xbc, 0x0d, 0x59, 0x36, 0x8d, 0xa7, 0xae,
+	0x07, 0x29, 0x1c, 0x26, 0xff, 0x04, 0xae, 0x73, 0x9b, 0x5b, 0x86, 0x4d, 0x5d, 0xd3, 0x43, 0x0e,
+	0x6e, 0xb7, 0x0a, 0x70, 0x69, 0x11, 0xfa, 0x8b, 0x04, 0xaf, 0x24, 0x13, 0x40, 0x7d, 0x3f, 0x82,
+	0x09, 0x5d, 0x4c, 0x55, 0x1c, 0x9c, 0xc3, 0xb0, 0x2d, 0x75, 0xd1, 0x1a, 0xb5, 0x88, 0xaa, 0xf3,
+	0x7a, 0x74, 0x9f, 0xcb, 0x0b, 0xe5, 0x3d, 0x3c, 0x88, 0xd1, 0x6d, 0xbb, 0x3a, 0x72, 0x1c, 0x32,
+	0xa6, 0x78, 0xfd, 0x64, 0xd5, 0x8c, 0xa9, 0xcb, 0xc7, 0x89, 0x01, 0x09, 0xdc, 0xf1, 0x43, 0xc8,
+	0xc7, 0xdc, 0x81, 0x91, 0xef, 0xcb, 0x1b, 0xe3, 0x51, 0x6f, 0xc8, 0x3f, 0xc5, 0x60, 0x7c, 0x60,
+	0x7a, 0xfb, 0xba, 0xa3, 0x1d, 0xfd, 0xdf, 0xd3, 0xe1, 0xaf, 0x12, 0xdc, 0x38, 0x87, 0x01, 0x3a,
+	0x40, 0x83, 0xc9, 0x23, 0x9c, 0x8b, 0x27, 0x44, 0xa9, 0x8b, 0x0b, 0x62, 0x36, 0xd1, 0x07, 0x13,
+	0x47, 0xb1, 0xad, 0x2e, 0x2f, 0x25, 0xb6, 0x31, 0x96, 0xb1, 0x8d, 0x7b, 0xce, 0x89, 0x73, 0xc2,
+	0x12, 0xf8, 0xa4, 0x02, 0x13, 0x71, 0x9f, 0x60, 0x56, 0xf4, 0xe7, 0x92, 0x7c, 0xcc, 0x25, 0x72,
+	0x0b, 0xcb, 0xe8, 0x77, 0x1d, 0xdd, 0x70, 0xba, 0x5f, 0xac, 0x2e, 0x2b, 0x1b, 0x7e, 0x2d, 0xe1,
+	0x8d, 0xd1, 0xdf, 0x17, 0xf5, 0x96, 0x61, 0x88, 0xf2, 0x11, 0x0c, 0xfc, 0x6b, 0x5d, 0x54, 0x72,
+	0x38, 0x6a, 0x43, 0xe4, 0xe5, 0x05, 0x79, 0x03, 0xab, 0x32, 0xdf, 0xa4, 0xab, 0x6b, 0xe2, 0xa1,
+	0xfd, 0x41, 0xd8, 0xb3, 0x81, 0xc0, 0x77, 0x61, 0x90, 0xd3, 0xc4, 0x28, 0xf6, 0xa2, 0x4f, 0x00,
+	0xe5, 0x5f, 0x48, 0x98, 0x7b, 0xc2, 0x75, 0x65, 0xf1, 0x6f, 0x87, 0x60, 0x01, 0x86, 0xa9, 0x18,
+	0xc1, 0x0b, 0x8b, 0xff, 0x18, 0xa6, 0x9e, 0xb9, 0x20, 0xaa, 0xfd, 0x5f, 0x59, 0x7e, 0x0c, 0x2f,
+	0x77, 0x98, 0x95, 0x29, 0x3d, 0x08, 0x12, 0xea, 0x1a, 0x8c, 0xe0, 0xd6, 0x22, 0xb2, 0x59, 0x75,
+	0x58, 0xec, 0xed, 0x92, 0x45, 0x98, 0xb4, 0x1d, 0xb3, 0x66, 0x54, 0x5a, 0x96, 0xe9, 0x55, 0x6c,
+	0x7a, 0xc4, 0xa2, 0x9f, 0x99, 0x1b, 0x58, 0x18, 0x53, 0xf3, 0x7c, 0xe2, 0xfb, 0x96, 0xe9, 0xed,
+	0xf1, 0x61, 0x72, 0x1d, 0x72, 0x56, 0xab, 0x59, 0xf1, 0xcc, 0xda, 0x81, 0xcb, 0x79, 0x8e, 0xa9,
+	0x23, 0x56, 0xab, 0xf9, 0x88, 0x3d, 0xcb, 0x07, 0x70, 0xf5, 0xcc, 0xee, 0xe8, 0xf5, 0x3d, 0xff,
+	0x5a, 0x90, 0xe1, 0x59, 0xf5, 0xcd, 0x54, 0x5e, 0xa7, 0xf4, 0x20, 0xfc, 0x3e, 0x8e, 0xdc, 0x13,
+	0xe4, 0x3f, 0x0e, 0xc2, 0x4b, 0x91, 0x3b, 0xf2, 0x1d, 0xc8, 0x7a, 0x6d, 0xdb, 0xe0, 0x3e, 0x1f,
+	0x5f, 0x9d, 0x4f, 0x71, 0x47, 0x7e, 0xd4, 0xb6, 0x0d, 0x95, 0x83, 0xe2, 0xb9, 0x13, 0x8e, 0xd4,
+	0x40, 0x24, 0x52, 0x05, 0x18, 0xae, 0x39, 0x86, 0xe6, 0x51, 0xa7, 0x90, 0x15, 0xc1, 0xc5, 0xc7,
+	0xa4, 0x8b, 0xf3, 0x60, 0xd2, 0xc5, 0x39, 0xe9, 0x56, 0x3c, 0x94, 0x70, 0x2b, 0x26, 0x3b, 0x30,
+	0xd1, 0x59, 0xe7, 0xb6, 0x6c, 0xbb, 0xd1, 0x2e, 0x0c, 0xb3, 0x85, 0xe5, 0x1b, 0xcc, 0x11, 0x4f,
+	0x4e, 0x67, 0xa7, 0x45, 0x86, 0xb8, 0xfa, 0x41, 0xc9, 0xa4, 0x4a, 0x53, 0xf3, 0xf6, 0x4b, 0xbb,
+	0x96, 0xa7, 0x8e, 0xfb, 0x76, 0xbe, 0xc7, 0x41, 0x64, 0x03, 0x72, 0x4d, 0xd3, 0xaa, 0xf0, 0x58,
+	0x16, 0x46, 0xb8, 0x85, 0xd9, 0x27, 0xa7, 0xb3, 0xd7, 0xcf, 0xa2, 0xdf, 0x33, 0xea, 0x5a, 0xad,
+	0xbd, 0x65, 0xd4, 0xd4, 0x91, 0xa6, 0x69, 0xed, 0x31, 0x00, 0x47, 0x6b, 0x8f, 0x11, 0x9d, 0x4b,
+	0x8b, 0xd6, 0x1e, 0x0b, 0xf4, 0x1a, 0x0c, 0x0a, 0x24, 0xa4, 0x43, 0x8a, 0xd5, 0xe4, 0x01, 0x8c,
+	0x54, 0xb5, 0x86, 0x66, 0xd5, 0x0c, 0xb7, 0x30, 0x9a, 0xfa, 0xa3, 0xa7, 0x8c, 0x10, 0xcc, 0x94,
+	0xc0, 0x04, 0x59, 0x83, 0xab, 0x0d, 0xcd, 0xf5, 0x2a, 0xb1, 0xf7, 0x3b, 0x0b, 0xef, 0x4b, 0x3c,
+	0xbc, 0x53, 0x6c, 0x3a, 0xfa, 0x1e, 0xdf, 0xd5, 0xc9, 0x3a, 0x14, 0x38, 0x2c, 0xfe, 0x06, 0x60,
+	0xb8, 0x31, 0x8e, 0x9b, 0x66, 0xf3, 0xb1, 0x4a, 0x1f, 0xfb, 0xfc, 0x1d, 0x9f, 0x93, 0x16, 0x46,
+	0x3a, 0x9f, 0xbf, 0xf2, 0xcf, 0x25, 0x91, 0xb8, 0x3e, 0x59, 0xe6, 0x60, 0x76, 0xc4, 0x79, 0x9c,
+	0xb1, 0x2a, 0x5d, 0x8b, 0x9c, 0x7d, 0x5f, 0x22, 0x0b, 0x69, 0x47, 0x9a, 0x6b, 0xb0, 0x67, 0xf2,
+	0x0e, 0xc0, 0x61, 0x8b, 0x7a, 0x08, 0xcf, 0xa4, 0x83, 0xe7, 0x38, 0x84, 0x0d, 0xc8, 0x7f, 0x93,
+	0x60, 0x3a, 0xf1, 0xb8, 0x9d, 0x5f, 0x68, 0xcb, 0x00, 0x9c, 0xb0, 0x08, 0x2c, 0xff, 0xf8, 0x2a,
+	0xbf, 0x8a, 0x29, 0x79, 0x61, 0x70, 0xb9, 0x4e, 0x91, 0x17, 0x1f, 0xc0, 0x28, 0xaf, 0x8a, 0x95,
+	0x2a, 0xab, 0x13, 0x85, 0x01, 0x5e, 0x16, 0x96, 0xd3, 0x96, 0x85, 0x58, 0x49, 0x00, 0x1a, 0x54,
+	0x1c, 0xf9, 0x3f, 0x12, 0x4c, 0x9e, 0x59, 0xc7, 0x28, 0x77, 0x6a, 0x9c, 0x28, 0xcb, 0x29, 0x29,
+	0x07, 0x15, 0x90, 0xd5, 0x30, 0xd7, 0x68, 0x34, 0x7a, 0xae, 0x61, 0xac, 0x38, 0xc6, 0x6b, 0x18,
+	0x37, 0x44, 0x1e, 0x42, 0xb6, 0xda, 0x6a, 0xfb, 0xea, 0x5f, 0xc4, 0x20, 0xb7, 0x23, 0xff, 0x3b,
+	0x1c, 0xcb, 0xf0, 0x2a, 0x72, 0xcb, 0x3f, 0x86, 0x3d, 0x48, 0xc7, 0xa3, 0xb8, 0x0b, 0x93, 0x2d,
+	0xd7, 0x70, 0x2a, 0x22, 0x5c, 0x5a, 0x93, 0xb6, 0x2c, 0x0f, 0x83, 0xde, 0xa5, 0x0e, 0xe5, 0x19,
+	0x8e, 0xf3, 0xd9, 0xe4, 0x28, 0x66, 0x8a, 0x57, 0xb4, 0x88, 0xa9, 0x81, 0x54, 0xa6, 0x18, 0x2e,
+	0x64, 0x6a, 0xf5, 0x57, 0x05, 0x18, 0xe4, 0x2f, 0x1b, 0xf2, 0xa9, 0x04, 0x43, 0xa2, 0x6f, 0x45,
+	0x56, 0xba, 0x78, 0xf0, 0x6c, 0xe3, 0xac, 0xb8, 0xda, 0x0b, 0x44, 0x38, 0x53, 0x5e, 0xfa, 0xd9,
+	0xdf, 0xff, 0xf9, 0x49, 0x66, 0x9e, 0xbc, 0xae, 0xa4, 0x69, 0xf3, 0x91, 0x5f, 0x4a, 0x00, 0x9d,
+	0x3e, 0x15, 0x59, 0x4e, 0xb5, 0x63, 0xa8, 0xcb, 0x56, 0x5c, 0xe9, 0x01, 0x81, 0x14, 0xdf, 0xe4,
+	0x14, 0x6f, 0x92, 0xd7, 0xba, 0x51, 0xe4, 0x94, 0x3e, 0x93, 0x20, 0x17, 0x18, 0x21, 0x4a, 0xda,
+	0xed, 0x7c, 0x7e, 0xcb, 0xe9, 0x01, 0x48, 0xef, 0x2d, 0x4e, 0x6f, 0x99, 0x94, 0xd2, 0xd0, 0x53,
+	0x8e, 0xf1, 0x2a, 0x7f, 0x42, 0x4e, 0x83, 0x46, 0x51, 0x42, 0x07, 0x8b, 0xdc, 0x4d, 0xcb, 0xe3,
+	0x9c, 0xde, 0x57, 0x1f, 0x42, 0x1e, 0x72, 0x21, 0xf7, 0xc9, 0x76, 0x2a, 0x21, 0xb1, 0xfb, 0x81,
+	0x72, 0x1c, 0x1b, 0x38, 0x21, 0x4f, 0x25, 0x28, 0x9c, 0xd7, 0x55, 0x23, 0xef, 0xa4, 0xd7, 0x97,
+	0xd4, 0x8e, 0xfb, 0x9f, 0xcb, 0x8b, 0xdd, 0x6a, 0x30, 0x6e, 0x9d, 0x81, 0x13, 0xf2, 0xe7, 0x48,
+	0xd3, 0xc8, 0x6f, 0xa9, 0x91, 0x6f, 0xa5, 0x3b, 0x84, 0x67, 0x7b, 0x83, 0xc5, 0x5b, 0x7d, 0x20,
+	0x7b, 0xcd, 0x41, 0x86, 0xae, 0x54, 0xdb, 0x15, 0x6c, 0xa0, 0x75, 0x8e, 0x33, 0xef, 0x57, 0x2d,
+	0xa7, 0x66, 0xd0, 0xdb, 0x71, 0x0e, 0x77, 0xd5, 0xd2, 0x1f, 0x67, 0x4e, 0xa9, 0x73, 0x9c, 0x35,
+	0xd3, 0x49, 0x79, 0x9c, 0x3b, 0x4d, 0xb2, 0xe2, 0x72, 0x7a, 0x40, 0x3f, 0xae, 0x54, 0x8e, 0xf1,
+	0x56, 0x71, 0x42, 0xbe, 0x94, 0x60, 0x2a, 0xa9, 0x43, 0x45, 0x6e, 0xa7, 0xa1, 0x90, 0xdc, 0x57,
+	0x2b, 0xde, 0xe9, 0x0b, 0x8b, 0x4a, 0x76, 0xb8, 0x92, 0x4d, 0x72, 0xb7, 0xb7, 0xc2, 0xa4, 0xc4,
+	0xfb, 0x68, 0xe4, 0x89, 0xff, 0x7d, 0x1d, 0xdd, 0x89, 0xdc, 0xea, 0x9d, 0x9d, 0x2f, 0xec, 0x76,
+	0x3f, 0x50, 0xd4, 0xf5, 0x1e, 0xd7, 0xb5, 0x4d, 0xb6, 0x5e, 0x50, 0x97, 0x72, 0xcc, 0xe2, 0xf6,
+	0x54, 0x82, 0xe9, 0xc4, 0x56, 0x12, 0x49, 0xe5, 0xfc, 0x73, 0x5a, 0x60, 0xc5, 0x8d, 0xfe, 0xc0,
+	0x28, 0xf1, 0x3e, 0x97, 0x58, 0x26, 0xef, 0xf6, 0x28, 0xf1, 0x4c, 0xcb, 0x8b, 0xbd, 0x65, 0xa6,
+	0x92, 0xf6, 0x4a, 0x97, 0x96, 0xc9, 0x1d, 0xa9, 0xe2, 0x9d, 0xbe, 0xb0, 0xa8, 0xed, 0x01, 0xd7,
+	0xb6, 0x43, 0xee, 0xbd, 0xa8, 0x36, 0x11, 0xbf, 0xdf, 0x49, 0x30, 0x1a, 0xea, 0x60, 0xa4, 0xbb,
+	0x37, 0x45, 0x1a, 0x54, 0xe9, 0xee, 0x4d, 0xd1, 0xde, 0x92, 0xfc, 0x36, 0x57, 0xb1, 0x4e, 0xd6,
+	0x7a, 0x2b, 0x13, 0x0a, 0xb6, 0x95, 0xfe, 0xe0, 0x17, 0x5e, 0x6e, 0x36, 0x5d, 0xe1, 0x0d, 0x77,
+	0x8e, 0x8a, 0x2b, 0x3d, 0x20, 0x90, 0x72, 0x99, 0x53, 0xde, 0x20, 0xb7, 0xfb, 0xa2, 0x2c, 0xbc,
+	0xfd, 0x27, 0x3f, 0x9d, 0x62, 0xfd, 0xa2, 0x74, 0xe9, 0x94, 0xdc, 0x64, 0xea, 0xcb, 0xff, 0xeb,
+	0x5c, 0xcc, 0x0a, 0x51, 0xba, 0x88, 0xf1, 0xc9, 0x63, 0xdb, 0xea, 0x84, 0xfc, 0x5e, 0x82, 0x7c,
+	0xac, 0xb3, 0x43, 0xd6, 0x52, 0x13, 0x08, 0xf7, 0xa1, 0x8a, 0x6f, 0xf5, 0x0a, 0x43, 0xee, 0xab,
+	0x9c, 0xfb, 0x9b, 0x64, 0x31, 0x0d, 0x77, 0xf1, 0x51, 0x59, 0x7e, 0xff, 0xf3, 0x67, 0x33, 0xd2,
+	0x17, 0xcf, 0x66, 0xa4, 0x7f, 0x3c, 0x9b, 0x91, 0x3e, 0x7e, 0x3e, 0x73, 0xe5, 0x8b, 0xe7, 0x33,
+	0x57, 0xbe, 0x7c, 0x3e, 0x73, 0xe5, 0xc3, 0xf5, 0xba, 0xe9, 0xed, 0xb7, 0xaa, 0xa5, 0x1a, 0x6d,
+	0x2a, 0x0f, 0x36, 0x1f, 0x3e, 0x52, 0x37, 0x97, 0xb6, 0x4d, 0x8b, 0x7d, 0x8e, 0x47, 0xcc, 0x3f,
+	0x0e, 0x6d, 0xe0, 0xb5, 0x6d, 0xc3, 0xad, 0x0e, 0xf1, 0xff, 0x84, 0xff, 0xc6, 0x7f, 0x03, 0x00,
+	0x00, 0xff, 0xff, 0x2d, 0x20, 0x17, 0xb8, 0xbe, 0x20, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1991,37 +1995,37 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Params returns parameters of the module.
+	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Pools returns all liquidity pools.
-	Pools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error)
+	QueryPools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error)
 	// Pool returns the specific liquidity pool.
-	Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// PoolByReserveAddress returns all pools that correspond to the reserve account.
-	PoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	QueryPoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-	PoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	QueryPoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// Pairs returns all liquidity pairs by denoms.
-	PairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error)
+	QueryPairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error)
 	// Pairs returns all liquidity pairs.
-	Pairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error)
+	QueryPairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error)
 	// Pair returns the specific pair.
-	Pair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error)
+	QueryPair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error)
 	// DepositRequests returns all deposit requests.
-	DepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error)
+	QueryDepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error)
 	// DepositRequest returns the specific deposit request.
-	DepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error)
+	QueryDepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error)
 	// WithdrawRequests returns all withdraw requests.
-	WithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error)
+	QueryWithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error)
 	// WithdrawRequest returns the specific withdraw request.
-	WithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error)
+	QueryWithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error)
 	// Orders returns all orders within the pair.
-	Orders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
+	QueryOrders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
 	// Order returns the specific order.
-	Order(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error)
+	QueryOrder(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error)
 	// OrdersByOrderer returns orders made by an orderer.
-	OrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
-	OrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error)
+	QueryOrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
+	QueryOrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error)
 }
 
 type queryClient struct {
@@ -2041,135 +2045,135 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Pools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error) {
+func (c *queryClient) QueryPools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error) {
 	out := new(QueryPoolsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Pools", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPools", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Pool", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) PoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) QueryPoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/PoolByReserveAddress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPoolByReserveAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) PoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) QueryPoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/PoolByPoolCoinDenom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPoolByPoolCoinDenom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) PairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error) {
+func (c *queryClient) QueryPairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error) {
 	out := new(QueryPairsByDenomsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/PairsByDenoms", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPairsByDenoms", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Pairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error) {
+func (c *queryClient) QueryPairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error) {
 	out := new(QueryPairsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Pairs", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPairs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Pair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error) {
+func (c *queryClient) QueryPair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error) {
 	out := new(QueryPairResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Pair", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryPair", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) DepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error) {
+func (c *queryClient) QueryDepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error) {
 	out := new(QueryDepositRequestsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/DepositRequests", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) DepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error) {
+func (c *queryClient) QueryDepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error) {
 	out := new(QueryDepositRequestResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/DepositRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) WithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error) {
+func (c *queryClient) QueryWithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error) {
 	out := new(QueryWithdrawRequestsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/WithdrawRequests", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) WithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error) {
+func (c *queryClient) QueryWithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error) {
 	out := new(QueryWithdrawRequestResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/WithdrawRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Orders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
+func (c *queryClient) QueryOrders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
 	out := new(QueryOrdersResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Orders", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryOrders", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Order(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error) {
+func (c *queryClient) QueryOrder(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error) {
 	out := new(QueryOrderResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/Order", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) OrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
+func (c *queryClient) QueryOrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
 	out := new(QueryOrdersResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/OrdersByOrderer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryOrdersByOrderer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) OrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error) {
+func (c *queryClient) QueryOrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error) {
 	out := new(QueryOrderBooksResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/OrderBooks", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.liquidity.v1beta1.Query/QueryOrderBooks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2178,37 +2182,37 @@ func (c *queryClient) OrderBooks(ctx context.Context, in *QueryOrderBooksRequest
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Params returns parameters of the module.
+	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Pools returns all liquidity pools.
-	Pools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error)
+	QueryPools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error)
 	// Pool returns the specific liquidity pool.
-	Pool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
+	QueryPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
 	// PoolByReserveAddress returns all pools that correspond to the reserve account.
-	PoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error)
+	QueryPoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error)
 	// PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-	PoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error)
+	QueryPoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error)
 	// Pairs returns all liquidity pairs by denoms.
-	PairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error)
+	QueryPairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error)
 	// Pairs returns all liquidity pairs.
-	Pairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error)
+	QueryPairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error)
 	// Pair returns the specific pair.
-	Pair(context.Context, *QueryPairRequest) (*QueryPairResponse, error)
+	QueryPair(context.Context, *QueryPairRequest) (*QueryPairResponse, error)
 	// DepositRequests returns all deposit requests.
-	DepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error)
+	QueryDepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error)
 	// DepositRequest returns the specific deposit request.
-	DepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error)
+	QueryDepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error)
 	// WithdrawRequests returns all withdraw requests.
-	WithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error)
+	QueryWithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error)
 	// WithdrawRequest returns the specific withdraw request.
-	WithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error)
+	QueryWithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error)
 	// Orders returns all orders within the pair.
-	Orders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error)
+	QueryOrders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error)
 	// Order returns the specific order.
-	Order(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error)
+	QueryOrder(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error)
 	// OrdersByOrderer returns orders made by an orderer.
-	OrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error)
-	OrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error)
+	QueryOrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error)
+	QueryOrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -2218,50 +2222,50 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) Pools(ctx context.Context, req *QueryPoolsRequest) (*QueryPoolsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Pools not implemented")
+func (*UnimplementedQueryServer) QueryPools(ctx context.Context, req *QueryPoolsRequest) (*QueryPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPools not implemented")
 }
-func (*UnimplementedQueryServer) Pool(ctx context.Context, req *QueryPoolRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Pool not implemented")
+func (*UnimplementedQueryServer) QueryPool(ctx context.Context, req *QueryPoolRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPool not implemented")
 }
-func (*UnimplementedQueryServer) PoolByReserveAddress(ctx context.Context, req *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PoolByReserveAddress not implemented")
+func (*UnimplementedQueryServer) QueryPoolByReserveAddress(ctx context.Context, req *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolByReserveAddress not implemented")
 }
-func (*UnimplementedQueryServer) PoolByPoolCoinDenom(ctx context.Context, req *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PoolByPoolCoinDenom not implemented")
+func (*UnimplementedQueryServer) QueryPoolByPoolCoinDenom(ctx context.Context, req *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolByPoolCoinDenom not implemented")
 }
-func (*UnimplementedQueryServer) PairsByDenoms(ctx context.Context, req *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PairsByDenoms not implemented")
+func (*UnimplementedQueryServer) QueryPairsByDenoms(ctx context.Context, req *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPairsByDenoms not implemented")
 }
-func (*UnimplementedQueryServer) Pairs(ctx context.Context, req *QueryPairsRequest) (*QueryPairsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Pairs not implemented")
+func (*UnimplementedQueryServer) QueryPairs(ctx context.Context, req *QueryPairsRequest) (*QueryPairsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPairs not implemented")
 }
-func (*UnimplementedQueryServer) Pair(ctx context.Context, req *QueryPairRequest) (*QueryPairResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Pair not implemented")
+func (*UnimplementedQueryServer) QueryPair(ctx context.Context, req *QueryPairRequest) (*QueryPairResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPair not implemented")
 }
-func (*UnimplementedQueryServer) DepositRequests(ctx context.Context, req *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DepositRequests not implemented")
+func (*UnimplementedQueryServer) QueryDepositRequests(ctx context.Context, req *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDepositRequests not implemented")
 }
-func (*UnimplementedQueryServer) DepositRequest(ctx context.Context, req *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DepositRequest not implemented")
+func (*UnimplementedQueryServer) QueryDepositRequest(ctx context.Context, req *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDepositRequest not implemented")
 }
-func (*UnimplementedQueryServer) WithdrawRequests(ctx context.Context, req *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawRequests not implemented")
+func (*UnimplementedQueryServer) QueryWithdrawRequests(ctx context.Context, req *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryWithdrawRequests not implemented")
 }
-func (*UnimplementedQueryServer) WithdrawRequest(ctx context.Context, req *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawRequest not implemented")
+func (*UnimplementedQueryServer) QueryWithdrawRequest(ctx context.Context, req *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryWithdrawRequest not implemented")
 }
-func (*UnimplementedQueryServer) Orders(ctx context.Context, req *QueryOrdersRequest) (*QueryOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Orders not implemented")
+func (*UnimplementedQueryServer) QueryOrders(ctx context.Context, req *QueryOrdersRequest) (*QueryOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOrders not implemented")
 }
-func (*UnimplementedQueryServer) Order(ctx context.Context, req *QueryOrderRequest) (*QueryOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Order not implemented")
+func (*UnimplementedQueryServer) QueryOrder(ctx context.Context, req *QueryOrderRequest) (*QueryOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOrder not implemented")
 }
-func (*UnimplementedQueryServer) OrdersByOrderer(ctx context.Context, req *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OrdersByOrderer not implemented")
+func (*UnimplementedQueryServer) QueryOrdersByOrderer(ctx context.Context, req *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOrdersByOrderer not implemented")
 }
-func (*UnimplementedQueryServer) OrderBooks(ctx context.Context, req *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method OrderBooks not implemented")
+func (*UnimplementedQueryServer) QueryOrderBooks(ctx context.Context, req *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOrderBooks not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -2286,272 +2290,272 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Pools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Pools(ctx, in)
+		return srv.(QueryServer).QueryPools(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Pools",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPools",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Pools(ctx, req.(*QueryPoolsRequest))
+		return srv.(QueryServer).QueryPools(ctx, req.(*QueryPoolsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Pool(ctx, in)
+		return srv.(QueryServer).QueryPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Pool",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Pool(ctx, req.(*QueryPoolRequest))
+		return srv.(QueryServer).QueryPool(ctx, req.(*QueryPoolRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_PoolByReserveAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPoolByReserveAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolByReserveAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).PoolByReserveAddress(ctx, in)
+		return srv.(QueryServer).QueryPoolByReserveAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/PoolByReserveAddress",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPoolByReserveAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PoolByReserveAddress(ctx, req.(*QueryPoolByReserveAddressRequest))
+		return srv.(QueryServer).QueryPoolByReserveAddress(ctx, req.(*QueryPoolByReserveAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_PoolByPoolCoinDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPoolByPoolCoinDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolByPoolCoinDenomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).PoolByPoolCoinDenom(ctx, in)
+		return srv.(QueryServer).QueryPoolByPoolCoinDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/PoolByPoolCoinDenom",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPoolByPoolCoinDenom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PoolByPoolCoinDenom(ctx, req.(*QueryPoolByPoolCoinDenomRequest))
+		return srv.(QueryServer).QueryPoolByPoolCoinDenom(ctx, req.(*QueryPoolByPoolCoinDenomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_PairsByDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPairsByDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairsByDenomsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).PairsByDenoms(ctx, in)
+		return srv.(QueryServer).QueryPairsByDenoms(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/PairsByDenoms",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPairsByDenoms",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PairsByDenoms(ctx, req.(*QueryPairsByDenomsRequest))
+		return srv.(QueryServer).QueryPairsByDenoms(ctx, req.(*QueryPairsByDenomsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Pairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Pairs(ctx, in)
+		return srv.(QueryServer).QueryPairs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Pairs",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPairs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Pairs(ctx, req.(*QueryPairsRequest))
+		return srv.(QueryServer).QueryPairs(ctx, req.(*QueryPairsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Pair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Pair(ctx, in)
+		return srv.(QueryServer).QueryPair(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Pair",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryPair",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Pair(ctx, req.(*QueryPairRequest))
+		return srv.(QueryServer).QueryPair(ctx, req.(*QueryPairRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_DepositRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryDepositRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDepositRequestsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).DepositRequests(ctx, in)
+		return srv.(QueryServer).QueryDepositRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/DepositRequests",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequests",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).DepositRequests(ctx, req.(*QueryDepositRequestsRequest))
+		return srv.(QueryServer).QueryDepositRequests(ctx, req.(*QueryDepositRequestsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_DepositRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryDepositRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDepositRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).DepositRequest(ctx, in)
+		return srv.(QueryServer).QueryDepositRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/DepositRequest",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).DepositRequest(ctx, req.(*QueryDepositRequestRequest))
+		return srv.(QueryServer).QueryDepositRequest(ctx, req.(*QueryDepositRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WithdrawRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryWithdrawRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWithdrawRequestsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WithdrawRequests(ctx, in)
+		return srv.(QueryServer).QueryWithdrawRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/WithdrawRequests",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequests",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WithdrawRequests(ctx, req.(*QueryWithdrawRequestsRequest))
+		return srv.(QueryServer).QueryWithdrawRequests(ctx, req.(*QueryWithdrawRequestsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WithdrawRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryWithdrawRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWithdrawRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WithdrawRequest(ctx, in)
+		return srv.(QueryServer).QueryWithdrawRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/WithdrawRequest",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WithdrawRequest(ctx, req.(*QueryWithdrawRequestRequest))
+		return srv.(QueryServer).QueryWithdrawRequest(ctx, req.(*QueryWithdrawRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Orders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrdersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Orders(ctx, in)
+		return srv.(QueryServer).QueryOrders(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Orders",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryOrders",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Orders(ctx, req.(*QueryOrdersRequest))
+		return srv.(QueryServer).QueryOrders(ctx, req.(*QueryOrdersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Order_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Order(ctx, in)
+		return srv.(QueryServer).QueryOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/Order",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryOrder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Order(ctx, req.(*QueryOrderRequest))
+		return srv.(QueryServer).QueryOrder(ctx, req.(*QueryOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_OrdersByOrderer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryOrdersByOrderer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrdersByOrdererRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).OrdersByOrderer(ctx, in)
+		return srv.(QueryServer).QueryOrdersByOrderer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/OrdersByOrderer",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryOrdersByOrderer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).OrdersByOrderer(ctx, req.(*QueryOrdersByOrdererRequest))
+		return srv.(QueryServer).QueryOrdersByOrderer(ctx, req.(*QueryOrdersByOrdererRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_OrderBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryOrderBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrderBooksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).OrderBooks(ctx, in)
+		return srv.(QueryServer).QueryOrderBooks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.liquidity.v1beta1.Query/OrderBooks",
+		FullMethod: "/mantrachain.liquidity.v1beta1.Query/QueryOrderBooks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).OrderBooks(ctx, req.(*QueryOrderBooksRequest))
+		return srv.(QueryServer).QueryOrderBooks(ctx, req.(*QueryOrderBooksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2565,64 +2569,64 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Pools",
-			Handler:    _Query_Pools_Handler,
+			MethodName: "QueryPools",
+			Handler:    _Query_QueryPools_Handler,
 		},
 		{
-			MethodName: "Pool",
-			Handler:    _Query_Pool_Handler,
+			MethodName: "QueryPool",
+			Handler:    _Query_QueryPool_Handler,
 		},
 		{
-			MethodName: "PoolByReserveAddress",
-			Handler:    _Query_PoolByReserveAddress_Handler,
+			MethodName: "QueryPoolByReserveAddress",
+			Handler:    _Query_QueryPoolByReserveAddress_Handler,
 		},
 		{
-			MethodName: "PoolByPoolCoinDenom",
-			Handler:    _Query_PoolByPoolCoinDenom_Handler,
+			MethodName: "QueryPoolByPoolCoinDenom",
+			Handler:    _Query_QueryPoolByPoolCoinDenom_Handler,
 		},
 		{
-			MethodName: "PairsByDenoms",
-			Handler:    _Query_PairsByDenoms_Handler,
+			MethodName: "QueryPairsByDenoms",
+			Handler:    _Query_QueryPairsByDenoms_Handler,
 		},
 		{
-			MethodName: "Pairs",
-			Handler:    _Query_Pairs_Handler,
+			MethodName: "QueryPairs",
+			Handler:    _Query_QueryPairs_Handler,
 		},
 		{
-			MethodName: "Pair",
-			Handler:    _Query_Pair_Handler,
+			MethodName: "QueryPair",
+			Handler:    _Query_QueryPair_Handler,
 		},
 		{
-			MethodName: "DepositRequests",
-			Handler:    _Query_DepositRequests_Handler,
+			MethodName: "QueryDepositRequests",
+			Handler:    _Query_QueryDepositRequests_Handler,
 		},
 		{
-			MethodName: "DepositRequest",
-			Handler:    _Query_DepositRequest_Handler,
+			MethodName: "QueryDepositRequest",
+			Handler:    _Query_QueryDepositRequest_Handler,
 		},
 		{
-			MethodName: "WithdrawRequests",
-			Handler:    _Query_WithdrawRequests_Handler,
+			MethodName: "QueryWithdrawRequests",
+			Handler:    _Query_QueryWithdrawRequests_Handler,
 		},
 		{
-			MethodName: "WithdrawRequest",
-			Handler:    _Query_WithdrawRequest_Handler,
+			MethodName: "QueryWithdrawRequest",
+			Handler:    _Query_QueryWithdrawRequest_Handler,
 		},
 		{
-			MethodName: "Orders",
-			Handler:    _Query_Orders_Handler,
+			MethodName: "QueryOrders",
+			Handler:    _Query_QueryOrders_Handler,
 		},
 		{
-			MethodName: "Order",
-			Handler:    _Query_Order_Handler,
+			MethodName: "QueryOrder",
+			Handler:    _Query_QueryOrder_Handler,
 		},
 		{
-			MethodName: "OrdersByOrderer",
-			Handler:    _Query_OrdersByOrderer_Handler,
+			MethodName: "QueryOrdersByOrderer",
+			Handler:    _Query_QueryOrdersByOrderer_Handler,
 		},
 		{
-			MethodName: "OrderBooks",
-			Handler:    _Query_OrderBooks_Handler,
+			MethodName: "QueryOrderBooks",
+			Handler:    _Query_QueryOrderBooks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -7949,7 +7953,7 @@ func (m *PoolResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
+			var v cosmossdk_io_math.LegacyDec
 			m.MinPrice = &v
 			if err := m.MinPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -7985,7 +7989,7 @@ func (m *PoolResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
+			var v cosmossdk_io_math.LegacyDec
 			m.MaxPrice = &v
 			if err := m.MaxPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -8021,7 +8025,7 @@ func (m *PoolResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
+			var v cosmossdk_io_math.LegacyDec
 			m.Price = &v
 			if err := m.Price.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

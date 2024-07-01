@@ -321,6 +321,214 @@ func (m *AuthzGrantRevokeMsgsTypes) GetMsgs() []*AuthzGrantRevokeMsgType {
 	return nil
 }
 
+type MsgAccountsPrivileges struct {
+	Accounts   []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Privileges [][]byte `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
+}
+
+func (m *MsgAccountsPrivileges) Reset()         { *m = MsgAccountsPrivileges{} }
+func (m *MsgAccountsPrivileges) String() string { return proto.CompactTextString(m) }
+func (*MsgAccountsPrivileges) ProtoMessage()    {}
+func (*MsgAccountsPrivileges) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{6}
+}
+func (m *MsgAccountsPrivileges) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAccountsPrivileges) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAccountsPrivileges.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAccountsPrivileges) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAccountsPrivileges.Merge(m, src)
+}
+func (m *MsgAccountsPrivileges) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAccountsPrivileges) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAccountsPrivileges.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAccountsPrivileges proto.InternalMessageInfo
+
+func (m *MsgAccountsPrivileges) GetAccounts() []string {
+	if m != nil {
+		return m.Accounts
+	}
+	return nil
+}
+
+func (m *MsgAccountsPrivileges) GetPrivileges() [][]byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
+type MsgAccountsPrivilegesGrouped struct {
+	Accounts   []*MsgAccounts `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Privileges [][]byte       `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
+}
+
+func (m *MsgAccountsPrivilegesGrouped) Reset()         { *m = MsgAccountsPrivilegesGrouped{} }
+func (m *MsgAccountsPrivilegesGrouped) String() string { return proto.CompactTextString(m) }
+func (*MsgAccountsPrivilegesGrouped) ProtoMessage()    {}
+func (*MsgAccountsPrivilegesGrouped) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{7}
+}
+func (m *MsgAccountsPrivilegesGrouped) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAccountsPrivilegesGrouped) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAccountsPrivilegesGrouped.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAccountsPrivilegesGrouped) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAccountsPrivilegesGrouped.Merge(m, src)
+}
+func (m *MsgAccountsPrivilegesGrouped) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAccountsPrivilegesGrouped) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAccountsPrivilegesGrouped.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAccountsPrivilegesGrouped proto.InternalMessageInfo
+
+func (m *MsgAccountsPrivilegesGrouped) GetAccounts() []*MsgAccounts {
+	if m != nil {
+		return m.Accounts
+	}
+	return nil
+}
+
+func (m *MsgAccountsPrivilegesGrouped) GetPrivileges() [][]byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
+type MsgRequiredPrivileges struct {
+	Indexes    [][]byte `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
+	Privileges [][]byte `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
+}
+
+func (m *MsgRequiredPrivileges) Reset()         { *m = MsgRequiredPrivileges{} }
+func (m *MsgRequiredPrivileges) String() string { return proto.CompactTextString(m) }
+func (*MsgRequiredPrivileges) ProtoMessage()    {}
+func (*MsgRequiredPrivileges) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{8}
+}
+func (m *MsgRequiredPrivileges) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRequiredPrivileges) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRequiredPrivileges.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRequiredPrivileges) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRequiredPrivileges.Merge(m, src)
+}
+func (m *MsgRequiredPrivileges) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRequiredPrivileges) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRequiredPrivileges.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRequiredPrivileges proto.InternalMessageInfo
+
+func (m *MsgRequiredPrivileges) GetIndexes() [][]byte {
+	if m != nil {
+		return m.Indexes
+	}
+	return nil
+}
+
+func (m *MsgRequiredPrivileges) GetPrivileges() [][]byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
+type MsgRequiredPrivilegesGrouped struct {
+	Indexes    []*MsgIndexes `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
+	Privileges [][]byte      `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
+}
+
+func (m *MsgRequiredPrivilegesGrouped) Reset()         { *m = MsgRequiredPrivilegesGrouped{} }
+func (m *MsgRequiredPrivilegesGrouped) String() string { return proto.CompactTextString(m) }
+func (*MsgRequiredPrivilegesGrouped) ProtoMessage()    {}
+func (*MsgRequiredPrivilegesGrouped) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ce2ac908ba79d3e1, []int{9}
+}
+func (m *MsgRequiredPrivilegesGrouped) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRequiredPrivilegesGrouped) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRequiredPrivilegesGrouped.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRequiredPrivilegesGrouped) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRequiredPrivilegesGrouped.Merge(m, src)
+}
+func (m *MsgRequiredPrivilegesGrouped) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRequiredPrivilegesGrouped) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRequiredPrivilegesGrouped.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRequiredPrivilegesGrouped proto.InternalMessageInfo
+
+func (m *MsgRequiredPrivilegesGrouped) GetIndexes() []*MsgIndexes {
+	if m != nil {
+		return m.Indexes
+	}
+	return nil
+}
+
+func (m *MsgRequiredPrivilegesGrouped) GetPrivileges() [][]byte {
+	if m != nil {
+		return m.Privileges
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*MsgAccounts)(nil), "mantrachain.guard.v1.MsgAccounts")
 	proto.RegisterType((*MsgIndexes)(nil), "mantrachain.guard.v1.MsgIndexes")
@@ -328,38 +536,47 @@ func init() {
 	proto.RegisterType((*RequiredPrivileges)(nil), "mantrachain.guard.v1.RequiredPrivileges")
 	proto.RegisterType((*AuthzGrantRevokeMsgType)(nil), "mantrachain.guard.v1.AuthzGrantRevokeMsgType")
 	proto.RegisterType((*AuthzGrantRevokeMsgsTypes)(nil), "mantrachain.guard.v1.AuthzGrantRevokeMsgsTypes")
+	proto.RegisterType((*MsgAccountsPrivileges)(nil), "mantrachain.guard.v1.MsgAccountsPrivileges")
+	proto.RegisterType((*MsgAccountsPrivilegesGrouped)(nil), "mantrachain.guard.v1.MsgAccountsPrivilegesGrouped")
+	proto.RegisterType((*MsgRequiredPrivileges)(nil), "mantrachain.guard.v1.MsgRequiredPrivileges")
+	proto.RegisterType((*MsgRequiredPrivilegesGrouped)(nil), "mantrachain.guard.v1.MsgRequiredPrivilegesGrouped")
 }
 
 func init() { proto.RegisterFile("mantrachain/guard/v1/common.proto", fileDescriptor_ce2ac908ba79d3e1) }
 
 var fileDescriptor_ce2ac908ba79d3e1 = []byte{
-	// 409 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x6e, 0xd4, 0x30,
-	0x14, 0x86, 0xc7, 0xb4, 0xd0, 0x99, 0x57, 0x36, 0x58, 0x91, 0xc8, 0x74, 0x61, 0x0d, 0x59, 0xa0,
-	0x6e, 0x26, 0x51, 0x29, 0x17, 0x48, 0x91, 0x40, 0x20, 0x05, 0x81, 0x29, 0x1b, 0x16, 0xad, 0xd2,
-	0xc4, 0xf2, 0x58, 0x9d, 0xd8, 0xc1, 0x76, 0xa2, 0x96, 0x53, 0x70, 0x0c, 0x0e, 0xc0, 0x21, 0x58,
-	0x56, 0xac, 0x58, 0xa2, 0xcc, 0x45, 0x50, 0xec, 0x30, 0xca, 0x62, 0x10, 0xbb, 0xf7, 0xbf, 0xfc,
-	0xef, 0xfb, 0x63, 0xfb, 0xc1, 0x93, 0x2a, 0x97, 0x56, 0xe7, 0xc5, 0x2a, 0x17, 0x32, 0xe1, 0x4d,
-	0xae, 0xcb, 0xa4, 0x3d, 0x49, 0x0a, 0x55, 0x55, 0x4a, 0xc6, 0xb5, 0x56, 0x56, 0xe1, 0x60, 0x64,
-	0x89, 0x9d, 0x25, 0x6e, 0x4f, 0x8e, 0xe6, 0x85, 0x32, 0x95, 0x32, 0x97, 0xce, 0x93, 0x78, 0xe1,
-	0x07, 0x8e, 0x02, 0xae, 0xb8, 0xf2, 0xfd, 0xbe, 0xf2, 0xdd, 0xe8, 0x05, 0x1c, 0x66, 0x86, 0xa7,
-	0x45, 0xa1, 0x1a, 0x69, 0x0d, 0x7e, 0x0e, 0xd3, 0x7c, 0xa8, 0x43, 0xb4, 0xd8, 0x3b, 0x9e, 0x9d,
-	0x85, 0x3f, 0xbf, 0x2f, 0x83, 0x01, 0x94, 0x96, 0xa5, 0x66, 0xc6, 0x7c, 0xb0, 0x5a, 0x48, 0x4e,
-	0xb7, 0xce, 0xe8, 0x29, 0x40, 0x66, 0xf8, 0x6b, 0x59, 0xb2, 0x1b, 0x66, 0x70, 0x08, 0x07, 0xc2,
-	0x97, 0x0e, 0xf1, 0x90, 0xfe, 0x95, 0x51, 0x06, 0x8f, 0x86, 0xa4, 0x77, 0x5a, 0xb4, 0x62, 0xcd,
-	0xb8, 0xb7, 0x0f, 0xa0, 0x10, 0x2d, 0x50, 0x6f, 0x1f, 0x24, 0x26, 0x00, 0xf5, 0xd6, 0x17, 0xde,
-	0x73, 0x1f, 0x47, 0x9d, 0xe8, 0x02, 0x30, 0x65, 0x9f, 0x1b, 0xa1, 0x59, 0x39, 0xe2, 0x05, 0x70,
-	0xdf, 0xe5, 0x0d, 0x34, 0x2f, 0xfe, 0xc7, 0xc2, 0x18, 0xf6, 0xaf, 0x85, 0x2c, 0xc3, 0xbd, 0x05,
-	0x3a, 0x9e, 0x51, 0x57, 0x47, 0x6f, 0xe0, 0x71, 0xda, 0xd8, 0xd5, 0x97, 0x57, 0x3a, 0x97, 0x96,
-	0xb2, 0x56, 0x5d, 0xb3, 0xcc, 0xf0, 0xf3, 0xdb, 0x9a, 0xe1, 0x39, 0x4c, 0xed, 0x6d, 0xcd, 0x2e,
-	0x1b, 0xbd, 0x76, 0x39, 0x33, 0x7a, 0xd0, 0xeb, 0x8f, 0x7a, 0xdd, 0xe7, 0xf3, 0x7e, 0xc0, 0x85,
-	0x4c, 0xa9, 0x17, 0xd1, 0x05, 0xcc, 0x77, 0xb0, 0x4c, 0x0f, 0x33, 0x38, 0x85, 0xfd, 0xca, 0x70,
-	0x7f, 0x5d, 0x87, 0xcf, 0x96, 0xf1, 0xae, 0xa7, 0x8d, 0xff, 0xf1, 0x2b, 0xd4, 0x8d, 0x9e, 0xbd,
-	0xff, 0xd6, 0x11, 0xf4, 0xa3, 0x23, 0xe8, 0xae, 0x23, 0xe8, 0x77, 0x47, 0xd0, 0xd7, 0x0d, 0x99,
-	0xdc, 0x6d, 0xc8, 0xe4, 0xd7, 0x86, 0x4c, 0x3e, 0x9d, 0x72, 0x61, 0x57, 0xcd, 0x55, 0x5c, 0xa8,
-	0x2a, 0xc9, 0xd2, 0xb7, 0xe7, 0x34, 0x5d, 0xbe, 0x14, 0x32, 0x97, 0x05, 0x4b, 0xc6, 0x9b, 0x76,
-	0x33, 0xec, 0x5a, 0x7f, 0x14, 0x73, 0xf5, 0xc0, 0x6d, 0xc8, 0xe9, 0x9f, 0x00, 0x00, 0x00, 0xff,
-	0xff, 0x3c, 0x76, 0x55, 0x76, 0x8d, 0x02, 0x00, 0x00,
+	// 495 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x86, 0x63, 0x52, 0x48, 0x32, 0xe9, 0x85, 0x55, 0x10, 0x4e, 0x85, 0xac, 0xd4, 0x07, 0x94,
+	0x4b, 0x6c, 0x35, 0xe5, 0x84, 0xc4, 0xc1, 0x45, 0xa2, 0x02, 0x29, 0x88, 0x2e, 0xe5, 0xc2, 0xa1,
+	0x95, 0x6b, 0xaf, 0x36, 0xab, 0xc6, 0xbb, 0x66, 0xd7, 0x8e, 0xda, 0x4a, 0xbc, 0x03, 0x8f, 0xc1,
+	0x03, 0xf0, 0x10, 0x1c, 0x2b, 0x4e, 0x1c, 0x51, 0xf2, 0x22, 0xc8, 0xbb, 0x4e, 0x65, 0x5a, 0x87,
+	0x42, 0x6f, 0x33, 0xa3, 0x99, 0xff, 0xdb, 0x99, 0xd9, 0x5d, 0xd8, 0x4e, 0x42, 0x9e, 0xc9, 0x30,
+	0x9a, 0x86, 0x8c, 0xfb, 0x34, 0x0f, 0x65, 0xec, 0xcf, 0x77, 0xfc, 0x48, 0x24, 0x89, 0xe0, 0x5e,
+	0x2a, 0x45, 0x26, 0x50, 0xaf, 0x92, 0xe2, 0xe9, 0x14, 0x6f, 0xbe, 0xb3, 0xd5, 0x8f, 0x84, 0x4a,
+	0x84, 0x3a, 0xd6, 0x39, 0xbe, 0x71, 0x4c, 0xc1, 0x56, 0x8f, 0x0a, 0x2a, 0x4c, 0xbc, 0xb0, 0x4c,
+	0xd4, 0x7d, 0x09, 0xdd, 0x89, 0xa2, 0x41, 0x14, 0x89, 0x9c, 0x67, 0x0a, 0x3d, 0x83, 0x76, 0x58,
+	0xda, 0xb6, 0x35, 0x68, 0x0e, 0x3b, 0x7b, 0xf6, 0x8f, 0x6f, 0xa3, 0x5e, 0x29, 0x14, 0xc4, 0xb1,
+	0x24, 0x4a, 0xbd, 0xcf, 0x24, 0xe3, 0x14, 0x5f, 0x65, 0xba, 0x4f, 0x01, 0x26, 0x8a, 0xbe, 0xe6,
+	0x31, 0x39, 0x23, 0x0a, 0xd9, 0xd0, 0x62, 0xc6, 0xd4, 0x12, 0x9b, 0x78, 0xe5, 0xba, 0x14, 0x1e,
+	0x96, 0xa4, 0x77, 0x92, 0xcd, 0xd9, 0x8c, 0x50, 0xa2, 0xd0, 0x18, 0x5a, 0xa5, 0x90, 0x6d, 0x0d,
+	0xac, 0xe1, 0xe6, 0x5f, 0x88, 0xab, 0x44, 0xe4, 0x00, 0xa4, 0x57, 0x0a, 0xf6, 0xbd, 0xa2, 0x0c,
+	0x57, 0x22, 0xee, 0x11, 0x20, 0x4c, 0x3e, 0xe5, 0x4c, 0x92, 0xb8, 0x42, 0xea, 0xc1, 0x7d, 0x7d,
+	0x12, 0xc3, 0xc1, 0xc6, 0xb9, 0x4d, 0x0b, 0x21, 0xd8, 0x38, 0x65, 0x3c, 0xb6, 0x9b, 0x03, 0x6b,
+	0xd8, 0xc1, 0xda, 0x76, 0xdf, 0xc0, 0xe3, 0x20, 0xcf, 0xa6, 0x17, 0xfb, 0x32, 0xe4, 0x19, 0x26,
+	0x73, 0x71, 0x4a, 0x26, 0x8a, 0x1e, 0x9e, 0xa7, 0x04, 0xf5, 0xa1, 0x9d, 0x9d, 0xa7, 0xe4, 0x38,
+	0x97, 0x33, 0xcd, 0xe9, 0xe0, 0x56, 0xe1, 0x7f, 0x90, 0xb3, 0x82, 0x4f, 0x8b, 0x02, 0x0d, 0x69,
+	0x63, 0xe3, 0xb8, 0x47, 0xd0, 0xaf, 0xd1, 0x52, 0x85, 0x98, 0x42, 0x01, 0x6c, 0x24, 0x8a, 0x9a,
+	0x41, 0x76, 0xc7, 0x23, 0xaf, 0x6e, 0xe9, 0xde, 0x9a, 0xa3, 0x60, 0x5d, 0xea, 0x26, 0xf0, 0xa8,
+	0xb2, 0xe1, 0xca, 0x38, 0xee, 0xb4, 0xeb, 0x1b, 0xe3, 0x6a, 0x5e, 0x1b, 0xfd, 0x67, 0x78, 0x52,
+	0x8b, 0xdb, 0x97, 0x22, 0x4f, 0x49, 0x8c, 0x5e, 0x5c, 0xa3, 0x76, 0xc7, 0xdb, 0xf5, 0x5d, 0x55,
+	0x54, 0xfe, 0x03, 0x7f, 0xa0, 0xbb, 0xad, 0x59, 0xfe, 0xda, 0x5b, 0x79, 0xab, 0xe4, 0x85, 0xee,
+	0xe8, 0xa6, 0xe4, 0xaa, 0xa3, 0xe7, 0x7f, 0x2a, 0x77, 0xc7, 0x83, 0xb5, 0x0d, 0x95, 0x4f, 0xe4,
+	0x9f, 0xd9, 0x7b, 0x07, 0x5f, 0x17, 0x8e, 0xf5, 0x7d, 0xe1, 0x58, 0x97, 0x0b, 0xc7, 0xfa, 0xb5,
+	0x70, 0xac, 0x2f, 0x4b, 0xa7, 0x71, 0xb9, 0x74, 0x1a, 0x3f, 0x97, 0x4e, 0xe3, 0xe3, 0x2e, 0x65,
+	0xd9, 0x34, 0x3f, 0xf1, 0x22, 0x91, 0xf8, 0x93, 0xe0, 0xed, 0x21, 0x0e, 0x46, 0xaf, 0x18, 0x0f,
+	0x79, 0x44, 0xfc, 0xea, 0x07, 0x72, 0x56, 0x7e, 0x21, 0xc5, 0x3d, 0x54, 0x27, 0x0f, 0xf4, 0xc3,
+	0xdf, 0xfd, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x78, 0x35, 0xc9, 0xd4, 0x64, 0x04, 0x00, 0x00,
 }
 
 func (this *MsgAccounts) Equal(that interface{}) bool {
@@ -528,6 +745,154 @@ func (this *AuthzGrantRevokeMsgsTypes) Equal(that interface{}) bool {
 	}
 	for i := range this.Msgs {
 		if !this.Msgs[i].Equal(that1.Msgs[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgAccountsPrivileges) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgAccountsPrivileges)
+	if !ok {
+		that2, ok := that.(MsgAccountsPrivileges)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Accounts) != len(that1.Accounts) {
+		return false
+	}
+	for i := range this.Accounts {
+		if this.Accounts[i] != that1.Accounts[i] {
+			return false
+		}
+	}
+	if len(this.Privileges) != len(that1.Privileges) {
+		return false
+	}
+	for i := range this.Privileges {
+		if !bytes.Equal(this.Privileges[i], that1.Privileges[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgAccountsPrivilegesGrouped) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgAccountsPrivilegesGrouped)
+	if !ok {
+		that2, ok := that.(MsgAccountsPrivilegesGrouped)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Accounts) != len(that1.Accounts) {
+		return false
+	}
+	for i := range this.Accounts {
+		if !this.Accounts[i].Equal(that1.Accounts[i]) {
+			return false
+		}
+	}
+	if len(this.Privileges) != len(that1.Privileges) {
+		return false
+	}
+	for i := range this.Privileges {
+		if !bytes.Equal(this.Privileges[i], that1.Privileges[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgRequiredPrivileges) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRequiredPrivileges)
+	if !ok {
+		that2, ok := that.(MsgRequiredPrivileges)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Indexes) != len(that1.Indexes) {
+		return false
+	}
+	for i := range this.Indexes {
+		if !bytes.Equal(this.Indexes[i], that1.Indexes[i]) {
+			return false
+		}
+	}
+	if len(this.Privileges) != len(that1.Privileges) {
+		return false
+	}
+	for i := range this.Privileges {
+		if !bytes.Equal(this.Privileges[i], that1.Privileges[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgRequiredPrivilegesGrouped) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRequiredPrivilegesGrouped)
+	if !ok {
+		that2, ok := that.(MsgRequiredPrivilegesGrouped)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Indexes) != len(that1.Indexes) {
+		return false
+	}
+	for i := range this.Indexes {
+		if !this.Indexes[i].Equal(that1.Indexes[i]) {
+			return false
+		}
+	}
+	if len(this.Privileges) != len(that1.Privileges) {
+		return false
+	}
+	for i := range this.Privileges {
+		if !bytes.Equal(this.Privileges[i], that1.Privileges[i]) {
 			return false
 		}
 	}
@@ -755,6 +1120,180 @@ func (m *AuthzGrantRevokeMsgsTypes) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgAccountsPrivileges) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAccountsPrivileges) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAccountsPrivileges) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		for iNdEx := len(m.Privileges) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Privileges[iNdEx])
+			copy(dAtA[i:], m.Privileges[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Accounts[iNdEx])
+			copy(dAtA[i:], m.Accounts[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Accounts[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAccountsPrivilegesGrouped) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAccountsPrivilegesGrouped) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAccountsPrivilegesGrouped) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		for iNdEx := len(m.Privileges) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Privileges[iNdEx])
+			copy(dAtA[i:], m.Privileges[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Accounts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRequiredPrivileges) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRequiredPrivileges) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRequiredPrivileges) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		for iNdEx := len(m.Privileges) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Privileges[iNdEx])
+			copy(dAtA[i:], m.Privileges[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Indexes) > 0 {
+		for iNdEx := len(m.Indexes) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Indexes[iNdEx])
+			copy(dAtA[i:], m.Indexes[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Indexes[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRequiredPrivilegesGrouped) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRequiredPrivilegesGrouped) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRequiredPrivilegesGrouped) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Privileges) > 0 {
+		for iNdEx := len(m.Privileges) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Privileges[iNdEx])
+			copy(dAtA[i:], m.Privileges[iNdEx])
+			i = encodeVarintCommon(dAtA, i, uint64(len(m.Privileges[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Indexes) > 0 {
+		for iNdEx := len(m.Indexes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Indexes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintCommon(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintCommon(dAtA []byte, offset int, v uint64) int {
 	offset -= sovCommon(v)
 	base := offset
@@ -859,6 +1398,90 @@ func (m *AuthzGrantRevokeMsgsTypes) Size() (n int) {
 	if len(m.Msgs) > 0 {
 		for _, e := range m.Msgs {
 			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgAccountsPrivileges) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for _, s := range m.Accounts {
+			l = len(s)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Privileges) > 0 {
+		for _, b := range m.Privileges {
+			l = len(b)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgAccountsPrivilegesGrouped) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for _, e := range m.Accounts {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Privileges) > 0 {
+		for _, b := range m.Privileges {
+			l = len(b)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgRequiredPrivileges) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Indexes) > 0 {
+		for _, b := range m.Indexes {
+			l = len(b)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Privileges) > 0 {
+		for _, b := range m.Privileges {
+			l = len(b)
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgRequiredPrivilegesGrouped) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Indexes) > 0 {
+		for _, e := range m.Indexes {
+			l = e.Size()
+			n += 1 + l + sovCommon(uint64(l))
+		}
+	}
+	if len(m.Privileges) > 0 {
+		for _, b := range m.Privileges {
+			l = len(b)
 			n += 1 + l + sovCommon(uint64(l))
 		}
 	}
@@ -1467,6 +2090,466 @@ func (m *AuthzGrantRevokeMsgsTypes) Unmarshal(dAtA []byte) error {
 			if err := m.Msgs[len(m.Msgs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAccountsPrivileges) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAccountsPrivileges: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAccountsPrivileges: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accounts = append(m.Accounts, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges, make([]byte, postIndex-iNdEx))
+			copy(m.Privileges[len(m.Privileges)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAccountsPrivilegesGrouped) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAccountsPrivilegesGrouped: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAccountsPrivilegesGrouped: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accounts = append(m.Accounts, &MsgAccounts{})
+			if err := m.Accounts[len(m.Accounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges, make([]byte, postIndex-iNdEx))
+			copy(m.Privileges[len(m.Privileges)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRequiredPrivileges) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRequiredPrivileges: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRequiredPrivileges: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Indexes = append(m.Indexes, make([]byte, postIndex-iNdEx))
+			copy(m.Indexes[len(m.Indexes)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges, make([]byte, postIndex-iNdEx))
+			copy(m.Privileges[len(m.Privileges)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCommon(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRequiredPrivilegesGrouped) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCommon
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRequiredPrivilegesGrouped: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRequiredPrivilegesGrouped: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Indexes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Indexes = append(m.Indexes, &MsgIndexes{})
+			if err := m.Indexes[len(m.Indexes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privileges", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCommon
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCommon
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCommon
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privileges = append(m.Privileges, make([]byte, postIndex-iNdEx))
+			copy(m.Privileges[len(m.Privileges)-1], dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

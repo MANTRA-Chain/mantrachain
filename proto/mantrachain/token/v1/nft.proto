@@ -7,32 +7,28 @@ import "mantrachain/token/v1/common.proto";
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/token/types";
 option (gogoproto.equal_all) = true;
 
+// Nft
 message Nft {
-  bytes index = 1 [(gogoproto.moretags) = "yaml:\"index\""];
-  string id = 2 [(gogoproto.moretags) = "yaml:\"id\""];
-  string title = 3 [(gogoproto.moretags) = "yaml:\"title\""];
-  repeated TokenImage images = 4 [(gogoproto.moretags) = "yaml:\"images\""];
-  string url = 5 [(gogoproto.moretags) = "yaml:\"url\""];
-  string description = 6 [(gogoproto.moretags) = "yaml:\"description\""];
-  repeated TokenLink links = 7 [(gogoproto.moretags) = "yaml:\"links\""];
-  repeated TokenAttribute attributes = 8 [(gogoproto.moretags) = "yaml:\"attributes\""];
-  bytes creator = 9 [
-    (gogoproto.moretags) = "yaml:\"creator\"",
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  bytes collection_creator = 10 [
-    (gogoproto.moretags) = "yaml:\"collection_creator\"",
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string collection_id = 11 [(gogoproto.moretags) = "yaml:\"collection_id\""];
-  bytes collection_index = 12 [(gogoproto.moretags) = "yaml:\"collection_index\""];
-  string did = 13 [(gogoproto.moretags) = "yaml:\"did\""];
+  bytes index = 1;
+  string id = 2;
+  string title = 3;
+  repeated TokenImage images = 4;
+  string url = 5;
+  string description = 6;
+  repeated TokenLink links = 7;
+  repeated TokenAttribute attributes = 8;
+  bytes creator = 9 [ (gogoproto.casttype) =
+                          "github.com/cosmos/cosmos-sdk/types.AccAddress" ];
+  bytes collection_creator = 10
+      [ (gogoproto.casttype) =
+            "github.com/cosmos/cosmos-sdk/types.AccAddress" ];
+  string collection_id = 11;
+  bytes collection_index = 12;
+  string did = 13;
 }
 
-message ApprovedAddressesList {
-  map<string, ApprovedAddresses> list = 1;
-}
+// ApprovedAddressesList
+message ApprovedAddressesList { map<string, ApprovedAddresses> list = 1; }
 
-message ApprovedAddresses {
-  map<string, bytes> addresses = 1;
-}
+// ApprovedAddresses
+message ApprovedAddresses { map<string, bytes> addresses = 1; }

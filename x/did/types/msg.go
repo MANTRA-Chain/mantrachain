@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 )
 
 // msg types
@@ -9,7 +10,10 @@ const (
 	TypeMsgCreateDidDocument = "create-did"
 )
 
-var _ sdk.Msg = &MsgCreateDidDocument{}
+var (
+	_ legacytx.LegacyMsg = &MsgCreateDidDocument{}
+	_ sdk.Msg            = &MsgCreateDidDocument{}
+)
 
 // NewMsgCreateDidDocument creates a new MsgCreateDidDocument instance
 func NewMsgCreateDidDocument(
@@ -36,17 +40,9 @@ func (MsgCreateDidDocument) Type() string {
 	return TypeMsgCreateDidDocument
 }
 
-func (msg MsgCreateDidDocument) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgCreateDidDocument) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgCreateDidDocument) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -56,6 +52,11 @@ func (msg MsgCreateDidDocument) GetSigners() []sdk.AccAddress {
 // msg types
 const (
 	TypeMsgUpdateDidDocument = "update-did"
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateDidDocument{}
+	_ sdk.Msg            = &MsgUpdateDidDocument{}
 )
 
 func NewMsgUpdateDidDocument(
@@ -78,17 +79,9 @@ func (MsgUpdateDidDocument) Type() string {
 	return TypeMsgUpdateDidDocument
 }
 
-func (msg MsgUpdateDidDocument) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgUpdateDidDocument) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgUpdateDidDocument) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -99,7 +92,10 @@ const (
 	TypeMsgAddVerification = "add-verification"
 )
 
-var _ sdk.Msg = &MsgAddVerification{}
+var (
+	_ legacytx.LegacyMsg = &MsgAddVerification{}
+	_ sdk.Msg            = &MsgAddVerification{}
+)
 
 // NewMsgAddVerification creates a new MsgAddVerification instance
 func NewMsgAddVerification(
@@ -124,17 +120,9 @@ func (MsgAddVerification) Type() string {
 	return TypeMsgAddVerification
 }
 
-func (msg MsgAddVerification) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgAddVerification) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgAddVerification) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -146,7 +134,10 @@ const (
 	TypeMsgRevokeVerification = "revoke-verification"
 )
 
-var _ sdk.Msg = &MsgRevokeVerification{}
+var (
+	_ legacytx.LegacyMsg = &MsgRevokeVerification{}
+	_ sdk.Msg            = &MsgRevokeVerification{}
+)
 
 // NewMsgRevokeVerification creates a new MsgRevokeVerification instance
 func NewMsgRevokeVerification(
@@ -171,17 +162,9 @@ func (MsgRevokeVerification) Type() string {
 	return TypeMsgRevokeVerification
 }
 
-func (msg MsgRevokeVerification) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgRevokeVerification) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgRevokeVerification) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -190,6 +173,11 @@ func (msg MsgRevokeVerification) GetSigners() []sdk.AccAddress {
 // msg types
 const (
 	TypeMsgSetVerificationRelationships = "set-verification-relationships"
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgSetVerificationRelationships{}
+	_ sdk.Msg            = &MsgSetVerificationRelationships{}
 )
 
 func NewMsgSetVerificationRelationships(
@@ -216,17 +204,9 @@ func (MsgSetVerificationRelationships) Type() string {
 	return TypeMsgSetVerificationRelationships
 }
 
-func (msg MsgSetVerificationRelationships) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgSetVerificationRelationships) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgSetVerificationRelationships) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -238,7 +218,10 @@ const (
 	TypeMsgAddService = "add-service"
 )
 
-var _ sdk.Msg = &MsgAddService{}
+var (
+	_ legacytx.LegacyMsg = &MsgAddService{}
+	_ sdk.Msg            = &MsgAddService{}
+)
 
 // NewMsgAddService creates a new MsgAddService instance
 func NewMsgAddService(
@@ -263,17 +246,9 @@ func (MsgAddService) Type() string {
 	return TypeMsgAddService
 }
 
-func (msg MsgAddService) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgAddService) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgAddService) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -283,6 +258,11 @@ func (msg MsgAddService) GetSigners() []sdk.AccAddress {
 // msg types
 const (
 	TypeMsgDeleteService = "delete-service"
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgDeleteService{}
+	_ sdk.Msg            = &MsgDeleteService{}
 )
 
 func NewMsgDeleteService(
@@ -307,17 +287,9 @@ func (MsgDeleteService) Type() string {
 	return TypeMsgDeleteService
 }
 
-func (msg MsgDeleteService) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgDeleteService) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgDeleteService) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -327,6 +299,11 @@ func (msg MsgDeleteService) GetSigners() []sdk.AccAddress {
 // msg types
 const (
 	TypeMsgAddController = "add-controller"
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgAddController{}
+	_ sdk.Msg            = &MsgAddController{}
 )
 
 func NewMsgAddController(
@@ -351,17 +328,9 @@ func (MsgAddController) Type() string {
 	return TypeMsgAddController
 }
 
-func (msg MsgAddController) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgAddController) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgAddController) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 // --------------------------
@@ -371,6 +340,11 @@ func (msg MsgAddController) GetSigners() []sdk.AccAddress {
 // msg types
 const (
 	TypeMsgDeleteController = "delete-controller"
+)
+
+var (
+	_ legacytx.LegacyMsg = &MsgDeleteController{}
+	_ sdk.Msg            = &MsgDeleteController{}
 )
 
 func NewMsgDeleteController(
@@ -395,15 +369,7 @@ func (MsgDeleteController) Type() string {
 	return TypeMsgDeleteController
 }
 
-func (msg MsgDeleteController) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
-// GetSigners implements sdk.Msg
-func (msg MsgDeleteController) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{accAddr}
+func (msg *MsgDeleteController) GetSignBytes() []byte {
+	bz := Amino.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }

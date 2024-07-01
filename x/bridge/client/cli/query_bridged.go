@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -13,10 +15,7 @@ func CmdListBridged() *cobra.Command {
 		Use:   "list-bridged",
 		Short: "list all bridged",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -29,7 +28,7 @@ func CmdListBridged() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.BridgedAll(cmd.Context(), params)
+			res, err := queryClient.QueryBridgedAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -50,10 +49,7 @@ func CmdShowBridged() *cobra.Command {
 		Short: "shows a bridged",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -63,7 +59,7 @@ func CmdShowBridged() *cobra.Command {
 				EthTxHash: argEthTxHash,
 			}
 
-			res, err := queryClient.Bridged(cmd.Context(), params)
+			res, err := queryClient.QueryBridged(context.Background(), params)
 			if err != nil {
 				return err
 			}

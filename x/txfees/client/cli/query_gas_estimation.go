@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,10 +17,7 @@ func CmdGasEstimation() *cobra.Command {
 		Short: "shows a gas estimation",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -36,7 +35,7 @@ func CmdGasEstimation() *cobra.Command {
 				Denom:  args[1],
 			}
 
-			res, err := queryClient.GasEstimation(cmd.Context(), params)
+			res, err := queryClient.QueryGasEstimation(context.Background(), params)
 			if err != nil {
 				return err
 			}

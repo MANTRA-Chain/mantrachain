@@ -3,11 +3,11 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 
+	nft "cosmossdk.io/x/nft"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCreateNftCollection) (*types.MsgCreateNftCollectionResponse, error) {
@@ -18,8 +18,8 @@ func (k msgServer) CreateNftCollection(goCtx context.Context, msg *types.MsgCrea
 		return nil, err
 	}
 
-	if err := k.gk.CheckNewRestrictedNftsCollection(ctx, msg.Collection.RestrictedNfts, creator.String()); err != nil {
-		return nil, sdkerrors.Wrap(err, "unauthorized")
+	if err := k.guardKeeper.CheckNewRestrictedNftsCollection(ctx, msg.Collection.RestrictedNfts, creator.String()); err != nil {
+		return nil, errors.Wrap(err, "unauthorized")
 	}
 
 	collectionController := NewNftCollectionController(ctx, creator, false).

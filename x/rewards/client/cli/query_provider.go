@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"context"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,10 +16,7 @@ func CmdListProvider() *cobra.Command {
 		Use:   "list-provider",
 		Short: "list all provider",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -30,7 +29,7 @@ func CmdListProvider() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.ProviderAll(cmd.Context(), params)
+			res, err := queryClient.QueryProviderAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -51,10 +50,7 @@ func CmdProviderPairs() *cobra.Command {
 		Short: "Shows a provider pairs ids",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -67,7 +63,7 @@ func CmdProviderPairs() *cobra.Command {
 				Provider: provider.String(),
 			}
 
-			res, err := queryClient.ProviderPairs(cmd.Context(), params)
+			res, err := queryClient.QueryProviderPairs(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -87,10 +83,7 @@ func CmdProvider() *cobra.Command {
 		Short: "Shows a provider",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -103,7 +96,7 @@ func CmdProvider() *cobra.Command {
 				Provider: provider.String(),
 			}
 
-			res, err := queryClient.Provider(cmd.Context(), params)
+			res, err := queryClient.QueryProvider(context.Background(), params)
 			if err != nil {
 				return err
 			}

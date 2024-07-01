@@ -1,21 +1,25 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) SetNft(ctx sdk.Context, nft types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nft.CollectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(nft.CollectionIndex))
 	b := k.cdc.MustMarshal(&nft)
 	store.Set(nft.Index, b)
 }
 
 func (k Keeper) SetNfts(ctx sdk.Context, nfts []types.Nft) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	for _, nft := range nfts {
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nft.CollectionIndex))
+		store := prefix.NewStore(storeAdapter, types.NftStoreKey(nft.CollectionIndex))
 		b := k.cdc.MustMarshal(&nft)
 		store.Set(nft.Index, b)
 	}
@@ -29,7 +33,8 @@ func (k Keeper) SetApprovedNft(
 	receiver sdk.AccAddress,
 	approved bool,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedStoreKey(collectionIndex))
 	bz := store.Get(nftIndex)
 	var approvedAddressesList types.ApprovedAddressesList
 	noOp := true
@@ -77,7 +82,8 @@ func (k Keeper) IsApproved(
 	owner sdk.AccAddress,
 	operator sdk.AccAddress,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
 
 	bz := store.Get(index)
@@ -88,7 +94,7 @@ func (k Keeper) IsApproved(
 		return true
 	}
 
-	store = prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	store = prefix.NewStore(storeAdapter, types.NftApprovedStoreKey(collectionIndex))
 	bz = store.Get(nftIndex)
 
 	var approvedAddressesList types.ApprovedAddressesList
@@ -104,7 +110,8 @@ func (k Keeper) GetNftApproved(
 	nftIndex []byte,
 	owner sdk.AccAddress,
 ) map[string][]byte {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedStoreKey(collectionIndex))
 	bz := store.Get(nftIndex)
 	var approvedAddressesList types.ApprovedAddressesList
 	k.cdc.MustUnmarshal(bz, &approvedAddressesList)
@@ -119,7 +126,8 @@ func (k Keeper) GetIsApprovedForAllNfts(
 	owner sdk.AccAddress,
 	operator sdk.AccAddress,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
 	bz := store.Get(index)
 	var approvedAddresses types.ApprovedAddresses
@@ -133,7 +141,8 @@ func (k Keeper) DeleteApprovedNft(
 	collectionIndex []byte,
 	nftIndex []byte,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedStoreKey(collectionIndex))
 	store.Delete(nftIndex)
 }
 
@@ -142,7 +151,8 @@ func (k Keeper) DeleteApprovedNfts(
 	collectionIndex []byte,
 	nftsIndexes [][]byte,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
 		store.Delete(nftIndex)
 	}
@@ -167,7 +177,8 @@ func (k Keeper) SetApprovedAllNfts(
 	receiver sdk.AccAddress,
 	approved bool,
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftApprovedAllStoreKey())
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftApprovedAllStoreKey())
 	index := types.GetNftApprovedAllIndex(owner)
 	bz := store.Get(index)
 	var approvedAddresses types.ApprovedAddresses
@@ -205,7 +216,8 @@ func (k Keeper) GetNft(
 	collectionIndex []byte,
 	nftIndex []byte,
 ) (val types.Nft, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 
 	if !k.HasNft(ctx, collectionIndex, nftIndex) {
 		return types.Nft{}, false
@@ -225,12 +237,14 @@ func (k Keeper) HasNft(
 	collectionIndex []byte,
 	nftIndex []byte,
 ) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	return store.Has(nftIndex)
 }
 
 func (k Keeper) FilterNotExist(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
 		if store.Has(nftIndex) {
 			list = append(list, nftIndex)
@@ -241,7 +255,8 @@ func (k Keeper) FilterNotExist(ctx sdk.Context, collectionIndex []byte, nftsInde
 }
 
 func (k Keeper) FilterExist(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) (list [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
 		if !store.Has(nftIndex) {
 			list = append(list, nftIndex)
@@ -252,20 +267,23 @@ func (k Keeper) FilterExist(ctx sdk.Context, collectionIndex []byte, nftsIndexes
 }
 
 func (k Keeper) DeleteNft(ctx sdk.Context, collectionIndex []byte, nftIndex []byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	store.Delete(nftIndex)
 }
 
 func (k Keeper) DeleteNfts(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
 		store.Delete(nftIndex)
 	}
 }
 
 func (k Keeper) GetAllNft(ctx sdk.Context) (list []types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(nil))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(nil))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -279,7 +297,8 @@ func (k Keeper) GetAllNft(ctx sdk.Context) (list []types.Nft) {
 }
 
 func (k Keeper) GetNftsByIndexes(ctx sdk.Context, collectionIndex []byte, nftsIndexes [][]byte) (list []types.Nft) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.NftStoreKey(collectionIndex))
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.NftStoreKey(collectionIndex))
 	for _, nftIndex := range nftsIndexes {
 		bz := store.Get(nftIndex)
 

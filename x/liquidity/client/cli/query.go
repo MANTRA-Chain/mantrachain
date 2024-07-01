@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -25,7 +26,6 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		NewQueryParamsCmd(),
 		NewQueryPoolsCmd(),
 		NewQueryPoolCmd(),
 		NewQueryPairsCmd(),
@@ -39,43 +39,6 @@ func GetQueryCmd() *cobra.Command {
 		NewQueryOrderCmd(),
 		NewQueryOrderBooksCmd(),
 	)
-
-	return cmd
-}
-
-// NewQueryParamsCmd implements the params query command.
-func NewQueryParamsCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "params",
-		Args:  cobra.NoArgs,
-		Short: "Query the current liquidity parameters information",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query values set as liquidity parameters.
-
-Example:
-$ %s query %s params
-`,
-				version.AppName, types.ModuleName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			resp, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(&resp.Params)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
@@ -100,10 +63,7 @@ $ %s query %s pairs --denoms=uatom,stake
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -113,7 +73,7 @@ $ %s query %s pairs --denoms=uatom,stake
 			denoms, _ := cmd.Flags().GetStringSlice(FlagDenoms)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.Pairs(cmd.Context(), &types.QueryPairsRequest{
+			res, err := queryClient.QueryPairs(context.Background(), &types.QueryPairsRequest{
 				Denoms:     denoms,
 				Pagination: pageReq,
 			})
@@ -148,10 +108,7 @@ $ %s query %s pair 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pairId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -160,7 +117,7 @@ $ %s query %s pair 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Pair(cmd.Context(), &types.QueryPairRequest{
+			res, err := queryClient.QueryPair(context.Background(), &types.QueryPairRequest{
 				PairId: pairId,
 			})
 			if err != nil {
@@ -192,10 +149,7 @@ $ %s query %s pairs-by-denoms uatom stake
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -215,7 +169,7 @@ $ %s query %s pairs-by-denoms uatom stake
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.PairsByDenoms(cmd.Context(), &types.QueryPairsByDenomsRequest{
+			res, err := queryClient.QueryPairsByDenoms(context.Background(), &types.QueryPairsByDenomsRequest{
 				Denom1:     denom1,
 				Denom2:     denom2,
 				Pagination: pageReq,
@@ -254,10 +208,7 @@ $ %s query %s pools --disabled=true
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -282,7 +233,7 @@ $ %s query %s pools --disabled=true
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.Pools(cmd.Context(), &types.QueryPoolsRequest{
+			res, err := queryClient.QueryPools(context.Background(), &types.QueryPoolsRequest{
 				PairId:     pairId,
 				Disabled:   disabledStr,
 				Pagination: pageReq,
@@ -322,10 +273,7 @@ $ %s query %s pool --reserve-address=mantrachain...
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			var poolId *uint64
 			if len(args) > 0 {
@@ -344,20 +292,21 @@ $ %s query %s pool --reserve-address=mantrachain...
 
 			queryClient := types.NewQueryClient(clientCtx)
 			var res *types.QueryPoolResponse
+			var err error
 			switch {
 			case poolId != nil:
-				res, err = queryClient.Pool(cmd.Context(), &types.QueryPoolRequest{
+				res, err = queryClient.QueryPool(context.Background(), &types.QueryPoolRequest{
 					PoolId: *poolId,
 				})
 			case poolCoinDenom != "":
-				res, err = queryClient.PoolByPoolCoinDenom(
-					cmd.Context(),
+				res, err = queryClient.QueryPoolByPoolCoinDenom(
+					context.Background(),
 					&types.QueryPoolByPoolCoinDenomRequest{
 						PoolCoinDenom: poolCoinDenom,
 					})
 			case reserveAddr != "":
-				res, err = queryClient.PoolByReserveAddress(
-					cmd.Context(),
+				res, err = queryClient.QueryPoolByReserveAddress(
+					context.Background(),
 					&types.QueryPoolByReserveAddressRequest{
 						ReserveAddress: reserveAddr,
 					})
@@ -392,10 +341,7 @@ $ %s query %s deposit-requests 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -409,8 +355,8 @@ $ %s query %s deposit-requests 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.DepositRequests(
-				cmd.Context(),
+			res, err := queryClient.QueryDepositRequests(
+				context.Background(),
 				&types.QueryDepositRequestsRequest{
 					PoolId:     poolId,
 					Pagination: pageReq,
@@ -445,10 +391,7 @@ $ %s query %s deposit-requests 1 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			poolId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -462,8 +405,8 @@ $ %s query %s deposit-requests 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.DepositRequest(
-				cmd.Context(),
+			res, err := queryClient.QueryDepositRequest(
+				context.Background(),
 				&types.QueryDepositRequestRequest{
 					PoolId: poolId,
 					Id:     id,
@@ -497,10 +440,7 @@ $ %s query %s withdraw-requests 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -514,8 +454,8 @@ $ %s query %s withdraw-requests 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.WithdrawRequests(
-				cmd.Context(),
+			res, err := queryClient.QueryWithdrawRequests(
+				context.Background(),
 				&types.QueryWithdrawRequestsRequest{
 					PoolId:     poolId,
 					Pagination: pageReq,
@@ -550,10 +490,7 @@ $ %s query %s withdraw-requests 1 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			poolId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -567,8 +504,8 @@ $ %s query %s withdraw-requests 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.WithdrawRequest(
-				cmd.Context(),
+			res, err := queryClient.QueryWithdrawRequest(
+				context.Background(),
 				&types.QueryWithdrawRequestRequest{
 					PoolId: poolId,
 					Id:     id,
@@ -606,10 +543,7 @@ $ %s query %s orders --pair-id=1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -637,13 +571,13 @@ $ %s query %s orders --pair-id=1
 
 			var res *types.QueryOrdersResponse
 			if orderer == nil {
-				res, err = queryClient.Orders(cmd.Context(), &types.QueryOrdersRequest{
+				res, err = queryClient.QueryOrders(context.Background(), &types.QueryOrdersRequest{
 					PairId:     pairId,
 					Pagination: pageReq,
 				})
 			} else {
-				res, err = queryClient.OrdersByOrderer(
-					cmd.Context(),
+				res, err = queryClient.QueryOrdersByOrderer(
+					context.Background(),
 					&types.QueryOrdersByOrdererRequest{
 						Orderer:    *orderer,
 						PairId:     pairId,
@@ -681,10 +615,7 @@ $ %s query %s order 1 1
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			pairId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -698,8 +629,8 @@ $ %s query %s order 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.Order(
-				cmd.Context(),
+			res, err := queryClient.QueryOrder(
+				context.Background(),
 				&types.QueryOrderRequest{
 					PairId: pairId,
 					Id:     id,
@@ -735,10 +666,7 @@ $ %s query %s order-books 2,3
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			numTicks, _ := cmd.Flags().GetUint32(FlagNumTicks)
 
@@ -754,8 +682,8 @@ $ %s query %s order-books 2,3
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.OrderBooks(
-				cmd.Context(),
+			res, err := queryClient.QueryOrderBooks(
+				context.Background(),
 				&types.QueryOrderBooksRequest{
 					PairIds:  pairIds,
 					NumTicks: numTicks,

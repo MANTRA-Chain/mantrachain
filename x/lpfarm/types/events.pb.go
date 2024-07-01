@@ -25,6 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// EventCreatePrivatePlan
 type EventCreatePrivatePlan struct {
 	Creator            string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	PlanId             uint64 `protobuf:"varint,2,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
@@ -64,6 +65,7 @@ func (m *EventCreatePrivatePlan) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventCreatePrivatePlan proto.InternalMessageInfo
 
+// EventFarm
 type EventFarm struct {
 	Farmer           string                                   `protobuf:"bytes,1,opt,name=farmer,proto3" json:"farmer,omitempty"`
 	Coin             types.Coin                               `protobuf:"bytes,2,opt,name=coin,proto3" json:"coin"`
@@ -103,6 +105,7 @@ func (m *EventFarm) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventFarm proto.InternalMessageInfo
 
+// EventUnfarm
 type EventUnfarm struct {
 	Farmer           string                                   `protobuf:"bytes,1,opt,name=farmer,proto3" json:"farmer,omitempty"`
 	Coin             types.Coin                               `protobuf:"bytes,2,opt,name=coin,proto3" json:"coin"`
@@ -142,6 +145,7 @@ func (m *EventUnfarm) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventUnfarm proto.InternalMessageInfo
 
+// EventHarvest
 type EventHarvest struct {
 	Farmer           string                                   `protobuf:"bytes,1,opt,name=farmer,proto3" json:"farmer,omitempty"`
 	Denom            string                                   `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
@@ -181,6 +185,7 @@ func (m *EventHarvest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventHarvest proto.InternalMessageInfo
 
+// EventTerminatePlan
 type EventTerminatePlan struct {
 	PlanId uint64 `protobuf:"varint,1,opt,name=plan_id,json=planId,proto3" json:"plan_id,omitempty"`
 }

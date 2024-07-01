@@ -3,8 +3,9 @@ package keeper
 import (
 	"strings"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -15,7 +16,7 @@ func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts
 	conf := k.GetParams(ctx)
 
 	if strings.TrimSpace(conf.AdminAccount) == "" {
-		return sdkerrors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
+		return errors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
 	}
 
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
@@ -23,7 +24,7 @@ func (k Keeper) CheckNewRestrictedNftsCollection(ctx sdk.Context, restrictedNfts
 	isAdmin := admin.Equals(sdk.MustAccAddressFromBech32(account))
 
 	if restrictedNfts && !isAdmin {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "not an admin")
+		return errors.Wrap(errorstypes.ErrUnauthorized, "not an admin")
 	}
 
 	return nil
@@ -33,13 +34,13 @@ func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator
 	conf := k.GetParams(ctx)
 
 	if strings.TrimSpace(conf.AdminAccount) == "" {
-		return sdkerrors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
+		return errors.Wrap(types.ErrInvalidAccount, "missing admin account in params")
 	}
 
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 
 	if strings.TrimSpace(collectionId) == "" {
-		return sdkerrors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
+		return errors.Wrap(types.ErrInvalidNftCollectionId, "nft collection id should not be empty")
 	}
 
 	creator, err := sdk.AccAddressFromBech32(collectionCreator)
@@ -52,11 +53,11 @@ func (k Keeper) CheckRestrictedNftsCollection(ctx sdk.Context, collectionCreator
 
 	isAdmin := admin.Equals(sdk.MustAccAddressFromBech32(account))
 
-	if k.tk.HasRestrictedNftsCollection(
+	if k.tokenKeeper.HasRestrictedNftsCollection(
 		ctx,
 		collectionIndex,
 	) && !isAdmin {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "restricted nfts colection")
+		return errors.Wrap(errorstypes.ErrUnauthorized, "restricted nfts colection")
 	}
 
 	return nil

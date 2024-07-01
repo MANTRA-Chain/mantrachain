@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"strings"
 
+	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +42,7 @@ func CmdGetNftCollection() *cobra.Command {
 				Id:      reqId,
 			}
 
-			res, err := queryClient.NftCollection(context.Background(), params)
+			res, err := queryClient.QueryNftCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -62,10 +62,7 @@ func CmdGetNftCollectionsByCreator() *cobra.Command {
 		Short: "Query nft collections",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			reqCreator := args[0]
 
@@ -86,7 +83,7 @@ func CmdGetNftCollectionsByCreator() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.NftCollectionsByCreator(cmd.Context(), params)
+			res, err := queryClient.QueryNftCollectionsByCreator(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -107,10 +104,7 @@ func CmdGetAllNftCollections() *cobra.Command {
 		Short: "Query all nft collections",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -123,7 +117,7 @@ func CmdGetAllNftCollections() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.AllNftCollections(cmd.Context(), params)
+			res, err := queryClient.QueryAllNftCollections(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -154,7 +148,7 @@ func CmdShowNftCollectionOwner() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.NftCollectionOwner(context.Background(), params)
+			res, err := queryClient.QueryNftCollectionOwner(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -184,7 +178,7 @@ func CmdShowOpenedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.OpenedNftsCollection(context.Background(), params)
+			res, err := queryClient.QueryOpenedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -214,7 +208,7 @@ func CmdShowRestrictedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.RestrictedNftsCollection(context.Background(), params)
+			res, err := queryClient.QueryRestrictedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -244,7 +238,7 @@ func CmdShowSoulBondedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.SoulBondedNftsCollection(context.Background(), params)
+			res, err := queryClient.QuerySoulBondedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}

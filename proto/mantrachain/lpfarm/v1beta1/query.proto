@@ -1,49 +1,59 @@
 syntax = "proto3";
-
 package mantrachain.lpfarm.v1beta1;
 
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmos/base/v1beta1/coin.proto";
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/lpfarm/v1beta1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "mantrachain/lpfarm/v1beta1/lpfarm.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types";
 
+// Query defines the gRPC querier service.
 service Query {
+  // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/params";
   }
-  rpc Plans(QueryPlansRequest) returns (QueryPlansResponse) {
+
+  rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/plans";
   }
-  rpc Plan(QueryPlanRequest) returns (QueryPlanResponse) {
+  rpc QueryPlan(QueryPlanRequest) returns (QueryPlanResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/plans/{plan_id}";
   }
-  rpc Farm(QueryFarmRequest) returns (QueryFarmResponse) {
+  rpc QueryFarm(QueryFarmRequest) returns (QueryFarmResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/farms/{denom}";
   }
-  rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
+  rpc QueryPositions(QueryPositionsRequest) returns (QueryPositionsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/positions/{farmer}";
   }
-  rpc Position(QueryPositionRequest) returns (QueryPositionResponse) {
+  rpc QueryPosition(QueryPositionRequest) returns (QueryPositionResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/positions/{farmer}/{denom}";
   }
-  rpc HistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
+  rpc QueryHistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/historical_rewards/{denom}";
   }
-  rpc TotalRewards(QueryTotalRewardsRequest) returns (QueryTotalRewardsResponse) {
+  rpc QueryTotalRewards(QueryTotalRewardsRequest) returns (QueryTotalRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/rewards/{farmer}";
   }
-  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+  rpc QueryRewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/rewards/{farmer}/{denom}";
   }
 }
 
+// QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
+// QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params holds all the parameters of this module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 message QueryPlansRequest {

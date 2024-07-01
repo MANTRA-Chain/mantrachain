@@ -1,8 +1,9 @@
 package keeper
 
 import (
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
@@ -19,7 +20,7 @@ func (k Keeper) CheckIsAdmin(ctx sdk.Context, address string) error {
 	}
 
 	if !admin.Equals(acc) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "unauthorized account %s", address)
+		return errors.Wrapf(errorstypes.ErrUnauthorized, "unauthorized account %s", address)
 	}
 
 	return nil

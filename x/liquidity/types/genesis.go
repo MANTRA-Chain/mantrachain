@@ -4,10 +4,17 @@ import (
 	"fmt"
 )
 
-// DefaultGenesis returns the default Capability genesis state
+// this line is used by starport scaffolding # genesis/types/import
+
+// DefaultIndex is the default global index
+const DefaultIndex uint64 = 1
+
+// DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Params:                   DefaultParams(),
+		// this line is used by starport scaffolding # genesis/types/default
+		Params: DefaultParams(),
+
 		LastPairId:               0,
 		LastPoolId:               0,
 		Pairs:                    []Pair{},
@@ -21,16 +28,15 @@ func DefaultGenesis() *GenesisState {
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
-func (genState GenesisState) Validate() error {
-	if err := genState.Params.Validate(); err != nil {
-		return fmt.Errorf("invalid params: %w", err)
-	}
+func (gs GenesisState) Validate() error {
+	// this line is used by starport scaffolding # genesis/types/validate
+
 	pairMap := map[uint64]Pair{}
-	for i, pair := range genState.Pairs {
+	for i, pair := range gs.Pairs {
 		if err := pair.Validate(); err != nil {
 			return fmt.Errorf("invalid pair at index %d: %w", i, err)
 		}
-		if pair.Id > genState.LastPairId {
+		if pair.Id > gs.LastPairId {
 			return fmt.Errorf("pair at index %d has an id greater than last pair id: %d", i, pair.Id)
 		}
 		if _, ok := pairMap[pair.Id]; ok {
@@ -39,11 +45,11 @@ func (genState GenesisState) Validate() error {
 		pairMap[pair.Id] = pair
 	}
 	poolMap := map[uint64]Pool{}
-	for i, pool := range genState.Pools {
+	for i, pool := range gs.Pools {
 		if err := pool.Validate(); err != nil {
 			return fmt.Errorf("invalid pool at index %d: %w", i, err)
 		}
-		if pool.Id > genState.LastPoolId {
+		if pool.Id > gs.LastPoolId {
 			return fmt.Errorf("pool at index %d has an id greater than last pool id: %d", i, pool.Id)
 		}
 		if _, ok := pairMap[pool.PairId]; !ok {
@@ -55,7 +61,7 @@ func (genState GenesisState) Validate() error {
 		poolMap[pool.Id] = pool
 	}
 	depositReqSet := map[uint64]map[uint64]struct{}{}
-	for i, req := range genState.DepositRequests {
+	for i, req := range gs.DepositRequests {
 		if err := req.Validate(); err != nil {
 			return fmt.Errorf("invalid deposit request at index %d: %w", i, err)
 		}
@@ -81,7 +87,7 @@ func (genState GenesisState) Validate() error {
 		depositReqSet[req.PoolId][req.Id] = struct{}{}
 	}
 	withdrawReqSet := map[uint64]map[uint64]struct{}{}
-	for i, req := range genState.WithdrawRequests {
+	for i, req := range gs.WithdrawRequests {
 		if err := req.Validate(); err != nil {
 			return fmt.Errorf("invalid withdraw request at index %d: %w", i, err)
 		}
@@ -102,7 +108,7 @@ func (genState GenesisState) Validate() error {
 		withdrawReqSet[req.PoolId][req.Id] = struct{}{}
 	}
 	orderSet := map[uint64]map[uint64]struct{}{}
-	for i, order := range genState.Orders {
+	for i, order := range gs.Orders {
 		if err := order.Validate(); err != nil {
 			return fmt.Errorf("invalid order at index %d: %w", i, err)
 		}
@@ -135,5 +141,6 @@ func (genState GenesisState) Validate() error {
 		}
 		orderSet[order.PairId][order.Id] = struct{}{}
 	}
-	return nil
+
+	return gs.Params.Validate()
 }

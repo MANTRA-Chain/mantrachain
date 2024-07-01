@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"cosmossdk.io/errors"
+	storetypes "cosmossdk.io/store/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +17,7 @@ import (
 
 // GetPlan returns a plan for a given plan id.
 func (k Keeper) GetPlan(ctx sdk.Context, id uint64) (plan types.PlanI, found bool) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetPlanKey(id))
 	if bz == nil {
 		return plan, false
@@ -36,7 +39,7 @@ func (k Keeper) GetPlans(ctx sdk.Context) (plans []types.PlanI) {
 // SetPlan sets a plan for a given plan id.
 func (k Keeper) SetPlan(ctx sdk.Context, plan types.PlanI) {
 	id := plan.GetId()
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	bz, err := k.MarshalPlan(plan)
 	if err != nil {
@@ -50,15 +53,15 @@ func (k Keeper) SetPlan(ctx sdk.Context, plan types.PlanI) {
 // NOTE: this will cause supply invariant violation if called
 func (k Keeper) DeletePlan(ctx sdk.Context, plan types.PlanI) {
 	id := plan.GetId()
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GetPlanKey(id))
 }
 
 // IteratePlans iterates over all the stored plans and performs a callback function.
 // Stops iteration when callback returns true.
 func (k Keeper) IteratePlans(ctx sdk.Context, cb func(plan types.PlanI) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PlanKeyPrefix)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PlanKeyPrefix)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -80,7 +83,7 @@ func (k Keeper) GetNextPlanIdWithUpdate(ctx sdk.Context) uint64 {
 
 // SetGlobalPlanId sets the global Plan ID counter.
 func (k Keeper) SetGlobalPlanId(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := k.cdc.MustMarshal(&gogotypes.UInt64Value{Value: id})
 	store.Set(types.GlobalPlanIdKey, bz)
 }
@@ -88,7 +91,7 @@ func (k Keeper) SetGlobalPlanId(ctx sdk.Context, id uint64) {
 // GetGlobalPlanId returns the global Plan ID counter.
 func (k Keeper) GetGlobalPlanId(ctx sdk.Context) uint64 {
 	var id uint64
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 
 	bz := store.Get(types.GlobalPlanIdKey)
 	if bz == nil {
@@ -103,7 +106,7 @@ func (k Keeper) GetGlobalPlanId(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) DeleteGlobalPlanId(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store.Delete(types.GlobalPlanIdKey)
 }
 
@@ -143,17 +146,17 @@ func (k Keeper) UnmarshalPlan(bz []byte) (plan types.PlanI, err error) {
 // CreateFixedAmountPlan sets fixed amount plan.
 func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixedAmountPlan, farmingPoolAcc, terminationAcc sdk.AccAddress, typ types.PlanType) (types.PlanI, error) {
 	if !ctx.BlockTime().Before(msg.EndTime) { // EndTime <= BlockTime
-		return nil, sdkerrors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
+		return nil, errors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
 	}
 
 	for _, coin := range msg.StakingCoinWeights {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
+			return nil, errors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
 		}
 	}
 	for _, coin := range msg.EpochAmount {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidEpochAmount, "denom %s has no supply", coin.Denom)
+			return nil, errors.Wrapf(types.ErrInvalidEpochAmount, "denom %s has no supply", coin.Denom)
 		}
 	}
 
@@ -165,13 +168,13 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 		maxNumDenoms = types.PublicPlanMaxNumDenoms
 	}
 	if len(msg.StakingCoinWeights) > maxNumDenoms {
-		return nil, sdkerrors.Wrapf(
+		return nil, errors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in staking coin weights is %d, which exceeds the limit %d",
 			len(msg.StakingCoinWeights), maxNumDenoms)
 	}
 	if len(msg.EpochAmount) > maxNumDenoms {
-		return nil, sdkerrors.Wrapf(
+		return nil, errors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in epoch amount is %d, which exceeds the limit %d",
 			len(msg.EpochAmount), maxNumDenoms)
@@ -185,12 +188,12 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 		}
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
-		// Guard: whitelist account address
-		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
-		err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
-		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+
+		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
+		err := k.bankKeeper.SendCoins(ctx, msg.GetAccCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
+		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
-			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
+			return nil, errors.Wrap(err, "failed to pay private plan creation fee")
 		}
 	}
 
@@ -228,12 +231,12 @@ func (k Keeper) CreateFixedAmountPlan(ctx sdk.Context, msg *types.MsgCreateFixed
 // CreateRatioPlan sets ratio plan.
 func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, farmingPoolAcc, terminationAcc sdk.AccAddress, typ types.PlanType) (types.PlanI, error) {
 	if !ctx.BlockTime().Before(msg.EndTime) { // EndTime <= BlockTime
-		return nil, sdkerrors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
+		return nil, errors.Wrap(types.ErrInvalidPlanEndTime, "end time has already passed")
 	}
 
 	for _, coin := range msg.StakingCoinWeights {
 		if k.bankKeeper.GetSupply(ctx, coin.Denom).Amount.IsZero() {
-			return nil, sdkerrors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
+			return nil, errors.Wrapf(types.ErrInvalidStakingCoinWeights, "denom %s has no supply", coin.Denom)
 		}
 	}
 
@@ -245,7 +248,7 @@ func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, 
 		maxNumDenoms = types.PublicPlanMaxNumDenoms
 	}
 	if len(msg.StakingCoinWeights) > maxNumDenoms {
-		return nil, sdkerrors.Wrapf(
+		return nil, errors.Wrapf(
 			types.ErrNumMaxDenomsLimit,
 			"number of denoms in staking coin weights is %d, which exceeds the limit %d",
 			len(msg.StakingCoinWeights), maxNumDenoms)
@@ -259,12 +262,12 @@ func (k Keeper) CreateRatioPlan(ctx sdk.Context, msg *types.MsgCreateRatioPlan, 
 		}
 
 		feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
-		// Guard: whitelist account address
-		whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
-		err := k.bankKeeper.SendCoins(ctx, msg.GetCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
-		k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+
+		whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
+		err := k.bankKeeper.SendCoins(ctx, msg.GetAccCreator(), feeCollectorAcc, params.PrivatePlanCreationFee)
+		k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 		if err != nil {
-			return nil, sdkerrors.Wrap(err, "failed to pay private plan creation fee")
+			return nil, errors.Wrap(err, "failed to pay private plan creation fee")
 		}
 	}
 
@@ -305,10 +308,10 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.PlanI) error {
 	if plan.GetFarmingPoolAddress().String() != plan.GetTerminationAddress().String() {
 		balances := k.bankKeeper.SpendableCoins(ctx, plan.GetFarmingPoolAddress())
 		if !balances.IsZero() {
-			// Guard: whitelist account address
-			whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{plan.GetFarmingPoolAddress().String()})
+
+			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{plan.GetFarmingPoolAddress().String()})
 			err := k.bankKeeper.SendCoins(ctx, plan.GetFarmingPoolAddress(), plan.GetTerminationAddress(), balances)
-			k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+			k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 			if err != nil {
 				return err
 			}
@@ -353,30 +356,30 @@ func (k Keeper) TerminateEndedPlans(ctx sdk.Context) error {
 func (k Keeper) RemovePlan(ctx sdk.Context, creator sdk.AccAddress, planId uint64) error {
 	plan, found := k.GetPlan(ctx, planId)
 	if !found {
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", planId)
+		return errors.Wrapf(sdkerrors.ErrNotFound, "plan %d not found", planId)
 	}
 
 	if !plan.IsTerminated() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not terminated yet", planId)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not terminated yet", planId)
 	}
 
 	if plan.GetType() != types.PlanTypePrivate {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not a private plan", planId)
+		return errors.Wrapf(sdkerrors.ErrInvalidRequest, "plan %d is not a private plan", planId)
 	}
 
 	if !plan.GetTerminationAddress().Equals(creator) {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "only the plan creator can remove the plan")
+		return errors.Wrap(sdkerrors.ErrUnauthorized, "only the plan creator can remove the plan")
 	}
 
 	// Refund private plan creation fee.
 	params := k.GetParams(ctx)
 	feeCollectorAcc, _ := sdk.AccAddressFromBech32(params.FarmingFeeCollector) // Already validated
-	// Guard: whitelist account address
-	whitelisted := k.gk.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
+
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{feeCollectorAcc.String()})
 	err := k.bankKeeper.SendCoins(ctx, feeCollectorAcc, creator, params.PrivatePlanCreationFee)
-	k.gk.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
 	if err != nil {
-		return sdkerrors.Wrap(err, "failed to refund private plan creation fee")
+		return errors.Wrap(err, "failed to refund private plan creation fee")
 	}
 
 	k.DeletePlan(ctx, plan)

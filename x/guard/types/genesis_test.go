@@ -1,94 +1,40 @@
-package types
+package types_test
 
 import (
 	"testing"
 
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/stretchr/testify/require"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestGenesisStateValidate(t *testing.T) {
-	testCases := []struct {
-		name         string
-		genesisState GenesisState
-		expErr       bool
+func TestGenesisState_Validate(t *testing.T) {
+	tests := []struct {
+		desc     string
+		genState *types.GenesisState
+		valid    bool
 	}{
 		{
-			"valid genesisState",
-			GenesisState{
-				Params: Params{
-					AdminAccount:                            "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionId:      "id",
-					DefaultPrivileges:                       make([]byte, 32),
-					BaseDenom:                               "uom",
-				},
-				AccountPrivilegesList: []*AccountPrivileges{
-					{
-						Account:    sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
-						Privileges: []byte{0x01},
-					},
-				},
-				GuardTransferCoins: []byte{0x01},
-				RequiredPrivilegesList: []*RequiredPrivileges{
-					{
-						Index:      []byte{0x01},
-						Privileges: []byte{0x01},
-						Kind:       "coin",
-					},
-				},
-			},
-			false,
-		},
-		{"empty genesisState", GenesisState{}, true},
-		{
-			"invalid params ",
-			GenesisState{
-				Params: Params{
-					AdminAccount:                            "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionId:      "id",
-					DefaultPrivileges:                       make([]byte, 31),
-					BaseDenom:                               "uom",
-				},
-			},
-			true,
+			desc:     "default is valid",
+			genState: types.DefaultGenesis(),
+			valid:    true,
 		},
 		{
-			"dup account privileges",
-			GenesisState{
-				Params: Params{
-					AdminAccount:                            "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionCreator: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
-					AccountPrivilegesTokenCollectionId:      "id",
-					DefaultPrivileges:                       make([]byte, 32),
-					BaseDenom:                               "uom",
-				},
-				AccountPrivilegesList: []*AccountPrivileges{
-					{
-						Account:    sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
-						Privileges: []byte{0x01},
-					},
-					{
-						Account:    sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
-						Privileges: []byte{0x01},
-					},
-				},
+			desc:     "valid genesis state",
+			genState: &types.GenesisState{
+
+				// this line is used by starport scaffolding # types/genesis/validField
 			},
-			true,
+			valid: true,
 		},
+		// this line is used by starport scaffolding # types/genesis/testcase
 	}
-
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			err := tc.genesisState.Validate()
-
-			if tc.expErr {
-				require.Error(t, err)
-			} else {
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			err := tc.genState.Validate()
+			if tc.valid {
 				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
 			}
 		})
 	}

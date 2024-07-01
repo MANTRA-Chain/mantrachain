@@ -3,56 +3,68 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
-// Keeper of the module's store.
-type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	paramSpace paramstypes.Subspace
+type (
+	Keeper struct {
+		cdc          codec.BinaryCodec
+		storeService store.KVStoreService
+		logger       log.Logger
 
-	accountKeeper   types.AccountKeeper
-	bankKeeper      types.BankKeeper
-	liquidityKeeper types.LiquidityKeeper
-	gk              types.GuardKeeper
-}
+		// the address capable of executing a MsgUpdateParams message. Typically, this
+		// should be the x/gov module account.
+		authority string
 
-// NewKeeper creates a new Keeper instance.
+		bankKeeper      types.BankKeeper
+		liquidityKeeper types.LiquidityKeeper
+		guardKeeper     types.GuardKeeper
+	}
+)
+
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey storetypes.StoreKey,
-	paramSpace paramstypes.Subspace,
-	accountKeeper types.AccountKeeper,
+	storeService store.KVStoreService,
+	logger log.Logger,
+	authority string,
+
 	bankKeeper types.BankKeeper,
 	liquidityKeeper types.LiquidityKeeper,
-	gk types.GuardKeeper,
+	guardKeeper types.GuardKeeper,
+
 ) Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
+		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	// Guard: whitelist account address
-	gk.AddTransferAccAddressesWhitelist([]string{types.DefaultFeeCollector.String(), sdk.AccAddress(types.RewardsPoolAddress).String()})
+	guardKeeper.AddTransferAccAddressesWhitelist([]string{
+		types.DefaultFeeCollector.String(),
+		sdk.AccAddress(types.RewardsPoolAddress).String(),
+	})
 
 	return Keeper{
-		cdc:             cdc,
-		storeKey:        storeKey,
-		paramSpace:      paramSpace,
-		accountKeeper:   accountKeeper,
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
+
 		bankKeeper:      bankKeeper,
 		liquidityKeeper: liquidityKeeper,
-		gk:              gk,
+		guardKeeper:     guardKeeper,
 	}
+}
+
+// GetAuthority returns the module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
 }
 
 // Logger returns a module-specific logger.
-func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+func (k Keeper) Logger() log.Logger {
+	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

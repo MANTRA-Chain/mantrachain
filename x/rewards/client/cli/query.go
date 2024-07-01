@@ -7,14 +7,12 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
-func GetQueryCmd(queryRoute string) *cobra.Command {
+func GetQueryCmd() *cobra.Command {
 	// Group rewards queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
@@ -24,7 +22,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQueryParams())
 	cmd.AddCommand(CmdListSnapshot())
 	cmd.AddCommand(CmdShowSnapshot())
 	cmd.AddCommand(CmdListProvider())

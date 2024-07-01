@@ -11,17 +11,13 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "liquidity"
 
-	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
-
 	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
-
-	// QuerierRoute defines the module's query routing key
-	QuerierRoute = ModuleName
 )
 
 var (
+	ParamsKey = []byte("p_liquidity")
+
 	LastPairIdKey = []byte{0xa0} // key for the latest pair id
 	LastPoolIdKey = []byte{0xa1} // key for the latest pool id
 

@@ -1,7 +1,8 @@
 package types
 
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // --------------------------
@@ -11,11 +12,11 @@ import (
 // ValidateBasic performs a basic check of the MsgCreateDidDocument fields.
 func (msg MsgCreateDidDocument) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if msg.Verifications == nil || len(msg.Verifications) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "verifications are required")
+		return errors.Wrap(errorstypes.ErrInvalidRequest, "verifications are required")
 	}
 
 	for _, v := range msg.Verifications {
@@ -44,13 +45,13 @@ func (msg MsgCreateDidDocument) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgUpdateDidDocument fields.
 func (msg MsgUpdateDidDocument) ValidateBasic() error {
 	if !IsValidDID(msg.Doc.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Doc.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Doc.Id)
 	}
 
 	for _, c := range msg.Doc.Controller {
 		// if controller is set must be compliant
 		if !IsValidDID(c) {
-			return sdkerrors.Wrap(ErrInvalidDIDFormat, "controller validation error")
+			return errors.Wrap(ErrInvalidDIDFormat, "controller validation error")
 		}
 	}
 	return nil
@@ -63,7 +64,7 @@ func (msg MsgUpdateDidDocument) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgAddVerification fields.
 func (msg MsgAddVerification) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	return ValidateVerification(msg.Verification)
@@ -76,11 +77,11 @@ func (msg MsgAddVerification) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgRevokeVerification fields.
 func (msg MsgRevokeVerification) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if !IsValidDIDURL(msg.MethodId) {
-		return sdkerrors.Wrap(ErrInvalidDIDURLFormat, "verification method id validation error")
+		return errors.Wrap(ErrInvalidDIDURLFormat, "verification method id validation error")
 	}
 	return nil
 }
@@ -92,16 +93,16 @@ func (msg MsgRevokeVerification) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgSetVerificationRelationships fields.
 func (msg MsgSetVerificationRelationships) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if !IsValidDIDURL(msg.MethodId) {
-		return sdkerrors.Wrap(ErrInvalidDIDURLFormat, "verification method id")
+		return errors.Wrap(ErrInvalidDIDURLFormat, "verification method id")
 	}
 
 	// there should be more then one relationship
 	if len(msg.Relationships) == 0 {
-		return sdkerrors.Wrap(ErrEmptyRelationships, "one ore more relationships is required")
+		return errors.Wrap(ErrEmptyRelationships, "one ore more relationships is required")
 	}
 
 	return nil
@@ -114,7 +115,7 @@ func (msg MsgSetVerificationRelationships) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgAddService fields.
 func (msg MsgAddService) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 	return ValidateService(msg.ServiceData)
 }
@@ -126,15 +127,15 @@ func (msg MsgAddService) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgDeleteService fields.
 func (msg MsgDeleteService) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if IsEmpty(msg.ServiceId) {
-		return sdkerrors.Wrap(ErrInvalidInput, "service id cannot be empty;")
+		return errors.Wrap(ErrInvalidInput, "service id cannot be empty;")
 	}
 
 	if !IsValidRFC3986Uri(msg.ServiceId) {
-		return sdkerrors.Wrap(ErrInvalidRFC3986UriFormat, "service id validation error")
+		return errors.Wrap(ErrInvalidRFC3986UriFormat, "service id validation error")
 	}
 	return nil
 }
@@ -146,11 +147,11 @@ func (msg MsgDeleteService) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgAddService fields.
 func (msg MsgAddController) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if !IsValidDIDKeyFormat(msg.ControllerDid) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.ControllerDid)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.ControllerDid)
 	}
 
 	return nil
@@ -163,11 +164,11 @@ func (msg MsgAddController) ValidateBasic() error {
 // ValidateBasic performs a basic check of the MsgDeleteService fields.
 func (msg MsgDeleteController) ValidateBasic() error {
 	if !IsValidDID(msg.Id) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.Id)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
 	if !IsValidDID(msg.ControllerDid) {
-		return sdkerrors.Wrap(ErrInvalidDIDFormat, msg.ControllerDid)
+		return errors.Wrap(ErrInvalidDIDFormat, msg.ControllerDid)
 	}
 
 	return nil

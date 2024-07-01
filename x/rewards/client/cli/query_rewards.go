@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
@@ -16,10 +17,7 @@ func CmdRewards() *cobra.Command {
 		Short: "Get rewards by provider and pair-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -42,7 +40,7 @@ func CmdRewards() *cobra.Command {
 				PairId:   pairId,
 			}
 
-			res, err := queryClient.Rewards(cmd.Context(), params)
+			res, err := queryClient.QueryRewards(context.Background(), params)
 			if err != nil {
 				return err
 			}
