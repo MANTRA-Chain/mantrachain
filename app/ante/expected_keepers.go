@@ -1,9 +1,9 @@
-package types
+package ante
 
 import (
 	"context"
 
-	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/core/address"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -16,27 +16,10 @@ type AccountKeeper interface {
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 	SetAccount(ctx context.Context, acc sdk.AccountI)
 	GetModuleAddress(moduleName string) sdk.AccAddress
+	AddressCodec() address.Codec
 }
 
 // FeegrantKeeper defines the expected feegrant keeper.
 type FeegrantKeeper interface {
 	UseGrantedFees(ctx context.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
-}
-
-// FeegrantKeeper defines the expected feegrant keeper.
-type GuardKeeper interface {
-	GetAdmin(ctx sdk.Context) sdk.AccAddress
-	CheckIsAdmin(ctx sdk.Context, address string) error
-}
-
-type LiquidityKeeper interface {
-	GetSwapAmount(ctx sdk.Context, pairId uint64, swapCoin sdk.Coin) (offerCoin sdk.Coin, price sdkmath.LegacyDec, err error)
-}
-
-type TxfeesKeeper interface {
-	GetParams(ctx context.Context) (params Params)
-	GetFeeToken(
-		ctx sdk.Context,
-		denom string,
-	) (val FeeToken, found bool)
 }

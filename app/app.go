@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -31,6 +32,7 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	_ "github.com/cosmos/cosmos-sdk/x/auth" // import for side-effects
+	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/auth/vesting"   // import for side-effects
@@ -93,6 +95,8 @@ import (
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/MANTRA-Finance/mantrachain/docs"
+
+	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
 )
 
 const (
@@ -363,6 +367,26 @@ func New(
 	if err := app.registerIBCModules(appOpts); err != nil {
 		return nil, err
 	}
+
+	// Ante handler
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			AccountKeeper:   app.AccountKeeper,
+			BankKeeper:      app.BankKeeper,
+			SignModeHandler: app.txConfig.SignModeHandler(),
+			FeegrantKeeper:  app.FeeGrantKeeper,
+			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
+			CircuitKeeper:   &app.CircuitBreakerKeeper,
+			GuardKeeper:     app.GuardKeeper,
+			LiquidityKeeper: &app.LiquidityKeeper,
+			TxfeesKeeper:    &app.TxfeesKeeper,
+		},
+	)
+	if err != nil {
+		panic(fmt.Errorf("failed to create AnteHandler: %w", err))
+	}
+
+	app.SetAnteHandler(anteHandler)
 
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
