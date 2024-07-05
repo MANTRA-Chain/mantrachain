@@ -11,8 +11,9 @@
 
 ## Pre-requisites
 
+- [Node.js](https://nodejs.org/en/) >= 20.9.0
 - [Go](https://golang.org/doc/install) >= 1.22.0
-- [Ignite](https://github.com/ignite/cli) = 0.28.0
+- [Ignite](https://github.com/ignite/cli) = 0.29.0
 
 ## Get started
 
@@ -61,8 +62,8 @@ Execute the tests:
 
 ```bash
 cd tests/e2e
-yarn
-yarn test
+npm install
+npm test
 ```
 
 ## Learn more

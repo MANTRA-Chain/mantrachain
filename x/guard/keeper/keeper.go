@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/core/store"
@@ -9,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
@@ -64,6 +66,20 @@ func NewKeeper(
 		authzKeeper: authzKeeper,
 		nftKeeper:   nftKeeper,
 	}
+}
+
+func SetSendRestrictions(k *Keeper, bankKeeper types.BankKeeper) {
+	bankKeeper.AppendSendRestriction(func(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) (newToAddr sdk.AccAddress, err error) {
+		sdkCtx := sdk.UnwrapSDKContext(ctx)
+		if err := k.ValidateCoinsTransfers(
+			sdkCtx,
+			[]banktypes.Input{{Address: fromAddr.String(), Coins: amt}},
+			[]banktypes.Output{{Address: toAddr.String(), Coins: amt}},
+		); err != nil {
+			return nil, err
+		}
+		return toAddr, nil
+	})
 }
 
 func SetCoinFactoryKeeper(k *Keeper, coinFactoryKeeper types.CoinFactoryKeeper) {

@@ -1,116 +1,115 @@
 version: 1
 accounts:
-  - name: validator
-    coins:
-      - 10000000000000000uom
-    mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
-  - name: admin
-    coins:
-      - 10000000000000000uom
-    mnemonic: border expire liar nurse pulse code network nut solution juice rate cloth bread broom total lobster clog response ill before acoustic wasp club clump
-  - name: recipient
-    coins:
-      - 10000000000000000uom
-    mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
+    - name: validator
+      coins:
+        - 10000000000000000uom
+      mnemonic: clever spin draw twelve document tornado panther crisp picture feel remind want basket uncle stove aisle hamster velvet dry protect buyer fiber choice answer
+    - name: admin
+      coins:
+        - 10000000000000000uom
+      mnemonic: border expire liar nurse pulse code network nut solution juice rate cloth bread broom total lobster clog response ill before acoustic wasp club clump
+    - name: recipient
+      coins:
+        - 10000000000000000uom
+      mnemonic: captain roast forget tree cliff common peasant unhappy reflect hole they essence trash paper slab carpet engine exist urge bulk kite trade rocket kid
 client:
-  typescript:
-    path: ts-client
-  openapi:
-    path: docs/static/openapi.yml
+    typescript:
+        path: ts-client
+    hooks:
+        path: react/src/hooks
+    openapi:
+        path: docs/static/openapi.yml
 genesis:
-  chain_id: "mantrachain-devnet-9001"
-  app_state:
-    bank:
-      denom_metadata:
-        - base: uom
-          denom_units:
-            - aliases:
-                - microom
-              denom: uom
-              exponent: 0
-            - aliases:
-                - milliom
-              denom: mom
-              exponent: 3
-            - denom: om
-              exponent: 6
-          description: The native staking token of the Mantrachain.
-          display: om
-          name: om
-          symbol: om
-    crisis:
-      constant_fee:
-        denom: uom
-    gov:
-      params:
-        min_deposit:
-          - amount: "10000000"
-            denom: uom
-        voting_period: "120s"
-        expedited_voting_period: 60s
-    guard:
-      params:
-        account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
-        account_privileges_token_collection_id: account_privileges_guard_nft_collection
-        admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
-        base_denom: uom
-    txfees:
-      params:
-        base_denom: uom
-    liquidity:
-      params:
-        pair_creation_fee:
-          - amount: "1000000"
-            denom: uom
-        pool_creation_fee:
-          - amount: "1000000"
-            denom: uom
-        swap_fee_rate: "0.03"
-        pair_creator_swap_fee_ratio: "0.66"
-    lpfarm:
-      params:
-        private_plan_creation_fee:
-          - amount: "1000000"
-            denom: uom
-    farming:
-      params:
-        private_plan_creation_fee:
-          - amount: "1000000000"
-            denom: uom
-    marketmaker:
-      params:
-        deposit_amount:
-          - amount: "1000000000"
-            denom: uom
-    mint:
-      params:
-        # inflation_min: "0"
-        # inflation_max: "0"
-        # inflation_rate_change: "0"
-        mint_denom: uom
-    staking:
-      params:
-        bond_denom: uom
-    coinfactory:
-      params:
-        denom_creation_fee:
-          - amount: "10"
-            denom: uom
+    app_state:
+        bank:
+            denom_metadata:
+                - base: uom
+                  denom_units:
+                    - aliases:
+                        - microom
+                      denom: uom
+                      exponent: 0
+                    - aliases:
+                        - milliom
+                      denom: mom
+                      exponent: 3
+                    - denom: om
+                      exponent: 6
+                  description: The native staking token of the Mantrachain.
+                  display: om
+                  name: om
+                  symbol: om
+        coinfactory:
+            params:
+                denom_creation_fee:
+                    - amount: "10"
+                      denom: uom
+        crisis:
+            constant_fee:
+                denom: uom
+        farming:
+            params:
+                private_plan_creation_fee:
+                    - amount: "1000000000"
+                      denom: uom
+        gov:
+            params:
+                expedited_voting_period: 60s
+                min_deposit:
+                    - amount: "10000000"
+                      denom: uom
+                voting_period: 120s
+        guard:
+            params:
+                account_privileges_token_collection_creator: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+                account_privileges_token_collection_id: account_privileges_guard_nft_collection
+                admin_account: mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka
+                base_denom: uom
+        liquidity:
+            params:
+                pair_creation_fee:
+                    - amount: "1000000"
+                      denom: uom
+                pair_creator_swap_fee_ratio: "0.66"
+                pool_creation_fee:
+                    - amount: "1000000"
+                      denom: uom
+                swap_fee_rate: "0.03"
+        lpfarm:
+            params:
+                private_plan_creation_fee:
+                    - amount: "1000000"
+                      denom: uom
+        marketmaker:
+            params:
+                deposit_amount:
+                    - amount: "1000000000"
+                      denom: uom
+        mint:
+            params:
+                mint_denom: uom
+        staking:
+            params:
+                bond_denom: uom
+        txfees:
+            params:
+                base_denom: uom
+    chain_id: mantrachain-devnet-9001
 validators:
-  - name: validator
-    bonded: 100000000uom
-    app:
-      grpc:
-        address: 0.0.0.0:9090
-      grpc-web:
-        address: 0.0.0.0:9091
-      minimum-gas-prices: 0.0001uom
-      pruning: nothing
-    config:
-      consensus:
-        timeout_commit: "6s"
-        timeout_propose: "6s"
-      moniker: mantrachain-dev-local
-      proxy_app: tcp://0.0.0.0:26658
-    client:
-      node: tcp://0.0.0.0:26657
+    - name: validator
+      bonded: 100000000uom
+      app:
+        grpc:
+            address: 0.0.0.0:9090
+        grpc-web:
+            address: 0.0.0.0:9091
+        minimum-gas-prices: 0.0001uom
+        pruning: nothing
+      config:
+        consensus:
+            timeout_commit: 6s
+            timeout_propose: 6s
+        moniker: mantrachain-dev-local
+        proxy_app: tcp://0.0.0.0:26658
+      client:
+        node: tcp://0.0.0.0:26657

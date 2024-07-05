@@ -38,15 +38,6 @@ func (msg *MsgCreateMultiBridged) Type() string {
 	return TypeMsgCreateMultiBridged
 }
 
-func (msg *MsgCreateMultiBridged) GetSigners() []sdk.AccAddress {
-	inAddr, err := sdk.AccAddressFromBech32(msg.Input.Address)
-	if err != nil {
-		panic(err)
-	}
-
-	return []sdk.AccAddress{inAddr}
-}
-
 func (msg *MsgCreateMultiBridged) GetSignBytes() []byte {
 	bz := Amino.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)

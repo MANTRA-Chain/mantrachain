@@ -160,7 +160,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetCoinFactoryKeeper, InvokeSetTokenKeeper),
+		appmodule.Invoke(InvokeSetSendRestrictions, InvokeSetCoinFactoryKeeper, InvokeSetTokenKeeper),
 	)
 }
 
@@ -221,6 +221,20 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	return ModuleOutputs{GuardKeeper: k, Module: m}
 }
 
+func InvokeSetSendRestrictions(
+	k *keeper.Keeper,
+	bankKeeper types.BankKeeper,
+) error {
+	if k == nil {
+		return fmt.Errorf("keeper is nil")
+	}
+	if bankKeeper == nil {
+		return fmt.Errorf("bank keeper is nil")
+	}
+	keeper.SetSendRestrictions(k, bankKeeper)
+	return nil
+}
+
 func InvokeSetCoinFactoryKeeper(
 	k *keeper.Keeper,
 	coinFactoryKeeper types.CoinFactoryKeeper,
@@ -229,7 +243,7 @@ func InvokeSetCoinFactoryKeeper(
 		return fmt.Errorf("keeper is nil")
 	}
 	if coinFactoryKeeper == nil {
-		return fmt.Errorf("funders keeper is nil")
+		return fmt.Errorf("coin factory keeper is nil")
 	}
 	keeper.SetCoinFactoryKeeper(k, coinFactoryKeeper)
 	return nil
@@ -243,7 +257,7 @@ func InvokeSetTokenKeeper(
 		return fmt.Errorf("keeper is nil")
 	}
 	if tokenKeeper == nil {
-		return fmt.Errorf("funders keeper is nil")
+		return fmt.Errorf("token keeper is nil")
 	}
 	keeper.SetTokenKeeper(k, tokenKeeper)
 	return nil

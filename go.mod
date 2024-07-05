@@ -3,7 +3,7 @@ module github.com/MANTRA-Finance/mantrachain
 go 1.21
 
 replace (
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240620124255-5c347674cb76
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240705115743-0b5ca774aa19
 	github.com/cosmos/ibc-go/v8 => github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240701150258-3b633d8beecc
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0

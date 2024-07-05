@@ -291,6 +291,10 @@ func New(
 		&app.legacyAmino,
 		&app.txConfig,
 		&app.interfaceRegistry,
+
+		// Guard keeper should be injected first
+		&app.GuardKeeper,
+
 		&app.AccountKeeper,
 		&app.BankKeeper,
 		&app.StakingKeeper,
@@ -310,9 +314,6 @@ func New(
 		&app.CircuitBreakerKeeper,
 
 		// Mantrachain Keepers
-		// Guard keeper should be injected first
-		&app.GuardKeeper,
-
 		&app.AirdropKeeper,
 		&app.BridgeKeeper,
 		&app.CoinfactoryKeeper,
