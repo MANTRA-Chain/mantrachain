@@ -2,9 +2,9 @@ syntax = "proto3";
 package mantrachain.guard.v1;
 
 import "amino/amino.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "mantrachain/guard/v1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
@@ -17,32 +17,25 @@ service Query {
   }
 
   // Queries a AccountPrivileges by index.
-  rpc QueryAccountPrivileges(QueryGetAccountPrivilegesRequest)
-      returns (QueryGetAccountPrivilegesResponse) {
-    option (google.api.http).get =
-        "/mantrachain/guard/v1/account_privileges/{account}";
+  rpc QueryAccountPrivileges(QueryGetAccountPrivilegesRequest) returns (QueryGetAccountPrivilegesResponse) {
+    option (google.api.http).get = "/mantrachain/guard/v1/account_privileges/{account}";
   }
 
   // Queries a list of AccountPrivileges items.
-  rpc QueryAccountPrivilegesAll(QueryAllAccountPrivilegesRequest)
-      returns (QueryAllAccountPrivilegesResponse) {
+  rpc QueryAccountPrivilegesAll(QueryAllAccountPrivilegesRequest) returns (QueryAllAccountPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/account_privileges";
   }
 
   // Queries a GuardTransferCoins by index.
-  rpc QueryGuardTransferCoins(QueryGetGuardTransferCoinsRequest)
-      returns (QueryGetGuardTransferCoinsResponse) {
+  rpc QueryGuardTransferCoins(QueryGetGuardTransferCoinsRequest) returns (QueryGetGuardTransferCoinsResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/guard_transfer_coins";
   }
 
   // Queries a list of RequiredPrivileges items.
-  rpc QueryRequiredPrivileges(QueryGetRequiredPrivilegesRequest)
-      returns (QueryGetRequiredPrivilegesResponse) {
-    option (google.api.http).get =
-        "/mantrachain/guard/v1/required_privileges/{index}";
+  rpc QueryRequiredPrivileges(QueryGetRequiredPrivilegesRequest) returns (QueryGetRequiredPrivilegesResponse) {
+    option (google.api.http).get = "/mantrachain/guard/v1/required_privileges/{index}";
   }
-  rpc QueryRequiredPrivilegesAll(QueryAllRequiredPrivilegesRequest)
-      returns (QueryAllRequiredPrivilegesResponse) {
+  rpc QueryRequiredPrivilegesAll(QueryAllRequiredPrivilegesRequest) returns (QueryAllRequiredPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/required_privileges";
   }
 }
@@ -53,11 +46,15 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
-message QueryGetAccountPrivilegesRequest { string account = 1; }
+message QueryGetAccountPrivilegesRequest {
+  string account = 1;
+}
 
 message QueryGetAccountPrivilegesResponse {
   string account = 1;
@@ -76,7 +73,9 @@ message QueryAllAccountPrivilegesResponse {
 
 message QueryGetGuardTransferCoinsRequest {}
 
-message QueryGetGuardTransferCoinsResponse { bool guard_transfer_coins = 1; }
+message QueryGetGuardTransferCoinsResponse {
+  bool guard_transfer_coins = 1;
+}
 
 message QueryGetRequiredPrivilegesRequest {
   bytes index = 1;

@@ -2,9 +2,9 @@ syntax = "proto3";
 package mantrachain.coinfactory.v1beta1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/bank/v1beta1/bank.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "mantrachain/coinfactory/v1beta1/authorityMetadata.proto";
 import "mantrachain/coinfactory/v1beta1/params.proto";
@@ -20,47 +20,42 @@ service Query {
 
   // DenomsFromCreator defines a gRPC query method for fetching all
   // denominations created by a specific admin/creator.
-  rpc QueryDenomsFromCreator(QueryDenomsFromCreatorRequest)
-      returns (QueryDenomsFromCreatorResponse) {
-    option (google.api.http).get =
-        "/mantrachain/coinfactory/v1beta1/denoms_from_creator/{creator}";
+  rpc QueryDenomsFromCreator(QueryDenomsFromCreatorRequest) returns (QueryDenomsFromCreatorResponse) {
+    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms_from_creator/{creator}";
   }
 
   // DenomAuthorityMetadata defines a gRPC query method for fetching
   // DenomAuthorityMetadata for a particular denom.
-  rpc QueryDenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest)
-      returns (QueryDenomAuthorityMetadataResponse) {
-    option (google.api.http).get =
-        "/mantrachain/coinfactory/v1beta1/denoms/{denom}/authority_metadata";
+  rpc QueryDenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest) returns (QueryDenomAuthorityMetadataResponse) {
+    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms/{denom}/authority_metadata";
   }
 
   // QueryDenomAuthorityMetadata2
-  rpc QueryDenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request)
-      returns (QueryDenomAuthorityMetadata2Response) {
+  rpc QueryDenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request) returns (QueryDenomAuthorityMetadata2Response) {
     option (google.api.http).get =
-        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
-        "{subdenom}/authority_metadata";
+      "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+      "{subdenom}/authority_metadata";
   }
 
   // QueryBalance
   rpc QueryBalance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get =
-        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
-        "{subdenom}/balances/{address}";
+      "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+      "{subdenom}/balances/{address}";
   }
 
   // QuerySupplyOf
   rpc QuerySupplyOf(QuerySupplyOfRequest) returns (QuerySupplyOfResponse) {
-    option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/creators/"
-                                   "{creator}/subdenoms/{subdenom}/supply";
+    option (google.api.http).get =
+      "/mantrachain/coinfactory/v1beta1/creators/"
+      "{creator}/subdenoms/{subdenom}/supply";
   }
 
   // QueryDenomMetadata
-  rpc QueryDenomMetadata(QueryDenomMetadataRequest)
-      returns (QueryDenomMetadataResponse) {
+  rpc QueryDenomMetadata(QueryDenomMetadataRequest) returns (QueryDenomMetadataResponse) {
     option (google.api.http).get =
-        "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
-        "{subdenom}/denoms_metadata";
+      "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
+      "{subdenom}/denoms_metadata";
   }
 }
 
@@ -70,8 +65,10 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // QueryDenomAuthorityMetadataRequest defines the request structure for the
@@ -84,8 +81,7 @@ message QueryDenomAuthorityMetadata2Request {
 // QueryDenomAuthorityMetadataResponse defines the response structure for the
 // DenomAuthorityMetadata gRPC query.
 message QueryDenomAuthorityMetadata2Response {
-  DenomAuthorityMetadata authority_metadata = 1
-      [ (gogoproto.nullable) = false ];
+  DenomAuthorityMetadata authority_metadata = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method.
@@ -110,7 +106,7 @@ message QuerySupplyOfRequest {
 // QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC method.
 message QuerySupplyOfResponse {
   // amount is the supply of the coin.
-  cosmos.base.v1beta1.Coin amount = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC
@@ -125,23 +121,26 @@ message QueryDenomMetadataRequest {
 message QueryDenomMetadataResponse {
   // metadata describes and provides all the client information for the
   // requested token.
-  cosmos.bank.v1beta1.Metadata metadata = 1 [ (gogoproto.nullable) = false ];
+  cosmos.bank.v1beta1.Metadata metadata = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryDenomAuthorityMetadataRequest defines the request structure for the
 // DenomAuthorityMetadata gRPC query.
-message QueryDenomAuthorityMetadataRequest { string denom = 1; }
+message QueryDenomAuthorityMetadataRequest {
+  string denom = 1;
+}
 
 // QueryDenomAuthorityMetadataResponse defines the response structure for the
 // DenomAuthorityMetadata gRPC query.
 message QueryDenomAuthorityMetadataResponse {
-  DenomAuthorityMetadata authority_metadata = 1
-      [ (gogoproto.nullable) = false ];
+  DenomAuthorityMetadata authority_metadata = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryDenomsFromCreatorRequest defines the request structure for the
 // DenomsFromCreator gRPC query.
-message QueryDenomsFromCreatorRequest { string creator = 1; }
+message QueryDenomsFromCreatorRequest {
+  string creator = 1;
+}
 
 // QueryDenomsFromCreatorRequest defines the response structure for the
 // DenomsFromCreator gRPC query.

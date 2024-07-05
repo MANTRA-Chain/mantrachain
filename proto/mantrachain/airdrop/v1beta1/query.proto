@@ -2,11 +2,11 @@ syntax = "proto3";
 package mantrachain.airdrop.v1beta1;
 
 import "amino/amino.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "mantrachain/airdrop/v1beta1/params.proto";
 import "mantrachain/airdrop/v1beta1/campaign.proto";
+import "mantrachain/airdrop/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/airdrop/types";
 
@@ -34,16 +34,20 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // QueryGetCampaignRequest
-message QueryGetCampaignRequest { uint64 id = 1; }
+message QueryGetCampaignRequest {
+  uint64 id = 1;
+}
 
 // QueryGetCampaignResponse
 message QueryGetCampaignResponse {
-  Campaign campaign = 1 [ (gogoproto.nullable) = false ];
+  Campaign campaign = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryAllCampaignRequest
@@ -53,6 +57,6 @@ message QueryAllCampaignRequest {
 
 // QueryAllCampaignResponse
 message QueryAllCampaignResponse {
-  repeated Campaign campaign = 1 [ (gogoproto.nullable) = false ];
+  repeated Campaign campaign = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

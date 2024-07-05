@@ -17,11 +17,11 @@ message GenesisState {
     (amino.dont_omitempty) = true
   ];
 
-  repeated Snapshot snapshot_list  = 2 [(gogoproto.nullable) = false];
-  repeated SnapshotCount snapshot_count_list = 3 [(gogoproto.nullable) = false];
-  repeated Provider provider_list  = 4 [(gogoproto.nullable) = false];
-  bytes distribution_pairs_ids = 5;
-  bytes purge_pairs_ids = 6;
-  uint64 snapshots_last_distributed_at = 7;
-  repeated SnapshotStartId snapshot_start_id_list = 8 [(gogoproto.nullable) = false];
+  repeated Snapshot snapshotList  = 2 [(gogoproto.nullable) = false];
+  repeated SnapshotCount snapshotCountList = 3 [(gogoproto.nullable) = false];
+  repeated Provider providerList  = 4 [(gogoproto.nullable) = false];
+  bytes distributionPairsIds = 5;
+  bytes purgePairsIds = 6;
+  uint64 snapshotsLastDistributedAt = 7;
+  repeated SnapshotStartId snapshotStartIdList = 8 [(gogoproto.nullable) = false];
 }

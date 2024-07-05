@@ -1,8 +1,8 @@
 syntax = "proto3";
 package mantrachain.coinfactory.v1beta1;
 
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types";
 
@@ -13,5 +13,5 @@ message DenomAuthorityMetadata {
   option (gogoproto.equal) = true;
 
   // Can be empty for no admin, or a valid mantrachain address
-  string admin = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string admin = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }

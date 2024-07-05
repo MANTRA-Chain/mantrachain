@@ -2,10 +2,10 @@ syntax = "proto3";
 package mantrachain.liquidity.v1beta1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidity/types";
 
@@ -18,26 +18,45 @@ message Params {
   uint32 tick_precision = 2;
   string fee_collector_address = 3;
   string dust_collector_address = 4;
-  string min_initial_pool_coin_supply = 5
-      [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  repeated cosmos.base.v1beta1.Coin pair_creation_fee = 6
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
-  repeated cosmos.base.v1beta1.Coin pool_creation_fee = 7
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
-  string min_initial_deposit_amount = 8
-      [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  string max_price_limit_ratio = 9
-      [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  string min_initial_pool_coin_supply = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin pair_creation_fee = 6 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin pool_creation_fee = 7 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
+  string min_initial_deposit_amount = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string max_price_limit_ratio = 9 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   uint32 max_num_market_making_order_ticks = 10;
-  google.protobuf.Duration max_order_lifespan = 11 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
-  string swap_fee_rate = 12
-      [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
-  string withdraw_fee_rate = 13
-      [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  google.protobuf.Duration max_order_lifespan = 11 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
+  string swap_fee_rate = 12 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string withdraw_fee_rate = 13 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
   uint64 deposit_extra_gas = 14;
   uint64 withdraw_extra_gas = 15;
   uint64 order_extra_gas = 16;
   uint32 max_num_active_pools_per_pair = 17;
-  string pair_creator_swap_fee_ratio = 18
-      [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  string pair_creator_swap_fee_ratio = 18 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
 }

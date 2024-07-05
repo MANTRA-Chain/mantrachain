@@ -5,8 +5,8 @@ import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "mantrachain/guard/v1/params.proto";
 import "mantrachain/guard/v1/common.proto";
+import "mantrachain/guard/v1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
 
@@ -18,26 +18,16 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
-  rpc UpdateAccountPrivileges(MsgUpdateAccountPrivileges)
-      returns (MsgUpdateAccountPrivilegesResponse);
-  rpc UpdateAccountPrivilegesBatch(MsgUpdateAccountPrivilegesBatch)
-      returns (MsgUpdateAccountPrivilegesBatchResponse);
-  rpc UpdateAccountPrivilegesGroupedBatch(
-      MsgUpdateAccountPrivilegesGroupedBatch)
-      returns (MsgUpdateAccountPrivilegesGroupedBatchResponse);
-  rpc UpdateGuardTransferCoins(MsgUpdateGuardTransferCoins)
-      returns (MsgUpdateGuardTransferCoinsResponse);
-  rpc UpdateRequiredPrivileges(MsgUpdateRequiredPrivileges)
-      returns (MsgUpdateRequiredPrivilegesResponse);
-  rpc UpdateRequiredPrivilegesBatch(MsgUpdateRequiredPrivilegesBatch)
-      returns (MsgUpdateRequiredPrivilegesBatchResponse);
-  rpc UpdateRequiredPrivilegesGroupedBatch(
-      MsgUpdateRequiredPrivilegesGroupedBatch)
-      returns (MsgUpdateRequiredPrivilegesGroupedBatchResponse);
+  rpc UpdateAccountPrivileges(MsgUpdateAccountPrivileges) returns (MsgUpdateAccountPrivilegesResponse);
+  rpc UpdateAccountPrivilegesBatch(MsgUpdateAccountPrivilegesBatch) returns (MsgUpdateAccountPrivilegesBatchResponse);
+  rpc UpdateAccountPrivilegesGroupedBatch(MsgUpdateAccountPrivilegesGroupedBatch) returns (MsgUpdateAccountPrivilegesGroupedBatchResponse);
+  rpc UpdateGuardTransferCoins(MsgUpdateGuardTransferCoins) returns (MsgUpdateGuardTransferCoinsResponse);
+  rpc UpdateRequiredPrivileges(MsgUpdateRequiredPrivileges) returns (MsgUpdateRequiredPrivilegesResponse);
+  rpc UpdateRequiredPrivilegesBatch(MsgUpdateRequiredPrivilegesBatch) returns (MsgUpdateRequiredPrivilegesBatchResponse);
+  rpc UpdateRequiredPrivilegesGroupedBatch(MsgUpdateRequiredPrivilegesGroupedBatch) returns (MsgUpdateRequiredPrivilegesGroupedBatchResponse);
 
   // this line is used by starport scaffolding # proto/tx/rpc}
-  rpc UpdateAuthzGenericGrantRevokeBatch(MsgUpdateAuthzGenericGrantRevokeBatch)
-      returns (MsgUpdateAuthzGenericGrantRevokeBatchResponse);
+  rpc UpdateAuthzGenericGrantRevokeBatch(MsgUpdateAuthzGenericGrantRevokeBatch) returns (MsgUpdateAuthzGenericGrantRevokeBatchResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -47,13 +37,15 @@ message MsgUpdateParams {
 
   // authority is the address that controls the module (defaults to x/gov unless
   // overwritten).
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // params defines the module parameters to update.
   //
   // NOTE: All parameters must be supplied.
-  Params params = 2
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
@@ -64,8 +56,8 @@ message MsgUpdateAccountPrivileges {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "mantrachain/x/guard/MsgUpdateAccountPrivileges";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  string account = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string account = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bytes privileges = 3;
 }
 
@@ -75,7 +67,7 @@ message MsgUpdateAccountPrivilegesBatch {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "mantrachain/x/guard/MsgUpdateAccountPrivilegesBatch";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   MsgAccountsPrivileges accounts_privileges = 2;
 }
 
@@ -83,10 +75,9 @@ message MsgUpdateAccountPrivilegesBatchResponse {}
 
 message MsgUpdateAccountPrivilegesGroupedBatch {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) =
-      "mantrachain/x/guard/MsgUpdateAccountPrivilegesGroupedBatch";
+  option (amino.name) = "mantrachain/x/guard/MsgUpdateAccountPrivilegesGroupedBatch";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   MsgAccountsPrivilegesGrouped accounts_privileges_grouped = 2;
 }
 
@@ -96,7 +87,7 @@ message MsgUpdateGuardTransferCoins {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "mantrachain/x/guard/MsgUpdateGuardTransferCoins";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bool enabled = 2;
 }
 
@@ -106,7 +97,7 @@ message MsgUpdateRequiredPrivileges {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "mantrachain/x/guard/MsgUpdateRequiredPrivileges";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   bytes index = 2;
   bytes privileges = 3;
   string kind = 4;
@@ -118,7 +109,7 @@ message MsgUpdateRequiredPrivilegesBatch {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "mantrachain/x/guard/MsgUpdateRequiredPrivilegesBatch";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   MsgRequiredPrivileges required_privileges = 2;
   string kind = 4;
 }
@@ -127,10 +118,9 @@ message MsgUpdateRequiredPrivilegesBatchResponse {}
 
 message MsgUpdateRequiredPrivilegesGroupedBatch {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) =
-      "mantrachain/x/guard/MsgUpdateRequiredPrivilegesGroupedBatch";
+  option (amino.name) = "mantrachain/x/guard/MsgUpdateRequiredPrivilegesGroupedBatch";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   MsgRequiredPrivilegesGrouped required_privileges_grouped = 2;
   string kind = 4;
 }
@@ -139,10 +129,9 @@ message MsgUpdateRequiredPrivilegesGroupedBatchResponse {}
 
 message MsgUpdateAuthzGenericGrantRevokeBatch {
   option (cosmos.msg.v1.signer) = "creator";
-  option (amino.name) =
-      "mantrachain/x/guard/MsgUpdateAuthzGenericGrantRevokeBatch";
+  option (amino.name) = "mantrachain/x/guard/MsgUpdateAuthzGenericGrantRevokeBatch";
 
-  string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string grantee = 2;
   AuthzGrantRevokeMsgsTypes authz_grant_revoke_msgs_types = 3;
 }

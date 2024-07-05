@@ -2,12 +2,12 @@ syntax = "proto3";
 package mantrachain.liquidity.v1beta1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "mantrachain/liquidity/v1beta1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 import "mantrachain/liquidity/v1beta1/liquidity.proto";
+import "mantrachain/liquidity/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidity/types";
 

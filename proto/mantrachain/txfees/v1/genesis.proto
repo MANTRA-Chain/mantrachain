@@ -16,5 +16,5 @@ message GenesisState {
     (amino.dont_omitempty) = true
   ];
 
-  repeated FeeToken fee_token_list = 2 [(gogoproto.nullable) = false];
+  repeated FeeToken feeTokenList = 2 [(gogoproto.nullable) = false];
 }

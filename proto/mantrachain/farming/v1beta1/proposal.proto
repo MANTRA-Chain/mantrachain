@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package mantrachain.farming.v1beta1;
 
-import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
@@ -13,7 +13,7 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
 // For public plan creation, depending on which field is passed, either epoch amount or epoch ratio, it creates a fixed
 // amount plan or ratio plan.
 message PublicPlanProposal {
-  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_getters) = false;
   option (gogoproto.goproto_stringer) = false;
 
   // title specifies the title of the plan
@@ -21,14 +21,11 @@ message PublicPlanProposal {
   // description specifies the description of the plan
   string description = 2;
   // add_plan_requests specifies AddPlanRequest object
-  repeated AddPlanRequest add_plan_requests = 3
-      [(gogoproto.nullable) = false];
+  repeated AddPlanRequest add_plan_requests = 3 [(gogoproto.nullable) = false];
   // modify_plan_requests specifies ModifyPlanRequest object
-  repeated ModifyPlanRequest modify_plan_requests = 4
-      [(gogoproto.nullable) = false];
+  repeated ModifyPlanRequest modify_plan_requests = 4 [(gogoproto.nullable) = false];
   // delete_plan_requests specifies DeletePlanRequest object
-  repeated DeletePlanRequest delete_plan_requests = 5
-      [(gogoproto.nullable) = false];
+  repeated DeletePlanRequest delete_plan_requests = 5 [(gogoproto.nullable) = false];
 }
 
 // AddPlanRequest details a proposal for creating a public plan.
@@ -44,23 +41,27 @@ message AddPlanRequest {
   // staking_coin_weights specifies coin weights for the plan
   repeated cosmos.base.v1beta1.DecCoin staking_coin_weights = 4 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // start_time specifies the start time of the plan
-  google.protobuf.Timestamp start_time = 5
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_time = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   // end_time specifies the end time of the plan
-  google.protobuf.Timestamp end_time = 6
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_time = 6 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   // epoch_amount specifies the distributing amount for each epoch
   repeated cosmos.base.v1beta1.Coin epoch_amount = 7 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // epoch_ratio specifies the distributing amount by ratio
   string epoch_ratio = 8 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -79,23 +80,27 @@ message ModifyPlanRequest {
   // staking_coin_weights specifies coin weights for the plan
   repeated cosmos.base.v1beta1.DecCoin staking_coin_weights = 5 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // start_time specifies the start time of the plan
-  google.protobuf.Timestamp start_time = 6
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  google.protobuf.Timestamp start_time = 6 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
+  ];
   // end_time specifies the end time of the plan
-  google.protobuf.Timestamp end_time = 7
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  google.protobuf.Timestamp end_time = 7 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
+  ];
   // epoch_amount specifies the distributing amount for each epoch
   repeated cosmos.base.v1beta1.Coin epoch_amount = 8 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // epoch_ratio specifies the distributing amount by ratio
   string epoch_ratio = 9 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
 }
 

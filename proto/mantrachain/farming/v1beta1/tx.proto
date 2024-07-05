@@ -2,12 +2,12 @@ syntax = "proto3";
 package mantrachain.farming.v1beta1;
 
 import "amino/amino.proto";
-import "cosmos/msg/v1/msg.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "mantrachain/farming/v1beta1/params.proto";
 import "google/protobuf/timestamp.proto";
+import "mantrachain/farming/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
 
@@ -64,7 +64,6 @@ message MsgUpdateParams {
 // MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
 
-
 // MsgCreateFixedAmountPlan defines a SDK message for creating a new fixed
 // amount farming plan.
 message MsgCreateFixedAmountPlan {
@@ -81,21 +80,25 @@ message MsgCreateFixedAmountPlan {
   // staking_coin_weights specifies coins weight for the plan
   repeated cosmos.base.v1beta1.DecCoin staking_coin_weights = 3 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 
   // start_time specifies the start time of the plan
-  google.protobuf.Timestamp start_time = 4
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_time = 4 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
 
   // end_time specifies the end time of the plan
-  google.protobuf.Timestamp end_time = 5
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_time = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
 
   // epoch_amount specifies the distributing amount for each epoch
   repeated cosmos.base.v1beta1.Coin epoch_amount = 6 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -118,21 +121,25 @@ message MsgCreateRatioPlan {
   // staking_coin_weights specifies coins weight for the plan
   repeated cosmos.base.v1beta1.DecCoin staking_coin_weights = 3 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 
   // start_time specifies the start time of the plan
-  google.protobuf.Timestamp start_time = 4
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_time = 4 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
 
   // end_time specifies the end time of the plan
-  google.protobuf.Timestamp end_time = 5
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_time = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
 
   // epoch_ratio specifies the distributing amount by ratio
   string epoch_ratio = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -151,7 +158,7 @@ message MsgStake {
   // staking_coins specifies coins to stake
   repeated cosmos.base.v1beta1.Coin staking_coins = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -170,7 +177,7 @@ message MsgUnstake {
   // unstaking_coins specifies coins to stake
   repeated cosmos.base.v1beta1.Coin unstaking_coins = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 

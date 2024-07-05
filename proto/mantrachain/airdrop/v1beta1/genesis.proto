@@ -3,17 +3,19 @@ package mantrachain.airdrop.v1beta1;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "mantrachain/airdrop/v1beta1/params.proto";
 import "mantrachain/airdrop/v1beta1/campaign.proto";
+import "mantrachain/airdrop/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/airdrop/types";
 
 // GenesisState defines the airdrop module's genesis state.
 message GenesisState {
   // params defines all the parameters of the module.
-  Params params = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-  repeated Campaign campaign_list = 2 [ (gogoproto.nullable) = false ];
-  repeated Claimed claimed_list = 3 [ (gogoproto.nullable) = false ];
-  uint64 last_campaign_id = 4;
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+  repeated Campaign campaignList = 2 [(gogoproto.nullable) = false];
+  repeated Claimed claimedList = 3 [(gogoproto.nullable) = false];
+  uint64 lastCampaignId = 4;
 }

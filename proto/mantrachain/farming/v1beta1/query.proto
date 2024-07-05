@@ -2,13 +2,13 @@ syntax = "proto3";
 package mantrachain.farming.v1beta1;
 
 import "amino/amino.proto";
-import "cosmos_proto/cosmos.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "gogoproto/gogo.proto";
-import "google/protobuf/any.proto";
-import "google/api/annotations.proto";
-import "google/protobuf/timestamp.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
 import "mantrachain/farming/v1beta1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
@@ -20,9 +20,9 @@ service Query {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/params";
   }
 
-   // Plans returns all plans.
-   rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
-    option (google.api.http).get                                           = "/mantrachain/farming/v1beta1/plans";
+  // Plans returns all plans.
+  rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
+    option (google.api.http).get = "/mantrachain/farming/v1beta1/plans";
   }
 
   // Plan returns a specific plan.
@@ -84,12 +84,12 @@ message QueryParamsResponse {
 
 // QueryPlansRequest is the request type for the Query/Plans RPC method.
 message QueryPlansRequest {
-  string                                type                 = 1;
-  string                                farming_pool_address = 2;
-  string                                termination_address  = 3;
-  string                                staking_coin_denom   = 4;
-  string                                terminated           = 5;
-  cosmos.base.query.v1beta1.PageRequest pagination           = 6;
+  string type = 1;
+  string farming_pool_address = 2;
+  string termination_address = 3;
+  string staking_coin_denom = 4;
+  string terminated = 5;
+  cosmos.base.query.v1beta1.PageRequest pagination = 6;
 }
 
 // QueryPlansResponse is the response type for the Query/Plans RPC method.
@@ -113,44 +113,50 @@ message QueryPlanResponse {
 
 // QueryPositionRequest is the request type for the Query/Position RPC method.
 message QueryPositionRequest {
-  string farmer             = 1;
+  string farmer = 1;
   string staking_coin_denom = 2;
 }
 
 // QueryPositionResponse is the response type for the Query/Position RPC method.
 message QueryPositionResponse {
-  repeated cosmos.base.v1beta1.Coin staked_coins = 1
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
-  repeated cosmos.base.v1beta1.Coin queued_coins = 2
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
-  repeated cosmos.base.v1beta1.Coin rewards = 3
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin staked_coins = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin queued_coins = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin rewards = 3 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // QueryStakingsRequest is the request type for the Query/Stakings RPC method.
 message QueryStakingsRequest {
-  string                                farmer             = 1;
-  string                                staking_coin_denom = 2;
-  cosmos.base.query.v1beta1.PageRequest pagination         = 3;
+  string farmer = 1;
+  string staking_coin_denom = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryStakingsResponse is the response type for the Query/Stakings RPC method.
 message QueryStakingsResponse {
-  repeated StakingResponse               stakings   = 1 [(gogoproto.nullable) = false];
+  repeated StakingResponse stakings = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryQueuedStakingsRequest is the request type for the Query/QueuedStakings RPC method.
 message QueryQueuedStakingsRequest {
-  string                                farmer             = 1;
-  string                                staking_coin_denom = 2;
-  cosmos.base.query.v1beta1.PageRequest pagination         = 3;
+  string farmer = 1;
+  string staking_coin_denom = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryQueuedStakingsResponse is the response type for the Query/QueuedStakings RPC method.
 message QueryQueuedStakingsResponse {
-  repeated QueuedStakingResponse         queued_stakings = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+  repeated QueuedStakingResponse queued_stakings = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryTotalStakingsRequest is the request type for the Query/TotalStakings RPC method.
@@ -160,33 +166,36 @@ message QueryTotalStakingsRequest {
 
 // QueryTotalStakingsResponse is the response type for the Query/TotalStakings RPC method.
 message QueryTotalStakingsResponse {
-  string amount = 1 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // QueryRewardsRequest is the request type for the Query/Rewards RPC method.
 message QueryRewardsRequest {
-  string                                farmer             = 1;
-  string                                staking_coin_denom = 2;
-  cosmos.base.query.v1beta1.PageRequest pagination         = 3;
+  string farmer = 1;
+  string staking_coin_denom = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryRewardsResponse is the response type for the Query/Rewards RPC method.
 message QueryRewardsResponse {
-  repeated RewardsResponse               rewards    = 1 [(gogoproto.nullable) = false];
+  repeated RewardsResponse rewards = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryUnharvestedRewardsRequest is the request type for the Query/UnharvestedRewards RPC method.
 message QueryUnharvestedRewardsRequest {
-  string                                farmer             = 1;
-  string                                staking_coin_denom = 2;
-  cosmos.base.query.v1beta1.PageRequest pagination         = 3;
+  string farmer = 1;
+  string staking_coin_denom = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryUnharvestedRewardsResponse is the response type for the Query/UnharvestedRewards RPC method.
 message QueryUnharvestedRewardsResponse {
-  repeated UnharvestedRewardsResponse    unharvested_rewards = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination          = 2;
+  repeated UnharvestedRewardsResponse unharvested_rewards = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryCurrentEpochDaysRequest is the request type for the Query/CurrentEpochDays RPC method.
@@ -199,20 +208,23 @@ message QueryCurrentEpochDaysResponse {
 
 // QueryHistoricalRewardsRequest is the request type for the Query/HistoricalRewards RPC method.
 message QueryHistoricalRewardsRequest {
-  string                                staking_coin_denom = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination         = 2;
+  string staking_coin_denom = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryHistoricalRewardsResponse is the response type for the Query/HistoricalRewards RPC method.
 message QueryHistoricalRewardsResponse {
-  repeated HistoricalRewardsResponse     historical_rewards = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination         = 2;
+  repeated HistoricalRewardsResponse historical_rewards = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message StakingResponse {
   string staking_coin_denom = 1;
 
-  string amount = 2 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 
   uint64 starting_epoch = 3;
 }
@@ -220,28 +232,40 @@ message StakingResponse {
 message QueuedStakingResponse {
   string staking_coin_denom = 1;
 
-  string amount = 2 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 
-  google.protobuf.Timestamp end_time = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_time = 3 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
 }
 
 message RewardsResponse {
   string staking_coin_denom = 1;
 
-  repeated cosmos.base.v1beta1.Coin rewards = 2
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message UnharvestedRewardsResponse {
   string staking_coin_denom = 1;
 
-  repeated cosmos.base.v1beta1.Coin rewards = 2
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message HistoricalRewardsResponse {
   uint64 epoch = 1;
 
-  repeated cosmos.base.v1beta1.DecCoin cumulative_unit_rewards = 2
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.DecCoin cumulative_unit_rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable) = false
+  ];
 }

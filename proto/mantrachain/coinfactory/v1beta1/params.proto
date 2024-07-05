@@ -1,8 +1,8 @@
 syntax = "proto3";
 package mantrachain.coinfactory.v1beta1;
 
-import "cosmos/base/v1beta1/coin.proto";
 import "amino/amino.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types";
@@ -24,5 +24,5 @@ message Params {
   // This is intended as a spam deterrence mechanism.
   //
   // See: https://github.com/CosmWasm/token-factory/issues/11
-  uint64 denom_creation_gas_consume = 2 [ (gogoproto.nullable) = true ];
+  uint64 denom_creation_gas_consume = 2 [(gogoproto.nullable) = true];
 }

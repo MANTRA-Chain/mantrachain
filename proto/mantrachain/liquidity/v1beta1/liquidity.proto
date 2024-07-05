@@ -1,10 +1,10 @@
 syntax = "proto3";
 package mantrachain.liquidity.v1beta1;
 
-import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/liquidity/types";
 option (gogoproto.goproto_getters_all) = false;
@@ -20,8 +20,14 @@ message Pair {
   uint64 current_batch_id = 7;
   string swap_fee_collector_address = 8;
   string creator = 9;
-  string swap_fee_rate = 10 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = true];
-  string pair_creator_swap_fee_ratio = 11 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = true];
+  string swap_fee_rate = 10 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = true
+  ];
+  string pair_creator_swap_fee_ratio = 11 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = true
+  ];
 }
 
 // Pool defines generic liquidity pool object which can be either a basic pool or a
@@ -51,11 +57,15 @@ message DepositRequest {
   // depositor specifies the bech32-encoded address that makes a deposit to the pool
   string depositor = 4;
   // deposit_coins specifies the amount of coins to deposit.
-  repeated cosmos.base.v1beta1.Coin deposit_coins = 5
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin deposit_coins = 5 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
   // accepted_coins specifies the amount of coins that are accepted.
-  repeated cosmos.base.v1beta1.Coin accepted_coins = 6
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin accepted_coins = 6 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
   cosmos.base.v1beta1.Coin minted_pool_coin = 7 [(gogoproto.nullable) = false];
   RequestStatus status = 8;
 }
@@ -73,8 +83,10 @@ message WithdrawRequest {
   // pool_coin specifies the pool coin that is a proof of liquidity provider for the pool
   cosmos.base.v1beta1.Coin pool_coin = 5 [(gogoproto.nullable) = false];
   // withdrawn_coins specifies the amount of coins that are withdrawn.
-  repeated cosmos.base.v1beta1.Coin withdrawn_coins = 6
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin withdrawn_coins = 6 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
   RequestStatus status = 7;
 }
 
@@ -98,13 +110,24 @@ message Order {
   // received_coin specifies the received coin after the swap
   cosmos.base.v1beta1.Coin received_coin = 9 [(gogoproto.nullable) = false];
   // price specifies the price that an orderer is willing to swap
-  string price = 10 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
-  string amount = 11 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
-  string open_amount = 12
-      [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string price = 10 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+  string amount = 11 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+  string open_amount = 12 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   // batch_id specifies the pair's batch id when the request is stored
   uint64 batch_id = 13;
-  google.protobuf.Timestamp expire_at = 14 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp expire_at = 14 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   OrderStatus status = 15;
   cosmos.base.v1beta1.Coin swap_fee_coin = 16 [(gogoproto.nullable) = false];
 }

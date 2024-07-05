@@ -2,8 +2,8 @@ syntax = "proto3";
 package mantrachain.farming.v1beta1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
 
@@ -16,7 +16,7 @@ message Params {
   // this fee prevents from spamming and is collected in the community pool
   repeated cosmos.base.v1beta1.Coin private_plan_creation_fee = 1 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // next_epoch_days is the epoch length in number of days
   // it updates internal state called CurrentEpochDays that is used to process

@@ -15,7 +15,7 @@ message DidDocumentCreatedEvent {
   string did = 1;
 
   // the signer account creating the did
-  string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // DidDocumentUpdatedEvent is an event triggered on a DID document update
@@ -27,5 +27,5 @@ message DidDocumentUpdatedEvent {
   string did = 1;
 
   // the signer account of the change
-  string signer = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string signer = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }

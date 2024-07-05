@@ -7,8 +7,8 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/did/types";
 
 /*
-This represents a minimal self-managed did document
-definition: https://w3c.github.io/did-core/
+   This represents a minimal self-managed did document
+   definition: https://w3c.github.io/did-core/
 */
 
 // DidDocument represents a dencentralised identifer.
@@ -17,7 +17,7 @@ message DidDocument {
   option (gogoproto.goproto_getters) = false;
 
   // @context is spec for did document.
-  repeated string context = 1 [ (gogoproto.jsontag) = "@context,omitempty" ];
+  repeated string context = 1 [(gogoproto.jsontag) = "@context,omitempty"];
 
   // id represents the id for the did document.
   string id = 2;
@@ -102,7 +102,7 @@ message DidMetadata {
   option (gogoproto.goproto_getters) = false;
 
   string versionId = 1;
-  google.protobuf.Timestamp created = 2 [ (gogoproto.stdtime) = true ];
-  google.protobuf.Timestamp updated = 3 [ (gogoproto.stdtime) = true ];
+  google.protobuf.Timestamp created = 2 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp updated = 3 [(gogoproto.stdtime) = true];
   bool deactivated = 4;
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package mantrachain.farming.v1beta1;
 
-import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/farming/types";
@@ -34,23 +34,26 @@ message BasePlan {
   // staking_coin_weights specifies the coin weights for the plan
   repeated cosmos.base.v1beta1.DecCoin staking_coin_weights = 6 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
   // start_time specifies the start time of the plan
-  google.protobuf.Timestamp start_time = 7
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_time = 7 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   // end_time specifies the end time of the plan
-  google.protobuf.Timestamp end_time = 8
-      [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp end_time = 8 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   // terminated indicates whether the plan has been terminated or not
   bool terminated = 9;
   // last_distribution_time specifies the last time a distribution occurred
-  google.protobuf.Timestamp last_distribution_time = 10
-      [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp last_distribution_time = 10 [(gogoproto.stdtime) = true];
   // distributed_coins specifies the total coins distributed by this plan
   repeated cosmos.base.v1beta1.Coin distributed_coins = 11 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -64,7 +67,7 @@ message FixedAmountPlan {
   // epoch_amount specifies the distributing amount for each epoch
   repeated cosmos.base.v1beta1.Coin epoch_amount = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -77,7 +80,7 @@ message RatioPlan {
   // epoch_ratio specifies the distributing amount by ratio
   string epoch_ratio = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -97,7 +100,10 @@ enum PlanType {
 message Staking {
   option (gogoproto.goproto_getters) = false;
 
-  string amount = 1 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
   uint64 starting_epoch = 2;
 }
 
@@ -105,14 +111,20 @@ message Staking {
 message QueuedStaking {
   option (gogoproto.goproto_getters) = false;
 
-  string amount = 1 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // TotalStakings defines the total staking amount for a staking coin denom.
 message TotalStakings {
   option (gogoproto.goproto_getters) = false;
 
-  string amount = 1 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // HistoricalRewards defines the cumulative unit rewards for a given staking coin denom and an epoch number.
@@ -121,7 +133,7 @@ message HistoricalRewards {
 
   repeated cosmos.base.v1beta1.DecCoin cumulative_unit_rewards = 1 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
-    (gogoproto.nullable)     = false
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -130,8 +142,10 @@ message HistoricalRewards {
 message OutstandingRewards {
   option (gogoproto.goproto_getters) = false;
 
-  repeated cosmos.base.v1beta1.DecCoin rewards = 1
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.DecCoin rewards = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // UnharvestedRewards represents unharvested rewards of a farmer for a
@@ -140,8 +154,10 @@ message OutstandingRewards {
 message UnharvestedRewards {
   option (gogoproto.goproto_getters) = false;
 
-  repeated cosmos.base.v1beta1.Coin rewards = 1
-      [(gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin rewards = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // AddressType enumerates the available types of a address.
