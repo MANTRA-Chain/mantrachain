@@ -418,6 +418,8 @@ func New(
 	// 	return app.App.InitChainer(ctx, req)
 	// })
 
+	app.setupUpgradeHandlers()
+
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
 	}
