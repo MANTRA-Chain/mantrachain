@@ -418,7 +418,7 @@ func New(
 	// 	return app.App.InitChainer(ctx, req)
 	// })
 
-	app.setupUpgradeHandlers()
+	app.setupUpgradeHandlers(app.RewardsKeeper)
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err

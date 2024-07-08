@@ -7,6 +7,7 @@ replace (
 	github.com/cosmos/ibc-go/v8 => github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240701150258-3b633d8beecc
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
+	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
@@ -35,7 +36,7 @@ require (
 	github.com/cosmos/gogoproto v1.4.12
 	github.com/cosmos/ibc-go/modules/capability v1.0.0
 	github.com/cosmos/ibc-go/v8 v8.1.1
-	github.com/gogo/protobuf v1.3.2
+	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0

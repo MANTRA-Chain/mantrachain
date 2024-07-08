@@ -126,11 +126,6 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
-
-	m := keeper.NewMigrator(am.keeper)
-	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
-		panic(fmt.Errorf("failed to migrate %s to v2: %w", types.ModuleName, err))
-	}
 }
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
