@@ -5,6 +5,7 @@ import (
 
 	circuitante "cosmossdk.io/x/circuit/ante"
 
+	corestoretypes "cosmossdk.io/core/store"
 	storetypes "cosmossdk.io/store/types"
 	txsigning "cosmossdk.io/x/tx/signing"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,6 +15,9 @@ import (
 
 	txfeeskeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.
@@ -25,6 +29,9 @@ type HandlerOptions struct {
 	SignModeHandler        *txsigning.HandlerMap
 	SigGasConsumer         func(meter storetypes.GasMeter, sig signing.SignatureV2, params types.Params) error
 	CircuitKeeper          circuitante.CircuitBreaker
+	WasmConfig             *wasmTypes.WasmConfig
+	WasmKeeper             *wasmkeeper.Keeper
+	TXCounterStoreService  corestoretypes.KVStoreService
 	TxFeeChecker           txfeeskeeper.TxFeeChecker
 	GuardKeeper            txfeestypes.GuardKeeper
 	LiquidityKeeper        txfeestypes.LiquidityKeeper
@@ -38,17 +45,33 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.AccountKeeper == nil {
 		return nil, errors.New("account keeper is required for ante builder")
 	}
-
 	if options.BankKeeper == nil {
 		return nil, errors.New("bank keeper is required for ante builder")
 	}
-
 	if options.SignModeHandler == nil {
 		return nil, errors.New("sign mode handler is required for ante builder")
 	}
+	if options.GuardKeeper == nil {
+		return nil, errors.New("guard keeper is required for ante builder")
+	}
+	if options.LiquidityKeeper == nil {
+		return nil, errors.New("liquidity keeper is required for ante builder")
+	}
+	if options.TxfeesKeeper == nil {
+		return nil, errors.New("txfees keeper is required for ante builder")
+	}
+	if options.WasmConfig == nil {
+		return nil, errors.New("wasm config is required for ante builder")
+	}
+	if options.TXCounterStoreService == nil {
+		return nil, errors.New("wasm store service is required for ante builder")
+	}
 
 	anteDecorators := []sdk.AnteDecorator{
-		authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		authante.NewSetUpContextDecorator(),                                              // outermost AnteDecorator. SetUpContext must be called first
+		wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
+		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
+		wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
 		circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
 		authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
 		authante.NewValidateBasicDecorator(),

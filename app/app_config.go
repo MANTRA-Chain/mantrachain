@@ -53,6 +53,8 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	"google.golang.org/protobuf/types/known/durationpb"
 
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	airdropmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/airdrop/module/v1"
 	bridgemodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/bridge/module/v1"
 	coinfactorymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/coinfactory/module/v1"
@@ -126,6 +128,7 @@ var (
 		group.ModuleName,
 		consensustypes.ModuleName,
 		circuittypes.ModuleName,
+		wasmtypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,
@@ -162,6 +165,7 @@ var (
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		wasmtypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,
@@ -192,6 +196,7 @@ var (
 		capabilitytypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		wasmtypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,

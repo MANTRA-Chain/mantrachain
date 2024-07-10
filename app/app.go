@@ -74,6 +74,9 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
+
 	bridgemodulekeeper "github.com/MANTRA-Finance/mantrachain/x/bridge/keeper"
 
 	airdropmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
@@ -97,6 +100,10 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/docs"
 
 	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
+
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 const (
@@ -151,12 +158,21 @@ type App struct {
 	ICAControllerKeeper icacontrollerkeeper.Keeper
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
+	IBCHooksKeeper      ibchookskeeper.Keeper
 
 	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedIBCTransferKeeper   capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+
+	WasmKeeper       wasmkeeper.Keeper
+	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
+	ContractKeeper   *wasmkeeper.PermissionedKeeper
+
+	// IBC Hooks Middleware
+	Ics20WasmHooks   *ibchooks.WasmHooks
+	HooksICS4Wrapper ibchooks.ICS4Middleware
 
 	BridgeKeeper      bridgemodulekeeper.Keeper
 	AirdropKeeper     airdropmodulekeeper.Keeper
@@ -222,6 +238,7 @@ func New(
 	traceStore io.Writer,
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
+	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
 	var (
@@ -240,6 +257,7 @@ func New(
 				// This needs to be removed after IBC supports App Wiring.
 				app.GetIBCKeeper,
 				app.GetCapabilityScopedKeeper,
+				app.GetWasmKeeper,
 				// Supply the logger
 				logger,
 
@@ -364,23 +382,41 @@ func New(
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
+	// TODO: set liquidity hooks in here
+
 	// Register legacy modules
-	if err := app.registerIBCModules(appOpts); err != nil {
+	wasmConfig, err := app.registerLegacyModules(appOpts, wasmOpts)
+	if err != nil {
 		return nil, err
+	}
+
+	// must be before Loading version
+	// requires the snapshot store to be created and registered as a BaseAppOption
+	// see cmd/wasmd/root.go: 206 - 214 approx
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to register snapshot extension: %w", err)
+		}
 	}
 
 	// Ante handler
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: app.txConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  authante.DefaultSigVerificationGasConsumer,
-			CircuitKeeper:   &app.CircuitBreakerKeeper,
-			GuardKeeper:     app.GuardKeeper,
-			LiquidityKeeper: &app.LiquidityKeeper,
-			TxfeesKeeper:    &app.TxfeesKeeper,
+			AccountKeeper:         app.AccountKeeper,
+			BankKeeper:            app.BankKeeper,
+			SignModeHandler:       app.txConfig.SignModeHandler(),
+			FeegrantKeeper:        app.FeeGrantKeeper,
+			SigGasConsumer:        authante.DefaultSigVerificationGasConsumer,
+			CircuitKeeper:         &app.CircuitBreakerKeeper,
+			WasmConfig:            &wasmConfig,
+			WasmKeeper:            &app.WasmKeeper,
+			TXCounterStoreService: runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
+			GuardKeeper:           app.GuardKeeper,
+			LiquidityKeeper:       &app.LiquidityKeeper,
+			TxfeesKeeper:          &app.TxfeesKeeper,
 		},
 	)
 	if err != nil {
@@ -422,6 +458,15 @@ func New(
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
+	}
+
+	if loadLatest {
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+
+		// Initialize pinned codes in wasmvm as they are not persisted there
+		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+			return nil, fmt.Errorf("failed to initialize pinned codes: %w", err)
+		}
 	}
 
 	return app, nil
@@ -488,6 +533,11 @@ func (app *App) GetIBCKeeper() *ibckeeper.Keeper {
 // GetCapabilityScopedKeeper returns the capability scoped keeper.
 func (app *App) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper.ScopedKeeper {
 	return app.CapabilityKeeper.ScopeToModule(moduleName)
+}
+
+// GetWasmKeeper returns the Wasm keeper.
+func (app *App) GetWasmKeeper() wasmkeeper.Keeper {
+	return app.WasmKeeper
 }
 
 // SimulationManager implements the SimulationApp interface.
