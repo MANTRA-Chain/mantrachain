@@ -2,12 +2,12 @@ syntax = "proto3";
 package mantrachain.txfees.v1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
-import "cosmos/base/v1beta1/coin.proto";
-import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "mantrachain/txfees/v1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 import "mantrachain/txfees/v1/fee_token.proto";
+import "mantrachain/txfees/v1/params.proto";
 
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 
@@ -19,17 +19,16 @@ service Query {
   }
 
   // Queries a list of FeeToken items.
-  rpc QueryFeeToken    (QueryGetFeeTokenRequest) returns (QueryGetFeeTokenResponse) {
+  rpc FeeToken(QueryGetFeeTokenRequest) returns (QueryGetFeeTokenResponse) {
     option (google.api.http).get = "/mantrachain/txfees/v1/fee_token/{denom}";
-  
   }
   // Queries a list of FeeToken items.
-  rpc QueryFeeTokenAll (QueryAllFeeTokenRequest) returns (QueryAllFeeTokenResponse) {
+  rpc FeeTokenAll(QueryAllFeeTokenRequest) returns (QueryAllFeeTokenResponse) {
     option (google.api.http).get = "/mantrachain/txfees/v1/fee_token";
   }
-  
+
   // Queries a list of FeeToken items.
-  rpc QueryGasEstimation    (QueryGetGasEstimationRequest) returns (QueryGetGasEstimationResponse) {
+  rpc GasEstimation(QueryGetGasEstimationRequest) returns (QueryGetGasEstimationResponse) {
     option (google.api.http).get = "/mantrachain/txfees/v1/gas_estimation";
   }
 }
@@ -53,7 +52,7 @@ message QueryGetFeeTokenRequest {
 
 // QueryGetFeeTokenResponse
 message QueryGetFeeTokenResponse {
-  FeeToken fee_token = 1 [(gogoproto.nullable) = false];
+  FeeToken feeToken = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryGetGasEstimationRequest
@@ -74,7 +73,6 @@ message QueryAllFeeTokenRequest {
 
 // QueryAllFeeTokenResponse
 message QueryAllFeeTokenResponse {
-  repeated FeeToken                               fee_token   = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  repeated FeeToken feeToken = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-

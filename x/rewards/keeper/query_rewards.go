@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryRewards(goCtx context.Context, req *types.QueryGetRewardsRequest) (*types.QueryGetRewardsResponse, error) {
+func (k Keeper) Rewards(goCtx context.Context, req *types.QueryGetRewardsRequest) (*types.QueryGetRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

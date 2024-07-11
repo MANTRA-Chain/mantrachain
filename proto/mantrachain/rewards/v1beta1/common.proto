@@ -12,9 +12,9 @@ option (gogoproto.equal_all) = true;
 message ProviderPair {
   option (gogoproto.goproto_getters) = false;
 
-  uint64 pair_id = 1;
-  uint64 last_claimed_snapshot_id = 2; 
-  repeated cosmos.base.v1beta1.DecCoin owed_rewards = 3 [
+  uint64 pairId = 1;
+  uint64 lastClaimedSnapshotId = 2; 
+  repeated cosmos.base.v1beta1.DecCoin owedRewards = 3 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable)     = false
   ];
@@ -22,8 +22,8 @@ message ProviderPair {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
     (gogoproto.nullable)     = false
   ];
-  map<uint64, uint64> pool_id_to_idx = 5;
-  google.protobuf.Timestamp last_deposit_time = 6 [
+  map<uint64, uint64> poolIdToIdx = 5;
+  google.protobuf.Timestamp lastDepositTime = 6 [
     (gogoproto.stdtime) = true,
     (gogoproto.nullable) = true
   ];
@@ -33,12 +33,12 @@ message ProviderPair {
 message SnapshotPool {
   option (gogoproto.goproto_getters) = false;
 
-  uint64 pool_id = 1;
-  string coin_supply = 2 [
+  uint64 poolId = 1;
+  string coinSupply = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ]; 
-  repeated cosmos.base.v1beta1.DecCoin rewards_per_token = 3 [
+  repeated cosmos.base.v1beta1.DecCoin rewardsPerToken = 3 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
     (gogoproto.nullable)     = false
   ];

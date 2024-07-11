@@ -46,7 +46,7 @@ func (ck *cachingKeeper) getPair(ctx sdk.Context, id uint64) (pair liquiditytype
 func (ck *cachingKeeper) getFarm(ctx sdk.Context, denom string) (farm types.Farm, found bool) {
 	p, ok := ck.farmCache[denom]
 	if !ok {
-		farm, found = ck.k.GetFarm(ctx, denom)
+		farm, found = ck.k.GetFarmFromStore(ctx, denom)
 		if found {
 			p = &farm
 		}

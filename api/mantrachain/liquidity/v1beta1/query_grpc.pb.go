@@ -19,22 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                    = "/mantrachain.liquidity.v1beta1.Query/Params"
-	Query_QueryPools_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/QueryPools"
-	Query_QueryPool_FullMethodName                 = "/mantrachain.liquidity.v1beta1.Query/QueryPool"
-	Query_QueryPoolByReserveAddress_FullMethodName = "/mantrachain.liquidity.v1beta1.Query/QueryPoolByReserveAddress"
-	Query_QueryPoolByPoolCoinDenom_FullMethodName  = "/mantrachain.liquidity.v1beta1.Query/QueryPoolByPoolCoinDenom"
-	Query_QueryPairsByDenoms_FullMethodName        = "/mantrachain.liquidity.v1beta1.Query/QueryPairsByDenoms"
-	Query_QueryPairs_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/QueryPairs"
-	Query_QueryPair_FullMethodName                 = "/mantrachain.liquidity.v1beta1.Query/QueryPair"
-	Query_QueryDepositRequests_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequests"
-	Query_QueryDepositRequest_FullMethodName       = "/mantrachain.liquidity.v1beta1.Query/QueryDepositRequest"
-	Query_QueryWithdrawRequests_FullMethodName     = "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequests"
-	Query_QueryWithdrawRequest_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/QueryWithdrawRequest"
-	Query_QueryOrders_FullMethodName               = "/mantrachain.liquidity.v1beta1.Query/QueryOrders"
-	Query_QueryOrder_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/QueryOrder"
-	Query_QueryOrdersByOrderer_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/QueryOrdersByOrderer"
-	Query_QueryOrderBooks_FullMethodName           = "/mantrachain.liquidity.v1beta1.Query/QueryOrderBooks"
+	Query_Params_FullMethodName               = "/mantrachain.liquidity.v1beta1.Query/Params"
+	Query_Pools_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/Pools"
+	Query_Pool_FullMethodName                 = "/mantrachain.liquidity.v1beta1.Query/Pool"
+	Query_PoolByReserveAddress_FullMethodName = "/mantrachain.liquidity.v1beta1.Query/PoolByReserveAddress"
+	Query_PoolByPoolCoinDenom_FullMethodName  = "/mantrachain.liquidity.v1beta1.Query/PoolByPoolCoinDenom"
+	Query_PairsByDenoms_FullMethodName        = "/mantrachain.liquidity.v1beta1.Query/PairsByDenoms"
+	Query_Pairs_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/Pairs"
+	Query_Pair_FullMethodName                 = "/mantrachain.liquidity.v1beta1.Query/Pair"
+	Query_DepositRequests_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/DepositRequests"
+	Query_DepositRequest_FullMethodName       = "/mantrachain.liquidity.v1beta1.Query/DepositRequest"
+	Query_WithdrawRequests_FullMethodName     = "/mantrachain.liquidity.v1beta1.Query/WithdrawRequests"
+	Query_WithdrawRequest_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/WithdrawRequest"
+	Query_Orders_FullMethodName               = "/mantrachain.liquidity.v1beta1.Query/Orders"
+	Query_Order_FullMethodName                = "/mantrachain.liquidity.v1beta1.Query/Order"
+	Query_OrdersByOrderer_FullMethodName      = "/mantrachain.liquidity.v1beta1.Query/OrdersByOrderer"
+	Query_OrderBooks_FullMethodName           = "/mantrachain.liquidity.v1beta1.Query/OrderBooks"
 )
 
 // QueryClient is the client API for Query service.
@@ -44,34 +44,34 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Pools returns all liquidity pools.
-	QueryPools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error)
+	Pools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error)
 	// Pool returns the specific liquidity pool.
-	QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// PoolByReserveAddress returns all pools that correspond to the reserve account.
-	QueryPoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	PoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-	QueryPoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	PoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	// Pairs returns all liquidity pairs by denoms.
-	QueryPairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error)
+	PairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error)
 	// Pairs returns all liquidity pairs.
-	QueryPairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error)
+	Pairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error)
 	// Pair returns the specific pair.
-	QueryPair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error)
+	Pair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error)
 	// DepositRequests returns all deposit requests.
-	QueryDepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error)
+	DepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error)
 	// DepositRequest returns the specific deposit request.
-	QueryDepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error)
+	DepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error)
 	// WithdrawRequests returns all withdraw requests.
-	QueryWithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error)
+	WithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error)
 	// WithdrawRequest returns the specific withdraw request.
-	QueryWithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error)
+	WithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error)
 	// Orders returns all orders within the pair.
-	QueryOrders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
+	Orders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
 	// Order returns the specific order.
-	QueryOrder(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error)
+	Order(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error)
 	// OrdersByOrderer returns orders made by an orderer.
-	QueryOrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
-	QueryOrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error)
+	OrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
+	OrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error)
 }
 
 type queryClient struct {
@@ -91,135 +91,135 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryPools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error) {
+func (c *queryClient) Pools(ctx context.Context, in *QueryPoolsRequest, opts ...grpc.CallOption) (*QueryPoolsResponse, error) {
 	out := new(QueryPoolsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPools_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Pools_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) Pool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPool_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Pool_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) PoolByReserveAddress(ctx context.Context, in *QueryPoolByReserveAddressRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPoolByReserveAddress_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_PoolByReserveAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) PoolByPoolCoinDenom(ctx context.Context, in *QueryPoolByPoolCoinDenomRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPoolByPoolCoinDenom_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_PoolByPoolCoinDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error) {
+func (c *queryClient) PairsByDenoms(ctx context.Context, in *QueryPairsByDenomsRequest, opts ...grpc.CallOption) (*QueryPairsByDenomsResponse, error) {
 	out := new(QueryPairsByDenomsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPairsByDenoms_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_PairsByDenoms_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error) {
+func (c *queryClient) Pairs(ctx context.Context, in *QueryPairsRequest, opts ...grpc.CallOption) (*QueryPairsResponse, error) {
 	out := new(QueryPairsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPairs_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Pairs_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error) {
+func (c *queryClient) Pair(ctx context.Context, in *QueryPairRequest, opts ...grpc.CallOption) (*QueryPairResponse, error) {
 	out := new(QueryPairResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPair_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Pair_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error) {
+func (c *queryClient) DepositRequests(ctx context.Context, in *QueryDepositRequestsRequest, opts ...grpc.CallOption) (*QueryDepositRequestsResponse, error) {
 	out := new(QueryDepositRequestsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDepositRequests_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DepositRequests_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error) {
+func (c *queryClient) DepositRequest(ctx context.Context, in *QueryDepositRequestRequest, opts ...grpc.CallOption) (*QueryDepositRequestResponse, error) {
 	out := new(QueryDepositRequestResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDepositRequest_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DepositRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryWithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error) {
+func (c *queryClient) WithdrawRequests(ctx context.Context, in *QueryWithdrawRequestsRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestsResponse, error) {
 	out := new(QueryWithdrawRequestsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryWithdrawRequests_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_WithdrawRequests_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryWithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error) {
+func (c *queryClient) WithdrawRequest(ctx context.Context, in *QueryWithdrawRequestRequest, opts ...grpc.CallOption) (*QueryWithdrawRequestResponse, error) {
 	out := new(QueryWithdrawRequestResponse)
-	err := c.cc.Invoke(ctx, Query_QueryWithdrawRequest_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_WithdrawRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOrders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
+func (c *queryClient) Orders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
 	out := new(QueryOrdersResponse)
-	err := c.cc.Invoke(ctx, Query_QueryOrders_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Orders_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOrder(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error) {
+func (c *queryClient) Order(ctx context.Context, in *QueryOrderRequest, opts ...grpc.CallOption) (*QueryOrderResponse, error) {
 	out := new(QueryOrderResponse)
-	err := c.cc.Invoke(ctx, Query_QueryOrder_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Order_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
+func (c *queryClient) OrdersByOrderer(ctx context.Context, in *QueryOrdersByOrdererRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error) {
 	out := new(QueryOrdersResponse)
-	err := c.cc.Invoke(ctx, Query_QueryOrdersByOrderer_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_OrdersByOrderer_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error) {
+func (c *queryClient) OrderBooks(ctx context.Context, in *QueryOrderBooksRequest, opts ...grpc.CallOption) (*QueryOrderBooksResponse, error) {
 	out := new(QueryOrderBooksResponse)
-	err := c.cc.Invoke(ctx, Query_QueryOrderBooks_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_OrderBooks_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -233,34 +233,34 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Pools returns all liquidity pools.
-	QueryPools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error)
+	Pools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error)
 	// Pool returns the specific liquidity pool.
-	QueryPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
+	Pool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
 	// PoolByReserveAddress returns all pools that correspond to the reserve account.
-	QueryPoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error)
+	PoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error)
 	// PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-	QueryPoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error)
+	PoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error)
 	// Pairs returns all liquidity pairs by denoms.
-	QueryPairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error)
+	PairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error)
 	// Pairs returns all liquidity pairs.
-	QueryPairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error)
+	Pairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error)
 	// Pair returns the specific pair.
-	QueryPair(context.Context, *QueryPairRequest) (*QueryPairResponse, error)
+	Pair(context.Context, *QueryPairRequest) (*QueryPairResponse, error)
 	// DepositRequests returns all deposit requests.
-	QueryDepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error)
+	DepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error)
 	// DepositRequest returns the specific deposit request.
-	QueryDepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error)
+	DepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error)
 	// WithdrawRequests returns all withdraw requests.
-	QueryWithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error)
+	WithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error)
 	// WithdrawRequest returns the specific withdraw request.
-	QueryWithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error)
+	WithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error)
 	// Orders returns all orders within the pair.
-	QueryOrders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error)
+	Orders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error)
 	// Order returns the specific order.
-	QueryOrder(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error)
+	Order(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error)
 	// OrdersByOrderer returns orders made by an orderer.
-	QueryOrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error)
-	QueryOrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error)
+	OrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error)
+	OrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -271,50 +271,50 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryPools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPools not implemented")
+func (UnimplementedQueryServer) Pools(context.Context, *QueryPoolsRequest) (*QueryPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pools not implemented")
 }
-func (UnimplementedQueryServer) QueryPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPool not implemented")
+func (UnimplementedQueryServer) Pool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pool not implemented")
 }
-func (UnimplementedQueryServer) QueryPoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolByReserveAddress not implemented")
+func (UnimplementedQueryServer) PoolByReserveAddress(context.Context, *QueryPoolByReserveAddressRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PoolByReserveAddress not implemented")
 }
-func (UnimplementedQueryServer) QueryPoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolByPoolCoinDenom not implemented")
+func (UnimplementedQueryServer) PoolByPoolCoinDenom(context.Context, *QueryPoolByPoolCoinDenomRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PoolByPoolCoinDenom not implemented")
 }
-func (UnimplementedQueryServer) QueryPairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPairsByDenoms not implemented")
+func (UnimplementedQueryServer) PairsByDenoms(context.Context, *QueryPairsByDenomsRequest) (*QueryPairsByDenomsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PairsByDenoms not implemented")
 }
-func (UnimplementedQueryServer) QueryPairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPairs not implemented")
+func (UnimplementedQueryServer) Pairs(context.Context, *QueryPairsRequest) (*QueryPairsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pairs not implemented")
 }
-func (UnimplementedQueryServer) QueryPair(context.Context, *QueryPairRequest) (*QueryPairResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPair not implemented")
+func (UnimplementedQueryServer) Pair(context.Context, *QueryPairRequest) (*QueryPairResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Pair not implemented")
 }
-func (UnimplementedQueryServer) QueryDepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDepositRequests not implemented")
+func (UnimplementedQueryServer) DepositRequests(context.Context, *QueryDepositRequestsRequest) (*QueryDepositRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DepositRequests not implemented")
 }
-func (UnimplementedQueryServer) QueryDepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDepositRequest not implemented")
+func (UnimplementedQueryServer) DepositRequest(context.Context, *QueryDepositRequestRequest) (*QueryDepositRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DepositRequest not implemented")
 }
-func (UnimplementedQueryServer) QueryWithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryWithdrawRequests not implemented")
+func (UnimplementedQueryServer) WithdrawRequests(context.Context, *QueryWithdrawRequestsRequest) (*QueryWithdrawRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawRequests not implemented")
 }
-func (UnimplementedQueryServer) QueryWithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryWithdrawRequest not implemented")
+func (UnimplementedQueryServer) WithdrawRequest(context.Context, *QueryWithdrawRequestRequest) (*QueryWithdrawRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawRequest not implemented")
 }
-func (UnimplementedQueryServer) QueryOrders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOrders not implemented")
+func (UnimplementedQueryServer) Orders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Orders not implemented")
 }
-func (UnimplementedQueryServer) QueryOrder(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOrder not implemented")
+func (UnimplementedQueryServer) Order(context.Context, *QueryOrderRequest) (*QueryOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Order not implemented")
 }
-func (UnimplementedQueryServer) QueryOrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOrdersByOrderer not implemented")
+func (UnimplementedQueryServer) OrdersByOrderer(context.Context, *QueryOrdersByOrdererRequest) (*QueryOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrdersByOrderer not implemented")
 }
-func (UnimplementedQueryServer) QueryOrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOrderBooks not implemented")
+func (UnimplementedQueryServer) OrderBooks(context.Context, *QueryOrderBooksRequest) (*QueryOrderBooksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderBooks not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -347,272 +347,272 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Pools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPools(ctx, in)
+		return srv.(QueryServer).Pools(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPools_FullMethodName,
+		FullMethod: Query_Pools_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPools(ctx, req.(*QueryPoolsRequest))
+		return srv.(QueryServer).Pools(ctx, req.(*QueryPoolsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Pool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPool(ctx, in)
+		return srv.(QueryServer).Pool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPool_FullMethodName,
+		FullMethod: Query_Pool_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPool(ctx, req.(*QueryPoolRequest))
+		return srv.(QueryServer).Pool(ctx, req.(*QueryPoolRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPoolByReserveAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PoolByReserveAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolByReserveAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPoolByReserveAddress(ctx, in)
+		return srv.(QueryServer).PoolByReserveAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPoolByReserveAddress_FullMethodName,
+		FullMethod: Query_PoolByReserveAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPoolByReserveAddress(ctx, req.(*QueryPoolByReserveAddressRequest))
+		return srv.(QueryServer).PoolByReserveAddress(ctx, req.(*QueryPoolByReserveAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPoolByPoolCoinDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PoolByPoolCoinDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolByPoolCoinDenomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPoolByPoolCoinDenom(ctx, in)
+		return srv.(QueryServer).PoolByPoolCoinDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPoolByPoolCoinDenom_FullMethodName,
+		FullMethod: Query_PoolByPoolCoinDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPoolByPoolCoinDenom(ctx, req.(*QueryPoolByPoolCoinDenomRequest))
+		return srv.(QueryServer).PoolByPoolCoinDenom(ctx, req.(*QueryPoolByPoolCoinDenomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPairsByDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PairsByDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairsByDenomsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPairsByDenoms(ctx, in)
+		return srv.(QueryServer).PairsByDenoms(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPairsByDenoms_FullMethodName,
+		FullMethod: Query_PairsByDenoms_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPairsByDenoms(ctx, req.(*QueryPairsByDenomsRequest))
+		return srv.(QueryServer).PairsByDenoms(ctx, req.(*QueryPairsByDenomsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Pairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPairs(ctx, in)
+		return srv.(QueryServer).Pairs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPairs_FullMethodName,
+		FullMethod: Query_Pairs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPairs(ctx, req.(*QueryPairsRequest))
+		return srv.(QueryServer).Pairs(ctx, req.(*QueryPairsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Pair_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPairRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPair(ctx, in)
+		return srv.(QueryServer).Pair(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPair_FullMethodName,
+		FullMethod: Query_Pair_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPair(ctx, req.(*QueryPairRequest))
+		return srv.(QueryServer).Pair(ctx, req.(*QueryPairRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDepositRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DepositRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDepositRequestsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDepositRequests(ctx, in)
+		return srv.(QueryServer).DepositRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDepositRequests_FullMethodName,
+		FullMethod: Query_DepositRequests_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDepositRequests(ctx, req.(*QueryDepositRequestsRequest))
+		return srv.(QueryServer).DepositRequests(ctx, req.(*QueryDepositRequestsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDepositRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DepositRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDepositRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDepositRequest(ctx, in)
+		return srv.(QueryServer).DepositRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDepositRequest_FullMethodName,
+		FullMethod: Query_DepositRequest_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDepositRequest(ctx, req.(*QueryDepositRequestRequest))
+		return srv.(QueryServer).DepositRequest(ctx, req.(*QueryDepositRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryWithdrawRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_WithdrawRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWithdrawRequestsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryWithdrawRequests(ctx, in)
+		return srv.(QueryServer).WithdrawRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryWithdrawRequests_FullMethodName,
+		FullMethod: Query_WithdrawRequests_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryWithdrawRequests(ctx, req.(*QueryWithdrawRequestsRequest))
+		return srv.(QueryServer).WithdrawRequests(ctx, req.(*QueryWithdrawRequestsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryWithdrawRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_WithdrawRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWithdrawRequestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryWithdrawRequest(ctx, in)
+		return srv.(QueryServer).WithdrawRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryWithdrawRequest_FullMethodName,
+		FullMethod: Query_WithdrawRequest_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryWithdrawRequest(ctx, req.(*QueryWithdrawRequestRequest))
+		return srv.(QueryServer).WithdrawRequest(ctx, req.(*QueryWithdrawRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Orders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrdersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOrders(ctx, in)
+		return srv.(QueryServer).Orders(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryOrders_FullMethodName,
+		FullMethod: Query_Orders_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOrders(ctx, req.(*QueryOrdersRequest))
+		return srv.(QueryServer).Orders(ctx, req.(*QueryOrdersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Order_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOrder(ctx, in)
+		return srv.(QueryServer).Order(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryOrder_FullMethodName,
+		FullMethod: Query_Order_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOrder(ctx, req.(*QueryOrderRequest))
+		return srv.(QueryServer).Order(ctx, req.(*QueryOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOrdersByOrderer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_OrdersByOrderer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrdersByOrdererRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOrdersByOrderer(ctx, in)
+		return srv.(QueryServer).OrdersByOrderer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryOrdersByOrderer_FullMethodName,
+		FullMethod: Query_OrdersByOrderer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOrdersByOrderer(ctx, req.(*QueryOrdersByOrdererRequest))
+		return srv.(QueryServer).OrdersByOrderer(ctx, req.(*QueryOrdersByOrdererRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOrderBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_OrderBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryOrderBooksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOrderBooks(ctx, in)
+		return srv.(QueryServer).OrderBooks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryOrderBooks_FullMethodName,
+		FullMethod: Query_OrderBooks_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOrderBooks(ctx, req.(*QueryOrderBooksRequest))
+		return srv.(QueryServer).OrderBooks(ctx, req.(*QueryOrderBooksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -629,64 +629,64 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryPools",
-			Handler:    _Query_QueryPools_Handler,
+			MethodName: "Pools",
+			Handler:    _Query_Pools_Handler,
 		},
 		{
-			MethodName: "QueryPool",
-			Handler:    _Query_QueryPool_Handler,
+			MethodName: "Pool",
+			Handler:    _Query_Pool_Handler,
 		},
 		{
-			MethodName: "QueryPoolByReserveAddress",
-			Handler:    _Query_QueryPoolByReserveAddress_Handler,
+			MethodName: "PoolByReserveAddress",
+			Handler:    _Query_PoolByReserveAddress_Handler,
 		},
 		{
-			MethodName: "QueryPoolByPoolCoinDenom",
-			Handler:    _Query_QueryPoolByPoolCoinDenom_Handler,
+			MethodName: "PoolByPoolCoinDenom",
+			Handler:    _Query_PoolByPoolCoinDenom_Handler,
 		},
 		{
-			MethodName: "QueryPairsByDenoms",
-			Handler:    _Query_QueryPairsByDenoms_Handler,
+			MethodName: "PairsByDenoms",
+			Handler:    _Query_PairsByDenoms_Handler,
 		},
 		{
-			MethodName: "QueryPairs",
-			Handler:    _Query_QueryPairs_Handler,
+			MethodName: "Pairs",
+			Handler:    _Query_Pairs_Handler,
 		},
 		{
-			MethodName: "QueryPair",
-			Handler:    _Query_QueryPair_Handler,
+			MethodName: "Pair",
+			Handler:    _Query_Pair_Handler,
 		},
 		{
-			MethodName: "QueryDepositRequests",
-			Handler:    _Query_QueryDepositRequests_Handler,
+			MethodName: "DepositRequests",
+			Handler:    _Query_DepositRequests_Handler,
 		},
 		{
-			MethodName: "QueryDepositRequest",
-			Handler:    _Query_QueryDepositRequest_Handler,
+			MethodName: "DepositRequest",
+			Handler:    _Query_DepositRequest_Handler,
 		},
 		{
-			MethodName: "QueryWithdrawRequests",
-			Handler:    _Query_QueryWithdrawRequests_Handler,
+			MethodName: "WithdrawRequests",
+			Handler:    _Query_WithdrawRequests_Handler,
 		},
 		{
-			MethodName: "QueryWithdrawRequest",
-			Handler:    _Query_QueryWithdrawRequest_Handler,
+			MethodName: "WithdrawRequest",
+			Handler:    _Query_WithdrawRequest_Handler,
 		},
 		{
-			MethodName: "QueryOrders",
-			Handler:    _Query_QueryOrders_Handler,
+			MethodName: "Orders",
+			Handler:    _Query_Orders_Handler,
 		},
 		{
-			MethodName: "QueryOrder",
-			Handler:    _Query_QueryOrder_Handler,
+			MethodName: "Order",
+			Handler:    _Query_Order_Handler,
 		},
 		{
-			MethodName: "QueryOrdersByOrderer",
-			Handler:    _Query_QueryOrdersByOrderer_Handler,
+			MethodName: "OrdersByOrderer",
+			Handler:    _Query_OrdersByOrderer_Handler,
 		},
 		{
-			MethodName: "QueryOrderBooks",
-			Handler:    _Query_QueryOrderBooks_Handler,
+			MethodName: "OrderBooks",
+			Handler:    _Query_OrderBooks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

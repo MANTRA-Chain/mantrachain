@@ -40,7 +40,7 @@ func CmdRewards() *cobra.Command {
 				PairId:   pairId,
 			}
 
-			res, err := queryClient.QueryRewards(context.Background(), params)
+			res, err := queryClient.Rewards(context.Background(), params)
 			if err != nil {
 				return err
 			}

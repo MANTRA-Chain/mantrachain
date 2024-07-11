@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryNftCollection(c context.Context, req *types.QueryGetNftCollectionRequest) (*types.QueryGetNftCollectionResponse, error) {
+func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectionRequest) (*types.QueryGetNftCollectionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -47,7 +47,7 @@ func (k Keeper) QueryNftCollection(c context.Context, req *types.QueryGetNftColl
 	}, nil
 }
 
-func (k Keeper) QueryNftCollectionsByCreator(c context.Context, req *types.QueryGetNftCollectionsByCreatorRequest) (*types.QueryGetNftCollectionsByCreatorResponse, error) {
+func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNftCollectionsByCreatorRequest) (*types.QueryGetNftCollectionsByCreatorResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -83,7 +83,7 @@ func (k Keeper) QueryNftCollectionsByCreator(c context.Context, req *types.Query
 	}, nil
 }
 
-func (k Keeper) QueryAllNftCollections(c context.Context, req *types.QueryGetAllNftCollectionsRequest) (*types.QueryGetAllNftCollectionsResponse, error) {
+func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCollectionsRequest) (*types.QueryGetAllNftCollectionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -112,7 +112,7 @@ func (k Keeper) QueryAllNftCollections(c context.Context, req *types.QueryGetAll
 	}, nil
 }
 
-func (k Keeper) QueryNftCollectionOwner(goCtx context.Context, req *types.QueryGetNftCollectionOwnerRequest) (*types.QueryGetNftCollectionOwnerResponse, error) {
+func (k Keeper) NftCollectionOwner(goCtx context.Context, req *types.QueryGetNftCollectionOwnerRequest) (*types.QueryGetNftCollectionOwnerResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -129,7 +129,7 @@ func (k Keeper) QueryNftCollectionOwner(goCtx context.Context, req *types.QueryG
 	return &types.QueryGetNftCollectionOwnerResponse{NftCollectionOwner: string(val)}, nil
 }
 
-func (k Keeper) QueryOpenedNftsCollection(goCtx context.Context, req *types.QueryGetOpenedNftsCollectionRequest) (*types.QueryGetOpenedNftsCollectionResponse, error) {
+func (k Keeper) OpenedNftsCollection(goCtx context.Context, req *types.QueryGetOpenedNftsCollectionRequest) (*types.QueryGetOpenedNftsCollectionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -146,7 +146,7 @@ func (k Keeper) QueryOpenedNftsCollection(goCtx context.Context, req *types.Quer
 	}, nil
 }
 
-func (k Keeper) QueryRestrictedNftsCollection(goCtx context.Context, req *types.QueryGetRestrictedNftsCollectionRequest) (*types.QueryGetRestrictedNftsCollectionResponse, error) {
+func (k Keeper) RestrictedNftsCollection(goCtx context.Context, req *types.QueryGetRestrictedNftsCollectionRequest) (*types.QueryGetRestrictedNftsCollectionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -163,7 +163,7 @@ func (k Keeper) QueryRestrictedNftsCollection(goCtx context.Context, req *types.
 	}, nil
 }
 
-func (k Keeper) QuerySoulBondedNftsCollection(goCtx context.Context, req *types.QueryGetSoulBondedNftsCollectionRequest) (*types.QueryGetSoulBondedNftsCollectionResponse, error) {
+func (k Keeper) SoulBondedNftsCollection(goCtx context.Context, req *types.QueryGetSoulBondedNftsCollectionRequest) (*types.QueryGetSoulBondedNftsCollectionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

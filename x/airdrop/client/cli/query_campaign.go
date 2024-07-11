@@ -29,7 +29,7 @@ func CmdListCampaign() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QueryCampaignAll(context.Background(), params)
+			res, err := queryClient.CampaignAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -63,7 +63,7 @@ func CmdShowCampaign() *cobra.Command {
 				Id: argId,
 			}
 
-			res, err := queryClient.QueryCampaign(context.Background(), params)
+			res, err := queryClient.Campaign(context.Background(), params)
 			if err != nil {
 				return err
 			}

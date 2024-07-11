@@ -21,51 +21,52 @@ service Query {
   }
 
   // Plans returns all plans.
-  rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
+  rpc Plans(QueryPlansRequest) returns (QueryPlansResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/plans";
   }
 
   // Plan returns a specific plan.
-  rpc QueryPlan(QueryPlanRequest) returns (QueryPlanResponse) {
+  rpc Plan(QueryPlanRequest) returns (QueryPlanResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/plans/{plan_id}";
   }
 
-  rpc QueryPosition(QueryPositionRequest) returns (QueryPositionResponse) {
+  // QueryPosition
+  rpc Position(QueryPositionRequest) returns (QueryPositionResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/positions/{farmer}";
   }
 
   // Stakings returns all stakings by a farmer.
-  rpc QueryStakings(QueryStakingsRequest) returns (QueryStakingsResponse) {
+  rpc Stakings(QueryStakingsRequest) returns (QueryStakingsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/stakings/{farmer}";
   }
 
-  // QueryStakings returns all queued stakings by a farmer.
-  rpc QueryQueuedStakings(QueryQueuedStakingsRequest) returns (QueryQueuedStakingsResponse) {
+  // QueuedStakings returns all queued stakings by a farmer.
+  rpc QueuedStakings(QueryQueuedStakingsRequest) returns (QueryQueuedStakingsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/queued_stakings/{farmer}";
   }
 
   // TotalStakings returns total staking amount for a staking coin denom
-  rpc QueryTotalStakings(QueryTotalStakingsRequest) returns (QueryTotalStakingsResponse) {
+  rpc TotalStakings(QueryTotalStakingsRequest) returns (QueryTotalStakingsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/total_stakings/{staking_coin_denom}";
   }
 
   // Rewards returns rewards for a farmer
-  rpc QueryRewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/rewards/{farmer}";
   }
 
   // UnharvestedRewards returns unharvested rewards for a farmer
-  rpc QueryUnharvestedRewards(QueryUnharvestedRewardsRequest) returns (QueryUnharvestedRewardsResponse) {
+  rpc UnharvestedRewards(QueryUnharvestedRewardsRequest) returns (QueryUnharvestedRewardsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/unharvested_rewards/{farmer}";
   }
 
   // CurrentEpochDays returns current epoch days.
-  rpc QueryCurrentEpochDays(QueryCurrentEpochDaysRequest) returns (QueryCurrentEpochDaysResponse) {
+  rpc CurrentEpochDays(QueryCurrentEpochDaysRequest) returns (QueryCurrentEpochDaysResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/current_epoch_days";
   }
 
   // HistoricalRewards returns HistoricalRewards records for a staking coin denom.
-  rpc QueryHistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
+  rpc HistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
     option (google.api.http).get = "/mantrachain/farming/v1beta1/historical_rewards/{staking_coin_denom}";
   }
 }

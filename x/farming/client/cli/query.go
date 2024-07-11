@@ -100,7 +100,7 @@ $ %s query %s plans --staking-coin-denom pool1
 				}
 			}
 
-			resp, err = queryClient.QueryPlans(context.Background(), req)
+			resp, err = queryClient.Plans(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -140,7 +140,7 @@ $ %s query %s plan
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			resp, err := queryClient.QueryPlan(context.Background(), &types.QueryPlanRequest{
+			resp, err := queryClient.Plan(context.Background(), &types.QueryPlanRequest{
 				PlanId: planId,
 			})
 			if err != nil {
@@ -188,7 +188,7 @@ $ %s query %s position %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueryPosition(context.Background(), &types.QueryPositionRequest{
+			resp, err := queryClient.Position(context.Background(), &types.QueryPositionRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -238,7 +238,7 @@ $ %s query %s stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueryStakings(context.Background(), &types.QueryStakingsRequest{
+			resp, err := queryClient.Stakings(context.Background(), &types.QueryStakingsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -288,7 +288,7 @@ $ %s query %s queued-stakings %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --stakin
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueryQueuedStakings(context.Background(), &types.QueryQueuedStakingsRequest{
+			resp, err := queryClient.QueuedStakings(context.Background(), &types.QueryQueuedStakingsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -330,7 +330,7 @@ $ %s query %s total-stakings pool1
 				return err
 			}
 
-			resp, err := queryClient.QueryTotalStakings(context.Background(), &types.QueryTotalStakingsRequest{
+			resp, err := queryClient.TotalStakings(context.Background(), &types.QueryTotalStakingsRequest{
 				StakingCoinDenom: stakingCoinDenom,
 			})
 			if err != nil {
@@ -378,7 +378,7 @@ $ %s query %s rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --staking-coin-d
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueryRewards(context.Background(), &types.QueryRewardsRequest{
+			resp, err := queryClient.Rewards(context.Background(), &types.QueryRewardsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -429,7 +429,7 @@ $ %s query %s unharvested-rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj --st
 
 			stakingCoinDenom, _ := cmd.Flags().GetString(FlagStakingCoinDenom)
 
-			resp, err := queryClient.QueryUnharvestedRewards(context.Background(), &types.QueryUnharvestedRewardsRequest{
+			resp, err := queryClient.UnharvestedRewards(context.Background(), &types.QueryUnharvestedRewardsRequest{
 				Farmer:           farmerAcc.String(),
 				StakingCoinDenom: stakingCoinDenom,
 			})
@@ -467,7 +467,7 @@ $ %s query %s current-epoch-days
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			resp, err := queryClient.QueryCurrentEpochDays(context.Background(), &types.QueryCurrentEpochDaysRequest{})
+			resp, err := queryClient.CurrentEpochDays(context.Background(), &types.QueryCurrentEpochDaysRequest{})
 			if err != nil {
 				return err
 			}
@@ -502,7 +502,7 @@ $ %s query %s historical-rewards pool1
 
 			stakingCoinDenom := args[0]
 
-			resp, err := queryClient.QueryHistoricalRewards(context.Background(), &types.QueryHistoricalRewardsRequest{
+			resp, err := queryClient.HistoricalRewards(context.Background(), &types.QueryHistoricalRewardsRequest{
 				StakingCoinDenom: stakingCoinDenom,
 			})
 			if err != nil {

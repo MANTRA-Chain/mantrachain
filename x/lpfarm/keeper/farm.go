@@ -12,7 +12,7 @@ import (
 // Farm locks the coin.
 // The farmer's rewards accrued in the given coin's denom are sent to the farmer.
 // Farm creates a new farm object for the given coin's denom, if there wasn't.
-func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
+func (k Keeper) GetFarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 
 	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
@@ -22,7 +22,7 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 		return nil, err
 	}
 
-	_, found := k.GetFarm(ctx, coin.Denom)
+	_, found := k.GetFarmFromStore(ctx, coin.Denom)
 	if !found {
 		k.initializeFarm(ctx, coin.Denom)
 	}
@@ -42,7 +42,7 @@ func (k Keeper) Farm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) 
 		}
 	}
 
-	farm, _ := k.GetFarm(ctx, coin.Denom)
+	farm, _ := k.GetFarmFromStore(ctx, coin.Denom)
 	farm.TotalFarmingAmount = farm.TotalFarmingAmount.Add(coin.Amount)
 	k.SetFarm(ctx, coin.Denom, farm)
 
@@ -85,7 +85,7 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 		k.updatePosition(ctx, position)
 	}
 
-	farm, found := k.GetFarm(ctx, coin.Denom)
+	farm, found := k.GetFarmFromStore(ctx, coin.Denom)
 	if !found {
 		return nil, errors.Wrap(errorstypes.ErrNotFound, "farm not found")
 	}
@@ -189,7 +189,7 @@ func (k Keeper) initializeFarm(ctx sdk.Context, denom string) types.Farm {
 
 // updatePosition updates the position's starting info.
 func (k Keeper) updatePosition(ctx sdk.Context, position types.Position) {
-	farm, found := k.GetFarm(ctx, position.Denom)
+	farm, found := k.GetFarmFromStore(ctx, position.Denom)
 	if !found { // Sanity check
 		panic("farm not found")
 	}
@@ -203,7 +203,7 @@ func (k Keeper) updatePosition(ctx sdk.Context, position types.Position) {
 // incrementFarmPeriod increments the farm object's period by settling
 // the historical rewards for the farm's current period.
 func (k Keeper) incrementFarmPeriod(ctx sdk.Context, denom string) (prevPeriod uint64) {
-	farm, found := k.GetFarm(ctx, denom)
+	farm, found := k.GetFarmFromStore(ctx, denom)
 	if !found { // Sanity check
 		panic("farm not found")
 	}
@@ -290,7 +290,7 @@ func (k Keeper) withdrawRewards(ctx sdk.Context, position types.Position) (sdk.C
 			return nil, err
 		}
 		// `found` has already been checked in k.incrementFarmPeriod.
-		farm, _ := k.GetFarm(ctx, position.Denom)
+		farm, _ := k.GetFarmFromStore(ctx, position.Denom)
 		farm.OutstandingRewards = farm.OutstandingRewards.
 			Sub(sdk.NewDecCoinsFromCoins(truncatedRewards...))
 		k.SetFarm(ctx, position.Denom, farm)

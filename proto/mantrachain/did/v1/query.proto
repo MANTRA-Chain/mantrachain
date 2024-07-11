@@ -18,11 +18,11 @@ service Query {
   }
 
   // DidDocuments queries all did documents that match the given status.
-  rpc QueryDidDocuments(QueryDidDocumentsRequest) returns (QueryDidDocumentsResponse) {
+  rpc DidDocuments(QueryDidDocumentsRequest) returns (QueryDidDocumentsResponse) {
     option (google.api.http).get = "/mantrachain/did/v1/dids";
   }
   // DidDocument queries a did documents with an id.
-  rpc QueryDidDocument(QueryDidDocumentRequest) returns (QueryDidDocumentResponse) {
+  rpc DidDocument(QueryDidDocumentRequest) returns (QueryDidDocumentResponse) {
     option (google.api.http).get = "/mantrachain/did/v1/dids/{id}";
   }
 }
@@ -52,7 +52,7 @@ message QueryDidDocumentsRequest {
 // method
 message QueryDidDocumentsResponse {
   // validators contains all the queried validators.
-  repeated DidDocument did_documents = 1 [(gogoproto.nullable) = false];
+  repeated DidDocument didDocuments = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
@@ -68,7 +68,7 @@ message QueryDidDocumentRequest {
 // method
 message QueryDidDocumentResponse {
   // validators contains all the queried validators.
-  DidDocument did_document = 1 [(gogoproto.nullable) = false];
-  DidMetadata did_metadata = 2 [(gogoproto.nullable) = false];
+  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DidMetadata didMetadata = 2 [(gogoproto.nullable) = false];
 }
 // this line is used by starport scaffolding # 3

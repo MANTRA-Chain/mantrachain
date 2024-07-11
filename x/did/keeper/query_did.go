@@ -13,7 +13,7 @@ import (
 var _ types.QueryServer = Keeper{}
 
 // DidDocuments implements the DidDocuments gRPC method
-func (k Keeper) QueryDidDocuments(
+func (k Keeper) DidDocuments(
 	c context.Context,
 	req *types.QueryDidDocumentsRequest,
 ) (*types.QueryDidDocumentsResponse, error) {
@@ -26,7 +26,7 @@ func (k Keeper) QueryDidDocuments(
 }
 
 // DidDocument implements the DidDocument gRPC method
-func (k Keeper) QueryDidDocument(
+func (k Keeper) DidDocument(
 	c context.Context,
 	req *types.QueryDidDocumentRequest,
 ) (*types.QueryDidDocumentResponse, error) {

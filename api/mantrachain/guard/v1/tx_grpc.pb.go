@@ -37,14 +37,21 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// UpdateAccountPrivileges
 	UpdateAccountPrivileges(ctx context.Context, in *MsgUpdateAccountPrivileges, opts ...grpc.CallOption) (*MsgUpdateAccountPrivilegesResponse, error)
+	// UpdateAccountPrivilegesBatch
 	UpdateAccountPrivilegesBatch(ctx context.Context, in *MsgUpdateAccountPrivilegesBatch, opts ...grpc.CallOption) (*MsgUpdateAccountPrivilegesBatchResponse, error)
+	// UpdateAccountPrivilegesGroupedBatch
 	UpdateAccountPrivilegesGroupedBatch(ctx context.Context, in *MsgUpdateAccountPrivilegesGroupedBatch, opts ...grpc.CallOption) (*MsgUpdateAccountPrivilegesGroupedBatchResponse, error)
+	// UpdateGuardTransferCoins
 	UpdateGuardTransferCoins(ctx context.Context, in *MsgUpdateGuardTransferCoins, opts ...grpc.CallOption) (*MsgUpdateGuardTransferCoinsResponse, error)
+	// UpdateRequiredPrivileges
 	UpdateRequiredPrivileges(ctx context.Context, in *MsgUpdateRequiredPrivileges, opts ...grpc.CallOption) (*MsgUpdateRequiredPrivilegesResponse, error)
+	// UpdateRequiredPrivilegesBatch
 	UpdateRequiredPrivilegesBatch(ctx context.Context, in *MsgUpdateRequiredPrivilegesBatch, opts ...grpc.CallOption) (*MsgUpdateRequiredPrivilegesBatchResponse, error)
+	// UpdateRequiredPrivilegesGroupedBatch
 	UpdateRequiredPrivilegesGroupedBatch(ctx context.Context, in *MsgUpdateRequiredPrivilegesGroupedBatch, opts ...grpc.CallOption) (*MsgUpdateRequiredPrivilegesGroupedBatchResponse, error)
-	// this line is used by starport scaffolding # proto/tx/rpc}
+	// UpdateAuthzGenericGrantRevokeBatch
 	UpdateAuthzGenericGrantRevokeBatch(ctx context.Context, in *MsgUpdateAuthzGenericGrantRevokeBatch, opts ...grpc.CallOption) (*MsgUpdateAuthzGenericGrantRevokeBatchResponse, error)
 }
 
@@ -144,14 +151,21 @@ type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// UpdateAccountPrivileges
 	UpdateAccountPrivileges(context.Context, *MsgUpdateAccountPrivileges) (*MsgUpdateAccountPrivilegesResponse, error)
+	// UpdateAccountPrivilegesBatch
 	UpdateAccountPrivilegesBatch(context.Context, *MsgUpdateAccountPrivilegesBatch) (*MsgUpdateAccountPrivilegesBatchResponse, error)
+	// UpdateAccountPrivilegesGroupedBatch
 	UpdateAccountPrivilegesGroupedBatch(context.Context, *MsgUpdateAccountPrivilegesGroupedBatch) (*MsgUpdateAccountPrivilegesGroupedBatchResponse, error)
+	// UpdateGuardTransferCoins
 	UpdateGuardTransferCoins(context.Context, *MsgUpdateGuardTransferCoins) (*MsgUpdateGuardTransferCoinsResponse, error)
+	// UpdateRequiredPrivileges
 	UpdateRequiredPrivileges(context.Context, *MsgUpdateRequiredPrivileges) (*MsgUpdateRequiredPrivilegesResponse, error)
+	// UpdateRequiredPrivilegesBatch
 	UpdateRequiredPrivilegesBatch(context.Context, *MsgUpdateRequiredPrivilegesBatch) (*MsgUpdateRequiredPrivilegesBatchResponse, error)
+	// UpdateRequiredPrivilegesGroupedBatch
 	UpdateRequiredPrivilegesGroupedBatch(context.Context, *MsgUpdateRequiredPrivilegesGroupedBatch) (*MsgUpdateRequiredPrivilegesGroupedBatchResponse, error)
-	// this line is used by starport scaffolding # proto/tx/rpc}
+	// UpdateAuthzGenericGrantRevokeBatch
 	UpdateAuthzGenericGrantRevokeBatch(context.Context, *MsgUpdateAuthzGenericGrantRevokeBatch) (*MsgUpdateAuthzGenericGrantRevokeBatchResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }

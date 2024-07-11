@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QuerySnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRequest) (*types.QueryAllSnapshotResponse, error) {
+func (k Keeper) SnapshotAll(goCtx context.Context, req *types.QueryAllSnapshotRequest) (*types.QueryAllSnapshotResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -41,7 +41,7 @@ func (k Keeper) QuerySnapshotAll(goCtx context.Context, req *types.QueryAllSnaps
 	return &types.QueryAllSnapshotResponse{Snapshot: snapshots, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QuerySnapshot(goCtx context.Context, req *types.QueryGetSnapshotRequest) (*types.QueryGetSnapshotResponse, error) {
+func (k Keeper) Snapshot(goCtx context.Context, req *types.QueryGetSnapshotRequest) (*types.QueryGetSnapshotResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

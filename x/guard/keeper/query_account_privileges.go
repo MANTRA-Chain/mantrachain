@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryAccountPrivilegesAll(goCtx context.Context, req *types.QueryAllAccountPrivilegesRequest) (*types.QueryAllAccountPrivilegesResponse, error) {
+func (k Keeper) AccountPrivilegesAll(goCtx context.Context, req *types.QueryAllAccountPrivilegesRequest) (*types.QueryAllAccountPrivilegesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -37,7 +37,7 @@ func (k Keeper) QueryAccountPrivilegesAll(goCtx context.Context, req *types.Quer
 	return &types.QueryAllAccountPrivilegesResponse{Accounts: accounts, Privileges: privileges, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryAccountPrivileges(c context.Context, req *types.QueryGetAccountPrivilegesRequest) (*types.QueryGetAccountPrivilegesResponse, error) {
+func (k Keeper) AccountPrivileges(c context.Context, req *types.QueryGetAccountPrivilegesRequest) (*types.QueryGetAccountPrivilegesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName             = "/mantrachain.txfees.v1.Query/Params"
-	Query_QueryFeeToken_FullMethodName      = "/mantrachain.txfees.v1.Query/QueryFeeToken"
-	Query_QueryFeeTokenAll_FullMethodName   = "/mantrachain.txfees.v1.Query/QueryFeeTokenAll"
-	Query_QueryGasEstimation_FullMethodName = "/mantrachain.txfees.v1.Query/QueryGasEstimation"
+	Query_Params_FullMethodName        = "/mantrachain.txfees.v1.Query/Params"
+	Query_FeeToken_FullMethodName      = "/mantrachain.txfees.v1.Query/FeeToken"
+	Query_FeeTokenAll_FullMethodName   = "/mantrachain.txfees.v1.Query/FeeTokenAll"
+	Query_GasEstimation_FullMethodName = "/mantrachain.txfees.v1.Query/GasEstimation"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,11 +32,11 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of FeeToken items.
-	QueryFeeToken(ctx context.Context, in *QueryGetFeeTokenRequest, opts ...grpc.CallOption) (*QueryGetFeeTokenResponse, error)
+	FeeToken(ctx context.Context, in *QueryGetFeeTokenRequest, opts ...grpc.CallOption) (*QueryGetFeeTokenResponse, error)
 	// Queries a list of FeeToken items.
-	QueryFeeTokenAll(ctx context.Context, in *QueryAllFeeTokenRequest, opts ...grpc.CallOption) (*QueryAllFeeTokenResponse, error)
+	FeeTokenAll(ctx context.Context, in *QueryAllFeeTokenRequest, opts ...grpc.CallOption) (*QueryAllFeeTokenResponse, error)
 	// Queries a list of FeeToken items.
-	QueryGasEstimation(ctx context.Context, in *QueryGetGasEstimationRequest, opts ...grpc.CallOption) (*QueryGetGasEstimationResponse, error)
+	GasEstimation(ctx context.Context, in *QueryGetGasEstimationRequest, opts ...grpc.CallOption) (*QueryGetGasEstimationResponse, error)
 }
 
 type queryClient struct {
@@ -56,27 +56,27 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryFeeToken(ctx context.Context, in *QueryGetFeeTokenRequest, opts ...grpc.CallOption) (*QueryGetFeeTokenResponse, error) {
+func (c *queryClient) FeeToken(ctx context.Context, in *QueryGetFeeTokenRequest, opts ...grpc.CallOption) (*QueryGetFeeTokenResponse, error) {
 	out := new(QueryGetFeeTokenResponse)
-	err := c.cc.Invoke(ctx, Query_QueryFeeToken_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_FeeToken_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryFeeTokenAll(ctx context.Context, in *QueryAllFeeTokenRequest, opts ...grpc.CallOption) (*QueryAllFeeTokenResponse, error) {
+func (c *queryClient) FeeTokenAll(ctx context.Context, in *QueryAllFeeTokenRequest, opts ...grpc.CallOption) (*QueryAllFeeTokenResponse, error) {
 	out := new(QueryAllFeeTokenResponse)
-	err := c.cc.Invoke(ctx, Query_QueryFeeTokenAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_FeeTokenAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryGasEstimation(ctx context.Context, in *QueryGetGasEstimationRequest, opts ...grpc.CallOption) (*QueryGetGasEstimationResponse, error) {
+func (c *queryClient) GasEstimation(ctx context.Context, in *QueryGetGasEstimationRequest, opts ...grpc.CallOption) (*QueryGetGasEstimationResponse, error) {
 	out := new(QueryGetGasEstimationResponse)
-	err := c.cc.Invoke(ctx, Query_QueryGasEstimation_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_GasEstimation_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,11 +90,11 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of FeeToken items.
-	QueryFeeToken(context.Context, *QueryGetFeeTokenRequest) (*QueryGetFeeTokenResponse, error)
+	FeeToken(context.Context, *QueryGetFeeTokenRequest) (*QueryGetFeeTokenResponse, error)
 	// Queries a list of FeeToken items.
-	QueryFeeTokenAll(context.Context, *QueryAllFeeTokenRequest) (*QueryAllFeeTokenResponse, error)
+	FeeTokenAll(context.Context, *QueryAllFeeTokenRequest) (*QueryAllFeeTokenResponse, error)
 	// Queries a list of FeeToken items.
-	QueryGasEstimation(context.Context, *QueryGetGasEstimationRequest) (*QueryGetGasEstimationResponse, error)
+	GasEstimation(context.Context, *QueryGetGasEstimationRequest) (*QueryGetGasEstimationResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -105,14 +105,14 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryFeeToken(context.Context, *QueryGetFeeTokenRequest) (*QueryGetFeeTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryFeeToken not implemented")
+func (UnimplementedQueryServer) FeeToken(context.Context, *QueryGetFeeTokenRequest) (*QueryGetFeeTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FeeToken not implemented")
 }
-func (UnimplementedQueryServer) QueryFeeTokenAll(context.Context, *QueryAllFeeTokenRequest) (*QueryAllFeeTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryFeeTokenAll not implemented")
+func (UnimplementedQueryServer) FeeTokenAll(context.Context, *QueryAllFeeTokenRequest) (*QueryAllFeeTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FeeTokenAll not implemented")
 }
-func (UnimplementedQueryServer) QueryGasEstimation(context.Context, *QueryGetGasEstimationRequest) (*QueryGetGasEstimationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryGasEstimation not implemented")
+func (UnimplementedQueryServer) GasEstimation(context.Context, *QueryGetGasEstimationRequest) (*QueryGetGasEstimationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GasEstimation not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -145,56 +145,56 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryFeeToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_FeeToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetFeeTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryFeeToken(ctx, in)
+		return srv.(QueryServer).FeeToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryFeeToken_FullMethodName,
+		FullMethod: Query_FeeToken_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryFeeToken(ctx, req.(*QueryGetFeeTokenRequest))
+		return srv.(QueryServer).FeeToken(ctx, req.(*QueryGetFeeTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryFeeTokenAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_FeeTokenAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllFeeTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryFeeTokenAll(ctx, in)
+		return srv.(QueryServer).FeeTokenAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryFeeTokenAll_FullMethodName,
+		FullMethod: Query_FeeTokenAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryFeeTokenAll(ctx, req.(*QueryAllFeeTokenRequest))
+		return srv.(QueryServer).FeeTokenAll(ctx, req.(*QueryAllFeeTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryGasEstimation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_GasEstimation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetGasEstimationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryGasEstimation(ctx, in)
+		return srv.(QueryServer).GasEstimation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryGasEstimation_FullMethodName,
+		FullMethod: Query_GasEstimation_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryGasEstimation(ctx, req.(*QueryGetGasEstimationRequest))
+		return srv.(QueryServer).GasEstimation(ctx, req.(*QueryGetGasEstimationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -211,16 +211,16 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryFeeToken",
-			Handler:    _Query_QueryFeeToken_Handler,
+			MethodName: "FeeToken",
+			Handler:    _Query_FeeToken_Handler,
 		},
 		{
-			MethodName: "QueryFeeTokenAll",
-			Handler:    _Query_QueryFeeTokenAll_Handler,
+			MethodName: "FeeTokenAll",
+			Handler:    _Query_FeeTokenAll_Handler,
 		},
 		{
-			MethodName: "QueryGasEstimation",
-			Handler:    _Query_QueryGasEstimation_Handler,
+			MethodName: "GasEstimation",
+			Handler:    _Query_GasEstimation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

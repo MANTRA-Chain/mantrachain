@@ -10,7 +10,7 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) QueryDenomAuthorityMetadata(ctx context.Context, req *types.QueryDenomAuthorityMetadataRequest) (*types.QueryDenomAuthorityMetadataResponse, error) {
+func (k Keeper) DenomAuthorityMetadata(ctx context.Context, req *types.QueryDenomAuthorityMetadataRequest) (*types.QueryDenomAuthorityMetadataResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	authorityMetadata, err := k.GetAuthorityMetadata(sdkCtx, req.GetDenom())
@@ -21,7 +21,7 @@ func (k Keeper) QueryDenomAuthorityMetadata(ctx context.Context, req *types.Quer
 	return &types.QueryDenomAuthorityMetadataResponse{AuthorityMetadata: authorityMetadata}, nil
 }
 
-func (k Keeper) QueryDenomAuthorityMetadata2(ctx context.Context, req *types.QueryDenomAuthorityMetadata2Request) (*types.QueryDenomAuthorityMetadata2Response, error) {
+func (k Keeper) DenomAuthorityMetadata2(ctx context.Context, req *types.QueryDenomAuthorityMetadata2Request) (*types.QueryDenomAuthorityMetadata2Response, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom, err := types.GetTokenDenom(req.GetCreator(), req.GetSubdenom())
@@ -37,13 +37,13 @@ func (k Keeper) QueryDenomAuthorityMetadata2(ctx context.Context, req *types.Que
 	return &types.QueryDenomAuthorityMetadata2Response{AuthorityMetadata: authorityMetadata}, nil
 }
 
-func (k Keeper) QueryDenomsFromCreator(ctx context.Context, req *types.QueryDenomsFromCreatorRequest) (*types.QueryDenomsFromCreatorResponse, error) {
+func (k Keeper) DenomsFromCreator(ctx context.Context, req *types.QueryDenomsFromCreatorRequest) (*types.QueryDenomsFromCreatorResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	denoms := k.getDenomsFromCreator(sdkCtx, req.GetCreator())
 	return &types.QueryDenomsFromCreatorResponse{Denoms: denoms}, nil
 }
 
-func (k Keeper) QueryBalance(ctx context.Context, req *types.QueryBalanceRequest) (*types.QueryBalanceResponse, error) {
+func (k Keeper) Balance(ctx context.Context, req *types.QueryBalanceRequest) (*types.QueryBalanceResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom, err := types.GetTokenDenom(req.GetCreator(), req.GetSubdenom())
@@ -61,7 +61,7 @@ func (k Keeper) QueryBalance(ctx context.Context, req *types.QueryBalanceRequest
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
 
-func (k Keeper) QuerySupplyOf(ctx context.Context, req *types.QuerySupplyOfRequest) (*types.QuerySupplyOfResponse, error) {
+func (k Keeper) SupplyOf(ctx context.Context, req *types.QuerySupplyOfRequest) (*types.QuerySupplyOfResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom, err := types.GetTokenDenom(req.GetCreator(), req.GetSubdenom())
@@ -74,7 +74,7 @@ func (k Keeper) QuerySupplyOf(ctx context.Context, req *types.QuerySupplyOfReque
 	return &types.QuerySupplyOfResponse{Amount: amount}, nil
 }
 
-func (k Keeper) QueryDenomMetadata(ctx context.Context, req *types.QueryDenomMetadataRequest) (*types.QueryDenomMetadataResponse, error) {
+func (k Keeper) DenomMetadata(ctx context.Context, req *types.QueryDenomMetadataRequest) (*types.QueryDenomMetadataResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom, err := types.GetTokenDenom(req.GetCreator(), req.GetSubdenom())

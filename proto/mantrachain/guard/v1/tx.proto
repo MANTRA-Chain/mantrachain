@@ -18,16 +18,24 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
+  // UpdateAccountPrivileges
   rpc UpdateAccountPrivileges(MsgUpdateAccountPrivileges) returns (MsgUpdateAccountPrivilegesResponse);
+  // UpdateAccountPrivilegesBatch
   rpc UpdateAccountPrivilegesBatch(MsgUpdateAccountPrivilegesBatch) returns (MsgUpdateAccountPrivilegesBatchResponse);
+  // UpdateAccountPrivilegesGroupedBatch
   rpc UpdateAccountPrivilegesGroupedBatch(MsgUpdateAccountPrivilegesGroupedBatch) returns (MsgUpdateAccountPrivilegesGroupedBatchResponse);
+  // UpdateGuardTransferCoins
   rpc UpdateGuardTransferCoins(MsgUpdateGuardTransferCoins) returns (MsgUpdateGuardTransferCoinsResponse);
+  // UpdateRequiredPrivileges
   rpc UpdateRequiredPrivileges(MsgUpdateRequiredPrivileges) returns (MsgUpdateRequiredPrivilegesResponse);
+  // UpdateRequiredPrivilegesBatch
   rpc UpdateRequiredPrivilegesBatch(MsgUpdateRequiredPrivilegesBatch) returns (MsgUpdateRequiredPrivilegesBatchResponse);
+  // UpdateRequiredPrivilegesGroupedBatch
   rpc UpdateRequiredPrivilegesGroupedBatch(MsgUpdateRequiredPrivilegesGroupedBatch) returns (MsgUpdateRequiredPrivilegesGroupedBatchResponse);
+  // UpdateAuthzGenericGrantRevokeBatch
+  rpc UpdateAuthzGenericGrantRevokeBatch(MsgUpdateAuthzGenericGrantRevokeBatch) returns (MsgUpdateAuthzGenericGrantRevokeBatchResponse);
 
   // this line is used by starport scaffolding # proto/tx/rpc}
-  rpc UpdateAuthzGenericGrantRevokeBatch(MsgUpdateAuthzGenericGrantRevokeBatch) returns (MsgUpdateAuthzGenericGrantRevokeBatchResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.

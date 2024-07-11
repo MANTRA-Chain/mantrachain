@@ -17,25 +17,25 @@ service Query {
   }
 
   // Queries a AccountPrivileges by index.
-  rpc QueryAccountPrivileges(QueryGetAccountPrivilegesRequest) returns (QueryGetAccountPrivilegesResponse) {
+  rpc AccountPrivileges(QueryGetAccountPrivilegesRequest) returns (QueryGetAccountPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/account_privileges/{account}";
   }
 
   // Queries a list of AccountPrivileges items.
-  rpc QueryAccountPrivilegesAll(QueryAllAccountPrivilegesRequest) returns (QueryAllAccountPrivilegesResponse) {
+  rpc AccountPrivilegesAll(QueryAllAccountPrivilegesRequest) returns (QueryAllAccountPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/account_privileges";
   }
 
   // Queries a GuardTransferCoins by index.
-  rpc QueryGuardTransferCoins(QueryGetGuardTransferCoinsRequest) returns (QueryGetGuardTransferCoinsResponse) {
+  rpc GuardTransferCoins(QueryGetGuardTransferCoinsRequest) returns (QueryGetGuardTransferCoinsResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/guard_transfer_coins";
   }
 
   // Queries a list of RequiredPrivileges items.
-  rpc QueryRequiredPrivileges(QueryGetRequiredPrivilegesRequest) returns (QueryGetRequiredPrivilegesResponse) {
+  rpc RequiredPrivileges(QueryGetRequiredPrivilegesRequest) returns (QueryGetRequiredPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/required_privileges/{index}";
   }
-  rpc QueryRequiredPrivilegesAll(QueryAllRequiredPrivilegesRequest) returns (QueryAllRequiredPrivilegesResponse) {
+  rpc RequiredPrivilegesAll(QueryAllRequiredPrivilegesRequest) returns (QueryAllRequiredPrivilegesResponse) {
     option (google.api.http).get = "/mantrachain/guard/v1/required_privileges";
   }
 }

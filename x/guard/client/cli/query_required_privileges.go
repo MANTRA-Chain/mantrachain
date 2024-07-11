@@ -35,7 +35,7 @@ func CmdListRequiredPrivileges() *cobra.Command {
 				Kind:       argKind.String(),
 			}
 
-			res, err := queryClient.QueryRequiredPrivilegesAll(context.Background(), params)
+			res, err := queryClient.RequiredPrivilegesAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -71,7 +71,7 @@ func CmdShowRequiredPrivileges() *cobra.Command {
 				Kind:  argKind.String(),
 			}
 
-			res, err := queryClient.QueryRequiredPrivileges(context.Background(), params)
+			res, err := queryClient.RequiredPrivileges(context.Background(), params)
 			if err != nil {
 				return err
 			}

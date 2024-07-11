@@ -42,7 +42,7 @@ func CmdGetNftCollection() *cobra.Command {
 				Id:      reqId,
 			}
 
-			res, err := queryClient.QueryNftCollection(context.Background(), params)
+			res, err := queryClient.NftCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -83,7 +83,7 @@ func CmdGetNftCollectionsByCreator() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QueryNftCollectionsByCreator(context.Background(), params)
+			res, err := queryClient.NftCollectionsByCreator(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -117,7 +117,7 @@ func CmdGetAllNftCollections() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QueryAllNftCollections(context.Background(), params)
+			res, err := queryClient.AllNftCollections(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -148,7 +148,7 @@ func CmdShowNftCollectionOwner() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.QueryNftCollectionOwner(context.Background(), params)
+			res, err := queryClient.NftCollectionOwner(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -178,7 +178,7 @@ func CmdShowOpenedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.QueryOpenedNftsCollection(context.Background(), params)
+			res, err := queryClient.OpenedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -208,7 +208,7 @@ func CmdShowRestrictedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.QueryRestrictedNftsCollection(context.Background(), params)
+			res, err := queryClient.RestrictedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -238,7 +238,7 @@ func CmdShowSoulBondedNftsCollection() *cobra.Command {
 				Index: argIndex,
 			}
 
-			res, err := queryClient.QuerySoulBondedNftsCollection(context.Background(), params)
+			res, err := queryClient.SoulBondedNftsCollection(context.Background(), params)
 			if err != nil {
 				return err
 			}

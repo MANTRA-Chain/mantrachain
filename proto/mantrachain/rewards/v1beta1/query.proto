@@ -20,30 +20,30 @@ service Query {
   }
 
   // Queries a list of Snapshot items.
-  rpc QuerySnapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pair_id}/{id}";
+  rpc Snapshot    (QueryGetSnapshotRequest) returns (QueryGetSnapshotResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pairId}/{id}";
   }
   // QuerySnapshotAll
-  rpc QuerySnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pair_id}";
+  rpc SnapshotAll (QueryAllSnapshotRequest) returns (QueryAllSnapshotResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/snapshot/{pairId}";
   }
   
   // Queries a list of Provider pairs ids.
-  rpc QueryProvider (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
+  rpc Provider (QueryGetProviderRequest) returns (QueryGetProviderResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider/{provider}";
   }
   // QueryProviderPairs
-  rpc QueryProviderPairs (QueryGetProviderPairsRequest) returns (QueryGetProviderPairsResponse) {
+  rpc ProviderPairs (QueryGetProviderPairsRequest) returns (QueryGetProviderPairsResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider-pairs/{provider}";
   }
   // QueryProviderAll
-  rpc QueryProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
+  rpc ProviderAll (QueryAllProviderRequest) returns (QueryAllProviderResponse) {
     option (google.api.http).get = "/mantrachain/rewards/v1beta1/provider";
   }
   
   // Queries a list of Claim items.
-  rpc QueryRewards (QueryGetRewardsRequest) returns (QueryGetRewardsResponse) {
-    option (google.api.http).get = "/mantrachain/rewards/v1beta1/rewards/{provider}/{pair_id}";
+  rpc Rewards (QueryGetRewardsRequest) returns (QueryGetRewardsResponse) {
+    option (google.api.http).get = "/mantrachain/rewards/v1beta1/rewards/{provider}/{pairId}";
   }
 }
 
@@ -61,24 +61,24 @@ message QueryParamsResponse {
 
 // QueryGetSnapshotRequest
 message QueryGetSnapshotRequest {
-  uint64 pair_id = 1;
+  uint64 pairId = 1;
   uint64 id = 2;
 }
 
 // QueryGetSnapshotResponse
 message QueryGetSnapshotResponse {
-  Snapshot snapshot = 1 [(gogoproto.nullable) = false];
+  Snapshot Snapshot = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryAllSnapshotRequest
 message QueryAllSnapshotRequest {
-  uint64 pair_id = 1;
+  uint64 pairId = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryAllSnapshotResponse
 message QueryAllSnapshotResponse {
-  repeated Snapshot                               snapshot   = 1 [(gogoproto.nullable) = false];
+  repeated Snapshot                               Snapshot   = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -117,11 +117,11 @@ message QueryAllProviderResponse {
 // QueryGetRewardsRequest
 message QueryGetRewardsRequest {
   string provider = 1;
-  uint64 pair_id = 2;
+  uint64 pairId = 2;
 }
 
 // QueryGetRewardsResponse
 message QueryGetRewardsResponse {
-  uint64 pair_id = 1;
+  uint64 pairId = 1;
   repeated cosmos.base.v1beta1.Coin rewards = 2;
 }

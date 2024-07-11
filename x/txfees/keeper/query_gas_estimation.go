@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryGasEstimation(goCtx context.Context, req *types.QueryGetGasEstimationRequest) (*types.QueryGetGasEstimationResponse, error) {
+func (k Keeper) GasEstimation(goCtx context.Context, req *types.QueryGetGasEstimationRequest) (*types.QueryGetGasEstimationResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

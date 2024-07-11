@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryRequiredPrivilegesAll(goCtx context.Context, req *types.QueryAllRequiredPrivilegesRequest) (*types.QueryAllRequiredPrivilegesResponse, error) {
+func (k Keeper) RequiredPrivilegesAll(goCtx context.Context, req *types.QueryAllRequiredPrivilegesRequest) (*types.QueryAllRequiredPrivilegesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -48,7 +48,7 @@ func (k Keeper) QueryRequiredPrivilegesAll(goCtx context.Context, req *types.Que
 	}, nil
 }
 
-func (k Keeper) QueryRequiredPrivileges(goCtx context.Context, req *types.QueryGetRequiredPrivilegesRequest) (*types.QueryGetRequiredPrivilegesResponse, error) {
+func (k Keeper) RequiredPrivileges(goCtx context.Context, req *types.QueryGetRequiredPrivilegesRequest) (*types.QueryGetRequiredPrivilegesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

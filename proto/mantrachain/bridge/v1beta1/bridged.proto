@@ -11,7 +11,7 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/bridge/types";
 // Bridged
 message Bridged {
   bytes index = 1;
-  string eth_tx_hash = 2;
+  string ethTxHash = 2;
   string receiver = 3;
   cosmos.base.v1beta1.Coin amount = 4;
 }

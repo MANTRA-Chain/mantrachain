@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryProviderAll(goCtx context.Context, req *types.QueryAllProviderRequest) (*types.QueryAllProviderResponse, error) {
+func (k Keeper) ProviderAll(goCtx context.Context, req *types.QueryAllProviderRequest) (*types.QueryAllProviderResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -40,7 +40,7 @@ func (k Keeper) QueryProviderAll(goCtx context.Context, req *types.QueryAllProvi
 	return &types.QueryAllProviderResponse{Provider: providers, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryProviderPairs(goCtx context.Context, req *types.QueryGetProviderPairsRequest) (*types.QueryGetProviderPairsResponse, error) {
+func (k Keeper) ProviderPairs(goCtx context.Context, req *types.QueryGetProviderPairsRequest) (*types.QueryGetProviderPairsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -66,7 +66,7 @@ func (k Keeper) QueryProviderPairs(goCtx context.Context, req *types.QueryGetPro
 	return &types.QueryGetProviderPairsResponse{Provider: creator.String(), PairsIds: pairsIds}, nil
 }
 
-func (k Keeper) QueryProvider(goCtx context.Context, req *types.QueryGetProviderRequest) (*types.QueryGetProviderResponse, error) {
+func (k Keeper) Provider(goCtx context.Context, req *types.QueryGetProviderRequest) (*types.QueryGetProviderResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

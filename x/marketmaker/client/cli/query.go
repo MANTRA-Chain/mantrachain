@@ -88,7 +88,7 @@ $ %s query %s marketmakers --eligible=true...
 				req.Eligible = eligibleStr
 			}
 
-			res, err := queryClient.QueryMarketMakers(context.Background(), req)
+			res, err := queryClient.MarketMakers(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -131,7 +131,7 @@ $ %s query %s incentive %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 				return err
 			}
 
-			resp, err := queryClient.QueryIncentive(context.Background(), &types.QueryIncentiveRequest{
+			resp, err := queryClient.Incentive(context.Background(), &types.QueryIncentiveRequest{
 				Address: mmAddr.String(),
 			})
 			if err != nil {

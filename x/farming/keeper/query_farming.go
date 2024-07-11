@@ -18,7 +18,7 @@ import (
 )
 
 // Plans queries all plans.
-func (k Keeper) QueryPlans(c context.Context, req *types.QueryPlansRequest) (*types.QueryPlansResponse, error) {
+func (k Keeper) Plans(c context.Context, req *types.QueryPlansRequest) (*types.QueryPlansResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -114,7 +114,7 @@ func (k Keeper) QueryPlans(c context.Context, req *types.QueryPlansRequest) (*ty
 }
 
 // Plan queries a specific plan.
-func (k Keeper) QueryPlan(c context.Context, req *types.QueryPlanRequest) (*types.QueryPlanResponse, error) {
+func (k Keeper) Plan(c context.Context, req *types.QueryPlanRequest) (*types.QueryPlanResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -134,7 +134,7 @@ func (k Keeper) QueryPlan(c context.Context, req *types.QueryPlanRequest) (*type
 }
 
 // Position queries farming position for a farmer.
-func (k Keeper) QueryPosition(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
+func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -171,14 +171,14 @@ func (k Keeper) QueryPosition(c context.Context, req *types.QueryPositionRequest
 			resp.QueuedCoins = resp.QueuedCoins.Add(sdk.NewCoin(req.StakingCoinDenom, queuedStakingAmt))
 		}
 		unharvested, _ := k.GetUnharvestedRewards(ctx, farmerAcc, req.StakingCoinDenom)
-		resp.Rewards = k.Rewards(ctx, farmerAcc, req.StakingCoinDenom).Add(unharvested.Rewards...)
+		resp.Rewards = k.GetRewards(ctx, farmerAcc, req.StakingCoinDenom).Add(unharvested.Rewards...)
 	}
 
 	return resp, nil
 }
 
 // Stakings queries all stakings of the farmer.
-func (k Keeper) QueryStakings(c context.Context, req *types.QueryStakingsRequest) (*types.QueryStakingsResponse, error) {
+func (k Keeper) Stakings(c context.Context, req *types.QueryStakingsRequest) (*types.QueryStakingsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -218,7 +218,7 @@ func (k Keeper) QueryStakings(c context.Context, req *types.QueryStakingsRequest
 }
 
 // QueuedStakings queries all queued stakings of the farmer.
-func (k Keeper) QueryQueuedStakings(c context.Context, req *types.QueryQueuedStakingsRequest) (*types.QueryQueuedStakingsResponse, error) {
+func (k Keeper) QueuedStakings(c context.Context, req *types.QueryQueuedStakingsRequest) (*types.QueryQueuedStakingsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -259,7 +259,7 @@ func (k Keeper) QueryQueuedStakings(c context.Context, req *types.QueryQueuedSta
 }
 
 // TotalStakings queries total staking coin amount for a specific staking coin denom.
-func (k Keeper) QueryTotalStakings(c context.Context, req *types.QueryTotalStakingsRequest) (*types.QueryTotalStakingsResponse, error) {
+func (k Keeper) TotalStakings(c context.Context, req *types.QueryTotalStakingsRequest) (*types.QueryTotalStakingsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -281,7 +281,7 @@ func (k Keeper) QueryTotalStakings(c context.Context, req *types.QueryTotalStaki
 }
 
 // Rewards queries all accumulated rewards for a farmer.
-func (k Keeper) QueryRewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {
+func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -311,7 +311,7 @@ func (k Keeper) QueryRewards(c context.Context, req *types.QueryRewardsRequest) 
 	pageRes, _ := query.FilteredPaginate(store, req.Pagination, func(key, value []byte, accumulate bool) (bool, error) {
 		_, stakingCoinDenom := types.ParseStakingIndexKey(append(keyPrefix, key...))
 
-		r := k.Rewards(ctx, farmerAcc, stakingCoinDenom)
+		r := k.GetRewards(ctx, farmerAcc, stakingCoinDenom)
 
 		if accumulate {
 			rewards = append(rewards, types.RewardsResponse{
@@ -327,7 +327,7 @@ func (k Keeper) QueryRewards(c context.Context, req *types.QueryRewardsRequest) 
 }
 
 // UnharvestedRewards queries all unharvested rewards for the farmer.
-func (k Keeper) QueryUnharvestedRewards(c context.Context, req *types.QueryUnharvestedRewardsRequest) (*types.QueryUnharvestedRewardsResponse, error) {
+func (k Keeper) UnharvestedRewards(c context.Context, req *types.QueryUnharvestedRewardsRequest) (*types.QueryUnharvestedRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -367,7 +367,7 @@ func (k Keeper) QueryUnharvestedRewards(c context.Context, req *types.QueryUnhar
 }
 
 // CurrentEpochDays queries current epoch days.
-func (k Keeper) QueryCurrentEpochDays(c context.Context, req *types.QueryCurrentEpochDaysRequest) (*types.QueryCurrentEpochDaysResponse, error) {
+func (k Keeper) CurrentEpochDays(c context.Context, req *types.QueryCurrentEpochDaysRequest) (*types.QueryCurrentEpochDaysResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -379,7 +379,7 @@ func (k Keeper) QueryCurrentEpochDays(c context.Context, req *types.QueryCurrent
 }
 
 // HistoricalRewards queries HistoricalRewards records for a staking coin denom.
-func (k Keeper) QueryHistoricalRewards(c context.Context, req *types.QueryHistoricalRewardsRequest) (*types.QueryHistoricalRewardsResponse, error) {
+func (k Keeper) HistoricalRewards(c context.Context, req *types.QueryHistoricalRewardsRequest) (*types.QueryHistoricalRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}

@@ -18,11 +18,11 @@ service Query {
   }
 
   // Queries a list of Bridged items.
-  rpc QueryBridged(QueryGetBridgedRequest) returns (QueryGetBridgedResponse) {
+  rpc Bridged(QueryGetBridgedRequest) returns (QueryGetBridgedResponse) {
     option (google.api.http).get = "/mantrachain/bridge/v1/bridged/{ethTxHash}";
   }
-  // QueryBridgedAll
-  rpc QueryBridgedAll(QueryAllBridgedRequest) returns (QueryAllBridgedResponse) {
+  // BridgedAll
+  rpc BridgedAll(QueryAllBridgedRequest) returns (QueryAllBridgedResponse) {
     option (google.api.http).get = "/mantrachain/bridge/v1/bridged";
   }
 }

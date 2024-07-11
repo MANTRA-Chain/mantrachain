@@ -953,7 +953,7 @@ func (m *QueryGetSoulBondedNftsCollectionRequest) GetIndex() []byte {
 // QueryGetSoulBondedNftsCollectionResponse
 type QueryGetSoulBondedNftsCollectionResponse struct {
 	Index                    []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
-	SoulBondedNftsCollection bool   `protobuf:"varint,2,opt,name=soul_bonded_nfts_collection,json=soulBondedNftsCollection,proto3" json:"soul_bonded_nfts_collection,omitempty"`
+	SoulBondedNftsCollection bool   `protobuf:"varint,2,opt,name=soulBondedNftsCollection,proto3" json:"soulBondedNftsCollection,omitempty"`
 }
 
 func (m *QueryGetSoulBondedNftsCollectionResponse) Reset() {
@@ -1055,7 +1055,7 @@ func (m *QueryGetRestrictedNftsCollectionRequest) GetIndex() []byte {
 // QueryGetRestrictedNftsCollectionResponse
 type QueryGetRestrictedNftsCollectionResponse struct {
 	Index                    []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
-	RestrictedNftsCollection bool   `protobuf:"varint,2,opt,name=restricted_nfts_collection,json=restrictedNftsCollection,proto3" json:"restricted_nfts_collection,omitempty"`
+	RestrictedNftsCollection bool   `protobuf:"varint,2,opt,name=restrictedNftsCollection,proto3" json:"restrictedNftsCollection,omitempty"`
 }
 
 func (m *QueryGetRestrictedNftsCollectionResponse) Reset() {
@@ -1155,7 +1155,7 @@ func (m *QueryGetOpenedNftsCollectionRequest) GetIndex() []byte {
 // QueryGetOpenedNftsCollectionResponse
 type QueryGetOpenedNftsCollectionResponse struct {
 	Index                []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
-	OpenedNftsCollection bool   `protobuf:"varint,2,opt,name=opened_nfts_collection,json=openedNftsCollection,proto3" json:"opened_nfts_collection,omitempty"`
+	OpenedNftsCollection bool   `protobuf:"varint,2,opt,name=openedNftsCollection,proto3" json:"openedNftsCollection,omitempty"`
 }
 
 func (m *QueryGetOpenedNftsCollectionResponse) Reset()         { *m = QueryGetOpenedNftsCollectionResponse{} }
@@ -1253,7 +1253,7 @@ func (m *QueryGetNftCollectionOwnerRequest) GetIndex() []byte {
 // QueryGetNftCollectionOwnerResponse
 type QueryGetNftCollectionOwnerResponse struct {
 	Index              []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
-	NftCollectionOwner string `protobuf:"bytes,2,opt,name=nft_collection_owner,json=nftCollectionOwner,proto3" json:"nft_collection_owner,omitempty"`
+	NftCollectionOwner string `protobuf:"bytes,2,opt,name=nftCollectionOwner,proto3" json:"nftCollectionOwner,omitempty"`
 }
 
 func (m *QueryGetNftCollectionOwnerResponse) Reset()         { *m = QueryGetNftCollectionOwnerResponse{} }
@@ -1333,89 +1333,88 @@ func init() {
 func init() { proto.RegisterFile("mantrachain/token/v1/query.proto", fileDescriptor_077c47d63799487f) }
 
 var fileDescriptor_077c47d63799487f = []byte{
-	// 1310 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x58, 0xcd, 0x6f, 0x1b, 0x45,
-	0x14, 0xcf, 0xd8, 0x49, 0x48, 0xa7, 0x6d, 0xa0, 0x0f, 0xab, 0xb8, 0xdb, 0x60, 0xd2, 0x4d, 0x94,
-	0xa6, 0x85, 0xec, 0xe6, 0x8b, 0xb4, 0xf9, 0xe8, 0x47, 0x1c, 0x91, 0x52, 0x20, 0x49, 0x31, 0x5f,
-	0x12, 0x07, 0xa2, 0x8d, 0x3d, 0x71, 0x97, 0x6e, 0x76, 0xdc, 0xdd, 0x4d, 0x48, 0x64, 0x19, 0x10,
-	0xdc, 0x38, 0x21, 0x71, 0xe6, 0xce, 0x81, 0x03, 0x37, 0xa4, 0x1e, 0x38, 0xe7, 0x84, 0x82, 0x2a,
-	0x21, 0xc4, 0x01, 0x95, 0x04, 0x89, 0x0b, 0x12, 0xff, 0x02, 0xf2, 0xec, 0xac, 0x77, 0x27, 0xde,
-	0x0f, 0xdb, 0x10, 0x2e, 0x96, 0x67, 0x77, 0xde, 0x7b, 0xbf, 0xdf, 0x9b, 0x79, 0x6f, 0x7e, 0xb3,
-	0x78, 0x70, 0x4b, 0x33, 0x1d, 0x4b, 0x2b, 0xde, 0xd7, 0x74, 0x53, 0x75, 0xe8, 0x03, 0x62, 0xaa,
-	0x3b, 0x13, 0xea, 0xc3, 0x6d, 0x62, 0xed, 0x29, 0x15, 0x8b, 0x3a, 0x14, 0x32, 0x81, 0x19, 0x0a,
-	0x9b, 0xa1, 0xec, 0x4c, 0x48, 0xe7, 0xb4, 0x2d, 0xdd, 0xa4, 0x2a, 0xfb, 0x75, 0x27, 0x4a, 0x99,
-	0x32, 0x2d, 0x53, 0xf6, 0x57, 0xad, 0xff, 0xe3, 0x4f, 0x07, 0xca, 0x94, 0x96, 0x0d, 0xa2, 0x6a,
-	0x15, 0x5d, 0xd5, 0x4c, 0x93, 0x3a, 0x9a, 0xa3, 0x53, 0xd3, 0xe6, 0x6f, 0xaf, 0x16, 0xa9, 0xbd,
-	0x45, 0x6d, 0x75, 0x43, 0xb3, 0x89, 0x1b, 0x55, 0xdd, 0x99, 0xd8, 0x20, 0x8e, 0x36, 0xa1, 0x56,
-	0xb4, 0xb2, 0x6e, 0xb2, 0xc9, 0x7c, 0xee, 0xa5, 0x50, 0xa8, 0x15, 0xcd, 0xd2, 0xb6, 0x3c, 0x77,
-	0xb9, 0xd0, 0x29, 0xe6, 0xa6, 0xc3, 0xdf, 0x5f, 0x89, 0x7a, 0xbf, 0x5e, 0xa4, 0x86, 0x41, 0x8a,
-	0x7e, 0x34, 0x39, 0x83, 0xe1, 0xcd, 0x3a, 0x9e, 0x7b, 0xcc, 0x7f, 0x81, 0x3c, 0xdc, 0x26, 0xb6,
-	0x23, 0xbf, 0x8b, 0x9f, 0x15, 0x9e, 0xda, 0x15, 0x6a, 0xda, 0x04, 0x6e, 0xe1, 0x5e, 0x17, 0x47,
-	0x16, 0x0d, 0xa2, 0xd1, 0xd3, 0x93, 0x03, 0x4a, 0x58, 0xd2, 0x14, 0xd7, 0x2a, 0x7f, 0x6a, 0xff,
-	0xb7, 0x17, 0xba, 0xbe, 0xf9, 0xf3, 0xbb, 0xab, 0xa8, 0xc0, 0xcd, 0xe4, 0x57, 0xf1, 0x00, 0xf3,
-	0x7b, 0x87, 0x38, 0xab, 0x9b, 0xce, 0x52, 0x03, 0x0c, 0x8f, 0x0b, 0x59, 0xfc, 0x54, 0xd1, 0x22,
-	0x9a, 0x43, 0x2d, 0x16, 0xe1, 0x54, 0xc1, 0x1b, 0x42, 0x3f, 0x4e, 0xe9, 0xa5, 0x6c, 0x8a, 0x3d,
-	0x4c, 0xe9, 0x25, 0xf9, 0x01, 0x7e, 0x3e, 0xc2, 0x13, 0xc7, 0xfa, 0x1a, 0xee, 0x17, 0x09, 0x73,
-	0xcc, 0x43, 0xe1, 0x98, 0x45, 0x27, 0x67, 0xcd, 0xe0, 0x50, 0x7e, 0x0f, 0x0f, 0x79, 0xc1, 0xee,
-	0xda, 0x8b, 0x95, 0x8a, 0x45, 0x77, 0x48, 0x69, 0x99, 0x5a, 0x8b, 0x86, 0xb1, 0xba, 0xe9, 0x78,
-	0x59, 0x83, 0x0c, 0xee, 0xa1, 0x1f, 0x99, 0xc4, 0xc3, 0xee, 0x0e, 0x40, 0xc2, 0x7d, 0xb4, 0x42,
-	0x2c, 0x46, 0xca, 0xc5, 0xdf, 0x18, 0xcb, 0x1f, 0xe0, 0xe1, 0x78, 0xc7, 0x9c, 0x4c, 0xd0, 0x07,
-	0x12, 0x7d, 0xd4, 0xdf, 0x69, 0xdc, 0x92, 0xf9, 0xef, 0x2b, 0x34, 0xc6, 0xf2, 0xa7, 0x08, 0x4b,
-	0x81, 0x34, 0x79, 0x11, 0x3c, 0xc0, 0x63, 0x18, 0xfc, 0xfc, 0xac, 0x8b, 0x99, 0x3f, 0xe7, 0xbf,
-	0x59, 0xe2, 0x6b, 0x30, 0x84, 0xcf, 0x06, 0xa6, 0x37, 0x96, 0xe3, 0x8c, 0xff, 0xf0, 0x6e, 0x89,
-	0x2f, 0x54, 0xba, 0xb1, 0x50, 0x5f, 0x23, 0x7c, 0x31, 0x14, 0x02, 0xa7, 0xf6, 0x3f, 0x60, 0x10,
-	0x52, 0xd4, 0x3d, 0x98, 0xae, 0xa7, 0xaf, 0x91, 0xa2, 0x5d, 0x5e, 0x00, 0x2e, 0xbc, 0x93, 0xcf,
-	0x4c, 0x77, 0x23, 0x33, 0x79, 0x5e, 0x64, 0x5e, 0x64, 0x9e, 0x90, 0x17, 0x71, 0xda, 0xdc, 0x74,
-	0xf8, 0x6e, 0xbd, 0x10, 0xb9, 0x5b, 0x0b, 0xf5, 0x59, 0xf2, 0x17, 0x08, 0x8f, 0x84, 0xd6, 0x81,
-	0x9d, 0xdf, 0xe3, 0xe0, 0x92, 0x6b, 0x6b, 0x19, 0x63, 0xbf, 0x0b, 0x31, 0xe8, 0xa7, 0x27, 0x47,
-	0x14, 0xb7, 0x65, 0x29, 0xf5, 0x96, 0xa5, 0xb8, 0x8d, 0x92, 0xb7, 0x2c, 0xe5, 0x9e, 0x56, 0x26,
-	0xdc, 0x6b, 0x21, 0x60, 0x29, 0xff, 0x8a, 0xf0, 0xe5, 0x44, 0x30, 0x9c, 0x65, 0x34, 0x9a, 0x37,
-	0xf0, 0xd3, 0x62, 0xe1, 0xda, 0xd9, 0xd4, 0x60, 0xba, 0xd5, 0xca, 0xed, 0x17, 0x2a, 0xd7, 0x86,
-	0x3b, 0x02, 0xb7, 0x34, 0xe3, 0x76, 0x39, 0x91, 0x9b, 0x0b, 0x52, 0x20, 0xf7, 0x21, 0x1e, 0xf4,
-	0xb8, 0xb9, 0xd5, 0x19, 0x88, 0xe2, 0xa5, 0x58, 0x4c, 0x24, 0xea, 0x38, 0x91, 0x8f, 0x10, 0xbe,
-	0x14, 0x13, 0x8c, 0xa7, 0x30, 0x24, 0x51, 0xe8, 0xbf, 0x4a, 0x54, 0xaa, 0xf3, 0x44, 0xfd, 0x80,
-	0x84, 0x4c, 0xf9, 0x31, 0x82, 0xad, 0xf2, 0x24, 0xea, 0x6b, 0x39, 0x64, 0xa9, 0x3b, 0xc9, 0xfe,
-	0xdf, 0x62, 0xf6, 0x8f, 0x13, 0x38, 0xc1, 0xbe, 0x35, 0x86, 0xbb, 0xcd, 0x4d, 0xc7, 0xce, 0xa6,
-	0xd9, 0x32, 0xc6, 0xd4, 0x3e, 0x9b, 0x76, 0x6c, 0xc9, 0xba, 0x3b, 0x5f, 0xb2, 0x5b, 0x7e, 0xdd,
-	0xbe, 0x45, 0xb7, 0x8d, 0x3c, 0x35, 0x4b, 0xa4, 0x54, 0x67, 0xdb, 0x7c, 0x42, 0x67, 0x70, 0x8f,
-	0x6e, 0x96, 0xc8, 0x2e, 0x63, 0x7a, 0xa6, 0xe0, 0x0e, 0xe4, 0x4f, 0xf0, 0x68, 0xb2, 0x03, 0x9e,
-	0xb8, 0x50, 0x0f, 0x70, 0x03, 0x5f, 0xb4, 0xe9, 0xb6, 0xb1, 0xbe, 0xc1, 0x4c, 0xd7, 0xeb, 0xfc,
-	0x82, 0x67, 0xb7, 0x7b, 0xb0, 0x65, 0xed, 0x08, 0xe7, 0x41, 0x06, 0x05, 0x62, 0x3b, 0x96, 0x5e,
-	0x74, 0xda, 0x63, 0xf0, 0xb1, 0xcf, 0x20, 0xda, 0x41, 0x2c, 0x83, 0x05, 0x2c, 0x59, 0x0d, 0xcb,
-	0x28, 0x02, 0x56, 0x84, 0x6f, 0x79, 0xde, 0x97, 0x18, 0x6b, 0x15, 0x62, 0xb6, 0x07, 0xde, 0xf2,
-	0x65, 0x44, 0xb8, 0x71, 0x2c, 0xf0, 0x69, 0x7c, 0x9e, 0x32, 0xab, 0x08, 0xd0, 0x19, 0x1a, 0xe2,
-	0x53, 0x9e, 0xf5, 0x8b, 0x44, 0x68, 0x2c, 0x6b, 0x75, 0xd1, 0x13, 0x0f, 0xd7, 0xc0, 0x72, 0x9c,
-	0x69, 0x2c, 0xd8, 0x71, 0x9c, 0x11, 0x9b, 0xde, 0xba, 0x2b, 0xb9, 0xdc, 0x72, 0x02, 0xb3, 0xc9,
-	0xdf, 0xe4, 0x5f, 0x80, 0x7b, 0x58, 0x38, 0xf8, 0x1c, 0xe1, 0x5e, 0x57, 0x9b, 0xc2, 0x68, 0x78,
-	0x6d, 0x35, 0x4b, 0x61, 0xe9, 0x4a, 0x0b, 0x33, 0x5d, 0xc4, 0xf2, 0xf0, 0x67, 0x8f, 0xff, 0xf8,
-	0x2a, 0x95, 0x83, 0x01, 0x35, 0x46, 0xc2, 0xc3, 0x23, 0xc4, 0x15, 0x87, 0xc0, 0x1d, 0x26, 0x63,
-	0xe2, 0x44, 0xc8, 0x65, 0x69, 0xaa, 0x2d, 0x1b, 0x8e, 0x72, 0x9e, 0xa1, 0x7c, 0x19, 0xa6, 0xd4,
-	0xa8, 0x5b, 0xc2, 0x98, 0x9f, 0x5d, 0xb5, 0xca, 0x3b, 0x5b, 0x4d, 0xad, 0xea, 0xa5, 0x1a, 0x3c,
-	0x46, 0x5c, 0xc1, 0x47, 0x9c, 0xef, 0xb0, 0xd0, 0x06, 0xa4, 0x26, 0x8d, 0x22, 0xdd, 0xe8, 0xd0,
-	0x9a, 0x53, 0x9b, 0x61, 0xd4, 0xc6, 0x41, 0x69, 0x8f, 0x1a, 0x7c, 0x8f, 0xf0, 0x79, 0x16, 0xa3,
-	0xe9, 0xb0, 0x85, 0x99, 0x78, 0x44, 0x51, 0x52, 0x40, 0xba, 0xd6, 0xb6, 0x1d, 0xe7, 0xf0, 0x12,
-	0xe3, 0x30, 0x02, 0xc3, 0xad, 0x70, 0x80, 0x6f, 0x11, 0xee, 0xf3, 0xd6, 0x23, 0x76, 0x53, 0x0b,
-	0xf2, 0x36, 0x76, 0x53, 0x8b, 0x72, 0x54, 0x7e, 0x9d, 0xe1, 0x79, 0x05, 0x96, 0x22, 0xf1, 0xa8,
-	0xd5, 0xe6, 0x83, 0xb0, 0x26, 0x3c, 0xd4, 0x4b, 0x7c, 0xfb, 0xfc, 0x88, 0xf0, 0x33, 0x1e, 0x5c,
-	0xef, 0x26, 0x00, 0xe3, 0x89, 0x60, 0x8e, 0xdd, 0x5b, 0xa4, 0x89, 0x36, 0x2c, 0x38, 0x8d, 0x77,
-	0x18, 0x8d, 0x35, 0x58, 0x89, 0xa6, 0xe1, 0x5e, 0x09, 0x34, 0xc3, 0x6e, 0x83, 0xd0, 0xcf, 0x08,
-	0x5f, 0x60, 0x61, 0xc3, 0xae, 0x6f, 0x30, 0x1b, 0x8f, 0x33, 0xe6, 0x2e, 0x29, 0xcd, 0x75, 0x62,
-	0xca, 0xb9, 0xe6, 0x19, 0xd7, 0x05, 0x98, 0x6b, 0x81, 0xeb, 0x98, 0x66, 0x18, 0x6a, 0x95, 0xf5,
-	0xd0, 0x9a, 0x5a, 0xf5, 0x2e, 0x95, 0x35, 0xf8, 0x29, 0x50, 0x12, 0xa2, 0x02, 0x6a, 0xa1, 0x24,
-	0x42, 0x35, 0x5f, 0x0b, 0x25, 0x11, 0x2e, 0xb5, 0xe4, 0x65, 0xc6, 0xe7, 0x36, 0xdc, 0xfc, 0x77,
-	0x5b, 0x10, 0x7e, 0x47, 0xfc, 0xa3, 0x41, 0x94, 0x46, 0x81, 0x84, 0xfe, 0x93, 0x20, 0x8e, 0xa4,
-	0x9b, 0x9d, 0x9a, 0x73, 0xa2, 0x8b, 0x8c, 0xe8, 0x3c, 0xcc, 0x86, 0x13, 0x8d, 0x11, 0x48, 0x6a,
-	0x95, 0x1d, 0x8f, 0x35, 0x78, 0xe2, 0x71, 0x8c, 0x52, 0x31, 0x49, 0x1c, 0x13, 0xe4, 0x53, 0x12,
-	0xc7, 0x24, 0xf1, 0x24, 0xdf, 0x66, 0x1c, 0xe7, 0xe0, 0x7a, 0x38, 0xc7, 0x68, 0x09, 0xd5, 0xa0,
-	0x78, 0xe0, 0xd5, 0x5c, 0x98, 0xd6, 0x49, 0xaa, 0xb9, 0x18, 0x71, 0x95, 0x54, 0x73, 0x71, 0xd2,
-	0x4a, 0x5e, 0x60, 0xb4, 0x66, 0x60, 0x3a, 0x9c, 0x56, 0xb8, 0xc0, 0x6a, 0x50, 0xda, 0x47, 0xf8,
-	0xb9, 0xe6, 0x63, 0x95, 0xe9, 0x17, 0xb8, 0xd6, 0xc6, 0x99, 0x18, 0x14, 0x5f, 0xd2, 0xf5, 0xf6,
-	0x0d, 0x39, 0x99, 0x39, 0x46, 0x66, 0x1a, 0x26, 0xd5, 0x16, 0x3e, 0x24, 0xba, 0x02, 0xcc, 0xa3,
-	0x92, 0x5f, 0xd9, 0x3f, 0xcc, 0xa1, 0x83, 0xc3, 0x1c, 0x7a, 0x72, 0x98, 0x43, 0x5f, 0x1e, 0xe5,
-	0xba, 0x0e, 0x8e, 0x72, 0x5d, 0xbf, 0x1c, 0xe5, 0xba, 0xde, 0x9f, 0x2a, 0xeb, 0xce, 0xfd, 0xed,
-	0x0d, 0xa5, 0x48, 0xb7, 0xd4, 0x95, 0xc5, 0xd5, 0xb7, 0x0b, 0x8b, 0x63, 0xcb, 0xba, 0xa9, 0x99,
-	0x45, 0x22, 0x84, 0xd9, 0xe5, 0x81, 0x9c, 0xbd, 0x0a, 0xb1, 0x37, 0x7a, 0xd9, 0x67, 0xca, 0xa9,
-	0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x4f, 0xcd, 0xd7, 0x1f, 0xc1, 0x15, 0x00, 0x00,
+	// 1284 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x58, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0xd8, 0x49, 0x68, 0x5f, 0x9a, 0xa0, 0x0c, 0x96, 0x30, 0x4b, 0x30, 0xe9, 0x26, 0x4a,
+	0xd3, 0x42, 0x76, 0x1b, 0xa7, 0xa4, 0xcd, 0x0f, 0xda, 0xc6, 0x11, 0x29, 0x05, 0x92, 0x14, 0xf3,
+	0x4b, 0xe2, 0x80, 0xb5, 0xb1, 0xc7, 0xee, 0xb6, 0xce, 0xce, 0x76, 0x77, 0x13, 0x12, 0x05, 0x4b,
+	0x08, 0x6e, 0x9c, 0x90, 0x38, 0x73, 0x86, 0x23, 0x42, 0xea, 0x85, 0x03, 0x17, 0x2e, 0x45, 0x20,
+	0x54, 0xc4, 0x05, 0x01, 0x42, 0x28, 0x41, 0xe2, 0xc8, 0xbf, 0x80, 0x3c, 0x3b, 0xeb, 0xdd, 0x8d,
+	0x67, 0x77, 0x6d, 0x43, 0xb8, 0x44, 0xd9, 0x99, 0x79, 0xef, 0x7d, 0xdf, 0x9b, 0x79, 0x6f, 0xbe,
+	0x31, 0x8c, 0x6f, 0x6b, 0x86, 0x63, 0x69, 0xe5, 0xdb, 0x9a, 0x6e, 0xa8, 0x0e, 0xbd, 0x4b, 0x0c,
+	0x75, 0x77, 0x56, 0xbd, 0xb7, 0x43, 0xac, 0x7d, 0xc5, 0xb4, 0xa8, 0x43, 0x71, 0x26, 0xb0, 0x42,
+	0x61, 0x2b, 0x94, 0xdd, 0x59, 0x69, 0x54, 0xdb, 0xd6, 0x0d, 0xaa, 0xb2, 0xbf, 0xee, 0x42, 0xe9,
+	0x42, 0x99, 0xda, 0xdb, 0xd4, 0x56, 0xb7, 0x34, 0x9b, 0xb8, 0x1e, 0xd4, 0xdd, 0xd9, 0x2d, 0xe2,
+	0x68, 0xb3, 0xaa, 0xa9, 0xd5, 0x74, 0x43, 0x73, 0x74, 0x6a, 0xf0, 0xb5, 0x99, 0x1a, 0xad, 0x51,
+	0xf6, 0xaf, 0xda, 0xfc, 0x8f, 0x8f, 0x8e, 0xd5, 0x28, 0xad, 0xd5, 0x89, 0xaa, 0x99, 0xba, 0xaa,
+	0x19, 0x06, 0x75, 0x98, 0x89, 0xcd, 0x67, 0x73, 0x42, 0xa8, 0x46, 0xd5, 0xe1, 0xf3, 0xe7, 0xa3,
+	0xe6, 0x4b, 0x65, 0x5a, 0xaf, 0x93, 0x72, 0x20, 0xfc, 0x59, 0xe1, 0x52, 0x53, 0xb3, 0xb4, 0x6d,
+	0x1e, 0x4d, 0xce, 0x00, 0x7e, 0xb5, 0xc9, 0xe1, 0x16, 0x1b, 0x2c, 0x92, 0x7b, 0x3b, 0xc4, 0x76,
+	0xe4, 0x37, 0xe1, 0xb1, 0xd0, 0xa8, 0x6d, 0x52, 0xc3, 0x26, 0xf8, 0x1a, 0x0c, 0xba, 0xc6, 0x59,
+	0x34, 0x8e, 0xa6, 0x87, 0xf2, 0x63, 0x8a, 0x28, 0x69, 0x8a, 0x6b, 0x55, 0x38, 0xfd, 0xe0, 0xf7,
+	0xa7, 0xfb, 0x3e, 0xff, 0xeb, 0x8b, 0x0b, 0xa8, 0xc8, 0xcd, 0xe4, 0x17, 0x61, 0x8c, 0xf9, 0xbd,
+	0x41, 0x9c, 0x8d, 0xaa, 0xb3, 0xda, 0xc2, 0xcb, 0xe3, 0xe2, 0x2c, 0x3c, 0x52, 0xb6, 0x88, 0xe6,
+	0x50, 0x8b, 0x45, 0x38, 0x5d, 0xf4, 0x3e, 0xf1, 0x08, 0xa4, 0xf4, 0x4a, 0x36, 0xc5, 0x06, 0x53,
+	0x7a, 0x45, 0xbe, 0x0b, 0x4f, 0x45, 0x78, 0xe2, 0x58, 0x5f, 0x82, 0x91, 0x70, 0x4e, 0x38, 0xe6,
+	0x09, 0x31, 0xe6, 0xb0, 0x93, 0x61, 0x23, 0xf8, 0x29, 0xbf, 0x05, 0x13, 0x5e, 0xb0, 0x9b, 0xf6,
+	0x8a, 0x69, 0x5a, 0x74, 0x97, 0x54, 0xd6, 0xa8, 0xb5, 0x52, 0xaf, 0x6f, 0x54, 0x1d, 0x2f, 0x6b,
+	0x38, 0x03, 0x03, 0xf4, 0x5d, 0x83, 0x78, 0xd8, 0xdd, 0x0f, 0x2c, 0xc1, 0x29, 0x6a, 0x12, 0x8b,
+	0x91, 0x72, 0xf1, 0xb7, 0xbe, 0xe5, 0x77, 0x60, 0x32, 0xde, 0x31, 0x27, 0x13, 0xf4, 0x81, 0xc2,
+	0x3e, 0x9a, 0x73, 0x1a, 0xb7, 0x64, 0xfe, 0x4f, 0x15, 0x5b, 0xdf, 0xf2, 0xfb, 0x08, 0xa4, 0x40,
+	0x9a, 0xbc, 0x08, 0x1e, 0xe0, 0x19, 0xc0, 0x7e, 0x7e, 0x4a, 0xe1, 0xcc, 0x8f, 0xfa, 0x33, 0xab,
+	0x7c, 0x0f, 0x26, 0x60, 0x38, 0xb0, 0xbc, 0xb5, 0x1d, 0x67, 0xfc, 0xc1, 0x9b, 0x15, 0xbe, 0x51,
+	0xe9, 0xd6, 0x46, 0x7d, 0x8a, 0xe0, 0x49, 0x21, 0x04, 0x4e, 0xed, 0x7f, 0xc0, 0x10, 0x4a, 0x51,
+	0xff, 0x78, 0xba, 0x99, 0xbe, 0x56, 0x8a, 0xf6, 0x78, 0x01, 0xb8, 0xf0, 0x4e, 0x3e, 0x33, 0xfd,
+	0xad, 0xcc, 0x14, 0x78, 0x91, 0x79, 0x91, 0x79, 0x42, 0x9e, 0x81, 0xb4, 0x51, 0x75, 0xf8, 0x69,
+	0x7d, 0x22, 0xf2, 0xb4, 0x16, 0x9b, 0xab, 0xe4, 0x8f, 0x10, 0x4c, 0x09, 0xeb, 0xc0, 0x2e, 0xec,
+	0x73, 0x70, 0xc9, 0xb5, 0xb5, 0x06, 0xe0, 0x77, 0x2e, 0x06, 0x7d, 0x28, 0x3f, 0xa5, 0xb8, 0x6d,
+	0x4e, 0x69, 0xb6, 0x39, 0xc5, 0x6d, 0x94, 0xbc, 0xcd, 0x29, 0xb7, 0xb4, 0x1a, 0xe1, 0x5e, 0x8b,
+	0x01, 0x4b, 0xf9, 0x17, 0x04, 0xe7, 0x12, 0xc1, 0x70, 0x96, 0xd1, 0x68, 0x5e, 0x81, 0x47, 0xc3,
+	0x85, 0x6b, 0x67, 0x53, 0xe3, 0xe9, 0x4e, 0x2b, 0x77, 0x24, 0x54, 0xb9, 0x36, 0xbe, 0x11, 0xe2,
+	0x96, 0x66, 0xdc, 0xce, 0x25, 0x72, 0x73, 0x41, 0x86, 0xc8, 0xdd, 0x81, 0x71, 0x8f, 0x9b, 0x5b,
+	0x9d, 0x81, 0x28, 0x5e, 0x8a, 0xc3, 0x89, 0x44, 0x3d, 0x27, 0xf2, 0x2b, 0x04, 0x67, 0x63, 0x82,
+	0xf1, 0x14, 0x0a, 0x12, 0x85, 0xfe, 0xab, 0x44, 0xa5, 0x7a, 0x4f, 0xd4, 0xd7, 0x28, 0x94, 0x29,
+	0x3f, 0x46, 0xb0, 0x55, 0x9e, 0x44, 0x7d, 0xad, 0x09, 0xb6, 0xba, 0x97, 0xec, 0xff, 0x1d, 0xce,
+	0xfe, 0x71, 0x02, 0x27, 0xd8, 0xb7, 0x66, 0xa0, 0xdf, 0xa8, 0x3a, 0x76, 0x36, 0xcd, 0xb6, 0x31,
+	0xa6, 0xf6, 0xd9, 0xb2, 0x63, 0x5b, 0xd6, 0xdf, 0xfb, 0x96, 0x5d, 0xf3, 0xeb, 0xf6, 0x35, 0xba,
+	0x53, 0x2f, 0x50, 0xa3, 0x42, 0x2a, 0x4d, 0xb6, 0xed, 0x37, 0x74, 0x06, 0x06, 0x74, 0xa3, 0x42,
+	0xf6, 0x18, 0xd3, 0x33, 0x45, 0xf7, 0x43, 0x7e, 0x0f, 0xa6, 0x93, 0x1d, 0xf0, 0xc4, 0x09, 0x3d,
+	0xe0, 0x45, 0xc8, 0xda, 0x11, 0x96, 0xfc, 0x56, 0x8b, 0x9c, 0x0f, 0xc2, 0x2f, 0x12, 0xdb, 0xb1,
+	0xf4, 0xb2, 0xd3, 0x33, 0xfc, 0x68, 0x07, 0x49, 0xf0, 0xad, 0x08, 0x4b, 0x0f, 0x7e, 0xd4, 0xbc,
+	0xbc, 0xe4, 0xab, 0x8b, 0x4d, 0x93, 0x18, 0xdd, 0x41, 0x37, 0x7d, 0x05, 0x21, 0x36, 0x8e, 0x85,
+	0x9d, 0x87, 0x0c, 0x15, 0x58, 0x71, 0xc8, 0xc2, 0x39, 0x79, 0xc1, 0xaf, 0x8e, 0x50, 0x47, 0xd9,
+	0x6c, 0xaa, 0x9d, 0x78, 0xb0, 0x77, 0x40, 0x8e, 0x33, 0x8d, 0x85, 0xaa, 0x00, 0x36, 0xda, 0x6c,
+	0x78, 0x15, 0x09, 0x66, 0xf2, 0xf7, 0x31, 0x0c, 0xb0, 0x60, 0xf8, 0x43, 0x04, 0x83, 0xae, 0x24,
+	0xc5, 0xd3, 0xe2, 0x92, 0x6a, 0x57, 0xc0, 0xd2, 0xf9, 0x0e, 0x56, 0xba, 0x78, 0xe5, 0xc9, 0x0f,
+	0x7e, 0xfa, 0xf3, 0x93, 0x54, 0x0e, 0x8f, 0xa9, 0x31, 0x72, 0x1b, 0xdf, 0x47, 0x30, 0x1c, 0x22,
+	0x8d, 0xf3, 0x31, 0x21, 0x22, 0x04, 0xb2, 0x34, 0xd7, 0x95, 0x0d, 0x07, 0xb8, 0xc4, 0x00, 0x3e,
+	0x87, 0xe7, 0xd4, 0xa8, 0xa7, 0xc3, 0x8c, 0xdf, 0x86, 0xd4, 0x03, 0xde, 0xcb, 0x1a, 0xea, 0x81,
+	0x5e, 0x69, 0xe0, 0x1f, 0x10, 0x3c, 0x1e, 0x71, 0x99, 0xe3, 0xe5, 0x2e, 0xd0, 0xb4, 0x09, 0x12,
+	0xe9, 0xf9, 0x1e, 0xad, 0x39, 0xab, 0x79, 0xc6, 0xea, 0x22, 0x56, 0xba, 0x63, 0x85, 0xbf, 0x44,
+	0x30, 0xda, 0x76, 0xa9, 0xe2, 0xf9, 0x78, 0x30, 0x51, 0x57, 0xbe, 0x74, 0xb9, 0x6b, 0x3b, 0x0e,
+	0xff, 0x59, 0x06, 0x7f, 0x0a, 0x4f, 0x76, 0x02, 0x1f, 0x7f, 0x86, 0x20, 0xbd, 0x51, 0x75, 0x62,
+	0x0f, 0x70, 0x48, 0xc1, 0xc6, 0x1e, 0xe0, 0xb0, 0xe2, 0x94, 0x5f, 0x66, 0x50, 0x5e, 0xc0, 0xab,
+	0x91, 0x50, 0xd4, 0x83, 0xf6, 0xbb, 0xae, 0x11, 0x1a, 0xd4, 0x2b, 0xfc, 0xbc, 0x7c, 0x8b, 0x60,
+	0x28, 0xa0, 0xf3, 0xf1, 0xc5, 0x44, 0x1c, 0xc7, 0x5e, 0x25, 0xd2, 0x6c, 0x17, 0x16, 0x9c, 0xc1,
+	0x1b, 0x8c, 0xc1, 0x26, 0x5e, 0x8f, 0x66, 0xe0, 0x0a, 0x7e, 0xad, 0x6e, 0x77, 0xc1, 0xe5, 0x47,
+	0x04, 0x19, 0xd1, 0xbb, 0x0c, 0x2f, 0xc4, 0x43, 0x8c, 0x79, 0x24, 0x4a, 0x8b, 0xbd, 0x98, 0x72,
+	0x9a, 0x05, 0x46, 0x73, 0x19, 0x2f, 0x76, 0x40, 0x73, 0x46, 0xab, 0xd7, 0xd5, 0x03, 0xf6, 0x04,
+	0x6d, 0xa8, 0x07, 0xde, 0x6b, 0xb1, 0x81, 0xbf, 0x77, 0x8f, 0x7f, 0x58, 0xd5, 0x74, 0x70, 0xfc,
+	0x85, 0x3a, 0xae, 0x83, 0xe3, 0x2f, 0x96, 0x4f, 0xf2, 0x1a, 0xa3, 0x72, 0x1d, 0x5f, 0xfd, 0x77,
+	0x67, 0x0e, 0xff, 0x86, 0x20, 0x1b, 0x25, 0x39, 0x70, 0x42, 0x87, 0x49, 0xd0, 0x3a, 0xd2, 0xd5,
+	0x5e, 0xcd, 0x39, 0xc7, 0x15, 0xc6, 0x71, 0x09, 0x2f, 0x88, 0x39, 0x36, 0xf5, 0x4c, 0x69, 0x8b,
+	0x39, 0x28, 0x35, 0xf5, 0x5c, 0x29, 0xd8, 0xae, 0xd8, 0xa5, 0xd7, 0xc0, 0xbf, 0x22, 0xc8, 0x46,
+	0x49, 0x92, 0x24, 0x7a, 0x09, 0x5a, 0x28, 0x89, 0x5e, 0x92, 0x12, 0x92, 0xaf, 0x33, 0x7a, 0x8b,
+	0xf8, 0x8a, 0x98, 0x9e, 0xaf, 0x77, 0x22, 0xd9, 0x7d, 0x87, 0x20, 0x23, 0x52, 0x2d, 0x49, 0xf5,
+	0x15, 0x23, 0x93, 0x92, 0xea, 0x2b, 0x4e, 0x24, 0xc9, 0xcb, 0x8c, 0xd1, 0x3c, 0xbe, 0x24, 0x66,
+	0xe4, 0xca, 0xa1, 0x48, 0x36, 0xdf, 0x20, 0xc0, 0xed, 0xb2, 0x06, 0x5f, 0xee, 0xe2, 0x9a, 0x0b,
+	0x6a, 0x28, 0xe9, 0x4a, 0xf7, 0x86, 0x9c, 0xc7, 0x22, 0xe3, 0x71, 0x09, 0xe7, 0xd5, 0x0e, 0x7e,
+	0x2b, 0x2c, 0xb1, 0x1e, 0xe1, 0xb1, 0x28, 0xac, 0x3f, 0x38, 0xcc, 0xa1, 0x87, 0x87, 0x39, 0xf4,
+	0xc7, 0x61, 0x0e, 0x7d, 0x7c, 0x94, 0xeb, 0x7b, 0x78, 0x94, 0xeb, 0xfb, 0xf9, 0x28, 0xd7, 0xf7,
+	0xf6, 0x5c, 0x4d, 0x77, 0x6e, 0xef, 0x6c, 0x29, 0x65, 0xba, 0xad, 0xae, 0xaf, 0x6c, 0xbc, 0x5e,
+	0x5c, 0x99, 0x59, 0xd3, 0x0d, 0xcd, 0x28, 0x93, 0x50, 0x98, 0x3d, 0x1e, 0xc8, 0xd9, 0x37, 0x89,
+	0xbd, 0x35, 0xc8, 0x7e, 0x66, 0x9c, 0xfb, 0x27, 0x00, 0x00, 0xff, 0xff, 0x0d, 0x65, 0xc6, 0x6b,
+	0x81, 0x15, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1432,28 +1431,28 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// QueryNftCollection
-	QueryNftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error)
-	// QueryNftCollectionsByCreator
-	QueryNftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error)
-	// QueryAllNftCollections
-	QueryAllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error)
-	// QueryNft
-	QueryNft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error)
-	// QueryNftApproved
-	QueryNftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error)
-	// QueryIsApprovedForAllNfts
-	QueryIsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error)
-	// QueryAllCollectionNfts
-	QueryAllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error)
+	// NftCollection
+	NftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error)
+	// NftCollectionsByCreator
+	NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error)
+	// AllNftCollections
+	AllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error)
+	// Nft
+	Nft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error)
+	// NftApproved
+	NftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error)
+	// IsApprovedForAllNfts
+	IsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error)
+	// AllCollectionNfts
+	AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error)
 	// Queries a list of SoulBondedNftsCollection items.
-	QuerySoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error)
+	SoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error)
 	// Queries a list of RestrictedNftsCollection items.
-	QueryRestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error)
+	RestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error)
 	// Queries a list of OpenedNftsCollection items.
-	QueryOpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error)
+	OpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error)
 	// Queries a list of NftCollectionOwner items.
-	QueryNftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error)
+	NftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error)
 }
 
 type queryClient struct {
@@ -1473,99 +1472,99 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error) {
+func (c *queryClient) NftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error) {
 	out := new(QueryGetNftCollectionResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryNftCollection", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/NftCollection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error) {
+func (c *queryClient) NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error) {
 	out := new(QueryGetNftCollectionsByCreatorResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryNftCollectionsByCreator", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/NftCollectionsByCreator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryAllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error) {
+func (c *queryClient) AllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error) {
 	out := new(QueryGetAllNftCollectionsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryAllNftCollections", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/AllNftCollections", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error) {
+func (c *queryClient) Nft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error) {
 	out := new(QueryGetNftResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryNft", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/Nft", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error) {
+func (c *queryClient) NftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error) {
 	out := new(QueryGetNftApprovedResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryNftApproved", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/NftApproved", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryIsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error) {
+func (c *queryClient) IsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error) {
 	out := new(QueryGetIsApprovedForAllNftsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryIsApprovedForAllNfts", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/IsApprovedForAllNfts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryAllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error) {
+func (c *queryClient) AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error) {
 	out := new(QueryGetAllCollectionNftsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryAllCollectionNfts", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/AllCollectionNfts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QuerySoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error) {
+func (c *queryClient) SoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error) {
 	out := new(QueryGetSoulBondedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QuerySoulBondedNftsCollection", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/SoulBondedNftsCollection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error) {
+func (c *queryClient) RestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error) {
 	out := new(QueryGetRestrictedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryRestrictedNftsCollection", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/RestrictedNftsCollection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error) {
+func (c *queryClient) OpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error) {
 	out := new(QueryGetOpenedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryOpenedNftsCollection", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/OpenedNftsCollection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error) {
+func (c *queryClient) NftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error) {
 	out := new(QueryGetNftCollectionOwnerResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/QueryNftCollectionOwner", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/mantrachain.token.v1.Query/NftCollectionOwner", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1576,28 +1575,28 @@ func (c *queryClient) QueryNftCollectionOwner(ctx context.Context, in *QueryGetN
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// QueryNftCollection
-	QueryNftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error)
-	// QueryNftCollectionsByCreator
-	QueryNftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error)
-	// QueryAllNftCollections
-	QueryAllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error)
-	// QueryNft
-	QueryNft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error)
-	// QueryNftApproved
-	QueryNftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error)
-	// QueryIsApprovedForAllNfts
-	QueryIsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error)
-	// QueryAllCollectionNfts
-	QueryAllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error)
+	// NftCollection
+	NftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error)
+	// NftCollectionsByCreator
+	NftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error)
+	// AllNftCollections
+	AllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error)
+	// Nft
+	Nft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error)
+	// NftApproved
+	NftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error)
+	// IsApprovedForAllNfts
+	IsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error)
+	// AllCollectionNfts
+	AllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error)
 	// Queries a list of SoulBondedNftsCollection items.
-	QuerySoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error)
+	SoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error)
 	// Queries a list of RestrictedNftsCollection items.
-	QueryRestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error)
+	RestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error)
 	// Queries a list of OpenedNftsCollection items.
-	QueryOpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error)
+	OpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error)
 	// Queries a list of NftCollectionOwner items.
-	QueryNftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error)
+	NftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1607,38 +1606,38 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) QueryNftCollection(ctx context.Context, req *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollection not implemented")
+func (*UnimplementedQueryServer) NftCollection(ctx context.Context, req *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollection not implemented")
 }
-func (*UnimplementedQueryServer) QueryNftCollectionsByCreator(ctx context.Context, req *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollectionsByCreator not implemented")
+func (*UnimplementedQueryServer) NftCollectionsByCreator(ctx context.Context, req *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollectionsByCreator not implemented")
 }
-func (*UnimplementedQueryServer) QueryAllNftCollections(ctx context.Context, req *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAllNftCollections not implemented")
+func (*UnimplementedQueryServer) AllNftCollections(ctx context.Context, req *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllNftCollections not implemented")
 }
-func (*UnimplementedQueryServer) QueryNft(ctx context.Context, req *QueryGetNftRequest) (*QueryGetNftResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNft not implemented")
+func (*UnimplementedQueryServer) Nft(ctx context.Context, req *QueryGetNftRequest) (*QueryGetNftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Nft not implemented")
 }
-func (*UnimplementedQueryServer) QueryNftApproved(ctx context.Context, req *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftApproved not implemented")
+func (*UnimplementedQueryServer) NftApproved(ctx context.Context, req *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftApproved not implemented")
 }
-func (*UnimplementedQueryServer) QueryIsApprovedForAllNfts(ctx context.Context, req *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryIsApprovedForAllNfts not implemented")
+func (*UnimplementedQueryServer) IsApprovedForAllNfts(ctx context.Context, req *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsApprovedForAllNfts not implemented")
 }
-func (*UnimplementedQueryServer) QueryAllCollectionNfts(ctx context.Context, req *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAllCollectionNfts not implemented")
+func (*UnimplementedQueryServer) AllCollectionNfts(ctx context.Context, req *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllCollectionNfts not implemented")
 }
-func (*UnimplementedQueryServer) QuerySoulBondedNftsCollection(ctx context.Context, req *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QuerySoulBondedNftsCollection not implemented")
+func (*UnimplementedQueryServer) SoulBondedNftsCollection(ctx context.Context, req *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SoulBondedNftsCollection not implemented")
 }
-func (*UnimplementedQueryServer) QueryRestrictedNftsCollection(ctx context.Context, req *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRestrictedNftsCollection not implemented")
+func (*UnimplementedQueryServer) RestrictedNftsCollection(ctx context.Context, req *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RestrictedNftsCollection not implemented")
 }
-func (*UnimplementedQueryServer) QueryOpenedNftsCollection(ctx context.Context, req *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOpenedNftsCollection not implemented")
+func (*UnimplementedQueryServer) OpenedNftsCollection(ctx context.Context, req *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpenedNftsCollection not implemented")
 }
-func (*UnimplementedQueryServer) QueryNftCollectionOwner(ctx context.Context, req *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollectionOwner not implemented")
+func (*UnimplementedQueryServer) NftCollectionOwner(ctx context.Context, req *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollectionOwner not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1663,200 +1662,200 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollection(ctx, in)
+		return srv.(QueryServer).NftCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryNftCollection",
+		FullMethod: "/mantrachain.token.v1.Query/NftCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollection(ctx, req.(*QueryGetNftCollectionRequest))
+		return srv.(QueryServer).NftCollection(ctx, req.(*QueryGetNftCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionsByCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollectionsByCreator(ctx, in)
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryNftCollectionsByCreator",
+		FullMethod: "/mantrachain.token.v1.Query/NftCollectionsByCreator",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollectionsByCreator(ctx, req.(*QueryGetNftCollectionsByCreatorRequest))
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, req.(*QueryGetNftCollectionsByCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAllNftCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllNftCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAllNftCollectionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAllNftCollections(ctx, in)
+		return srv.(QueryServer).AllNftCollections(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryAllNftCollections",
+		FullMethod: "/mantrachain.token.v1.Query/AllNftCollections",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAllNftCollections(ctx, req.(*QueryGetAllNftCollectionsRequest))
+		return srv.(QueryServer).AllNftCollections(ctx, req.(*QueryGetAllNftCollectionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Nft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNft(ctx, in)
+		return srv.(QueryServer).Nft(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryNft",
+		FullMethod: "/mantrachain.token.v1.Query/Nft",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNft(ctx, req.(*QueryGetNftRequest))
+		return srv.(QueryServer).Nft(ctx, req.(*QueryGetNftRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftApproved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftApproved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftApprovedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftApproved(ctx, in)
+		return srv.(QueryServer).NftApproved(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryNftApproved",
+		FullMethod: "/mantrachain.token.v1.Query/NftApproved",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftApproved(ctx, req.(*QueryGetNftApprovedRequest))
+		return srv.(QueryServer).NftApproved(ctx, req.(*QueryGetNftApprovedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryIsApprovedForAllNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IsApprovedForAllNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetIsApprovedForAllNftsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryIsApprovedForAllNfts(ctx, in)
+		return srv.(QueryServer).IsApprovedForAllNfts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryIsApprovedForAllNfts",
+		FullMethod: "/mantrachain.token.v1.Query/IsApprovedForAllNfts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryIsApprovedForAllNfts(ctx, req.(*QueryGetIsApprovedForAllNftsRequest))
+		return srv.(QueryServer).IsApprovedForAllNfts(ctx, req.(*QueryGetIsApprovedForAllNftsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAllCollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllCollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAllCollectionNftsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAllCollectionNfts(ctx, in)
+		return srv.(QueryServer).AllCollectionNfts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryAllCollectionNfts",
+		FullMethod: "/mantrachain.token.v1.Query/AllCollectionNfts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAllCollectionNfts(ctx, req.(*QueryGetAllCollectionNftsRequest))
+		return srv.(QueryServer).AllCollectionNfts(ctx, req.(*QueryGetAllCollectionNftsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QuerySoulBondedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_SoulBondedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetSoulBondedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QuerySoulBondedNftsCollection(ctx, in)
+		return srv.(QueryServer).SoulBondedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QuerySoulBondedNftsCollection",
+		FullMethod: "/mantrachain.token.v1.Query/SoulBondedNftsCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QuerySoulBondedNftsCollection(ctx, req.(*QueryGetSoulBondedNftsCollectionRequest))
+		return srv.(QueryServer).SoulBondedNftsCollection(ctx, req.(*QueryGetSoulBondedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRestrictedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_RestrictedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetRestrictedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRestrictedNftsCollection(ctx, in)
+		return srv.(QueryServer).RestrictedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryRestrictedNftsCollection",
+		FullMethod: "/mantrachain.token.v1.Query/RestrictedNftsCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRestrictedNftsCollection(ctx, req.(*QueryGetRestrictedNftsCollectionRequest))
+		return srv.(QueryServer).RestrictedNftsCollection(ctx, req.(*QueryGetRestrictedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOpenedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_OpenedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetOpenedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOpenedNftsCollection(ctx, in)
+		return srv.(QueryServer).OpenedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryOpenedNftsCollection",
+		FullMethod: "/mantrachain.token.v1.Query/OpenedNftsCollection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOpenedNftsCollection(ctx, req.(*QueryGetOpenedNftsCollectionRequest))
+		return srv.(QueryServer).OpenedNftsCollection(ctx, req.(*QueryGetOpenedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollectionOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollectionOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionOwnerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollectionOwner(ctx, in)
+		return srv.(QueryServer).NftCollectionOwner(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.token.v1.Query/QueryNftCollectionOwner",
+		FullMethod: "/mantrachain.token.v1.Query/NftCollectionOwner",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollectionOwner(ctx, req.(*QueryGetNftCollectionOwnerRequest))
+		return srv.(QueryServer).NftCollectionOwner(ctx, req.(*QueryGetNftCollectionOwnerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1870,48 +1869,48 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryNftCollection",
-			Handler:    _Query_QueryNftCollection_Handler,
+			MethodName: "NftCollection",
+			Handler:    _Query_NftCollection_Handler,
 		},
 		{
-			MethodName: "QueryNftCollectionsByCreator",
-			Handler:    _Query_QueryNftCollectionsByCreator_Handler,
+			MethodName: "NftCollectionsByCreator",
+			Handler:    _Query_NftCollectionsByCreator_Handler,
 		},
 		{
-			MethodName: "QueryAllNftCollections",
-			Handler:    _Query_QueryAllNftCollections_Handler,
+			MethodName: "AllNftCollections",
+			Handler:    _Query_AllNftCollections_Handler,
 		},
 		{
-			MethodName: "QueryNft",
-			Handler:    _Query_QueryNft_Handler,
+			MethodName: "Nft",
+			Handler:    _Query_Nft_Handler,
 		},
 		{
-			MethodName: "QueryNftApproved",
-			Handler:    _Query_QueryNftApproved_Handler,
+			MethodName: "NftApproved",
+			Handler:    _Query_NftApproved_Handler,
 		},
 		{
-			MethodName: "QueryIsApprovedForAllNfts",
-			Handler:    _Query_QueryIsApprovedForAllNfts_Handler,
+			MethodName: "IsApprovedForAllNfts",
+			Handler:    _Query_IsApprovedForAllNfts_Handler,
 		},
 		{
-			MethodName: "QueryAllCollectionNfts",
-			Handler:    _Query_QueryAllCollectionNfts_Handler,
+			MethodName: "AllCollectionNfts",
+			Handler:    _Query_AllCollectionNfts_Handler,
 		},
 		{
-			MethodName: "QuerySoulBondedNftsCollection",
-			Handler:    _Query_QuerySoulBondedNftsCollection_Handler,
+			MethodName: "SoulBondedNftsCollection",
+			Handler:    _Query_SoulBondedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryRestrictedNftsCollection",
-			Handler:    _Query_QueryRestrictedNftsCollection_Handler,
+			MethodName: "RestrictedNftsCollection",
+			Handler:    _Query_RestrictedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryOpenedNftsCollection",
-			Handler:    _Query_QueryOpenedNftsCollection_Handler,
+			MethodName: "OpenedNftsCollection",
+			Handler:    _Query_OpenedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryNftCollectionOwner",
-			Handler:    _Query_QueryNftCollectionOwner_Handler,
+			MethodName: "NftCollectionOwner",
+			Handler:    _Query_NftCollectionOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

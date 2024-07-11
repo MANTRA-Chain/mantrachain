@@ -45,7 +45,7 @@ func CmdQueryBalance() *cobra.Command {
 				Address:  addr.String(),
 			}
 
-			res, err := queryClient.QueryBalance(context.Background(), params)
+			res, err := queryClient.Balance(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -85,7 +85,7 @@ func CmdQueryDenomMetadata() *cobra.Command {
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.QueryDenomMetadata(context.Background(), params)
+			res, err := queryClient.DenomMetadata(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -125,7 +125,7 @@ func CmdQuerySupplyOf() *cobra.Command {
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.QuerySupplyOf(context.Background(), params)
+			res, err := queryClient.SupplyOf(context.Background(), params)
 			if err != nil {
 				return err
 			}

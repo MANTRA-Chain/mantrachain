@@ -28,7 +28,7 @@ func CmdListFeeToken() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QueryFeeTokenAll(context.Background(), params)
+			res, err := queryClient.FeeTokenAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -59,7 +59,7 @@ func CmdShowFeeToken() *cobra.Command {
 				Denom: argDenom,
 			}
 
-			res, err := queryClient.QueryFeeToken(context.Background(), params)
+			res, err := queryClient.FeeToken(context.Background(), params)
 			if err != nil {
 				return err
 			}

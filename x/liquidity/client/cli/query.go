@@ -73,7 +73,7 @@ $ %s query %s pairs --denoms=uatom,stake
 			denoms, _ := cmd.Flags().GetStringSlice(FlagDenoms)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryPairs(context.Background(), &types.QueryPairsRequest{
+			res, err := queryClient.Pairs(context.Background(), &types.QueryPairsRequest{
 				Denoms:     denoms,
 				Pagination: pageReq,
 			})
@@ -117,7 +117,7 @@ $ %s query %s pair 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryPair(context.Background(), &types.QueryPairRequest{
+			res, err := queryClient.Pair(context.Background(), &types.QueryPairRequest{
 				PairId: pairId,
 			})
 			if err != nil {
@@ -169,7 +169,7 @@ $ %s query %s pairs-by-denoms uatom stake
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryPairsByDenoms(context.Background(), &types.QueryPairsByDenomsRequest{
+			res, err := queryClient.PairsByDenoms(context.Background(), &types.QueryPairsByDenomsRequest{
 				Denom1:     denom1,
 				Denom2:     denom2,
 				Pagination: pageReq,
@@ -233,7 +233,7 @@ $ %s query %s pools --disabled=true
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryPools(context.Background(), &types.QueryPoolsRequest{
+			res, err := queryClient.Pools(context.Background(), &types.QueryPoolsRequest{
 				PairId:     pairId,
 				Disabled:   disabledStr,
 				Pagination: pageReq,
@@ -295,17 +295,17 @@ $ %s query %s pool --reserve-address=mantrachain...
 			var err error
 			switch {
 			case poolId != nil:
-				res, err = queryClient.QueryPool(context.Background(), &types.QueryPoolRequest{
+				res, err = queryClient.Pool(context.Background(), &types.QueryPoolRequest{
 					PoolId: *poolId,
 				})
 			case poolCoinDenom != "":
-				res, err = queryClient.QueryPoolByPoolCoinDenom(
+				res, err = queryClient.PoolByPoolCoinDenom(
 					context.Background(),
 					&types.QueryPoolByPoolCoinDenomRequest{
 						PoolCoinDenom: poolCoinDenom,
 					})
 			case reserveAddr != "":
-				res, err = queryClient.QueryPoolByReserveAddress(
+				res, err = queryClient.PoolByReserveAddress(
 					context.Background(),
 					&types.QueryPoolByReserveAddressRequest{
 						ReserveAddress: reserveAddr,
@@ -355,7 +355,7 @@ $ %s query %s deposit-requests 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryDepositRequests(
+			res, err := queryClient.DepositRequests(
 				context.Background(),
 				&types.QueryDepositRequestsRequest{
 					PoolId:     poolId,
@@ -405,7 +405,7 @@ $ %s query %s deposit-requests 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryDepositRequest(
+			res, err := queryClient.DepositRequest(
 				context.Background(),
 				&types.QueryDepositRequestRequest{
 					PoolId: poolId,
@@ -454,7 +454,7 @@ $ %s query %s withdraw-requests 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryWithdrawRequests(
+			res, err := queryClient.WithdrawRequests(
 				context.Background(),
 				&types.QueryWithdrawRequestsRequest{
 					PoolId:     poolId,
@@ -504,7 +504,7 @@ $ %s query %s withdraw-requests 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryWithdrawRequest(
+			res, err := queryClient.WithdrawRequest(
 				context.Background(),
 				&types.QueryWithdrawRequestRequest{
 					PoolId: poolId,
@@ -571,12 +571,12 @@ $ %s query %s orders --pair-id=1
 
 			var res *types.QueryOrdersResponse
 			if orderer == nil {
-				res, err = queryClient.QueryOrders(context.Background(), &types.QueryOrdersRequest{
+				res, err = queryClient.Orders(context.Background(), &types.QueryOrdersRequest{
 					PairId:     pairId,
 					Pagination: pageReq,
 				})
 			} else {
-				res, err = queryClient.QueryOrdersByOrderer(
+				res, err = queryClient.OrdersByOrderer(
 					context.Background(),
 					&types.QueryOrdersByOrdererRequest{
 						Orderer:    *orderer,
@@ -629,7 +629,7 @@ $ %s query %s order 1 1
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryOrder(
+			res, err := queryClient.Order(
 				context.Background(),
 				&types.QueryOrderRequest{
 					PairId: pairId,
@@ -682,7 +682,7 @@ $ %s query %s order-books 2,3
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryOrderBooks(
+			res, err := queryClient.OrderBooks(
 				context.Background(),
 				&types.QueryOrderBooksRequest{
 					PairIds:  pairIds,

@@ -35,7 +35,7 @@ func CmdGasEstimation() *cobra.Command {
 				Denom:  args[1],
 			}
 
-			res, err := queryClient.QueryGasEstimation(context.Background(), params)
+			res, err := queryClient.GasEstimation(context.Background(), params)
 			if err != nil {
 				return err
 			}

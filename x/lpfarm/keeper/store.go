@@ -84,7 +84,7 @@ func (k Keeper) IterateAllPlans(ctx sdk.Context, cb func(plan types.Plan) (stop 
 	}
 }
 
-func (k Keeper) GetFarm(ctx sdk.Context, denom string) (farm types.Farm, found bool) {
+func (k Keeper) GetFarmFromStore(ctx sdk.Context, denom string) (farm types.Farm, found bool) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	bz := store.Get(types.GetFarmKey(denom))
 	if bz == nil {

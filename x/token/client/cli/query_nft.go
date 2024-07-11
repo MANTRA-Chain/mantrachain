@@ -48,7 +48,7 @@ func CmdGetNft() *cobra.Command {
 				Id:                reqId,
 			}
 
-			res, err := queryClient.QueryNft(context.Background(), params)
+			res, err := queryClient.Nft(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -95,7 +95,7 @@ func CmdGetAllCollectionNfts() *cobra.Command {
 				Pagination:        pageReq,
 			}
 
-			res, err := queryClient.QueryAllCollectionNfts(context.Background(), params)
+			res, err := queryClient.AllCollectionNfts(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -138,7 +138,7 @@ func CmdGetIsApprovedForAllNfts() *cobra.Command {
 				Operator: operator.String(),
 			}
 
-			res, err := queryClient.QueryIsApprovedForAllNfts(context.Background(), params)
+			res, err := queryClient.IsApprovedForAllNfts(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -185,7 +185,7 @@ func CmdGetNftApproved() *cobra.Command {
 				Id:                reqId,
 			}
 
-			res, err := queryClient.QueryNftApproved(context.Background(), params)
+			res, err := queryClient.NftApproved(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -18,12 +18,12 @@ service Query {
   }
 
   // MarketMakers returns all market makers.
-  rpc QueryMarketMakers(QueryMarketMakersRequest) returns (QueryMarketMakersResponse) {
+  rpc MarketMakers(QueryMarketMakersRequest) returns (QueryMarketMakersResponse) {
     option (google.api.http).get = "/mantrachain/marketmaker/v1beta1/marketmakers";
   }
 
   // Incentive returns a specific incentive.
-  rpc QueryIncentive(QueryIncentiveRequest) returns (QueryIncentiveResponse) {
+  rpc Incentive(QueryIncentiveRequest) returns (QueryIncentiveResponse) {
     option (google.api.http).get = "/mantrachain/marketmaker/v1beta1/incentive/{address}";
   }
 }

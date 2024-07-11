@@ -19,76 +19,76 @@ service Query {
   }
 
   // Pools returns all liquidity pools.
-  rpc QueryPools(QueryPoolsRequest) returns (QueryPoolsResponse) {
+  rpc Pools(QueryPoolsRequest) returns (QueryPoolsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools";
   }
 
   // Pool returns the specific liquidity pool.
-  rpc QueryPool(QueryPoolRequest) returns (QueryPoolResponse) {
+  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}";
   }
 
   // PoolByReserveAddress returns all pools that correspond to the reserve account.
-  rpc QueryPoolByReserveAddress(QueryPoolByReserveAddressRequest) returns (QueryPoolResponse) {
+  rpc PoolByReserveAddress(QueryPoolByReserveAddressRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/reserve_address/{reserve_address}";
   }
 
   // PoolByPoolCoinDenom returns all pools that correspond to the pool coin denom.
-  rpc QueryPoolByPoolCoinDenom(QueryPoolByPoolCoinDenomRequest) returns (QueryPoolResponse) {
+  rpc PoolByPoolCoinDenom(QueryPoolByPoolCoinDenomRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/pool_coin_denom/{pool_coin_denom}";
   }
 
   // Pairs returns all liquidity pairs by denoms.
-  rpc QueryPairsByDenoms(QueryPairsByDenomsRequest) returns (QueryPairsByDenomsResponse) {
+  rpc PairsByDenoms(QueryPairsByDenomsRequest) returns (QueryPairsByDenomsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs_by_denoms";
   }
 
   // Pairs returns all liquidity pairs.
-  rpc QueryPairs(QueryPairsRequest) returns (QueryPairsResponse) {
+  rpc Pairs(QueryPairsRequest) returns (QueryPairsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs";
   }
 
   // Pair returns the specific pair.
-  rpc QueryPair(QueryPairRequest) returns (QueryPairResponse) {
+  rpc Pair(QueryPairRequest) returns (QueryPairResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}";
   }
 
   // DepositRequests returns all deposit requests.
-  rpc QueryDepositRequests(QueryDepositRequestsRequest) returns (QueryDepositRequestsResponse) {
+  rpc DepositRequests(QueryDepositRequestsRequest) returns (QueryDepositRequestsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/deposit_requests";
   }
 
   // DepositRequest returns the specific deposit request.
-  rpc QueryDepositRequest(QueryDepositRequestRequest) returns (QueryDepositRequestResponse) {
+  rpc DepositRequest(QueryDepositRequestRequest) returns (QueryDepositRequestResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/deposit_requests/{id}";
   }
 
   // WithdrawRequests returns all withdraw requests.
-  rpc QueryWithdrawRequests(QueryWithdrawRequestsRequest) returns (QueryWithdrawRequestsResponse) {
+  rpc WithdrawRequests(QueryWithdrawRequestsRequest) returns (QueryWithdrawRequestsResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/withdraw_requests";
   }
 
   // WithdrawRequest returns the specific withdraw request.
-  rpc QueryWithdrawRequest(QueryWithdrawRequestRequest) returns (QueryWithdrawRequestResponse) {
+  rpc WithdrawRequest(QueryWithdrawRequestRequest) returns (QueryWithdrawRequestResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pools/{pool_id}/withdraw_requests/{id}";
   }
 
   // Orders returns all orders within the pair.
-  rpc QueryOrders(QueryOrdersRequest) returns (QueryOrdersResponse) {
+  rpc Orders(QueryOrdersRequest) returns (QueryOrdersResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}/orders";
   }
 
   // Order returns the specific order.
-  rpc QueryOrder(QueryOrderRequest) returns (QueryOrderResponse) {
+  rpc Order(QueryOrderRequest) returns (QueryOrderResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/pairs/{pair_id}/orders/{id}";
   }
 
   // OrdersByOrderer returns orders made by an orderer.
-  rpc QueryOrdersByOrderer(QueryOrdersByOrdererRequest) returns (QueryOrdersResponse) {
+  rpc OrdersByOrderer(QueryOrdersByOrdererRequest) returns (QueryOrdersResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/orders/{orderer}";
   }
 
-  rpc QueryOrderBooks(QueryOrderBooksRequest) returns (QueryOrderBooksResponse) {
+  rpc OrderBooks(QueryOrderBooksRequest) returns (QueryOrderBooksResponse) {
     option (google.api.http).get = "/mantrachain/liquidity/v1beta1/order_books";
   }
 }

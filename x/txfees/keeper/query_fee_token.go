@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryFeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRequest) (*types.QueryAllFeeTokenResponse, error) {
+func (k Keeper) FeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRequest) (*types.QueryAllFeeTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -40,7 +40,7 @@ func (k Keeper) QueryFeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTo
 	return &types.QueryAllFeeTokenResponse{FeeToken: feeTokens, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryFeeToken(goCtx context.Context, req *types.QueryGetFeeTokenRequest) (*types.QueryGetFeeTokenResponse, error) {
+func (k Keeper) FeeToken(goCtx context.Context, req *types.QueryGetFeeTokenRequest) (*types.QueryGetFeeTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

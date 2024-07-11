@@ -68,7 +68,7 @@ func (k msgServer) Farm(goCtx context.Context, msg *types.MsgFarm) (*types.MsgFa
 		return nil, err
 	}
 
-	withdrawnRewards, err := k.Keeper.Farm(ctx, farmerAddr, msg.Coin)
+	withdrawnRewards, err := k.Keeper.GetFarm(ctx, farmerAddr, msg.Coin)
 	if err != nil {
 		return nil, err
 	}

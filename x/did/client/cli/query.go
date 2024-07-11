@@ -44,7 +44,7 @@ func GetCmdQueryIdentifers() *cobra.Command {
 				return err
 			}
 
-			result, err := queryClient.QueryDidDocuments(
+			result, err := queryClient.DidDocuments(
 				context.Background(),
 				&types.QueryDidDocumentsRequest{
 					// Leaving status empty on purpose to query all validators.
@@ -73,7 +73,7 @@ func GetCmdQueryIdentifer() *cobra.Command {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			result, err := queryClient.QueryDidDocument(
+			result, err := queryClient.DidDocument(
 				context.Background(),
 				&types.QueryDidDocumentRequest{
 					Id: args[0],

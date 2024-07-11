@@ -28,7 +28,7 @@ func CmdListBridged() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QueryBridgedAll(context.Background(), params)
+			res, err := queryClient.BridgedAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -59,7 +59,7 @@ func CmdShowBridged() *cobra.Command {
 				EthTxHash: argEthTxHash,
 			}
 
-			res, err := queryClient.QueryBridged(context.Background(), params)
+			res, err := queryClient.Bridged(context.Background(), params)
 			if err != nil {
 				return err
 			}

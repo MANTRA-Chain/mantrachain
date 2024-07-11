@@ -8,6 +8,6 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/rewards/types";
 message Provider {
   string index = 1; 
   repeated ProviderPair pairs = 2; 
-  map<uint64, uint64> pair_id_to_idx = 3;
+  map<uint64, uint64> pairIdToIdx = 3;
 }
 

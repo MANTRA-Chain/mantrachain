@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName            = "/mantrachain.marketmaker.v1beta1.Query/Params"
-	Query_QueryMarketMakers_FullMethodName = "/mantrachain.marketmaker.v1beta1.Query/QueryMarketMakers"
-	Query_QueryIncentive_FullMethodName    = "/mantrachain.marketmaker.v1beta1.Query/QueryIncentive"
+	Query_Params_FullMethodName       = "/mantrachain.marketmaker.v1beta1.Query/Params"
+	Query_MarketMakers_FullMethodName = "/mantrachain.marketmaker.v1beta1.Query/MarketMakers"
+	Query_Incentive_FullMethodName    = "/mantrachain.marketmaker.v1beta1.Query/Incentive"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,9 +31,9 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// MarketMakers returns all market makers.
-	QueryMarketMakers(ctx context.Context, in *QueryMarketMakersRequest, opts ...grpc.CallOption) (*QueryMarketMakersResponse, error)
+	MarketMakers(ctx context.Context, in *QueryMarketMakersRequest, opts ...grpc.CallOption) (*QueryMarketMakersResponse, error)
 	// Incentive returns a specific incentive.
-	QueryIncentive(ctx context.Context, in *QueryIncentiveRequest, opts ...grpc.CallOption) (*QueryIncentiveResponse, error)
+	Incentive(ctx context.Context, in *QueryIncentiveRequest, opts ...grpc.CallOption) (*QueryIncentiveResponse, error)
 }
 
 type queryClient struct {
@@ -53,18 +53,18 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryMarketMakers(ctx context.Context, in *QueryMarketMakersRequest, opts ...grpc.CallOption) (*QueryMarketMakersResponse, error) {
+func (c *queryClient) MarketMakers(ctx context.Context, in *QueryMarketMakersRequest, opts ...grpc.CallOption) (*QueryMarketMakersResponse, error) {
 	out := new(QueryMarketMakersResponse)
-	err := c.cc.Invoke(ctx, Query_QueryMarketMakers_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_MarketMakers_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryIncentive(ctx context.Context, in *QueryIncentiveRequest, opts ...grpc.CallOption) (*QueryIncentiveResponse, error) {
+func (c *queryClient) Incentive(ctx context.Context, in *QueryIncentiveRequest, opts ...grpc.CallOption) (*QueryIncentiveResponse, error) {
 	out := new(QueryIncentiveResponse)
-	err := c.cc.Invoke(ctx, Query_QueryIncentive_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Incentive_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// MarketMakers returns all market makers.
-	QueryMarketMakers(context.Context, *QueryMarketMakersRequest) (*QueryMarketMakersResponse, error)
+	MarketMakers(context.Context, *QueryMarketMakersRequest) (*QueryMarketMakersResponse, error)
 	// Incentive returns a specific incentive.
-	QueryIncentive(context.Context, *QueryIncentiveRequest) (*QueryIncentiveResponse, error)
+	Incentive(context.Context, *QueryIncentiveRequest) (*QueryIncentiveResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -91,11 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryMarketMakers(context.Context, *QueryMarketMakersRequest) (*QueryMarketMakersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryMarketMakers not implemented")
+func (UnimplementedQueryServer) MarketMakers(context.Context, *QueryMarketMakersRequest) (*QueryMarketMakersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarketMakers not implemented")
 }
-func (UnimplementedQueryServer) QueryIncentive(context.Context, *QueryIncentiveRequest) (*QueryIncentiveResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryIncentive not implemented")
+func (UnimplementedQueryServer) Incentive(context.Context, *QueryIncentiveRequest) (*QueryIncentiveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Incentive not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -128,38 +128,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryMarketMakers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_MarketMakers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryMarketMakersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryMarketMakers(ctx, in)
+		return srv.(QueryServer).MarketMakers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryMarketMakers_FullMethodName,
+		FullMethod: Query_MarketMakers_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryMarketMakers(ctx, req.(*QueryMarketMakersRequest))
+		return srv.(QueryServer).MarketMakers(ctx, req.(*QueryMarketMakersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryIncentive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Incentive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIncentiveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryIncentive(ctx, in)
+		return srv.(QueryServer).Incentive(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryIncentive_FullMethodName,
+		FullMethod: Query_Incentive_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryIncentive(ctx, req.(*QueryIncentiveRequest))
+		return srv.(QueryServer).Incentive(ctx, req.(*QueryIncentiveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,12 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryMarketMakers",
-			Handler:    _Query_QueryMarketMakers_Handler,
+			MethodName: "MarketMakers",
+			Handler:    _Query_MarketMakers_Handler,
 		},
 		{
-			MethodName: "QueryIncentive",
-			Handler:    _Query_QueryIncentive_Handler,
+			MethodName: "Incentive",
+			Handler:    _Query_Incentive_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

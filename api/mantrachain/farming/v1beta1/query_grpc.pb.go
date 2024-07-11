@@ -19,17 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                  = "/mantrachain.farming.v1beta1.Query/Params"
-	Query_QueryPlans_FullMethodName              = "/mantrachain.farming.v1beta1.Query/QueryPlans"
-	Query_QueryPlan_FullMethodName               = "/mantrachain.farming.v1beta1.Query/QueryPlan"
-	Query_QueryPosition_FullMethodName           = "/mantrachain.farming.v1beta1.Query/QueryPosition"
-	Query_QueryStakings_FullMethodName           = "/mantrachain.farming.v1beta1.Query/QueryStakings"
-	Query_QueryQueuedStakings_FullMethodName     = "/mantrachain.farming.v1beta1.Query/QueryQueuedStakings"
-	Query_QueryTotalStakings_FullMethodName      = "/mantrachain.farming.v1beta1.Query/QueryTotalStakings"
-	Query_QueryRewards_FullMethodName            = "/mantrachain.farming.v1beta1.Query/QueryRewards"
-	Query_QueryUnharvestedRewards_FullMethodName = "/mantrachain.farming.v1beta1.Query/QueryUnharvestedRewards"
-	Query_QueryCurrentEpochDays_FullMethodName   = "/mantrachain.farming.v1beta1.Query/QueryCurrentEpochDays"
-	Query_QueryHistoricalRewards_FullMethodName  = "/mantrachain.farming.v1beta1.Query/QueryHistoricalRewards"
+	Query_Params_FullMethodName             = "/mantrachain.farming.v1beta1.Query/Params"
+	Query_Plans_FullMethodName              = "/mantrachain.farming.v1beta1.Query/Plans"
+	Query_Plan_FullMethodName               = "/mantrachain.farming.v1beta1.Query/Plan"
+	Query_Position_FullMethodName           = "/mantrachain.farming.v1beta1.Query/Position"
+	Query_Stakings_FullMethodName           = "/mantrachain.farming.v1beta1.Query/Stakings"
+	Query_QueuedStakings_FullMethodName     = "/mantrachain.farming.v1beta1.Query/QueuedStakings"
+	Query_TotalStakings_FullMethodName      = "/mantrachain.farming.v1beta1.Query/TotalStakings"
+	Query_Rewards_FullMethodName            = "/mantrachain.farming.v1beta1.Query/Rewards"
+	Query_UnharvestedRewards_FullMethodName = "/mantrachain.farming.v1beta1.Query/UnharvestedRewards"
+	Query_CurrentEpochDays_FullMethodName   = "/mantrachain.farming.v1beta1.Query/CurrentEpochDays"
+	Query_HistoricalRewards_FullMethodName  = "/mantrachain.farming.v1beta1.Query/HistoricalRewards"
 )
 
 // QueryClient is the client API for Query service.
@@ -39,24 +39,25 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Plans returns all plans.
-	QueryPlans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error)
+	Plans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error)
 	// Plan returns a specific plan.
-	QueryPlan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error)
-	QueryPosition(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error)
+	Plan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error)
+	// QueryPosition
+	Position(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error)
 	// Stakings returns all stakings by a farmer.
-	QueryStakings(ctx context.Context, in *QueryStakingsRequest, opts ...grpc.CallOption) (*QueryStakingsResponse, error)
-	// QueryStakings returns all queued stakings by a farmer.
-	QueryQueuedStakings(ctx context.Context, in *QueryQueuedStakingsRequest, opts ...grpc.CallOption) (*QueryQueuedStakingsResponse, error)
+	Stakings(ctx context.Context, in *QueryStakingsRequest, opts ...grpc.CallOption) (*QueryStakingsResponse, error)
+	// QueuedStakings returns all queued stakings by a farmer.
+	QueuedStakings(ctx context.Context, in *QueryQueuedStakingsRequest, opts ...grpc.CallOption) (*QueryQueuedStakingsResponse, error)
 	// TotalStakings returns total staking amount for a staking coin denom
-	QueryTotalStakings(ctx context.Context, in *QueryTotalStakingsRequest, opts ...grpc.CallOption) (*QueryTotalStakingsResponse, error)
+	TotalStakings(ctx context.Context, in *QueryTotalStakingsRequest, opts ...grpc.CallOption) (*QueryTotalStakingsResponse, error)
 	// Rewards returns rewards for a farmer
-	QueryRewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error)
+	Rewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error)
 	// UnharvestedRewards returns unharvested rewards for a farmer
-	QueryUnharvestedRewards(ctx context.Context, in *QueryUnharvestedRewardsRequest, opts ...grpc.CallOption) (*QueryUnharvestedRewardsResponse, error)
+	UnharvestedRewards(ctx context.Context, in *QueryUnharvestedRewardsRequest, opts ...grpc.CallOption) (*QueryUnharvestedRewardsResponse, error)
 	// CurrentEpochDays returns current epoch days.
-	QueryCurrentEpochDays(ctx context.Context, in *QueryCurrentEpochDaysRequest, opts ...grpc.CallOption) (*QueryCurrentEpochDaysResponse, error)
+	CurrentEpochDays(ctx context.Context, in *QueryCurrentEpochDaysRequest, opts ...grpc.CallOption) (*QueryCurrentEpochDaysResponse, error)
 	// HistoricalRewards returns HistoricalRewards records for a staking coin denom.
-	QueryHistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error)
+	HistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error)
 }
 
 type queryClient struct {
@@ -76,90 +77,90 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryPlans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error) {
+func (c *queryClient) Plans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error) {
 	out := new(QueryPlansResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPlans_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Plans_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPlan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error) {
+func (c *queryClient) Plan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error) {
 	out := new(QueryPlanResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPlan_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Plan_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPosition(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error) {
+func (c *queryClient) Position(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error) {
 	out := new(QueryPositionResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPosition_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Position_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryStakings(ctx context.Context, in *QueryStakingsRequest, opts ...grpc.CallOption) (*QueryStakingsResponse, error) {
+func (c *queryClient) Stakings(ctx context.Context, in *QueryStakingsRequest, opts ...grpc.CallOption) (*QueryStakingsResponse, error) {
 	out := new(QueryStakingsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryStakings_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Stakings_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryQueuedStakings(ctx context.Context, in *QueryQueuedStakingsRequest, opts ...grpc.CallOption) (*QueryQueuedStakingsResponse, error) {
+func (c *queryClient) QueuedStakings(ctx context.Context, in *QueryQueuedStakingsRequest, opts ...grpc.CallOption) (*QueryQueuedStakingsResponse, error) {
 	out := new(QueryQueuedStakingsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryQueuedStakings_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueuedStakings_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryTotalStakings(ctx context.Context, in *QueryTotalStakingsRequest, opts ...grpc.CallOption) (*QueryTotalStakingsResponse, error) {
+func (c *queryClient) TotalStakings(ctx context.Context, in *QueryTotalStakingsRequest, opts ...grpc.CallOption) (*QueryTotalStakingsResponse, error) {
 	out := new(QueryTotalStakingsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryTotalStakings_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_TotalStakings_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error) {
+func (c *queryClient) Rewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error) {
 	out := new(QueryRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Rewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryUnharvestedRewards(ctx context.Context, in *QueryUnharvestedRewardsRequest, opts ...grpc.CallOption) (*QueryUnharvestedRewardsResponse, error) {
+func (c *queryClient) UnharvestedRewards(ctx context.Context, in *QueryUnharvestedRewardsRequest, opts ...grpc.CallOption) (*QueryUnharvestedRewardsResponse, error) {
 	out := new(QueryUnharvestedRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryUnharvestedRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_UnharvestedRewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryCurrentEpochDays(ctx context.Context, in *QueryCurrentEpochDaysRequest, opts ...grpc.CallOption) (*QueryCurrentEpochDaysResponse, error) {
+func (c *queryClient) CurrentEpochDays(ctx context.Context, in *QueryCurrentEpochDaysRequest, opts ...grpc.CallOption) (*QueryCurrentEpochDaysResponse, error) {
 	out := new(QueryCurrentEpochDaysResponse)
-	err := c.cc.Invoke(ctx, Query_QueryCurrentEpochDays_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_CurrentEpochDays_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryHistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error) {
+func (c *queryClient) HistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error) {
 	out := new(QueryHistoricalRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryHistoricalRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_HistoricalRewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,24 +174,25 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Plans returns all plans.
-	QueryPlans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error)
+	Plans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error)
 	// Plan returns a specific plan.
-	QueryPlan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error)
-	QueryPosition(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error)
+	Plan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error)
+	// QueryPosition
+	Position(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error)
 	// Stakings returns all stakings by a farmer.
-	QueryStakings(context.Context, *QueryStakingsRequest) (*QueryStakingsResponse, error)
-	// QueryStakings returns all queued stakings by a farmer.
-	QueryQueuedStakings(context.Context, *QueryQueuedStakingsRequest) (*QueryQueuedStakingsResponse, error)
+	Stakings(context.Context, *QueryStakingsRequest) (*QueryStakingsResponse, error)
+	// QueuedStakings returns all queued stakings by a farmer.
+	QueuedStakings(context.Context, *QueryQueuedStakingsRequest) (*QueryQueuedStakingsResponse, error)
 	// TotalStakings returns total staking amount for a staking coin denom
-	QueryTotalStakings(context.Context, *QueryTotalStakingsRequest) (*QueryTotalStakingsResponse, error)
+	TotalStakings(context.Context, *QueryTotalStakingsRequest) (*QueryTotalStakingsResponse, error)
 	// Rewards returns rewards for a farmer
-	QueryRewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error)
+	Rewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error)
 	// UnharvestedRewards returns unharvested rewards for a farmer
-	QueryUnharvestedRewards(context.Context, *QueryUnharvestedRewardsRequest) (*QueryUnharvestedRewardsResponse, error)
+	UnharvestedRewards(context.Context, *QueryUnharvestedRewardsRequest) (*QueryUnharvestedRewardsResponse, error)
 	// CurrentEpochDays returns current epoch days.
-	QueryCurrentEpochDays(context.Context, *QueryCurrentEpochDaysRequest) (*QueryCurrentEpochDaysResponse, error)
+	CurrentEpochDays(context.Context, *QueryCurrentEpochDaysRequest) (*QueryCurrentEpochDaysResponse, error)
 	// HistoricalRewards returns HistoricalRewards records for a staking coin denom.
-	QueryHistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error)
+	HistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -201,35 +203,35 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryPlans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPlans not implemented")
+func (UnimplementedQueryServer) Plans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Plans not implemented")
 }
-func (UnimplementedQueryServer) QueryPlan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPlan not implemented")
+func (UnimplementedQueryServer) Plan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Plan not implemented")
 }
-func (UnimplementedQueryServer) QueryPosition(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPosition not implemented")
+func (UnimplementedQueryServer) Position(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Position not implemented")
 }
-func (UnimplementedQueryServer) QueryStakings(context.Context, *QueryStakingsRequest) (*QueryStakingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryStakings not implemented")
+func (UnimplementedQueryServer) Stakings(context.Context, *QueryStakingsRequest) (*QueryStakingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stakings not implemented")
 }
-func (UnimplementedQueryServer) QueryQueuedStakings(context.Context, *QueryQueuedStakingsRequest) (*QueryQueuedStakingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryQueuedStakings not implemented")
+func (UnimplementedQueryServer) QueuedStakings(context.Context, *QueryQueuedStakingsRequest) (*QueryQueuedStakingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueuedStakings not implemented")
 }
-func (UnimplementedQueryServer) QueryTotalStakings(context.Context, *QueryTotalStakingsRequest) (*QueryTotalStakingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryTotalStakings not implemented")
+func (UnimplementedQueryServer) TotalStakings(context.Context, *QueryTotalStakingsRequest) (*QueryTotalStakingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalStakings not implemented")
 }
-func (UnimplementedQueryServer) QueryRewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRewards not implemented")
+func (UnimplementedQueryServer) Rewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Rewards not implemented")
 }
-func (UnimplementedQueryServer) QueryUnharvestedRewards(context.Context, *QueryUnharvestedRewardsRequest) (*QueryUnharvestedRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryUnharvestedRewards not implemented")
+func (UnimplementedQueryServer) UnharvestedRewards(context.Context, *QueryUnharvestedRewardsRequest) (*QueryUnharvestedRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnharvestedRewards not implemented")
 }
-func (UnimplementedQueryServer) QueryCurrentEpochDays(context.Context, *QueryCurrentEpochDaysRequest) (*QueryCurrentEpochDaysResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryCurrentEpochDays not implemented")
+func (UnimplementedQueryServer) CurrentEpochDays(context.Context, *QueryCurrentEpochDaysRequest) (*QueryCurrentEpochDaysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CurrentEpochDays not implemented")
 }
-func (UnimplementedQueryServer) QueryHistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryHistoricalRewards not implemented")
+func (UnimplementedQueryServer) HistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HistoricalRewards not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -262,182 +264,182 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Plans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPlansRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPlans(ctx, in)
+		return srv.(QueryServer).Plans(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPlans_FullMethodName,
+		FullMethod: Query_Plans_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPlans(ctx, req.(*QueryPlansRequest))
+		return srv.(QueryServer).Plans(ctx, req.(*QueryPlansRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Plan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPlanRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPlan(ctx, in)
+		return srv.(QueryServer).Plan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPlan_FullMethodName,
+		FullMethod: Query_Plan_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPlan(ctx, req.(*QueryPlanRequest))
+		return srv.(QueryServer).Plan(ctx, req.(*QueryPlanRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPosition_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Position_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPositionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPosition(ctx, in)
+		return srv.(QueryServer).Position(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPosition_FullMethodName,
+		FullMethod: Query_Position_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPosition(ctx, req.(*QueryPositionRequest))
+		return srv.(QueryServer).Position(ctx, req.(*QueryPositionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryStakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Stakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryStakingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryStakings(ctx, in)
+		return srv.(QueryServer).Stakings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryStakings_FullMethodName,
+		FullMethod: Query_Stakings_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryStakings(ctx, req.(*QueryStakingsRequest))
+		return srv.(QueryServer).Stakings(ctx, req.(*QueryStakingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryQueuedStakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueuedStakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryQueuedStakingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryQueuedStakings(ctx, in)
+		return srv.(QueryServer).QueuedStakings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryQueuedStakings_FullMethodName,
+		FullMethod: Query_QueuedStakings_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryQueuedStakings(ctx, req.(*QueryQueuedStakingsRequest))
+		return srv.(QueryServer).QueuedStakings(ctx, req.(*QueryQueuedStakingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryTotalStakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_TotalStakings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryTotalStakingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryTotalStakings(ctx, in)
+		return srv.(QueryServer).TotalStakings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryTotalStakings_FullMethodName,
+		FullMethod: Query_TotalStakings_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryTotalStakings(ctx, req.(*QueryTotalStakingsRequest))
+		return srv.(QueryServer).TotalStakings(ctx, req.(*QueryTotalStakingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Rewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRewards(ctx, in)
+		return srv.(QueryServer).Rewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRewards_FullMethodName,
+		FullMethod: Query_Rewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRewards(ctx, req.(*QueryRewardsRequest))
+		return srv.(QueryServer).Rewards(ctx, req.(*QueryRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryUnharvestedRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_UnharvestedRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryUnharvestedRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryUnharvestedRewards(ctx, in)
+		return srv.(QueryServer).UnharvestedRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryUnharvestedRewards_FullMethodName,
+		FullMethod: Query_UnharvestedRewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryUnharvestedRewards(ctx, req.(*QueryUnharvestedRewardsRequest))
+		return srv.(QueryServer).UnharvestedRewards(ctx, req.(*QueryUnharvestedRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryCurrentEpochDays_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_CurrentEpochDays_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryCurrentEpochDaysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryCurrentEpochDays(ctx, in)
+		return srv.(QueryServer).CurrentEpochDays(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryCurrentEpochDays_FullMethodName,
+		FullMethod: Query_CurrentEpochDays_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryCurrentEpochDays(ctx, req.(*QueryCurrentEpochDaysRequest))
+		return srv.(QueryServer).CurrentEpochDays(ctx, req.(*QueryCurrentEpochDaysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryHistoricalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_HistoricalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryHistoricalRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryHistoricalRewards(ctx, in)
+		return srv.(QueryServer).HistoricalRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryHistoricalRewards_FullMethodName,
+		FullMethod: Query_HistoricalRewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryHistoricalRewards(ctx, req.(*QueryHistoricalRewardsRequest))
+		return srv.(QueryServer).HistoricalRewards(ctx, req.(*QueryHistoricalRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -454,44 +456,44 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryPlans",
-			Handler:    _Query_QueryPlans_Handler,
+			MethodName: "Plans",
+			Handler:    _Query_Plans_Handler,
 		},
 		{
-			MethodName: "QueryPlan",
-			Handler:    _Query_QueryPlan_Handler,
+			MethodName: "Plan",
+			Handler:    _Query_Plan_Handler,
 		},
 		{
-			MethodName: "QueryPosition",
-			Handler:    _Query_QueryPosition_Handler,
+			MethodName: "Position",
+			Handler:    _Query_Position_Handler,
 		},
 		{
-			MethodName: "QueryStakings",
-			Handler:    _Query_QueryStakings_Handler,
+			MethodName: "Stakings",
+			Handler:    _Query_Stakings_Handler,
 		},
 		{
-			MethodName: "QueryQueuedStakings",
-			Handler:    _Query_QueryQueuedStakings_Handler,
+			MethodName: "QueuedStakings",
+			Handler:    _Query_QueuedStakings_Handler,
 		},
 		{
-			MethodName: "QueryTotalStakings",
-			Handler:    _Query_QueryTotalStakings_Handler,
+			MethodName: "TotalStakings",
+			Handler:    _Query_TotalStakings_Handler,
 		},
 		{
-			MethodName: "QueryRewards",
-			Handler:    _Query_QueryRewards_Handler,
+			MethodName: "Rewards",
+			Handler:    _Query_Rewards_Handler,
 		},
 		{
-			MethodName: "QueryUnharvestedRewards",
-			Handler:    _Query_QueryUnharvestedRewards_Handler,
+			MethodName: "UnharvestedRewards",
+			Handler:    _Query_UnharvestedRewards_Handler,
 		},
 		{
-			MethodName: "QueryCurrentEpochDays",
-			Handler:    _Query_QueryCurrentEpochDays_Handler,
+			MethodName: "CurrentEpochDays",
+			Handler:    _Query_CurrentEpochDays_Handler,
 		},
 		{
-			MethodName: "QueryHistoricalRewards",
-			Handler:    _Query_QueryHistoricalRewards_Handler,
+			MethodName: "HistoricalRewards",
+			Handler:    _Query_HistoricalRewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

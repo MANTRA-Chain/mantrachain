@@ -61,7 +61,7 @@ $ %s query %s plans
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.QueryPlans(context.Background(), &types.QueryPlansRequest{
+			res, err := queryClient.Plans(context.Background(), &types.QueryPlansRequest{
 				Pagination: pageReq,
 			})
 			if err != nil {
@@ -97,7 +97,7 @@ $ %s query %s plan 1
 			if err != nil {
 				return fmt.Errorf("invalid plan id: %w", err)
 			}
-			res, err := queryClient.QueryPlan(context.Background(), &types.QueryPlanRequest{
+			res, err := queryClient.Plan(context.Background(), &types.QueryPlanRequest{
 				PlanId: planId,
 			})
 			if err != nil {
@@ -128,7 +128,7 @@ $ %s query %s farm pool1
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryFarm(context.Background(), &types.QueryFarmRequest{
+			res, err := queryClient.Farm(context.Background(), &types.QueryFarmRequest{
 				Denom: args[0],
 			})
 			if err != nil {
@@ -163,7 +163,7 @@ $ %s query %s positions cosmos1...
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.QueryPositions(context.Background(), &types.QueryPositionsRequest{
+			res, err := queryClient.Positions(context.Background(), &types.QueryPositionsRequest{
 				Farmer:     args[0],
 				Pagination: pageReq,
 			})
@@ -196,7 +196,7 @@ $ %s query %s position cosmos1... pool1
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryPosition(context.Background(), &types.QueryPositionRequest{
+			res, err := queryClient.Position(context.Background(), &types.QueryPositionRequest{
 				Farmer: args[0],
 				Denom:  args[1],
 			})
@@ -232,7 +232,7 @@ $ %s query %s historical-rewards pool1
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.QueryHistoricalRewards(context.Background(), &types.QueryHistoricalRewardsRequest{
+			res, err := queryClient.HistoricalRewards(context.Background(), &types.QueryHistoricalRewardsRequest{
 				Denom:      args[0],
 				Pagination: pageReq,
 			})
@@ -265,7 +265,7 @@ $ %s query %s all-rewards cosmos1...
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryTotalRewards(context.Background(), &types.QueryTotalRewardsRequest{
+			res, err := queryClient.TotalRewards(context.Background(), &types.QueryTotalRewardsRequest{
 				Farmer: args[0],
 			})
 			if err != nil {
@@ -296,7 +296,7 @@ $ %s query %s rewards cosmos1... pool1
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QueryRewards(context.Background(), &types.QueryRewardsRequest{
+			res, err := queryClient.Rewards(context.Background(), &types.QueryRewardsRequest{
 				Farmer: args[0],
 				Denom:  args[1],
 			})

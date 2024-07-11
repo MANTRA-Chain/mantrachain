@@ -18,28 +18,28 @@ service Query {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/params";
   }
 
-  rpc QueryPlans(QueryPlansRequest) returns (QueryPlansResponse) {
+  rpc Plans(QueryPlansRequest) returns (QueryPlansResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/plans";
   }
-  rpc QueryPlan(QueryPlanRequest) returns (QueryPlanResponse) {
+  rpc Plan(QueryPlanRequest) returns (QueryPlanResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/plans/{plan_id}";
   }
-  rpc QueryFarm(QueryFarmRequest) returns (QueryFarmResponse) {
+  rpc Farm(QueryFarmRequest) returns (QueryFarmResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/farms/{denom}";
   }
-  rpc QueryPositions(QueryPositionsRequest) returns (QueryPositionsResponse) {
+  rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/positions/{farmer}";
   }
-  rpc QueryPosition(QueryPositionRequest) returns (QueryPositionResponse) {
+  rpc Position(QueryPositionRequest) returns (QueryPositionResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/positions/{farmer}/{denom}";
   }
-  rpc QueryHistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
+  rpc HistoricalRewards(QueryHistoricalRewardsRequest) returns (QueryHistoricalRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/historical_rewards/{denom}";
   }
-  rpc QueryTotalRewards(QueryTotalRewardsRequest) returns (QueryTotalRewardsResponse) {
+  rpc TotalRewards(QueryTotalRewardsRequest) returns (QueryTotalRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/rewards/{farmer}";
   }
-  rpc QueryRewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/mantrachain/lpfarm/v1beta1/rewards/{farmer}/{denom}";
   }
 }

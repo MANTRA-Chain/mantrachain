@@ -321,7 +321,7 @@ $ %s tx %s harvest --all --from mykey
 				}
 
 				queryClient := types.NewQueryClient(clientCtx)
-				resp, err := queryClient.QueryPosition(cmd.Context(), &types.QueryPositionRequest{
+				resp, err := queryClient.Position(cmd.Context(), &types.QueryPositionRequest{
 					Farmer: farmer.String(),
 				})
 				if err != nil {

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryGuardTransferCoins(c context.Context, req *types.QueryGetGuardTransferCoinsRequest) (*types.QueryGetGuardTransferCoinsResponse, error) {
+func (k Keeper) GuardTransferCoins(c context.Context, req *types.QueryGetGuardTransferCoinsRequest) (*types.QueryGetGuardTransferCoinsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

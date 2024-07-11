@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryCampaignAll(goCtx context.Context, req *types.QueryAllCampaignRequest) (*types.QueryAllCampaignResponse, error) {
+func (k Keeper) CampaignAll(goCtx context.Context, req *types.QueryAllCampaignRequest) (*types.QueryAllCampaignResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -41,7 +41,7 @@ func (k Keeper) QueryCampaignAll(goCtx context.Context, req *types.QueryAllCampa
 	return &types.QueryAllCampaignResponse{Campaign: campaigns, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryCampaign(goCtx context.Context, req *types.QueryGetCampaignRequest) (*types.QueryGetCampaignResponse, error) {
+func (k Keeper) Campaign(goCtx context.Context, req *types.QueryGetCampaignRequest) (*types.QueryGetCampaignResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

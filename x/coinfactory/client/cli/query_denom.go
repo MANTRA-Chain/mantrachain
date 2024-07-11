@@ -38,7 +38,7 @@ func CmdQueryDenomAuthorityMetadata2() *cobra.Command {
 				Subdenom: reqSubDenom,
 			}
 
-			res, err := queryClient.QueryDenomAuthorityMetadata2(context.Background(), params)
+			res, err := queryClient.DenomAuthorityMetadata2(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -72,7 +72,7 @@ func CmdQueryDenomAuthorityMetadata() *cobra.Command {
 				Denom: reqDenom,
 			}
 
-			res, err := queryClient.QueryDenomAuthorityMetadata(context.Background(), params)
+			res, err := queryClient.DenomAuthorityMetadata(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -106,7 +106,7 @@ func CmdQueryDenomsFromCreator() *cobra.Command {
 				Creator: reqCreator,
 			}
 
-			res, err := queryClient.QueryDenomsFromCreator(context.Background(), params)
+			res, err := queryClient.DenomsFromCreator(context.Background(), params)
 			if err != nil {
 				return err
 			}

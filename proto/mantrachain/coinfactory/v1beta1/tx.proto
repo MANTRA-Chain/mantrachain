@@ -104,7 +104,7 @@ message MsgBurn {
 
   string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
-  string burn_from_address = 3 [
+  string burnFromAddress = 3 [
     (cosmos_proto.scalar) = "cosmos.AddressString",
     (gogoproto.nullable) = true
   ];
@@ -135,8 +135,8 @@ message MsgForceTransfer {
 
   string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
-  string transfer_from_address = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string transfer_to_address = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transferFromAddress = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string transferToAddress = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
 // MsgForceTransferResponse

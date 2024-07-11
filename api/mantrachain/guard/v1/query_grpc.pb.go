@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                     = "/mantrachain.guard.v1.Query/Params"
-	Query_QueryAccountPrivileges_FullMethodName     = "/mantrachain.guard.v1.Query/QueryAccountPrivileges"
-	Query_QueryAccountPrivilegesAll_FullMethodName  = "/mantrachain.guard.v1.Query/QueryAccountPrivilegesAll"
-	Query_QueryGuardTransferCoins_FullMethodName    = "/mantrachain.guard.v1.Query/QueryGuardTransferCoins"
-	Query_QueryRequiredPrivileges_FullMethodName    = "/mantrachain.guard.v1.Query/QueryRequiredPrivileges"
-	Query_QueryRequiredPrivilegesAll_FullMethodName = "/mantrachain.guard.v1.Query/QueryRequiredPrivilegesAll"
+	Query_Params_FullMethodName                = "/mantrachain.guard.v1.Query/Params"
+	Query_AccountPrivileges_FullMethodName     = "/mantrachain.guard.v1.Query/AccountPrivileges"
+	Query_AccountPrivilegesAll_FullMethodName  = "/mantrachain.guard.v1.Query/AccountPrivilegesAll"
+	Query_GuardTransferCoins_FullMethodName    = "/mantrachain.guard.v1.Query/GuardTransferCoins"
+	Query_RequiredPrivileges_FullMethodName    = "/mantrachain.guard.v1.Query/RequiredPrivileges"
+	Query_RequiredPrivilegesAll_FullMethodName = "/mantrachain.guard.v1.Query/RequiredPrivilegesAll"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,14 +34,14 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a AccountPrivileges by index.
-	QueryAccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error)
+	AccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error)
 	// Queries a list of AccountPrivileges items.
-	QueryAccountPrivilegesAll(ctx context.Context, in *QueryAllAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllAccountPrivilegesResponse, error)
+	AccountPrivilegesAll(ctx context.Context, in *QueryAllAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllAccountPrivilegesResponse, error)
 	// Queries a GuardTransferCoins by index.
-	QueryGuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error)
+	GuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error)
 	// Queries a list of RequiredPrivileges items.
-	QueryRequiredPrivileges(ctx context.Context, in *QueryGetRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetRequiredPrivilegesResponse, error)
-	QueryRequiredPrivilegesAll(ctx context.Context, in *QueryAllRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllRequiredPrivilegesResponse, error)
+	RequiredPrivileges(ctx context.Context, in *QueryGetRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetRequiredPrivilegesResponse, error)
+	RequiredPrivilegesAll(ctx context.Context, in *QueryAllRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllRequiredPrivilegesResponse, error)
 }
 
 type queryClient struct {
@@ -61,45 +61,45 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryAccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error) {
+func (c *queryClient) AccountPrivileges(ctx context.Context, in *QueryGetAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetAccountPrivilegesResponse, error) {
 	out := new(QueryGetAccountPrivilegesResponse)
-	err := c.cc.Invoke(ctx, Query_QueryAccountPrivileges_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_AccountPrivileges_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryAccountPrivilegesAll(ctx context.Context, in *QueryAllAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllAccountPrivilegesResponse, error) {
+func (c *queryClient) AccountPrivilegesAll(ctx context.Context, in *QueryAllAccountPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllAccountPrivilegesResponse, error) {
 	out := new(QueryAllAccountPrivilegesResponse)
-	err := c.cc.Invoke(ctx, Query_QueryAccountPrivilegesAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_AccountPrivilegesAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryGuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error) {
+func (c *queryClient) GuardTransferCoins(ctx context.Context, in *QueryGetGuardTransferCoinsRequest, opts ...grpc.CallOption) (*QueryGetGuardTransferCoinsResponse, error) {
 	out := new(QueryGetGuardTransferCoinsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryGuardTransferCoins_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_GuardTransferCoins_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRequiredPrivileges(ctx context.Context, in *QueryGetRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetRequiredPrivilegesResponse, error) {
+func (c *queryClient) RequiredPrivileges(ctx context.Context, in *QueryGetRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryGetRequiredPrivilegesResponse, error) {
 	out := new(QueryGetRequiredPrivilegesResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRequiredPrivileges_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_RequiredPrivileges_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRequiredPrivilegesAll(ctx context.Context, in *QueryAllRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllRequiredPrivilegesResponse, error) {
+func (c *queryClient) RequiredPrivilegesAll(ctx context.Context, in *QueryAllRequiredPrivilegesRequest, opts ...grpc.CallOption) (*QueryAllRequiredPrivilegesResponse, error) {
 	out := new(QueryAllRequiredPrivilegesResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRequiredPrivilegesAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_RequiredPrivilegesAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,14 +113,14 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a AccountPrivileges by index.
-	QueryAccountPrivileges(context.Context, *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error)
+	AccountPrivileges(context.Context, *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error)
 	// Queries a list of AccountPrivileges items.
-	QueryAccountPrivilegesAll(context.Context, *QueryAllAccountPrivilegesRequest) (*QueryAllAccountPrivilegesResponse, error)
+	AccountPrivilegesAll(context.Context, *QueryAllAccountPrivilegesRequest) (*QueryAllAccountPrivilegesResponse, error)
 	// Queries a GuardTransferCoins by index.
-	QueryGuardTransferCoins(context.Context, *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error)
+	GuardTransferCoins(context.Context, *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error)
 	// Queries a list of RequiredPrivileges items.
-	QueryRequiredPrivileges(context.Context, *QueryGetRequiredPrivilegesRequest) (*QueryGetRequiredPrivilegesResponse, error)
-	QueryRequiredPrivilegesAll(context.Context, *QueryAllRequiredPrivilegesRequest) (*QueryAllRequiredPrivilegesResponse, error)
+	RequiredPrivileges(context.Context, *QueryGetRequiredPrivilegesRequest) (*QueryGetRequiredPrivilegesResponse, error)
+	RequiredPrivilegesAll(context.Context, *QueryAllRequiredPrivilegesRequest) (*QueryAllRequiredPrivilegesResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -131,20 +131,20 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryAccountPrivileges(context.Context, *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAccountPrivileges not implemented")
+func (UnimplementedQueryServer) AccountPrivileges(context.Context, *QueryGetAccountPrivilegesRequest) (*QueryGetAccountPrivilegesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountPrivileges not implemented")
 }
-func (UnimplementedQueryServer) QueryAccountPrivilegesAll(context.Context, *QueryAllAccountPrivilegesRequest) (*QueryAllAccountPrivilegesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAccountPrivilegesAll not implemented")
+func (UnimplementedQueryServer) AccountPrivilegesAll(context.Context, *QueryAllAccountPrivilegesRequest) (*QueryAllAccountPrivilegesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountPrivilegesAll not implemented")
 }
-func (UnimplementedQueryServer) QueryGuardTransferCoins(context.Context, *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryGuardTransferCoins not implemented")
+func (UnimplementedQueryServer) GuardTransferCoins(context.Context, *QueryGetGuardTransferCoinsRequest) (*QueryGetGuardTransferCoinsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GuardTransferCoins not implemented")
 }
-func (UnimplementedQueryServer) QueryRequiredPrivileges(context.Context, *QueryGetRequiredPrivilegesRequest) (*QueryGetRequiredPrivilegesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRequiredPrivileges not implemented")
+func (UnimplementedQueryServer) RequiredPrivileges(context.Context, *QueryGetRequiredPrivilegesRequest) (*QueryGetRequiredPrivilegesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequiredPrivileges not implemented")
 }
-func (UnimplementedQueryServer) QueryRequiredPrivilegesAll(context.Context, *QueryAllRequiredPrivilegesRequest) (*QueryAllRequiredPrivilegesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRequiredPrivilegesAll not implemented")
+func (UnimplementedQueryServer) RequiredPrivilegesAll(context.Context, *QueryAllRequiredPrivilegesRequest) (*QueryAllRequiredPrivilegesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequiredPrivilegesAll not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -177,92 +177,92 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAccountPrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AccountPrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAccountPrivilegesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAccountPrivileges(ctx, in)
+		return srv.(QueryServer).AccountPrivileges(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryAccountPrivileges_FullMethodName,
+		FullMethod: Query_AccountPrivileges_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAccountPrivileges(ctx, req.(*QueryGetAccountPrivilegesRequest))
+		return srv.(QueryServer).AccountPrivileges(ctx, req.(*QueryGetAccountPrivilegesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAccountPrivilegesAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AccountPrivilegesAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllAccountPrivilegesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAccountPrivilegesAll(ctx, in)
+		return srv.(QueryServer).AccountPrivilegesAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryAccountPrivilegesAll_FullMethodName,
+		FullMethod: Query_AccountPrivilegesAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAccountPrivilegesAll(ctx, req.(*QueryAllAccountPrivilegesRequest))
+		return srv.(QueryServer).AccountPrivilegesAll(ctx, req.(*QueryAllAccountPrivilegesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryGuardTransferCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_GuardTransferCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetGuardTransferCoinsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryGuardTransferCoins(ctx, in)
+		return srv.(QueryServer).GuardTransferCoins(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryGuardTransferCoins_FullMethodName,
+		FullMethod: Query_GuardTransferCoins_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryGuardTransferCoins(ctx, req.(*QueryGetGuardTransferCoinsRequest))
+		return srv.(QueryServer).GuardTransferCoins(ctx, req.(*QueryGetGuardTransferCoinsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRequiredPrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_RequiredPrivileges_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetRequiredPrivilegesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRequiredPrivileges(ctx, in)
+		return srv.(QueryServer).RequiredPrivileges(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRequiredPrivileges_FullMethodName,
+		FullMethod: Query_RequiredPrivileges_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRequiredPrivileges(ctx, req.(*QueryGetRequiredPrivilegesRequest))
+		return srv.(QueryServer).RequiredPrivileges(ctx, req.(*QueryGetRequiredPrivilegesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRequiredPrivilegesAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_RequiredPrivilegesAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllRequiredPrivilegesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRequiredPrivilegesAll(ctx, in)
+		return srv.(QueryServer).RequiredPrivilegesAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRequiredPrivilegesAll_FullMethodName,
+		FullMethod: Query_RequiredPrivilegesAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRequiredPrivilegesAll(ctx, req.(*QueryAllRequiredPrivilegesRequest))
+		return srv.(QueryServer).RequiredPrivilegesAll(ctx, req.(*QueryAllRequiredPrivilegesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -279,24 +279,24 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryAccountPrivileges",
-			Handler:    _Query_QueryAccountPrivileges_Handler,
+			MethodName: "AccountPrivileges",
+			Handler:    _Query_AccountPrivileges_Handler,
 		},
 		{
-			MethodName: "QueryAccountPrivilegesAll",
-			Handler:    _Query_QueryAccountPrivilegesAll_Handler,
+			MethodName: "AccountPrivilegesAll",
+			Handler:    _Query_AccountPrivilegesAll_Handler,
 		},
 		{
-			MethodName: "QueryGuardTransferCoins",
-			Handler:    _Query_QueryGuardTransferCoins_Handler,
+			MethodName: "GuardTransferCoins",
+			Handler:    _Query_GuardTransferCoins_Handler,
 		},
 		{
-			MethodName: "QueryRequiredPrivileges",
-			Handler:    _Query_QueryRequiredPrivileges_Handler,
+			MethodName: "RequiredPrivileges",
+			Handler:    _Query_RequiredPrivileges_Handler,
 		},
 		{
-			MethodName: "QueryRequiredPrivilegesAll",
-			Handler:    _Query_QueryRequiredPrivilegesAll_Handler,
+			MethodName: "RequiredPrivilegesAll",
+			Handler:    _Query_RequiredPrivilegesAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

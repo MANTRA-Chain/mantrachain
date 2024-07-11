@@ -265,7 +265,7 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stak
 
 // Rewards returns truncated rewards accumulated until the current epoch
 // for a farmer for a given staking coin denom.
-func (k Keeper) Rewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) sdk.Coins {
+func (k Keeper) GetRewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDenom string) sdk.Coins {
 	currentEpoch := k.GetCurrentEpoch(ctx, stakingCoinDenom)
 	rewards := k.CalculateRewards(ctx, farmerAcc, stakingCoinDenom, currentEpoch-1)
 	truncatedRewards, _ := rewards.TruncateDecimal()
@@ -278,7 +278,7 @@ func (k Keeper) Rewards(ctx sdk.Context, farmerAcc sdk.AccAddress, stakingCoinDe
 func (k Keeper) AllRewards(ctx sdk.Context, farmerAcc sdk.AccAddress) sdk.Coins {
 	totalRewards := sdk.NewCoins()
 	k.IterateStakingsByFarmer(ctx, farmerAcc, func(stakingCoinDenom string, staking types.Staking) (stop bool) {
-		rewards := k.Rewards(ctx, farmerAcc, stakingCoinDenom)
+		rewards := k.GetRewards(ctx, farmerAcc, stakingCoinDenom)
 		totalRewards = totalRewards.Add(rewards...)
 		return false
 	})
@@ -624,7 +624,7 @@ func (k Keeper) AllocateRewards(ctx sdk.Context) error {
 func (k Keeper) ValidateRemainingRewardsAmount(ctx sdk.Context) error {
 	remainingRewards := sdk.NewCoins()
 	k.IterateStakings(ctx, func(stakingCoinDenom string, farmerAcc sdk.AccAddress, staking types.Staking) (stop bool) {
-		rewards := k.Rewards(ctx, farmerAcc, stakingCoinDenom)
+		rewards := k.GetRewards(ctx, farmerAcc, stakingCoinDenom)
 		remainingRewards = remainingRewards.Add(rewards...)
 		return false
 	})

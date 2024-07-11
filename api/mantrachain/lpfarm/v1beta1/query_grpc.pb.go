@@ -19,15 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                 = "/mantrachain.lpfarm.v1beta1.Query/Params"
-	Query_QueryPlans_FullMethodName             = "/mantrachain.lpfarm.v1beta1.Query/QueryPlans"
-	Query_QueryPlan_FullMethodName              = "/mantrachain.lpfarm.v1beta1.Query/QueryPlan"
-	Query_QueryFarm_FullMethodName              = "/mantrachain.lpfarm.v1beta1.Query/QueryFarm"
-	Query_QueryPositions_FullMethodName         = "/mantrachain.lpfarm.v1beta1.Query/QueryPositions"
-	Query_QueryPosition_FullMethodName          = "/mantrachain.lpfarm.v1beta1.Query/QueryPosition"
-	Query_QueryHistoricalRewards_FullMethodName = "/mantrachain.lpfarm.v1beta1.Query/QueryHistoricalRewards"
-	Query_QueryTotalRewards_FullMethodName      = "/mantrachain.lpfarm.v1beta1.Query/QueryTotalRewards"
-	Query_QueryRewards_FullMethodName           = "/mantrachain.lpfarm.v1beta1.Query/QueryRewards"
+	Query_Params_FullMethodName            = "/mantrachain.lpfarm.v1beta1.Query/Params"
+	Query_Plans_FullMethodName             = "/mantrachain.lpfarm.v1beta1.Query/Plans"
+	Query_Plan_FullMethodName              = "/mantrachain.lpfarm.v1beta1.Query/Plan"
+	Query_Farm_FullMethodName              = "/mantrachain.lpfarm.v1beta1.Query/Farm"
+	Query_Positions_FullMethodName         = "/mantrachain.lpfarm.v1beta1.Query/Positions"
+	Query_Position_FullMethodName          = "/mantrachain.lpfarm.v1beta1.Query/Position"
+	Query_HistoricalRewards_FullMethodName = "/mantrachain.lpfarm.v1beta1.Query/HistoricalRewards"
+	Query_TotalRewards_FullMethodName      = "/mantrachain.lpfarm.v1beta1.Query/TotalRewards"
+	Query_Rewards_FullMethodName           = "/mantrachain.lpfarm.v1beta1.Query/Rewards"
 )
 
 // QueryClient is the client API for Query service.
@@ -36,14 +36,14 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	QueryPlans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error)
-	QueryPlan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error)
-	QueryFarm(ctx context.Context, in *QueryFarmRequest, opts ...grpc.CallOption) (*QueryFarmResponse, error)
-	QueryPositions(ctx context.Context, in *QueryPositionsRequest, opts ...grpc.CallOption) (*QueryPositionsResponse, error)
-	QueryPosition(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error)
-	QueryHistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error)
-	QueryTotalRewards(ctx context.Context, in *QueryTotalRewardsRequest, opts ...grpc.CallOption) (*QueryTotalRewardsResponse, error)
-	QueryRewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error)
+	Plans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error)
+	Plan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error)
+	Farm(ctx context.Context, in *QueryFarmRequest, opts ...grpc.CallOption) (*QueryFarmResponse, error)
+	Positions(ctx context.Context, in *QueryPositionsRequest, opts ...grpc.CallOption) (*QueryPositionsResponse, error)
+	Position(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error)
+	HistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error)
+	TotalRewards(ctx context.Context, in *QueryTotalRewardsRequest, opts ...grpc.CallOption) (*QueryTotalRewardsResponse, error)
+	Rewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error)
 }
 
 type queryClient struct {
@@ -63,72 +63,72 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryPlans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error) {
+func (c *queryClient) Plans(ctx context.Context, in *QueryPlansRequest, opts ...grpc.CallOption) (*QueryPlansResponse, error) {
 	out := new(QueryPlansResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPlans_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Plans_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPlan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error) {
+func (c *queryClient) Plan(ctx context.Context, in *QueryPlanRequest, opts ...grpc.CallOption) (*QueryPlanResponse, error) {
 	out := new(QueryPlanResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPlan_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Plan_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryFarm(ctx context.Context, in *QueryFarmRequest, opts ...grpc.CallOption) (*QueryFarmResponse, error) {
+func (c *queryClient) Farm(ctx context.Context, in *QueryFarmRequest, opts ...grpc.CallOption) (*QueryFarmResponse, error) {
 	out := new(QueryFarmResponse)
-	err := c.cc.Invoke(ctx, Query_QueryFarm_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Farm_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPositions(ctx context.Context, in *QueryPositionsRequest, opts ...grpc.CallOption) (*QueryPositionsResponse, error) {
+func (c *queryClient) Positions(ctx context.Context, in *QueryPositionsRequest, opts ...grpc.CallOption) (*QueryPositionsResponse, error) {
 	out := new(QueryPositionsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPositions_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Positions_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryPosition(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error) {
+func (c *queryClient) Position(ctx context.Context, in *QueryPositionRequest, opts ...grpc.CallOption) (*QueryPositionResponse, error) {
 	out := new(QueryPositionResponse)
-	err := c.cc.Invoke(ctx, Query_QueryPosition_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Position_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryHistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error) {
+func (c *queryClient) HistoricalRewards(ctx context.Context, in *QueryHistoricalRewardsRequest, opts ...grpc.CallOption) (*QueryHistoricalRewardsResponse, error) {
 	out := new(QueryHistoricalRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryHistoricalRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_HistoricalRewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryTotalRewards(ctx context.Context, in *QueryTotalRewardsRequest, opts ...grpc.CallOption) (*QueryTotalRewardsResponse, error) {
+func (c *queryClient) TotalRewards(ctx context.Context, in *QueryTotalRewardsRequest, opts ...grpc.CallOption) (*QueryTotalRewardsResponse, error) {
 	out := new(QueryTotalRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryTotalRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_TotalRewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error) {
+func (c *queryClient) Rewards(ctx context.Context, in *QueryRewardsRequest, opts ...grpc.CallOption) (*QueryRewardsResponse, error) {
 	out := new(QueryRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Rewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -141,14 +141,14 @@ func (c *queryClient) QueryRewards(ctx context.Context, in *QueryRewardsRequest,
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	QueryPlans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error)
-	QueryPlan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error)
-	QueryFarm(context.Context, *QueryFarmRequest) (*QueryFarmResponse, error)
-	QueryPositions(context.Context, *QueryPositionsRequest) (*QueryPositionsResponse, error)
-	QueryPosition(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error)
-	QueryHistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error)
-	QueryTotalRewards(context.Context, *QueryTotalRewardsRequest) (*QueryTotalRewardsResponse, error)
-	QueryRewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error)
+	Plans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error)
+	Plan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error)
+	Farm(context.Context, *QueryFarmRequest) (*QueryFarmResponse, error)
+	Positions(context.Context, *QueryPositionsRequest) (*QueryPositionsResponse, error)
+	Position(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error)
+	HistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error)
+	TotalRewards(context.Context, *QueryTotalRewardsRequest) (*QueryTotalRewardsResponse, error)
+	Rewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -159,29 +159,29 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryPlans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPlans not implemented")
+func (UnimplementedQueryServer) Plans(context.Context, *QueryPlansRequest) (*QueryPlansResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Plans not implemented")
 }
-func (UnimplementedQueryServer) QueryPlan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPlan not implemented")
+func (UnimplementedQueryServer) Plan(context.Context, *QueryPlanRequest) (*QueryPlanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Plan not implemented")
 }
-func (UnimplementedQueryServer) QueryFarm(context.Context, *QueryFarmRequest) (*QueryFarmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryFarm not implemented")
+func (UnimplementedQueryServer) Farm(context.Context, *QueryFarmRequest) (*QueryFarmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Farm not implemented")
 }
-func (UnimplementedQueryServer) QueryPositions(context.Context, *QueryPositionsRequest) (*QueryPositionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPositions not implemented")
+func (UnimplementedQueryServer) Positions(context.Context, *QueryPositionsRequest) (*QueryPositionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Positions not implemented")
 }
-func (UnimplementedQueryServer) QueryPosition(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryPosition not implemented")
+func (UnimplementedQueryServer) Position(context.Context, *QueryPositionRequest) (*QueryPositionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Position not implemented")
 }
-func (UnimplementedQueryServer) QueryHistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryHistoricalRewards not implemented")
+func (UnimplementedQueryServer) HistoricalRewards(context.Context, *QueryHistoricalRewardsRequest) (*QueryHistoricalRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HistoricalRewards not implemented")
 }
-func (UnimplementedQueryServer) QueryTotalRewards(context.Context, *QueryTotalRewardsRequest) (*QueryTotalRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryTotalRewards not implemented")
+func (UnimplementedQueryServer) TotalRewards(context.Context, *QueryTotalRewardsRequest) (*QueryTotalRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalRewards not implemented")
 }
-func (UnimplementedQueryServer) QueryRewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRewards not implemented")
+func (UnimplementedQueryServer) Rewards(context.Context, *QueryRewardsRequest) (*QueryRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Rewards not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -214,146 +214,146 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Plans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPlansRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPlans(ctx, in)
+		return srv.(QueryServer).Plans(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPlans_FullMethodName,
+		FullMethod: Query_Plans_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPlans(ctx, req.(*QueryPlansRequest))
+		return srv.(QueryServer).Plans(ctx, req.(*QueryPlansRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Plan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPlanRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPlan(ctx, in)
+		return srv.(QueryServer).Plan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPlan_FullMethodName,
+		FullMethod: Query_Plan_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPlan(ctx, req.(*QueryPlanRequest))
+		return srv.(QueryServer).Plan(ctx, req.(*QueryPlanRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryFarm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Farm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryFarmRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryFarm(ctx, in)
+		return srv.(QueryServer).Farm(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryFarm_FullMethodName,
+		FullMethod: Query_Farm_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryFarm(ctx, req.(*QueryFarmRequest))
+		return srv.(QueryServer).Farm(ctx, req.(*QueryFarmRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPositions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Positions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPositionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPositions(ctx, in)
+		return srv.(QueryServer).Positions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPositions_FullMethodName,
+		FullMethod: Query_Positions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPositions(ctx, req.(*QueryPositionsRequest))
+		return srv.(QueryServer).Positions(ctx, req.(*QueryPositionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryPosition_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Position_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPositionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryPosition(ctx, in)
+		return srv.(QueryServer).Position(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryPosition_FullMethodName,
+		FullMethod: Query_Position_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryPosition(ctx, req.(*QueryPositionRequest))
+		return srv.(QueryServer).Position(ctx, req.(*QueryPositionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryHistoricalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_HistoricalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryHistoricalRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryHistoricalRewards(ctx, in)
+		return srv.(QueryServer).HistoricalRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryHistoricalRewards_FullMethodName,
+		FullMethod: Query_HistoricalRewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryHistoricalRewards(ctx, req.(*QueryHistoricalRewardsRequest))
+		return srv.(QueryServer).HistoricalRewards(ctx, req.(*QueryHistoricalRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryTotalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_TotalRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryTotalRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryTotalRewards(ctx, in)
+		return srv.(QueryServer).TotalRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryTotalRewards_FullMethodName,
+		FullMethod: Query_TotalRewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryTotalRewards(ctx, req.(*QueryTotalRewardsRequest))
+		return srv.(QueryServer).TotalRewards(ctx, req.(*QueryTotalRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Rewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRewards(ctx, in)
+		return srv.(QueryServer).Rewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRewards_FullMethodName,
+		FullMethod: Query_Rewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRewards(ctx, req.(*QueryRewardsRequest))
+		return srv.(QueryServer).Rewards(ctx, req.(*QueryRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -370,36 +370,36 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryPlans",
-			Handler:    _Query_QueryPlans_Handler,
+			MethodName: "Plans",
+			Handler:    _Query_Plans_Handler,
 		},
 		{
-			MethodName: "QueryPlan",
-			Handler:    _Query_QueryPlan_Handler,
+			MethodName: "Plan",
+			Handler:    _Query_Plan_Handler,
 		},
 		{
-			MethodName: "QueryFarm",
-			Handler:    _Query_QueryFarm_Handler,
+			MethodName: "Farm",
+			Handler:    _Query_Farm_Handler,
 		},
 		{
-			MethodName: "QueryPositions",
-			Handler:    _Query_QueryPositions_Handler,
+			MethodName: "Positions",
+			Handler:    _Query_Positions_Handler,
 		},
 		{
-			MethodName: "QueryPosition",
-			Handler:    _Query_QueryPosition_Handler,
+			MethodName: "Position",
+			Handler:    _Query_Position_Handler,
 		},
 		{
-			MethodName: "QueryHistoricalRewards",
-			Handler:    _Query_QueryHistoricalRewards_Handler,
+			MethodName: "HistoricalRewards",
+			Handler:    _Query_HistoricalRewards_Handler,
 		},
 		{
-			MethodName: "QueryTotalRewards",
-			Handler:    _Query_QueryTotalRewards_Handler,
+			MethodName: "TotalRewards",
+			Handler:    _Query_TotalRewards_Handler,
 		},
 		{
-			MethodName: "QueryRewards",
-			Handler:    _Query_QueryRewards_Handler,
+			MethodName: "Rewards",
+			Handler:    _Query_Rewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

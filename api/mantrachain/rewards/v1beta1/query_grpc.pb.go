@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName             = "/mantrachain.rewards.v1beta1.Query/Params"
-	Query_QuerySnapshot_FullMethodName      = "/mantrachain.rewards.v1beta1.Query/QuerySnapshot"
-	Query_QuerySnapshotAll_FullMethodName   = "/mantrachain.rewards.v1beta1.Query/QuerySnapshotAll"
-	Query_QueryProvider_FullMethodName      = "/mantrachain.rewards.v1beta1.Query/QueryProvider"
-	Query_QueryProviderPairs_FullMethodName = "/mantrachain.rewards.v1beta1.Query/QueryProviderPairs"
-	Query_QueryProviderAll_FullMethodName   = "/mantrachain.rewards.v1beta1.Query/QueryProviderAll"
-	Query_QueryRewards_FullMethodName       = "/mantrachain.rewards.v1beta1.Query/QueryRewards"
+	Query_Params_FullMethodName        = "/mantrachain.rewards.v1beta1.Query/Params"
+	Query_Snapshot_FullMethodName      = "/mantrachain.rewards.v1beta1.Query/Snapshot"
+	Query_SnapshotAll_FullMethodName   = "/mantrachain.rewards.v1beta1.Query/SnapshotAll"
+	Query_Provider_FullMethodName      = "/mantrachain.rewards.v1beta1.Query/Provider"
+	Query_ProviderPairs_FullMethodName = "/mantrachain.rewards.v1beta1.Query/ProviderPairs"
+	Query_ProviderAll_FullMethodName   = "/mantrachain.rewards.v1beta1.Query/ProviderAll"
+	Query_Rewards_FullMethodName       = "/mantrachain.rewards.v1beta1.Query/Rewards"
 )
 
 // QueryClient is the client API for Query service.
@@ -35,17 +35,17 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Snapshot items.
-	QuerySnapshot(ctx context.Context, in *QueryGetSnapshotRequest, opts ...grpc.CallOption) (*QueryGetSnapshotResponse, error)
+	Snapshot(ctx context.Context, in *QueryGetSnapshotRequest, opts ...grpc.CallOption) (*QueryGetSnapshotResponse, error)
 	// QuerySnapshotAll
-	QuerySnapshotAll(ctx context.Context, in *QueryAllSnapshotRequest, opts ...grpc.CallOption) (*QueryAllSnapshotResponse, error)
+	SnapshotAll(ctx context.Context, in *QueryAllSnapshotRequest, opts ...grpc.CallOption) (*QueryAllSnapshotResponse, error)
 	// Queries a list of Provider pairs ids.
-	QueryProvider(ctx context.Context, in *QueryGetProviderRequest, opts ...grpc.CallOption) (*QueryGetProviderResponse, error)
+	Provider(ctx context.Context, in *QueryGetProviderRequest, opts ...grpc.CallOption) (*QueryGetProviderResponse, error)
 	// QueryProviderPairs
-	QueryProviderPairs(ctx context.Context, in *QueryGetProviderPairsRequest, opts ...grpc.CallOption) (*QueryGetProviderPairsResponse, error)
+	ProviderPairs(ctx context.Context, in *QueryGetProviderPairsRequest, opts ...grpc.CallOption) (*QueryGetProviderPairsResponse, error)
 	// QueryProviderAll
-	QueryProviderAll(ctx context.Context, in *QueryAllProviderRequest, opts ...grpc.CallOption) (*QueryAllProviderResponse, error)
+	ProviderAll(ctx context.Context, in *QueryAllProviderRequest, opts ...grpc.CallOption) (*QueryAllProviderResponse, error)
 	// Queries a list of Claim items.
-	QueryRewards(ctx context.Context, in *QueryGetRewardsRequest, opts ...grpc.CallOption) (*QueryGetRewardsResponse, error)
+	Rewards(ctx context.Context, in *QueryGetRewardsRequest, opts ...grpc.CallOption) (*QueryGetRewardsResponse, error)
 }
 
 type queryClient struct {
@@ -65,54 +65,54 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QuerySnapshot(ctx context.Context, in *QueryGetSnapshotRequest, opts ...grpc.CallOption) (*QueryGetSnapshotResponse, error) {
+func (c *queryClient) Snapshot(ctx context.Context, in *QueryGetSnapshotRequest, opts ...grpc.CallOption) (*QueryGetSnapshotResponse, error) {
 	out := new(QueryGetSnapshotResponse)
-	err := c.cc.Invoke(ctx, Query_QuerySnapshot_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Snapshot_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QuerySnapshotAll(ctx context.Context, in *QueryAllSnapshotRequest, opts ...grpc.CallOption) (*QueryAllSnapshotResponse, error) {
+func (c *queryClient) SnapshotAll(ctx context.Context, in *QueryAllSnapshotRequest, opts ...grpc.CallOption) (*QueryAllSnapshotResponse, error) {
 	out := new(QueryAllSnapshotResponse)
-	err := c.cc.Invoke(ctx, Query_QuerySnapshotAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_SnapshotAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryProvider(ctx context.Context, in *QueryGetProviderRequest, opts ...grpc.CallOption) (*QueryGetProviderResponse, error) {
+func (c *queryClient) Provider(ctx context.Context, in *QueryGetProviderRequest, opts ...grpc.CallOption) (*QueryGetProviderResponse, error) {
 	out := new(QueryGetProviderResponse)
-	err := c.cc.Invoke(ctx, Query_QueryProvider_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Provider_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryProviderPairs(ctx context.Context, in *QueryGetProviderPairsRequest, opts ...grpc.CallOption) (*QueryGetProviderPairsResponse, error) {
+func (c *queryClient) ProviderPairs(ctx context.Context, in *QueryGetProviderPairsRequest, opts ...grpc.CallOption) (*QueryGetProviderPairsResponse, error) {
 	out := new(QueryGetProviderPairsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryProviderPairs_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_ProviderPairs_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryProviderAll(ctx context.Context, in *QueryAllProviderRequest, opts ...grpc.CallOption) (*QueryAllProviderResponse, error) {
+func (c *queryClient) ProviderAll(ctx context.Context, in *QueryAllProviderRequest, opts ...grpc.CallOption) (*QueryAllProviderResponse, error) {
 	out := new(QueryAllProviderResponse)
-	err := c.cc.Invoke(ctx, Query_QueryProviderAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_ProviderAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRewards(ctx context.Context, in *QueryGetRewardsRequest, opts ...grpc.CallOption) (*QueryGetRewardsResponse, error) {
+func (c *queryClient) Rewards(ctx context.Context, in *QueryGetRewardsRequest, opts ...grpc.CallOption) (*QueryGetRewardsResponse, error) {
 	out := new(QueryGetRewardsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRewards_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Rewards_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,17 +126,17 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Snapshot items.
-	QuerySnapshot(context.Context, *QueryGetSnapshotRequest) (*QueryGetSnapshotResponse, error)
+	Snapshot(context.Context, *QueryGetSnapshotRequest) (*QueryGetSnapshotResponse, error)
 	// QuerySnapshotAll
-	QuerySnapshotAll(context.Context, *QueryAllSnapshotRequest) (*QueryAllSnapshotResponse, error)
+	SnapshotAll(context.Context, *QueryAllSnapshotRequest) (*QueryAllSnapshotResponse, error)
 	// Queries a list of Provider pairs ids.
-	QueryProvider(context.Context, *QueryGetProviderRequest) (*QueryGetProviderResponse, error)
+	Provider(context.Context, *QueryGetProviderRequest) (*QueryGetProviderResponse, error)
 	// QueryProviderPairs
-	QueryProviderPairs(context.Context, *QueryGetProviderPairsRequest) (*QueryGetProviderPairsResponse, error)
+	ProviderPairs(context.Context, *QueryGetProviderPairsRequest) (*QueryGetProviderPairsResponse, error)
 	// QueryProviderAll
-	QueryProviderAll(context.Context, *QueryAllProviderRequest) (*QueryAllProviderResponse, error)
+	ProviderAll(context.Context, *QueryAllProviderRequest) (*QueryAllProviderResponse, error)
 	// Queries a list of Claim items.
-	QueryRewards(context.Context, *QueryGetRewardsRequest) (*QueryGetRewardsResponse, error)
+	Rewards(context.Context, *QueryGetRewardsRequest) (*QueryGetRewardsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -147,23 +147,23 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QuerySnapshot(context.Context, *QueryGetSnapshotRequest) (*QueryGetSnapshotResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QuerySnapshot not implemented")
+func (UnimplementedQueryServer) Snapshot(context.Context, *QueryGetSnapshotRequest) (*QueryGetSnapshotResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Snapshot not implemented")
 }
-func (UnimplementedQueryServer) QuerySnapshotAll(context.Context, *QueryAllSnapshotRequest) (*QueryAllSnapshotResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QuerySnapshotAll not implemented")
+func (UnimplementedQueryServer) SnapshotAll(context.Context, *QueryAllSnapshotRequest) (*QueryAllSnapshotResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SnapshotAll not implemented")
 }
-func (UnimplementedQueryServer) QueryProvider(context.Context, *QueryGetProviderRequest) (*QueryGetProviderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryProvider not implemented")
+func (UnimplementedQueryServer) Provider(context.Context, *QueryGetProviderRequest) (*QueryGetProviderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Provider not implemented")
 }
-func (UnimplementedQueryServer) QueryProviderPairs(context.Context, *QueryGetProviderPairsRequest) (*QueryGetProviderPairsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryProviderPairs not implemented")
+func (UnimplementedQueryServer) ProviderPairs(context.Context, *QueryGetProviderPairsRequest) (*QueryGetProviderPairsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProviderPairs not implemented")
 }
-func (UnimplementedQueryServer) QueryProviderAll(context.Context, *QueryAllProviderRequest) (*QueryAllProviderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryProviderAll not implemented")
+func (UnimplementedQueryServer) ProviderAll(context.Context, *QueryAllProviderRequest) (*QueryAllProviderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProviderAll not implemented")
 }
-func (UnimplementedQueryServer) QueryRewards(context.Context, *QueryGetRewardsRequest) (*QueryGetRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRewards not implemented")
+func (UnimplementedQueryServer) Rewards(context.Context, *QueryGetRewardsRequest) (*QueryGetRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Rewards not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -196,110 +196,110 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QuerySnapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Snapshot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetSnapshotRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QuerySnapshot(ctx, in)
+		return srv.(QueryServer).Snapshot(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QuerySnapshot_FullMethodName,
+		FullMethod: Query_Snapshot_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QuerySnapshot(ctx, req.(*QueryGetSnapshotRequest))
+		return srv.(QueryServer).Snapshot(ctx, req.(*QueryGetSnapshotRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QuerySnapshotAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_SnapshotAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllSnapshotRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QuerySnapshotAll(ctx, in)
+		return srv.(QueryServer).SnapshotAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QuerySnapshotAll_FullMethodName,
+		FullMethod: Query_SnapshotAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QuerySnapshotAll(ctx, req.(*QueryAllSnapshotRequest))
+		return srv.(QueryServer).SnapshotAll(ctx, req.(*QueryAllSnapshotRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Provider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetProviderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryProvider(ctx, in)
+		return srv.(QueryServer).Provider(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryProvider_FullMethodName,
+		FullMethod: Query_Provider_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryProvider(ctx, req.(*QueryGetProviderRequest))
+		return srv.(QueryServer).Provider(ctx, req.(*QueryGetProviderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryProviderPairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_ProviderPairs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetProviderPairsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryProviderPairs(ctx, in)
+		return srv.(QueryServer).ProviderPairs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryProviderPairs_FullMethodName,
+		FullMethod: Query_ProviderPairs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryProviderPairs(ctx, req.(*QueryGetProviderPairsRequest))
+		return srv.(QueryServer).ProviderPairs(ctx, req.(*QueryGetProviderPairsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryProviderAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_ProviderAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllProviderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryProviderAll(ctx, in)
+		return srv.(QueryServer).ProviderAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryProviderAll_FullMethodName,
+		FullMethod: Query_ProviderAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryProviderAll(ctx, req.(*QueryAllProviderRequest))
+		return srv.(QueryServer).ProviderAll(ctx, req.(*QueryAllProviderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Rewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRewards(ctx, in)
+		return srv.(QueryServer).Rewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRewards_FullMethodName,
+		FullMethod: Query_Rewards_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRewards(ctx, req.(*QueryGetRewardsRequest))
+		return srv.(QueryServer).Rewards(ctx, req.(*QueryGetRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -316,28 +316,28 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QuerySnapshot",
-			Handler:    _Query_QuerySnapshot_Handler,
+			MethodName: "Snapshot",
+			Handler:    _Query_Snapshot_Handler,
 		},
 		{
-			MethodName: "QuerySnapshotAll",
-			Handler:    _Query_QuerySnapshotAll_Handler,
+			MethodName: "SnapshotAll",
+			Handler:    _Query_SnapshotAll_Handler,
 		},
 		{
-			MethodName: "QueryProvider",
-			Handler:    _Query_QueryProvider_Handler,
+			MethodName: "Provider",
+			Handler:    _Query_Provider_Handler,
 		},
 		{
-			MethodName: "QueryProviderPairs",
-			Handler:    _Query_QueryProviderPairs_Handler,
+			MethodName: "ProviderPairs",
+			Handler:    _Query_ProviderPairs_Handler,
 		},
 		{
-			MethodName: "QueryProviderAll",
-			Handler:    _Query_QueryProviderAll_Handler,
+			MethodName: "ProviderAll",
+			Handler:    _Query_ProviderAll_Handler,
 		},
 		{
-			MethodName: "QueryRewards",
-			Handler:    _Query_QueryRewards_Handler,
+			MethodName: "Rewards",
+			Handler:    _Query_Rewards_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

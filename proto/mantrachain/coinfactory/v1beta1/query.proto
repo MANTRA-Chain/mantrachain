@@ -20,39 +20,39 @@ service Query {
 
   // DenomsFromCreator defines a gRPC query method for fetching all
   // denominations created by a specific admin/creator.
-  rpc QueryDenomsFromCreator(QueryDenomsFromCreatorRequest) returns (QueryDenomsFromCreatorResponse) {
+  rpc DenomsFromCreator(QueryDenomsFromCreatorRequest) returns (QueryDenomsFromCreatorResponse) {
     option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms_from_creator/{creator}";
   }
 
   // DenomAuthorityMetadata defines a gRPC query method for fetching
   // DenomAuthorityMetadata for a particular denom.
-  rpc QueryDenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest) returns (QueryDenomAuthorityMetadataResponse) {
+  rpc DenomAuthorityMetadata(QueryDenomAuthorityMetadataRequest) returns (QueryDenomAuthorityMetadataResponse) {
     option (google.api.http).get = "/mantrachain/coinfactory/v1beta1/denoms/{denom}/authority_metadata";
   }
 
-  // QueryDenomAuthorityMetadata2
-  rpc QueryDenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request) returns (QueryDenomAuthorityMetadata2Response) {
+  // DenomAuthorityMetadata2
+  rpc DenomAuthorityMetadata2(QueryDenomAuthorityMetadata2Request) returns (QueryDenomAuthorityMetadata2Response) {
     option (google.api.http).get =
       "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
       "{subdenom}/authority_metadata";
   }
 
-  // QueryBalance
-  rpc QueryBalance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+  // Balance
+  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get =
       "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
       "{subdenom}/balances/{address}";
   }
 
-  // QuerySupplyOf
-  rpc QuerySupplyOf(QuerySupplyOfRequest) returns (QuerySupplyOfResponse) {
+  // SupplyOf
+  rpc SupplyOf(QuerySupplyOfRequest) returns (QuerySupplyOfResponse) {
     option (google.api.http).get =
       "/mantrachain/coinfactory/v1beta1/creators/"
       "{creator}/subdenoms/{subdenom}/supply";
   }
 
-  // QueryDenomMetadata
-  rpc QueryDenomMetadata(QueryDenomMetadataRequest) returns (QueryDenomMetadataResponse) {
+  // DenomMetadata
+  rpc DenomMetadata(QueryDenomMetadataRequest) returns (QueryDenomMetadataResponse) {
     option (google.api.http).get =
       "/mantrachain/coinfactory/v1beta1/creators/{creator}/subdenoms/"
       "{subdenom}/denoms_metadata";

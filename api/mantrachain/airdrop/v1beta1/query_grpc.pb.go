@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName           = "/mantrachain.airdrop.v1beta1.Query/Params"
-	Query_QueryCampaign_FullMethodName    = "/mantrachain.airdrop.v1beta1.Query/QueryCampaign"
-	Query_QueryCampaignAll_FullMethodName = "/mantrachain.airdrop.v1beta1.Query/QueryCampaignAll"
+	Query_Params_FullMethodName      = "/mantrachain.airdrop.v1beta1.Query/Params"
+	Query_Campaign_FullMethodName    = "/mantrachain.airdrop.v1beta1.Query/Campaign"
+	Query_CampaignAll_FullMethodName = "/mantrachain.airdrop.v1beta1.Query/CampaignAll"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,9 +31,9 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Campaign items.
-	QueryCampaign(ctx context.Context, in *QueryGetCampaignRequest, opts ...grpc.CallOption) (*QueryGetCampaignResponse, error)
+	Campaign(ctx context.Context, in *QueryGetCampaignRequest, opts ...grpc.CallOption) (*QueryGetCampaignResponse, error)
 	// Queries a list of Campaign items.
-	QueryCampaignAll(ctx context.Context, in *QueryAllCampaignRequest, opts ...grpc.CallOption) (*QueryAllCampaignResponse, error)
+	CampaignAll(ctx context.Context, in *QueryAllCampaignRequest, opts ...grpc.CallOption) (*QueryAllCampaignResponse, error)
 }
 
 type queryClient struct {
@@ -53,18 +53,18 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryCampaign(ctx context.Context, in *QueryGetCampaignRequest, opts ...grpc.CallOption) (*QueryGetCampaignResponse, error) {
+func (c *queryClient) Campaign(ctx context.Context, in *QueryGetCampaignRequest, opts ...grpc.CallOption) (*QueryGetCampaignResponse, error) {
 	out := new(QueryGetCampaignResponse)
-	err := c.cc.Invoke(ctx, Query_QueryCampaign_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Campaign_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryCampaignAll(ctx context.Context, in *QueryAllCampaignRequest, opts ...grpc.CallOption) (*QueryAllCampaignResponse, error) {
+func (c *queryClient) CampaignAll(ctx context.Context, in *QueryAllCampaignRequest, opts ...grpc.CallOption) (*QueryAllCampaignResponse, error) {
 	out := new(QueryAllCampaignResponse)
-	err := c.cc.Invoke(ctx, Query_QueryCampaignAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_CampaignAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Campaign items.
-	QueryCampaign(context.Context, *QueryGetCampaignRequest) (*QueryGetCampaignResponse, error)
+	Campaign(context.Context, *QueryGetCampaignRequest) (*QueryGetCampaignResponse, error)
 	// Queries a list of Campaign items.
-	QueryCampaignAll(context.Context, *QueryAllCampaignRequest) (*QueryAllCampaignResponse, error)
+	CampaignAll(context.Context, *QueryAllCampaignRequest) (*QueryAllCampaignResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -91,11 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryCampaign(context.Context, *QueryGetCampaignRequest) (*QueryGetCampaignResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryCampaign not implemented")
+func (UnimplementedQueryServer) Campaign(context.Context, *QueryGetCampaignRequest) (*QueryGetCampaignResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Campaign not implemented")
 }
-func (UnimplementedQueryServer) QueryCampaignAll(context.Context, *QueryAllCampaignRequest) (*QueryAllCampaignResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryCampaignAll not implemented")
+func (UnimplementedQueryServer) CampaignAll(context.Context, *QueryAllCampaignRequest) (*QueryAllCampaignResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CampaignAll not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -128,38 +128,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryCampaign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Campaign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetCampaignRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryCampaign(ctx, in)
+		return srv.(QueryServer).Campaign(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryCampaign_FullMethodName,
+		FullMethod: Query_Campaign_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryCampaign(ctx, req.(*QueryGetCampaignRequest))
+		return srv.(QueryServer).Campaign(ctx, req.(*QueryGetCampaignRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryCampaignAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_CampaignAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllCampaignRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryCampaignAll(ctx, in)
+		return srv.(QueryServer).CampaignAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryCampaignAll_FullMethodName,
+		FullMethod: Query_CampaignAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryCampaignAll(ctx, req.(*QueryAllCampaignRequest))
+		return srv.(QueryServer).CampaignAll(ctx, req.(*QueryAllCampaignRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,12 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryCampaign",
-			Handler:    _Query_QueryCampaign_Handler,
+			MethodName: "Campaign",
+			Handler:    _Query_Campaign_Handler,
 		},
 		{
-			MethodName: "QueryCampaignAll",
-			Handler:    _Query_QueryCampaignAll_Handler,
+			MethodName: "CampaignAll",
+			Handler:    _Query_CampaignAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

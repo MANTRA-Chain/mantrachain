@@ -15,7 +15,7 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
-func (k Keeper) QueryPlans(c context.Context, req *types.QueryPlansRequest) (*types.QueryPlansResponse, error) {
+func (k Keeper) Plans(c context.Context, req *types.QueryPlansRequest) (*types.QueryPlansResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -37,7 +37,7 @@ func (k Keeper) QueryPlans(c context.Context, req *types.QueryPlansRequest) (*ty
 	return &types.QueryPlansResponse{Plans: plans, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryPlan(c context.Context, req *types.QueryPlanRequest) (*types.QueryPlanResponse, error) {
+func (k Keeper) Plan(c context.Context, req *types.QueryPlanRequest) (*types.QueryPlanResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -49,7 +49,7 @@ func (k Keeper) QueryPlan(c context.Context, req *types.QueryPlanRequest) (*type
 	return &types.QueryPlanResponse{Plan: plan}, nil
 }
 
-func (k Keeper) QueryFarm(c context.Context, req *types.QueryFarmRequest) (*types.QueryFarmResponse, error) {
+func (k Keeper) Farm(c context.Context, req *types.QueryFarmRequest) (*types.QueryFarmResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -57,14 +57,14 @@ func (k Keeper) QueryFarm(c context.Context, req *types.QueryFarmRequest) (*type
 		return nil, status.Errorf(codes.InvalidArgument, "invalid denom: %v", err)
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	farm, found := k.GetFarm(ctx, req.Denom)
+	farm, found := k.GetFarmFromStore(ctx, req.Denom)
 	if !found {
 		return nil, status.Error(codes.NotFound, "farm not found")
 	}
 	return &types.QueryFarmResponse{Farm: farm}, nil
 }
 
-func (k Keeper) QueryPositions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
+func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -92,7 +92,7 @@ func (k Keeper) QueryPositions(c context.Context, req *types.QueryPositionsReque
 	return &types.QueryPositionsResponse{Positions: positions, Pagination: pageReq}, nil
 }
 
-func (k Keeper) QueryPosition(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
+func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -113,7 +113,7 @@ func (k Keeper) QueryPosition(c context.Context, req *types.QueryPositionRequest
 	return &types.QueryPositionResponse{Position: position}, nil
 }
 
-func (k Keeper) QueryHistoricalRewards(c context.Context, req *types.QueryHistoricalRewardsRequest) (*types.QueryHistoricalRewardsResponse, error) {
+func (k Keeper) HistoricalRewards(c context.Context, req *types.QueryHistoricalRewardsRequest) (*types.QueryHistoricalRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -146,7 +146,7 @@ func (k Keeper) QueryHistoricalRewards(c context.Context, req *types.QueryHistor
 	return &types.QueryHistoricalRewardsResponse{HistoricalRewards: hists, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryTotalRewards(c context.Context, req *types.QueryTotalRewardsRequest) (*types.QueryTotalRewardsResponse, error) {
+func (k Keeper) TotalRewards(c context.Context, req *types.QueryTotalRewardsRequest) (*types.QueryTotalRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -168,7 +168,7 @@ func (k Keeper) QueryTotalRewards(c context.Context, req *types.QueryTotalReward
 	return &types.QueryTotalRewardsResponse{Rewards: rewards}, nil
 }
 
-func (k Keeper) QueryRewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {
+func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -181,7 +181,7 @@ func (k Keeper) QueryRewards(c context.Context, req *types.QueryRewardsRequest) 
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, found := k.GetFarm(ctx, req.Denom)
+	_, found := k.GetFarmFromStore(ctx, req.Denom)
 	if !found {
 		return &types.QueryRewardsResponse{Rewards: nil}, nil
 	}

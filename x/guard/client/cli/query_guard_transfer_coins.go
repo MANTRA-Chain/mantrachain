@@ -22,7 +22,7 @@ func CmdShowGuardTransferCoins() *cobra.Command {
 
 			params := &types.QueryGetGuardTransferCoinsRequest{}
 
-			res, err := queryClient.QueryGuardTransferCoins(context.Background(), params)
+			res, err := queryClient.GuardTransferCoins(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                       = "/mantrachain.coinfactory.v1beta1.Query/Params"
-	Query_QueryDenomsFromCreator_FullMethodName       = "/mantrachain.coinfactory.v1beta1.Query/QueryDenomsFromCreator"
-	Query_QueryDenomAuthorityMetadata_FullMethodName  = "/mantrachain.coinfactory.v1beta1.Query/QueryDenomAuthorityMetadata"
-	Query_QueryDenomAuthorityMetadata2_FullMethodName = "/mantrachain.coinfactory.v1beta1.Query/QueryDenomAuthorityMetadata2"
-	Query_QueryBalance_FullMethodName                 = "/mantrachain.coinfactory.v1beta1.Query/QueryBalance"
-	Query_QuerySupplyOf_FullMethodName                = "/mantrachain.coinfactory.v1beta1.Query/QuerySupplyOf"
-	Query_QueryDenomMetadata_FullMethodName           = "/mantrachain.coinfactory.v1beta1.Query/QueryDenomMetadata"
+	Query_Params_FullMethodName                  = "/mantrachain.coinfactory.v1beta1.Query/Params"
+	Query_DenomsFromCreator_FullMethodName       = "/mantrachain.coinfactory.v1beta1.Query/DenomsFromCreator"
+	Query_DenomAuthorityMetadata_FullMethodName  = "/mantrachain.coinfactory.v1beta1.Query/DenomAuthorityMetadata"
+	Query_DenomAuthorityMetadata2_FullMethodName = "/mantrachain.coinfactory.v1beta1.Query/DenomAuthorityMetadata2"
+	Query_Balance_FullMethodName                 = "/mantrachain.coinfactory.v1beta1.Query/Balance"
+	Query_SupplyOf_FullMethodName                = "/mantrachain.coinfactory.v1beta1.Query/SupplyOf"
+	Query_DenomMetadata_FullMethodName           = "/mantrachain.coinfactory.v1beta1.Query/DenomMetadata"
 )
 
 // QueryClient is the client API for Query service.
@@ -36,18 +36,18 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// DenomsFromCreator defines a gRPC query method for fetching all
 	// denominations created by a specific admin/creator.
-	QueryDenomsFromCreator(ctx context.Context, in *QueryDenomsFromCreatorRequest, opts ...grpc.CallOption) (*QueryDenomsFromCreatorResponse, error)
+	DenomsFromCreator(ctx context.Context, in *QueryDenomsFromCreatorRequest, opts ...grpc.CallOption) (*QueryDenomsFromCreatorResponse, error)
 	// DenomAuthorityMetadata defines a gRPC query method for fetching
 	// DenomAuthorityMetadata for a particular denom.
-	QueryDenomAuthorityMetadata(ctx context.Context, in *QueryDenomAuthorityMetadataRequest, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadataResponse, error)
-	// QueryDenomAuthorityMetadata2
-	QueryDenomAuthorityMetadata2(ctx context.Context, in *QueryDenomAuthorityMetadata2Request, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadata2Response, error)
-	// QueryBalance
-	QueryBalance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
-	// QuerySupplyOf
-	QuerySupplyOf(ctx context.Context, in *QuerySupplyOfRequest, opts ...grpc.CallOption) (*QuerySupplyOfResponse, error)
-	// QueryDenomMetadata
-	QueryDenomMetadata(ctx context.Context, in *QueryDenomMetadataRequest, opts ...grpc.CallOption) (*QueryDenomMetadataResponse, error)
+	DenomAuthorityMetadata(ctx context.Context, in *QueryDenomAuthorityMetadataRequest, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadataResponse, error)
+	// DenomAuthorityMetadata2
+	DenomAuthorityMetadata2(ctx context.Context, in *QueryDenomAuthorityMetadata2Request, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadata2Response, error)
+	// Balance
+	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
+	// SupplyOf
+	SupplyOf(ctx context.Context, in *QuerySupplyOfRequest, opts ...grpc.CallOption) (*QuerySupplyOfResponse, error)
+	// DenomMetadata
+	DenomMetadata(ctx context.Context, in *QueryDenomMetadataRequest, opts ...grpc.CallOption) (*QueryDenomMetadataResponse, error)
 }
 
 type queryClient struct {
@@ -67,54 +67,54 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryDenomsFromCreator(ctx context.Context, in *QueryDenomsFromCreatorRequest, opts ...grpc.CallOption) (*QueryDenomsFromCreatorResponse, error) {
+func (c *queryClient) DenomsFromCreator(ctx context.Context, in *QueryDenomsFromCreatorRequest, opts ...grpc.CallOption) (*QueryDenomsFromCreatorResponse, error) {
 	out := new(QueryDenomsFromCreatorResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDenomsFromCreator_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DenomsFromCreator_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDenomAuthorityMetadata(ctx context.Context, in *QueryDenomAuthorityMetadataRequest, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadataResponse, error) {
+func (c *queryClient) DenomAuthorityMetadata(ctx context.Context, in *QueryDenomAuthorityMetadataRequest, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadataResponse, error) {
 	out := new(QueryDenomAuthorityMetadataResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDenomAuthorityMetadata_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DenomAuthorityMetadata_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDenomAuthorityMetadata2(ctx context.Context, in *QueryDenomAuthorityMetadata2Request, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadata2Response, error) {
+func (c *queryClient) DenomAuthorityMetadata2(ctx context.Context, in *QueryDenomAuthorityMetadata2Request, opts ...grpc.CallOption) (*QueryDenomAuthorityMetadata2Response, error) {
 	out := new(QueryDenomAuthorityMetadata2Response)
-	err := c.cc.Invoke(ctx, Query_QueryDenomAuthorityMetadata2_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DenomAuthorityMetadata2_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryBalance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error) {
+func (c *queryClient) Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error) {
 	out := new(QueryBalanceResponse)
-	err := c.cc.Invoke(ctx, Query_QueryBalance_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Balance_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QuerySupplyOf(ctx context.Context, in *QuerySupplyOfRequest, opts ...grpc.CallOption) (*QuerySupplyOfResponse, error) {
+func (c *queryClient) SupplyOf(ctx context.Context, in *QuerySupplyOfRequest, opts ...grpc.CallOption) (*QuerySupplyOfResponse, error) {
 	out := new(QuerySupplyOfResponse)
-	err := c.cc.Invoke(ctx, Query_QuerySupplyOf_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_SupplyOf_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDenomMetadata(ctx context.Context, in *QueryDenomMetadataRequest, opts ...grpc.CallOption) (*QueryDenomMetadataResponse, error) {
+func (c *queryClient) DenomMetadata(ctx context.Context, in *QueryDenomMetadataRequest, opts ...grpc.CallOption) (*QueryDenomMetadataResponse, error) {
 	out := new(QueryDenomMetadataResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDenomMetadata_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DenomMetadata_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -129,18 +129,18 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// DenomsFromCreator defines a gRPC query method for fetching all
 	// denominations created by a specific admin/creator.
-	QueryDenomsFromCreator(context.Context, *QueryDenomsFromCreatorRequest) (*QueryDenomsFromCreatorResponse, error)
+	DenomsFromCreator(context.Context, *QueryDenomsFromCreatorRequest) (*QueryDenomsFromCreatorResponse, error)
 	// DenomAuthorityMetadata defines a gRPC query method for fetching
 	// DenomAuthorityMetadata for a particular denom.
-	QueryDenomAuthorityMetadata(context.Context, *QueryDenomAuthorityMetadataRequest) (*QueryDenomAuthorityMetadataResponse, error)
-	// QueryDenomAuthorityMetadata2
-	QueryDenomAuthorityMetadata2(context.Context, *QueryDenomAuthorityMetadata2Request) (*QueryDenomAuthorityMetadata2Response, error)
-	// QueryBalance
-	QueryBalance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
-	// QuerySupplyOf
-	QuerySupplyOf(context.Context, *QuerySupplyOfRequest) (*QuerySupplyOfResponse, error)
-	// QueryDenomMetadata
-	QueryDenomMetadata(context.Context, *QueryDenomMetadataRequest) (*QueryDenomMetadataResponse, error)
+	DenomAuthorityMetadata(context.Context, *QueryDenomAuthorityMetadataRequest) (*QueryDenomAuthorityMetadataResponse, error)
+	// DenomAuthorityMetadata2
+	DenomAuthorityMetadata2(context.Context, *QueryDenomAuthorityMetadata2Request) (*QueryDenomAuthorityMetadata2Response, error)
+	// Balance
+	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
+	// SupplyOf
+	SupplyOf(context.Context, *QuerySupplyOfRequest) (*QuerySupplyOfResponse, error)
+	// DenomMetadata
+	DenomMetadata(context.Context, *QueryDenomMetadataRequest) (*QueryDenomMetadataResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -151,23 +151,23 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryDenomsFromCreator(context.Context, *QueryDenomsFromCreatorRequest) (*QueryDenomsFromCreatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDenomsFromCreator not implemented")
+func (UnimplementedQueryServer) DenomsFromCreator(context.Context, *QueryDenomsFromCreatorRequest) (*QueryDenomsFromCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DenomsFromCreator not implemented")
 }
-func (UnimplementedQueryServer) QueryDenomAuthorityMetadata(context.Context, *QueryDenomAuthorityMetadataRequest) (*QueryDenomAuthorityMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDenomAuthorityMetadata not implemented")
+func (UnimplementedQueryServer) DenomAuthorityMetadata(context.Context, *QueryDenomAuthorityMetadataRequest) (*QueryDenomAuthorityMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DenomAuthorityMetadata not implemented")
 }
-func (UnimplementedQueryServer) QueryDenomAuthorityMetadata2(context.Context, *QueryDenomAuthorityMetadata2Request) (*QueryDenomAuthorityMetadata2Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDenomAuthorityMetadata2 not implemented")
+func (UnimplementedQueryServer) DenomAuthorityMetadata2(context.Context, *QueryDenomAuthorityMetadata2Request) (*QueryDenomAuthorityMetadata2Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DenomAuthorityMetadata2 not implemented")
 }
-func (UnimplementedQueryServer) QueryBalance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryBalance not implemented")
+func (UnimplementedQueryServer) Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Balance not implemented")
 }
-func (UnimplementedQueryServer) QuerySupplyOf(context.Context, *QuerySupplyOfRequest) (*QuerySupplyOfResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QuerySupplyOf not implemented")
+func (UnimplementedQueryServer) SupplyOf(context.Context, *QuerySupplyOfRequest) (*QuerySupplyOfResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SupplyOf not implemented")
 }
-func (UnimplementedQueryServer) QueryDenomMetadata(context.Context, *QueryDenomMetadataRequest) (*QueryDenomMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDenomMetadata not implemented")
+func (UnimplementedQueryServer) DenomMetadata(context.Context, *QueryDenomMetadataRequest) (*QueryDenomMetadataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DenomMetadata not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -200,110 +200,110 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDenomsFromCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DenomsFromCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDenomsFromCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDenomsFromCreator(ctx, in)
+		return srv.(QueryServer).DenomsFromCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDenomsFromCreator_FullMethodName,
+		FullMethod: Query_DenomsFromCreator_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDenomsFromCreator(ctx, req.(*QueryDenomsFromCreatorRequest))
+		return srv.(QueryServer).DenomsFromCreator(ctx, req.(*QueryDenomsFromCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDenomAuthorityMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DenomAuthorityMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDenomAuthorityMetadataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDenomAuthorityMetadata(ctx, in)
+		return srv.(QueryServer).DenomAuthorityMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDenomAuthorityMetadata_FullMethodName,
+		FullMethod: Query_DenomAuthorityMetadata_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDenomAuthorityMetadata(ctx, req.(*QueryDenomAuthorityMetadataRequest))
+		return srv.(QueryServer).DenomAuthorityMetadata(ctx, req.(*QueryDenomAuthorityMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDenomAuthorityMetadata2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DenomAuthorityMetadata2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDenomAuthorityMetadata2Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDenomAuthorityMetadata2(ctx, in)
+		return srv.(QueryServer).DenomAuthorityMetadata2(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDenomAuthorityMetadata2_FullMethodName,
+		FullMethod: Query_DenomAuthorityMetadata2_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDenomAuthorityMetadata2(ctx, req.(*QueryDenomAuthorityMetadata2Request))
+		return srv.(QueryServer).DenomAuthorityMetadata2(ctx, req.(*QueryDenomAuthorityMetadata2Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Balance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryBalanceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryBalance(ctx, in)
+		return srv.(QueryServer).Balance(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryBalance_FullMethodName,
+		FullMethod: Query_Balance_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryBalance(ctx, req.(*QueryBalanceRequest))
+		return srv.(QueryServer).Balance(ctx, req.(*QueryBalanceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QuerySupplyOf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_SupplyOf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QuerySupplyOfRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QuerySupplyOf(ctx, in)
+		return srv.(QueryServer).SupplyOf(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QuerySupplyOf_FullMethodName,
+		FullMethod: Query_SupplyOf_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QuerySupplyOf(ctx, req.(*QuerySupplyOfRequest))
+		return srv.(QueryServer).SupplyOf(ctx, req.(*QuerySupplyOfRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDenomMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DenomMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDenomMetadataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDenomMetadata(ctx, in)
+		return srv.(QueryServer).DenomMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDenomMetadata_FullMethodName,
+		FullMethod: Query_DenomMetadata_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDenomMetadata(ctx, req.(*QueryDenomMetadataRequest))
+		return srv.(QueryServer).DenomMetadata(ctx, req.(*QueryDenomMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -320,28 +320,28 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryDenomsFromCreator",
-			Handler:    _Query_QueryDenomsFromCreator_Handler,
+			MethodName: "DenomsFromCreator",
+			Handler:    _Query_DenomsFromCreator_Handler,
 		},
 		{
-			MethodName: "QueryDenomAuthorityMetadata",
-			Handler:    _Query_QueryDenomAuthorityMetadata_Handler,
+			MethodName: "DenomAuthorityMetadata",
+			Handler:    _Query_DenomAuthorityMetadata_Handler,
 		},
 		{
-			MethodName: "QueryDenomAuthorityMetadata2",
-			Handler:    _Query_QueryDenomAuthorityMetadata2_Handler,
+			MethodName: "DenomAuthorityMetadata2",
+			Handler:    _Query_DenomAuthorityMetadata2_Handler,
 		},
 		{
-			MethodName: "QueryBalance",
-			Handler:    _Query_QueryBalance_Handler,
+			MethodName: "Balance",
+			Handler:    _Query_Balance_Handler,
 		},
 		{
-			MethodName: "QuerySupplyOf",
-			Handler:    _Query_QuerySupplyOf_Handler,
+			MethodName: "SupplyOf",
+			Handler:    _Query_SupplyOf_Handler,
 		},
 		{
-			MethodName: "QueryDenomMetadata",
-			Handler:    _Query_QueryDenomMetadata_Handler,
+			MethodName: "DenomMetadata",
+			Handler:    _Query_DenomMetadata_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

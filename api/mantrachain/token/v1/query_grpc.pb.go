@@ -19,18 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                        = "/mantrachain.token.v1.Query/Params"
-	Query_QueryNftCollection_FullMethodName            = "/mantrachain.token.v1.Query/QueryNftCollection"
-	Query_QueryNftCollectionsByCreator_FullMethodName  = "/mantrachain.token.v1.Query/QueryNftCollectionsByCreator"
-	Query_QueryAllNftCollections_FullMethodName        = "/mantrachain.token.v1.Query/QueryAllNftCollections"
-	Query_QueryNft_FullMethodName                      = "/mantrachain.token.v1.Query/QueryNft"
-	Query_QueryNftApproved_FullMethodName              = "/mantrachain.token.v1.Query/QueryNftApproved"
-	Query_QueryIsApprovedForAllNfts_FullMethodName     = "/mantrachain.token.v1.Query/QueryIsApprovedForAllNfts"
-	Query_QueryAllCollectionNfts_FullMethodName        = "/mantrachain.token.v1.Query/QueryAllCollectionNfts"
-	Query_QuerySoulBondedNftsCollection_FullMethodName = "/mantrachain.token.v1.Query/QuerySoulBondedNftsCollection"
-	Query_QueryRestrictedNftsCollection_FullMethodName = "/mantrachain.token.v1.Query/QueryRestrictedNftsCollection"
-	Query_QueryOpenedNftsCollection_FullMethodName     = "/mantrachain.token.v1.Query/QueryOpenedNftsCollection"
-	Query_QueryNftCollectionOwner_FullMethodName       = "/mantrachain.token.v1.Query/QueryNftCollectionOwner"
+	Query_Params_FullMethodName                   = "/mantrachain.token.v1.Query/Params"
+	Query_NftCollection_FullMethodName            = "/mantrachain.token.v1.Query/NftCollection"
+	Query_NftCollectionsByCreator_FullMethodName  = "/mantrachain.token.v1.Query/NftCollectionsByCreator"
+	Query_AllNftCollections_FullMethodName        = "/mantrachain.token.v1.Query/AllNftCollections"
+	Query_Nft_FullMethodName                      = "/mantrachain.token.v1.Query/Nft"
+	Query_NftApproved_FullMethodName              = "/mantrachain.token.v1.Query/NftApproved"
+	Query_IsApprovedForAllNfts_FullMethodName     = "/mantrachain.token.v1.Query/IsApprovedForAllNfts"
+	Query_AllCollectionNfts_FullMethodName        = "/mantrachain.token.v1.Query/AllCollectionNfts"
+	Query_SoulBondedNftsCollection_FullMethodName = "/mantrachain.token.v1.Query/SoulBondedNftsCollection"
+	Query_RestrictedNftsCollection_FullMethodName = "/mantrachain.token.v1.Query/RestrictedNftsCollection"
+	Query_OpenedNftsCollection_FullMethodName     = "/mantrachain.token.v1.Query/OpenedNftsCollection"
+	Query_NftCollectionOwner_FullMethodName       = "/mantrachain.token.v1.Query/NftCollectionOwner"
 )
 
 // QueryClient is the client API for Query service.
@@ -39,28 +39,28 @@ const (
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// QueryNftCollection
-	QueryNftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error)
-	// QueryNftCollectionsByCreator
-	QueryNftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error)
-	// QueryAllNftCollections
-	QueryAllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error)
-	// QueryNft
-	QueryNft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error)
-	// QueryNftApproved
-	QueryNftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error)
-	// QueryIsApprovedForAllNfts
-	QueryIsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error)
-	// QueryAllCollectionNfts
-	QueryAllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error)
+	// NftCollection
+	NftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error)
+	// NftCollectionsByCreator
+	NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error)
+	// AllNftCollections
+	AllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error)
+	// Nft
+	Nft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error)
+	// NftApproved
+	NftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error)
+	// IsApprovedForAllNfts
+	IsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error)
+	// AllCollectionNfts
+	AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error)
 	// Queries a list of SoulBondedNftsCollection items.
-	QuerySoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error)
+	SoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error)
 	// Queries a list of RestrictedNftsCollection items.
-	QueryRestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error)
+	RestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error)
 	// Queries a list of OpenedNftsCollection items.
-	QueryOpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error)
+	OpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error)
 	// Queries a list of NftCollectionOwner items.
-	QueryNftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error)
+	NftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error)
 }
 
 type queryClient struct {
@@ -80,99 +80,99 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error) {
+func (c *queryClient) NftCollection(ctx context.Context, in *QueryGetNftCollectionRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionResponse, error) {
 	out := new(QueryGetNftCollectionResponse)
-	err := c.cc.Invoke(ctx, Query_QueryNftCollection_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_NftCollection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error) {
+func (c *queryClient) NftCollectionsByCreator(ctx context.Context, in *QueryGetNftCollectionsByCreatorRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionsByCreatorResponse, error) {
 	out := new(QueryGetNftCollectionsByCreatorResponse)
-	err := c.cc.Invoke(ctx, Query_QueryNftCollectionsByCreator_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_NftCollectionsByCreator_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryAllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error) {
+func (c *queryClient) AllNftCollections(ctx context.Context, in *QueryGetAllNftCollectionsRequest, opts ...grpc.CallOption) (*QueryGetAllNftCollectionsResponse, error) {
 	out := new(QueryGetAllNftCollectionsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryAllNftCollections_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_AllNftCollections_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error) {
+func (c *queryClient) Nft(ctx context.Context, in *QueryGetNftRequest, opts ...grpc.CallOption) (*QueryGetNftResponse, error) {
 	out := new(QueryGetNftResponse)
-	err := c.cc.Invoke(ctx, Query_QueryNft_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Nft_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error) {
+func (c *queryClient) NftApproved(ctx context.Context, in *QueryGetNftApprovedRequest, opts ...grpc.CallOption) (*QueryGetNftApprovedResponse, error) {
 	out := new(QueryGetNftApprovedResponse)
-	err := c.cc.Invoke(ctx, Query_QueryNftApproved_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_NftApproved_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryIsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error) {
+func (c *queryClient) IsApprovedForAllNfts(ctx context.Context, in *QueryGetIsApprovedForAllNftsRequest, opts ...grpc.CallOption) (*QueryGetIsApprovedForAllNftsResponse, error) {
 	out := new(QueryGetIsApprovedForAllNftsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryIsApprovedForAllNfts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_IsApprovedForAllNfts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryAllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error) {
+func (c *queryClient) AllCollectionNfts(ctx context.Context, in *QueryGetAllCollectionNftsRequest, opts ...grpc.CallOption) (*QueryGetAllCollectionNftsResponse, error) {
 	out := new(QueryGetAllCollectionNftsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryAllCollectionNfts_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_AllCollectionNfts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QuerySoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error) {
+func (c *queryClient) SoulBondedNftsCollection(ctx context.Context, in *QueryGetSoulBondedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetSoulBondedNftsCollectionResponse, error) {
 	out := new(QueryGetSoulBondedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, Query_QuerySoulBondedNftsCollection_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_SoulBondedNftsCollection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryRestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error) {
+func (c *queryClient) RestrictedNftsCollection(ctx context.Context, in *QueryGetRestrictedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetRestrictedNftsCollectionResponse, error) {
 	out := new(QueryGetRestrictedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, Query_QueryRestrictedNftsCollection_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_RestrictedNftsCollection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryOpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error) {
+func (c *queryClient) OpenedNftsCollection(ctx context.Context, in *QueryGetOpenedNftsCollectionRequest, opts ...grpc.CallOption) (*QueryGetOpenedNftsCollectionResponse, error) {
 	out := new(QueryGetOpenedNftsCollectionResponse)
-	err := c.cc.Invoke(ctx, Query_QueryOpenedNftsCollection_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_OpenedNftsCollection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryNftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error) {
+func (c *queryClient) NftCollectionOwner(ctx context.Context, in *QueryGetNftCollectionOwnerRequest, opts ...grpc.CallOption) (*QueryGetNftCollectionOwnerResponse, error) {
 	out := new(QueryGetNftCollectionOwnerResponse)
-	err := c.cc.Invoke(ctx, Query_QueryNftCollectionOwner_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_NftCollectionOwner_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,28 +185,28 @@ func (c *queryClient) QueryNftCollectionOwner(ctx context.Context, in *QueryGetN
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// QueryNftCollection
-	QueryNftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error)
-	// QueryNftCollectionsByCreator
-	QueryNftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error)
-	// QueryAllNftCollections
-	QueryAllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error)
-	// QueryNft
-	QueryNft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error)
-	// QueryNftApproved
-	QueryNftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error)
-	// QueryIsApprovedForAllNfts
-	QueryIsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error)
-	// QueryAllCollectionNfts
-	QueryAllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error)
+	// NftCollection
+	NftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error)
+	// NftCollectionsByCreator
+	NftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error)
+	// AllNftCollections
+	AllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error)
+	// Nft
+	Nft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error)
+	// NftApproved
+	NftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error)
+	// IsApprovedForAllNfts
+	IsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error)
+	// AllCollectionNfts
+	AllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error)
 	// Queries a list of SoulBondedNftsCollection items.
-	QuerySoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error)
+	SoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error)
 	// Queries a list of RestrictedNftsCollection items.
-	QueryRestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error)
+	RestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error)
 	// Queries a list of OpenedNftsCollection items.
-	QueryOpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error)
+	OpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error)
 	// Queries a list of NftCollectionOwner items.
-	QueryNftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error)
+	NftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -217,38 +217,38 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryNftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollection not implemented")
+func (UnimplementedQueryServer) NftCollection(context.Context, *QueryGetNftCollectionRequest) (*QueryGetNftCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollection not implemented")
 }
-func (UnimplementedQueryServer) QueryNftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollectionsByCreator not implemented")
+func (UnimplementedQueryServer) NftCollectionsByCreator(context.Context, *QueryGetNftCollectionsByCreatorRequest) (*QueryGetNftCollectionsByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollectionsByCreator not implemented")
 }
-func (UnimplementedQueryServer) QueryAllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAllNftCollections not implemented")
+func (UnimplementedQueryServer) AllNftCollections(context.Context, *QueryGetAllNftCollectionsRequest) (*QueryGetAllNftCollectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllNftCollections not implemented")
 }
-func (UnimplementedQueryServer) QueryNft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNft not implemented")
+func (UnimplementedQueryServer) Nft(context.Context, *QueryGetNftRequest) (*QueryGetNftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Nft not implemented")
 }
-func (UnimplementedQueryServer) QueryNftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftApproved not implemented")
+func (UnimplementedQueryServer) NftApproved(context.Context, *QueryGetNftApprovedRequest) (*QueryGetNftApprovedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftApproved not implemented")
 }
-func (UnimplementedQueryServer) QueryIsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryIsApprovedForAllNfts not implemented")
+func (UnimplementedQueryServer) IsApprovedForAllNfts(context.Context, *QueryGetIsApprovedForAllNftsRequest) (*QueryGetIsApprovedForAllNftsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsApprovedForAllNfts not implemented")
 }
-func (UnimplementedQueryServer) QueryAllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryAllCollectionNfts not implemented")
+func (UnimplementedQueryServer) AllCollectionNfts(context.Context, *QueryGetAllCollectionNftsRequest) (*QueryGetAllCollectionNftsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllCollectionNfts not implemented")
 }
-func (UnimplementedQueryServer) QuerySoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QuerySoulBondedNftsCollection not implemented")
+func (UnimplementedQueryServer) SoulBondedNftsCollection(context.Context, *QueryGetSoulBondedNftsCollectionRequest) (*QueryGetSoulBondedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SoulBondedNftsCollection not implemented")
 }
-func (UnimplementedQueryServer) QueryRestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryRestrictedNftsCollection not implemented")
+func (UnimplementedQueryServer) RestrictedNftsCollection(context.Context, *QueryGetRestrictedNftsCollectionRequest) (*QueryGetRestrictedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RestrictedNftsCollection not implemented")
 }
-func (UnimplementedQueryServer) QueryOpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryOpenedNftsCollection not implemented")
+func (UnimplementedQueryServer) OpenedNftsCollection(context.Context, *QueryGetOpenedNftsCollectionRequest) (*QueryGetOpenedNftsCollectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpenedNftsCollection not implemented")
 }
-func (UnimplementedQueryServer) QueryNftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryNftCollectionOwner not implemented")
+func (UnimplementedQueryServer) NftCollectionOwner(context.Context, *QueryGetNftCollectionOwnerRequest) (*QueryGetNftCollectionOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NftCollectionOwner not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -281,200 +281,200 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollection(ctx, in)
+		return srv.(QueryServer).NftCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryNftCollection_FullMethodName,
+		FullMethod: Query_NftCollection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollection(ctx, req.(*QueryGetNftCollectionRequest))
+		return srv.(QueryServer).NftCollection(ctx, req.(*QueryGetNftCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionsByCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollectionsByCreator(ctx, in)
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryNftCollectionsByCreator_FullMethodName,
+		FullMethod: Query_NftCollectionsByCreator_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollectionsByCreator(ctx, req.(*QueryGetNftCollectionsByCreatorRequest))
+		return srv.(QueryServer).NftCollectionsByCreator(ctx, req.(*QueryGetNftCollectionsByCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAllNftCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllNftCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAllNftCollectionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAllNftCollections(ctx, in)
+		return srv.(QueryServer).AllNftCollections(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryAllNftCollections_FullMethodName,
+		FullMethod: Query_AllNftCollections_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAllNftCollections(ctx, req.(*QueryGetAllNftCollectionsRequest))
+		return srv.(QueryServer).AllNftCollections(ctx, req.(*QueryGetAllNftCollectionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Nft_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNft(ctx, in)
+		return srv.(QueryServer).Nft(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryNft_FullMethodName,
+		FullMethod: Query_Nft_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNft(ctx, req.(*QueryGetNftRequest))
+		return srv.(QueryServer).Nft(ctx, req.(*QueryGetNftRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftApproved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftApproved_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftApprovedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftApproved(ctx, in)
+		return srv.(QueryServer).NftApproved(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryNftApproved_FullMethodName,
+		FullMethod: Query_NftApproved_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftApproved(ctx, req.(*QueryGetNftApprovedRequest))
+		return srv.(QueryServer).NftApproved(ctx, req.(*QueryGetNftApprovedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryIsApprovedForAllNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IsApprovedForAllNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetIsApprovedForAllNftsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryIsApprovedForAllNfts(ctx, in)
+		return srv.(QueryServer).IsApprovedForAllNfts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryIsApprovedForAllNfts_FullMethodName,
+		FullMethod: Query_IsApprovedForAllNfts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryIsApprovedForAllNfts(ctx, req.(*QueryGetIsApprovedForAllNftsRequest))
+		return srv.(QueryServer).IsApprovedForAllNfts(ctx, req.(*QueryGetIsApprovedForAllNftsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryAllCollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllCollectionNfts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetAllCollectionNftsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryAllCollectionNfts(ctx, in)
+		return srv.(QueryServer).AllCollectionNfts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryAllCollectionNfts_FullMethodName,
+		FullMethod: Query_AllCollectionNfts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryAllCollectionNfts(ctx, req.(*QueryGetAllCollectionNftsRequest))
+		return srv.(QueryServer).AllCollectionNfts(ctx, req.(*QueryGetAllCollectionNftsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QuerySoulBondedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_SoulBondedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetSoulBondedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QuerySoulBondedNftsCollection(ctx, in)
+		return srv.(QueryServer).SoulBondedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QuerySoulBondedNftsCollection_FullMethodName,
+		FullMethod: Query_SoulBondedNftsCollection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QuerySoulBondedNftsCollection(ctx, req.(*QueryGetSoulBondedNftsCollectionRequest))
+		return srv.(QueryServer).SoulBondedNftsCollection(ctx, req.(*QueryGetSoulBondedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryRestrictedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_RestrictedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetRestrictedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryRestrictedNftsCollection(ctx, in)
+		return srv.(QueryServer).RestrictedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryRestrictedNftsCollection_FullMethodName,
+		FullMethod: Query_RestrictedNftsCollection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryRestrictedNftsCollection(ctx, req.(*QueryGetRestrictedNftsCollectionRequest))
+		return srv.(QueryServer).RestrictedNftsCollection(ctx, req.(*QueryGetRestrictedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryOpenedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_OpenedNftsCollection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetOpenedNftsCollectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryOpenedNftsCollection(ctx, in)
+		return srv.(QueryServer).OpenedNftsCollection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryOpenedNftsCollection_FullMethodName,
+		FullMethod: Query_OpenedNftsCollection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryOpenedNftsCollection(ctx, req.(*QueryGetOpenedNftsCollectionRequest))
+		return srv.(QueryServer).OpenedNftsCollection(ctx, req.(*QueryGetOpenedNftsCollectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryNftCollectionOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NftCollectionOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetNftCollectionOwnerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryNftCollectionOwner(ctx, in)
+		return srv.(QueryServer).NftCollectionOwner(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryNftCollectionOwner_FullMethodName,
+		FullMethod: Query_NftCollectionOwner_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryNftCollectionOwner(ctx, req.(*QueryGetNftCollectionOwnerRequest))
+		return srv.(QueryServer).NftCollectionOwner(ctx, req.(*QueryGetNftCollectionOwnerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -491,48 +491,48 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryNftCollection",
-			Handler:    _Query_QueryNftCollection_Handler,
+			MethodName: "NftCollection",
+			Handler:    _Query_NftCollection_Handler,
 		},
 		{
-			MethodName: "QueryNftCollectionsByCreator",
-			Handler:    _Query_QueryNftCollectionsByCreator_Handler,
+			MethodName: "NftCollectionsByCreator",
+			Handler:    _Query_NftCollectionsByCreator_Handler,
 		},
 		{
-			MethodName: "QueryAllNftCollections",
-			Handler:    _Query_QueryAllNftCollections_Handler,
+			MethodName: "AllNftCollections",
+			Handler:    _Query_AllNftCollections_Handler,
 		},
 		{
-			MethodName: "QueryNft",
-			Handler:    _Query_QueryNft_Handler,
+			MethodName: "Nft",
+			Handler:    _Query_Nft_Handler,
 		},
 		{
-			MethodName: "QueryNftApproved",
-			Handler:    _Query_QueryNftApproved_Handler,
+			MethodName: "NftApproved",
+			Handler:    _Query_NftApproved_Handler,
 		},
 		{
-			MethodName: "QueryIsApprovedForAllNfts",
-			Handler:    _Query_QueryIsApprovedForAllNfts_Handler,
+			MethodName: "IsApprovedForAllNfts",
+			Handler:    _Query_IsApprovedForAllNfts_Handler,
 		},
 		{
-			MethodName: "QueryAllCollectionNfts",
-			Handler:    _Query_QueryAllCollectionNfts_Handler,
+			MethodName: "AllCollectionNfts",
+			Handler:    _Query_AllCollectionNfts_Handler,
 		},
 		{
-			MethodName: "QuerySoulBondedNftsCollection",
-			Handler:    _Query_QuerySoulBondedNftsCollection_Handler,
+			MethodName: "SoulBondedNftsCollection",
+			Handler:    _Query_SoulBondedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryRestrictedNftsCollection",
-			Handler:    _Query_QueryRestrictedNftsCollection_Handler,
+			MethodName: "RestrictedNftsCollection",
+			Handler:    _Query_RestrictedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryOpenedNftsCollection",
-			Handler:    _Query_QueryOpenedNftsCollection_Handler,
+			MethodName: "OpenedNftsCollection",
+			Handler:    _Query_OpenedNftsCollection_Handler,
 		},
 		{
-			MethodName: "QueryNftCollectionOwner",
-			Handler:    _Query_QueryNftCollectionOwner_Handler,
+			MethodName: "NftCollectionOwner",
+			Handler:    _Query_NftCollectionOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

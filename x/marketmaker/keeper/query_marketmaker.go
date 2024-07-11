@@ -16,7 +16,7 @@ import (
 )
 
 // MarketMakers queries all market makers.
-func (k Keeper) QueryMarketMakers(c context.Context, req *types.QueryMarketMakersRequest) (*types.QueryMarketMakersResponse, error) {
+func (k Keeper) MarketMakers(c context.Context, req *types.QueryMarketMakersRequest) (*types.QueryMarketMakersResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -93,7 +93,7 @@ func (k Keeper) QueryMarketMakers(c context.Context, req *types.QueryMarketMaker
 }
 
 // Incentive queries all queued stakings of the farmer.
-func (k Keeper) QueryIncentive(c context.Context, req *types.QueryIncentiveRequest) (*types.QueryIncentiveResponse, error) {
+func (k Keeper) Incentive(c context.Context, req *types.QueryIncentiveRequest) (*types.QueryIncentiveResponse, error) {
 	if req == nil || req.Address == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}

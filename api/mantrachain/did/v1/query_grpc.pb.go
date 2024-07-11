@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName            = "/mantrachain.did.v1.Query/Params"
-	Query_QueryDidDocuments_FullMethodName = "/mantrachain.did.v1.Query/QueryDidDocuments"
-	Query_QueryDidDocument_FullMethodName  = "/mantrachain.did.v1.Query/QueryDidDocument"
+	Query_Params_FullMethodName       = "/mantrachain.did.v1.Query/Params"
+	Query_DidDocuments_FullMethodName = "/mantrachain.did.v1.Query/DidDocuments"
+	Query_DidDocument_FullMethodName  = "/mantrachain.did.v1.Query/DidDocument"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,9 +31,9 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// DidDocuments queries all did documents that match the given status.
-	QueryDidDocuments(ctx context.Context, in *QueryDidDocumentsRequest, opts ...grpc.CallOption) (*QueryDidDocumentsResponse, error)
+	DidDocuments(ctx context.Context, in *QueryDidDocumentsRequest, opts ...grpc.CallOption) (*QueryDidDocumentsResponse, error)
 	// DidDocument queries a did documents with an id.
-	QueryDidDocument(ctx context.Context, in *QueryDidDocumentRequest, opts ...grpc.CallOption) (*QueryDidDocumentResponse, error)
+	DidDocument(ctx context.Context, in *QueryDidDocumentRequest, opts ...grpc.CallOption) (*QueryDidDocumentResponse, error)
 }
 
 type queryClient struct {
@@ -53,18 +53,18 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryDidDocuments(ctx context.Context, in *QueryDidDocumentsRequest, opts ...grpc.CallOption) (*QueryDidDocumentsResponse, error) {
+func (c *queryClient) DidDocuments(ctx context.Context, in *QueryDidDocumentsRequest, opts ...grpc.CallOption) (*QueryDidDocumentsResponse, error) {
 	out := new(QueryDidDocumentsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDidDocuments_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DidDocuments_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryDidDocument(ctx context.Context, in *QueryDidDocumentRequest, opts ...grpc.CallOption) (*QueryDidDocumentResponse, error) {
+func (c *queryClient) DidDocument(ctx context.Context, in *QueryDidDocumentRequest, opts ...grpc.CallOption) (*QueryDidDocumentResponse, error) {
 	out := new(QueryDidDocumentResponse)
-	err := c.cc.Invoke(ctx, Query_QueryDidDocument_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_DidDocument_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// DidDocuments queries all did documents that match the given status.
-	QueryDidDocuments(context.Context, *QueryDidDocumentsRequest) (*QueryDidDocumentsResponse, error)
+	DidDocuments(context.Context, *QueryDidDocumentsRequest) (*QueryDidDocumentsResponse, error)
 	// DidDocument queries a did documents with an id.
-	QueryDidDocument(context.Context, *QueryDidDocumentRequest) (*QueryDidDocumentResponse, error)
+	DidDocument(context.Context, *QueryDidDocumentRequest) (*QueryDidDocumentResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -91,11 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryDidDocuments(context.Context, *QueryDidDocumentsRequest) (*QueryDidDocumentsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDidDocuments not implemented")
+func (UnimplementedQueryServer) DidDocuments(context.Context, *QueryDidDocumentsRequest) (*QueryDidDocumentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidDocuments not implemented")
 }
-func (UnimplementedQueryServer) QueryDidDocument(context.Context, *QueryDidDocumentRequest) (*QueryDidDocumentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDidDocument not implemented")
+func (UnimplementedQueryServer) DidDocument(context.Context, *QueryDidDocumentRequest) (*QueryDidDocumentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidDocument not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -128,38 +128,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDidDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DidDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDidDocumentsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDidDocuments(ctx, in)
+		return srv.(QueryServer).DidDocuments(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDidDocuments_FullMethodName,
+		FullMethod: Query_DidDocuments_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDidDocuments(ctx, req.(*QueryDidDocumentsRequest))
+		return srv.(QueryServer).DidDocuments(ctx, req.(*QueryDidDocumentsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryDidDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DidDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDidDocumentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryDidDocument(ctx, in)
+		return srv.(QueryServer).DidDocument(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryDidDocument_FullMethodName,
+		FullMethod: Query_DidDocument_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryDidDocument(ctx, req.(*QueryDidDocumentRequest))
+		return srv.(QueryServer).DidDocument(ctx, req.(*QueryDidDocumentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,12 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryDidDocuments",
-			Handler:    _Query_QueryDidDocuments_Handler,
+			MethodName: "DidDocuments",
+			Handler:    _Query_DidDocuments_Handler,
 		},
 		{
-			MethodName: "QueryDidDocument",
-			Handler:    _Query_QueryDidDocument_Handler,
+			MethodName: "DidDocument",
+			Handler:    _Query_DidDocument_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -28,7 +28,7 @@ func CmdListSnapshot() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.QuerySnapshotAll(context.Background(), params)
+			res, err := queryClient.SnapshotAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -72,7 +72,7 @@ func CmdShowSnapshot() *cobra.Command {
 				Id:     id,
 			}
 
-			res, err := queryClient.QuerySnapshot(context.Background(), params)
+			res, err := queryClient.Snapshot(context.Background(), params)
 			if err != nil {
 				return err
 			}

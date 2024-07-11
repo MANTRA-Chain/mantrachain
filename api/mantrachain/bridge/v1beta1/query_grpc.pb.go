@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName          = "/mantrachain.bridge.v1beta1.Query/Params"
-	Query_QueryBridged_FullMethodName    = "/mantrachain.bridge.v1beta1.Query/QueryBridged"
-	Query_QueryBridgedAll_FullMethodName = "/mantrachain.bridge.v1beta1.Query/QueryBridgedAll"
+	Query_Params_FullMethodName     = "/mantrachain.bridge.v1beta1.Query/Params"
+	Query_Bridged_FullMethodName    = "/mantrachain.bridge.v1beta1.Query/Bridged"
+	Query_BridgedAll_FullMethodName = "/mantrachain.bridge.v1beta1.Query/BridgedAll"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,9 +31,9 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of Bridged items.
-	QueryBridged(ctx context.Context, in *QueryGetBridgedRequest, opts ...grpc.CallOption) (*QueryGetBridgedResponse, error)
-	// QueryBridgedAll
-	QueryBridgedAll(ctx context.Context, in *QueryAllBridgedRequest, opts ...grpc.CallOption) (*QueryAllBridgedResponse, error)
+	Bridged(ctx context.Context, in *QueryGetBridgedRequest, opts ...grpc.CallOption) (*QueryGetBridgedResponse, error)
+	// BridgedAll
+	BridgedAll(ctx context.Context, in *QueryAllBridgedRequest, opts ...grpc.CallOption) (*QueryAllBridgedResponse, error)
 }
 
 type queryClient struct {
@@ -53,18 +53,18 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) QueryBridged(ctx context.Context, in *QueryGetBridgedRequest, opts ...grpc.CallOption) (*QueryGetBridgedResponse, error) {
+func (c *queryClient) Bridged(ctx context.Context, in *QueryGetBridgedRequest, opts ...grpc.CallOption) (*QueryGetBridgedResponse, error) {
 	out := new(QueryGetBridgedResponse)
-	err := c.cc.Invoke(ctx, Query_QueryBridged_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_Bridged_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) QueryBridgedAll(ctx context.Context, in *QueryAllBridgedRequest, opts ...grpc.CallOption) (*QueryAllBridgedResponse, error) {
+func (c *queryClient) BridgedAll(ctx context.Context, in *QueryAllBridgedRequest, opts ...grpc.CallOption) (*QueryAllBridgedResponse, error) {
 	out := new(QueryAllBridgedResponse)
-	err := c.cc.Invoke(ctx, Query_QueryBridgedAll_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_BridgedAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of Bridged items.
-	QueryBridged(context.Context, *QueryGetBridgedRequest) (*QueryGetBridgedResponse, error)
-	// QueryBridgedAll
-	QueryBridgedAll(context.Context, *QueryAllBridgedRequest) (*QueryAllBridgedResponse, error)
+	Bridged(context.Context, *QueryGetBridgedRequest) (*QueryGetBridgedResponse, error)
+	// BridgedAll
+	BridgedAll(context.Context, *QueryAllBridgedRequest) (*QueryAllBridgedResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -91,11 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) QueryBridged(context.Context, *QueryGetBridgedRequest) (*QueryGetBridgedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryBridged not implemented")
+func (UnimplementedQueryServer) Bridged(context.Context, *QueryGetBridgedRequest) (*QueryGetBridgedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Bridged not implemented")
 }
-func (UnimplementedQueryServer) QueryBridgedAll(context.Context, *QueryAllBridgedRequest) (*QueryAllBridgedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryBridgedAll not implemented")
+func (UnimplementedQueryServer) BridgedAll(context.Context, *QueryAllBridgedRequest) (*QueryAllBridgedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BridgedAll not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -128,38 +128,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryBridged_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Bridged_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetBridgedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryBridged(ctx, in)
+		return srv.(QueryServer).Bridged(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryBridged_FullMethodName,
+		FullMethod: Query_Bridged_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryBridged(ctx, req.(*QueryGetBridgedRequest))
+		return srv.(QueryServer).Bridged(ctx, req.(*QueryGetBridgedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryBridgedAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_BridgedAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllBridgedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).QueryBridgedAll(ctx, in)
+		return srv.(QueryServer).BridgedAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_QueryBridgedAll_FullMethodName,
+		FullMethod: Query_BridgedAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryBridgedAll(ctx, req.(*QueryAllBridgedRequest))
+		return srv.(QueryServer).BridgedAll(ctx, req.(*QueryAllBridgedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,12 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "QueryBridged",
-			Handler:    _Query_QueryBridged_Handler,
+			MethodName: "Bridged",
+			Handler:    _Query_Bridged_Handler,
 		},
 		{
-			MethodName: "QueryBridgedAll",
-			Handler:    _Query_QueryBridgedAll_Handler,
+			MethodName: "BridgedAll",
+			Handler:    _Query_BridgedAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

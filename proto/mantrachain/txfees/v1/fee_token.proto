@@ -6,5 +6,5 @@ option go_package = "github.com/MANTRA-Finance/mantrachain/x/txfees/types";
 // FeeToken
 message FeeToken {
   string denom = 1;
-  uint64 pair_id = 2;
+  uint64 pairId = 2;
 }

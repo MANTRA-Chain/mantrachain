@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryBridgedAll(goCtx context.Context, req *types.QueryAllBridgedRequest) (*types.QueryAllBridgedResponse, error) {
+func (k Keeper) BridgedAll(goCtx context.Context, req *types.QueryAllBridgedRequest) (*types.QueryAllBridgedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -40,7 +40,7 @@ func (k Keeper) QueryBridgedAll(goCtx context.Context, req *types.QueryAllBridge
 	return &types.QueryAllBridgedResponse{Bridged: bridgeds, Pagination: pageRes}, nil
 }
 
-func (k Keeper) QueryBridged(goCtx context.Context, req *types.QueryGetBridgedRequest) (*types.QueryGetBridgedResponse, error) {
+func (k Keeper) Bridged(goCtx context.Context, req *types.QueryGetBridgedRequest) (*types.QueryGetBridgedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) QueryNft(c context.Context, req *types.QueryGetNftRequest) (*types.QueryGetNftResponse, error) {
+func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.QueryGetNftResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -60,7 +60,7 @@ func (k Keeper) QueryNft(c context.Context, req *types.QueryGetNftRequest) (*typ
 	}, nil
 }
 
-func (k Keeper) QueryAllCollectionNfts(goCtx context.Context, req *types.QueryGetAllCollectionNftsRequest) (*types.QueryGetAllCollectionNftsResponse, error) {
+func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllCollectionNftsRequest) (*types.QueryGetAllCollectionNftsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -111,7 +111,7 @@ func (k Keeper) QueryAllCollectionNfts(goCtx context.Context, req *types.QueryGe
 	}, nil
 }
 
-func (k Keeper) QueryNftApproved(c context.Context, req *types.QueryGetNftApprovedRequest) (*types.QueryGetNftApprovedResponse, error) {
+func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedRequest) (*types.QueryGetNftApprovedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -172,7 +172,7 @@ func (k Keeper) QueryNftApproved(c context.Context, req *types.QueryGetNftApprov
 	}, nil
 }
 
-func (k Keeper) QueryIsApprovedForAllNfts(c context.Context, req *types.QueryGetIsApprovedForAllNftsRequest) (*types.QueryGetIsApprovedForAllNftsResponse, error) {
+func (k Keeper) IsApprovedForAllNfts(c context.Context, req *types.QueryGetIsApprovedForAllNftsRequest) (*types.QueryGetIsApprovedForAllNftsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
