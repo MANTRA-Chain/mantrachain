@@ -1,0 +1,5 @@
+[url "https://${PRIVATE_REPO_GITHUB_TOKEN}:x-oauth-basic@github.com/MANTRA-Finance/cosmos-sdk"]
+        insteadOf = https://github.com/MANTRA-Finance/cosmos-sdk
+
+[url "https://${PRIVATE_REPO_GITHUB_TOKEN}:x-oauth-basic@github.com/MANTRA-Finance/ibc-go"]
+        insteadOf = https://github.com/MANTRA-Finance/ibc-go

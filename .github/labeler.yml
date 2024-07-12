@@ -1,0 +1,90 @@
+# Note that any updates to this files will not be applied in CI
+"C:app-wiring":
+  - changed-files:
+      - any-glob-to-any-file:
+          - app/*.go
+          - app/apptesting/**
+          - app/keepers/**
+          - app/params/**
+          - app/upgrades/**
+          - x/**/module.go
+"C:wasm":
+  - changed-files:
+      - any-glob-to-any-file:
+          - wasmbinding/**
+"C:x/guard":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/guard/**
+"C:x/txfees":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/txfees/**
+"C:x/airdrop":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/airdrop/**
+"C:x/bridge":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/bridge/**
+"C:x/coinfactory":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/coinfactory/**
+"C:x/did":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/did/**
+"C:x/farming":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/farming/**
+"C:x/liquidity":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/liquidity/**
+"C:x/lpfarm":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/lpfarm/**
+"C:x/marketmaker":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/marketmaker/**
+"C:x/rewards":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/rewards/**
+"C:x/token":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/token/**
+
+"T:build":
+  - changed-files:
+      - any-glob-to-any-file:
+          - Makefile
+          - Dockerfile
+          - scripts/*
+"T:CI":
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*.yml
+          - .mergify.yml
+          - .golangci.yml
+"C:CLI":
+  - changed-files:
+      - any-glob-to-any-file:
+          - client/**
+          - x/*/client/**
+"C:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - bug.md
+          - issue.md
+          - proto-docs.md
+          - README.md
+          - x/**/*.md
+          - x/**/*/*.md
+          - tests/**/*.md

@@ -1,0 +1,26 @@
+# Mantrachain
+- name: mantrachain
+  github-organization: MANTRA-Finance
+  github-repo: mantrachain
+  dockerfile: cosmos
+  build-target: |
+    export CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH}
+    export BUILD_TAGS="netgo ledger muslc osusergo"
+    export CMT_VERSION=$(go list -m github.com/cometbft/cometbft 2> /dev/null | sed 's:.* ::')
+    export COMMIT=$(git log -1 --format='%h')
+    export COMMON_LDFLAGS="-X github.com/cosmos/cosmos-sdk/version.Name=mantrachain \
+      -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind \
+      -X github.com/cosmos/cosmos-sdk/version.Version=$VERSION \
+      -X github.com/cosmos/cosmos-sdk/version.Commit=$COMMIT \
+      -X github.com/cosmos/cosmos-sdk/version.BuildTags=${BUILD_TAGS// /,} \
+      -X github.com/cometbft/cometbft/version.TMCoreSemVer=$CMT_VERSION \
+      -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static -lm'"
+
+    go install -ldflags "$COMMON_LDFLAGS" \
+      -tags "$BUILD_TAGS" -mod=readonly -trimpath \
+      ./cmd/mantrachaind
+  binaries:
+    - /go/bin/mantrachaind
+  platforms:
+    - linux/amd64
+    - linux/arm64

@@ -1,0 +1,42 @@
+name: Build Mantrachaind
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches:
+      - develop
+      - main
+      - release/**
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+        exclude:
+          - goarch: arm64
+            goos: windows
+    steps:
+      - uses: actions/checkout@v4
+      # - uses: DeterminateSystems/nix-installer-action@main
+      # - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+            ssh-private-key: |
+                  ${{ secrets.SSH_COSMOS_SDK }}
+                  ${{ secrets.SSH_IBC_GO }}
+      - name: Build
+        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.go-arch }} make build
+# Todo: add nix build with rocksdb

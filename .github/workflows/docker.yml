@@ -1,0 +1,51 @@
+name: Docker Build and Push
+# Build & Push builds the simapp docker image on every push to master
+# and pushes the image to https://hub.docker.com/u/provenanceio
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  REGISTRY: ghcr.io
+
+# Set concurrency for this workflow to cancel in-progress jobs if retriggered.
+# The github.ref is only available when triggered by a PR so fall back to github.run_id for other cases.
+# The github.run_id is unique for each run, giving each such invocation it's own unique concurrency group.
+# Basically, if you push to a PR branch, jobs that are still running for that PR will be cancelled.
+# But jobs started because of a merge to main or a release tag push are not cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+jobs:
+  heighliner-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      # TODO: use forked branch until https://github.com/strangelove-ventures/heighliner/issues/253 is fixed
+      - uses: strangelove-ventures/heighliner-build-action@main
+        with:
+          chain: mantrachain
+          heighliner-owner: ProvLabs
+          heighliner-tag: v1.6.3
+          chains-spec-file: chains.yaml
+          clone-key: ${{ secrets.GIT_CLONE_KEY }}
+          github-organization: ${{ github.repository_owner }}
+          github-repo: ${{ github.event.repository.name }}
+          registry: ghcr.io/${{ env.OWNER_LC }}
