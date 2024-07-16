@@ -4,10 +4,7 @@ import (
 	"context"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 // NOTE: we're only keeping this logic for the upgrade tests
@@ -17,13 +14,8 @@ import (
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,
-	baseAppLegacySS paramstypes.Subspace,
-	ps baseapp.ParamStore,
 ) upgradetypes.UpgradeHandler {
 	return func(goCtx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-		ctx := sdk.UnwrapSDKContext(goCtx)
-		baseapp.MigrateParams(ctx, baseAppLegacySS, ps)
-
 		return mm.RunMigrations(goCtx, configurator, vm)
 	}
 }
