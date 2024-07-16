@@ -23,6 +23,7 @@ import (
 
 	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/coinfactory/module/v1"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
@@ -105,16 +106,19 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper         keeper.Keeper
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	legacySubspace exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
+		legacySubspace: legacySubspace,
 	}
 }
 
@@ -122,6 +126,11 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Errorf("failed to migrate %s to v2: %w", types.ModuleName, err))
+	}
 }
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
@@ -142,7 +151,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 // ConsensusVersion is a sequence number for state-breaking change of the module.
 // It should be incremented on each consensus-breaking change introduced by the module.
 // To avoid wrong/empty versions, the initial version should be set to 1.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
+func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.
 func (am AppModule) IsOnePerModuleType() {}
@@ -168,6 +177,9 @@ type ModuleInputs struct {
 	Cdc          codec.Codec
 	Config       *modulev1.Module
 	Logger       log.Logger
+
+	// LegacySubspace is used solely for migration of x/params managed parameters
+	LegacySubspace exported.Subspace `optional:"true"`
 
 	AccountKeeper       types.AccountKeeper
 	BankKeeper          types.BankKeeper
@@ -201,6 +213,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	m := NewAppModule(
 		in.Cdc,
 		k,
+		in.LegacySubspace,
 	)
 
 	return ModuleOutputs{CoinfactoryKeeper: k, Module: m}

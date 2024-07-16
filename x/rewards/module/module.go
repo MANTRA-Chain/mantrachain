@@ -23,6 +23,7 @@ import (
 
 	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/rewards/module/v1"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/rewards/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 
@@ -109,16 +110,19 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper         keeper.Keeper
+	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	legacySubspace exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
+		legacySubspace: legacySubspace,
 	}
 }
 
@@ -126,6 +130,11 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Errorf("failed to migrate %s to v2: %w", types.ModuleName, err))
+	}
 }
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
@@ -189,6 +198,9 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	Logger       log.Logger
 
+	// LegacySubspace is used solely for migration of x/params managed parameters
+	LegacySubspace exported.Subspace `optional:"true"`
+
 	BankKeeper      types.BankKeeper
 	LiquidityKeeper types.LiquidityKeeper
 	GuardKeeper     types.GuardKeeper
@@ -219,6 +231,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	m := NewAppModule(
 		in.Cdc,
 		k,
+		in.LegacySubspace,
 	)
 
 	in.LiquidityKeeper.SetHooks(
