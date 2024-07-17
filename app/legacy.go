@@ -117,7 +117,7 @@ func (app *App) registerLegacyModules(appOpts servertypes.AppOptions, wasmOpts [
 	)
 
 	// Create IBC transfer keeper
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
+	app.TransferKeeper = ibctransferkeeper.NewKeeperWithGuard(
 		app.appCodec,
 		app.GetKey(ibctransfertypes.StoreKey),
 		app.GetSubspace(ibctransfertypes.ModuleName),
@@ -127,6 +127,7 @@ func (app *App) registerLegacyModules(appOpts servertypes.AppOptions, wasmOpts [
 		app.AccountKeeper,
 		app.BankKeeper,
 		scopedIBCTransferKeeper,
+		app.GuardKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
