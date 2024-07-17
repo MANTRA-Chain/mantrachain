@@ -37,6 +37,12 @@ func (k Keeper) ValidateMsgCreatePair(ctx sdk.Context, msg *types.MsgCreatePair)
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
 		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
 	}
+	if msg.SwapFeeRate != nil && msg.SwapFeeRate.GT(sdkmath.LegacyOneDec()) {
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "swap fee rate %s is greater than 1", msg.SwapFeeRate.String())
+	}
+	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.GT(sdkmath.LegacyOneDec()) {
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio %s is greater than 1", msg.PairCreatorSwapFeeRatio.String())
+	}
 	return nil
 }
 
@@ -51,6 +57,12 @@ func (k Keeper) ValidateMsgUpdatePairSwapFee(ctx sdk.Context, msg *types.MsgUpda
 	}
 	if msg.SwapFeeRate != nil && msg.PairCreatorSwapFeeRatio == nil {
 		return errors.Wrap(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio must not be nil when swap fee rate is not nil")
+	}
+	if msg.SwapFeeRate != nil && msg.SwapFeeRate.GT(sdkmath.LegacyOneDec()) {
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "swap fee rate %s is greater than 1", msg.SwapFeeRate.String())
+	}
+	if msg.PairCreatorSwapFeeRatio != nil && msg.PairCreatorSwapFeeRatio.GT(sdkmath.LegacyOneDec()) {
+		return errors.Wrapf(errorstypes.ErrInvalidRequest, "pair creator swap fee ratio %s is greater than 1", msg.PairCreatorSwapFeeRatio.String())
 	}
 	return nil
 }

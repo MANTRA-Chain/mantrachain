@@ -76,6 +76,7 @@ import (
 
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 
 	bridgemodulekeeper "github.com/MANTRA-Finance/mantrachain/x/bridge/keeper"
 
@@ -92,6 +93,7 @@ import (
 	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 
 	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	lpfarmmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 
 	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
@@ -180,10 +182,10 @@ type App struct {
 	DidKeeper         didmodulekeeper.Keeper
 	TokenKeeper       tokenmodulekeeper.Keeper
 	GuardKeeper       *guardmodulekeeper.Keeper
-	RewardsKeeper     rewardsmodulekeeper.Keeper
+	RewardsKeeper     *rewardsmodulekeeper.Keeper
 	MarketmakerKeeper marketmakermodulekeeper.Keeper
 	FarmingKeeper     farmingmodulekeeper.Keeper
-	LiquidityKeeper   liquiditymodulekeeper.Keeper
+	LiquidityKeeper   *liquiditymodulekeeper.Keeper
 	LpfarmKeeper      lpfarmmodulekeeper.Keeper
 	TxfeesKeeper      txfeesmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
@@ -223,8 +225,9 @@ func AppConfig() depinject.Config {
 		depinject.Supply(
 			// supply custom module basics
 			map[string]module.AppModuleBasic{
-				genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
-				govtypes.ModuleName:     gov.NewAppModuleBasic(getGovProposalHandlers()),
+				genutiltypes.ModuleName:  genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+				govtypes.ModuleName:      gov.NewAppModuleBasic(getGovProposalHandlers()),
+				ibchookstypes.ModuleName: ibchooks.AppModuleBasic{},
 				// this line is used by starport scaffolding # stargate/appConfig/moduleBasic
 			},
 		),
@@ -310,7 +313,6 @@ func New(
 		&app.txConfig,
 		&app.interfaceRegistry,
 
-		// Guard keeper should be injected first
 		&app.GuardKeeper,
 
 		&app.AccountKeeper,
@@ -382,7 +384,11 @@ func New(
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
-	// TODO: set liquidity hooks in here
+	app.LiquidityKeeper.SetHooks(
+		liquiditytypes.NewMultiLiquidityHooks(
+			app.RewardsKeeper.Hooks(),
+		),
+	)
 
 	// Register legacy modules
 	wasmConfig, err := app.registerLegacyModules(appOpts, wasmOpts)
@@ -415,7 +421,7 @@ func New(
 			WasmKeeper:            &app.WasmKeeper,
 			TXCounterStoreService: runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
 			GuardKeeper:           app.GuardKeeper,
-			LiquidityKeeper:       &app.LiquidityKeeper,
+			LiquidityKeeper:       app.LiquidityKeeper,
 			TxfeesKeeper:          &app.TxfeesKeeper,
 		},
 	)

@@ -107,8 +107,6 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		return nil
 	}
 
-	return nil
-
 	conf := k.GetParams(ctx)
 	admin := sdk.MustAccAddressFromBech32(conf.AdminAccount)
 

@@ -9,7 +9,7 @@ import (
 )
 
 // RegisterInvariants registers all liquidity module invariants.
-func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
+func RegisterInvariants(ir sdk.InvariantRegistry, k *Keeper) {
 	ir.RegisterRoute(types.ModuleName, "deposit-coins-escrow", DepositCoinsEscrowInvariant(k))
 	ir.RegisterRoute(types.ModuleName, "pool-coin-escrow", PoolCoinEscrowInvariant(k))
 	ir.RegisterRoute(types.ModuleName, "remaining-offer-coin-escrow", RemainingOfferCoinEscrowInvariant(k))
@@ -17,9 +17,9 @@ func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 }
 
 // AllInvariants returns a combined invariant of the liquidity module.
-func AllInvariants(k Keeper) sdk.Invariant {
+func AllInvariants(k *Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
-		for _, inv := range []func(Keeper) sdk.Invariant{
+		for _, inv := range []func(*Keeper) sdk.Invariant{
 			DepositCoinsEscrowInvariant,
 			PoolCoinEscrowInvariant,
 			RemainingOfferCoinEscrowInvariant,
@@ -37,7 +37,7 @@ func AllInvariants(k Keeper) sdk.Invariant {
 // DepositCoinsEscrowInvariant checks that the amount of coins in the global
 // escrow address is greater or equal than remaining deposit coins in all
 // deposit requests.
-func DepositCoinsEscrowInvariant(k Keeper) sdk.Invariant {
+func DepositCoinsEscrowInvariant(k *Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		escrowDepositCoins := sdk.Coins{}
 		_ = k.IterateAllDepositRequests(ctx, func(req types.DepositRequest) (stop bool, err error) {
@@ -58,7 +58,7 @@ func DepositCoinsEscrowInvariant(k Keeper) sdk.Invariant {
 // PoolCoinEscrowInvariant checks that the amount of coins in the global
 // escrow address is greater or equal than remaining withdrawing pool
 // coins in all withdrawal requests.
-func PoolCoinEscrowInvariant(k Keeper) sdk.Invariant {
+func PoolCoinEscrowInvariant(k *Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		escrowPoolCoins := sdk.Coins{}
 		_ = k.IterateAllWithdrawRequests(ctx, func(req types.WithdrawRequest) (stop bool, err error) {
@@ -79,7 +79,7 @@ func PoolCoinEscrowInvariant(k Keeper) sdk.Invariant {
 // RemainingOfferCoinEscrowInvariant checks that the amount of coins in each pair's
 // escrow address is greater or equal than remaining offer coins in the pair's
 // orders.
-func RemainingOfferCoinEscrowInvariant(k Keeper) sdk.Invariant {
+func RemainingOfferCoinEscrowInvariant(k *Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		var (
 			count int
@@ -110,7 +110,7 @@ func RemainingOfferCoinEscrowInvariant(k Keeper) sdk.Invariant {
 
 // PoolStatusInvariant checks that the pools with zero pool coin supply have
 // been marked as disabled.
-func PoolStatusInvariant(k Keeper) sdk.Invariant {
+func PoolStatusInvariant(k *Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		var (
 			count int

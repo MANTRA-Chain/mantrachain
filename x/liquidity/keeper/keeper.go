@@ -39,7 +39,7 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	guardKeeper types.GuardKeeper,
 
-) Keeper {
+) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
@@ -50,7 +50,7 @@ func NewKeeper(
 		types.GlobalEscrowAddress.String(),
 	})
 
-	return Keeper{
+	return &Keeper{
 		cdc:          cdc,
 		storeService: storeService,
 		authority:    authority,
@@ -64,7 +64,7 @@ func NewKeeper(
 	}
 }
 
-func (keeper Keeper) Hooks() types.LiquidityHooks {
+func (keeper *Keeper) Hooks() types.LiquidityHooks {
 	if keeper.hooks == nil {
 		// return a no-op implementation if no hooks are set
 		return types.MultiLiquidityHooks{}
@@ -73,7 +73,7 @@ func (keeper Keeper) Hooks() types.LiquidityHooks {
 	return keeper.hooks
 }
 
-func (keeper Keeper) SetHooks(gh types.LiquidityHooks) {
+func (keeper *Keeper) SetHooks(gh types.LiquidityHooks) {
 	if keeper.hooks != nil {
 		panic("cannot set liquidity hooks twice")
 	}

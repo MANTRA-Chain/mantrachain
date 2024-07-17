@@ -26,8 +26,6 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
-
-	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 var (
@@ -110,13 +108,13 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper         keeper.Keeper
+	keeper         *keeper.Keeper
 	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
 	cdc codec.Codec,
-	keeper keeper.Keeper,
+	keeper *keeper.Keeper,
 	legacySubspace exported.Subspace,
 ) AppModule {
 	return AppModule{
@@ -209,7 +207,7 @@ type ModuleInputs struct {
 type ModuleOutputs struct {
 	depinject.Out
 
-	RewardsKeeper keeper.Keeper
+	RewardsKeeper *keeper.Keeper
 	Module        appmodule.AppModule
 }
 
@@ -232,12 +230,6 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Cdc,
 		k,
 		in.LegacySubspace,
-	)
-
-	in.LiquidityKeeper.SetHooks(
-		liquiditytypes.NewMultiLiquidityHooks(
-			k.Hooks(),
-		),
 	)
 
 	return ModuleOutputs{RewardsKeeper: k, Module: m}

@@ -109,13 +109,13 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper         keeper.Keeper
+	keeper         *keeper.Keeper
 	legacySubspace exported.Subspace
 }
 
 func NewAppModule(
 	cdc codec.Codec,
-	keeper keeper.Keeper,
+	keeper *keeper.Keeper,
 	legacySubspace exported.Subspace,
 ) AppModule {
 	return AppModule{
@@ -213,7 +213,7 @@ type ModuleInputs struct {
 type ModuleOutputs struct {
 	depinject.Out
 
-	LiquidityKeeper keeper.Keeper
+	LiquidityKeeper *keeper.Keeper
 	Module          appmodule.AppModule
 }
 

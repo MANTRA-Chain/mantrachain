@@ -36,12 +36,12 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	liquidityKeeper types.LiquidityKeeper,
 	guardKeeper types.GuardKeeper,
-) Keeper {
+) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	return Keeper{
+	return &Keeper{
 		cdc:          cdc,
 		storeService: storeService,
 		authority:    authority,
