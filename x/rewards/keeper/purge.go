@@ -139,9 +139,14 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 		snapshotEndId = snapshotStartId.SnapshotId + conf.MaxPurgedRangeLength
 	}
 
-	// Doo not delete the last snapshot
-	if snapshotEndId == lastSnapshot.Id {
+	// Do not delete the last snapshot
+	if snapshotEndId > 0 && snapshotEndId == lastSnapshot.Id {
 		snapshotEndId--
+	}
+
+	// No snapshots to delete
+	if snapshotEndId == 0 {
+		return nil
 	}
 
 	admin := k.guardKeeper.GetAdmin(ctx)
