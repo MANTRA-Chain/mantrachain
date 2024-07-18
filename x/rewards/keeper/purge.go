@@ -152,11 +152,13 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 			continue
 		}
 
-		if snapshot.Distributed {
-			for _, decCoin := range snapshot.Remaining {
-				if decCoin.Amount.IsPositive() {
-					remaining = remaining.Add(sdk.NewCoin(decCoin.Denom, decCoin.Amount.TruncateInt()))
-				}
+		if !snapshot.Distributed {
+			continue
+		}
+
+		for _, decCoin := range snapshot.Remaining {
+			if decCoin.Amount.IsPositive() {
+				remaining = remaining.Add(sdk.NewCoin(decCoin.Denom, decCoin.Amount.TruncateInt()))
 			}
 		}
 

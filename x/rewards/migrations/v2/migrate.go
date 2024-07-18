@@ -60,36 +60,37 @@ func migrateSnapshots(
 
 		pools := make([]*types.SnapshotPool, len(snapshot.Pools))
 		for i, pool := range snapshot.Pools {
-			coinSupply := math.LegacyNewDec(0)
+			snapshotsStoreByPairId := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(snapshot.PairId))
 
 			// Set the correct coin supply for the pool if it is not distributed, otwerwise it will be 0
 			if !snapshot.Distributed {
-				coinSupply = getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
+				coinSupply := getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
+
+				newPool := types.SnapshotPool{
+					PoolId:          pool.PoolId,
+					CoinSupply:      coinSupply,
+					RewardsPerToken: pool.RewardsPerToken,
+				}
+
+				pools[i] = &newPool
+
+				upgradedSnapshot := types.Snapshot{
+					Id:            snapshot.Id,
+					PairId:        snapshot.PairId,
+					Pools:         pools,
+					PoolIdToIdx:   snapshot.PoolIdToIdx,
+					Distributed:   snapshot.Distributed,
+					DistributedAt: snapshot.DistributedAt,
+					Remaining:     snapshot.Remaining,
+				}
+
+				b := cdc.MustMarshal(&upgradedSnapshot)
+
+				snapshotsStoreByPairId.Set(GetSnapshotIDBytes(upgradedSnapshot.Id), b)
+			} else {
+				snapshotsStoreByPairId.Delete(GetSnapshotIDBytes(snapshot.Id))
 			}
-
-			newPool := types.SnapshotPool{
-				PoolId:          pool.PoolId,
-				CoinSupply:      coinSupply,
-				RewardsPerToken: pool.RewardsPerToken,
-			}
-
-			pools[i] = &newPool
 		}
-
-		upgradedSnapshot := types.Snapshot{
-			Id:            snapshot.Id,
-			PairId:        snapshot.PairId,
-			Pools:         pools,
-			PoolIdToIdx:   snapshot.PoolIdToIdx,
-			Distributed:   snapshot.Distributed,
-			DistributedAt: snapshot.DistributedAt,
-			Remaining:     snapshot.Remaining,
-		}
-
-		b := cdc.MustMarshal(&upgradedSnapshot)
-
-		snapshotsStoreByPairId := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(upgradedSnapshot.PairId))
-		snapshotsStoreByPairId.Set(GetSnapshotIDBytes(upgradedSnapshot.Id), b)
 	}
 }
 
