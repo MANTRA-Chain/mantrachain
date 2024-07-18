@@ -105,7 +105,7 @@ import (
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 const (
@@ -467,7 +467,7 @@ func New(
 	}
 
 	if loadLatest {
-		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, cmtproto.Header{})
 
 		// Initialize pinned codes in wasmvm as they are not persisted there
 		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {

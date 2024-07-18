@@ -51,7 +51,7 @@ func (campaign Campaign) Validate() error {
 		return errors.Wrap(ErrCampaignIdInvalid, "campaign id must not be 0")
 	}
 	if _, err := sdk.AccAddressFromBech32(campaign.CampaignAddress); err != nil {
-		return errors.Wrapf(ErrCampaignReserveAddressInvalid, "invalid reserve address %s: %w", campaign.CampaignAddress, err)
+		return errors.Wrapf(ErrCampaignReserveAddressInvalid, "invalid reserve address %s: %s", campaign.CampaignAddress, err)
 	}
 	if _, err := sdk.AccAddressFromBech32(campaign.Creator); err != nil {
 		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid creator address (%s)", err)

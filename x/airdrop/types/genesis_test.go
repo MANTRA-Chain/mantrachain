@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,12 +19,34 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				CampaignList: []types.Campaign{
+					{
+						Index: []byte("0"),
+					},
+					{
+						Index: []byte("1"),
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated campaign",
+			genState: &types.GenesisState{
+				CampaignList: []types.Campaign{
+					{
+						Index: []byte("0"),
+					},
+					{
+						Index: []byte("0"),
+					},
+				},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}

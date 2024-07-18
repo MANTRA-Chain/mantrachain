@@ -59,6 +59,7 @@ func (app *App) RegisterUpgradeHandlers() {
 		}
 	}
 
+	// TODO: Check this out: https://github.com/cosmos/cosmos-sdk/issues/20160#issuecomment-2232936737
 	baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable())
 	upgradeKey := app.GetKey("upgrade")
 	authority := app.AccountKeeper.GetAuthority()

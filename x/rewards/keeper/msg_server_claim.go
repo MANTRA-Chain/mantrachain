@@ -3,8 +3,10 @@ package keeper
 import (
 	"context"
 	"math"
+	"strconv"
 
 	"cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,7 +52,6 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 
 	if !found {
 		snapshotStartId = types.SnapshotStartId{
-			PairId:     msg.PairId,
 			SnapshotId: 0,
 		}
 	}
@@ -105,6 +106,29 @@ func (k msgServer) Claim(goCtx context.Context, msg *types.MsgClaim) (*types.Msg
 
 	// Update the provider
 	k.SetProvider(ctx, provider)
+
+	baseAmount := sdkmath.ZeroInt()
+	quoteAmount := sdkmath.ZeroInt()
+
+	if ok, _ := rewards.Find(pair.BaseCoinDenom); ok {
+		baseAmount = rewards.AmountOf(pair.BaseCoinDenom)
+	}
+	if ok, _ := rewards.Find(pair.QuoteCoinDenom); ok {
+		quoteAmount = rewards.AmountOf(pair.QuoteCoinDenom)
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeClaim,
+			sdk.NewAttribute(types.AttributeKeyProvider, provider.Index),
+			sdk.NewAttribute(types.AttributeKeyPairId, strconv.FormatUint(msg.PairId, 10)),
+			sdk.NewAttribute(types.AttributeKeySnapshotId, strconv.FormatUint(endClaimedSnapshotId, 10)),
+			sdk.NewAttribute(types.AttributeKeyBaseDenom, pair.BaseCoinDenom),
+			sdk.NewAttribute(types.AttributeKeyBaseAmount, baseAmount.String()),
+			sdk.NewAttribute(types.AttributeKeyQuoteDenom, pair.QuoteCoinDenom),
+			sdk.NewAttribute(types.AttributeKeyQuoteAmount, quoteAmount.String()),
+		),
+	})
 
 	return &types.MsgClaimResponse{}, nil
 }

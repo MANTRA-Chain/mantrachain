@@ -3,38 +3,140 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/cometbft/cometbft/crypto"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
-func TestGenesisState_Validate(t *testing.T) {
-	tests := []struct {
-		desc     string
-		genState *types.GenesisState
-		valid    bool
+func TestValidateGenesis(t *testing.T) {
+	mmAddr := sdk.AccAddress(crypto.AddressHash([]byte("mmAddr")))
+	testCases := []struct {
+		name        string
+		configure   func(*types.GenesisState)
+		expectedErr string
 	}{
 		{
-			desc:     "default is valid",
-			genState: types.DefaultGenesis(),
-			valid:    true,
+			"default case",
+			func(genState *types.GenesisState) {
+				params := types.DefaultParams()
+				genState.Params = params
+			},
+			"",
 		},
 		{
-			desc:     "valid genesis state",
-			genState: &types.GenesisState{
-
-				// this line is used by starport scaffolding # types/genesis/validField
+			"empty deposit amount case",
+			func(genState *types.GenesisState) {
+				params := types.DefaultParams()
+				params.DepositAmount = sdk.Coins{}
+				genState.Params = params
 			},
-			valid: true,
+			"",
 		},
-		// this line is used by starport scaffolding # types/genesis/testcase
+		{
+			"invalid param case",
+			func(genState *types.GenesisState) {
+				params := types.DefaultParams()
+				params.IncentiveBudgetAddress = "invalidaddr"
+				genState.Params = params
+			},
+			"invalid account address: invalidaddr",
+		},
+		{
+			"invalid market maker case",
+			func(genState *types.GenesisState) {
+				genState.MarketMakers = []types.MarketMaker{
+					{
+						Address: "invalidaddr",
+						PairId:  1,
+					},
+				}
+			},
+			"decoding bech32 failed: invalid separator index -1",
+		},
+		{
+			"invalid incentives",
+			func(genState *types.GenesisState) {
+				genState.Incentives = []types.Incentive{
+					{
+						Address:   "invalidaddr",
+						Claimable: sdk.Coins{},
+					},
+				}
+			},
+			"decoding bech32 failed: invalid separator index -1",
+		},
+		{
+			"invalid deposit records",
+			func(genState *types.GenesisState) {
+				genState.DepositRecords = []types.DepositRecord{
+					{
+						Address: "invalidaddr",
+						PairId:  1,
+						Amount:  sdk.Coins{},
+					},
+				}
+			},
+			"decoding bech32 failed: invalid separator index -1",
+		},
+		{
+			"empty deposit is valid",
+			func(genState *types.GenesisState) {
+				genState.MarketMakers = []types.MarketMaker{
+					{
+						Address:  mmAddr.String(),
+						PairId:   1,
+						Eligible: false,
+					},
+				}
+				genState.DepositRecords = []types.DepositRecord{
+					{
+						Address: mmAddr.String(),
+						PairId:  1,
+						Amount:  sdk.Coins{},
+					},
+				}
+			},
+			"",
+		},
+		{
+			"deposit record invariant fail 1",
+			func(genState *types.GenesisState) {
+				genState.MarketMakers = []types.MarketMaker{
+					{
+						Address:  mmAddr.String(),
+						PairId:   1,
+						Eligible: false,
+					},
+				}
+			},
+			"deposit invariant failed, not eligible market maker must have deposit record",
+		},
+		{
+			"deposit record invariant fail 2",
+			func(genState *types.GenesisState) {
+				genState.DepositRecords = []types.DepositRecord{
+					{
+						Address: mmAddr.String(),
+						PairId:  1,
+						Amount:  sdk.Coins{},
+					},
+				}
+			},
+			"deposit invariant failed, deposit record's market maker must not be eligible",
+		},
 	}
-	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			err := tc.genState.Validate()
-			if tc.valid {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			genState := types.DefaultGenesis()
+			tc.configure(genState)
+
+			err := genState.Validate()
+			if tc.expectedErr == "" {
 				require.NoError(t, err)
 			} else {
-				require.Error(t, err)
+				require.EqualError(t, err, tc.expectedErr)
 			}
 		})
 	}
