@@ -30,6 +30,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	_ "github.com/cosmos/cosmos-sdk/x/auth" // import for side-effects
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -201,6 +202,14 @@ func init() {
 	}
 
 	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
+
+	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
+}
+
+// MantraCoinDenomRegex returns the mantra regex string
+// this is used to override the default sdk coin denom regex
+func MantraCoinDenomRegex() string {
+	return `[a-zA-Z][a-zA-Z0-9/:._-]{1,127}`
 }
 
 // getGovProposalHandlers return the chain proposal handlers.
