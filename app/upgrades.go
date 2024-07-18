@@ -14,7 +14,6 @@ import (
 	rewardstypes "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
@@ -59,8 +58,6 @@ func (app *App) RegisterUpgradeHandlers() {
 		}
 	}
 
-	// TODO: Check this out: https://github.com/cosmos/cosmos-sdk/issues/20160#issuecomment-2232936737
-	baseAppLegacySS := app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable())
 	upgradeKey := app.GetKey("upgrade")
 	authority := app.AccountKeeper.GetAuthority()
 
@@ -71,7 +68,6 @@ func (app *App) RegisterUpgradeHandlers() {
 			app.ModuleManager,
 			app.Configurator(),
 			app.appCodec,
-			baseAppLegacySS,
 			&app.ConsensusParamsKeeper.ParamsStore,
 			upgradeKey,
 			authority,

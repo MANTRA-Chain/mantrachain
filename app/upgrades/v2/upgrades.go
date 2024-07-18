@@ -12,7 +12,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 // NOTE: we're only keeping this logic for the upgrade tests
@@ -23,21 +22,14 @@ func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,
 	cdc codec.Codec,
-	baseAppLegacySS paramstypes.Subspace,
 	ps baseapp.ParamStore,
 	upgradeKey *storetypes.KVStoreKey,
 	authority string,
 ) upgradetypes.UpgradeHandler {
 	return func(goCtx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(goCtx)
-
-		baseapp.MigrateParams(ctx, baseAppLegacySS, ps)
-		consensusParams := baseapp.GetConsensusParams(ctx, baseAppLegacySS)
-		// make sure the consensus params are set
-		if consensusParams.Block == nil || consensusParams.Evidence == nil || consensusParams.Validator == nil {
-			defaultParams := cbtypes.DefaultConsensusParams().ToProto()
-			ps.Set(ctx, defaultParams)
-		}
+		// Fix the consensus params: https://github.com/cosmos/cosmos-sdk/issues/18733#issuecomment-1854611049
+		defaultParams := cbtypes.DefaultConsensusParams().ToProto()
 
 		storesvc := runtime.NewKVStoreService(upgradeKey)
 		consensuskeeper := consensuskeeper.NewKeeper(
@@ -50,6 +42,26 @@ func CreateUpgradeHandler(
 		params, err := consensuskeeper.ParamsStore.Get(ctx)
 		if err != nil {
 			return nil, err
+		}
+
+		if params.Block == nil {
+			params.Block = defaultParams.Block
+		}
+
+		if params.Evidence == nil {
+			params.Evidence = defaultParams.Evidence
+		}
+
+		if params.Validator == nil {
+			params.Validator = defaultParams.Validator
+		}
+
+		if params.Version == nil {
+			params.Version = defaultParams.Version
+		}
+
+		if params.Abci == nil {
+			params.Abci = defaultParams.Abci
 		}
 
 		err = ps.Set(ctx, params)
