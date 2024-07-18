@@ -462,7 +462,10 @@ func (k Keeper) ExecuteDepositRequest(ctx sdk.Context, req types.DepositRequest)
 
 	acceptedCoins := sdk.NewCoins(sdk.NewCoin(pair.QuoteCoinDenom, ax), sdk.NewCoin(pair.BaseCoinDenom, ay))
 
-	k.Hooks().OnProvideLiquidity(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
+	err := k.Hooks().OnProvideLiquidity(ctx, req.GetDepositor(), pair.Id, pool.Id, mintedPoolCoin)
+	if err != nil {
+		k.logger.Error("failed to execute OnProvideLiquidity hook", "error", err)
+	}
 
 	bulkOp := types.NewBulkSendCoinsOperation()
 	bulkOp.QueueSendCoins(types.GlobalEscrowAddress, pool.GetReserveAddress(), acceptedCoins)
@@ -579,7 +582,10 @@ func (k Keeper) FinishWithdrawRequest(ctx sdk.Context, req types.WithdrawRequest
 
 	var refundingCoins sdk.Coins
 	if status == types.RequestStatusFailed {
-		k.Hooks().OnProvideLiquidity(ctx, req.GetWithdrawer(), pairId, req.PoolId, req.PoolCoin)
+		err := k.Hooks().OnProvideLiquidity(ctx, req.GetWithdrawer(), pairId, req.PoolId, req.PoolCoin)
+		if err != nil {
+			k.logger.Error("failed to execute OnProvideLiquidity hook", "error", err)
+		}
 		refundingCoins = sdk.NewCoins(req.PoolCoin)
 		if err := k.bankKeeper.SendCoins(ctx, types.GlobalEscrowAddress, req.GetWithdrawer(), refundingCoins); err != nil {
 			return err

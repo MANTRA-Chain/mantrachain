@@ -30,7 +30,7 @@ func MigrateStore(
 	legacySubspace exported.Subspace,
 ) error {
 	store := storeService.OpenKVStore(ctx)
-	migrateSnapshots(store, cdc)
+	migrateSnapshots(ctx, store, cdc)
 
 	var currParams types.Params
 	legacySubspace.GetParamSet(ctx, &currParams)
@@ -44,6 +44,7 @@ func MigrateStore(
 }
 
 func migrateSnapshots(
+	ctx sdk.Context,
 	store store.KVStore,
 	cdc codec.BinaryCodec,
 ) {
@@ -54,15 +55,21 @@ func migrateSnapshots(
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val v1types.Snapshot
-		cdc.MustUnmarshal(iterator.Value(), &val)
+		var snapshot v1types.Snapshot
+		cdc.MustUnmarshal(iterator.Value(), &snapshot)
 
-		pools := make([]*types.SnapshotPool, len(val.Pools))
-		for i, pool := range val.Pools {
+		pools := make([]*types.SnapshotPool, len(snapshot.Pools))
+		for i, pool := range snapshot.Pools {
+			coinSupply := math.LegacyNewDec(0)
+
+			// Set the correct coin supply for the pool if it is not distributed, otwerwise it will be 0
+			if !snapshot.Distributed {
+				coinSupply = getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
+			}
 
 			newPool := types.SnapshotPool{
 				PoolId:          pool.PoolId,
-				CoinSupply:      math.LegacyNewDec(0), // Not ok to use zero value, but we don't have the historical data to populate this field
+				CoinSupply:      coinSupply,
 				RewardsPerToken: pool.RewardsPerToken,
 			}
 
@@ -70,13 +77,13 @@ func migrateSnapshots(
 		}
 
 		upgradedSnapshot := types.Snapshot{
-			Id:            val.Id,
-			PairId:        val.PairId,
+			Id:            snapshot.Id,
+			PairId:        snapshot.PairId,
 			Pools:         pools,
-			PoolIdToIdx:   val.PoolIdToIdx,
-			Distributed:   val.Distributed,
-			DistributedAt: val.DistributedAt,
-			Remaining:     val.Remaining,
+			PoolIdToIdx:   snapshot.PoolIdToIdx,
+			Distributed:   snapshot.Distributed,
+			DistributedAt: snapshot.DistributedAt,
+			Remaining:     snapshot.Remaining,
 		}
 
 		b := cdc.MustMarshal(&upgradedSnapshot)
@@ -84,4 +91,45 @@ func migrateSnapshots(
 		snapshotsStoreByPairId := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(upgradedSnapshot.PairId))
 		snapshotsStoreByPairId.Set(GetSnapshotIDBytes(upgradedSnapshot.Id), b)
 	}
+}
+
+func getPoolCoinSupply(
+	_ sdk.Context,
+	store store.KVStore,
+	cdc codec.BinaryCodec,
+	pairId uint64,
+	poolId uint64,
+) math.LegacyDec {
+	storeAdapter := runtime.KVStoreAdapter(store)
+	providerStore := prefix.NewStore(storeAdapter, types.KeyPrefix(types.ProviderKeyPrefix))
+	iterator := storetypes.KVStorePrefixIterator(providerStore, []byte{})
+	coinSupply := math.LegacyNewDec(0)
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var provider types.Provider
+		cdc.MustUnmarshal(iterator.Value(), &provider)
+
+		pairIdx, found := provider.PairIdToIdx[pairId]
+		if !found {
+			continue
+		}
+
+		providerPair := provider.Pairs[pairIdx]
+
+		poolIdx, found := providerPair.PoolIdToIdx[poolId]
+		if !found {
+			continue
+		}
+
+		balance := providerPair.Balances[poolIdx]
+
+		if balance.IsPositive() {
+			coinSupply = coinSupply.Add(balance.Amount.ToLegacyDec())
+		}
+	}
+
+	return coinSupply
+
 }

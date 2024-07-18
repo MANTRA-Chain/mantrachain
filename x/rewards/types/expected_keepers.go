@@ -22,7 +22,6 @@ type BankKeeper interface {
 type LiquidityKeeper interface {
 	GetPair(ctx sdk.Context, id uint64) (pair liquiditytypes.Pair, found bool)
 	GetAllPairsIds(ctx sdk.Context) (pairsIds []uint64)
-	SetHooks(gh liquiditytypes.LiquidityHooks)
 }
 
 type GuardKeeper interface {
