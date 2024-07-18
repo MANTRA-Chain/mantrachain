@@ -111,13 +111,9 @@ func (m *SnapshotPool) XXX_DiscardUnknown() {
 var xxx_messageInfo_SnapshotPool proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*ProviderPair)(nil), "mantrachain.rewards.legacy.ProviderPair")
-	proto.RegisterMapType((map[uint64]uint64)(nil), "mantrachain.rewards.legacy.ProviderPair.PoolIdToIdxEntry")
-	proto.RegisterType((*SnapshotPool)(nil), "mantrachain.rewards.legacy.SnapshotPool")
-}
-
-func init() {
-	proto.RegisterFile("mantrachain/rewards/legacy/common.proto", fileDescriptor_274771e038f60916)
+	proto.RegisterType((*ProviderPair)(nil), "mantrachain.rewards.legacy_v1.ProviderPair")
+	proto.RegisterMapType((map[uint64]uint64)(nil), "mantrachain.rewards.legacy_v1.ProviderPair.PoolIdToIdxEntry")
+	proto.RegisterType((*SnapshotPool)(nil), "mantrachain.rewards.legacy_v1.SnapshotPool")
 }
 
 var fileDescriptor_274771e038f60916 = []byte{

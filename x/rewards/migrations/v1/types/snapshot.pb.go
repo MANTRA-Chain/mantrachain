@@ -226,14 +226,10 @@ func (m *SnapshotStartId) GetSnapshotId() uint64 {
 }
 
 func init() {
-	proto.RegisterType((*Snapshot)(nil), "mantrachain.rewards.legacy.Snapshot")
-	proto.RegisterMapType((map[uint64]uint64)(nil), "mantrachain.rewards.legacy.Snapshot.PoolIdToIdxEntry")
-	proto.RegisterType((*SnapshotCount)(nil), "mantrachain.rewards.legacy.SnapshotCount")
-	proto.RegisterType((*SnapshotStartId)(nil), "mantrachain.rewards.legacy.SnapshotStartId")
-}
-
-func init() {
-	proto.RegisterFile("mantrachain/rewards/legacy/snapshot.proto", fileDescriptor_90c05cf638b78cad)
+	proto.RegisterType((*Snapshot)(nil), "mantrachain.rewards.legacy_v1.Snapshot")
+	proto.RegisterMapType((map[uint64]uint64)(nil), "mantrachain.rewards.legacy_v1.Snapshot.PoolIdToIdxEntry")
+	proto.RegisterType((*SnapshotCount)(nil), "mantrachain.rewards.legacy_v1.SnapshotCount")
+	proto.RegisterType((*SnapshotStartId)(nil), "mantrachain.rewards.legacy_v1.SnapshotStartId")
 }
 
 var fileDescriptor_90c05cf638b78cad = []byte{

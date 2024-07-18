@@ -47,7 +47,6 @@ func (k Keeper) CalculateRewards(ctx sdk.Context, pairId uint64, provider types.
 
 		if !found {
 			snapshotStartId = types.SnapshotStartId{
-				PairId:     pairId,
 				SnapshotId: 0,
 			}
 		}

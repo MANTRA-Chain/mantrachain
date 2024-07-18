@@ -2,6 +2,7 @@ package v2
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/math"
@@ -58,40 +59,87 @@ func migrateSnapshots(
 		var snapshot v1types.Snapshot
 		cdc.MustUnmarshal(iterator.Value(), &snapshot)
 
+		snapshotsStoreByPairId := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(snapshot.PairId))
+
+		lastSnapshot, found := getLastSnapshot(ctx, store, cdc, snapshot.PairId)
+
+		if !found {
+			panic(fmt.Sprintf("last snapshot not found %d", snapshot.PairId))
+		}
+
 		pools := make([]*types.SnapshotPool, len(snapshot.Pools))
 		for i, pool := range snapshot.Pools {
-			snapshotsStoreByPairId := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(snapshot.PairId))
+			coinSupply := math.LegacyNewDec(0)
 
-			// Set the correct coin supply for the pool if it is not distributed, otwerwise it will be 0
-			if !snapshot.Distributed {
-				coinSupply := getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
-
-				newPool := types.SnapshotPool{
-					PoolId:          pool.PoolId,
-					CoinSupply:      coinSupply,
-					RewardsPerToken: pool.RewardsPerToken,
-				}
-
-				pools[i] = &newPool
-
-				upgradedSnapshot := types.Snapshot{
-					Id:            snapshot.Id,
-					PairId:        snapshot.PairId,
-					Pools:         pools,
-					PoolIdToIdx:   snapshot.PoolIdToIdx,
-					Distributed:   snapshot.Distributed,
-					DistributedAt: snapshot.DistributedAt,
-					Remaining:     snapshot.Remaining,
-				}
-
-				b := cdc.MustMarshal(&upgradedSnapshot)
-
-				snapshotsStoreByPairId.Set(GetSnapshotIDBytes(upgradedSnapshot.Id), b)
-			} else {
-				snapshotsStoreByPairId.Delete(GetSnapshotIDBytes(snapshot.Id))
+			// If the last snapshot is the same as the current one, then we need to calculate the coin supply
+			// for the pool, otwerwise we can set it to 0. It's not ideal but it's the best we can do
+			if lastSnapshot.Id == snapshot.Id {
+				coinSupply = getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
 			}
+
+			newPool := types.SnapshotPool{
+				PoolId:          pool.PoolId,
+				CoinSupply:      coinSupply,
+				RewardsPerToken: pool.RewardsPerToken,
+			}
+
+			pools[i] = &newPool
 		}
+
+		upgradedSnapshot := types.Snapshot{
+			Id:            snapshot.Id,
+			PairId:        snapshot.PairId,
+			Pools:         pools,
+			PoolIdToIdx:   snapshot.PoolIdToIdx,
+			Distributed:   snapshot.Distributed,
+			DistributedAt: snapshot.DistributedAt,
+			Remaining:     snapshot.Remaining,
+		}
+
+		b := cdc.MustMarshal(&upgradedSnapshot)
+		snapshotsStoreByPairId.Set(GetSnapshotIDBytes(upgradedSnapshot.Id), b)
 	}
+}
+
+func getLastSnapshot(
+	ctx sdk.Context,
+	store store.KVStore,
+	cdc codec.BinaryCodec,
+	pairId uint64,
+) (val types.Snapshot, found bool) {
+	storeAdapter := runtime.KVStoreAdapter(store)
+	snapshotsStore := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
+	snapshotCount, found := getSnapshotCount(ctx, store, cdc, pairId)
+
+	if !found {
+		return val, false
+	}
+
+	b := snapshotsStore.Get(GetSnapshotIDBytes(snapshotCount.Count - 1))
+	if b == nil {
+		return val, false
+	}
+	cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+func getSnapshotCount(
+	_ sdk.Context,
+	store store.KVStore,
+	cdc codec.BinaryCodec,
+	pairId uint64,
+) (val types.SnapshotCount, found bool) {
+	storeAdapter := runtime.KVStoreAdapter(store)
+	snapshotsStore := prefix.NewStore(storeAdapter, types.SnapshotCountStoreKey(pairId))
+	byteKey := types.KeyPrefix(types.SnapshotCountKey)
+	bz := snapshotsStore.Get(byteKey)
+
+	if bz == nil {
+		return val, false
+	}
+
+	cdc.MustUnmarshal(bz, &val)
+	return val, true
 }
 
 func getPoolCoinSupply(

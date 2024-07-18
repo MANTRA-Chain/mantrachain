@@ -139,6 +139,11 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 		snapshotEndId = snapshotStartId.SnapshotId + conf.MaxPurgedRangeLength
 	}
 
+	// Doo not delete the last snapshot
+	if snapshotEndId == lastSnapshot.Id {
+		snapshotEndId--
+	}
+
 	admin := k.guardKeeper.GetAdmin(ctx)
 	remaining := sdk.NewCoins()
 
@@ -149,10 +154,6 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 
 		if !found {
 			k.logger.Error("no snapshot found for pair", "pair_id", pairId, "snapshot_id", i)
-			continue
-		}
-
-		if !snapshot.Distributed {
 			continue
 		}
 
