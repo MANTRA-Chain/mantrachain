@@ -34,9 +34,7 @@ func DefaultGenesis() *GenesisState {
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-	if err := gs.Params.Validate(); err != nil {
-		return err
-	}
+	// this line is used by starport scaffolding # genesis/types/validate
 
 	var plans []PlanI
 	for _, record := range gs.PlanRecords {
@@ -104,7 +102,7 @@ func (gs GenesisState) Validate() error {
 		return fmt.Errorf("current epoch days must be positive")
 	}
 
-	return nil
+	return gs.Params.Validate()
 }
 
 // Validate validates PlanRecord.
