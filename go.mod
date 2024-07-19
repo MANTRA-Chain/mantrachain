@@ -5,7 +5,6 @@ go 1.22
 toolchain go1.22.4
 
 replace (
-	// github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.7-0.20240604092547-62212dfc04b3
 	github.com/cosmos/ibc-go/v8 => github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240701150258-3b633d8beecc
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
