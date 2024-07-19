@@ -129,13 +129,16 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 		}
 	}
 
-	if maxSnapshotsCount == math.MaxUint64 || lastSnapshot.Id < maxSnapshotsCount || lastSnapshot.Id-snapshotStartId.SnapshotId < maxSnapshotsCount {
+	if maxSnapshotsCount == math.MaxUint64 ||
+		lastSnapshot.Id < maxSnapshotsCount ||
+		lastSnapshot.Id-snapshotStartId.SnapshotId < maxSnapshotsCount {
 		return nil
 	}
 
 	snapshotEndId := lastSnapshot.Id - maxSnapshotsCount
 
-	if conf.MaxPurgedRangeLength > 0 && snapshotEndId-snapshotStartId.SnapshotId > conf.MaxPurgedRangeLength {
+	if conf.MaxPurgedRangeLength > 0 &&
+		snapshotEndId-snapshotStartId.SnapshotId > conf.MaxPurgedRangeLength {
 		snapshotEndId = snapshotStartId.SnapshotId + conf.MaxPurgedRangeLength
 	}
 
