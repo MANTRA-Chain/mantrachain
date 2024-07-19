@@ -72,7 +72,7 @@ func migrateSnapshots(
 			coinSupply := math.LegacyNewDec(0)
 
 			// If the last snapshot is the same as the current one, then we need to calculate the coin supply
-			// for the pool, otwerwise we can set it to 0. It's not ideal but it's the best we can do
+			// for the pool, otwerwise we can set it to 0. It's not ideal but it's the best we can do.
 			if lastSnapshot.Id == snapshot.Id {
 				coinSupply = getPoolCoinSupply(ctx, store, cdc, snapshot.PairId, pool.PoolId)
 			}
@@ -106,7 +106,7 @@ func getLastSnapshot(
 	store store.KVStore,
 	cdc codec.BinaryCodec,
 	pairId uint64,
-) (val types.Snapshot, found bool) {
+) (val v1types.Snapshot, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(store)
 	snapshotsStore := prefix.NewStore(storeAdapter, types.SnapshotStoreKey(pairId))
 	snapshotCount, found := getSnapshotCount(ctx, store, cdc, pairId)
@@ -128,7 +128,7 @@ func getSnapshotCount(
 	store store.KVStore,
 	cdc codec.BinaryCodec,
 	pairId uint64,
-) (val types.SnapshotCount, found bool) {
+) (val v1types.SnapshotCount, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(store)
 	snapshotsStore := prefix.NewStore(storeAdapter, types.SnapshotCountStoreKey(pairId))
 	byteKey := types.KeyPrefix(types.SnapshotCountKey)
@@ -157,7 +157,7 @@ func getPoolCoinSupply(
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var provider types.Provider
+		var provider v1types.Provider
 		cdc.MustUnmarshal(iterator.Value(), &provider)
 
 		pairIdx, found := provider.PairIdToIdx[pairId]
