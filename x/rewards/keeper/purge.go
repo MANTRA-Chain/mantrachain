@@ -139,16 +139,6 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 		snapshotEndId = snapshotStartId.SnapshotId + conf.MaxPurgedRangeLength
 	}
 
-	// Do not delete the last snapshot
-	if snapshotEndId > 0 && snapshotEndId == lastSnapshot.Id {
-		snapshotEndId--
-	}
-
-	// No snapshots to delete
-	if snapshotEndId == 0 {
-		return nil
-	}
-
 	admin := k.guardKeeper.GetAdmin(ctx)
 	remaining := sdk.NewCoins()
 
@@ -162,9 +152,11 @@ func (k Keeper) PurgeSnapshotsForPair(ctx sdk.Context, pairId uint64) error {
 			continue
 		}
 
-		for _, decCoin := range snapshot.Remaining {
-			if decCoin.Amount.IsPositive() {
-				remaining = remaining.Add(sdk.NewCoin(decCoin.Denom, decCoin.Amount.TruncateInt()))
+		if snapshot.Distributed {
+			for _, decCoin := range snapshot.Remaining {
+				if decCoin.Amount.IsPositive() {
+					remaining = remaining.Add(sdk.NewCoin(decCoin.Denom, decCoin.Amount.TruncateInt()))
+				}
 			}
 		}
 
