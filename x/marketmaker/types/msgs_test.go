@@ -55,14 +55,13 @@ func TestMsgApplyMarketMaker(t *testing.T) {
 		require.IsType(t, &types.MsgApplyMarketMaker{}, tc.msg)
 		require.Equal(t, types.TypeMsgApplyMarketMaker, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
 			signers := tc.msg.GetAccAddress()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetAddress(), signers[0])
+			require.Equal(t, tc.msg.GetAddress(), signers.String())
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}
@@ -98,8 +97,7 @@ func TestMsgClaimIncentives(t *testing.T) {
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
 			signers := tc.msg.GetAccAddress()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetAddress(), signers[0])
+			require.Equal(t, tc.msg.GetAddress(), signers.String())
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}

@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/MANTRA-Finance/mantrachain/testutil/sample"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -17,22 +18,20 @@ func TestMsgCreateMultiBridged_ValidateBasic(t *testing.T) {
 		{
 			name: "no inputs",
 			msg: MsgCreateMultiBridged{
-				Inputs: []Input{},
+				Input: Input{},
 			},
-			err: ErrNoInputs,
+			err: ErrNoInput,
 		}, {
 			name: "valid address",
 			msg: MsgCreateMultiBridged{
-				Inputs: []Input{
-					{
-						Address: sample.AccAddress(),
-						Coins:   sdk.NewCoins(sdk.NewCoin("uom", sdk.NewInt(100))),
-					},
+				Input: Input{
+					Address: sample.AccAddress(),
+					Coins:   sdk.NewCoins(sdk.NewCoin("uom", sdkmath.NewInt(100))),
 				},
 				Outputs: []Output{
 					{
 						Address: sample.AccAddress(),
-						Coins:   sdk.NewCoins(sdk.NewCoin("uom", sdk.NewInt(100))),
+						Coins:   sdk.NewCoins(sdk.NewCoin("uom", sdkmath.NewInt(100))),
 					},
 				},
 				EthTxHashes: []string{"0x1"},

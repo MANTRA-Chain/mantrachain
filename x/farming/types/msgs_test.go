@@ -65,14 +65,11 @@ func TestMsgCreateFixedAmountPlan(t *testing.T) {
 		require.IsType(t, &types.MsgCreateFixedAmountPlan{}, tc.msg)
 		require.Equal(t, types.TypeMsgCreateFixedAmountPlan, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
-			signers := tc.msg.GetSigners()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetCreator(), signers[0])
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}
@@ -94,35 +91,35 @@ func TestMsgCreateRatioPlan(t *testing.T) {
 			"", // empty means no error expected
 			types.NewMsgCreateRatioPlan(
 				name, creatorAddr, stakingCoinWeights,
-				startTime, endTime, sdk.NewDec(1),
+				startTime, endTime, math.LegacyNewDec(1),
 			),
 		},
 		{
 			"invalid creator address \"\": empty address string is not allowed: invalid address",
 			types.NewMsgCreateRatioPlan(
 				name, sdk.AccAddress{}, stakingCoinWeights,
-				startTime, endTime, sdk.NewDec(1),
+				startTime, endTime, math.LegacyNewDec(1),
 			),
 		},
 		{
 			"end time 2020-11-01T22:08:41Z must be greater than start time 2021-11-01T22:08:41Z: invalid plan end time",
 			types.NewMsgCreateRatioPlan(
 				name, creatorAddr, stakingCoinWeights,
-				startTime, startTime.AddDate(-1, 0, 0), sdk.NewDec(1),
+				startTime, startTime.AddDate(-1, 0, 0), math.LegacyNewDec(1),
 			),
 		},
 		{
 			"staking coin weights must not be empty: invalid staking coin weights",
 			types.NewMsgCreateRatioPlan(
 				name, creatorAddr, sdk.NewDecCoins(),
-				startTime, endTime, sdk.NewDec(1),
+				startTime, endTime, math.LegacyNewDec(1),
 			),
 		},
 		{
 			"epoch ratio must be positive: -1.000000000000000000: invalid request",
 			types.NewMsgCreateRatioPlan(
 				name, creatorAddr, stakingCoinWeights,
-				startTime, endTime, sdk.NewDec(-1),
+				startTime, endTime, math.LegacyNewDec(-1),
 			),
 		},
 	}
@@ -131,14 +128,11 @@ func TestMsgCreateRatioPlan(t *testing.T) {
 		require.IsType(t, &types.MsgCreateRatioPlan{}, tc.msg)
 		require.Equal(t, types.TypeMsgCreateRatioPlan, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
-			signers := tc.msg.GetSigners()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetCreator(), signers[0])
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}
@@ -171,14 +165,11 @@ func TestMsgStake(t *testing.T) {
 		require.IsType(t, &types.MsgStake{}, tc.msg)
 		require.Equal(t, types.TypeMsgStake, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
-			signers := tc.msg.GetSigners()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetFarmer(), signers[0])
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}
@@ -211,14 +202,11 @@ func TestMsgUnstake(t *testing.T) {
 		require.IsType(t, &types.MsgUnstake{}, tc.msg)
 		require.Equal(t, types.TypeMsgUnstake, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
-			signers := tc.msg.GetSigners()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetFarmer(), signers[0])
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}
@@ -251,14 +239,11 @@ func TestMsgHarvest(t *testing.T) {
 		require.IsType(t, &types.MsgHarvest{}, tc.msg)
 		require.Equal(t, types.TypeMsgHarvest, tc.msg.Type())
 		require.Equal(t, types.RouterKey, tc.msg.Route())
-		require.Equal(t, sdk.MustSortJSON(types.ModuleCdc.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
+		require.Equal(t, sdk.MustSortJSON(types.Amino.MustMarshalJSON(tc.msg)), tc.msg.GetSignBytes())
 
 		err := tc.msg.ValidateBasic()
 		if tc.expectedErr == "" {
 			require.Nil(t, err)
-			signers := tc.msg.GetSigners()
-			require.Len(t, signers, 1)
-			require.Equal(t, tc.msg.GetFarmer(), signers[0])
 		} else {
 			require.EqualError(t, err, tc.expectedErr)
 		}

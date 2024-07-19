@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/crypto"
@@ -55,16 +56,13 @@ func TestMsgCreatePair(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			msg := types.NewMsgCreatePair(testAddr, "denom1", "denom2", &sdk.Dec{}, &sdk.Dec{})
+			msg := types.NewMsgCreatePair(testAddr, "denom1", "denom2", &sdkmath.LegacyDec{}, &sdkmath.LegacyDec{})
 			tc.malleate(msg)
 			require.Equal(t, types.TypeMsgCreatePair, msg.Type())
 			require.Equal(t, types.RouterKey, msg.Route())
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetCreator(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -134,9 +132,6 @@ func TestMsgCreatePool(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetCreator(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -207,7 +202,7 @@ func TestMsgCreateRangedPool(t *testing.T) {
 		{
 			"too large max price",
 			func(msg *types.MsgCreateRangedPool) {
-				msg.MaxPrice = sdk.NewDecFromInt(math.NewIntWithDecimal(1, 25))
+				msg.MaxPrice = sdkmath.LegacyNewDecFromInt(math.NewIntWithDecimal(1, 25))
 			},
 			"max price must not be higher than 100000000000000000000.000000000000000000: invalid request",
 		},
@@ -243,9 +238,6 @@ func TestMsgCreateRangedPool(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetCreator(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -310,9 +302,6 @@ func TestMsgDeposit(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetDepositor(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -361,9 +350,6 @@ func TestMsgWithdraw(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetWithdrawer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -452,7 +438,7 @@ func TestMsgLimitOrder(t *testing.T) {
 		{
 			"zero order amount",
 			func(msg *types.MsgLimitOrder) {
-				msg.Amount = sdk.ZeroInt()
+				msg.Amount = sdkmath.ZeroInt()
 			},
 			"order amount 0 is smaller than the min amount 100: invalid request",
 		},
@@ -481,14 +467,12 @@ func TestMsgLimitOrder(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
 		})
 	}
+	var _ sdk.Msg
 }
 
 func TestMsgMarketOrder(t *testing.T) {
@@ -556,7 +540,7 @@ func TestMsgMarketOrder(t *testing.T) {
 		{
 			"zero order amount",
 			func(msg *types.MsgMarketOrder) {
-				msg.Amount = sdk.ZeroInt()
+				msg.Amount = sdkmath.ZeroInt()
 			},
 			"order amount 0 is smaller than the min amount 100: invalid request",
 		},
@@ -585,9 +569,6 @@ func TestMsgMarketOrder(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -624,14 +605,14 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"non-positive max sell price",
 			func(msg *types.MsgMMOrder) {
-				msg.MaxSellPrice = sdk.ZeroDec()
+				msg.MaxSellPrice = sdkmath.LegacyZeroDec()
 			},
 			"max sell price must be positive: 0.000000000000000000: invalid request",
 		},
 		{
 			"non-positive min sell price",
 			func(msg *types.MsgMMOrder) {
-				msg.MinSellPrice = sdk.ZeroDec()
+				msg.MinSellPrice = sdkmath.LegacyZeroDec()
 			},
 			"min sell price must be positive: 0.000000000000000000: invalid request",
 		},
@@ -653,14 +634,14 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"non-positive max buy price",
 			func(msg *types.MsgMMOrder) {
-				msg.MaxBuyPrice = sdk.ZeroDec()
+				msg.MaxBuyPrice = sdkmath.LegacyZeroDec()
 			},
 			"max buy price must be positive: 0.000000000000000000: invalid request",
 		},
 		{
 			"non-positive min buy price",
 			func(msg *types.MsgMMOrder) {
-				msg.MinBuyPrice = sdk.ZeroDec()
+				msg.MinBuyPrice = sdkmath.LegacyZeroDec()
 			},
 			"min buy price must be positive: 0.000000000000000000: invalid request",
 		},
@@ -682,7 +663,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"zero buy amount",
 			func(msg *types.MsgMMOrder) {
-				msg.BuyAmount = sdk.ZeroInt()
+				msg.BuyAmount = sdkmath.ZeroInt()
 			},
 			"",
 		},
@@ -696,15 +677,15 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"zero sell amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = sdk.ZeroInt()
+				msg.SellAmount = sdkmath.ZeroInt()
 			},
 			"",
 		},
 		{
 			"both zero amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = sdk.ZeroInt()
-				msg.BuyAmount = sdk.ZeroInt()
+				msg.SellAmount = sdkmath.ZeroInt()
+				msg.BuyAmount = sdkmath.ZeroInt()
 			},
 			"sell amount and buy amount must not be zero at the same time: invalid request",
 		},
@@ -728,9 +709,6 @@ func TestMsgMMOrder(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -779,9 +757,6 @@ func TestMsgCancelOrder(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -830,9 +805,6 @@ func TestMsgCancelAllOrders(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
@@ -874,9 +846,6 @@ func TestMsgCancelMMOrder(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
-				require.Equal(t, msg.GetOrderer(), signers[0])
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}

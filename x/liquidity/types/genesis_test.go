@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -15,7 +16,7 @@ import (
 func TestGenesisState_Validate(t *testing.T) {
 	depositor := sdk.AccAddress(crypto.AddressHash([]byte("depositor"))).String()
 	// Valid structs.
-	pair := types.NewPair(1, "denom1", "denom2", depositor, &sdk.Dec{}, &sdk.Dec{})
+	pair := types.NewPair(1, "denom1", "denom2", depositor, &sdkmath.LegacyDec{}, &sdkmath.LegacyDec{})
 	pool := types.NewBasicPool(1, 1, testAddr)
 	depositReq := types.DepositRequest{
 		Id:             1,

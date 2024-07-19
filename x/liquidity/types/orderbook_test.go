@@ -5,14 +5,14 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkmath "cosmossdk.io/math"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
-func newOrder(dir amm.OrderDirection, price sdk.Dec, amt math.Int) amm.Order {
+func newOrder(dir amm.OrderDirection, price sdkmath.LegacyDec, amt math.Int) amm.Order {
 	return amm.DefaultOrderer.Order(dir, price, amt)
 }
 

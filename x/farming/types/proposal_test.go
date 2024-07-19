@@ -175,7 +175,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 			"invalid staking coin weights - invalid",
 			func(req *types.AddPlanRequest) {
 				req.StakingCoinWeights = sdk.DecCoins{
-					sdk.DecCoin{Denom: "stake1", Amount: sdk.ZeroDec()},
+					sdk.DecCoin{Denom: "stake1", Amount: math.LegacyZeroDec()},
 				}
 			},
 			"invalid staking coin weights: coin 0.000000000000000000stake1 amount is not positive: invalid staking coin weights",
@@ -216,7 +216,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 			"zero epoch ratio",
 			func(req *types.AddPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.ZeroDec()
+				req.EpochRatio = math.LegacyZeroDec()
 			},
 			"exactly one of epoch amount or epoch ratio must be provided: invalid request",
 		},
@@ -224,7 +224,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 			"too big epoch ratio",
 			func(req *types.AddPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.NewDec(2)
+				req.EpochRatio = math.LegacyNewDec(2)
 			},
 			"epoch ratio must be less than 1: 2.000000000000000000: invalid request",
 		},
@@ -238,7 +238,7 @@ func TestAddPlanRequest_Validate(t *testing.T) {
 				types.ParseTime("0001-01-01T00:00:00Z"),
 				types.ParseTime("9999-12-31T00:00:00Z"),
 				sdk.NewCoins(sdk.NewInt64Coin("reward1", 10000000)),
-				sdk.Dec{},
+				math.LegacyDec{},
 			)
 			tc.malleate(&req)
 			err := req.Validate()
@@ -358,7 +358,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 			"invalid staking coin weights - invalid",
 			func(req *types.ModifyPlanRequest) {
 				req.StakingCoinWeights = sdk.DecCoins{
-					sdk.DecCoin{Denom: "stake1", Amount: sdk.ZeroDec()},
+					sdk.DecCoin{Denom: "stake1", Amount: math.LegacyZeroDec()},
 				}
 			},
 			"invalid staking coin weights: coin 0.000000000000000000stake1 amount is not positive: invalid staking coin weights",
@@ -425,7 +425,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 			"zero epoch ratio",
 			func(req *types.ModifyPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.ZeroDec()
+				req.EpochRatio = math.LegacyZeroDec()
 			},
 			"",
 		},
@@ -433,7 +433,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 			"too big epoch ratio",
 			func(req *types.ModifyPlanRequest) {
 				req.EpochAmount = nil
-				req.EpochRatio = sdk.NewDec(2)
+				req.EpochRatio = math.LegacyNewDec(2)
 			},
 			"epoch ratio must be less than 1: 2.000000000000000000: invalid request",
 		},
@@ -448,7 +448,7 @@ func TestModifyPlanRequest_Validate(t *testing.T) {
 				types.ParseTime("0001-01-01T00:00:00Z"),
 				types.ParseTime("9999-12-31T00:00:00Z"),
 				sdk.NewCoins(sdk.NewInt64Coin("reward1", 10000000)),
-				sdk.Dec{},
+				math.LegacyDec{},
 			)
 			tc.malleate(&req)
 			err := req.Validate()

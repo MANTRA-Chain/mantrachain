@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -53,7 +54,7 @@ func TestPair_Validate(t *testing.T) {
 		{
 			"",
 			func(pair *types.Pair) {
-				p := sdk.NewDec(-1)
+				p := sdkmath.LegacyNewDec(-1)
 				pair.LastPrice = &p
 			},
 			"last price must be positive: -1.000000000000000000",
@@ -67,7 +68,7 @@ func TestPair_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2", creator, &sdk.Dec{}, &sdk.Dec{})
+			pair := types.NewPair(1, "denom1", "denom2", creator, &sdkmath.LegacyDec{}, &sdkmath.LegacyDec{})
 			tc.malleate(&pair)
 			err := pair.Validate()
 			if tc.expectedErr == "" {

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -53,21 +54,21 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"zero MinInitialPoolCoinSupply",
 			func(params *types.Params) {
-				params.MinInitialPoolCoinSupply = sdk.ZeroInt()
+				params.MinInitialPoolCoinSupply = sdkmath.ZeroInt()
 			},
 			"min initial pool coin supply must be positive: 0",
 		},
 		{
 			"invalid PairCreationFee",
 			func(params *types.Params) {
-				params.PairCreationFee = sdk.Coins{sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.ZeroInt()}}
+				params.PairCreationFee = sdk.Coins{sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdkmath.ZeroInt()}}
 			},
 			"invalid pair creation fee: coin 0stake amount is not positive",
 		},
 		{
 			"invalid PoolCreationFee",
 			func(params *types.Params) {
-				params.PoolCreationFee = sdk.Coins{sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.ZeroInt()}}
+				params.PoolCreationFee = sdk.Coins{sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdkmath.ZeroInt()}}
 			},
 			"invalid pool creation fee: coin 0stake amount is not positive",
 		},
@@ -81,7 +82,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"negative MaxPriceLimitRatio",
 			func(params *types.Params) {
-				params.MaxPriceLimitRatio = sdk.NewDec(-1)
+				params.MaxPriceLimitRatio = sdkmath.LegacyNewDec(-1)
 			},
 			"max price limit ratio must not be negative: -1.000000000000000000",
 		},
@@ -102,21 +103,21 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"negative SwapFeeRate",
 			func(params *types.Params) {
-				params.SwapFeeRate = sdk.NewDec(-1)
+				params.SwapFeeRate = sdkmath.LegacyNewDec(-1)
 			},
 			"swap fee rate must not be negative: -1.000000000000000000",
 		},
 		{
 			"negative PairCreatorSwapFeeRate",
 			func(params *types.Params) {
-				params.PairCreatorSwapFeeRatio = sdk.NewDec(-1)
+				params.PairCreatorSwapFeeRatio = sdkmath.LegacyNewDec(-1)
 			},
 			"pair creator swap fee ratio must not be negative: -1.000000000000000000",
 		},
 		{
 			"negative WithdrawFeeRate",
 			func(params *types.Params) {
-				params.WithdrawFeeRate = sdk.NewDec(-1)
+				params.WithdrawFeeRate = sdkmath.LegacyNewDec(-1)
 			},
 			"withdraw fee rate must not be negative: -1.000000000000000000",
 		},

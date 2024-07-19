@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,17 +16,20 @@ import (
 func TestParams(t *testing.T) {
 	require.IsType(t, paramstypes.KeyTable{}, types.ParamKeyTable())
 
-	defaultParams := types.DefaultParams()
+	wantParams := types.Params{
+		PrivatePlanCreationFee: sdk.Coins{
+			{
+				Denom:  "stake",
+				Amount: sdkmath.NewInt(1000000000),
+			},
+		},
+		NextEpochDays:        1,
+		FarmingFeeCollector:  "cosmos1h292smhhttwy0rl3qr4p6xsvpvxc4v05s6rxtczwq3cs6qc462mqejwy8x",
+		DelayedStakingGasFee: 60000,
+		MaxNumPrivatePlans:   10000,
+	}
 
-	paramsStr := `private_plan_creation_fee:
-- denom: stake
-  amount: "1000000000"
-next_epoch_days: 1
-farming_fee_collector: cosmos1h292smhhttwy0rl3qr4p6xsvpvxc4v05s6rxtczwq3cs6qc462mqejwy8x
-delayed_staking_gas_fee: 60000
-max_num_private_plans: 10000
-`
-	require.Equal(t, paramsStr, defaultParams.String())
+	require.Equal(t, wantParams, types.DefaultParams())
 }
 
 func TestParamsValidate(t *testing.T) {

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -76,7 +77,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			"total farming amount can be zero",
 			func(genState *types.GenesisState) {
 				farm := validFarm
-				farm.TotalFarmingAmount = sdk.ZeroInt()
+				farm.TotalFarmingAmount = sdkmath.ZeroInt()
 				genState.Farms = []types.FarmRecord{{Denom: "pool1", Farm: farm}}
 			},
 			"",
@@ -155,7 +156,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			"invalid position: invalid farming amount",
 			func(genState *types.GenesisState) {
 				position := validPosition
-				position.FarmingAmount = sdk.ZeroInt()
+				position.FarmingAmount = sdkmath.ZeroInt()
 				genState.Positions = []types.Position{position}
 			},
 			"farming amount must be positive: 0",

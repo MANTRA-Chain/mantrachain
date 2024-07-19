@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
@@ -18,23 +19,31 @@ import (
 func TestParams(t *testing.T) {
 	require.IsType(t, paramstypes.KeyTable{}, types.ParamKeyTable())
 
-	defaultParams := types.DefaultParams()
+	minOpenRatio, err := sdkmath.LegacyNewDecFromStr("0.500000000000000000")
+	require.NoError(t, err)
+	minOpenDepthRation, err := sdkmath.LegacyNewDecFromStr("0.100000000000000000")
+	require.NoError(t, err)
 
-	paramsStr := `incentive_budget_address: cosmos1ddn66jv0sjpmck0ptegmhmqtn35qsg2vxyk2hn9sqf4qxtzqz3sqanrtcm
-deposit_amount:
-- denom: stake
-  amount: "1000000000"
-common:
-  min_open_ratio: "0.500000000000000000"
-  min_open_depth_ratio: "0.100000000000000000"
-  max_downtime: 20
-  max_total_downtime: 100
-  min_hours: 16
-  min_days: 22
-incentive_pairs: []
-`
+	wantParams := types.Params{
+		IncentiveBudgetAddress: "cosmos1ddn66jv0sjpmck0ptegmhmqtn35qsg2vxyk2hn9sqf4qxtzqz3sqanrtcm",
+		DepositAmount: sdk.Coins{
+			{
+				Denom:  "stake",
+				Amount: sdkmath.NewInt(1000000000),
+			},
+		},
+		Common: types.Common{
+			MinOpenRatio:      minOpenRatio,
+			MinOpenDepthRatio: minOpenDepthRation,
+			MaxDowntime:       20,
+			MaxTotalDowntime:  100,
+			MinHours:          16,
+			MinDays:           22,
+		},
+		IncentivePairs: []types.IncentivePair{},
+	}
 
-	require.Equal(t, paramsStr, defaultParams.String())
+	require.Equal(t, wantParams, types.DefaultParams())
 }
 
 func TestParamsValidate(t *testing.T) {

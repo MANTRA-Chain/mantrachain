@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -323,14 +324,14 @@ func TestOrder_Validate(t *testing.T) {
 		{
 			"zero price",
 			func(order *types.Order) {
-				order.Price = sdk.ZeroDec()
+				order.Price = sdkmath.LegacyZeroDec()
 			},
 			"price must be positive: 0.000000000000000000",
 		},
 		{
 			"zero amount",
 			func(order *types.Order) {
-				order.Amount = sdk.ZeroInt()
+				order.Amount = sdkmath.ZeroInt()
 			},
 			"amount must be positive: 0",
 		},
@@ -364,7 +365,7 @@ func TestOrder_Validate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			pair := types.NewPair(1, "denom1", "denom2", creator, &sdk.Dec{}, &sdk.Dec{})
+			pair := types.NewPair(1, "denom1", "denom2", creator, &sdkmath.LegacyDec{}, &sdkmath.LegacyDec{})
 			orderer := sdk.AccAddress(crypto.AddressHash([]byte("orderer")))
 			msg := types.NewMsgLimitOrder(
 				orderer, pair.Id, types.OrderDirectionBuy, utils.ParseCoin("1000000denom2"),

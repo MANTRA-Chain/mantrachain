@@ -5,7 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cometbft/cometbft/crypto"
@@ -13,7 +15,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
@@ -116,7 +117,7 @@ func TestPlanI(t *testing.T) {
 				sdk.NewDecCoinFromDec("stake2", math.LegacyNewDecWithPrec(5, 1)),
 			),
 			func(a, b interface{}) bool {
-				return a.(sdk.DecCoins).IsEqual(b.(sdk.DecCoins))
+				return a.(sdk.DecCoins).Equal(b.(sdk.DecCoins))
 			},
 		},
 		{
@@ -185,7 +186,7 @@ func TestPlanI(t *testing.T) {
 			sdk.NewCoins(),
 			sdk.NewCoins(sdk.NewInt64Coin("reward1", 10000000)),
 			func(a, b interface{}) bool {
-				return a.(sdk.Coins).IsEqual(b.(sdk.Coins))
+				return a.(sdk.Coins).Equal(b.(sdk.Coins))
 			},
 		},
 	} {
@@ -265,7 +266,7 @@ func TestBasePlanValidate(t *testing.T) {
 			"invalid staking coin weights - invalid denom",
 			func(plan *types.BasePlan) {
 				plan.StakingCoinWeights = sdk.DecCoins{
-					sdk.DecCoin{Denom: "!", Amount: sdk.NewDec(1)},
+					sdk.DecCoin{Denom: "!", Amount: sdkmath.LegacyNewDec(1)},
 				}
 			},
 			"invalid staking coin weights: invalid denom: !: invalid staking coin weights",
@@ -274,7 +275,7 @@ func TestBasePlanValidate(t *testing.T) {
 			"invalid staking coin weights - invalid amount",
 			func(plan *types.BasePlan) {
 				plan.StakingCoinWeights = sdk.DecCoins{
-					sdk.DecCoin{Denom: "stake1", Amount: sdk.NewDec(-1)},
+					sdk.DecCoin{Denom: "stake1", Amount: sdkmath.LegacyNewDec(-1)},
 				}
 			},
 			"invalid staking coin weights: coin -1.000000000000000000stake1 amount is not positive: invalid staking coin weights",
@@ -316,7 +317,7 @@ func TestBasePlanValidate(t *testing.T) {
 		{
 			"invalid distributed coins - invalid amount",
 			func(plan *types.BasePlan) {
-				plan.DistributedCoins = sdk.Coins{sdk.Coin{Denom: "reward1", Amount: sdk.ZeroInt()}}
+				plan.DistributedCoins = sdk.Coins{sdk.Coin{Denom: "reward1", Amount: sdkmath.ZeroInt()}}
 			},
 			"invalid distributed coins: coin 0reward1 amount is not positive: invalid coins",
 		},
@@ -422,7 +423,7 @@ func TestValidateStakingCoinTotalWeights(t *testing.T) {
 		{
 			"invalid case 3",
 			sdk.DecCoins{
-				sdk.DecCoin{Denom: "stake1", Amount: sdk.NewDec(-1)},
+				sdk.DecCoin{Denom: "stake1", Amount: sdkmath.LegacyNewDec(-1)},
 			},
 			"invalid staking coin weights: coin -1.000000000000000000stake1 amount is not positive: invalid staking coin weights",
 		},
@@ -456,7 +457,7 @@ func TestTotalEpochRatio(t *testing.T) {
 			[]types.PlanI{
 				types.NewRatioPlan(
 					types.NewBasePlan(1, name1, 1, farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights, startTime, endTime),
-					sdk.NewDec(1),
+					sdkmath.LegacyNewDec(1),
 				),
 			},
 			nil,
@@ -465,14 +466,14 @@ func TestTotalEpochRatio(t *testing.T) {
 			[]types.PlanI{
 				types.NewRatioPlan(
 					types.NewBasePlan(1, name1, 1, farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights, startTime, endTime),
-					sdk.NewDec(1),
+					sdkmath.LegacyNewDec(1),
 				),
 				types.NewRatioPlan(
 					types.NewBasePlan(1, name2, 1, farmingPoolAddr1.String(), terminationAddr1.String(), stakingCoinWeights, startTime, endTime),
-					sdk.NewDec(1),
+					sdkmath.LegacyNewDec(1),
 				),
 			},
-			sdkerrors.Wrap(types.ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1"),
+			errors.Wrap(types.ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1"),
 		},
 		{
 			[]types.PlanI{
@@ -535,7 +536,7 @@ func TestTotalEpochRatio(t *testing.T) {
 					math.LegacyNewDecWithPrec(7, 1), // 0.7
 				),
 			},
-			sdkerrors.Wrap(types.ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1"),
+			errors.Wrap(types.ErrInvalidTotalEpochRatio, "total epoch ratio must be lower than 1"),
 		},
 		{
 			[]types.PlanI{
@@ -602,7 +603,7 @@ func TestUnpackPlan(t *testing.T) {
 				types.ParseTime("2021-08-03T00:00:00Z"),
 				types.ParseTime("2021-08-07T00:00:00Z"),
 			),
-			sdk.NewDec(1),
+			sdkmath.LegacyNewDec(1),
 		),
 	}
 
@@ -641,7 +642,7 @@ func TestUnpackPlanJSON(t *testing.T) {
 			types.ParseTime("2021-08-03T00:00:00Z"),
 			types.ParseTime("2021-08-07T00:00:00Z"),
 		),
-		sdk.NewDec(1),
+		sdkmath.LegacyNewDec(1),
 	)
 
 	any, err := types.PackPlan(plan)

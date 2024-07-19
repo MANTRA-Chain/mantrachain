@@ -4,9 +4,11 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"github.com/cometbft/cometbft/crypto"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/stretchr/testify/require"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -189,7 +191,7 @@ func TestValidateGenesis(t *testing.T) {
 						types.ParseTime("0001-01-01T00:00:00Z"),
 						types.ParseTime("9999-12-31T00:00:00Z"),
 					),
-					sdk.OneDec(),
+					sdkmath.LegacyOneDec(),
 				)
 				planB := types.NewRatioPlan(
 					types.NewBasePlan(
@@ -204,7 +206,7 @@ func TestValidateGenesis(t *testing.T) {
 						types.ParseTime("0001-01-01T00:00:00Z"),
 						types.ParseTime("9999-12-31T00:00:00Z"),
 					),
-					sdk.OneDec(),
+					sdkmath.LegacyOneDec(),
 				)
 				planAAny, _ := types.PackPlan(planA)
 				planBAny, _ := types.PackPlan(planB)
@@ -256,7 +258,7 @@ func TestValidateGenesis(t *testing.T) {
 						StakingCoinDenom: validStakingCoinDenom,
 						Farmer:           validAcc.String(),
 						Staking: types.Staking{
-							Amount:        sdk.ZeroInt(),
+							Amount:        sdkmath.ZeroInt(),
 							StartingEpoch: 0,
 						},
 					},
@@ -298,7 +300,7 @@ func TestValidateGenesis(t *testing.T) {
 						StakingCoinDenom: validStakingCoinDenom,
 						Farmer:           validAcc.String(),
 						QueuedStaking: types.QueuedStaking{
-							Amount: sdk.ZeroInt(),
+							Amount: sdkmath.ZeroInt(),
 						},
 					},
 				}
@@ -324,7 +326,7 @@ func TestValidateGenesis(t *testing.T) {
 				genState.TotalStakingsRecords = []types.TotalStakingsRecord{
 					{
 						StakingCoinDenom: "!",
-						Amount:           sdk.OneInt(),
+						Amount:           sdkmath.OneInt(),
 					},
 				}
 			},
@@ -336,7 +338,7 @@ func TestValidateGenesis(t *testing.T) {
 				genState.TotalStakingsRecords = []types.TotalStakingsRecord{
 					{
 						StakingCoinDenom: "uatom",
-						Amount:           sdk.ZeroInt(),
+						Amount:           sdkmath.ZeroInt(),
 					},
 				}
 			},
@@ -417,7 +419,7 @@ func TestValidateGenesis(t *testing.T) {
 						Farmer:           validAcc.String(),
 						StakingCoinDenom: validStakingCoinDenom,
 						UnharvestedRewards: types.UnharvestedRewards{
-							Rewards: sdk.Coins{sdk.Coin{Denom: "denom3", Amount: sdk.ZeroInt()}},
+							Rewards: sdk.Coins{sdk.Coin{Denom: "denom3", Amount: sdkmath.ZeroInt()}},
 						},
 					},
 				}
@@ -453,10 +455,10 @@ func TestValidateGenesis(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			genState := types.DefaultGenesisState()
+			genState := types.DefaultGenesis()
 			tc.configure(genState)
 
-			err := types.ValidateGenesis(*genState)
+			err := genState.Validate()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
 			} else {

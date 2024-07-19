@@ -57,8 +57,6 @@ func TestMsgUpdateRequiredPrivileges(t *testing.T) {
 			err := msg.ValidateBasic()
 			if tc.expectedErr == "" {
 				require.NoError(t, err)
-				signers := msg.GetSigners()
-				require.Len(t, signers, 1)
 			} else {
 				require.EqualError(t, err, tc.expectedErr)
 			}
