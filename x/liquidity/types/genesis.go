@@ -29,9 +29,8 @@ func DefaultGenesis() *GenesisState {
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
-	if err := gs.Params.Validate(); err != nil {
-		return fmt.Errorf("invalid params: %w", err)
-	}
+	// this line is used by starport scaffolding # genesis/types/validate
+
 	pairMap := map[uint64]Pair{}
 	for i, pair := range gs.Pairs {
 		if err := pair.Validate(); err != nil {
@@ -143,5 +142,8 @@ func (gs GenesisState) Validate() error {
 		orderSet[order.PairId][order.Id] = struct{}{}
 	}
 
-	return gs.Params.Validate()
+	if err := gs.Params.Validate(); err != nil {
+		return fmt.Errorf("invalid params: %w", err)
+	}
+	return nil
 }
