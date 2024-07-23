@@ -99,7 +99,7 @@ func (suite *KeeperTestSuite) TestMintDenom() {
 		{
 			desc:      "denom does not exist",
 			amount:    10,
-			mintDenom: "factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/testcoin",
+			mintDenom: "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/testcoin",
 			admin:     suite.addrs[0].String(),
 			valid:     false,
 		},
@@ -153,7 +153,7 @@ func (suite *KeeperTestSuite) TestBurnDenom() {
 		{
 			desc:      "denom does not exist",
 			amount:    10,
-			burnDenom: "factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/testcoin",
+			burnDenom: "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/testcoin",
 			admin:     suite.addrs[0].String(),
 			valid:     false,
 		},

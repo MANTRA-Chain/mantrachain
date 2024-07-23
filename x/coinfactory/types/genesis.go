@@ -7,15 +7,21 @@ import (
 
 // this line is used by starport scaffolding # genesis/types/import
 
-// DefaultIndex is the default global index
+// DefaultIndex is the default capability global index
 const DefaultIndex uint64 = 1
 
-// DefaultGenesis returns the default genesis state
+// DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		// this line is used by starport scaffolding # genesis/types/default
 		Params:        DefaultParams(),
 		FactoryDenoms: []GenesisDenom{},
+	}
+}
+
+func NewGenesisState(params Params) *GenesisState {
+	return &GenesisState{
+		FactoryDenoms: []GenesisDenom{},
+		Params:        params,
 	}
 }
 

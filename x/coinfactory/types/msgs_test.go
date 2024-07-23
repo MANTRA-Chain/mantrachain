@@ -55,7 +55,7 @@ func TestAuthzMsg(t *testing.T) {
 			msg: &types.MsgChangeAdmin{
 				Sender:   addr1,
 				Denom:    "denom",
-				NewAdmin: "cosmos15ejrsrfts5jfd8vekdje4t3t56nvflry92uegz",
+				NewAdmin: "mantra10d07y265gmmuvt4z0w9aw880jnsr700j3fep4f",
 			},
 		},
 	}

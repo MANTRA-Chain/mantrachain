@@ -11,21 +11,21 @@ func (suite *KeeperTestSuite) TestGenesis() {
 	genesisState := types.GenesisState{
 		FactoryDenoms: []types.GenesisDenom{
 			{
-				Denom: "factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/bitcoin",
+				Denom: "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/bitcoin",
 				AuthorityMetadata: types.DenomAuthorityMetadata{
-					Admin: "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw",
+					Admin: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				},
 			},
 			{
-				Denom: "factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/diff-admin",
+				Denom: "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/diff-admin",
 				AuthorityMetadata: types.DenomAuthorityMetadata{
-					Admin: "cosmos15ejrsrfts5jfd8vekdje4t3t56nvflry92uegz",
+					Admin: "mantra10d07y265gmmuvt4z0w9aw880jnsr700j3fep4f",
 				},
 			},
 			{
-				Denom: "factory/cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw/litecoin",
+				Denom: "factory/mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka/litecoin",
 				AuthorityMetadata: types.DenomAuthorityMetadata{
-					Admin: "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw",
+					Admin: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				},
 			},
 		},
@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) TestGenesis() {
 
 	module.InitGenesis(suite.ctx, app.CoinfactoryKeeper, genesisState)
 
-	coinfactoryModuleAccount := app.AccountKeeper.GetAccount(suite.ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
+	coinfactoryModuleAccount := app.AccountKeeper.GetModuleAccount(suite.ctx, types.ModuleName)
 	suite.Require().NotNil(coinfactoryModuleAccount)
 
 	exportedGenesis := module.ExportGenesis(suite.ctx, app.CoinfactoryKeeper)

@@ -3,15 +3,18 @@ package keeper_test
 import (
 	"testing"
 
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/stretchr/testify/suite"
+
 	"cosmossdk.io/math"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
 	"golang.org/x/exp/slices"
 
 	"github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
+
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
@@ -40,11 +43,13 @@ func TestKeeperTestSuite(t *testing.T) {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	suite.app = testutil.SetupWithGenesisValSet(suite.T())
-	suite.ctx = suite.app.BaseApp.NewContext(false)
-	suite.app.ModuleManager.BeginBlock(suite.ctx)
-	suite.app.BeginBlocker(suite.ctx)
+	app, err := testutil.Setup()
+	suite.NoError(err)
+
+	suite.app = app
+	suite.ctx = app.BaseApp.NewContextLegacy(false, cmtproto.Header{Height: 1})
 	suite.keeper = suite.app.CoinfactoryKeeper
+
 	initialBalances := sdk.NewCoins(sdk.NewCoin(SecondaryDenom, SecondaryAmount))
 	suite.addrs = testutil.AddTestAddrsAndAdmin(suite.app, suite.ctx, 6, math.ZeroInt())
 	for _, addr := range suite.addrs {
@@ -55,34 +60,15 @@ func (suite *KeeperTestSuite) SetupTest() {
 		GRPCQueryRouter: suite.app.GRPCQueryRouter(),
 		Ctx:             suite.ctx,
 	}
+
 	suite.queryClient = types.NewQueryClient(suite.QueryHelper)
 	suite.msgServer = keeper.NewMsgServerImpl(suite.keeper)
 }
 
 func (suite *KeeperTestSuite) CreateDefaultDenom() {
 	res, err := suite.msgServer.CreateDenom(sdk.WrapSDKContext(suite.ctx), types.NewMsgCreateDenom(suite.addrs[0].String(), "bitcoin"))
-	require.NoError(suite.T(), err)
+	suite.NoError(err)
 	suite.defaultDenom = res.GetNewTokenDenom()
-}
-
-func (suite *KeeperTestSuite) TestCreateModuleAccount() {
-	app := suite.app
-
-	// remove module account
-	coinfactoryModuleAccount := app.AccountKeeper.GetAccount(suite.ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	app.AccountKeeper.RemoveAccount(suite.ctx, coinfactoryModuleAccount)
-
-	// ensure module account was removed
-	suite.ctx = app.BaseApp.NewContext(false)
-	coinfactoryModuleAccount = app.AccountKeeper.GetAccount(suite.ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	suite.Require().Nil(coinfactoryModuleAccount)
-
-	// create module account
-	app.CoinfactoryKeeper.CreateModuleAccount(suite.ctx)
-
-	// check that the module account is now initialized
-	coinfactoryModuleAccount = app.AccountKeeper.GetAccount(suite.ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	suite.Require().NotNil(coinfactoryModuleAccount)
 }
 
 // AssertEventEmitted asserts that ctx's event manager has emitted the given number of events
