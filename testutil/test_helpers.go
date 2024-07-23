@@ -42,7 +42,7 @@ import (
 
 const (
 	DefaultGenTxGas                           = 10000000
-	TestAdminAddress                          = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+	TestAdminAddress                          = "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
 	TestAccountPrivilegesGuardNftCollectionId = "nft-guard-collection"
 )
 
@@ -142,6 +142,7 @@ func Setup(isCheckTx bool) *chain.App {
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in App.
 func SetupWithGenesisValSet(t *testing.T) *chain.App {
+	initSDKConfig()
 	privVal := mock.NewPV()
 	pubKey, err := privVal.GetPubKey()
 	require.NoError(t, err)
@@ -192,7 +193,7 @@ func setupWithGenesisValSet(t *testing.T, valSet *cbtypes.ValidatorSet, genAccs 
 			MinSelfDelegation: math.ZeroInt(),
 		}
 		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), val.Address.String(), math.LegacyOneDec()))
+		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress().String(), sdk.ValAddress(val.Address).String(), math.LegacyOneDec()))
 
 	}
 	// set validators and delegations
