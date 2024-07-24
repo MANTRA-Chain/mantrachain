@@ -4,7 +4,6 @@ import (
 	"sort"
 
 	"cosmossdk.io/math"
-	sdkmath "cosmossdk.io/math"
 )
 
 var (
@@ -14,10 +13,10 @@ var (
 )
 
 type OrderView interface {
-	HighestBuyPrice() (sdkmath.LegacyDec, bool)
-	LowestSellPrice() (sdkmath.LegacyDec, bool)
-	BuyAmountOver(price sdkmath.LegacyDec, inclusive bool) math.Int
-	SellAmountUnder(price sdkmath.LegacyDec, inclusive bool) math.Int
+	HighestBuyPrice() (math.LegacyDec, bool)
+	LowestSellPrice() (math.LegacyDec, bool)
+	BuyAmountOver(price math.LegacyDec, inclusive bool) math.Int
+	SellAmountUnder(price math.LegacyDec, inclusive bool) math.Int
 }
 
 type OrderBookView struct {
@@ -94,33 +93,33 @@ func (view *OrderBookView) Match() {
 	}
 }
 
-func (view *OrderBookView) HighestBuyPrice() (sdkmath.LegacyDec, bool) {
+func (view *OrderBookView) HighestBuyPrice() (math.LegacyDec, bool) {
 	if len(view.buyAmtAccSums) == 0 {
-		return sdkmath.LegacyDec{}, false
+		return math.LegacyDec{}, false
 	}
 	i := sort.Search(len(view.buyAmtAccSums), func(i int) bool {
 		return view.buyAmtAccSums[i].sum.IsPositive()
 	})
 	if i >= len(view.buyAmtAccSums) {
-		return sdkmath.LegacyDec{}, false
+		return math.LegacyDec{}, false
 	}
 	return view.buyAmtAccSums[i].price, true
 }
 
-func (view *OrderBookView) LowestSellPrice() (sdkmath.LegacyDec, bool) {
+func (view *OrderBookView) LowestSellPrice() (math.LegacyDec, bool) {
 	if len(view.sellAmtAccSums) == 0 {
-		return sdkmath.LegacyDec{}, false
+		return math.LegacyDec{}, false
 	}
 	i := sort.Search(len(view.sellAmtAccSums), func(i int) bool {
 		return view.sellAmtAccSums[i].sum.IsPositive()
 	})
 	if i >= len(view.sellAmtAccSums) {
-		return sdkmath.LegacyDec{}, false
+		return math.LegacyDec{}, false
 	}
 	return view.sellAmtAccSums[i].price, true
 }
 
-func (view *OrderBookView) BuyAmountOver(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (view *OrderBookView) BuyAmountOver(price math.LegacyDec, inclusive bool) math.Int {
 	i := sort.Search(len(view.buyAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.buyAmtAccSums[i].price.LT(price)
@@ -134,7 +133,7 @@ func (view *OrderBookView) BuyAmountOver(price sdkmath.LegacyDec, inclusive bool
 	return view.buyAmtAccSums[i-1].sum
 }
 
-func (view *OrderBookView) BuyAmountUnder(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (view *OrderBookView) BuyAmountUnder(price math.LegacyDec, inclusive bool) math.Int {
 	i := sort.Search(len(view.buyAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.buyAmtAccSums[i].price.LTE(price)
@@ -148,7 +147,7 @@ func (view *OrderBookView) BuyAmountUnder(price sdkmath.LegacyDec, inclusive boo
 	return view.buyAmtAccSums[len(view.buyAmtAccSums)-1].sum.Sub(view.buyAmtAccSums[i-1].sum)
 }
 
-func (view *OrderBookView) SellAmountUnder(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (view *OrderBookView) SellAmountUnder(price math.LegacyDec, inclusive bool) math.Int {
 	i := sort.Search(len(view.sellAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.sellAmtAccSums[i].price.GT(price)
@@ -162,7 +161,7 @@ func (view *OrderBookView) SellAmountUnder(price sdkmath.LegacyDec, inclusive bo
 	return view.sellAmtAccSums[i-1].sum
 }
 
-func (view *OrderBookView) SellAmountOver(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (view *OrderBookView) SellAmountOver(price math.LegacyDec, inclusive bool) math.Int {
 	i := sort.Search(len(view.sellAmtAccSums), func(i int) bool {
 		if inclusive {
 			return view.sellAmtAccSums[i].price.GTE(price)
@@ -177,13 +176,13 @@ func (view *OrderBookView) SellAmountOver(price sdkmath.LegacyDec, inclusive boo
 }
 
 type amtAccSum struct {
-	price sdkmath.LegacyDec
+	price math.LegacyDec
 	sum   math.Int
 }
 
 type MultipleOrderViews []OrderView
 
-func (views MultipleOrderViews) HighestBuyPrice() (price sdkmath.LegacyDec, found bool) {
+func (views MultipleOrderViews) HighestBuyPrice() (price math.LegacyDec, found bool) {
 	for _, view := range views {
 		p, f := view.HighestBuyPrice()
 		if f && (price.IsNil() || p.GT(price)) {
@@ -194,7 +193,7 @@ func (views MultipleOrderViews) HighestBuyPrice() (price sdkmath.LegacyDec, foun
 	return
 }
 
-func (views MultipleOrderViews) LowestSellPrice() (price sdkmath.LegacyDec, found bool) {
+func (views MultipleOrderViews) LowestSellPrice() (price math.LegacyDec, found bool) {
 	for _, view := range views {
 		p, f := view.LowestSellPrice()
 		if f && (price.IsNil() || p.LT(price)) {
@@ -205,7 +204,7 @@ func (views MultipleOrderViews) LowestSellPrice() (price sdkmath.LegacyDec, foun
 	return
 }
 
-func (views MultipleOrderViews) BuyAmountOver(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (views MultipleOrderViews) BuyAmountOver(price math.LegacyDec, inclusive bool) math.Int {
 	amt := math.ZeroInt()
 	for _, view := range views {
 		amt = amt.Add(view.BuyAmountOver(price, inclusive))
@@ -213,7 +212,7 @@ func (views MultipleOrderViews) BuyAmountOver(price sdkmath.LegacyDec, inclusive
 	return amt
 }
 
-func (views MultipleOrderViews) SellAmountUnder(price sdkmath.LegacyDec, inclusive bool) math.Int {
+func (views MultipleOrderViews) SellAmountUnder(price math.LegacyDec, inclusive bool) math.Int {
 	amt := math.ZeroInt()
 	for _, view := range views {
 		amt = amt.Add(view.SellAmountUnder(price, inclusive))

@@ -167,7 +167,7 @@ func Setup() (*app.App, error) {
 		appConfig     = app.AppConfig()
 		app           = &app.App{}
 		appBuilder    *runtime.AppBuilder
-		codec         codec.Codec
+		appCodec      codec.Codec
 	)
 
 	if err := depinject.Inject(
@@ -176,7 +176,7 @@ func Setup() (*app.App, error) {
 			depinject.Supply(log.NewNopLogger()),
 		),
 		&appBuilder,
-		&codec,
+		&appCodec,
 		&app.GuardKeeper,
 		&app.AccountKeeper,
 		&app.BankKeeper,
@@ -196,6 +196,8 @@ func Setup() (*app.App, error) {
 	); err != nil {
 		return nil, fmt.Errorf("failed to inject dependencies: %w", err)
 	}
+
+	app.SetAppCodec(appCodec)
 
 	if startupConfig.BaseAppOption != nil {
 		app.App = appBuilder.Build(startupConfig.DB, nil, startupConfig.BaseAppOption)
@@ -221,7 +223,7 @@ func Setup() (*app.App, error) {
 		balances = append(balances, banktypes.Balance{Address: ga.GenesisAccount.GetAddress().String(), Coins: ga.Coins})
 	}
 
-	genesisState, err := GenesisStateWithValSet(codec, app.DefaultGenesis(), valSet, genAccounts, balances...)
+	genesisState, err := GenesisStateWithValSet(appCodec, app.DefaultGenesis(), valSet, genAccounts, balances...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create genesis state: %w", err)
 	}

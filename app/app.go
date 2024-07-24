@@ -503,6 +503,14 @@ func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
+// AppCodec sets the App's app codec.
+//
+// NOTE: This is solely to be used for testing purposes as it may be desirable
+// for modules to register their own custom testing types.
+func (app *App) SetAppCodec(cdc codec.Codec) {
+	app.appCodec = cdc
+}
+
 // GetKey returns the KVStoreKey for the provided store key.
 func (app *App) GetKey(storeKey string) *storetypes.KVStoreKey {
 	kvStoreKey, ok := app.UnsafeFindStoreKey(storeKey).(*storetypes.KVStoreKey)
