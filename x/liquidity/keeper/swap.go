@@ -875,9 +875,9 @@ func (k Keeper) FinishOrder(ctx sdk.Context, order types.Order, status types.Ord
 	accumulatedSwapFee := sdk.NewCoin(order.OfferCoin.Denom, math.NewInt(0))
 	collectedSwapFeeAmountFromOrderer := order.SwapFeeCoin.Amount
 
-	var pairCreatorSwapFeeCoin sdk.Coin
-	var rewardsSwapFeeCoin sdk.Coin
-	var refundCoin sdk.Coin
+	pairCreatorSwapFeeCoin := sdk.Coin{}
+	rewardsSwapFeeCoin := sdk.Coin{}
+	refundCoin := sdk.Coin{}
 
 	if order.RemainingOfferCoin.IsPositive() {
 		refundCoin = sdk.NewCoin(order.RemainingOfferCoin.Denom, order.RemainingOfferCoin.Amount)
