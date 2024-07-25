@@ -12,7 +12,7 @@ import (
 // Farm locks the coin.
 // The farmer's rewards accrued in the given coin's denom are sent to the farmer.
 // Farm creates a new farm object for the given coin's denom, if there wasn't.
-func (k Keeper) GetFarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
+func (k Keeper) FarmLock(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 
 	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})

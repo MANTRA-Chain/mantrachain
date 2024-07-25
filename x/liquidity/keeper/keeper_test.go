@@ -10,14 +10,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/stretchr/testify/suite"
 
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	chain "github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
-	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
-	module "github.com/MANTRA-Finance/mantrachain/x/liquidity/module"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
@@ -42,8 +41,8 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	s.app = app
 	s.ctx = app.BaseApp.NewContextLegacy(false, cmtproto.Header{
-		Height: s.app.LastBlockHeight() + 1,
-		Time:   utils.ParseTime("2022-01-01T00:00:00Z"),
+		Height: 1,
+		Time:   utils.ParseTime("2022-01-01T00:00:05Z"),
 	})
 	s.keeper = s.app.LiquidityKeeper
 	s.QueryHelper = &baseapp.QueryServiceTestHelper{
@@ -72,10 +71,14 @@ func (s *KeeperTestSuite) sendCoins(fromAddr, toAddr sdk.AccAddress, amt sdk.Coi
 
 func (s *KeeperTestSuite) nextBlock() {
 	s.T().Helper()
-	ctx, err := testutil.NextBlock(s.app, s.ctx, 6)
+	ctx, err := testutil.NextBlock(s.app, s.ctx, time.Second*5)
 	s.Require().NoError(err)
 	s.ctx = ctx
-	module.BeginBlocker(s.ctx, s.keeper)
+	s.QueryHelper = &baseapp.QueryServiceTestHelper{
+		GRPCQueryRouter: s.app.GRPCQueryRouter(),
+		Ctx:             s.ctx,
+	}
+	s.queryClient = types.NewQueryClient(s.QueryHelper)
 }
 
 // Below are useful helpers to write test code easily.

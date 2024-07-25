@@ -352,6 +352,7 @@ func (s *KeeperTestSuite) TestPartialMatch() {
 
 	s.sellMarketOrder(s.addr(3), pair.Id, math.NewInt(5000), 0, true)
 	s.nextBlock()
+	module.BeginBlocker(s.ctx, s.keeper)
 
 	// Now completely matched.
 	_, found = s.keeper.GetOrder(s.ctx, order.PairId, order.Id)

@@ -49,6 +49,11 @@ import (
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
+
+	lpfarm "github.com/MANTRA-Finance/mantrachain/x/lpfarm/module"
+	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	marketmaker "github.com/MANTRA-Finance/mantrachain/x/marketmaker/module"
+	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	// this line is used by starport scaffolding # ibc/app/import
 )
 
@@ -107,7 +112,10 @@ func (app *App) registerLegacyModules(appOpts servertypes.AppOptions, wasmOpts [
 	// by granting the governance module the right to execute the message.
 	// See: https://docs.cosmos.network/main/modules/gov#proposal-messages
 	govRouter := govv1beta1.NewRouter()
-	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler)
+	govRouter.
+		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(marketmakertypes.RouterKey, marketmaker.NewMarketMakerProposalHandler(app.MarketmakerKeeper)).
+		AddRoute(lpfarmtypes.RouterKey, lpfarm.NewFarmingPlanProposalHandler(app.LpfarmKeeper))
 
 	app.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
 		app.appCodec, app.GetKey(ibcfeetypes.StoreKey),

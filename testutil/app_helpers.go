@@ -19,6 +19,7 @@ import (
 	"cosmossdk.io/depinject"
 	sdkmath "cosmossdk.io/math"
 
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -249,6 +250,7 @@ func Setup() (*app.App, error) {
 		_, err = app.FinalizeBlock(&abci.RequestFinalizeBlock{
 			Height:             app.LastBlockHeight() + 1,
 			NextValidatorsHash: valSet.Hash(),
+			Time:               utils.ParseTime("2022-01-01T00:00:00Z"),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("failed to finalize block: %w", err)

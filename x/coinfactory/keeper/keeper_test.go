@@ -14,6 +14,7 @@ import (
 
 	"github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
@@ -47,7 +48,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.NoError(err)
 
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContextLegacy(false, cmtproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContextLegacy(false, cmtproto.Header{
+		Height: 1,
+		Time:   utils.ParseTime("2022-01-01T00:00:05Z"),
+	})
 	suite.keeper = suite.app.CoinfactoryKeeper
 
 	initialBalances := sdk.NewCoins(sdk.NewCoin(SecondaryDenom, SecondaryAmount))
