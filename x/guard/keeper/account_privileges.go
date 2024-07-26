@@ -82,7 +82,7 @@ func (k Keeper) RemoveAccountPrivileges(
 	store.Delete(account)
 }
 
-func (k Keeper) GetAllAccountPrivileges(ctx sdk.Context) (list []*types.AccountPrivileges) {
+func (k Keeper) GetAllAccountPrivileges(ctx sdk.Context) (list []types.AccountPrivileges) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.AccountPrivilegesStoreKey())
 	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
@@ -90,7 +90,7 @@ func (k Keeper) GetAllAccountPrivileges(ctx sdk.Context) (list []*types.AccountP
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		list = append(list, &types.AccountPrivileges{
+		list = append(list, types.AccountPrivileges{
 			Account:    iterator.Key(),
 			Privileges: iterator.Value(),
 		})

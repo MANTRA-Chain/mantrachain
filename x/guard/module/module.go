@@ -108,19 +108,22 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper         *keeper.Keeper
-	legacySubspace exported.Subspace
+	keeper                      *keeper.Keeper
+	legacySubspace              exported.Subspace
+	whitelistedTransferAccAddrs []string
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper *keeper.Keeper,
 	legacySubspace exported.Subspace,
+	whitelistedTransferAccAddrs []string,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: NewAppModuleBasic(cdc),
-		keeper:         keeper,
-		legacySubspace: legacySubspace,
+		AppModuleBasic:              NewAppModuleBasic(cdc),
+		keeper:                      keeper,
+		legacySubspace:              legacySubspace,
+		whitelistedTransferAccAddrs: whitelistedTransferAccAddrs,
 	}
 }
 
@@ -129,7 +132,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 
-	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace, am.whitelistedTransferAccAddrs)
 	if err := cfg.RegisterMigration(types.ModuleName, 2, m.Migrate2to3); err != nil {
 		panic(fmt.Errorf("failed to migrate %s to v3: %w", types.ModuleName, err))
 	}
@@ -204,23 +207,11 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 
-	modAccAddrs := make(map[string]bool)
-	if len(in.Config.WhitelistedTransferAccAddrs) > 0 {
-		for _, moduleName := range in.Config.WhitelistedTransferAccAddrs {
-			addrStr, err := in.AccountKeeper.AddressCodec().BytesToString(authtypes.NewModuleAddress(moduleName))
-			if err != nil {
-				panic(err)
-			}
-			modAccAddrs[addrStr] = true
-		}
-	}
-
 	k := keeper.NewKeeper(
 		in.Cdc,
 		in.StoreService,
 		in.Logger,
 		authority.String(),
-		modAccAddrs,
 		in.Router,
 		in.AuthzKeeper,
 		in.NFTKeeper,
@@ -229,6 +220,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Cdc,
 		k,
 		in.LegacySubspace,
+		in.Config.WhitelistedTransferAccAddrs,
 	)
 
 	return ModuleOutputs{GuardKeeper: k, Module: m}

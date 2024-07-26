@@ -195,9 +195,9 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 			distributionFeeRateCoin := sdk.NewCoin(balance.Denom, availableBalance.Sub(rewardsBalance).TruncateInt())
 
 			if !distributionFeeRateCoin.IsZero() {
-				whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
+				whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{swapFeeCollectorAddress})
 				err := k.bankKeeper.SendCoins(ctx, swapFeeCollectorAddress, admin, sdk.NewCoins(distributionFeeRateCoin))
-				k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
+				k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 				if err != nil {
 					return err
 				}
@@ -219,9 +219,9 @@ func (k Keeper) DistributeRewardsForPair(ctx sdk.Context, pairId uint64) error {
 		}
 
 		if !balance.IsZero() {
-			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{swapFeeCollectorAddress.String()})
+			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{swapFeeCollectorAddress})
 			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, swapFeeCollectorAddress, types.ModuleName, sdk.NewCoins(balance))
-			k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
+			k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 			if err != nil {
 				return err
 			}

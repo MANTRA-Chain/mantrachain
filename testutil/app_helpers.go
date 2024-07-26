@@ -190,7 +190,6 @@ func Setup() (*app.App, error) {
 		&app.TokenKeeper,
 		&app.RewardsKeeper,
 		&app.MarketmakerKeeper,
-		&app.FarmingKeeper,
 		&app.LiquidityKeeper,
 		&app.LpfarmKeeper,
 		&app.TxfeesKeeper,

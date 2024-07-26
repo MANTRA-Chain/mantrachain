@@ -33,8 +33,8 @@ type AccountKeeper interface {
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
 	GetAdmin(ctx sdk.Context) sdk.AccAddress
-	AddTransferAccAddressesWhitelist(addresses []string) []string
-	RemoveTransferAccAddressesWhitelist(addresses []string)
+	AddTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) []sdk.AccAddress
+	RemoveTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress)
 	CheckHasAuthz(ctx sdk.Context, address string, authz string) error
 	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 }

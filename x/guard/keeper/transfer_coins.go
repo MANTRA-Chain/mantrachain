@@ -125,7 +125,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 		// The admin can send coins to any address no matter if the recipient has soul bond nft and/or
 		// the account privileges and no matter of the coin required privileges
-		if k.whitelistTransfersAccAddrs[in.Address] || admin.Equals(inAddress) {
+		if k.IsTransfersAccAddrsWhitelisted(ctx, types.GetWhitelistTransfersAccAddrsIndex(inAddress)) || admin.Equals(inAddress) {
 			if len(inputs) == 1 {
 				return nil
 			} else {
@@ -144,7 +144,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 			return err
 		}
 
-		if k.whitelistTransfersAccAddrs[out.Address] || admin.Equals(outAddress) {
+		if k.IsTransfersAccAddrsWhitelisted(ctx, types.GetWhitelistTransfersAccAddrsIndex(outAddress)) || admin.Equals(outAddress) {
 			continue
 		}
 
@@ -157,32 +157,51 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 	return nil
 }
-
-func (k Keeper) AddTransferAccAddressesWhitelist(addresses []string) []string {
-	updated := make([]string, 0)
+func (k Keeper) AddTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) []sdk.AccAddress {
+	updated := make([]sdk.AccAddress, 0)
 
 	if len(addresses) == 0 {
 		return updated
 	}
 
 	for _, address := range addresses {
-		val, ok := k.whitelistTransfersAccAddrs[address]
+		index := types.GetWhitelistTransfersAccAddrsIndex(address)
+		transferAccAddressesWhitelist, found := k.GetWhitelistTransfersAccAddrs(ctx, index)
 
-		if !ok || !val {
-			k.whitelistTransfersAccAddrs[address] = true
+		if !found {
+			transferAccAddressesWhitelist = types.WhitelistTransfersAccAddrs{
+				Index:         index,
+				Account:       address,
+				IsWhitelisted: true,
+			}
 			updated = append(updated, address)
+		} else if !transferAccAddressesWhitelist.IsWhitelisted {
+			transferAccAddressesWhitelist.IsWhitelisted = true
+			updated = append(updated, address)
+		} else {
+			continue
 		}
+
+		k.SetWhitelistTransfersAccAddrs(ctx, transferAccAddressesWhitelist)
 	}
 
 	return updated
 }
 
-func (k Keeper) RemoveTransferAccAddressesWhitelist(addresses []string) {
-	for _, address := range addresses {
-		_, ok := k.whitelistTransfersAccAddrs[address]
+func (k Keeper) RemoveTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) {
+	if len(addresses) == 0 {
+		return
+	}
 
-		if ok {
-			delete(k.whitelistTransfersAccAddrs, address)
+	for _, address := range addresses {
+		transferAccAddressesWhitelist, found := k.GetWhitelistTransfersAccAddrs(ctx, types.GetWhitelistTransfersAccAddrsIndex(address))
+
+		if !found || !transferAccAddressesWhitelist.IsWhitelisted {
+			continue
+		} else if transferAccAddressesWhitelist.IsWhitelisted {
+			transferAccAddressesWhitelist.IsWhitelisted = false
 		}
+
+		k.SetWhitelistTransfersAccAddrs(ctx, transferAccAddressesWhitelist)
 	}
 }

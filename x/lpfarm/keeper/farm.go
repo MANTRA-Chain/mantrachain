@@ -15,9 +15,9 @@ import (
 func (k Keeper) FarmLock(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin) (withdrawnRewards sdk.Coins, err error) {
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 
-	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{farmingReserveAddr})
 	err = k.bankKeeper.SendCoins(ctx, farmerAddr, farmingReserveAddr, sdk.NewCoins(coin))
-	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 	if err != nil {
 		return nil, err
 	}
@@ -94,9 +94,9 @@ func (k Keeper) Unfarm(ctx sdk.Context, farmerAddr sdk.AccAddress, coin sdk.Coin
 
 	farmingReserveAddr := types.DeriveFarmingReserveAddress(coin.Denom)
 
-	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{farmingReserveAddr.String()})
+	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{farmingReserveAddr})
 	err = k.bankKeeper.SendCoins(ctx, farmingReserveAddr, farmerAddr, sdk.NewCoins(coin))
-	k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)
+	k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 	if err != nil {
 		return nil, err
 	}

@@ -24,18 +24,25 @@ func TestGenesisStateValidate(t *testing.T) {
 					DefaultPrivileges:                       make([]byte, 32),
 					BaseDenom:                               "uom",
 				},
-				AccountPrivilegesList: []*AccountPrivileges{
+				AccountPrivilegesList: []AccountPrivileges{
 					{
 						Account:    sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
 						Privileges: []byte{0x01},
 					},
 				},
 				GuardTransferCoins: []byte{0x01},
-				RequiredPrivilegesList: []*RequiredPrivileges{
+				RequiredPrivilegesList: []RequiredPrivileges{
 					{
 						Index:      []byte{0x01},
 						Privileges: []byte{0x01},
 						Kind:       "coin",
+					},
+				},
+				WhitelistTransfersAccAddrs: []WhitelistTransfersAccAddrs{
+					{
+						Index:         []byte{0x01},
+						Account:       sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
+						IsWhitelisted: true,
 					},
 				},
 			},
@@ -65,7 +72,7 @@ func TestGenesisStateValidate(t *testing.T) {
 					DefaultPrivileges:                       make([]byte, 32),
 					BaseDenom:                               "uom",
 				},
-				AccountPrivilegesList: []*AccountPrivileges{
+				AccountPrivilegesList: []AccountPrivileges{
 					{
 						Account:    sdk.MustAccAddressFromBech32("cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t").Bytes(),
 						Privileges: []byte{0x01},

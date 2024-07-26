@@ -59,7 +59,6 @@ import (
 	bridgemodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/bridge/module/v1"
 	coinfactorymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/coinfactory/module/v1"
 	didmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/did/module/v1"
-	farmingmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/farming/module/v1"
 	guardmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/guard/module/v1"
 	liquiditymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/liquidity/module/v1"
 	lpfarmmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/lpfarm/module/v1"
@@ -75,8 +74,6 @@ import (
 	coinfactorymoduletypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/did/module" // import for side-effects
 	didmoduletypes "github.com/MANTRA-Finance/mantrachain/x/did/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/farming/module" // import for side-effects
-	farmingmoduletypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/guard/module" // import for side-effects
 	guardmoduletypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/liquidity/module" // import for side-effects
@@ -138,7 +135,6 @@ var (
 		guardmoduletypes.ModuleName,
 		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
-		farmingmoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
 		txfeesmoduletypes.ModuleName,
@@ -175,7 +171,6 @@ var (
 		guardmoduletypes.ModuleName,
 		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
-		farmingmoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
 		txfeesmoduletypes.ModuleName,
@@ -206,7 +201,6 @@ var (
 		guardmoduletypes.ModuleName,
 		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
-		farmingmoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
 		txfeesmoduletypes.ModuleName,
@@ -237,7 +231,6 @@ var (
 		{Account: bridgemoduletypes.ModuleName},
 		{Account: coinfactorymoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: didmoduletypes.ModuleName},
-		{Account: farmingmoduletypes.ModuleName},
 		{Account: guardmoduletypes.ModuleName},
 		{Account: liquiditymoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: lpfarmmoduletypes.ModuleName},
@@ -255,7 +248,6 @@ var (
 		airdropmoduletypes.ModuleName,
 		bridgemoduletypes.ModuleName,
 		coinfactorymoduletypes.ModuleName,
-		farmingmoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
@@ -434,10 +426,6 @@ var (
 			{
 				Name:   marketmakermoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&marketmakermodulev1.Module{}),
-			},
-			{
-				Name:   farmingmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&farmingmodulev1.Module{}),
 			},
 			{
 				Name:   liquiditymoduletypes.ModuleName,

@@ -23,9 +23,8 @@ type (
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
-		authority                  string
-		whitelistTransfersAccAddrs map[string]bool
-		router                     *baseapp.MsgServiceRouter
+		authority string
+		router    *baseapp.MsgServiceRouter
 
 		authzKeeper       types.AuthzKeeper
 		nftKeeper         types.NFTKeeper
@@ -39,7 +38,6 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
-	whitelistedTransferAccAddrs map[string]bool,
 	router *baseapp.MsgServiceRouter,
 
 	authzKeeper types.AuthzKeeper,
@@ -50,18 +48,12 @@ func NewKeeper(
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	whitelistedTransferAccAddrsCopy := make(map[string]bool)
-	for k, v := range whitelistedTransferAccAddrs {
-		whitelistedTransferAccAddrsCopy[k] = v
-	}
-
 	return &Keeper{
-		cdc:                        cdc,
-		storeService:               storeService,
-		authority:                  authority,
-		logger:                     logger,
-		whitelistTransfersAccAddrs: whitelistedTransferAccAddrsCopy,
-		router:                     router,
+		cdc:          cdc,
+		storeService: storeService,
+		authority:    authority,
+		logger:       logger,
+		router:       router,
 
 		authzKeeper: authzKeeper,
 		nftKeeper:   nftKeeper,

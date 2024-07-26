@@ -26,7 +26,7 @@ type LiquidityKeeper interface {
 
 type GuardKeeper interface {
 	GetAdmin(ctx sdk.Context) sdk.AccAddress
-	AddTransferAccAddressesWhitelist(addresses []string) []string
-	RemoveTransferAccAddressesWhitelist(addresses []string)
+	AddTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) []sdk.AccAddress
+	RemoveTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress)
 	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
 }

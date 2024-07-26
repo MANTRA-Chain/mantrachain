@@ -9,8 +9,6 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 // Liquidity params default values
@@ -24,8 +22,8 @@ const (
 
 // Liquidity params default values
 var (
-	DefaultFeeCollectorAddress      = farmingtypes.DeriveAddress(AddressType, ModuleName, "FeeCollector")
-	DefaultDustCollectorAddress     = farmingtypes.DeriveAddress(AddressType, ModuleName, "DustCollector")
+	DefaultFeeCollectorAddress      = DeriveAddress(AddrType, ModuleName, "FeeCollector")
+	DefaultDustCollectorAddress     = DeriveAddress(AddrType, ModuleName, "DustCollector")
 	DefaultMinInitialPoolCoinSupply = math.NewInt(1_000_000_000_000)
 	DefaultPairCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
 	DefaultPoolCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
@@ -45,12 +43,12 @@ const (
 	PairEscrowAddressPrefix           = "PairEscrowAddress"
 	PairSwapFeeCollectorAddressPrefix = "PairSwapFeeCollectorAddress"
 	ModuleAddressNameSplitter         = "|"
-	AddressType                       = farmingtypes.AddressType32Bytes
+	AddrType                          = AddressType32Bytes
 )
 
 var (
 	// GlobalEscrowAddress is an escrow for deposit/withdraw requests.
-	GlobalEscrowAddress = farmingtypes.DeriveAddress(AddressType, ModuleName, "GlobalEscrow")
+	GlobalEscrowAddress = DeriveAddress(AddrType, ModuleName, "GlobalEscrow")
 )
 
 var (

@@ -11,7 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
@@ -23,8 +22,8 @@ var (
 
 // PoolReserveAddress returns a unique pool reserve account address for each pool.
 func PoolReserveAddress(poolId uint64) sdk.AccAddress {
-	return farmingtypes.DeriveAddress(
-		AddressType,
+	return DeriveAddress(
+		AddrType,
 		ModuleName,
 		strings.Join([]string{PoolReserveAddressPrefix, strconv.FormatUint(poolId, 10)}, ModuleAddressNameSplitter),
 	)

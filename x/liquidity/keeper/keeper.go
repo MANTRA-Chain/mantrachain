@@ -44,12 +44,6 @@ func NewKeeper(
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	guardKeeper.AddTransferAccAddressesWhitelist([]string{
-		types.DefaultFeeCollectorAddress.String(),
-		types.DefaultDustCollectorAddress.String(),
-		types.GlobalEscrowAddress.String(),
-	})
-
 	return &Keeper{
 		cdc:          cdc,
 		storeService: storeService,

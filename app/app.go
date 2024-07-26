@@ -90,7 +90,6 @@ import (
 	guardmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	rewardsmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
 
-	farmingmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/farming/keeper"
 	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 
 	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
@@ -185,7 +184,6 @@ type App struct {
 	GuardKeeper       *guardmodulekeeper.Keeper
 	RewardsKeeper     *rewardsmodulekeeper.Keeper
 	MarketmakerKeeper marketmakermodulekeeper.Keeper
-	FarmingKeeper     farmingmodulekeeper.Keeper
 	LiquidityKeeper   *liquiditymodulekeeper.Keeper
 	LpfarmKeeper      lpfarmmodulekeeper.Keeper
 	TxfeesKeeper      txfeesmodulekeeper.Keeper
@@ -350,7 +348,6 @@ func New(
 		&app.TokenKeeper,
 		&app.RewardsKeeper,
 		&app.MarketmakerKeeper,
-		&app.FarmingKeeper,
 		&app.LiquidityKeeper,
 		&app.LpfarmKeeper,
 		&app.TxfeesKeeper,

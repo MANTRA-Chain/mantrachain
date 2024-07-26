@@ -8,8 +8,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 )
 
 func (pair Pair) GetEscrowAddress() sdk.AccAddress {
@@ -78,16 +76,16 @@ func (pair Pair) Validate() error {
 
 // PairEscrowAddress returns a unique address of the pair's escrow.
 func PairEscrowAddress(pairId uint64) sdk.AccAddress {
-	return farmingtypes.DeriveAddress(
-		AddressType,
+	return DeriveAddress(
+		AddrType,
 		ModuleName,
 		strings.Join([]string{PairEscrowAddressPrefix, strconv.FormatUint(pairId, 10)}, ModuleAddressNameSplitter))
 }
 
 // PairSwapFeeCollectorAddress returns a unique pair swap fee collector account address for each pair.
 func PairSwapFeeCollectorAddress(pairID uint64) sdk.AccAddress {
-	return farmingtypes.DeriveAddress(
-		AddressType,
+	return DeriveAddress(
+		AddrType,
 		ModuleName,
 		strings.Join([]string{PairSwapFeeCollectorAddressPrefix, strconv.FormatUint(pairID, 10)}, ModuleAddressNameSplitter),
 	)

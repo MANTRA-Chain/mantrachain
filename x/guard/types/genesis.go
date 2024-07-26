@@ -10,9 +10,10 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		AccountPrivilegesList:  []*AccountPrivileges{},
-		GuardTransferCoins:     nil,
-		RequiredPrivilegesList: []*RequiredPrivileges{},
+		AccountPrivilegesList:      []AccountPrivileges{},
+		GuardTransferCoins:         nil,
+		RequiredPrivilegesList:     []RequiredPrivileges{},
+		WhitelistTransfersAccAddrs: []WhitelistTransfersAccAddrs{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -20,9 +21,10 @@ func DefaultGenesis() *GenesisState {
 
 func NewGenesisState(params Params) *GenesisState {
 	return &GenesisState{
-		AccountPrivilegesList:  []*AccountPrivileges{},
-		GuardTransferCoins:     nil,
-		RequiredPrivilegesList: []*RequiredPrivileges{},
+		AccountPrivilegesList:      []AccountPrivileges{},
+		GuardTransferCoins:         nil,
+		RequiredPrivilegesList:     []RequiredPrivileges{},
+		WhitelistTransfersAccAddrs: []WhitelistTransfersAccAddrs{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: params,
 	}
@@ -58,6 +60,17 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicated index for requiredPrivileges")
 		}
 		requiredPrivilegesIndexMap[index] = struct{}{}
+	}
+
+	// Check for duplicated index in whitelistTransfersAccAddrs
+	whitelistTransfersAccAddrsIndexMap := make(map[string]struct{})
+
+	for _, elem := range gs.WhitelistTransfersAccAddrs {
+		index := string(elem.Index)
+		if _, ok := whitelistTransfersAccAddrsIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for whitelistTransfersAccAddrs")
+		}
+		whitelistTransfersAccAddrsIndexMap[index] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

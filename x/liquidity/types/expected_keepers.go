@@ -3,6 +3,7 @@ package types
 import (
 	"context"
 
+	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,8 +28,9 @@ type BankKeeper interface {
 type GuardKeeper interface {
 	CheckIsAdmin(ctx sdk.Context, address string) error
 	CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error
-	AddTransferAccAddressesWhitelist(addresses []string) []string
-	RemoveTransferAccAddressesWhitelist(addresses []string)
+	AddTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) []sdk.AccAddress
+	RemoveTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress)
+	SetWhitelistTransfersAccAddrs(ctx sdk.Context, whitelistTransfersAccAddrs guardtypes.WhitelistTransfersAccAddrs)
 }
 
 type LiquidityHooks interface {

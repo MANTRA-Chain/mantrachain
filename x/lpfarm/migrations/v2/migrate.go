@@ -14,7 +14,13 @@ func MigrateStore(
 	storeService store.KVStoreService,
 	cdc codec.BinaryCodec,
 	legacySubspace exported.Subspace,
+	guardKeeper types.GuardKeeper,
 ) error {
+	guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{
+		types.DefaultFeeCollector,
+		sdk.AccAddress(types.RewardsPoolAddress),
+	})
+
 	store := storeService.OpenKVStore(ctx)
 	var currParams types.Params
 	legacySubspace.GetParamSet(ctx, &currParams)

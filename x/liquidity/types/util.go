@@ -6,7 +6,9 @@ import (
 
 	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
+	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
@@ -189,4 +191,17 @@ func FormatUint64s(us []uint64) (s string) {
 		ss = append(ss, strconv.FormatUint(u, 10))
 	}
 	return strings.Join(ss, ",")
+}
+
+// DeriveAddress derives an address with the given address length type, module name, and
+// address derivation name. It is used to derive private plan farming pool address, and staking reserve address.
+func DeriveAddress(addressType AddressType, moduleName, name string) sdk.AccAddress {
+	switch addressType {
+	case AddressType32Bytes:
+		return sdk.AccAddress(address.Module(moduleName, []byte(name)))
+	case AddressType20Bytes:
+		return sdk.AccAddress(crypto.AddressHash([]byte(moduleName + name)))
+	default:
+		return sdk.AccAddress{}
+	}
 }

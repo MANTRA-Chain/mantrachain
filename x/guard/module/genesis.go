@@ -39,6 +39,10 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState)
 		}
 		k.SetRequiredPrivileges(ctx, elem.Index, kind, elem.Privileges)
 	}
+	// Set all the whitelistTransfersAccAddrs
+	for _, elem := range genState.WhitelistTransfersAccAddrs {
+		k.SetWhitelistTransfersAccAddrs(ctx, elem)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis.
@@ -54,6 +58,7 @@ func ExportGenesis(ctx sdk.Context, k *keeper.Keeper) *types.GenesisState {
 	requiredPrivilegesCoin := k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesCoin)
 	requiredPrivilegesAuthz := k.GetAllRequiredPrivileges(ctx, types.RequiredPrivilegesAuthz)
 	genesis.RequiredPrivilegesList = append(requiredPrivilegesCoin, requiredPrivilegesAuthz...)
+	genesis.WhitelistTransfersAccAddrs = k.GetAllWhitelistTransfersAccAddrs(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

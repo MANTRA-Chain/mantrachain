@@ -9,11 +9,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 const (
-	AddressType                             = farmingtypes.AddressType32Bytes
+	AddressType                             = liquiditytypes.AddressType32Bytes
 	ClaimableIncentiveReserveAccName string = "ClaimableIncentiveReserveAcc"
 )
 
@@ -24,7 +24,7 @@ var (
 	KeyCommon                 = []byte("Common")
 	KeyIncentivePairs         = []byte("IncentivePairs")
 
-	DefaultIncentiveBudgetAddress = farmingtypes.DeriveAddress(AddressType, farmingtypes.ModuleName, "ecosystem_incentive_mm")
+	DefaultIncentiveBudgetAddress = liquiditytypes.DeriveAddress(AddressType, "farming", "ecosystem_incentive_mm")
 	DefaultDepositAmount          = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(1000000000)))
 	DefaultCommon                 = Common{
 		MinOpenRatio:      math.LegacyMustNewDecFromStr("0.5"),
@@ -35,7 +35,7 @@ var (
 		MinDays:           uint32(22),
 	}
 
-	ClaimableIncentiveReserveAcc = farmingtypes.DeriveAddress(AddressType, ModuleName, ClaimableIncentiveReserveAccName)
+	ClaimableIncentiveReserveAcc = liquiditytypes.DeriveAddress(AddressType, ModuleName, ClaimableIncentiveReserveAccName)
 	DepositReserveAcc            = sdk.AccAddress(crypto.AddressHash([]byte(ModuleName)))
 )
 

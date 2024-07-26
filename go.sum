@@ -242,8 +242,8 @@ github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
 github.com/DataDog/zstd v1.5.5/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240701150258-3b633d8beecc h1:/GwSIx8Ym7KAetSTZ9CcQ+4yeknWWH0jQyJ30t59/p8=
-github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240701150258-3b633d8beecc/go.mod h1:OKSx5ZWCUGj6QHPfF2FkANH8wagE7nCMfqCInAiXX48=
+github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240726121104-3e26d15fee54 h1:AsqD/VELcXn5cSMyLtjvYSnWaF+KuXLMaeQ22AsLwBo=
+github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240726121104-3e26d15fee54/go.mod h1:OKSx5ZWCUGj6QHPfF2FkANH8wagE7nCMfqCInAiXX48=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=

@@ -211,3 +211,13 @@ enum OrderStatus {
   // ORDER_STATUS_XPIRED indicates the order has been expired
   ORDER_STATUS_EXPIRED = 6 [(gogoproto.enumvalue_customname) = "OrderStatusExpired"];
 }
+
+// AddressType enumerates the available types of a address.
+enum AddressType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // the 32 bytes length address type of ADR 028.
+  ADDRESS_TYPE_32_BYTES = 0 [(gogoproto.enumvalue_customname) = "AddressType32Bytes"];
+  // the default 20 bytes length address type.
+  ADDRESS_TYPE_20_BYTES = 1 [(gogoproto.enumvalue_customname) = "AddressType20Bytes"];
+}

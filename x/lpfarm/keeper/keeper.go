@@ -42,11 +42,6 @@ func NewKeeper(
 		panic(fmt.Sprintf("invalid authority address: %s", authority))
 	}
 
-	guardKeeper.AddTransferAccAddressesWhitelist([]string{
-		types.DefaultFeeCollector.String(),
-		sdk.AccAddress(types.RewardsPoolAddress).String(),
-	})
-
 	return Keeper{
 		cdc:          cdc,
 		storeService: storeService,

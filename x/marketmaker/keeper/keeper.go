@@ -47,12 +47,6 @@ func NewKeeper(
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 
-	guardKeeper.AddTransferAccAddressesWhitelist([]string{
-		types.DefaultIncentiveBudgetAddress.String(),
-		types.ClaimableIncentiveReserveAcc.String(),
-		types.DepositReserveAcc.String(),
-	})
-
 	return Keeper{
 		cdc:           cdc,
 		storeService:  storeService,

@@ -7,6 +7,12 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/MANTRA-Finance/mantrachain/x/guard/types";
 option (gogoproto.equal_all) = true;
 
+message WhitelistTransfersAccAddrs {
+  bytes index = 1;
+  bytes account = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  bool is_whitelisted = 3;
+}
+
 message MsgAccounts {
   repeated string accounts = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }

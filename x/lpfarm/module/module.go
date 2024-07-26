@@ -110,17 +110,20 @@ type AppModule struct {
 
 	keeper         keeper.Keeper
 	legacySubspace exported.Subspace
+	guardKeeper    types.GuardKeeper
 }
 
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
 	legacySubspace exported.Subspace,
+	guardKeeper types.GuardKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		legacySubspace: legacySubspace,
+		guardKeeper:    guardKeeper,
 	}
 }
 
@@ -129,7 +132,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 
-	m := keeper.NewMigrator(am.keeper, am.legacySubspace)
+	m := keeper.NewMigrator(am.keeper, am.legacySubspace, am.guardKeeper)
 	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
 		panic(fmt.Errorf("failed to migrate %s to v2: %w", types.ModuleName, err))
 	}
@@ -227,6 +230,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.Cdc,
 		k,
 		in.LegacySubspace,
+		in.GuardKeeper,
 	)
 
 	return ModuleOutputs{LpfarmKeeper: k, Module: m}

@@ -6,7 +6,6 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-	farmingtypes "github.com/MANTRA-Finance/mantrachain/x/farming/types"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
@@ -26,9 +25,6 @@ func (app *App) RegisterUpgradeHandlers() {
 		switch subspace.Name() {
 		case coinfactorytypes.ModuleName:
 			keyTable = coinfactorytypes.ParamKeyTable() //nolint:staticcheck
-			customModule = true
-		case farmingtypes.ModuleName:
-			keyTable = farmingtypes.ParamKeyTable() //nolint:staticcheck
 			customModule = true
 		case guardtypes.ModuleName:
 			keyTable = guardtypes.ParamKeyTable() //nolint:staticcheck
@@ -91,7 +87,8 @@ func (app *App) RegisterUpgradeHandlers() {
 	switch upgradeInfo.Name {
 	case v2.UpgradeName:
 		storeUpgrades = &storetypes.StoreUpgrades{
-			Added: []string{"bridge", "circuit"},
+			Added:   []string{"bridge", "circuit"},
+			Deleted: []string{"farming"},
 		}
 	default:
 		// no-op
