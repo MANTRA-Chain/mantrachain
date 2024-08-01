@@ -38,12 +38,9 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
-      # TODO: use forked branch until https://github.com/strangelove-ventures/heighliner/issues/253 is fixed
       - uses: strangelove-ventures/heighliner-build-action@main
         with:
           chain: mantrachain
-          heighliner-owner: ProvLabs
-          heighliner-tag: v1.6.3
           chains-spec-file: chains.yaml
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
           github-organization: ${{ github.repository_owner }}

@@ -42,5 +42,5 @@ jobs:
                   ${{ secrets.SSH_COSMOS_SDK }}
                   ${{ secrets.SSH_IBC_GO }}
       - name: Build
-        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.go-arch }} make build
+        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} make build
 # Todo: add nix build with rocksdb
