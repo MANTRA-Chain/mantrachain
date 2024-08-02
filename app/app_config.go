@@ -63,7 +63,6 @@ import (
 	liquiditymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/liquidity/module/v1"
 	lpfarmmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/lpfarm/module/v1"
 	marketmakermodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/marketmaker/module/v1"
-	rewardsmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/rewards/module/v1"
 	tokenmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/token/module/v1"
 	txfeesmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/txfees/module/v1"
 	_ "github.com/MANTRA-Finance/mantrachain/x/airdrop/module" // import for side-effects
@@ -82,8 +81,6 @@ import (
 	lpfarmmoduletypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/marketmaker/module" // import for side-effects
 	marketmakermoduletypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/rewards/module" // import for side-effects
-	rewardsmoduletypes "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/token/module" // import for side-effects
 	tokenmoduletypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/txfees/module" // import for side-effects
@@ -133,7 +130,6 @@ var (
 		didmoduletypes.ModuleName,
 		tokenmoduletypes.ModuleName,
 		guardmoduletypes.ModuleName,
-		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
@@ -169,7 +165,6 @@ var (
 		didmoduletypes.ModuleName,
 		tokenmoduletypes.ModuleName,
 		guardmoduletypes.ModuleName,
-		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
@@ -199,7 +194,6 @@ var (
 		didmoduletypes.ModuleName,
 		tokenmoduletypes.ModuleName,
 		guardmoduletypes.ModuleName,
-		rewardsmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
@@ -235,7 +229,6 @@ var (
 		{Account: liquiditymoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: lpfarmmoduletypes.ModuleName},
 		{Account: marketmakermoduletypes.ModuleName},
-		{Account: rewardsmoduletypes.ModuleName},
 		{Account: tokenmoduletypes.ModuleName},
 		{Account: txfeesmoduletypes.ModuleName},
 	}
@@ -251,7 +244,6 @@ var (
 		liquiditymoduletypes.ModuleName,
 		lpfarmmoduletypes.ModuleName,
 		marketmakermoduletypes.ModuleName,
-		rewardsmoduletypes.ModuleName,
 		tokenmoduletypes.ModuleName,
 		txfeesmoduletypes.ModuleName,
 	}
@@ -418,10 +410,6 @@ var (
 			{
 				Name:   tokenmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&tokenmodulev1.Module{}),
-			},
-			{
-				Name:   rewardsmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&rewardsmodulev1.Module{}),
 			},
 			{
 				Name:   marketmakermoduletypes.ModuleName,

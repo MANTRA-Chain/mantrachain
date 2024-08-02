@@ -10,7 +10,6 @@ import (
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	lpfarmtypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
-	rewardstypes "github.com/MANTRA-Finance/mantrachain/x/rewards/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -37,9 +36,6 @@ func (app *App) RegisterUpgradeHandlers() {
 			customModule = true
 		case marketmakertypes.ModuleName:
 			keyTable = marketmakertypes.ParamKeyTable() //nolint:staticcheck
-			customModule = true
-		case rewardstypes.ModuleName:
-			keyTable = rewardstypes.ParamKeyTable() //nolint:staticcheck
 			customModule = true
 		case tokentypes.ModuleName:
 			keyTable = tokentypes.ParamKeyTable() //nolint:staticcheck
@@ -88,7 +84,7 @@ func (app *App) RegisterUpgradeHandlers() {
 	case v2.UpgradeName:
 		storeUpgrades = &storetypes.StoreUpgrades{
 			Added:   []string{"bridge", "circuit"},
-			Deleted: []string{"farming"},
+			Deleted: []string{"farming", "rewards"},
 		}
 	default:
 		// no-op

@@ -88,12 +88,10 @@ import (
 	tokenmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/token/keeper"
 
 	guardmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
-	rewardsmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/rewards/keeper"
 
 	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 
 	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
-	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	lpfarmmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 
 	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
@@ -182,7 +180,6 @@ type App struct {
 	DidKeeper         didmodulekeeper.Keeper
 	TokenKeeper       tokenmodulekeeper.Keeper
 	GuardKeeper       *guardmodulekeeper.Keeper
-	RewardsKeeper     *rewardsmodulekeeper.Keeper
 	MarketmakerKeeper marketmakermodulekeeper.Keeper
 	LiquidityKeeper   *liquiditymodulekeeper.Keeper
 	LpfarmKeeper      lpfarmmodulekeeper.Keeper
@@ -346,7 +343,6 @@ func New(
 		&app.CoinfactoryKeeper,
 		&app.DidKeeper,
 		&app.TokenKeeper,
-		&app.RewardsKeeper,
 		&app.MarketmakerKeeper,
 		&app.LiquidityKeeper,
 		&app.LpfarmKeeper,
@@ -389,12 +385,6 @@ func New(
 	// }
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
-
-	app.LiquidityKeeper.SetHooks(
-		liquiditytypes.NewMultiLiquidityHooks(
-			app.RewardsKeeper.Hooks(),
-		),
-	)
 
 	// Register legacy modules
 	wasmConfig, err := app.registerLegacyModules(appOpts, wasmOpts)

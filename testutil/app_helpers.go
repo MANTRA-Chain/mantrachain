@@ -188,7 +188,6 @@ func Setup() (*app.App, error) {
 		&app.CoinfactoryKeeper,
 		&app.DidKeeper,
 		&app.TokenKeeper,
-		&app.RewardsKeeper,
 		&app.MarketmakerKeeper,
 		&app.LiquidityKeeper,
 		&app.LpfarmKeeper,

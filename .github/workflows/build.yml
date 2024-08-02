@@ -1,6 +1,10 @@
 name: Build Mantrachaind
 on:
   pull_request:
+    branches:
+      - develop
+      - main
+      - release/**
   merge_group:
   push:
     branches:

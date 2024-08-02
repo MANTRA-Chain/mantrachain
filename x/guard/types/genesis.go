@@ -2,6 +2,10 @@ package types
 
 import (
 	"fmt"
+
+	"github.com/cometbft/cometbft/crypto"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 // DefaultIndex is the default capability global index
@@ -9,11 +13,35 @@ const DefaultIndex uint64 = 1
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
+	// TODO: all hardcoded due to import cycle, see if there is better fix
+	whitelistAddresses := []sdk.AccAddress{
+		address.Module("coinfactory"),
+
+		address.Module("liquidity", []byte("FeeCollector")),
+		address.Module("liquidity", []byte("DustCollector")),
+		address.Module("liquidity", []byte("GlobalEscrow")),
+		address.Module("liquidity"),
+
+		address.Module("lpfarm", []byte("FeeCollector")),
+		address.Module("lpfarm", []byte("RewardsPool")),
+
+		address.Module("farming", []byte("ecosystem_incentive_mm")),
+		address.Module("marketmaker", []byte("ClaimableIncentiveReserveAcc")),
+		sdk.AccAddress(crypto.AddressHash([]byte("marketmaker"))),
+	}
+	whitelistTransfersAccAddrs := make([]WhitelistTransfersAccAddrs, len(whitelistAddresses))
+	for i, addr := range whitelistAddresses {
+		whitelistTransfersAccAddrs[i] = WhitelistTransfersAccAddrs{
+			Index:         addr,
+			Account:       addr,
+			IsWhitelisted: true,
+		}
+	}
 	return &GenesisState{
 		AccountPrivilegesList:      []AccountPrivileges{},
 		GuardTransferCoins:         nil,
 		RequiredPrivilegesList:     []RequiredPrivileges{},
-		WhitelistTransfersAccAddrs: []WhitelistTransfersAccAddrs{},
+		WhitelistTransfersAccAddrs: whitelistTransfersAccAddrs,
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}

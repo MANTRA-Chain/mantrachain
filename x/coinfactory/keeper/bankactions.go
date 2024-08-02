@@ -22,7 +22,6 @@ func (k Keeper) mintTo(ctx sdk.Context, amount sdk.Coin, mintTo string) error {
 	if err != nil {
 		return err
 	}
-
 	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName,
 		addr,
 		sdk.NewCoins(amount))

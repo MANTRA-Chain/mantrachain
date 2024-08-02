@@ -40,9 +40,11 @@ func InitGenesis(ctx sdk.Context, k *keeper.Keeper, genState types.GenesisState)
 		k.SetRequiredPrivileges(ctx, elem.Index, kind, elem.Privileges)
 	}
 	// Set all the whitelistTransfersAccAddrs
-	for _, elem := range genState.WhitelistTransfersAccAddrs {
-		k.SetWhitelistTransfersAccAddrs(ctx, elem)
+	whitelistAddresses := make([]sdk.AccAddress, len(genState.WhitelistTransfersAccAddrs))
+	for i, elem := range genState.WhitelistTransfersAccAddrs {
+		whitelistAddresses[i] = elem.Account
 	}
+	k.AddTransferAccAddressesWhitelist(ctx, whitelistAddresses)
 }
 
 // ExportGenesis returns the module's exported genesis.

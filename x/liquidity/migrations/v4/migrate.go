@@ -7,6 +7,7 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 func MigrateStore(
@@ -20,6 +21,7 @@ func MigrateStore(
 		types.DefaultFeeCollectorAddress,
 		types.DefaultDustCollectorAddress,
 		types.GlobalEscrowAddress,
+		address.Module(types.ModuleName),
 	})
 
 	store := storeService.OpenKVStore(ctx)
