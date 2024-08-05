@@ -5,7 +5,8 @@
 Current guard checks are all done at the cosmos-sdk/x/bank SendCoins function level with the restriction registered [here](/x/guard/keeper/keeper.go#L72). This is extremely problematic as the SendCoins function is called by multiple internal functions and is critical to the functionality of mantrachain. The current architecture of allowing the native fee token to always bypass the check was also due to the fact that blocking the SendCoins function for the native fee token can have unintended consequences.
 
 Currently, whenever a module/generated address were to send/receive tokens, they need to be whitelisted before the SendCoins function is called and immediately removed from whitelist afterwards. Below is a code snippert from [airdrop CreateCampaign](/x/airdrop/keeper/msg_server_campaign.go#L34) to show how it is currently.
-```
+
+```go
 whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist([]string{campaign.GetReserveAddress().String()})
 err = k.bankKeeper.SendCoins(ctx, creator, campaign.GetReserveAddress(), campaign.Amounts)
 k.guardKeeper.RemoveTransferAccAddressesWhitelist(whitelisted)

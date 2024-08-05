@@ -30,7 +30,7 @@
 
 > This section describes alternative designs to the chosen design. This section
 > is important and if an adr does not have any alternatives then it should be
-> considered that the ADR was not thought through. 
+> considered that the ADR was not thought through.
 
 ## Decision
 
@@ -69,7 +69,7 @@
 > While an ADR is in the DRAFT or PROPOSED stage, this section should contain a
 > summary of issues to be solved in future iterations (usually referencing comments
 > from a pull-request discussion).
-> 
+>
 > Later, this section can optionally list ideas or improvements the author or
 > reviewers found during the analysis of this ADR.
 
