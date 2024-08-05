@@ -19,7 +19,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func BridgeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func BridgeKeeper(tb testing.TB) (*keeper.Keeper, sdk.Context) {
+	tb.Helper()
 	storeKey := storetypes.NewKVStoreKey(types.ModuleName)
 
 	registry := codectypes.NewInterfaceRegistry()
@@ -42,12 +43,14 @@ func BridgeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	db := tmdb.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db, logger, storemetrics.NewNoOpMetrics())
 	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
-	require.NoError(t, stateStore.LoadLatestVersion())
+	require.NoError(tb, stateStore.LoadLatestVersion())
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	if err := k.SetParams(ctx, types.DefaultParams()); err != nil {
+		panic(err)
+	}
 
 	return &k, ctx
 }
