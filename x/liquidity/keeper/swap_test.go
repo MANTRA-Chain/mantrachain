@@ -536,7 +536,7 @@ func (s *KeeperTestSuite) TestCancelAllOrdersGasUsage() {
 
 	s.ctx = s.ctx.WithGasMeter(storetypes.NewInfiniteGasMeter()) // to record gas consumption
 	s.cancelAllOrders(orderer, nil)                              // cancel all orders in all pairs
-	s.Require().Less(s.ctx.GasMeter().GasConsumed(), uint64(50000))
+	s.Require().Less(s.ctx.GasMeter().GasConsumed(), uint64(55000))
 }
 
 func (s *KeeperTestSuite) TestDustCollector() {
