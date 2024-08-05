@@ -49,18 +49,18 @@ type Deposit struct {
 
 Stores are KVStores in the `multistore`. The key to find the store is the first parameter in the list.
 
-### **The key to get the market maker object by address and pair id**
+## **The key to get the market maker object by address and pair id**
 
 - MarketMakerKey: `[]byte{0xc0} | AddressLen (1 byte) | Address | PairId -> ProtocalBuffer(MarketMaker)`
 
-### **The index key to get the market maker object by pair id and address**
+## **The index key to get the market maker object by pair id and address**
 
 - MarketMakerIndexByPairIdKey: `[]byte{0xc1} | PairId | Address -> nil`
 
-### **The key to get the deposit object by address and pair id**
+## **The key to get the deposit object by address and pair id**
 
 - DepositKey: `[]byte{0xc2} | AddressLen (1 byte) | Address | PairId -> ProtocalBuffer(Deposit)`
 
-### **The key to get the incentive object**
+## **The key to get the incentive object**
 
 - IncentiveKey: `[]byte{0xc5} | Address -> ProtocalBuffer(Incentive)`

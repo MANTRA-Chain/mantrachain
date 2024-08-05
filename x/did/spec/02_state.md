@@ -29,7 +29,7 @@ A did document has the following fields:
 - `verificationMethod` - a list of [Verification Method](02_state.md#verification_method) objects. The `id` field of each verification method must be unique within a did document
 - `service` - a list of [Service](02_state.md#service) objects. The `id` field of each service must be unique within a did document.
 
-in addition, the following fields map the verification relationships defined in the [W3C DID recommendations](), they are all list of strings that should match one of the verification method id contained in the `verificationMethod` field of the did document:
+in addition, the following fields map the verification relationships defined in the [W3C DID recommendations](https://w3c.github.io/did-core/#verification-methods), they are all list of strings that should match one of the verification method id contained in the `verificationMethod` field of the did document:
 
 - `authentication`
 - `assertionMethod`
