@@ -1,9 +1,9 @@
 name: Check for main or tag CI failure
 on:
   workflow_run:
-    workflows: [Build Mantrachaind, CodeQL, Run Gosec, Lint, Create release, Run unit tests]
+    workflows: [Build Mantrachaind, CodeQL, Run Gosec, Lint, Create release, Docker Build and Push, Run unit tests]
     types: [completed]
-    branches: [develop,main,release/**]
+    branches: [main,release/**]
 
 jobs:
   on-failure:

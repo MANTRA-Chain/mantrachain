@@ -22,19 +22,6 @@ RUN apk add --no-cache \
   binutils-gold \
   git
 
-# TODO: Remove this part once no more private go modules
-# ssh private key for downloading private go modules
-# use with: docker build --secret id=goprivate,src=$HOME/.ssh/YOUR_PRIVATE_KEY .
-RUN --mount=type=secret,id=goprivate \
-  if [ -f /run/secrets/goprivate ]; then \
-    mkdir -p ~/.ssh; \
-    cat /run/secrets/goprivate > ~/.ssh/id_ed25519; \
-    chmod 600 ~/.ssh/id_ed25519; \
-    apk add openssh; \
-    git config --global --add url."ssh://git@github.com/".insteadOf "https://github.com/"; \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts; \
-  fi
-
 # Download go dependencies
 WORKDIR /mantrachain
 COPY go.mod go.sum ./

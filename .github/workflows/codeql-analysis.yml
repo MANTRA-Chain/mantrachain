@@ -14,14 +14,12 @@ name: "CodeQL"
 on:
   push:
       branches:
-        - develop
         - main
         - release/**
       paths:
         - "**.go"
   pull_request:
       branches:
-        - develop
         - main
         - release/**
       paths:

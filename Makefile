@@ -150,18 +150,13 @@ COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.*
 REPO_OWNER ?= MANTRA-Finance
 REPO_NAME ?= mantrachain
 
-# Check if both GITHUB_TOKEN and PRIVATE_REPO_GITHUB_TOKEN are defined
+# Check if GITHUB_TOKEN is defined
 ifndef GITHUB_TOKEN
 MISSING_TOKEN := GITHUB_TOKEN
-endif
-ifndef PRIVATE_REPO_GITHUB_TOKEN
-MISSING_TOKEN := $(if $(MISSING_TOKEN),$(MISSING_TOKEN) PRIVATE_REPO_GITHUB_TOKEN,PRIVATE_REPO_GITHUB_TOKEN)
 endif
 
 ifeq ($(strip $(MISSING_TOKEN)),)
 release:
-# TODO: Remove .gitconfig-goreleaser once private submodule go public
-	envsubst < .github/files/.gitconfig-goreleaser.template > .github/files/.gitconfig-goreleaser
 	docker run \
 		--rm \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
@@ -171,7 +166,6 @@ release:
 		-e REPO_NAME=$(REPO_NAME) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/mantrachaind \
-		-v $(CURDIR)/.github/files/.gitconfig-goreleaser:/etc/gitconfig \
 		-w /go/src/mantrachaind \
 		$(GORELEASER_IMAGE) \
 		release \

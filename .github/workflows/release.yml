@@ -35,4 +35,3 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRIVATE_REPO_GITHUB_TOKEN: ${{ secrets.PRIVATE_REPO_GITHUB_TOKEN }}

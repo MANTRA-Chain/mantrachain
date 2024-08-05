@@ -5,7 +5,6 @@ on:
   pull_request:
   push:
     branches:
-      - develop
       - main
       - release/**
 
@@ -23,8 +22,6 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.20'
-      - name: Create Configs
-        run: bash .github/scripts/setup-go-private.sh
       - name: Tidy go dependencies
         run: go mod tidy
       - name: Build chain
