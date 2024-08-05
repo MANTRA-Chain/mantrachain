@@ -76,6 +76,8 @@ func pathToChunks(path []byte) ([][]byte, error) {
 func genLeafHash(creator string, amt string) ([]byte, error) {
 	leafStr := fmt.Sprintf("%s-%s", creator, amt)
 	hasher := sha256.New()
-	hasher.Write([]byte(leafStr))
+	if _, err := hasher.Write([]byte(leafStr)); err != nil {
+		return nil, err
+	}
 	return hasher.Sum(nil), nil
 }

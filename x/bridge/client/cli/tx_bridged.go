@@ -18,7 +18,10 @@ func CmdCreateMultiBridged() *cobra.Command {
 		Short: "Create multi bridged",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			cmd.Flags().Set(flags.FlagFrom, args[0])
+			err = cmd.Flags().Set(flags.FlagFrom, args[0])
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

@@ -41,7 +41,9 @@ func (k Keeper) GetPrivatePlanCreationFee(ctx context.Context) (fee sdk.Coins) {
 func (k Keeper) SetPrivatePlanCreationFee(ctx context.Context, fee sdk.Coins) {
 	params := k.GetParams(ctx)
 	params.PrivatePlanCreationFee = fee
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetFeeCollector(ctx context.Context) (feeCollector string) {
@@ -51,7 +53,9 @@ func (k Keeper) GetFeeCollector(ctx context.Context) (feeCollector string) {
 func (k Keeper) SetFeeCollector(ctx context.Context, feeCollector string) {
 	params := k.GetParams(ctx)
 	params.FeeCollector = feeCollector
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetMaxNumPrivatePlans(ctx context.Context) (num uint32) {
@@ -61,7 +65,9 @@ func (k Keeper) GetMaxNumPrivatePlans(ctx context.Context) (num uint32) {
 func (k Keeper) SetMaxNumPrivatePlans(ctx context.Context, num uint32) {
 	params := k.GetParams(ctx)
 	params.MaxNumPrivatePlans = num
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetMaxBlockDuration(ctx context.Context) (d time.Duration) {
@@ -71,5 +77,7 @@ func (k Keeper) GetMaxBlockDuration(ctx context.Context) (d time.Duration) {
 func (k Keeper) SetMaxBlockDuration(ctx context.Context, d time.Duration) {
 	params := k.GetParams(ctx)
 	params.MaxBlockDuration = d
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }

@@ -77,7 +77,7 @@ func (gs GenesisState) Validate() error {
 
 	for _, elem := range gs.RequiredPrivilegesList {
 		var key []byte
-		indexBytes := []byte(RequiredPrivilegesStoreKey([]byte(elem.Kind)))
+		indexBytes := RequiredPrivilegesStoreKey([]byte(elem.Kind))
 		key = append(key, indexBytes...)
 		key = append(key, Placeholder...)
 		key = append(key, elem.Index...)

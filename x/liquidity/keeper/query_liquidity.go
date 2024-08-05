@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -642,7 +641,7 @@ func (k Keeper) OrderBooks(c context.Context, req *types.QueryOrderBooksRequest)
 				return false, nil
 			}
 			rx, ry := k.getPoolBalances(ctx, pool, pair)
-			ammPool := pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
+			ammPool := pool.AMMPool(rx.Amount, ry.Amount, sdkmath.Int{})
 			ob.AddOrder(amm.PoolOrders(ammPool, amm.DefaultOrderer, lowestPrice, highestPrice, int(tickPrec))...)
 			return false, nil
 		})

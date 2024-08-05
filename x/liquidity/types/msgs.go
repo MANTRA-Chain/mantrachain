@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
@@ -392,7 +391,7 @@ func NewMsgLimitOrder(
 	offerCoin sdk.Coin,
 	demandCoinDenom string,
 	price sdkmath.LegacyDec,
-	amt math.Int,
+	amt sdkmath.Int,
 	orderLifespan time.Duration,
 ) *MsgLimitOrder {
 	return &MsgLimitOrder{
@@ -481,7 +480,7 @@ func NewMsgMarketOrder(
 	dir OrderDirection,
 	offerCoin sdk.Coin,
 	demandCoinDenom string,
-	amt math.Int,
+	amt sdkmath.Int,
 	orderLifespan time.Duration,
 ) *MsgMarketOrder {
 	return &MsgMarketOrder{
@@ -553,8 +552,8 @@ func (msg MsgMarketOrder) GetAccOrderer() sdk.AccAddress {
 func NewMsgMMOrder(
 	orderer sdk.AccAddress,
 	pairId uint64,
-	maxSellPrice, minSellPrice sdkmath.LegacyDec, sellAmt math.Int,
-	maxBuyPrice, minBuyPrice sdkmath.LegacyDec, buyAmt math.Int,
+	maxSellPrice, minSellPrice sdkmath.LegacyDec, sellAmt sdkmath.Int,
+	maxBuyPrice, minBuyPrice sdkmath.LegacyDec, buyAmt sdkmath.Int,
 	orderLifespan time.Duration,
 ) *MsgMMOrder {
 	return &MsgMMOrder{

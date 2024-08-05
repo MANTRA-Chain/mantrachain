@@ -131,7 +131,7 @@ func (dfd DeductFeeDecorator) checkDeductFee(ctx sdk.Context, sdkTx sdk.Tx, fee 
 }
 
 // DeductFees deducts fees from the given account.
-func DeductFees(bankKeeper authtypes.BankKeeper, ctx sdk.Context, acc authtypes.AccountI, fees sdk.Coins, guardKeeper types.GuardKeeper) error {
+func DeductFees(bankKeeper authtypes.BankKeeper, ctx sdk.Context, acc sdk.AccountI, fees sdk.Coins, guardKeeper types.GuardKeeper) error {
 	if !fees.IsValid() {
 		return errors.Wrapf(errorstypes.ErrInsufficientFee, "invalid fee amount: %s", fees)
 	}

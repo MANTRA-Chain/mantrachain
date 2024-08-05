@@ -338,7 +338,6 @@ func WithControllers(controllers ...string) DidDocumentOption {
 
 // NewDidDocument constructs a new DidDocument
 func NewDidDocument(id string, options ...DidDocumentOption) (did DidDocument, err error) {
-
 	if !IsValidDID(id) {
 		err = errors.Wrapf(ErrInvalidDIDFormat, "did %s", id)
 		return
@@ -430,7 +429,6 @@ func (didDoc *DidDocument) AddVerifications(verifications ...*Verification) (err
 
 		// update context
 		didDoc.Context = union(didDoc.Context, v.Context)
-
 	}
 	return
 }
@@ -438,7 +436,6 @@ func (didDoc *DidDocument) AddVerifications(verifications ...*Verification) (err
 // RevokeVerification revoke a verification method
 // and all relationships associated with it
 func (didDoc *DidDocument) RevokeVerification(methodID string) error {
-
 	del := func(x int) {
 		lastIdx := len(didDoc.VerificationMethod) - 1
 		switch lastIdx {
@@ -498,7 +495,6 @@ func (didDoc *DidDocument) SetVerificationRelationships(methodID string, relatio
 
 // setRelationships overwrite relationships for a did document
 func (didDoc *DidDocument) setRelationships(methodID string, relationships ...VerificationRelationship) {
-
 	// first remove existing relationships
 	for _, vr := range VerificationRelationships {
 		vrs := didDoc.getRelationships(vr)

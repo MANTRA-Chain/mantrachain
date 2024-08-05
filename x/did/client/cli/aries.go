@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -35,7 +34,7 @@ func request(method, url string, requestBody io.Reader, val interface{}) (err er
 		return
 	}
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
@@ -74,7 +73,6 @@ type keySetCreateRsp struct {
 
 // toBytes get the public key to bytes
 func (kscr keySetCreateRsp) toBytes() ([]byte, error) {
-
 	return base64.RawURLEncoding.DecodeString(kscr.PublicKey)
 }
 
@@ -91,7 +89,7 @@ type x25519ECDHKW struct {
 // a json structure containing the key itself
 func processAriesKeySet(keyType string, kscr *keySetCreateRsp) (err error) {
 	if keyType != "X25519ECDHKW" {
-		return
+		return nil
 	}
 	/*
 		for this particular key the result from aries is something like this:
@@ -104,7 +102,7 @@ func processAriesKeySet(keyType string, kscr *keySetCreateRsp) (err error) {
 	// decode the kscr.PubKey
 	keyRawJSON, err := base64.RawURLEncoding.DecodeString(kscr.PublicKey)
 	if err != nil {
-		return
+		return nil
 	}
 	// now get into a struct
 	var xPubKey x25519ECDHKW
@@ -115,11 +113,11 @@ func processAriesKeySet(keyType string, kscr *keySetCreateRsp) (err error) {
 	// now convert the base64 encoding
 	rawPubKey, err := base64.StdEncoding.DecodeString(xPubKey.X)
 	if err != nil {
-		return
+		return nil
 	}
 	// re-encode as expected
 	kscr.PublicKey = base64.RawURLEncoding.EncodeToString(rawPubKey)
-	return
+	return nil
 }
 
 func createKeySetOnAgent(agentURL, keyType string) (keyID string, pubKey []byte, err error) {
@@ -144,7 +142,6 @@ func createKeySetOnAgent(agentURL, keyType string) (keyID string, pubKey []byte,
 
 // NewLinkAriesAgentCmd link an aries
 func NewLinkAriesAgentCmd() *cobra.Command {
-
 	var keyType string
 
 	cmd := &cobra.Command{
@@ -199,7 +196,6 @@ func NewLinkAriesAgentCmd() *cobra.Command {
 			)
 			// broadcast the messages
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgAV, msgAS)
-
 		},
 	}
 

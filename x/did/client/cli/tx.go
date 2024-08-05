@@ -118,7 +118,6 @@ func NewCreateDidDocumentCmd() *cobra.Command {
 
 // NewAddVerificationCmd define the command to add a verification message
 func NewAddVerificationCmd() *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:     "add-verification-method [id] [pubkey]",
 		Short:   "add an verification method to a decentralized did (did) document",
@@ -377,7 +376,6 @@ func NewDeleteControllerCmd() *cobra.Command {
 
 // NewSetVerificationRelationshipCmd adds a verification relationship to a verification method
 func NewSetVerificationRelationshipCmd() *cobra.Command {
-
 	// relationships
 	var relationships []string
 	// if true do not add the default authentication relationship

@@ -12,7 +12,7 @@ import (
 )
 
 func GetIndexHex(index []byte) string {
-	b := sha256.Sum256([]byte(index))
+	b := sha256.Sum256(index)
 	return hex.EncodeToString(b[:])
 }
 

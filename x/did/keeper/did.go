@@ -3,9 +3,9 @@ package keeper
 import (
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
@@ -76,7 +76,7 @@ func (k Keeper) Marshal(value interface{}) (bytes []byte) {
 }
 
 // Unmarshal unmarshal a byte slice to a struct, return false in case of errors
-func (k Keeper) Unmarshal(data []byte, val codec.ProtoMarshaler) bool {
+func (k Keeper) Unmarshal(data []byte, val proto.Message) bool {
 	if len(data) == 0 {
 		return false
 	}
@@ -122,7 +122,6 @@ func (k Keeper) GetAllDidDocuments(ctx sdk.Context) []types.DidDocument {
 // GetDidDocumentsByPubKey retrieve a did document using a pubkey associated to the DID
 // TODO: this function is used only in the issuer module ante handler !
 func (k Keeper) GetDidDocumentsByPubKey(ctx sdk.Context, pubkey cryptotypes.PubKey) (dids []types.DidDocument) {
-
 	dids = k.GetAllDidDocumentsWithCondition(
 		ctx,
 		types.DidDocumentKey,

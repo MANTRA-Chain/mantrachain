@@ -28,7 +28,7 @@ func (gs GenesisState) ValidateNftCollection() error {
 
 	for _, elem := range gs.NftCollectionList {
 		var key []byte
-		indexBytes := []byte(NftCollectionStoreKey(elem.Creator))
+		indexBytes := NftCollectionStoreKey(elem.Creator)
 		key = append(key, indexBytes...)
 		key = append(key, Placeholder...)
 		key = append(key, elem.Index...)
@@ -50,7 +50,7 @@ func (gs GenesisState) ValidateNft() error {
 
 	for _, elem := range gs.NftList {
 		var key []byte
-		indexBytes := []byte(NftStoreKey(elem.CollectionIndex))
+		indexBytes := NftStoreKey(elem.CollectionIndex)
 		key = append(key, indexBytes...)
 		key = append(key, Placeholder...)
 		key = append(key, elem.Index...)

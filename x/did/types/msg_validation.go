@@ -35,7 +35,6 @@ func (msg MsgCreateDidDocument) ValidateBasic() error {
 	}
 
 	return nil
-
 }
 
 // --------------------------

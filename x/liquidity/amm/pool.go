@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/big"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -17,18 +16,18 @@ var (
 
 // Pool is the interface of a pool.
 type Pool interface {
-	Balances() (rx, ry math.Int)
-	SetBalances(rx, ry math.Int, derive bool)
-	PoolCoinSupply() math.Int
+	Balances() (rx, ry sdkmath.Int)
+	SetBalances(rx, ry sdkmath.Int, derive bool)
+	PoolCoinSupply() sdkmath.Int
 	Price() sdkmath.LegacyDec
 	IsDepleted() bool
 
 	HighestBuyPrice() (sdkmath.LegacyDec, bool)
 	LowestSellPrice() (sdkmath.LegacyDec, bool)
-	BuyAmountOver(price sdkmath.LegacyDec, inclusive bool) math.Int
-	SellAmountUnder(price sdkmath.LegacyDec, inclusive bool) math.Int
-	BuyAmountTo(price sdkmath.LegacyDec) math.Int
-	SellAmountTo(price sdkmath.LegacyDec) math.Int
+	BuyAmountOver(price sdkmath.LegacyDec, inclusive bool) sdkmath.Int
+	SellAmountUnder(price sdkmath.LegacyDec, inclusive bool) sdkmath.Int
+	BuyAmountTo(price sdkmath.LegacyDec) sdkmath.Int
+	SellAmountTo(price sdkmath.LegacyDec) sdkmath.Int
 
 	Clone() Pool
 }
@@ -38,14 +37,14 @@ type BasicPool struct {
 	// rx and ry are the pool's reserve balance of each x/y coin.
 	// In perspective of a pair, x coin is the quote coin and
 	// y coin is the base coin.
-	rx, ry math.Int
+	rx, ry sdkmath.Int
 	// ps is the pool's pool coin supply.
-	ps math.Int
+	ps sdkmath.Int
 }
 
 // NewBasicPool returns a new BasicPool.
-// It is OK to pass an empty math.Int to ps when ps is not going to be used.
-func NewBasicPool(rx, ry, ps math.Int) *BasicPool {
+// It is OK to pass an empty sdkmath.Int to ps when ps is not going to be used.
+func NewBasicPool(rx, ry, ps sdkmath.Int) *BasicPool {
 	return &BasicPool{
 		rx: rx,
 		ry: ry,
@@ -53,11 +52,11 @@ func NewBasicPool(rx, ry, ps math.Int) *BasicPool {
 	}
 }
 
-func CreateBasicPool(rx, ry math.Int) (*BasicPool, error) {
+func CreateBasicPool(rx, ry sdkmath.Int) (*BasicPool, error) {
 	if rx.IsZero() || ry.IsZero() {
 		return nil, fmt.Errorf("cannot create basic pool with zero reserve amount")
 	}
-	p := math.LegacyNewDecFromInt(rx).Quo(math.LegacyNewDecFromInt(ry))
+	p := sdkmath.LegacyNewDecFromInt(rx).Quo(sdkmath.LegacyNewDecFromInt(ry))
 	if p.LT(MinPoolPrice) {
 		return nil, fmt.Errorf("pool price is lower than min price %s", MinPoolPrice)
 	}
@@ -68,17 +67,17 @@ func CreateBasicPool(rx, ry math.Int) (*BasicPool, error) {
 }
 
 // Balances returns the balances of the pool.
-func (pool *BasicPool) Balances() (rx, ry math.Int) {
+func (pool *BasicPool) Balances() (rx, ry sdkmath.Int) {
 	return pool.rx, pool.ry
 }
 
-func (pool *BasicPool) SetBalances(rx, ry math.Int, _ bool) {
+func (pool *BasicPool) SetBalances(rx, ry sdkmath.Int, _ bool) {
 	pool.rx = rx
 	pool.ry = ry
 }
 
 // PoolCoinSupply returns the pool coin supply.
-func (pool *BasicPool) PoolCoinSupply() math.Int {
+func (pool *BasicPool) PoolCoinSupply() sdkmath.Int {
 	return pool.ps
 }
 
@@ -87,7 +86,7 @@ func (pool *BasicPool) Price() sdkmath.LegacyDec {
 	if pool.rx.IsZero() || pool.ry.IsZero() {
 		panic("pool price is not defined for a depleted pool")
 	}
-	return math.LegacyNewDecFromInt(pool.rx).Quo(math.LegacyNewDecFromInt(pool.ry))
+	return sdkmath.LegacyNewDecFromInt(pool.rx).Quo(sdkmath.LegacyNewDecFromInt(pool.ry))
 }
 
 // IsDepleted returns whether the pool is depleted or not.
@@ -112,7 +111,7 @@ func (pool *BasicPool) LowestSellPrice() (price sdkmath.LegacyDec, found bool) {
 // BuyAmountOver returns the amount of buy orders for price greater than
 // or equal to given price.
 // amt = (X - P*Y)/P
-func (pool *BasicPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math.Int) {
+func (pool *BasicPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt sdkmath.Int) {
 	origPrice := price
 	if price.LT(MinPoolPrice) {
 		price = MinPoolPrice
@@ -120,7 +119,7 @@ func (pool *BasicPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math.
 	if price.GTE(pool.Price()) {
 		return zeroInt
 	}
-	dx := math.LegacyNewDecFromInt(pool.rx).Sub(price.MulInt(pool.ry))
+	dx := sdkmath.LegacyNewDecFromInt(pool.rx).Sub(price.MulInt(pool.ry))
 	if !dx.IsPositive() {
 		return zeroInt
 	}
@@ -135,14 +134,14 @@ func (pool *BasicPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math.
 	return
 }
 
-func (pool *BasicPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt math.Int) {
+func (pool *BasicPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt sdkmath.Int) {
 	if price.GT(MaxPoolPrice) {
 		price = MaxPoolPrice
 	}
 	if price.LTE(pool.Price()) {
 		return zeroInt
 	}
-	amt = math.LegacyNewDecFromInt(pool.ry).Sub(math.LegacyNewDecFromInt(pool.rx).QuoRoundUp(price)).TruncateInt()
+	amt = sdkmath.LegacyNewDecFromInt(pool.ry).Sub(sdkmath.LegacyNewDecFromInt(pool.rx).QuoRoundUp(price)).TruncateInt()
 	if !amt.IsPositive() {
 		return zeroInt
 	}
@@ -152,7 +151,7 @@ func (pool *BasicPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt mat
 // BuyAmountTo returns the amount of buy orders of the pool for price,
 // where BuyAmountTo is used when the pool price is higher than the highest
 // price of the order book.
-func (pool *BasicPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
+func (pool *BasicPool) BuyAmountTo(price sdkmath.LegacyDec) (amt sdkmath.Int) {
 	origPrice := price
 	if price.LT(MinPoolPrice) {
 		price = MinPoolPrice
@@ -160,10 +159,10 @@ func (pool *BasicPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
 	if price.GTE(pool.Price()) {
 		return zeroInt
 	}
-	sqrtRx := utils.DecApproxSqrt(math.LegacyNewDecFromInt(pool.rx))
-	sqrtRy := utils.DecApproxSqrt(math.LegacyNewDecFromInt(pool.ry))
+	sqrtRx := utils.DecApproxSqrt(sdkmath.LegacyNewDecFromInt(pool.rx))
+	sqrtRy := utils.DecApproxSqrt(sdkmath.LegacyNewDecFromInt(pool.ry))
 	sqrtPrice := utils.DecApproxSqrt(price)
-	dx := math.LegacyNewDecFromInt(pool.rx).Sub(sqrtPrice.Mul(sqrtRx.Mul(sqrtRy))) // dx = rx - sqrt(P * rx * ry)
+	dx := sdkmath.LegacyNewDecFromInt(pool.rx).Sub(sqrtPrice.Mul(sqrtRx.Mul(sqrtRy))) // dx = rx - sqrt(P * rx * ry)
 	if !dx.IsPositive() {
 		return zeroInt
 	}
@@ -181,18 +180,18 @@ func (pool *BasicPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
 // SellAmountTo returns the amount of sell orders of the pool for price,
 // where SellAmountTo is used when the pool price is lower than the lowest
 // price of the order book.
-func (pool *BasicPool) SellAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
+func (pool *BasicPool) SellAmountTo(price sdkmath.LegacyDec) (amt sdkmath.Int) {
 	if price.GT(MaxPoolPrice) {
 		price = MaxPoolPrice
 	}
 	if price.LTE(pool.Price()) {
 		return zeroInt
 	}
-	sqrtRx := utils.DecApproxSqrt(math.LegacyNewDecFromInt(pool.rx))
-	sqrtRy := utils.DecApproxSqrt(math.LegacyNewDecFromInt(pool.ry))
+	sqrtRx := utils.DecApproxSqrt(sdkmath.LegacyNewDecFromInt(pool.rx))
+	sqrtRy := utils.DecApproxSqrt(sdkmath.LegacyNewDecFromInt(pool.ry))
 	sqrtPrice := utils.DecApproxSqrt(price)
 	// dy = ry - sqrt(rx * ry / P)
-	amt = math.LegacyNewDecFromInt(pool.ry).Sub(sqrtRx.Mul(sqrtRy).Quo(sqrtPrice)).TruncateInt()
+	amt = sdkmath.LegacyNewDecFromInt(pool.ry).Sub(sqrtRx.Mul(sqrtRy).Quo(sqrtPrice)).TruncateInt()
 	if !amt.IsPositive() {
 		return zeroInt
 	}
@@ -204,15 +203,15 @@ func (pool *BasicPool) Clone() Pool {
 }
 
 type RangedPool struct {
-	rx, ry             math.Int
-	ps                 math.Int
+	rx, ry             sdkmath.Int
+	ps                 sdkmath.Int
 	minPrice, maxPrice sdkmath.LegacyDec
 	transX, transY     sdkmath.LegacyDec
 	xComp, yComp       sdkmath.LegacyDec
 }
 
 // NewRangedPool returns a new RangedPool.
-func NewRangedPool(rx, ry, ps math.Int, minPrice, maxPrice sdkmath.LegacyDec) *RangedPool {
+func NewRangedPool(rx, ry, ps sdkmath.Int, minPrice, maxPrice sdkmath.LegacyDec) *RangedPool {
 	transX, transY := DeriveTranslation(rx, ry, minPrice, maxPrice)
 	return &RangedPool{
 		rx:       rx,
@@ -222,14 +221,14 @@ func NewRangedPool(rx, ry, ps math.Int, minPrice, maxPrice sdkmath.LegacyDec) *R
 		maxPrice: maxPrice,
 		transX:   transX,
 		transY:   transY,
-		xComp:    math.LegacyNewDecFromInt(rx).Add(transX),
-		yComp:    math.LegacyNewDecFromInt(ry).Add(transY),
+		xComp:    sdkmath.LegacyNewDecFromInt(rx).Add(transX),
+		yComp:    sdkmath.LegacyNewDecFromInt(ry).Add(transY),
 	}
 }
 
 // CreateRangedPool creates new RangedPool from given inputs, while validating
 // the inputs and using only needed amount of x/y coins(the rest should be refunded).
-func CreateRangedPool(x, y math.Int, minPrice, maxPrice, initialPrice sdkmath.LegacyDec) (pool *RangedPool, err error) {
+func CreateRangedPool(x, y sdkmath.Int, minPrice, maxPrice, initialPrice sdkmath.LegacyDec) (pool *RangedPool, err error) {
 	if !x.IsPositive() && !y.IsPositive() {
 		return nil, fmt.Errorf("either x or y must be positive")
 	}
@@ -238,7 +237,7 @@ func CreateRangedPool(x, y math.Int, minPrice, maxPrice, initialPrice sdkmath.Le
 	}
 
 	// P = initialPrice, M = minPrice, L = maxPrice
-	var ax, ay math.Int
+	var ax, ay sdkmath.Int
 	switch {
 	case initialPrice.Equal(minPrice): // single y asset pool
 		ax = zeroInt
@@ -248,7 +247,7 @@ func CreateRangedPool(x, y math.Int, minPrice, maxPrice, initialPrice sdkmath.Le
 		ay = zeroInt
 	default: // normal pool
 		sqrt := utils.DecApproxSqrt
-		xDec, yDec := math.LegacyNewDecFromInt(x), math.LegacyNewDecFromInt(y)
+		xDec, yDec := sdkmath.LegacyNewDecFromInt(x), sdkmath.LegacyNewDecFromInt(y)
 		sqrtP := sqrt(initialPrice) // sqrt(P)
 		sqrtM := sqrt(minPrice)     // sqrt(M)
 		sqrtL := sqrt(maxPrice)     // sqrt(L)
@@ -295,24 +294,24 @@ func ValidateRangedPoolParams(minPrice, maxPrice, initialPrice sdkmath.LegacyDec
 }
 
 // Balances returns the balances of the pool.
-func (pool *RangedPool) Balances() (rx, ry math.Int) {
+func (pool *RangedPool) Balances() (rx, ry sdkmath.Int) {
 	return pool.rx, pool.ry
 }
 
 // SetBalances sets RangedPool's balances without recalculating
 // transX and transY.
-func (pool *RangedPool) SetBalances(rx, ry math.Int, derive bool) {
+func (pool *RangedPool) SetBalances(rx, ry sdkmath.Int, derive bool) {
 	if derive {
 		pool.transX, pool.transY = DeriveTranslation(rx, ry, pool.minPrice, pool.maxPrice)
 	}
 	pool.rx = rx
 	pool.ry = ry
-	pool.xComp = math.LegacyNewDecFromInt(pool.rx).Add(pool.transX)
-	pool.yComp = math.LegacyNewDecFromInt(pool.ry).Add(pool.transY)
+	pool.xComp = sdkmath.LegacyNewDecFromInt(pool.rx).Add(pool.transX)
+	pool.yComp = sdkmath.LegacyNewDecFromInt(pool.ry).Add(pool.transY)
 }
 
 // PoolCoinSupply returns the pool coin supply.
-func (pool *RangedPool) PoolCoinSupply() math.Int {
+func (pool *RangedPool) PoolCoinSupply() sdkmath.Int {
 	return pool.ps
 }
 
@@ -357,7 +356,7 @@ func (pool *RangedPool) LowestSellPrice() (price sdkmath.LegacyDec, found bool) 
 
 // BuyAmountOver returns the amount of buy orders for price greater than
 // or equal to given price.
-func (pool *RangedPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math.Int) {
+func (pool *RangedPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt sdkmath.Int) {
 	origPrice := price
 	if price.LT(pool.minPrice) {
 		price = pool.minPrice
@@ -369,8 +368,8 @@ func (pool *RangedPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math
 	dx := pool.xComp.Sub(price.Mul(pool.yComp))
 	if !dx.IsPositive() {
 		return zeroInt
-	} else if dx.GT(math.LegacyNewDecFromInt(pool.rx)) {
-		dx = math.LegacyNewDecFromInt(pool.rx)
+	} else if dx.GT(sdkmath.LegacyNewDecFromInt(pool.rx)) {
+		dx = sdkmath.LegacyNewDecFromInt(pool.rx)
 	}
 	utils.SafeMath(func() {
 		amt = dx.QuoTruncate(origPrice).TruncateInt() // dy = dx / P
@@ -385,7 +384,7 @@ func (pool *RangedPool) BuyAmountOver(price sdkmath.LegacyDec, _ bool) (amt math
 
 // SellAmountUnder returns the amount of sell orders for price less than
 // or equal to given price.
-func (pool *RangedPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt math.Int) {
+func (pool *RangedPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt sdkmath.Int) {
 	if price.GT(pool.maxPrice) {
 		price = pool.maxPrice
 	}
@@ -406,7 +405,7 @@ func (pool *RangedPool) SellAmountUnder(price sdkmath.LegacyDec, _ bool) (amt ma
 // BuyAmountTo returns the amount of buy orders of the pool for price,
 // where BuyAmountTo is used when the pool price is higher than the highest
 // price of the order book.
-func (pool *RangedPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
+func (pool *RangedPool) BuyAmountTo(price sdkmath.LegacyDec) (amt sdkmath.Int) {
 	origPrice := price
 	if price.LT(pool.minPrice) {
 		price = pool.minPrice
@@ -418,11 +417,11 @@ func (pool *RangedPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
 	sqrtYComp := utils.DecApproxSqrt(pool.yComp)
 	sqrtPrice := utils.DecApproxSqrt(price)
 	// dx = rx - (sqrt(P * (rx + transX) * (ry + transY)) - transX)
-	dx := math.LegacyNewDecFromInt(pool.rx).Sub(sqrtPrice.Mul(sqrtXComp.Mul(sqrtYComp)).Sub(pool.transX))
+	dx := sdkmath.LegacyNewDecFromInt(pool.rx).Sub(sqrtPrice.Mul(sqrtXComp.Mul(sqrtYComp)).Sub(pool.transX))
 	if !dx.IsPositive() {
 		return zeroInt
-	} else if dx.GT(math.LegacyNewDecFromInt(pool.rx)) {
-		dx = math.LegacyNewDecFromInt(pool.rx)
+	} else if dx.GT(sdkmath.LegacyNewDecFromInt(pool.rx)) {
+		dx = sdkmath.LegacyNewDecFromInt(pool.rx)
 	}
 	utils.SafeMath(func() {
 		amt = dx.QuoTruncate(origPrice).TruncateInt() // dy = dx / P
@@ -438,7 +437,7 @@ func (pool *RangedPool) BuyAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
 // SellAmountTo returns the amount of sell orders of the pool for price,
 // where SellAmountTo is used when the pool price is lower than the lowest
 // price of the order book.
-func (pool *RangedPool) SellAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
+func (pool *RangedPool) SellAmountTo(price sdkmath.LegacyDec) (amt sdkmath.Int) {
 	if price.GT(pool.maxPrice) {
 		price = pool.maxPrice
 	}
@@ -449,7 +448,7 @@ func (pool *RangedPool) SellAmountTo(price sdkmath.LegacyDec) (amt math.Int) {
 	sqrtYComp := utils.DecApproxSqrt(pool.yComp)
 	sqrtPrice := utils.DecApproxSqrt(price)
 	// dy = ry - (sqrt((x + transX) * (y + transY) / P) - b)
-	amt = math.LegacyNewDecFromInt(pool.ry).Sub(sqrtXComp.Mul(sqrtYComp).QuoRoundUp(sqrtPrice).Sub(pool.transY)).TruncateInt()
+	amt = sdkmath.LegacyNewDecFromInt(pool.ry).Sub(sqrtXComp.Mul(sqrtYComp).QuoRoundUp(sqrtPrice).Sub(pool.transY)).TruncateInt()
 	if amt.GT(pool.ry) {
 		amt = pool.ry
 	}
@@ -475,35 +474,35 @@ func (pool *RangedPool) Clone() Pool {
 
 // Deposit returns accepted x and y coin amount and minted pool coin amount
 // when someone deposits x and y coins.
-func Deposit(rx, ry, ps, x, y math.Int) (ax, ay, pc math.Int) {
+func Deposit(rx, ry, ps, x, y sdkmath.Int) (ax, ay, pc sdkmath.Int) {
 	// Calculate accepted amount and minting amount.
 	// Note that we take as many coins as possible(by ceiling numbers)
 	// from depositor and mint as little coins as possible.
 
 	utils.SafeMath(func() {
-		rx, ry := math.LegacyNewDecFromInt(rx), math.LegacyNewDecFromInt(ry)
-		ps := math.LegacyNewDecFromInt(ps)
+		rx, ry := sdkmath.LegacyNewDecFromInt(rx), sdkmath.LegacyNewDecFromInt(ry)
+		ps := sdkmath.LegacyNewDecFromInt(ps)
 
 		// pc = floor(ps * min(x / rx, y / ry))
 		var ratio sdkmath.LegacyDec
 		switch {
 		case rx.IsZero():
-			ratio = math.LegacyNewDecFromInt(y).QuoTruncate(ry)
+			ratio = sdkmath.LegacyNewDecFromInt(y).QuoTruncate(ry)
 		case ry.IsZero():
-			ratio = math.LegacyNewDecFromInt(x).QuoTruncate(rx)
+			ratio = sdkmath.LegacyNewDecFromInt(x).QuoTruncate(rx)
 		default:
-			ratio = math.LegacyMinDec(
-				math.LegacyNewDecFromInt(x).QuoTruncate(rx),
-				math.LegacyNewDecFromInt(y).QuoTruncate(ry),
+			ratio = sdkmath.LegacyMinDec(
+				sdkmath.LegacyNewDecFromInt(x).QuoTruncate(rx),
+				sdkmath.LegacyNewDecFromInt(y).QuoTruncate(ry),
 			)
 		}
 		pc = ps.MulTruncate(ratio).TruncateInt()
 
-		mintProportion := math.LegacyNewDecFromInt(pc).Quo(ps) // pc / ps
-		ax = rx.Mul(mintProportion).Ceil().TruncateInt()       // ceil(rx * mintProportion)
-		ay = ry.Mul(mintProportion).Ceil().TruncateInt()       // ceil(ry * mintProportion)
+		mintProportion := sdkmath.LegacyNewDecFromInt(pc).Quo(ps) // pc / ps
+		ax = rx.Mul(mintProportion).Ceil().TruncateInt()          // ceil(rx * mintProportion)
+		ay = ry.Mul(mintProportion).Ceil().TruncateInt()          // ceil(ry * mintProportion)
 	}, func() {
-		ax, ay, pc = math.ZeroInt(), math.ZeroInt(), math.ZeroInt()
+		ax, ay, pc = sdkmath.ZeroInt(), sdkmath.ZeroInt(), sdkmath.ZeroInt()
 	})
 
 	return
@@ -512,7 +511,7 @@ func Deposit(rx, ry, ps, x, y math.Int) (ax, ay, pc math.Int) {
 // Withdraw returns withdrawn x and y coin amount when someone withdraws
 // pc pool coin.
 // Withdraw also takes care of the fee rate.
-func Withdraw(rx, ry, ps, pc math.Int, feeRate sdkmath.LegacyDec) (x, y math.Int) {
+func Withdraw(rx, ry, ps, pc sdkmath.Int, feeRate sdkmath.LegacyDec) (x, y sdkmath.Int) {
 	if pc.Equal(ps) {
 		// Redeeming the last pool coin - give all remaining rx and ry.
 		x = rx
@@ -521,22 +520,22 @@ func Withdraw(rx, ry, ps, pc math.Int, feeRate sdkmath.LegacyDec) (x, y math.Int
 	}
 
 	utils.SafeMath(func() {
-		proportion := math.LegacyNewDecFromInt(pc).QuoTruncate(math.LegacyNewDecFromInt(ps))           // pc / ps
-		multiplier := math.LegacyOneDec().Sub(feeRate)                                                 // 1 - feeRate
-		x = math.LegacyNewDecFromInt(rx).MulTruncate(proportion).MulTruncate(multiplier).TruncateInt() // floor(rx * proportion * multiplier)
-		y = math.LegacyNewDecFromInt(ry).MulTruncate(proportion).MulTruncate(multiplier).TruncateInt() // floor(ry * proportion * multiplier)
+		proportion := sdkmath.LegacyNewDecFromInt(pc).QuoTruncate(sdkmath.LegacyNewDecFromInt(ps))        // pc / ps
+		multiplier := sdkmath.LegacyOneDec().Sub(feeRate)                                                 // 1 - feeRate
+		x = sdkmath.LegacyNewDecFromInt(rx).MulTruncate(proportion).MulTruncate(multiplier).TruncateInt() // floor(rx * proportion * multiplier)
+		y = sdkmath.LegacyNewDecFromInt(ry).MulTruncate(proportion).MulTruncate(multiplier).TruncateInt() // floor(ry * proportion * multiplier)
 	}, func() {
-		x, y = math.ZeroInt(), math.ZeroInt()
+		x, y = sdkmath.ZeroInt(), sdkmath.ZeroInt()
 	})
 
 	return
 }
 
-func DeriveTranslation(rx, ry math.Int, minPrice, maxPrice sdkmath.LegacyDec) (transX, transY sdkmath.LegacyDec) {
+func DeriveTranslation(rx, ry sdkmath.Int, minPrice, maxPrice sdkmath.LegacyDec) (transX, transY sdkmath.LegacyDec) {
 	sqrt := utils.DecApproxSqrt
 
 	// M = minPrice, L = maxPrice
-	rxDec, ryDec := math.LegacyNewDecFromInt(rx), math.LegacyNewDecFromInt(ry)
+	rxDec, ryDec := sdkmath.LegacyNewDecFromInt(rx), sdkmath.LegacyNewDecFromInt(ry)
 	sqrtM := sqrt(minPrice)
 	sqrtL := sqrt(maxPrice)
 
@@ -601,7 +600,7 @@ func PoolBuyOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmath
 		return nil
 	}
 	tmpPool := pool.Clone()
-	placeOrder := func(price sdkmath.LegacyDec, amt math.Int, derive bool) {
+	placeOrder := func(price sdkmath.LegacyDec, amt sdkmath.Int, derive bool) {
 		orders = append(orders, orderer.Order(Buy, price, amt))
 		rx, ry := tmpPool.Balances()
 		rx = rx.Sub(price.MulInt(amt).Ceil().TruncateInt()) // quote coin ceiling
@@ -614,7 +613,7 @@ func PoolBuyOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmath
 			placeOrder(highestPrice, amt, true)
 		}
 	}
-	tick := PriceToDownTick(math.LegacyMinDec(highestPrice, tmpPool.Price()), tickPrec)
+	tick := PriceToDownTick(sdkmath.LegacyMinDec(highestPrice, tmpPool.Price()), tickPrec)
 	for tick.GTE(lowestPrice) {
 		amt := tmpPool.BuyAmountOver(tick, true)
 		if amt.LT(MinCoinAmount) {
@@ -642,7 +641,7 @@ func PoolSellOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmat
 		return nil
 	}
 	tmpPool := pool.Clone()
-	placeOrder := func(price sdkmath.LegacyDec, amt math.Int, derive bool) {
+	placeOrder := func(price sdkmath.LegacyDec, amt sdkmath.Int, derive bool) {
 		orders = append(orders, orderer.Order(Sell, price, amt))
 		rx, ry := tmpPool.Balances()
 		rx = rx.Add(price.MulInt(amt).TruncateInt()) // quote coin truncation
@@ -655,7 +654,7 @@ func PoolSellOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmat
 			placeOrder(lowestPrice, amt, true)
 		}
 	}
-	tick := PriceToUpTick(math.LegacyMaxDec(lowestPrice, tmpPool.Price()), tickPrec)
+	tick := PriceToUpTick(sdkmath.LegacyMaxDec(lowestPrice, tmpPool.Price()), tickPrec)
 	for tick.LTE(highestPrice) {
 		amt := tmpPool.SellAmountUnder(tick, true)
 		if amt.LT(MinCoinAmount) || tick.MulInt(amt).TruncateInt().IsZero() {
@@ -673,11 +672,11 @@ func PoolSellOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmat
 }
 
 // InitialPoolCoinSupply returns ideal initial pool coin minting amount.
-func InitialPoolCoinSupply(x, y math.Int) math.Int {
+func InitialPoolCoinSupply(x, y sdkmath.Int) sdkmath.Int {
 	cx := len(x.BigInt().Text(10)) - 1 // characteristic of x
 	cy := len(y.BigInt().Text(10)) - 1 // characteristic of y
 	c := ((cx + 1) + (cy + 1) + 1) / 2 // ceil(((cx + 1) + (cy + 1)) / 2)
 	res := big.NewInt(10)
 	res.Exp(res, big.NewInt(int64(c)), nil) // 10^c
-	return math.NewIntFromBigInt(res)
+	return sdkmath.NewIntFromBigInt(res)
 }

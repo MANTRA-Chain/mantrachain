@@ -76,7 +76,6 @@ func (k msgServer) UpdateDidDocument(
 	goCtx context.Context,
 	msg *types.MsgUpdateDidDocument,
 ) (*types.MsgUpdateDidDocumentResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -100,7 +99,6 @@ func (k msgServer) AddVerification(
 	goCtx context.Context,
 	msg *types.MsgAddVerification,
 ) (*types.MsgAddVerificationResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -118,7 +116,6 @@ func (k msgServer) AddService(
 	goCtx context.Context,
 	msg *types.MsgAddService,
 ) (*types.MsgAddServiceResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -137,7 +134,6 @@ func (k msgServer) RevokeVerification(
 	goCtx context.Context,
 	msg *types.MsgRevokeVerification,
 ) (*types.MsgRevokeVerificationResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -156,7 +152,6 @@ func (k msgServer) DeleteService(
 	goCtx context.Context,
 	msg *types.MsgDeleteService,
 ) (*types.MsgDeleteServiceResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -181,7 +176,6 @@ func (k msgServer) SetVerificationRelationships(
 	goCtx context.Context,
 	msg *types.MsgSetVerificationRelationships,
 ) (*types.MsgSetVerificationRelationshipsResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),
@@ -218,7 +212,6 @@ func (k msgServer) DeleteController(
 	goCtx context.Context,
 	msg *types.MsgDeleteController,
 ) (*types.MsgDeleteControllerResponse, error) {
-
 	if err := executeOnDidWithRelationships(
 		goCtx, &k.Keeper,
 		newConstraints(types.Authentication),

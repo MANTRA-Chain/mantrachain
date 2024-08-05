@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,17 +23,17 @@ const (
 var (
 	DefaultFeeCollectorAddress      = DeriveAddress(AddrType, ModuleName, "FeeCollector")
 	DefaultDustCollectorAddress     = DeriveAddress(AddrType, ModuleName, "DustCollector")
-	DefaultMinInitialPoolCoinSupply = math.NewInt(1_000_000_000_000)
+	DefaultMinInitialPoolCoinSupply = sdkmath.NewInt(1_000_000_000_000)
 	DefaultPairCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
 	DefaultPoolCreationFee          = sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000))
-	DefaultMinInitialDepositAmount  = math.NewInt(1000000)
-	DefaultMaxPriceLimitRatio       = math.LegacyNewDecWithPrec(1, 1) // 10%
-	DefaultSwapFeeRate              = math.LegacyZeroDec()
-	DefaultWithdrawFeeRate          = math.LegacyZeroDec()
+	DefaultMinInitialDepositAmount  = sdkmath.NewInt(1000000)
+	DefaultMaxPriceLimitRatio       = sdkmath.LegacyNewDecWithPrec(1, 1) // 10%
+	DefaultSwapFeeRate              = sdkmath.LegacyZeroDec()
+	DefaultWithdrawFeeRate          = sdkmath.LegacyZeroDec()
 	DefaultDepositExtraGas          = storetypes.Gas(60000)
 	DefaultWithdrawExtraGas         = storetypes.Gas(64000)
 	DefaultOrderExtraGas            = storetypes.Gas(37000)
-	DefaultPairCreatorSwapFeeRatio  = math.LegacyZeroDec()
+	DefaultPairCreatorSwapFeeRatio  = sdkmath.LegacyZeroDec()
 )
 
 // General constants
@@ -207,7 +206,7 @@ func validateDustCollectorAddress(i interface{}) error {
 }
 
 func validateMinInitialPoolCoinSupply(i interface{}) error {
-	v, ok := i.(math.Int)
+	v, ok := i.(sdkmath.Int)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -250,7 +249,7 @@ func validatePoolCreationFee(i interface{}) error {
 }
 
 func validateMinInitialDepositAmount(i interface{}) error {
-	v, ok := i.(math.Int)
+	v, ok := i.(sdkmath.Int)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

@@ -35,7 +35,7 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 
 	meta, found := k.GetNftCollection(
 		ctx,
-		sdk.AccAddress(creator),
+		creator,
 		index,
 	)
 	if !found {

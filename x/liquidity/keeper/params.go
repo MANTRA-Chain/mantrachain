@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -59,8 +58,7 @@ func (k Keeper) GetPairCreatorSwapFeeRatio(ctx sdk.Context) (pairCreatorSwapFeeR
 
 // GetFeeCollector returns the current fee collector address parameter.
 func (k Keeper) GetFeeCollector(ctx sdk.Context) sdk.AccAddress {
-	var feeCollectorAddr string
-	feeCollectorAddr = k.GetParams(ctx).FeeCollectorAddress
+	feeCollectorAddr := k.GetParams(ctx).FeeCollectorAddress
 	addr, err := sdk.AccAddressFromBech32(feeCollectorAddr)
 	if err != nil {
 		panic(err)
@@ -70,8 +68,7 @@ func (k Keeper) GetFeeCollector(ctx sdk.Context) sdk.AccAddress {
 
 // GetDustCollector returns the current dust collector address parameter.
 func (k Keeper) GetDustCollector(ctx sdk.Context) sdk.AccAddress {
-	var dustCollectorAddr string
-	dustCollectorAddr = k.GetParams(ctx).DustCollectorAddress
+	dustCollectorAddr := k.GetParams(ctx).DustCollectorAddress
 	addr, err := sdk.AccAddressFromBech32(dustCollectorAddr)
 	if err != nil {
 		panic(err)
@@ -81,7 +78,7 @@ func (k Keeper) GetDustCollector(ctx sdk.Context) sdk.AccAddress {
 
 // GetMinInitialPoolCoinSupply returns the current minimum pool coin supply
 // parameter.
-func (k Keeper) GetMinInitialPoolCoinSupply(ctx sdk.Context) (i math.Int) {
+func (k Keeper) GetMinInitialPoolCoinSupply(ctx sdk.Context) (i sdkmath.Int) {
 	return k.GetParams(ctx).MinInitialPoolCoinSupply
 }
 
@@ -97,7 +94,7 @@ func (k Keeper) GetPoolCreationFee(ctx sdk.Context) (fee sdk.Coins) {
 
 // GetMinInitialDepositAmount returns the current minimum initial deposit
 // amount parameter.
-func (k Keeper) GetMinInitialDepositAmount(ctx sdk.Context) (amt math.Int) {
+func (k Keeper) GetMinInitialDepositAmount(ctx sdk.Context) (amt sdkmath.Int) {
 	return k.GetParams(ctx).MinInitialDepositAmount
 }
 
@@ -143,7 +140,9 @@ func (k Keeper) GetOrderExtraGas(ctx sdk.Context) (gas storetypes.Gas) {
 func (k Keeper) SetMaxNumMarketMakingOrderTicks(ctx sdk.Context, input uint32) {
 	params := k.GetParams(ctx)
 	params.MaxNumMarketMakingOrderTicks = input
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }
 
 // GetMaxNumActivePoolsPerPair returns the current maximum number of active
@@ -156,5 +155,7 @@ func (k Keeper) GetMaxNumActivePoolsPerPair(ctx sdk.Context) (i uint32) {
 func (k Keeper) SetMaxNumActivePoolsPerPair(ctx sdk.Context, i uint32) {
 	params := k.GetParams(ctx)
 	params.MaxNumActivePoolsPerPair = i
-	k.SetParams(ctx, params)
+	if err := k.SetParams(ctx, params); err != nil {
+		panic(err)
+	}
 }

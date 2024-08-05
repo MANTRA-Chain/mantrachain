@@ -72,7 +72,7 @@ func (app *App) registerLegacyModules(appOpts servertypes.AppOptions, wasmOpts [
 		// wasm kv store
 		storetypes.NewKVStoreKey(wasmtypes.StoreKey),
 	); err != nil {
-		panic(err)
+		return wasmtypes.WasmConfig{}, err
 	}
 
 	// register the key tables for legacy param subspaces

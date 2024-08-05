@@ -69,7 +69,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 				nftImageIndex = int(msg.NftsImagesGrouped.ImagesIndexes[i].Indexes[k])
 			}
 
-			if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
+			if nftImageIndex > 0 && (nft.Images == nil || nftImageIndex >= len(nft.Images)) {
 				return nil, errors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 			}
 
@@ -104,7 +104,6 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 			updated = append(updated, nft.Id)
 			cnt++
 		}
-
 	}
 
 	return &types.MsgUpdateRestrictedCollectionNftImageGroupedBatchResponse{
@@ -113,7 +112,6 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 		CollectionCreator: msg.CollectionCreator,
 		CollectionId:      msg.CollectionId,
 	}, nil
-
 }
 
 func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context, msg *types.MsgUpdateRestrictedCollectionNftImageBatch) (*types.MsgUpdateRestrictedCollectionNftImageBatchResponse, error) {
@@ -167,7 +165,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 			nftImageIndex = int(msg.NftsImages.ImagesIndexes[i])
 		}
 
-		if nftImageIndex > 0 && (nft.Images == nil || int(nftImageIndex) >= len(nft.Images)) {
+		if nftImageIndex > 0 && (nft.Images == nil || nftImageIndex >= len(nft.Images)) {
 			return nil, errors.Wrapf(types.ErrInvalidNftImageIndex, "invalid nft image index nft id %s, image index %d", nft.Id, nftImageIndex)
 		}
 
@@ -525,7 +523,7 @@ func (k msgServer) MintNfts(goCtx context.Context, msg *types.MsgMintNfts) (*typ
 			Did:               did,
 		})
 
-		nftsIds = append(nftsIds, string(nftMetadata.Id))
+		nftsIds = append(nftsIds, nftMetadata.Id)
 	}
 
 	nftExecutor := NewNftExecutor(ctx, k.nftKeeper)
@@ -629,7 +627,10 @@ func (k msgServer) BurnNfts(goCtx context.Context, msg *types.MsgBurnNfts) (*typ
 
 	didExecutor := NewDidExecutor(ctx, "", k.didKeeper)
 	for _, nftIndex := range nftsIndexes {
-		didExecutor.ForceDeleteDidOfNftIfExists(nftIndex)
+		_, err := didExecutor.ForceDeleteDidOfNftIfExists(nftIndex)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	k.DeleteApprovedNfts(ctx, collectionIndex, nftsIndexes)
@@ -1125,7 +1126,9 @@ func (k msgServer) BurnNft(goCtx context.Context, msg *types.MsgBurnNft) (*types
 	}
 
 	didExecutor := NewDidExecutor(ctx, "", k.didKeeper)
-	didExecutor.ForceDeleteDidOfNftIfExists(nftsIndexes[0])
+	if _, err = didExecutor.ForceDeleteDidOfNftIfExists(nftsIndexes[0]); err != nil {
+		return nil, err
+	}
 
 	k.DeleteApprovedNft(ctx, collectionIndex, nftsIndexes[0])
 	k.DeleteNft(ctx, collectionIndex, nftsIndexes[0])

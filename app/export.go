@@ -241,5 +241,4 @@ func (app *App) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []str
 	); err != nil {
 		log.Fatal(err)
 	}
-
 }

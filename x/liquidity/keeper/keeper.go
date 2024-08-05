@@ -58,21 +58,21 @@ func NewKeeper(
 	}
 }
 
-func (keeper *Keeper) Hooks() types.LiquidityHooks {
-	if keeper.hooks == nil {
+func (k *Keeper) Hooks() types.LiquidityHooks {
+	if k.hooks == nil {
 		// return a no-op implementation if no hooks are set
 		return types.MultiLiquidityHooks{}
 	}
 
-	return keeper.hooks
+	return k.hooks
 }
 
-func (keeper *Keeper) SetHooks(gh types.LiquidityHooks) {
-	if keeper.hooks != nil {
+func (k *Keeper) SetHooks(gh types.LiquidityHooks) {
+	if k.hooks != nil {
 		panic("cannot set liquidity hooks twice")
 	}
 
-	keeper.hooks = gh
+	k.hooks = gh
 }
 
 // GetAuthority returns the module's authority.

@@ -135,7 +135,6 @@ func (k Keeper) TerminatePlan(ctx sdk.Context, plan types.Plan) error {
 	if plan.FarmingPoolAddress != plan.TerminationAddress {
 		balances := k.bankKeeper.SpendableCoins(ctx, farmingPoolAddr)
 		if !balances.IsZero() {
-
 			whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{farmingPoolAddr})
 			err := k.bankKeeper.SendCoins(ctx, farmingPoolAddr, plan.GetTerminationAddress(), balances)
 			k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)

@@ -74,7 +74,10 @@ func (c *NftCollectionController) CreateDefaultNftCollection() error {
 	c.metadata.Opened = true
 	collectionIndex := c.getIndex()
 
-	c.requireNftCollection()
+	err := c.requireNftCollection()
+	if err != nil {
+		return err
+	}
 
 	if c.nftCollection == nil {
 		nftExecutor := NewNftExecutor(c.ctx, c.store.nftKeeper)

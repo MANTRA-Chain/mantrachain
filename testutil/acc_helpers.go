@@ -177,6 +177,7 @@ func CreateIncrementalAccounts(accNum int) []sdk.AccAddress {
 
 // CheckBalance checks the balance of an account.
 func CheckBalance(t *testing.T, app *chain.App, addr sdk.AccAddress, balances sdk.Coins) {
+	t.Helper()
 	ctxCheck := app.BaseApp.NewContext(true)
 	require.True(t, balances.Equal(app.BankKeeper.GetAllBalances(ctxCheck, addr)))
 }

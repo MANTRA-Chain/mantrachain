@@ -16,7 +16,6 @@ type DidExecutor struct {
 }
 
 func NewDidExecutor(ctx sdk.Context, controller string, didKeeper types.DidKeeper) *DidExecutor {
-
 	return &DidExecutor{
 		controller: controller,
 		ctx:        ctx,

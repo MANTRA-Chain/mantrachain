@@ -5,7 +5,6 @@ import (
 	"sort"
 	"strings"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 )
 
@@ -64,7 +63,7 @@ func (ob *OrderBook) HighestPrice() (sdkmath.LegacyDec, bool) {
 	highestSellPrice, _, foundSell := ob.sells.highestPrice()
 	switch {
 	case foundBuy && foundSell:
-		return math.LegacyMaxDec(highestBuyPrice, highestSellPrice), true
+		return sdkmath.LegacyMaxDec(highestBuyPrice, highestSellPrice), true
 	case foundBuy:
 		return highestBuyPrice, true
 	case foundSell:
@@ -79,7 +78,7 @@ func (ob *OrderBook) LowestPrice() (sdkmath.LegacyDec, bool) {
 	lowestSellPrice, _, foundSell := ob.sells.lowestPrice()
 	switch {
 	case foundBuy && foundSell:
-		return math.LegacyMinDec(lowestBuyPrice, lowestSellPrice), true
+		return sdkmath.LegacyMinDec(lowestBuyPrice, lowestSellPrice), true
 	case foundBuy:
 		return lowestBuyPrice, true
 	case foundSell:

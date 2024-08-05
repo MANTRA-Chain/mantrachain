@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sort"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
 
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
@@ -87,14 +86,14 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 		if foundLowestSellPrice {
 			startPrice := FitPriceToTickGap(lowestSellPrice, priceUnit, false)
 			currentPrice := startPrice
-			accAmt := math.ZeroInt()
+			accAmt := sdkmath.ZeroInt()
 			for j := 0; j < config.MaxNumTicks && currentPrice.LTE(highestPrice); {
 				amt := ov.SellAmountUnder(currentPrice, true).Sub(accAmt)
 				if amt.IsPositive() {
 					ob.Sells = append(ob.Sells, OrderBookTickResponse{
 						Price:           currentPrice,
 						UserOrderAmount: amt,
-						PoolOrderAmount: math.ZeroInt(),
+						PoolOrderAmount: sdkmath.ZeroInt(),
 					})
 					accAmt = accAmt.Add(amt)
 					j++
@@ -112,14 +111,14 @@ func MakeOrderBookPairResponse(pairId uint64, ov *amm.OrderBookView, lowestPrice
 		if foundHighestBuyPrice {
 			startPrice := FitPriceToTickGap(highestBuyPrice, priceUnit, true)
 			currentPrice := startPrice
-			accAmt := math.ZeroInt()
+			accAmt := sdkmath.ZeroInt()
 			for j := 0; j < config.MaxNumTicks && currentPrice.GTE(lowestPrice) && !currentPrice.IsNegative(); {
 				amt := ov.BuyAmountOver(currentPrice, true).Sub(accAmt)
 				if amt.IsPositive() {
 					ob.Buys = append(ob.Buys, OrderBookTickResponse{
 						Price:           currentPrice,
 						UserOrderAmount: amt,
-						PoolOrderAmount: math.ZeroInt(),
+						PoolOrderAmount: sdkmath.ZeroInt(),
 					})
 					accAmt = accAmt.Add(amt)
 					j++
@@ -155,7 +154,7 @@ func PrintOrderBookResponse(ob OrderBookResponse, basePrice sdkmath.LegacyDec) {
 func FitPriceToTickGap(price, gap sdkmath.LegacyDec, down bool) sdkmath.LegacyDec {
 	b := price.BigInt()
 	b.Quo(b, gap.BigInt()).Mul(b, gap.BigInt())
-	tick := math.LegacyNewDecFromBigIntWithPrec(b, sdkmath.LegacyPrecision)
+	tick := sdkmath.LegacyNewDecFromBigIntWithPrec(b, sdkmath.LegacyPrecision)
 	if !down && !tick.Equal(price) {
 		tick = tick.Add(gap)
 	}

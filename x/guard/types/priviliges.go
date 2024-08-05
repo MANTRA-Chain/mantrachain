@@ -7,8 +7,8 @@ import (
 type IPrivileges interface {
 	Check(query []byte) bool
 	Equal(pr []byte) bool
-	Мerge(pr []byte) *Privileges
-	МergeMore(prs [][]byte) *Privileges
+	Merge(pr []byte) *Privileges
+	MergeMore(prs [][]byte) *Privileges
 	SwitchOn(ids []*big.Int) *Privileges
 	SwitchOff(ids []*big.Int) *Privileges
 	SetBytes(buf []byte) *Privileges
@@ -91,13 +91,13 @@ func (p Privileges) Equal(pr []byte) bool {
 	return p.BigInt().Cmp(big.NewInt(0).SetBytes(pr)) == 0
 }
 
-func (p Privileges) Мerge(pr []byte) *Privileges {
+func (p Privileges) Merge(pr []byte) *Privileges {
 	p.BigInt().Or(p.BigInt(), big.NewInt(0).SetBytes(pr))
 	p.raw = p.BigInt().Bytes()
 	return &p
 }
 
-func (p Privileges) МergeMore(prs [][]byte) *Privileges {
+func (p Privileges) MergeMore(prs [][]byte) *Privileges {
 	for _, pr := range prs {
 		p.BigInt().Or(p.BigInt(), big.NewInt(0).SetBytes(pr))
 	}

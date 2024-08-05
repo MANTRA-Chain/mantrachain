@@ -35,15 +35,15 @@ func NewMsgCreateDenom(sender, subdenom string) *MsgCreateDenom {
 	}
 }
 
-func (m MsgCreateDenom) Route() string { return RouterKey }
-func (m MsgCreateDenom) Type() string  { return TypeMsgCreateDenom }
-func (m MsgCreateDenom) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgCreateDenom) Route() string { return RouterKey }
+func (msg MsgCreateDenom) Type() string  { return TypeMsgCreateDenom }
+func (msg MsgCreateDenom) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	_, err = GetTokenDenom(m.Sender, m.Subdenom)
+	_, err = GetTokenDenom(msg.Sender, msg.Subdenom)
 	if err != nil {
 		return errors.Wrap(ErrInvalidDenom, err.Error())
 	}
@@ -77,20 +77,20 @@ func NewMsgMintTo(sender string, amount sdk.Coin, mintToAddress string) *MsgMint
 	}
 }
 
-func (m MsgMint) Route() string { return RouterKey }
-func (m MsgMint) Type() string  { return TypeMsgMint }
-func (m MsgMint) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgMint) Route() string { return RouterKey }
+func (msg MsgMint) Type() string  { return TypeMsgMint }
+func (msg MsgMint) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
-		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	if !msg.Amount.IsValid() || msg.Amount.Amount.Equal(math.ZeroInt()) {
+		return errors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
-	if strings.TrimSpace(m.MintToAddress) != "" {
-		_, err = sdk.AccAddressFromBech32(m.MintToAddress)
+	if strings.TrimSpace(msg.MintToAddress) != "" {
+		_, err = sdk.AccAddressFromBech32(msg.MintToAddress)
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid mint to address (%s)", err)
 		}
@@ -125,20 +125,20 @@ func NewMsgBurnFrom(sender string, amount sdk.Coin, burnFromAddress string) *Msg
 	}
 }
 
-func (m MsgBurn) Route() string { return RouterKey }
-func (m MsgBurn) Type() string  { return TypeMsgBurn }
-func (m MsgBurn) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgBurn) Route() string { return RouterKey }
+func (msg MsgBurn) Type() string  { return TypeMsgBurn }
+func (msg MsgBurn) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
-		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	if !msg.Amount.IsValid() || msg.Amount.Amount.Equal(math.ZeroInt()) {
+		return errors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
-	if strings.TrimSpace(m.BurnFromAddress) != "" {
-		_, err = sdk.AccAddressFromBech32(m.BurnFromAddress)
+	if strings.TrimSpace(msg.BurnFromAddress) != "" {
+		_, err = sdk.AccAddressFromBech32(msg.BurnFromAddress)
 		if err != nil {
 			return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid burn from address (%s)", err)
 		}
@@ -167,25 +167,25 @@ func NewMsgForceTransfer(sender string, amount sdk.Coin, fromAddr, toAddr string
 	}
 }
 
-func (m MsgForceTransfer) Route() string { return RouterKey }
-func (m MsgForceTransfer) Type() string  { return TypeMsgForceTransfer }
-func (m MsgForceTransfer) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgForceTransfer) Route() string { return RouterKey }
+func (msg MsgForceTransfer) Type() string  { return TypeMsgForceTransfer }
+func (msg MsgForceTransfer) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	_, err = sdk.AccAddressFromBech32(m.TransferFromAddress)
+	_, err = sdk.AccAddressFromBech32(msg.TransferFromAddress)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
-	_, err = sdk.AccAddressFromBech32(m.TransferToAddress)
+	_, err = sdk.AccAddressFromBech32(msg.TransferToAddress)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() {
-		return errors.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
+	if !msg.Amount.IsValid() {
+		return errors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
 	return nil
@@ -210,20 +210,20 @@ func NewMsgChangeAdmin(sender, denom, newAdmin string) *MsgChangeAdmin {
 	}
 }
 
-func (m MsgChangeAdmin) Route() string { return RouterKey }
-func (m MsgChangeAdmin) Type() string  { return TypeMsgChangeAdmin }
-func (m MsgChangeAdmin) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgChangeAdmin) Route() string { return RouterKey }
+func (msg MsgChangeAdmin) Type() string  { return TypeMsgChangeAdmin }
+func (msg MsgChangeAdmin) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	_, err = sdk.AccAddressFromBech32(m.NewAdmin)
+	_, err = sdk.AccAddressFromBech32(msg.NewAdmin)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
 
-	_, _, err = DeconstructDenom(m.Denom)
+	_, _, err = DeconstructDenom(msg.Denom)
 	if err != nil {
 		return err
 	}
@@ -249,20 +249,20 @@ func NewMsgSetDenomMetadata(sender string, metadata banktypes.Metadata) *MsgSetD
 	}
 }
 
-func (m MsgSetDenomMetadata) Route() string { return RouterKey }
-func (m MsgSetDenomMetadata) Type() string  { return TypeMsgSetDenomMetadata }
-func (m MsgSetDenomMetadata) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(m.Sender)
+func (msg MsgSetDenomMetadata) Route() string { return RouterKey }
+func (msg MsgSetDenomMetadata) Type() string  { return TypeMsgSetDenomMetadata }
+func (msg MsgSetDenomMetadata) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	err = m.Metadata.Validate()
+	err = msg.Metadata.Validate()
 	if err != nil {
 		return err
 	}
 
-	_, _, err = DeconstructDenom(m.Metadata.Base)
+	_, _, err = DeconstructDenom(msg.Metadata.Base)
 	if err != nil {
 		return err
 	}
