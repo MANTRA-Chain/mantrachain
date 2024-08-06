@@ -3,24 +3,13 @@
   github-organization: MANTRA-Finance
   github-repo: mantrachain
   dockerfile: cosmos
+  # TODO: should fix in heighliner cosmos/dockerfile
   build-target: |
-    export CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH}
-    export BUILD_TAGS="netgo ledger muslc osusergo"
-    export CMT_VERSION=$(go list -m github.com/cometbft/cometbft 2> /dev/null | sed 's:.* ::')
-    export COMMIT=$(git log -1 --format='%h')
-    export COMMON_LDFLAGS="-X github.com/cosmos/cosmos-sdk/version.Name=mantrachain \
-      -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind \
-      -X github.com/cosmos/cosmos-sdk/version.Version=$VERSION \
-      -X github.com/cosmos/cosmos-sdk/version.Commit=$COMMIT \
-      -X github.com/cosmos/cosmos-sdk/version.BuildTags=${BUILD_TAGS// /,} \
-      -X github.com/cometbft/cometbft/version.TMCoreSemVer=$CMT_VERSION \
-      -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static -lm'"
-
-    go install -ldflags "$COMMON_LDFLAGS" \
-      -tags "$BUILD_TAGS" -mod=readonly -trimpath \
-      ./cmd/mantrachaind
+    [ -f /lib/libwasmvm_muslc.a ] && cp /lib/libwasmvm_muslc.a /lib/libwasmvm_muslc.x86_64.a
+    [ -f /usr/aarch64-linux-musl/lib/libwasmvm_muslc.a ] && cp /usr/aarch64-linux-musl/lib/libwasmvm_muslc.a /usr/aarch64-linux-musl/lib/libwasmvm_muslc.aarch64.a
+    LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
   binaries:
-    - /go/bin/mantrachaind
+    - build/mantrachaind
   platforms:
     - linux/amd64
     - linux/arm64

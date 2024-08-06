@@ -98,7 +98,7 @@ ifeq (,$(findstring nostrip,$(MANTRACHAIN_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
 ifeq ($(LINK_STATICALLY),true)
-	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static -lm"
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))

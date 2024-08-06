@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   heighliner-docker:
-    runs-on: ubuntu-latest
+    runs-on: chain-runner
     steps:
       - uses: actions/checkout@v4
 

@@ -44,7 +44,7 @@ COPY . .
 # build tag info: https://github.com/cosmos/wasmd/blob/master/README.md#supported-systems
 RUN --mount=type=cache,target=/root/.cache/go-build \
   --mount=type=cache,target=/root/go/pkg/mod \
-  LEDGER_ENABLED=true BUILD_TAGS=muslc LINK_STATICALLY=true make build
+  LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
 
 # --------------------------------------------------------
 # Runner
