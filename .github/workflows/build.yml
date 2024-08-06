@@ -21,11 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goos: [linux, windows, darwin]
-        goarch: [amd64, arm64]
-        exclude:
-          - goarch: arm64
-            goos: windows
+        goos: [linux]
+        goarch: [amd64]
+        # TODO: uncomment the following lines once wasm cross-compilation is supported
+        # goos: [linux, windows, darwin]
+        # goarch: [amd64, arm64]
+        # exclude:
+        #   - goarch: arm64
+        #     goos: windows
     steps:
       - uses: actions/checkout@v4
       # - uses: DeterminateSystems/nix-installer-action@main
@@ -34,11 +37,6 @@ jobs:
         with:
           go-version: "1.22"
           check-latest: true
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-            ssh-private-key: |
-                  ${{ secrets.SSH_COSMOS_SDK }}
-                  ${{ secrets.SSH_IBC_GO }}
       - name: Build
         run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} make build
 # Todo: add nix build with rocksdb

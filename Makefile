@@ -164,9 +164,9 @@ release:
 		-e CMT_VERSION=$(CMT_VERSION) \
 		-e REPO_OWNER=$(REPO_OWNER) \
 		-e REPO_NAME=$(REPO_NAME) \
-		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/mantrachaind \
 		-w /go/src/mantrachaind \
+		--platform=linux/amd64 \
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean
@@ -174,5 +174,24 @@ else
 release:
 	@echo "Error: $(MISSING_TOKEN) is not defined. Please define it before running 'make release'."
 endif
+
+# uses goreleaser to create static binaries for linux an darwin on local machine
+# platform is set because not setting it results in broken builds for linux-amd64
+goreleaser-build-local:
+	docker run \
+		--rm \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
+		-e CMT_VERSION=$(CMT_VERSION) \
+		-e REPO_OWNER=$(REPO_OWNER) \
+		-e REPO_NAME=$(REPO_NAME) \
+		-v `pwd`:/go/src/mantrachaind \
+		-w /go/src/mantrachaind \
+		--platform=linux/amd64 \
+		$(GORELEASER_IMAGE) \
+		release \
+		--snapshot \
+		--skip=publish \
+		--timeout 90m \
+		--verbose
 
 .PHONY: build build-linux lint release
