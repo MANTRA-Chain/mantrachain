@@ -24,7 +24,9 @@ const waitForHTTP = async (
         return
       }
       // eslint-disable-next-line no-empty
-    } catch (e) { }
+    } catch (e) {
+      console.error(e.message)
+    }
     await wait(10)
   }
   throw new Error('No port opened')
@@ -54,7 +56,9 @@ export const waitForChannel = async (
         return
       }
       // eslint-disable-next-line no-empty
-    } catch (e) { }
+    } catch (e) {
+      console.error(e.message)
+    }
     await wait(10)
   }
 
