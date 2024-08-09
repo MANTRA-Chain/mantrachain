@@ -19,7 +19,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
       - name: Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.22'
       - name: Tidy go dependencies
