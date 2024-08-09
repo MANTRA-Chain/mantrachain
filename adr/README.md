@@ -51,3 +51,4 @@ When writing ADRs, follow the same best practices for writing RFCs. When writing
 * [ADR 002: Moving of guard permission checks to Message level](./adr-002-guard-checks-at-msg-level.md)
 * [ADR 003: Using of official Cosmos-SDK and IBC-Go](./adr-003-use-official-cosmos-modules.md)
 * [ADR 004: Allow users to create permissionless coins](./adr-004-create-permissionless-coins.md)
+* [ADR 005: Default coinfactory coins to be permissionless](./adr-005-default-permissionless-coins.md)

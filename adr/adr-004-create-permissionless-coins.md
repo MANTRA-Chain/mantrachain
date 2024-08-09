@@ -31,7 +31,7 @@ This is exactly the same as `MsgCreateDenom`. The transaction will create a new 
 
 ## Status
 
-Draft
+Superseded by ADR-005
 
 ## Further Discussions
 
