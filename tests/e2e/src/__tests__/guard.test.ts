@@ -510,7 +510,7 @@ describe('Guard module', () => {
       expect(latestBalance).toEqual(0);
     })
 
-    test('Should transfer from admin account to account without guard soul-bond nft when guard transfer coins is true', async () => {
+    test('Should transfer from account when transfer coin without required privileges', async () => {
       await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
 
       const denom = genCoinDenom(sdk.adminAddress, 'guard5')
@@ -518,66 +518,27 @@ describe('Guard module', () => {
       const privBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
 
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
-      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
-      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
-
-      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount)
-      const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
-
-      expect(privBalance + amount).toEqual(currBalance);
-    })
-
-    test('Should return error when transfer from account without guard soul-bond nft when guard transfer coins is true', async () => {
-      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
-
-      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = 1000
-
-      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
-      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
-      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
-
-      await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress, denom, amount, amount)
-      const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
-
-      await expect(sdk.clientRecipient.CosmosBankV1Beta1.tx.sendMsgSend({
-        value: {
-          fromAddress: sdk.recipientAddress,
-          toAddress: sdk.adminAddress,
-          amount: [{
-            denom,
-            amount: currBalance.toString()
-          }]
-        }
-      })).rejects.toThrow(
-        /missing soul bond nft/
-      )
-    })
-
-    test('Should return error when transfer coin without required privileges', async () => {
-      await setGuardTransferCoins(sdk, sdk.clientAdmin, sdk.adminAddress, true)
-
-      const denom = genCoinDenom(sdk.adminAddress, 'guard5')
-      const amount = 1000
-
-      await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom)
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
+      await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
-      const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
+      const valBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)
 
       await expect(sdk.clientValidator.CosmosBankV1Beta1.tx.sendMsgSend({
         value: {
           fromAddress: sdk.validatorAddress,
-          toAddress: sdk.adminAddress,
+          toAddress: sdk.recipientAddress,
           amount: [{
             denom,
-            amount: currBalance.toString()
+            amount: valBalance.toString()
           }]
         }
-      })).rejects.toThrow(
-        /coin required privileges not found/
-      )
+      })).resolves.not.toThrow()
+      const currBalance = await queryBalance(sdk.clientRecipient, sdk.recipientAddress, denom)
+
+      expect(privBalance + valBalance).toEqual(currBalance);
     })
 
     test('Should return error when transfer coin from account without account privileges', async () => {
@@ -589,7 +550,8 @@ describe('Guard module', () => {
       await updateCoinRequiredPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, denom, [64])
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
       await updateAccountPrivileges(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
-      await burnGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress)
+      await mintGuardSoulBondNft(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.recipientAddress)
 
       await sendCoins(sdk, sdk.clientAdmin, sdk.adminAddress, sdk.validatorAddress, denom, amount, amount)
       const currBalance = await queryBalance(sdk.clientValidator, sdk.validatorAddress, denom)

@@ -295,9 +295,8 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	err := s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], nil)
 	s.Require().NoError(err)
 
-	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin("mantrachain", 1000000000000000000)))
-	s.Require().Contains(err.Error(), "coin required privileges not found")
+	s.Require().NoError(err)
 
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(types.DefaultBaseDenom, 1000000000000000000)))
 	s.Require().NoError(err)
@@ -307,9 +306,8 @@ func (s *KeeperTestSuite) TestCheckCanTransferCoins() {
 	s.Require().NoError(err)
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
-	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)
 	err = s.guardKeeper.CheckCanTransferCoins(s.ctx, s.addrs[0], sdk.NewCoins(sdk.NewInt64Coin(string(s.lkIndex), 1000000000000000000)))
-	s.Require().Contains(err.Error(), "coin required privileges not found")
+	s.Require().NoError(err)
 
 	s.coinFactoryKeeper.EXPECT().GetAdmin(gomock.Any(), gomock.Any()).Return(s.addrs[1], true).Times(1)
 	s.nftKeeper.EXPECT().GetOwner(gomock.Any(), gomock.Any(), gomock.Any()).Return(s.addrs[0]).Times(1)

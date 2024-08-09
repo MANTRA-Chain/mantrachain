@@ -64,17 +64,17 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 }
 
 func (k Keeper) CheckCanTransferCoin(ctx sdk.Context, nftCollectionCreator sdk.AccAddress, nftCollectionIndex []byte, inverseDefaultPrilileges *big.Int, address sdk.AccAddress, denom []byte) error {
+	privileges, found := k.GetRequiredPrivileges(ctx, denom, types.RequiredPrivilegesCoin)
+
+	if !found || privileges == nil {
+		return nil
+	}
+
 	nftIndex := tokentypes.GetNftIndex(nftCollectionIndex, address.String())
 	nftOwner := k.nftKeeper.GetOwner(ctx, string(nftCollectionIndex), string(nftIndex))
 
 	if nftOwner.Empty() || !address.Equals(nftOwner) {
 		return errors.Wrapf(types.ErrMissingSoulBondNft, "missing soul bond nft, address %s", address)
-	}
-
-	privileges, found := k.GetRequiredPrivileges(ctx, denom, types.RequiredPrivilegesCoin)
-
-	if !found || privileges == nil {
-		return errors.Wrapf(types.ErrCoinRequiredPrivilegesNotFound, "coin required privileges not found, denom %s", string(denom))
 	}
 
 	requiredPrivileges := types.PrivilegesFromBytes(privileges)
