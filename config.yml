@@ -70,11 +70,11 @@ genesis:
                 pair_creation_fee:
                     - amount: "1000000"
                       denom: uom
-                pair_creator_swap_fee_ratio: "0.66"
+                pair_creator_swap_fee_ratio: "0"
                 pool_creation_fee:
                     - amount: "1000000"
                       denom: uom
-                swap_fee_rate: "0.03"
+                swap_fee_rate: "0"
         lpfarm:
             params:
                 private_plan_creation_fee:
