@@ -52,3 +52,5 @@ When writing ADRs, follow the same best practices for writing RFCs. When writing
 * [ADR 003: Using of official Cosmos-SDK and IBC-Go](./adr-003-use-official-cosmos-modules.md)
 * [ADR 004: Allow users to create permissionless coins](./adr-004-create-permissionless-coins.md)
 * [ADR 005: Default coinfactory coins to be permissionless](./adr-005-default-permissionless-coins.md)
+* [ADR 006: Standardise coinfactory protobuf](./adr-006-standardise-coinfactory.md)
+* [ADR 007: KVStore key prefix](./adr-007-kvstore-key-prefix.md)
