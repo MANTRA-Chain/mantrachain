@@ -22,7 +22,7 @@ golangci_version=v1.59.0
 #? lint-install: Install golangci-lint
 lint-install:
 	@echo "--> Installing golangci-lint $(golangci_version)"
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $(go env GOPATH)/bin v1.59.1
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
 
 lint-all:
 	@echo "--> Running linter"
