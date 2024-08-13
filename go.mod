@@ -26,7 +26,7 @@ require (
 	cosmossdk.io/x/circuit v0.1.0
 	cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant v0.1.0
-	cosmossdk.io/x/nft v0.1.0
+	cosmossdk.io/x/nft v0.1.1
 	cosmossdk.io/x/tx v0.13.4
 	cosmossdk.io/x/upgrade v0.1.3
 	github.com/CosmWasm/wasmd v0.51.0
