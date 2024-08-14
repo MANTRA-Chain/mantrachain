@@ -27,9 +27,7 @@ func (k Keeper) CreatePrivatePlan(
 		return types.Plan{}, err
 	}
 
-	whitelisted := k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{feeCollectorAddr})
 	err = k.bankKeeper.SendCoins(ctx, creatorAddr, feeCollectorAddr, fee)
-	k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 	if err != nil {
 		return types.Plan{}, err
 	}

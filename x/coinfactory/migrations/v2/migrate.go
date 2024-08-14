@@ -7,7 +7,6 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
 )
 
 func MigrateStore(
@@ -17,10 +16,6 @@ func MigrateStore(
 	legacySubspace exported.Subspace,
 	guardKeeper types.GuardKeeper,
 ) error {
-	guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{
-		address.Module(types.ModuleName),
-	})
-
 	store := storeService.OpenKVStore(ctx)
 	var currParams types.Params
 	legacySubspace.GetParamSet(ctx, &currParams)

@@ -18,6 +18,6 @@ CODE_ID=1
 
 INIT={\"count\":0}
 
-sleep 7
+sleep 3
 
 "$PWD"/build/mantrachaind tx wasm instantiate $CODE_ID "$INIT" --label "e2e-test" --admin admin --from admin --chain-id $CHAINID --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes

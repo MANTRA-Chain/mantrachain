@@ -5981,6 +5981,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// WhitelistTransfersAccAddrs defines the structure for whitelist of internal accounts
 type WhitelistTransfersAccAddrs struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6032,6 +6033,7 @@ func (x *WhitelistTransfersAccAddrs) GetIsWhitelisted() bool {
 	return false
 }
 
+// MsgAccounts
 type MsgAccounts struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6067,6 +6069,7 @@ func (x *MsgAccounts) GetAccounts() []string {
 	return nil
 }
 
+// MsgIndexes
 type MsgIndexes struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6102,6 +6105,7 @@ func (x *MsgIndexes) GetIndexes() [][]byte {
 	return nil
 }
 
+// AccountPrivileges defines the structure for account privileges
 type AccountPrivileges struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6145,6 +6149,7 @@ func (x *AccountPrivileges) GetPrivileges() []byte {
 	return nil
 }
 
+// RequiredPrivileges defines the structure for required privileges
 type RequiredPrivileges struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6196,6 +6201,7 @@ func (x *RequiredPrivileges) GetKind() string {
 	return ""
 }
 
+// AuthzGrantRevokeMsgType
 type AuthzGrantRevokeMsgType struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6239,6 +6245,7 @@ func (x *AuthzGrantRevokeMsgType) GetGrant() bool {
 	return false
 }
 
+// AuthzGrantRevokeMsgsTypes
 type AuthzGrantRevokeMsgsTypes struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6274,6 +6281,7 @@ func (x *AuthzGrantRevokeMsgsTypes) GetMsgs() []*AuthzGrantRevokeMsgType {
 	return nil
 }
 
+// MsgAccountsPrivileges
 type MsgAccountsPrivileges struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6317,6 +6325,7 @@ func (x *MsgAccountsPrivileges) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgAccountsPrivilegesGrouped
 type MsgAccountsPrivilegesGrouped struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6360,6 +6369,7 @@ func (x *MsgAccountsPrivilegesGrouped) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgRequiredPrivileges
 type MsgRequiredPrivileges struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -6403,6 +6413,7 @@ func (x *MsgRequiredPrivileges) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgRequiredPrivilegesGrouped
 type MsgRequiredPrivilegesGrouped struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

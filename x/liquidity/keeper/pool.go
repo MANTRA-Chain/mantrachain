@@ -143,9 +143,7 @@ func (k Keeper) CreatePool(ctx sdk.Context, msg *types.MsgCreatePool) (types.Poo
 	}
 
 	// Send the pool creation fee to the fee collector.
-	whitelisted = k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{k.GetFeeCollector(ctx)})
 	err = k.bankKeeper.SendCoins(ctx, creator, k.GetFeeCollector(ctx), k.GetPoolCreationFee(ctx))
-	k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 	if err != nil {
 		return types.Pool{}, errors.Wrap(err, "insufficient pool creation fee")
 	}
@@ -267,9 +265,7 @@ func (k Keeper) CreateRangedPool(ctx sdk.Context, msg *types.MsgCreateRangedPool
 	// Send the pool creation fee to the fee collector.
 	feeCollector := k.GetFeeCollector(ctx)
 	poolCreationFee := k.GetPoolCreationFee(ctx)
-	whitelisted = k.guardKeeper.AddTransferAccAddressesWhitelist(ctx, []sdk.AccAddress{feeCollector})
 	err = k.bankKeeper.SendCoins(ctx, creator, feeCollector, poolCreationFee)
-	k.guardKeeper.RemoveTransferAccAddressesWhitelist(ctx, whitelisted)
 	if err != nil {
 		return types.Pool{}, errors.Wrap(err, "insufficient pool creation fee")
 	}

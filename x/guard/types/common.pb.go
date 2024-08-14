@@ -25,6 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// WhitelistTransfersAccAddrs defines the structure for whitelist of internal accounts
 type WhitelistTransfersAccAddrs struct {
 	Index         []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
 	Account       []byte `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
@@ -85,6 +86,7 @@ func (m *WhitelistTransfersAccAddrs) GetIsWhitelisted() bool {
 	return false
 }
 
+// MsgAccounts
 type MsgAccounts struct {
 	Accounts []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
 }
@@ -129,6 +131,7 @@ func (m *MsgAccounts) GetAccounts() []string {
 	return nil
 }
 
+// MsgIndexes
 type MsgIndexes struct {
 	Indexes [][]byte `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
 }
@@ -173,6 +176,7 @@ func (m *MsgIndexes) GetIndexes() [][]byte {
 	return nil
 }
 
+// AccountPrivileges defines the structure for account privileges
 type AccountPrivileges struct {
 	Account    []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 	Privileges []byte `protobuf:"bytes,2,opt,name=privileges,proto3" json:"privileges,omitempty"`
@@ -225,6 +229,7 @@ func (m *AccountPrivileges) GetPrivileges() []byte {
 	return nil
 }
 
+// RequiredPrivileges defines the structure for required privileges
 type RequiredPrivileges struct {
 	Index      []byte `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
 	Privileges []byte `protobuf:"bytes,2,opt,name=privileges,proto3" json:"privileges,omitempty"`
@@ -285,6 +290,7 @@ func (m *RequiredPrivileges) GetKind() string {
 	return ""
 }
 
+// AuthzGrantRevokeMsgType
 type AuthzGrantRevokeMsgType struct {
 	TypeUrl string `protobuf:"bytes,1,opt,name=type_url,json=typeUrl,proto3" json:"type_url,omitempty"`
 	Grant   bool   `protobuf:"varint,2,opt,name=grant,proto3" json:"grant,omitempty"`
@@ -337,6 +343,7 @@ func (m *AuthzGrantRevokeMsgType) GetGrant() bool {
 	return false
 }
 
+// AuthzGrantRevokeMsgsTypes
 type AuthzGrantRevokeMsgsTypes struct {
 	Msgs []*AuthzGrantRevokeMsgType `protobuf:"bytes,1,rep,name=msgs,proto3" json:"msgs,omitempty"`
 }
@@ -381,6 +388,7 @@ func (m *AuthzGrantRevokeMsgsTypes) GetMsgs() []*AuthzGrantRevokeMsgType {
 	return nil
 }
 
+// MsgAccountsPrivileges
 type MsgAccountsPrivileges struct {
 	Accounts   []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
 	Privileges [][]byte `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
@@ -433,6 +441,7 @@ func (m *MsgAccountsPrivileges) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgAccountsPrivilegesGrouped
 type MsgAccountsPrivilegesGrouped struct {
 	Accounts   []*MsgAccounts `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
 	Privileges [][]byte       `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
@@ -485,6 +494,7 @@ func (m *MsgAccountsPrivilegesGrouped) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgRequiredPrivileges
 type MsgRequiredPrivileges struct {
 	Indexes    [][]byte `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
 	Privileges [][]byte `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`
@@ -537,6 +547,7 @@ func (m *MsgRequiredPrivileges) GetPrivileges() [][]byte {
 	return nil
 }
 
+// MsgRequiredPrivilegesGrouped
 type MsgRequiredPrivilegesGrouped struct {
 	Indexes    []*MsgIndexes `protobuf:"bytes,1,rep,name=indexes,proto3" json:"indexes,omitempty"`
 	Privileges [][]byte      `protobuf:"bytes,2,rep,name=privileges,proto3" json:"privileges,omitempty"`

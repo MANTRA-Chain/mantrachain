@@ -107,8 +107,8 @@ validators:
         pruning: nothing
       config:
         consensus:
-            timeout_commit: 6s
-            timeout_propose: 6s
+            timeout_commit: 2s
+            timeout_propose: 2s
         moniker: mantrachain-dev-local
         proxy_app: tcp://0.0.0.0:26658
       client:

@@ -27,7 +27,7 @@ ACCOUNT_PRIVILEGES_GUARD_COLL_JSON=$(echo '{"id":"{id}","soul_bonded_nfts": true
 cecho "CYAN" "Create account privileges guard nft collection"
 "$PWD"/build/mantrachaind tx token create-nft-collection "$(echo $ACCOUNT_PRIVILEGES_GUARD_COLL_JSON)" --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --yes --home "$HOMEDIR"
 
-sleep 7
+sleep 3
 
 ACCOUNT_PRIVILEGES_GUARD_NFT_VALIDATOR_JSON=$(echo '{"id":"{id}","title":"AccountPrivileges","description":"AccountPrivileges"}' | sed -e "s/{id}/$VALIDATOR_WALLET/g")
 
@@ -36,16 +36,16 @@ ACCOUNT_PRIVILEGES_GUARD_NFT_ADMIN_JSON=$(echo '{"id":"{id}","title":"AccountPri
 cecho "CYAN" "Mint account privileges guard nfts"
 "$PWD"/build/mantrachaind tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_VALIDATOR_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --receiver $VALIDATOR_WALLET --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --did --yes
 
-sleep 7
+sleep 3
 
 "$PWD"/build/mantrachaind tx token mint-nft "$(echo $ACCOUNT_PRIVILEGES_GUARD_NFT_ADMIN_JSON)" --collection-creator $ADMIN_WALLET --collection-id $ACCOUNT_PRIVILEGES_GUARD_NFT_COLLECTION_ID --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --did --yes
 
-sleep 7
+sleep 3
 
 cecho "CYAN" "Update guard transfer coins"
 "$PWD"/build/mantrachaind tx guard update-guard-transfer-coins true --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes
 
-sleep 7
+sleep 3
 
 cecho "CYAN" "Set module coinfactory CreateDenom required privileges"
 ./build/mantrachaind tx guard update-required-privileges module:coinfactory:CreateDenom AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA//////////8= authz --chain-id $CHAINID --from ${KEYS[2]} --keyring-backend $KEYRING --gas auto --gas-adjustment $GAS_ADJ --gas-prices $GAS_PRICE --home "$HOMEDIR" --yes

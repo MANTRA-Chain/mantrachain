@@ -32,7 +32,7 @@ func DefaultGenesis() *GenesisState {
 	whitelistTransfersAccAddrs := make([]WhitelistTransfersAccAddrs, len(whitelistAddresses))
 	for i, addr := range whitelistAddresses {
 		whitelistTransfersAccAddrs[i] = WhitelistTransfersAccAddrs{
-			Index:         addr,
+			Index:         GetWhitelistTransfersAccAddrsIndex(addr),
 			Account:       addr,
 			IsWhitelisted: true,
 		}
