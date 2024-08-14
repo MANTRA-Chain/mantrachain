@@ -54,8 +54,8 @@ require (
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 	golang.org/x/tools v0.24.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
-	google.golang.org/grpc v1.64.1
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
+	google.golang.org/grpc v1.65.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 	google.golang.org/protobuf v1.34.2
 )
 
@@ -142,7 +142,7 @@ require (
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/uuid/v5 v5.2.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/golang/glog v1.2.0 // indirect
+	github.com/golang/glog v1.2.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/btree v1.1.2 // indirect
