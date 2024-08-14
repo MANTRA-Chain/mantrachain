@@ -97,39 +97,26 @@ func (suite *KeeperTestSuite) TestGenericKeeperSetAndGet() {
 	}
 	for _, tc := range testCases {
 		dd := tc.didFn()
-		suite.keeper.Set(suite.ctx,
+		suite.keeper.SetDidDocument(suite.ctx,
 			[]byte(dd.Id),
-			[]byte{0x01},
 			dd,
-			suite.keeper.Marshal,
 		)
-		suite.keeper.Set(suite.ctx,
+		suite.keeper.SetDidDocument(suite.ctx,
 			[]byte(dd.Id+"1"),
-			[]byte{0x01},
 			dd,
-			suite.keeper.Marshal,
 		)
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
 			if tc.expPass {
-				_, found := suite.keeper.Get(
+				_, found := suite.keeper.GetDidDocument(
 					suite.ctx,
 					[]byte(dd.Id),
-					[]byte{0x01},
-					suite.keeper.UnmarshalDidDocument,
 				)
 				suite.Require().True(found)
 
-				iterator := suite.keeper.GetAll(
+				documents := suite.keeper.GetAllDidDocuments(
 					suite.ctx,
-					[]byte{0x01},
 				)
-				defer iterator.Close()
-
-				var array []interface{}
-				for ; iterator.Valid(); iterator.Next() {
-					array = append(array, iterator.Value())
-				}
-				suite.Require().Equal(2, len(array))
+				suite.Require().Equal(2, len(documents))
 			} else {
 				// TODO write failure cases
 				suite.Require().False(tc.expPass)
@@ -157,31 +144,24 @@ func (suite *KeeperTestSuite) TestGenericKeeperDelete() {
 	}
 	for _, tc := range testCases {
 		dd := tc.didFn()
-		suite.keeper.Set(suite.ctx,
+		suite.keeper.SetDidDocument(suite.ctx,
 			[]byte(dd.Id),
-			[]byte{0x01},
 			dd,
-			suite.keeper.Marshal,
 		)
-		suite.keeper.Set(suite.ctx,
+		suite.keeper.SetDidDocument(suite.ctx,
 			[]byte(dd.Id+"1"),
-			[]byte{0x01},
 			dd,
-			suite.keeper.Marshal,
 		)
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
 			if tc.expPass {
-				suite.keeper.Delete(
+				suite.keeper.DeleteDidDocument(
 					suite.ctx,
 					[]byte(dd.Id),
-					[]byte{0x01},
 				)
 
-				_, found := suite.keeper.Get(
+				_, found := suite.keeper.GetDidDocument(
 					suite.ctx,
 					[]byte(dd.Id),
-					[]byte{0x01},
-					suite.keeper.UnmarshalDidDocument,
 				)
 				suite.Require().False(found)
 

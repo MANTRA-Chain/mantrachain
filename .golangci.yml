@@ -13,7 +13,7 @@ linters:
     - errcheck
     - errname
     - exportloopref
-    # - forcetypeassert
+    - forcetypeassert
     - goconst
     - gofmt
     - goimports
