@@ -1,0 +1,21 @@
+name: Cleanup Unused Tag Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Comma-separated list of tags to delete'
+        required: true
+        type: string
+
+jobs:
+  delete-tagged-images:
+    name: Delete Specific Tagged Images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          tags: ${{ github.event.inputs.tags }}
+          token: ${{ secrets.GITHUB_TOKEN }}
