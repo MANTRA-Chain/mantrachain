@@ -15,6 +15,7 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
+	v3 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v3"
 )
 
 func (app *App) RegisterUpgradeHandlers() {
@@ -64,6 +65,12 @@ func (app *App) RegisterUpgradeHandlers() {
 			upgradeKey,
 			authority,
 		),
+	)
+
+	// v3 upgrade handler
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v3.UpgradeName,
+		v3.CreateUpgradeHandler(app.ModuleManager, app.Configurator(), *app.GovKeeper),
 	)
 
 	// When a planned update height is reached, the old binary will panic

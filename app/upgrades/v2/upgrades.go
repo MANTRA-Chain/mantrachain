@@ -14,10 +14,7 @@ import (
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 )
 
-// NOTE: we're only keeping this logic for the upgrade tests
-// This is not the original upgrade logic.
-// Look into the previous version if want to know what the upgrade logic was
-// CreateUpgradeHandler creates an SDK upgrade handler for v15.0.0
+// CreateUpgradeHandler creates an SDK upgrade handler for v2.0.0
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,

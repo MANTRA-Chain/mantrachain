@@ -1,6 +1,6 @@
-package v2
+package v3
 
 const (
 	// UpgradeName is the shared upgrade plan name
-	UpgradeName = "v2.0.0"
+	UpgradeName = "v3.0.0"
 )
