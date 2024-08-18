@@ -933,6 +933,7 @@ func _Query_RequiredPrivilegesAll_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "mantrachain.guard.v1.Query",
 	HandlerType: (*QueryServer)(nil),

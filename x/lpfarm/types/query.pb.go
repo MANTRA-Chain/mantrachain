@@ -1358,6 +1358,7 @@ func _Query_Rewards_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "mantrachain.lpfarm.v1beta1.Query",
 	HandlerType: (*QueryServer)(nil),
