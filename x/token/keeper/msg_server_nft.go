@@ -87,7 +87,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageGroupedBatch(goCtx context.
 				return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
 			}
 
-			if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+			if nftImageIndex == 0 && len(nft.Images) == 0 {
 				nft.Images = []*types.TokenImage{
 					{
 						Type: nftImage.Type,
@@ -183,7 +183,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImageBatch(goCtx context.Context
 			return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", nft.Id, nftImageIndex)
 		}
 
-		if nftImageIndex == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+		if nftImageIndex == 0 && len(nft.Images) == 0 {
 			nft.Images = []*types.TokenImage{
 				{
 					Type: nftImage.Type,
@@ -268,7 +268,7 @@ func (k msgServer) UpdateRestrictedCollectionNftImage(goCtx context.Context, msg
 		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
 	}
 
-	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+	if msg.Index == 0 && len(nft.Images) == 0 {
 		nft.Images = []*types.TokenImage{
 			{
 				Type: msg.Image.Image.Type,
@@ -353,7 +353,7 @@ func (k msgServer) UpdateGuardSoulBondNftImage(goCtx context.Context, msg *types
 		return nil, errors.Wrapf(types.ErrInvalidNftImage, "nft id %s image invalid url, image index %d", msg.NftId, msg.Index)
 	}
 
-	if msg.Index == 0 && (nft.Images == nil || len(nft.Images) == 0) {
+	if msg.Index == 0 && len(nft.Images) == 0 {
 		nft.Images = []*types.TokenImage{
 			{
 				Type: msg.Image.Image.Type,

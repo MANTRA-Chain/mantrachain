@@ -51,7 +51,7 @@ func (msg *MsgUpdateAccountPrivileges) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrapf(errorstypes.ErrInvalidAddress, "invalid account address (%s)", err)
 	}
-	if msg.Privileges != nil && len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
+	if len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
 		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
 	}
 	return nil

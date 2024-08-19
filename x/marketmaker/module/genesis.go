@@ -17,7 +17,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	ctx, writeCache := ctx.CacheContext()
 
 	// init to prevent nil slice, []types.IncentivePairs(nil)
-	if genState.Params.IncentivePairs == nil || len(genState.Params.IncentivePairs) == 0 {
+	if len(genState.Params.IncentivePairs) == 0 {
 		genState.Params.IncentivePairs = []types.IncentivePair{}
 	}
 
@@ -59,8 +59,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
-	// init to prevent nil slice, []types.IncentivePairs(nil)
-	if genesis.Params.IncentivePairs == nil || len(genesis.Params.IncentivePairs) == 0 {
+	// init to prevent empty slice
+	if len(genesis.Params.IncentivePairs) == 0 {
 		genesis.Params.IncentivePairs = []types.IncentivePair{}
 	}
 

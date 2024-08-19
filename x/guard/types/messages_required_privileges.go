@@ -61,7 +61,7 @@ func (msg *MsgUpdateRequiredPrivileges) ValidateBasic() error {
 	if err != nil {
 		return errors.Wrap(errorstypes.ErrInvalidRequest, "kind is invalid")
 	}
-	if msg.Privileges != nil && len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
+	if len(msg.Privileges) > 0 && len(msg.Privileges) != 32 {
 		return errors.Wrapf(errorstypes.ErrInvalidRequest, "invalid privileges length (%d)", len(msg.Privileges))
 	}
 	return nil
