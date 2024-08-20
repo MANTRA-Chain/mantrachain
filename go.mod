@@ -1,6 +1,9 @@
 module github.com/MANTRA-Finance/mantrachain
 
-go 1.22
+go 1.23
+
+toolchain go1.23.0
+
 replace (
 	github.com/cosmos/ibc-go/v8 => github.com/MANTRA-Chain/ibc-go/v8 v8.0.0-rc.0.0.20240726121104-3e26d15fee54
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
