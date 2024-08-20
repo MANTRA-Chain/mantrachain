@@ -234,7 +234,7 @@ func (c *NftCollectionController) requireNftCollection() error {
 func (c *NftCollectionController) mustNotExist() error {
 	err := c.requireNftCollection()
 	if err == nil {
-		return errors.Wrapf(types.ErrNftCollectionAlreadyExists, c.metadata.Name)
+		return errors.Wrapf(types.ErrNftCollectionAlreadyExists, "collection with name %s already exists", c.metadata.Name)
 	}
 	return nil
 }
@@ -244,7 +244,7 @@ func (c *NftCollectionController) validCollectionMetadataCategory() error {
 		return nil
 	}
 	if _, err := types.ParseNftCollectionCategory(c.metadata.Category); err != nil {
-		return errors.Wrapf(types.ErrInvalidNftCollectionCategory, c.metadata.Category)
+		return errors.Wrapf(types.ErrInvalidNftCollectionCategory, "invalid category: %s", c.metadata.Category)
 	}
 	return nil
 }

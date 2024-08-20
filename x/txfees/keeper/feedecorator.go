@@ -140,7 +140,7 @@ func DeductFees(bankKeeper authtypes.BankKeeper, ctx sdk.Context, acc sdk.Accoun
 
 	err := bankKeeper.SendCoins(ctx, acc.GetAddress(), admin, fees)
 	if err != nil {
-		return errors.Wrapf(errorstypes.ErrInsufficientFunds, err.Error())
+		return errors.Wrapf(errorstypes.ErrInsufficientFunds, "failed to send coins: %s", err.Error())
 	}
 
 	return nil

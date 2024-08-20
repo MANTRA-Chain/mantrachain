@@ -15,7 +15,7 @@ func (msg MsgCreateDidDocument) ValidateBasic() error {
 		return errors.Wrap(ErrInvalidDIDFormat, msg.Id)
 	}
 
-	if msg.Verifications == nil || len(msg.Verifications) == 0 {
+	if len(msg.Verifications) == 0 {
 		return errors.Wrap(errorstypes.ErrInvalidRequest, "verifications are required")
 	}
 
