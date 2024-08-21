@@ -94,6 +94,59 @@ genesis:
         txfees:
             params:
                 base_denom: uom
+        oracle:
+            currency_pair_genesis:
+                - currency_pair:
+                      Base: BTC
+                      Quote: USD
+                  currency_pair_price: null
+                  nonce: 0
+                  id: 1
+                - currency_pair:
+                      Base: ETH
+                      Quote: USD
+                  currency_pair_price: null
+                  nonce: 0
+                  id: 2
+            next_id: 3
+        marketmap:
+            market_map:
+                markets:
+                    BTC/USD:
+                        ticker:
+                            currency_pair:
+                                Base: BTC
+                                Quote: USD
+                            decimals: 5
+                            min_provider_count: 3
+                            enabled: true
+                        provider_configs:
+                            - name: binance_ws
+                              off_chain_ticker: BTCUSDT
+                            - name: coinbase_ws
+                              off_chain_ticker: BTC-USD
+                            - name: okx_ws
+                              off_chain_ticker: BTC-USDT
+                    ETH/USD:
+                        ticker:
+                            currency_pair:
+                                Base: ETH
+                                Quote: USD
+                            decimals: 6
+                            min_provider_count: 3
+                            enabled: true
+                        provider_configs:
+                            - name: binance_ws
+                              off_chain_ticker: ETHUSDT
+                            - name: coinbase_ws
+                              off_chain_ticker: ETH-USD
+                            - name: okx_ws
+                              off_chain_ticker: ETH-USDT
+            last_updated: "0"
+    consensus:
+        params:
+            abci:
+                vote_extensions_enable_height: "1"
     chain_id: mantrachain-devnet-9001
 validators:
     - name: validator
@@ -103,6 +156,8 @@ validators:
             address: 0.0.0.0:9090
         grpc-web:
             address: 0.0.0.0:9091
+        oracle:
+            enabled: true
         minimum-gas-prices: 0.0001uom
         pruning: nothing
       config:

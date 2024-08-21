@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	DefaultAdminAccount                            = ""
-	DefaultAccountPrivilegesTokenCollectionCreator = ""
-	DefaultAccountPrivilegesTokenCollectionId      = ""
+	DefaultAdminAccount                            = "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+	DefaultAccountPrivilegesTokenCollectionCreator = "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
+	DefaultAccountPrivilegesTokenCollectionId      = "account_privileges_guard_nft_collection"
 	DefaultPrivileges                              = append(make([]byte, 24), big.NewInt(0).Sub(
 		big.NewInt(0).
 			Exp(

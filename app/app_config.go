@@ -51,6 +51,12 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
+	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
+	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
+	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 	"google.golang.org/protobuf/types/known/durationpb"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -123,6 +129,10 @@ var (
 		consensustypes.ModuleName,
 		circuittypes.ModuleName,
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
+		marketmaptypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,
@@ -158,6 +168,9 @@ var (
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,
@@ -187,6 +200,9 @@ var (
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 		// chain modules
 		bridgemoduletypes.ModuleName,
 		airdropmoduletypes.ModuleName,
@@ -218,6 +234,7 @@ var (
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
+		{Account: oracletypes.ModuleName, Permissions: []string{}},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 
 		// Mantrachain
@@ -333,6 +350,14 @@ var (
 			{
 				Name:   "tx",
 				Config: appconfig.WrapAny(&txconfigv1.Config{}),
+			},
+			{
+				Name:   oracletypes.ModuleName,
+				Config: appconfig.WrapAny(&oraclemodulev1.Module{}),
+			},
+			{
+				Name:   marketmaptypes.ModuleName,
+				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
 			{
 				Name:   genutiltypes.ModuleName,

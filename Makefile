@@ -138,6 +138,10 @@ test-unit:
 test-cover:
 	@VERSION=$(VERSION) go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace' $(PACKAGES_NOSIMULATION)
 
+test-slinky:
+	docker build -f Dockerfile -t mantra-finance/mantrachain .
+	@VERSION=$(VERSION) cd tests/slinky && go test -v -race .
+
 mocks:
 	@go install github.com/golang/mock/mockgen@v1.6.0
 	sh ./scripts/mockgen.sh

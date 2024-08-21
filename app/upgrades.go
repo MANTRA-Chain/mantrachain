@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 
 	storetypes "cosmossdk.io/store/types"
@@ -12,13 +13,19 @@ import (
 	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
 	v3 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v3"
+	v4 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v4"
 )
 
 func (app *App) RegisterUpgradeHandlers() {
+	var defaultUpgradeHandler = func(goCtx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+		return app.ModuleManager.RunMigrations(goCtx, app.Configurator(), fromVM)
+	}
+
 	for _, subspace := range app.ParamsKeeper.GetSubspaces() {
 		var keyTable paramstypes.KeyTable
 		var customModule bool
@@ -73,6 +80,12 @@ func (app *App) RegisterUpgradeHandlers() {
 		v3.CreateUpgradeHandler(app.ModuleManager, app.Configurator(), *app.GovKeeper),
 	)
 
+	// v4 upgrade handler
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v4.UpgradeName,
+		defaultUpgradeHandler,
+	)
+
 	// When a planned update height is reached, the old binary will panic
 	// writing on disk the height and name of the update that triggered it
 	// This will read that value, and execute the preparations for the upgrade.
@@ -86,6 +99,10 @@ func (app *App) RegisterUpgradeHandlers() {
 	}
 
 	var storeUpgrades *storetypes.StoreUpgrades
+	var upgradeHandler *upgradetypes.UpgradeHandler
+
+	// Slinky upgrader
+	slinkyUpgrade := createSlinkyUpgrader(app)
 
 	switch upgradeInfo.Name {
 	case v2.UpgradeName:
@@ -93,12 +110,18 @@ func (app *App) RegisterUpgradeHandlers() {
 			Added:   []string{"bridge", "circuit"},
 			Deleted: []string{"farming", "rewards"},
 		}
+	case v4.UpgradeName:
+		upgradeHandler = &slinkyUpgrade.Handler
+		storeUpgrades = &slinkyUpgrade.StoreUpgrade
 	default:
 		// no-op
 	}
 
 	if storeUpgrades != nil {
-		// configure store loader that checks if version == upgradeHeight and applies store upgrades
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, storeUpgrades))
+	}
+
+	if upgradeHandler != nil {
+		app.UpgradeKeeper.SetUpgradeHandler(upgradeInfo.Name, *upgradeHandler)
 	}
 }

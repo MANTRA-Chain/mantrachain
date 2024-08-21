@@ -97,6 +97,9 @@ import (
 	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
+	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
+	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
+
 	"github.com/MANTRA-Finance/mantrachain/docs"
 
 	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
@@ -173,6 +176,10 @@ type App struct {
 	// IBC Hooks Middleware
 	Ics20WasmHooks   *ibchooks.WasmHooks
 	HooksICS4Wrapper ibchooks.ICS4Middleware
+
+	// Slinky
+	OracleKeeper    *oraclekeeper.Keeper
+	MarketMapKeeper *marketmapkeeper.Keeper
 
 	BridgeKeeper      bridgemodulekeeper.Keeper
 	AirdropKeeper     airdropmodulekeeper.Keeper
@@ -337,6 +344,10 @@ func New(
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 
+		// Slinky Keepers
+		&app.MarketMapKeeper,
+		&app.OracleKeeper,
+
 		// Mantrachain Keepers
 		&app.AirdropKeeper,
 		&app.BridgeKeeper,
@@ -385,6 +396,16 @@ func New(
 	// }
 
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
+
+	// oracle initialization
+	client, metrics, err := app.initializeOracle(appOpts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize oracle client and metrics: %w", err)
+	}
+
+	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+
+	app.initializeABCIExtensions(client, metrics)
 
 	// Register legacy modules
 	wasmConfig, err := app.registerLegacyModules(appOpts, wasmOpts)
