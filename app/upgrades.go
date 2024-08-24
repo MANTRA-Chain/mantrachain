@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"fmt"
 
 	storetypes "cosmossdk.io/store/types"
@@ -13,8 +12,9 @@ import (
 	marketmakertypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 
 	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
 	v3 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v3"
@@ -22,10 +22,6 @@ import (
 )
 
 func (app *App) RegisterUpgradeHandlers() {
-	var defaultUpgradeHandler = func(goCtx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-		return app.ModuleManager.RunMigrations(goCtx, app.Configurator(), fromVM)
-	}
-
 	for _, subspace := range app.ParamsKeeper.GetSubspaces() {
 		var keyTable paramstypes.KeyTable
 		var customModule bool
@@ -83,7 +79,7 @@ func (app *App) RegisterUpgradeHandlers() {
 	// v4 upgrade handler
 	app.UpgradeKeeper.SetUpgradeHandler(
 		v4.UpgradeName,
-		defaultUpgradeHandler,
+		v4.CreateUpgradeHandler(app.ModuleManager, app.Configurator(), *app.GovKeeper, *app.GuardKeeper, app.IBCKeeper.ChannelKeeper, app.ConsensusParamsKeeper, *app.MarketMapKeeper),
 	)
 
 	// When a planned update height is reached, the old binary will panic
@@ -101,9 +97,6 @@ func (app *App) RegisterUpgradeHandlers() {
 	var storeUpgrades *storetypes.StoreUpgrades
 	var upgradeHandler *upgradetypes.UpgradeHandler
 
-	// Slinky upgrader
-	slinkyUpgrade := createSlinkyUpgrader(app)
-
 	switch upgradeInfo.Name {
 	case v2.UpgradeName:
 		storeUpgrades = &storetypes.StoreUpgrades{
@@ -111,8 +104,13 @@ func (app *App) RegisterUpgradeHandlers() {
 			Deleted: []string{"farming", "rewards"},
 		}
 	case v4.UpgradeName:
-		upgradeHandler = &slinkyUpgrade.Handler
-		storeUpgrades = &slinkyUpgrade.StoreUpgrade
+		storeUpgrades = &storetypes.StoreUpgrades{
+			Added: []string{
+				marketmaptypes.ModuleName,
+				oracletypes.ModuleName,
+			},
+			Deleted: []string{"icahost", "icacontroller"},
+		}
 	default:
 		// no-op
 	}

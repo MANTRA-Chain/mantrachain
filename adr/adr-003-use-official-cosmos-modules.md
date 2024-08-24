@@ -16,7 +16,7 @@ Move to only use official imports of Comsos-SDK, IBC-Go and other future officia
 
 ## Status
 
-Draft
+Accepted
 
 ## Consequences
 

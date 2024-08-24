@@ -2,18 +2,11 @@ package app
 
 import (
 	"context"
-	"fmt"
-	"slices"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	oracleconfig "github.com/skip-mev/slinky/oracle/config"
 
-	storetypes "cosmossdk.io/store/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	oraclepreblock "github.com/skip-mev/slinky/abci/preblock/oracle"
 	"github.com/skip-mev/slinky/abci/strategies/aggregator"
@@ -22,13 +15,6 @@ import (
 	"github.com/skip-mev/slinky/pkg/math/voteweighted"
 	oracleclient "github.com/skip-mev/slinky/service/clients/oracle"
 	servicemetrics "github.com/skip-mev/slinky/service/metrics"
-	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
-	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
-
-	tmtypes "github.com/cometbft/cometbft/proto/tendermint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	"github.com/skip-mev/slinky/cmd/constants/marketmaps"
 
 	"github.com/skip-mev/slinky/abci/proposals"
 
@@ -150,89 +136,4 @@ func (app *App) initializeABCIExtensions(oracleClient oracleclient.OracleClient,
 	)
 	app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
 	app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
-}
-
-type AppUpgrade struct {
-	Handler      upgradetypes.UpgradeHandler
-	StoreUpgrade storetypes.StoreUpgrades
-}
-
-// createSlinkyUpgrader returns the upgrade name and an upgrade handler that:
-// - runs migrations
-// - updates the consensus keeper params with a vote extension enable height. (height of upgrade + 10).
-// - adds the core markets to x/marketmap keeper.
-// additionally, it returns the required StoreUpgrades needed for the new slinky modules added to this chain.
-func createSlinkyUpgrader(app *App) AppUpgrade {
-	return AppUpgrade{
-		Handler: func(ctx context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-			migrations, err := app.ModuleManager.RunMigrations(ctx, app.Configurator(), fromVM)
-			if err != nil {
-				return nil, err
-			}
-			// upgrade consensus params to enable vote extensions
-			consensusParams, err := app.ConsensusParamsKeeper.Params(ctx, nil)
-			if err != nil {
-				return nil, err
-			}
-			sdkCtx := sdk.UnwrapSDKContext(ctx)
-			consensusParams.Params.Abci = &tmtypes.ABCIParams{
-				VoteExtensionsEnableHeight: sdkCtx.BlockHeight() + int64(10),
-			}
-			_, err = app.ConsensusParamsKeeper.UpdateParams(ctx, &consensustypes.MsgUpdateParams{
-				Authority: app.ConsensusParamsKeeper.GetAuthority(),
-				Block:     consensusParams.Params.Block,
-				Evidence:  consensusParams.Params.Evidence,
-				Validator: consensusParams.Params.Validator,
-				Abci:      consensusParams.Params.Abci,
-			})
-			if err != nil {
-				return nil, err
-			}
-
-			// add core markets
-			coreMarkets := marketmaps.CoreMarketMap
-			markets := coreMarkets.Markets
-			keys := make([]string, 0, len(markets))
-			for name := range markets {
-				keys = append(keys, name)
-			}
-			slices.Sort(keys)
-
-			// iterates over slice and not map
-			for _, marketName := range keys {
-				// create market
-				market := markets[marketName]
-				err = app.MarketMapKeeper.CreateMarket(sdkCtx, market)
-				if err != nil {
-					return nil, err
-				}
-
-				// invoke hooks
-				err = app.MarketMapKeeper.Hooks().AfterMarketCreated(sdkCtx, market)
-				if err != nil {
-					return nil, err
-				}
-			}
-
-			err = app.MarketMapKeeper.SetParams(
-				sdkCtx,
-				marketmaptypes.Params{
-					Admin: authtypes.NewModuleAddress(govtypes.ModuleName).String(), // governance. allows gov to add or remove market authorities.
-					// market authority addresses may add and update markets to the x/marketmap module
-					MarketAuthorities: []string{
-						authtypes.NewModuleAddress(govtypes.ModuleName).String(), // governance
-					}},
-			)
-			if err != nil {
-				return nil, fmt.Errorf("failed to set x/marketmap params: %w", err)
-			}
-			return migrations, nil
-		},
-		StoreUpgrade: storetypes.StoreUpgrades{
-			Added: []string{
-				marketmaptypes.ModuleName,
-				oracletypes.ModuleName,
-			},
-		},
-	}
 }
