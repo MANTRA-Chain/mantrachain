@@ -38,7 +38,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/prometheus/client_golang v1.20.1
+	github.com/prometheus/client_golang v1.20.2
 	github.com/skip-mev/slinky v1.0.10
 	github.com/spf13/cast v1.7.0
 	github.com/spf13/cobra v1.8.1
