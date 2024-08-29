@@ -1,4 +1,4 @@
-# ADR 006: Standardise our coinfactory protobuf
+# ADR 006: Standardise our tokenfactory protobuf namespace
 
 ## Context
 
@@ -10,4 +10,4 @@ In order to allow for CosmWasm developers that are active on chains such as Osmo
 
 ## Status
 
-Proposed
+Accepted
