@@ -62,7 +62,6 @@ jobs:
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
 
-      # TODO: uncomment the following lines to enable the security scan once public
 
-      # - name: Perform CodeQL Analysis
-      #   uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
