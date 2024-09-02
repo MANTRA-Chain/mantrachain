@@ -2,6 +2,8 @@ module github.com/MANTRA-Finance/mantrachain
 
 go 1.23
 
+toolchain go1.23.0
+
 replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// replace broken goleveldb
