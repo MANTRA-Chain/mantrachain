@@ -8,7 +8,7 @@
 
 ## What is an ADR?
 
-An ADR is a document to document an implementation and design that may or may not have been discussed in an RFC. While an RFC is meant to replace synchoronus communication in a distributed environment, an ADR is meant to document an already made decision. An ADR wont come with much of a communication overhead because the discussion was recorded in an RFC or a synchronous discussion. If the consensus came from a synchoronus discussion then a short excerpt should be added to the ADR to explain the goals.
+An ADR is a document to document an implementation and design that may or may not have been discussed in an RFC. While an RFC is meant to replace synchoronus communication in a distributed environment, an ADR is meant to document an already made decision. An ADR won't come with much of a communication overhead because the discussion was recorded in an RFC or a synchronous discussion. If the consensus came from a synchoronus discussion then a short excerpt should be added to the ADR to explain the goals.
 
 ## ADR life cycle
 
@@ -49,7 +49,7 @@ DRAFT -> PROPOSED -> LAST CALL yyyy-mm-dd -> ACCEPTED | REJECTED -> SUPERSEDED b
 * `LAST CALL <date for the last call>`: [optional] clear notify that we are close to accept updates. Changing a status to `LAST CALL` means that social consensus (of mantrachain maintainers) has been reached and we still want to give it a time to let the community react or analyze.
 * `ACCEPTED`: ADR which will represent a currently implemented or to be implemented architecture design.
 * `REJECTED`: ADR can go from PROPOSED or ACCEPTED to rejected if the consensus among project stakeholders will decide so.
-* `SUPERSEEDED by ADR-xxx`: ADR which has been superseded by a new ADR.
+* `SUPERSEDED by ADR-xxx`: ADR which has been superseded by a new ADR.
 * `ABANDONED`: the ADR is no longer pursued by the original authors.
 
 ## Language used in ADR

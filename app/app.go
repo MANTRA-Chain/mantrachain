@@ -1,12 +1,10 @@
 package app
 
 import (
-	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
+	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
@@ -21,20 +19,9 @@ import (
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
 	"github.com/MANTRA-Finance/mantrachain/docs"
-	airdropmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
-	bridgemodulekeeper "github.com/MANTRA-Finance/mantrachain/x/bridge/keeper"
-	coinfactorymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
-	didmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/did/keeper"
-	guardmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
-	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
-	lpfarmmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
-	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
-	tokenmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/token/keeper"
-	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -47,11 +34,12 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	_ "github.com/cosmos/cosmos-sdk/x/auth" // import for side-effects
-	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/auth/vesting"   // import for side-effects
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	_ "github.com/cosmos/cosmos-sdk/x/auth/vesting" // import for side-effects
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/authz/module" // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/bank"         // import for side-effects
@@ -80,9 +68,6 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
-	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
-	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -92,8 +77,6 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
-	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
 )
 
 const (
@@ -146,36 +129,18 @@ type App struct {
 	ICAControllerKeeper icacontrollerkeeper.Keeper
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
-	IBCHooksKeeper      ibchookskeeper.Keeper
 
 	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedIBCTransferKeeper   capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
 
+	// CosmWasm
 	WasmKeeper       wasmkeeper.Keeper
 	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
-	ContractKeeper   *wasmkeeper.PermissionedKeeper
 
-	// IBC Hooks Middleware
-	Ics20WasmHooks   *ibchooks.WasmHooks
-	HooksICS4Wrapper ibchooks.ICS4Middleware
-
-	// Slinky
-	OracleKeeper    *oraclekeeper.Keeper
-	MarketMapKeeper *marketmapkeeper.Keeper
-
-	BridgeKeeper      bridgemodulekeeper.Keeper
-	AirdropKeeper     airdropmodulekeeper.Keeper
-	CoinfactoryKeeper coinfactorymodulekeeper.Keeper
-	DidKeeper         didmodulekeeper.Keeper
-	TokenKeeper       tokenmodulekeeper.Keeper
-	GuardKeeper       *guardmodulekeeper.Keeper
-	MarketmakerKeeper marketmakermodulekeeper.Keeper
-	LiquidityKeeper   *liquiditymodulekeeper.Keeper
-	LpfarmKeeper      lpfarmmodulekeeper.Keeper
-	TxfeesKeeper      txfeesmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -183,13 +148,12 @@ type App struct {
 }
 
 func init() {
-	userHomeDir, err := os.UserHomeDir()
+	var err error
+	clienthelpers.EnvPrefix = Name
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory("." + Name)
 	if err != nil {
 		panic(err)
 	}
-
-	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
-
 	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
 }
 
@@ -216,14 +180,13 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 func AppConfig() depinject.Config {
 	return depinject.Configs(
 		appConfig,
-		// Loads the app config from a YAML file.
+		// Alternatively, load the app config from a YAML file.
 		// appconfig.LoadYAML(AppConfigYAML),
 		depinject.Supply(
 			// supply custom module basics
 			map[string]module.AppModuleBasic{
-				genutiltypes.ModuleName:  genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
-				govtypes.ModuleName:      gov.NewAppModuleBasic(getGovProposalHandlers()),
-				ibchookstypes.ModuleName: ibchooks.AppModuleBasic{},
+				genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+				govtypes.ModuleName:     gov.NewAppModuleBasic(getGovProposalHandlers()),
 				// this line is used by starport scaffolding # stargate/appConfig/moduleBasic
 			},
 		),
@@ -237,67 +200,30 @@ func New(
 	traceStore io.Writer,
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
-	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
 	var (
-		app        = &App{}
+		app        = &App{ScopedKeepers: make(map[string]capabilitykeeper.ScopedKeeper)}
 		appBuilder *runtime.AppBuilder
 
 		// merge the AppConfig and other configuration in one config
 		appConfig = depinject.Configs(
 			AppConfig(),
 			depinject.Supply(
-				// Supply the application options
-				appOpts,
+				appOpts, // supply app options
+				logger,  // supply logger
 				// Supply with IBC keeper getter for the IBC modules with App Wiring.
 				// The IBC Keeper cannot be passed because it has not been initiated yet.
 				// Passing the getter, the app IBC Keeper will always be accessible.
 				// This needs to be removed after IBC supports App Wiring.
 				app.GetIBCKeeper,
 				app.GetCapabilityScopedKeeper,
-				app.GetWasmKeeper,
-				// Supply the logger
-				logger,
 
-				// ADVANCED CONFIGURATION
-				//
-				// AUTH
-				//
-				// For providing a custom function required in auth to generate custom account types
-				// add it below. By default the auth module uses simulation.RandomGenesisAccounts.
-				//
-				// authtypes.RandomGenesisAccountsFn(simulation.RandomGenesisAccounts),
-				//
-				// For providing a custom a base account type add it below.
-				// By default the auth module uses authtypes.ProtoBaseAccount().
-				//
-				// func() sdk.AccountI { return authtypes.ProtoBaseAccount() },
-				//
-				// For providing a different address codec, add it below.
-				// By default the auth module uses a Bech32 address codec,
-				// with the prefix defined in the auth module configuration.
-				//
-				// func() address.Codec { return <- custom address codec type -> }
-
-				//
-				// STAKING
-				//
-				// For provinding a different validator and consensus address codec, add it below.
-				// By default the staking module uses the bech32 prefix provided in the auth config,
-				// and appends "valoper" and "valcons" for validator and consensus addresses respectively.
-				// When providing a custom address codec in auth, custom address codecs must be provided here as well.
-				//
-				// func() runtime.ValidatorAddressCodec { return <- custom validator address codec type -> }
-				// func() runtime.ConsensusAddressCodec { return <- custom consensus address codec type -> }
-
-				//
-				// MINT
-				//
-
-				// For providing a custom inflation function for x/mint add here your
-				// custom function that implements the minttypes.InflationCalculationFn
-				// interface.
+				// here alternative options can be supplied to the DI container.
+				// those options can be used f.e to override the default behavior of some modules.
+				// for instance supplying a custom address codec for not using bech32 addresses.
+				// read the depinject documentation and depinject module wiring for more information
+				// on available options and how to use them.
 			),
 		)
 	)
@@ -308,9 +234,6 @@ func New(
 		&app.legacyAmino,
 		&app.txConfig,
 		&app.interfaceRegistry,
-
-		&app.GuardKeeper,
-
 		&app.AccountKeeper,
 		&app.BankKeeper,
 		&app.StakingKeeper,
@@ -328,110 +251,21 @@ func New(
 		&app.NFTKeeper,
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
-
-		// Slinky Keepers
-		&app.MarketMapKeeper,
-		&app.OracleKeeper,
-
-		// Mantrachain Keepers
-		&app.AirdropKeeper,
-		&app.BridgeKeeper,
-		&app.CoinfactoryKeeper,
-		&app.DidKeeper,
-		&app.TokenKeeper,
-		&app.MarketmakerKeeper,
-		&app.LiquidityKeeper,
-		&app.LpfarmKeeper,
-		&app.TxfeesKeeper,
-		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)
 	}
 
-	// Below we could construct and set an application specific mempool and
-	// ABCI 1.0 PrepareProposal and ProcessProposal handlers. These defaults are
-	// already set in the SDK's BaseApp, this shows an example of how to override
-	// them.
-	//
-	// Example:
-	//
-	// app.App = appBuilder.Build(...)
-	// nonceMempool := mempool.NewSenderNonceMempool()
-	// abciPropHandler := NewDefaultProposalHandler(nonceMempool, app.App.BaseApp)
-	//
-	// app.App.BaseApp.SetMempool(nonceMempool)
-	// app.App.BaseApp.SetPrepareProposal(abciPropHandler.PrepareProposalHandler())
-	// app.App.BaseApp.SetProcessProposal(abciPropHandler.ProcessProposalHandler())
-	//
-	// Alternatively, you can construct BaseApp options, append those to
-	// baseAppOptions and pass them to the appBuilder.
-	//
-	// Example:
-	//
-	// prepareOpt = func(app *baseapp.BaseApp) {
-	// 	abciPropHandler := baseapp.NewDefaultProposalHandler(nonceMempool, app)
-	// 	app.SetPrepareProposal(abciPropHandler.PrepareProposalHandler())
-	// }
-	// baseAppOptions = append(baseAppOptions, prepareOpt)
-	//
-	// create and set vote extension handler
-	// voteExtOp := func(bApp *baseapp.BaseApp) {
-	// 	voteExtHandler := NewVoteExtensionHandler()
-	// 	voteExtHandler.SetHandlers(bApp)
-	// }
+	// add to default baseapp options
+	// enable optimistic execution
+	baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
 
+	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
-	// oracle initialization
-	client, metrics, err := app.initializeOracle(appOpts)
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize oracle client and metrics: %w", err)
-	}
-
-	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
-
-	app.initializeABCIExtensions(client, metrics)
-
-	// Register legacy modules
-	wasmConfig, err := app.registerLegacyModules(appOpts, wasmOpts)
-	if err != nil {
+	// register legacy modules
+	if err := app.registerIBCModules(appOpts); err != nil {
 		return nil, err
 	}
-
-	// must be before Loading version
-	// requires the snapshot store to be created and registered as a BaseAppOption
-	// see cmd/wasmd/root.go: 206 - 214 approx
-	if manager := app.SnapshotManager(); manager != nil {
-		err := manager.RegisterExtensions(
-			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to register snapshot extension: %w", err)
-		}
-	}
-
-	// Ante handler
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:         app.AccountKeeper,
-			BankKeeper:            app.BankKeeper,
-			SignModeHandler:       app.txConfig.SignModeHandler(),
-			FeegrantKeeper:        app.FeeGrantKeeper,
-			SigGasConsumer:        authante.DefaultSigVerificationGasConsumer,
-			CircuitKeeper:         &app.CircuitBreakerKeeper,
-			WasmConfig:            &wasmConfig,
-			WasmKeeper:            &app.WasmKeeper,
-			TXCounterStoreService: runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
-			GuardKeeper:           app.GuardKeeper,
-			LiquidityKeeper:       app.LiquidityKeeper,
-			TxfeesKeeper:          &app.TxfeesKeeper,
-		},
-	)
-	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %w", err))
-	}
-
-	app.SetAnteHandler(anteHandler)
 
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
@@ -443,41 +277,28 @@ func New(
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
-	//
-	// NOTE: this is not required apps that don't use the simulator for fuzz testing transactions
-	// overrideModules := map[string]module.AppModuleSimulation{
-	// 	authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
-	// }
-	// app.sm = module.NewSimulationManagerFromAppModules(app.ModuleManager.Modules, overrideModules)
-	// app.sm.RegisterStoreDecoders()
+	overrideModules := map[string]module.AppModuleSimulation{
+		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+	}
+	app.sm = module.NewSimulationManagerFromAppModules(app.ModuleManager.Modules, overrideModules)
+	app.sm.RegisterStoreDecoders()
 
-	// A custom InitChainer can be set if extra pre-init-genesis logic is required.
-	// By default, when using app wiring enabled module, this is not required.
-	// For instance, the upgrade module will set automatically the module version map in its init genesis thanks to app wiring.
-	// However, when registering a module manually (i.e. that does not support app wiring), the module version map
-	// must be set manually as follow. The upgrade module will de-duplicate the module version map.
-	//
-	// app.SetInitChainer(func(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
-	// 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap())
-	// 	return app.App.InitChainer(ctx, req)
-	// })
-
-	app.RegisterUpgradeHandlers()
+	// A custom InitChainer sets if extra pre-init-genesis logic is required.
+	// This is necessary for manually registered modules that do not support app wiring.
+	// Manually set the module version map as shown below.
+	// The upgrade module will automatically handle de-duplication of the module version map.
+	app.SetInitChainer(func(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+		if err := app.UpgradeKeeper.SetModuleVersionMap(ctx, app.ModuleManager.GetVersionMap()); err != nil {
+			return nil, err
+		}
+		return app.App.InitChainer(ctx, req)
+	})
 
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
 	}
 
-	if loadLatest {
-		ctx := app.BaseApp.NewUncachedContext(true, cmtproto.Header{})
-
-		// Initialize pinned codes in wasmvm as they are not persisted there
-		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
-			return nil, fmt.Errorf("failed to initialize pinned codes: %w", err)
-		}
-	}
-
-	return app, nil
+	return app, app.WasmKeeper.InitializePinnedCodes(app.NewUncachedContext(true, tmproto.Header{}))
 }
 
 // LegacyAmino returns App's amino codec.
@@ -494,14 +315,6 @@ func (app *App) LegacyAmino() *codec.LegacyAmino {
 // for modules to register their own custom testing types.
 func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
-}
-
-// AppCodec sets the App's app codec.
-//
-// NOTE: This is solely to be used for testing purposes as it may be desirable
-// for modules to register their own custom testing types.
-func (app *App) SetAppCodec(cdc codec.Codec) {
-	app.appCodec = cdc
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
@@ -548,12 +361,12 @@ func (app *App) GetIBCKeeper() *ibckeeper.Keeper {
 
 // GetCapabilityScopedKeeper returns the capability scoped keeper.
 func (app *App) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper.ScopedKeeper {
-	return app.CapabilityKeeper.ScopeToModule(moduleName)
-}
-
-// GetWasmKeeper returns the Wasm keeper.
-func (app *App) GetWasmKeeper() wasmkeeper.Keeper {
-	return app.WasmKeeper
+	sk, ok := app.ScopedKeepers[moduleName]
+	if !ok {
+		sk = app.CapabilityKeeper.ScopeToModule(moduleName)
+		app.ScopedKeepers[moduleName] = sk
+	}
+	return sk
 }
 
 // SimulationManager implements the SimulationApp interface.

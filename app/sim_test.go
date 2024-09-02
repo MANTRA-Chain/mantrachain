@@ -86,7 +86,7 @@ func BenchmarkSimulation(b *testing.B) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	bApp, err := app.New(logger, db, nil, true, appOptions, nil, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
+	bApp, err := app.New(logger, db, nil, true, appOptions, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
 	require.NoError(b, err)
 	require.Equal(b, app.Name, bApp.Name())
 
@@ -132,7 +132,7 @@ func TestAppImportExport(t *testing.T) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	bApp, err := app.New(logger, db, nil, true, appOptions, nil, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
+	bApp, err := app.New(logger, db, nil, true, appOptions, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
 	require.NoError(t, err)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -173,7 +173,7 @@ func TestAppImportExport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp, err := app.New(log.NewNopLogger(), newDB, nil, true, appOptions, nil, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
+	newApp, err := app.New(log.NewNopLogger(), newDB, nil, true, appOptions, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
 	require.NoError(t, err)
 	require.Equal(t, app.Name, newApp.Name())
 
@@ -228,7 +228,7 @@ func TestAppImportExport(t *testing.T) {
 
 		fmt.Printf("compared %d different key/value pairs between %s and %s\n", len(failedKVAs), appKeyA, appKeyB)
 
-		require.Equal(t, 0, len(failedKVAs), simtestutil.GetSimulationLog(keyName, bApp.SimulationManager().StoreDecoders, failedKVAs, failedKVBs))
+		require.Empty(t, failedKVAs, simtestutil.GetSimulationLog(keyName, bApp.SimulationManager().StoreDecoders, failedKVAs, failedKVBs))
 	}
 }
 
@@ -251,7 +251,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	bApp, err := app.New(logger, db, nil, true, appOptions, nil, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
+	bApp, err := app.New(logger, db, nil, true, appOptions, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
 	require.NoError(t, err)
 	require.Equal(t, app.Name, bApp.Name())
 
@@ -297,7 +297,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp, err := app.New(log.NewNopLogger(), newDB, nil, true, appOptions, nil, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
+	newApp, err := app.New(log.NewNopLogger(), newDB, nil, true, appOptions, fauxMerkleModeOpt, baseapp.SetChainID(SimAppChainID))
 	require.NoError(t, err)
 	require.Equal(t, app.Name, newApp.Name())
 
@@ -331,6 +331,7 @@ func TestAppStateDeterminism(t *testing.T) {
 	config.ExportParamsPath = ""
 	config.OnOperation = true
 	config.AllInvariants = true
+	config.ChainID = SimAppChainID
 
 	numSeeds := 3
 	numTimesToRunPerSeed := 3 // This used to be set to 5, but we've temporarily reduced it to 3 for the sake of faster CI.
@@ -370,8 +371,6 @@ func TestAppStateDeterminism(t *testing.T) {
 			} else {
 				logger = log.NewNopLogger()
 			}
-			chainID := fmt.Sprintf("chain-id-%d-%d", i, j)
-			config.ChainID = chainID
 
 			db := dbm.NewMemDB()
 			bApp, err := app.New(
@@ -380,9 +379,8 @@ func TestAppStateDeterminism(t *testing.T) {
 				nil,
 				true,
 				appOptions,
-				nil,
 				interBlockCacheOpt(),
-				baseapp.SetChainID(chainID),
+				baseapp.SetChainID(SimAppChainID),
 			)
 			require.NoError(t, err)
 

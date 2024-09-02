@@ -2,7 +2,7 @@
 
 ## Context
 
-There is a need for a scalable structure of Mantrachain ADR documentation. Current decisons made are often recorded at multiple different places (notion, slack, other messaging apps) or not recorded at all. Starting from commit 99fd49f11413d36993ef31fdca7b3455c3de2f0d, the adr folder is created to record any architectural decisions the Mantrachain team makes.
+There is a need for a scalable structure of Mantrachain ADR documentation. Current decisions made are often recorded at multiple different places (notion, slack, other messaging apps) or not recorded at all. Starting from commit 99fd49f11413d36993ef31fdca7b3455c3de2f0d, the adr folder is created to record any architectural decisions the Mantrachain team makes.
 
 ## Decision
 

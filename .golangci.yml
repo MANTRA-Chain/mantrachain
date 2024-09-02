@@ -10,13 +10,18 @@ linters:
   enable:
     - asciicheck
     - bidichk
+    - bodyclose
+    - canonicalheader
     - durationcheck
     - errcheck
     - errname
     - exportloopref
+    - fatcontext
     - forcetypeassert
     - gci
     - goconst
+    - gochecksumtype
+    - gocritic
     - gofumpt
     - goheader
     - gomodguard
@@ -25,14 +30,18 @@ linters:
     - govet
     - importas
     - ineffassign
+    - maintidx
     - makezero
     - misspell
     - nakedret
     - nilnil
+    - nolintlint
     - promlinter
     - staticcheck
     - stylecheck
     - tenv
+    - testableexamples
+    - testifylint
     - thelper
     - tparallel
     - typecheck
@@ -42,6 +51,8 @@ linters:
     - whitespace
     - unparam
     - revive
+    - usestdlibvars
+    - zerologlint
 
 linters-settings:
   revive:

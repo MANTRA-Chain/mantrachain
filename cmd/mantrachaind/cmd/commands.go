@@ -6,7 +6,8 @@ import (
 
 	"cosmossdk.io/log"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
 	"github.com/MANTRA-Finance/mantrachain/app"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -22,8 +23,6 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -51,13 +50,15 @@ func initRootCmd(
 		txCommand(),
 		keys.Commands(),
 	)
+	wasmcli.ExtendUnsafeResetAllCmd(rootCmd)
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+	wasm.AddModuleInitFlags(startCmd)
 }
 
-// genesisCommand builds genesis-related `mantrachaind genesis` command. Users may provide application specific commands as a parameter
+// genesisCommand builds genesis-related `mantrad genesis` command. Users may provide application specific commands as a parameter
 func genesisCommand(txConfig client.TxConfig, basicManager module.BasicManager, cmds ...*cobra.Command) *cobra.Command {
 	cmd := genutilcli.Commands(txConfig, basicManager, app.DefaultNodeHome)
 
@@ -126,15 +127,9 @@ func newApp(
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 
-	var wasmOpts []wasmkeeper.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
-
 	app, err := app.New(
 		logger, db, traceStore, true,
 		appOpts,
-		wasmOpts,
 		baseappOptions...,
 	)
 	if err != nil {
@@ -174,10 +169,9 @@ func appExport(
 	// overwrite the FlagInvCheckPeriod
 	viperAppOpts.Set(server.FlagInvCheckPeriod, 1)
 	appOpts = viperAppOpts
-	var emptyWasmOpts []wasmkeeper.Option
 
 	if height != -1 {
-		bApp, err = app.New(logger, db, traceStore, false, appOpts, emptyWasmOpts)
+		bApp, err = app.New(logger, db, traceStore, false, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}
@@ -186,7 +180,7 @@ func appExport(
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		bApp, err = app.New(logger, db, traceStore, true, appOpts, emptyWasmOpts)
+		bApp, err = app.New(logger, db, traceStore, true, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}

@@ -7,7 +7,3 @@ release/
 *.dot
 *.log
 *.ign
-build/
-coverage.txt
-.github/files/.gitconfig-goreleaser
-dist/

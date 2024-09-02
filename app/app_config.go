@@ -25,43 +25,13 @@ import (
 	txconfigv1 "cosmossdk.io/api/cosmos/tx/config/v1"
 	upgrademodulev1 "cosmossdk.io/api/cosmos/upgrade/module/v1"
 	vestingmodulev1 "cosmossdk.io/api/cosmos/vesting/module/v1"
-	"cosmossdk.io/core/appconfig"
+	"cosmossdk.io/depinject/appconfig"
 	circuittypes "cosmossdk.io/x/circuit/types"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	"cosmossdk.io/x/feegrant"
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	airdropmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/airdrop/module/v1"
-	bridgemodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/bridge/module/v1"
-	coinfactorymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/coinfactory/module/v1"
-	didmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/did/module/v1"
-	guardmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/guard/module/v1"
-	liquiditymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/liquidity/module/v1"
-	lpfarmmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/lpfarm/module/v1"
-	marketmakermodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/marketmaker/module/v1"
-	tokenmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/token/module/v1"
-	txfeesmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/txfees/module/v1"
-	_ "github.com/MANTRA-Finance/mantrachain/x/airdrop/module" // import for side-effects
-	airdropmoduletypes "github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/bridge/module" // import for side-effects
-	bridgemoduletypes "github.com/MANTRA-Finance/mantrachain/x/bridge/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/coinfactory/module" // import for side-effects
-	coinfactorymoduletypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/did/module" // import for side-effects
-	didmoduletypes "github.com/MANTRA-Finance/mantrachain/x/did/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/guard/module" // import for side-effects
-	guardmoduletypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/liquidity/module" // import for side-effects
-	liquiditymoduletypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/lpfarm/module" // import for side-effects
-	lpfarmmoduletypes "github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/marketmaker/module" // import for side-effects
-	marketmakermoduletypes "github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/token/module" // import for side-effects
-	tokenmoduletypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
-	_ "github.com/MANTRA-Finance/mantrachain/x/txfees/module" // import for side-effects
-	txfeesmoduletypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -82,12 +52,6 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
-	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
-	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
-	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
-	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
-	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 
@@ -120,27 +84,12 @@ var (
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		circuittypes.ModuleName,
 		nft.ModuleName,
 		group.ModuleName,
 		consensustypes.ModuleName,
 		circuittypes.ModuleName,
-		wasmtypes.ModuleName,
-		// slinky modules
-		oracletypes.ModuleName,
-		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
-		marketmaptypes.ModuleName,
 		// chain modules
-		bridgemoduletypes.ModuleName,
-		airdropmoduletypes.ModuleName,
-		coinfactorymoduletypes.ModuleName,
-		didmoduletypes.ModuleName,
-		tokenmoduletypes.ModuleName,
-		guardmoduletypes.ModuleName,
-		marketmakermoduletypes.ModuleName,
-		liquiditymoduletypes.ModuleName,
-		lpfarmmoduletypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
+		wasmtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -164,21 +113,8 @@ var (
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
-		wasmtypes.ModuleName,
-		// slinky modules
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		// chain modules
-		bridgemoduletypes.ModuleName,
-		airdropmoduletypes.ModuleName,
-		coinfactorymoduletypes.ModuleName,
-		didmoduletypes.ModuleName,
-		tokenmoduletypes.ModuleName,
-		guardmoduletypes.ModuleName,
-		marketmakermoduletypes.ModuleName,
-		liquiditymoduletypes.ModuleName,
-		lpfarmmoduletypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
+		wasmtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -196,21 +132,8 @@ var (
 		capabilitytypes.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
-		wasmtypes.ModuleName,
-		// slinky modules
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		// chain modules
-		bridgemoduletypes.ModuleName,
-		airdropmoduletypes.ModuleName,
-		coinfactorymoduletypes.ModuleName,
-		didmoduletypes.ModuleName,
-		tokenmoduletypes.ModuleName,
-		guardmoduletypes.ModuleName,
-		marketmakermoduletypes.ModuleName,
-		liquiditymoduletypes.ModuleName,
-		lpfarmmoduletypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
+		wasmtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -231,35 +154,8 @@ var (
 		{Account: ibctransfertypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
-		{Account: oracletypes.ModuleName, Permissions: []string{}},
+		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-
-		// Mantrachain
-		{Account: airdropmoduletypes.ModuleName},
-		{Account: bridgemoduletypes.ModuleName},
-		{Account: coinfactorymoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
-		{Account: didmoduletypes.ModuleName},
-		{Account: guardmoduletypes.ModuleName},
-		{Account: liquiditymoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
-		{Account: lpfarmmoduletypes.ModuleName},
-		{Account: marketmakermoduletypes.ModuleName},
-		{Account: tokenmoduletypes.ModuleName},
-		{Account: txfeesmoduletypes.ModuleName},
-	}
-
-	// guard whitelisted transfer acc addresses
-	guardWhitelistedTransferAccAddrs = []string{
-		ibctransfertypes.ModuleName,
-		ibcfeetypes.ModuleName,
-		icatypes.ModuleName,
-		airdropmoduletypes.ModuleName,
-		bridgemoduletypes.ModuleName,
-		coinfactorymoduletypes.ModuleName,
-		liquiditymoduletypes.ModuleName,
-		lpfarmmoduletypes.ModuleName,
-		marketmakermoduletypes.ModuleName,
-		tokenmoduletypes.ModuleName,
-		txfeesmoduletypes.ModuleName,
 	}
 
 	// blocked account addresses
@@ -270,11 +166,6 @@ var (
 		stakingtypes.BondedPoolName,
 		stakingtypes.NotBondedPoolName,
 		nft.ModuleName,
-
-		// Mantrachain,
-		didmoduletypes.ModuleName,
-		guardmoduletypes.ModuleName,
-
 		// We allow the following module accounts to receive funds:
 		// govtypes.ModuleName
 	}
@@ -331,7 +222,7 @@ var (
 				Name: stakingtypes.ModuleName,
 				Config: appconfig.WrapAny(&stakingmodulev1.Module{
 					// NOTE: specifying a prefix is only necessary when using bech32 addresses
-					// If not specfied, the auth Bech32Prefix appended with "valoper" and "valcons" is used by default
+					// If not specified, the auth Bech32Prefix appended with "valoper" and "valcons" is used by default
 					Bech32PrefixValidator: AccountAddressPrefix + "valoper",
 					Bech32PrefixConsensus: AccountAddressPrefix + "valcons",
 				}),
@@ -347,14 +238,6 @@ var (
 			{
 				Name:   "tx",
 				Config: appconfig.WrapAny(&txconfigv1.Config{}),
-			},
-			{
-				Name:   oracletypes.ModuleName,
-				Config: appconfig.WrapAny(&oraclemodulev1.Module{}),
-			},
-			{
-				Name:   marketmaptypes.ModuleName,
-				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
 			{
 				Name:   genutiltypes.ModuleName,
@@ -406,48 +289,6 @@ var (
 			{
 				Name:   circuittypes.ModuleName,
 				Config: appconfig.WrapAny(&circuitmodulev1.Module{}),
-			},
-			{
-				Name:   airdropmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&airdropmodulev1.Module{}),
-			},
-			{
-				Name:   bridgemoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&bridgemodulev1.Module{}),
-			},
-			{
-				Name:   coinfactorymoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&coinfactorymodulev1.Module{}),
-			},
-			{
-				Name:   didmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&didmodulev1.Module{}),
-			},
-			{
-				Name: guardmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&guardmodulev1.Module{
-					WhitelistedTransferAccAddrs: guardWhitelistedTransferAccAddrs,
-				}),
-			},
-			{
-				Name:   tokenmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&tokenmodulev1.Module{}),
-			},
-			{
-				Name:   marketmakermoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&marketmakermodulev1.Module{}),
-			},
-			{
-				Name:   liquiditymoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&liquiditymodulev1.Module{}),
-			},
-			{
-				Name:   lpfarmmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&lpfarmmodulev1.Module{}),
-			},
-			{
-				Name:   txfeesmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&txfeesmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

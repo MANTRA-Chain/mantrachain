@@ -2,7 +2,7 @@
 
 ## Context
 
-Our current protobuf implemntation for the coinfactory is `mantrachain.coinfactory.v1beta1.*`. This module has the same functionalities as the `tokenfactory` in Osmosis but with permissions enforced by the `guard` module. Most Cosmos SDK chains with this module (Osmosis, Neutron) follows the protobuf of osmosis with `osmosis.tokenfactory.v1beta1.*`.
+Our current protobuf implementation for the coinfactory is `mantrachain.coinfactory.v1beta1.*`. This module has the same functionalities as the `tokenfactory` in Osmosis but with permissions enforced by the `guard` module. Most Cosmos SDK chains with this module (Osmosis, Neutron) follows the protobuf of osmosis with `osmosis.tokenfactory.v1beta1.*`.
 
 ## Decision
 

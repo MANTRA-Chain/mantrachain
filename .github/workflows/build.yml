@@ -1,42 +1,15 @@
-name: Build Mantrachaind
-on:
-  pull_request:
-    branches:
-      - main
-      - release/**
-  merge_group:
-  push:
-    branches:
-      - main
-      - release/**
-permissions:
-  contents: read
-
-concurrency:
-  group: ci-${{ github.ref }}-build
-  cancel-in-progress: true
-
+on: [push, pull_request]
+name: Test
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
     strategy:
       matrix:
-        goos: [linux]
-        goarch: [amd64]
-        # TODO: uncomment the following lines once wasm cross-compilation is supported
-        # goos: [linux, windows, darwin]
-        # goarch: [amd64, arm64]
-        # exclude:
-        #   - goarch: arm64
-        #     goos: windows
+        go-version: [1.23.x]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      # - uses: DeterminateSystems/nix-installer-action@main
-      # - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
-          check-latest: true
-      - name: Build
-        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} make build
-# Todo: add nix build with rocksdb
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/checkout@v4
+      - run: go build ./...
