@@ -59,8 +59,8 @@ func (ob *OrderBook) SellOrdersAt(price sdkmath.LegacyDec) []Order {
 }
 
 func (ob *OrderBook) HighestPrice() (sdkmath.LegacyDec, bool) {
-	highestBuyPrice, _, foundBuy := ob.buys.highestPrice()
-	highestSellPrice, _, foundSell := ob.sells.highestPrice()
+	highestBuyPrice, foundBuy := ob.buys.highestPrice()
+	highestSellPrice, foundSell := ob.sells.highestPrice()
 	switch {
 	case foundBuy && foundSell:
 		return sdkmath.LegacyMaxDec(highestBuyPrice, highestSellPrice), true
@@ -74,8 +74,8 @@ func (ob *OrderBook) HighestPrice() (sdkmath.LegacyDec, bool) {
 }
 
 func (ob *OrderBook) LowestPrice() (sdkmath.LegacyDec, bool) {
-	lowestBuyPrice, _, foundBuy := ob.buys.lowestPrice()
-	lowestSellPrice, _, foundSell := ob.sells.lowestPrice()
+	lowestBuyPrice, foundBuy := ob.buys.lowestPrice()
+	lowestSellPrice, foundSell := ob.sells.lowestPrice()
 	switch {
 	case foundBuy && foundSell:
 		return sdkmath.LegacyMinDec(lowestBuyPrice, lowestSellPrice), true
@@ -192,25 +192,25 @@ func (ticks *orderBookTicks) ordersAt(price sdkmath.LegacyDec) []Order {
 	return ticks.ticks[i].orders
 }
 
-func (ticks *orderBookTicks) highestPrice() (sdkmath.LegacyDec, int, bool) {
+func (ticks *orderBookTicks) highestPrice() (sdkmath.LegacyDec, bool) {
 	if len(ticks.ticks) == 0 {
-		return sdkmath.LegacyDec{}, 0, false
+		return sdkmath.LegacyDec{}, false
 	}
 	if ticks.priceIncreasing {
-		return ticks.ticks[len(ticks.ticks)-1].price, len(ticks.ticks) - 1, true
+		return ticks.ticks[len(ticks.ticks)-1].price, true
 	} else {
-		return ticks.ticks[0].price, 0, true
+		return ticks.ticks[0].price, true
 	}
 }
 
-func (ticks *orderBookTicks) lowestPrice() (sdkmath.LegacyDec, int, bool) {
+func (ticks *orderBookTicks) lowestPrice() (sdkmath.LegacyDec, bool) {
 	if len(ticks.ticks) == 0 {
-		return sdkmath.LegacyDec{}, 0, false
+		return sdkmath.LegacyDec{}, false
 	}
 	if ticks.priceIncreasing {
-		return ticks.ticks[0].price, 0, true
+		return ticks.ticks[0].price, true
 	} else {
-		return ticks.ticks[len(ticks.ticks)-1].price, len(ticks.ticks) - 1, true
+		return ticks.ticks[len(ticks.ticks)-1].price, true
 	}
 }
 

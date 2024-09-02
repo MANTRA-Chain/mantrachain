@@ -6,10 +6,9 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/stretchr/testify/require"
 )
 
 func TestOrderBook(t *testing.T) {
@@ -75,7 +74,9 @@ func TestOrderBook_HighestPriceLowestPrice(t *testing.T) {
 	}{
 		{
 			amm.NewOrderBook(),
-			false, math.LegacyDec{}, math.LegacyDec{},
+			false,
+			math.LegacyDec{},
+			math.LegacyDec{},
 		},
 		{
 			amm.NewOrderBook(

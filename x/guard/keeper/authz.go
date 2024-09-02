@@ -4,9 +4,8 @@ import (
 	"math/big"
 
 	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) error {
@@ -39,7 +38,6 @@ func (k Keeper) CheckHasAuthz(ctx sdk.Context, address string, authz string) err
 	}
 
 	hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, acc, privileges)
-
 	if err != nil {
 		return err
 	}

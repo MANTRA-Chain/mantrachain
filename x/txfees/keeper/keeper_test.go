@@ -14,22 +14,22 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/codec"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 
-func TxfeesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func TxfeesKeeper(tb testing.TB) (*keeper.Keeper, sdk.Context) {
+	tb.Helper()
 	storeKey := storetypes.NewKVStoreKey(types.ModuleName)
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 
-	ctrl := gomock.NewController(t)
+	ctrl := gomock.NewController(tb)
 	logger := log.NewNopLogger()
 
 	storeService := runtime.NewKVStoreService(storeKey)
@@ -52,12 +52,13 @@ func TxfeesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	db := tmdb.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db, logger, storemetrics.NewNoOpMetrics())
 	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
-	require.NoError(t, stateStore.LoadLatestVersion())
+	require.NoError(tb, stateStore.LoadLatestVersion())
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 
 	// Initialize params
-	k.SetParams(ctx, types.DefaultParams())
+	err := k.SetParams(ctx, types.DefaultParams())
+	require.NoError(tb, err)
 
 	guardKeeper.EXPECT().CheckIsAdmin(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 	guardKeeper.EXPECT().GetAdmin(gomock.Any()).Return(sdk.MustAccAddressFromBech32(testutil.TestAdminAddress)).AnyTimes()

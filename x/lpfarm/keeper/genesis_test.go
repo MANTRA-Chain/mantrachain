@@ -16,7 +16,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	farmerAddr := utils.TestAddress(0)
 	s.farm(farmerAddr, utils.ParseCoin("1_000000pool1"))
 	s.nextBlock()
-	s.harvest(farmerAddr, "pool1")
+	s.harvest(farmerAddr)
 	s.nextBlock()
 
 	genState := module.ExportGenesis(s.ctx, s.keeper)

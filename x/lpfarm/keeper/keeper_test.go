@@ -5,13 +5,6 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/stretchr/testify/suite"
-
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	chain "github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
 	utils "github.com/MANTRA-Finance/mantrachain/types"
@@ -19,8 +12,12 @@ import (
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 	module "github.com/MANTRA-Finance/mantrachain/x/lpfarm/module"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
-
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/stretchr/testify/suite"
 )
 
 var (
@@ -91,18 +88,48 @@ func (s *KeeperTestSuite) fundAddr(addr sdk.AccAddress, amt sdk.Coins) {
 func (s *KeeperTestSuite) assertEq(exp, got interface{}) {
 	s.T().Helper()
 	var equal bool
+
 	switch exp := exp.(type) {
 	case math.Int:
-		equal = exp.Equal(got.(math.Int))
+		gotVal, ok := got.(math.Int)
+		if !ok {
+			s.Fail("Type mismatch: expected math.Int")
+			return
+		}
+		equal = exp.Equal(gotVal)
 	case math.LegacyDec:
-		equal = exp.Equal(got.(math.LegacyDec))
+		gotVal, ok := got.(math.LegacyDec)
+		if !ok {
+			s.Fail("Type mismatch: expected math.LegacyDec")
+			return
+		}
+		equal = exp.Equal(gotVal)
 	case sdk.Coin:
-		equal = exp.IsEqual(got.(sdk.Coin))
+		gotVal, ok := got.(sdk.Coin)
+		if !ok {
+			s.Fail("Type mismatch: expected sdk.Coin")
+			return
+		}
+		equal = exp.IsEqual(gotVal)
 	case sdk.Coins:
-		equal = exp.Equal(got.(sdk.Coins))
+		gotVal, ok := got.(sdk.Coins)
+		if !ok {
+			s.Fail("Type mismatch: expected sdk.Coins")
+			return
+		}
+		equal = exp.Equal(gotVal)
 	case sdk.DecCoins:
-		equal = exp.Equal(got.(sdk.DecCoins))
+		gotVal, ok := got.(sdk.DecCoins)
+		if !ok {
+			s.Fail("Type mismatch: expected sdk.DecCoins")
+			return
+		}
+		equal = exp.Equal(gotVal)
+	default:
+		s.Fail("Unexpected type in assertEq")
+		return
 	}
+
 	s.Require().True(equal, "expected:\t%v\ngot:\t\t%v", exp, got)
 }
 
@@ -182,9 +209,9 @@ func (s *KeeperTestSuite) unfarm(farmerAddr sdk.AccAddress, coin sdk.Coin) sdk.C
 	return withdrawnRewards
 }
 
-func (s *KeeperTestSuite) harvest(farmerAddr sdk.AccAddress, denom string) sdk.Coins {
+func (s *KeeperTestSuite) harvest(farmerAddr sdk.AccAddress) sdk.Coins {
 	s.T().Helper()
-	withdrawnRewards, err := s.keeper.Harvest(s.ctx, farmerAddr, denom)
+	withdrawnRewards, err := s.keeper.Harvest(s.ctx, farmerAddr, "pool1")
 	s.Require().NoError(err)
 	return withdrawnRewards
 }

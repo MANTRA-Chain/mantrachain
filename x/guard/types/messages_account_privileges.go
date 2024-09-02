@@ -13,14 +13,15 @@ const (
 	TypeMsgUpdateAccountPrivilegesGroupedBatch = "update_account_privileges_grouped_batch"
 )
 
-var _ legacytx.LegacyMsg = &MsgUpdateAccountPrivileges{}
-var _ sdk.Msg = &MsgUpdateAccountPrivileges{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateAccountPrivileges{}
+	_ sdk.Msg            = &MsgUpdateAccountPrivileges{}
+)
 
 func NewMsgUpdateAccountPrivileges(
 	creator string,
 	account string,
 	privileges []byte,
-
 ) *MsgUpdateAccountPrivileges {
 	return &MsgUpdateAccountPrivileges{
 		Creator:    creator,
@@ -57,8 +58,10 @@ func (msg *MsgUpdateAccountPrivileges) ValidateBasic() error {
 	return nil
 }
 
-var _ legacytx.LegacyMsg = &MsgUpdateAccountPrivilegesBatch{}
-var _ sdk.Msg = &MsgUpdateAccountPrivilegesBatch{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateAccountPrivilegesBatch{}
+	_ sdk.Msg            = &MsgUpdateAccountPrivilegesBatch{}
+)
 
 func NewMsgUpdateAccountPrivilegesBatch(
 	creator string,
@@ -106,8 +109,10 @@ func (msg *MsgUpdateAccountPrivilegesBatch) ValidateBasic() error {
 	return nil
 }
 
-var _ legacytx.LegacyMsg = &MsgUpdateAccountPrivilegesGroupedBatch{}
-var _ sdk.Msg = &MsgUpdateAccountPrivilegesGroupedBatch{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateAccountPrivilegesGroupedBatch{}
+	_ sdk.Msg            = &MsgUpdateAccountPrivilegesGroupedBatch{}
+)
 
 func NewMsgUpdateAccountPrivilegesGroupedBatch(
 	creator string,

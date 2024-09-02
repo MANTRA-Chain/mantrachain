@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
-
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -253,7 +252,7 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 	if !found {
 		err = errors.Wrapf(types.ErrDidDocumentNotFound, "did document at %s not found", did)
 		k.logger.Error(err.Error())
-		return
+		return err
 	}
 
 	// Any verification method in the authentication relationship can update the DID document
@@ -268,7 +267,7 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 				signer, did,
 			)
 			k.logger.Error(err.Error())
-			return
+			return err
 		}
 	}
 
@@ -276,7 +275,7 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 	err = update(&didDoc)
 	if err != nil {
 		k.logger.Error(err.Error())
-		return
+		return err
 	}
 
 	// persist the did document
@@ -286,12 +285,12 @@ func executeOnDidWithRelationships(goCtx context.Context, k *Keeper, constraints
 	// update the Metadata
 	if err = updateDidMetadata(k, ctx, didDoc.Id); err != nil {
 		k.logger.Error(err.Error(), "did", didDoc.Id)
-		return
+		return err
 	}
 	// fire the event
 	if err := ctx.EventManager().EmitTypedEvent(types.NewDidDocumentUpdatedEvent(did, signer)); err != nil {
 		k.logger.Error("failed to emit DidDocumentUpdatedEvent", "did", did, "signer", signer, "err", err)
 	}
 	k.logger.Info("request to update did document success", "did", didDoc.Id)
-	return
+	return nil
 }

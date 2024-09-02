@@ -30,7 +30,6 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocuments() {
 			if tc.expPass {
 				suite.NoError(err)
 				suite.NotNil(didsResp)
-
 			} else {
 				suite.Require().Error(err)
 			}
@@ -65,7 +64,6 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocument() {
 		{
 			"Pass: will pass because a did is found",
 			func() {
-
 				dd, _ := types.NewDidDocument("did:cosmos:mantrachain:1234")
 
 				suite.keeper.SetDidDocument(
@@ -105,7 +103,6 @@ func (suite *KeeperTestSuite) TestGRPCQueryDidDocument() {
 			if tc.expPass {
 				suite.NoError(err)
 				suite.NotNil(didsResp)
-
 			} else {
 				suite.Require().Error(err)
 			}

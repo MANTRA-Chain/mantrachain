@@ -4,20 +4,18 @@ import (
 	"math/rand"
 	"testing"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
-func newOrder(dir amm.OrderDirection, price sdkmath.LegacyDec, amt math.Int) amm.Order {
+func newOrder(dir amm.OrderDirection, price sdkmath.LegacyDec, amt sdkmath.Int) amm.Order {
 	return amm.DefaultOrderer.Order(dir, price, amt)
 }
 
 func TestMakeOrderBookResponse(t *testing.T) {
-	pool := amm.NewBasicPool(math.NewInt(1000_000000), math.NewInt(1000_000000), math.Int{})
+	pool := amm.NewBasicPool(sdkmath.NewInt(1000_000000), sdkmath.NewInt(1000_000000), sdkmath.Int{})
 	lastPrice := utils.ParseDec("1")
 	lowestPrice := lastPrice.Mul(utils.ParseDec("0.9"))
 	highestPrice := lastPrice.Mul(utils.ParseDec("1.1"))
@@ -56,15 +54,15 @@ func makeOrderBookPairResponse(numOrders, numPools, numTicks, tickPrec int) type
 		}
 		price := amm.PriceToDownTick(
 			utils.RandomDec(r, utils.ParseDec("0.5"), utils.ParseDec("1.5")), tickPrec)
-		amt := utils.RandomInt(r, math.NewInt(1000), math.NewInt(100000))
+		amt := utils.RandomInt(r, sdkmath.NewInt(1000), sdkmath.NewInt(100000))
 		ob.AddOrder(newOrder(dir, price, amt))
 	}
 
 	lowestPrice, highestPrice := utils.ParseDec("0.9"), utils.ParseDec("1.1")
 	for i := 0; i < numPools; i++ {
-		rx := utils.RandomInt(r, math.NewInt(10000_000000), math.NewInt(11000_000000))
-		ry := utils.RandomInt(r, math.NewInt(10000_000000), math.NewInt(11000_000000))
-		pool := amm.NewBasicPool(rx, ry, math.Int{})
+		rx := utils.RandomInt(r, sdkmath.NewInt(10000_000000), sdkmath.NewInt(11000_000000))
+		ry := utils.RandomInt(r, sdkmath.NewInt(10000_000000), sdkmath.NewInt(11000_000000))
+		pool := amm.NewBasicPool(rx, ry, sdkmath.Int{})
 		ob.AddOrder(amm.PoolOrders(pool, amm.DefaultOrderer, lowestPrice, highestPrice, tickPrec)...)
 	}
 

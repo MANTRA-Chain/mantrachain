@@ -4,10 +4,9 @@ import (
 	"strings"
 
 	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

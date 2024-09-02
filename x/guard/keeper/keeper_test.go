@@ -4,24 +4,22 @@ import (
 	"testing"
 
 	"cosmossdk.io/log"
-	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	cbttime "github.com/cometbft/cometbft/types/time"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/suite"
-
 	storetypes "cosmossdk.io/store/types"
+	"github.com/MANTRA-Finance/mantrachain/testutil"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	guardtestutil "github.com/MANTRA-Finance/mantrachain/x/guard/testutil"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	"github.com/MANTRA-Finance/mantrachain/testutil"
-
+	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	cbttime "github.com/cometbft/cometbft/types/time"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
 
 var (
@@ -107,7 +105,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		types.DefaultPrivileges,
 		types.DefaultBaseDenom,
 	)
-	s.guardKeeper.SetParams(s.ctx, s.params)
+	err := s.guardKeeper.SetParams(s.ctx, s.params)
+	require.NoError(s.T(), err)
 	s.testAdminAccount = "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka"
 	s.testAccount = testAccount
 }

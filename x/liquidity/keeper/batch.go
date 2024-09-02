@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // ExecuteRequests executes all orders, deposit requests and withdraw requests.

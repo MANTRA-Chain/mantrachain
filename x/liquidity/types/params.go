@@ -45,10 +45,8 @@ const (
 	AddrType                          = AddressType32Bytes
 )
 
-var (
-	// GlobalEscrowAddress is an escrow for deposit/withdraw requests.
-	GlobalEscrowAddress = DeriveAddress(AddrType, ModuleName, "GlobalEscrow")
-)
+// GlobalEscrowAddress is an escrow for deposit/withdraw requests.
+var GlobalEscrowAddress = DeriveAddress(AddrType, ModuleName, "GlobalEscrow")
 
 var (
 	KeyBatchSize                    = []byte("BatchSize")

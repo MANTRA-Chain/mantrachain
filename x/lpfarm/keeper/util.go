@@ -2,10 +2,9 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // cachingKeeper acts like a proxy to keeper methods,
@@ -134,8 +133,7 @@ func (ra *rewardAllocator) allocateRewardsToPair(farmingPoolAddr sdk.AccAddress,
 			rewardsByDenom[pi.poolCoinDenom] = rewardsByDenom[pi.poolCoinDenom].Add(
 				sdk.NewDecCoinsFromCoins(rewards...).MulDecTruncate(pi.rewardsShare)...)
 		}
-		ra.totalRewardsByFarmingPool[farmingPool] =
-			ra.totalRewardsByFarmingPool[farmingPool].Add(rewards...)
+		ra.totalRewardsByFarmingPool[farmingPool] = ra.totalRewardsByFarmingPool[farmingPool].Add(rewards...)
 	}
 }
 
@@ -153,8 +151,7 @@ func (ra *rewardAllocator) allocateRewardsToDenom(farmingPoolAddr sdk.AccAddress
 	}
 	rewardsByDenom[denom] = rewardsByDenom[denom].Add(
 		sdk.NewDecCoinsFromCoins(rewards...)...)
-	ra.totalRewardsByFarmingPool[farmingPool] =
-		ra.totalRewardsByFarmingPool[farmingPool].Add(rewards...)
+	ra.totalRewardsByFarmingPool[farmingPool] = ra.totalRewardsByFarmingPool[farmingPool].Add(rewards...)
 }
 
 // PoolRewardWeight returns the pool's reward weight.

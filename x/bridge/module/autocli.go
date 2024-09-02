@@ -2,7 +2,6 @@ package bridge
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-
 	modulev1beta1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/bridge/v1beta1"
 )
 

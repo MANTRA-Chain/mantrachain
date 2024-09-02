@@ -3,16 +3,15 @@ package keeper_test
 import (
 	"time"
 
+	"cosmossdk.io/math"
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	module "github.com/MANTRA-Finance/mantrachain/x/liquidity/module"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
-
-	"cosmossdk.io/math"
 	_ "github.com/stretchr/testify/suite"
 )
 
 func (s *KeeperTestSuite) TestOrderExpiration() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	s.ctx = s.ctx.WithBlockTime(utils.ParseTime("2022-03-01T12:00:00Z"))
 	order := s.limitOrder(s.addr(1), pair.Id, types.OrderDirectionSell, utils.ParseDec("1.0"), math.NewInt(10000), 10*time.Second, true)

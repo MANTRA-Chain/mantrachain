@@ -6,8 +6,10 @@ import (
 
 	"cosmossdk.io/errors"
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+)
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+const (
+	testDid = "did:cosmos:mantrachain:subject"
 )
 
 func (suite *KeeperTestSuite) TestHandleMsgCreateDidDocument() {
@@ -39,7 +41,7 @@ func (suite *KeeperTestSuite) TestHandleMsgCreateDidDocument() {
 		{
 			"FAIL: did already exists",
 			func() {
-				did := "did:cosmos:mantrachain:subject"
+				did := testDid
 				didDoc, _ := types.NewDidDocument(did)
 
 				suite.keeper.SetDidDocument(suite.ctx, []byte(didDoc.Id), didDoc)
@@ -51,7 +53,7 @@ func (suite *KeeperTestSuite) TestHandleMsgCreateDidDocument() {
 	for _, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			tc.malleate()
-			_, err := server.CreateDidDocument(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.CreateDidDocument(suite.ctx, &req)
 			if errExp == nil {
 				suite.Require().NoError(err)
 			} else {
@@ -84,20 +86,17 @@ func (suite *KeeperTestSuite) TestHandleMsgUpdateDidDocument() {
 		{
 			"FAIL: unauthorized",
 			func() {
-
 				did := "did:cosmos:mantrachain:subject"
 				didDoc, _ := types.NewDidDocument(did)
 				suite.keeper.SetDidDocument(suite.ctx, []byte(didDoc.Id), didDoc)
 
 				req = *types.NewMsgUpdateDidDocument(&types.DidDocument{Id: didDoc.Id, Controller: []string{"did:cosmos:mantrachain:controller"}}, "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8")
 				errExp = errors.Wrapf(types.ErrUnauthorized, "signer account %s not authorized to update the target did document at %s", "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8", did)
-
 			},
 		},
 		{
 			"PASS: replace did document",
 			func() {
-
 				did := "did:cosmos:mantrachain:subject"
 				didDoc, _ := types.NewDidDocument(did, types.WithVerifications(
 					types.NewVerification(
@@ -151,7 +150,7 @@ func (suite *KeeperTestSuite) TestHandleMsgUpdateDidDocument() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			tc.malleate()
 
-			_, err := server.UpdateDidDocument(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.UpdateDidDocument(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -252,7 +251,7 @@ func (suite *KeeperTestSuite) TestHandleMsgAddVerification() {
 			"FAIL: can not add verification, invalid verification",
 			func() {
 				// setup
-				//signer := "subject"
+				// signer := "subject"
 				signer := "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
@@ -322,7 +321,7 @@ func (suite *KeeperTestSuite) TestHandleMsgAddVerification() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			tc.malleate()
 
-			_, err := server.AddVerification(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.AddVerification(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -482,7 +481,7 @@ func (suite *KeeperTestSuite) TestHandleMsgSetVerificationRelationships() {
 		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
 			tc.malleate()
 
-			_, err := server.SetVerificationRelationships(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.SetVerificationRelationships(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -595,7 +594,7 @@ func (suite *KeeperTestSuite) TestHandleMsgRevokeVerification() {
 		suite.Run(fmt.Sprintf("TestHandleMsgRevokeVerification#%v", i), func() {
 			tc.malleate()
 
-			_, err := server.RevokeVerification(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.RevokeVerification(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -718,7 +717,7 @@ func (suite *KeeperTestSuite) TestHandleMsgAddService() {
 		{
 			"FAIL: duplicated service",
 			func() {
-				//signer := "subject"
+				// signer := "subject"
 				signer := "cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8"
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
@@ -771,7 +770,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddService() {
 						),
 					),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -794,7 +792,7 @@ func (suite *KeeperTestSuite) TestHandleMsgAddService() {
 		suite.Run(tc.name, func() {
 			tc.malleate()
 
-			_, err := server.AddService(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.AddService(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -826,7 +824,6 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteService() {
 			},
 		},
 		{
-
 			"PASS: can delete service from did document",
 			func() {
 				didDoc, _ := types.NewDidDocument(
@@ -860,7 +857,6 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteService() {
 		{
 			"FAIL: cannot remove an invalid serviceID",
 			func() {
-
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
 					types.WithVerifications(
@@ -910,10 +906,10 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteService() {
 		},
 	}
 	for _, tc := range testCases {
-		suite.Run(fmt.Sprintf(tc.name), func() {
+		suite.Run(tc.name, func() {
 			tc.malleate()
 
-			_, err := server.DeleteService(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.DeleteService(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -974,7 +970,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 		{
 			"FAIL: signer not authorized to change controller",
 			func() {
-
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
 					types.WithVerifications(
@@ -1004,7 +999,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 		{
 			"FAIL: controller is not type key",
 			func() {
-
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
 					types.WithVerifications(
@@ -1048,7 +1042,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 						),
 					),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -1081,7 +1074,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 					),
 					types.WithControllers("did:cosmos:key:cosmos1lvl2s8x4pta5f96appxrwn3mypsvumukvk7ck2"),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -1114,7 +1106,6 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 						),
 					),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -1134,7 +1125,7 @@ func (suite *KeeperTestSuite) TestHandleMsgAddController() {
 		suite.Run(tc.name, func() {
 			tc.malleate()
 
-			_, err := server.AddController(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.AddController(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)
@@ -1174,7 +1165,6 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteController() {
 		{
 			"FAIL: signer not authorized to change controller",
 			func() {
-
 				didDoc, _ := types.NewDidDocument(
 					"did:cosmos:mantrachain:subject",
 					types.WithVerifications(
@@ -1218,7 +1208,6 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteController() {
 						),
 					),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -1232,7 +1221,8 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteController() {
 					"cosmos1sl48sj2jjed7enrv3lzzplr9wc2f5js5tzjph8")
 				errExp = nil
 			},
-		}, {
+		},
+		{
 			"PASS: can delete controller (via controller)",
 			func() {
 				didDoc, err := types.NewDidDocument(
@@ -1253,7 +1243,6 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteController() {
 						"did:cosmos:key:cosmos17t8t3t6a6vpgk69perfyq930593sa8dn4kzsdf",
 					),
 				)
-
 				if err != nil {
 					suite.FailNow("test setup failed: ", err)
 				}
@@ -1275,7 +1264,7 @@ func (suite *KeeperTestSuite) TestHandleMsgDeleteController() {
 		suite.Run(tc.name, func() {
 			tc.malleate()
 
-			_, err := server.DeleteController(sdk.WrapSDKContext(suite.ctx), &req)
+			_, err := server.DeleteController(suite.ctx, &req)
 
 			if errExp == nil {
 				suite.Require().NoError(err)

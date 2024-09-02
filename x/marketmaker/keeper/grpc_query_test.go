@@ -2,14 +2,13 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCParams() {
-	resp, err := suite.queryClient.Params(sdk.WrapSDKContext(suite.ctx), &types.QueryParamsRequest{})
+	resp, err := suite.queryClient.Params(suite.ctx, &types.QueryParamsRequest{})
 	suite.Require().NoError(err)
 
 	suite.Require().Equal(suite.keeper.GetParams(suite.ctx), resp.Params)
@@ -31,7 +30,8 @@ func (suite *KeeperTestSuite) TestGRPCMarketMakers() {
 	proposal := types.NewMarketMakerProposal("title", "description",
 		[]types.MarketMakerHandle{
 			{Address: mmAddr.String(), PairId: 3},
-			{Address: mmAddr2.String(), PairId: 3}},
+			{Address: mmAddr2.String(), PairId: 3},
+		},
 		nil, nil, nil)
 	suite.handleProposal(proposal)
 
@@ -152,7 +152,7 @@ func (suite *KeeperTestSuite) TestGRPCMarketMakers() {
 		},
 	} {
 		suite.Run(tc.name, func() {
-			resp, err := suite.queryClient.MarketMakers(sdk.WrapSDKContext(suite.ctx), tc.req)
+			resp, err := suite.queryClient.MarketMakers(suite.ctx, tc.req)
 			if tc.expectErr {
 				suite.Require().Error(err)
 			} else {
@@ -172,10 +172,11 @@ func (suite *KeeperTestSuite) TestGRPCIncentive() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[5].String()
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3, 4, 5, 6})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3, 4, 5, 6})
 	suite.NoError(err)
 	err = k.ApplyMarketMaker(ctx, mmAddr2, []uint64{2, 3, 4, 5, 6, 7})
 	suite.NoError(err)
@@ -224,7 +225,6 @@ func (suite *KeeperTestSuite) TestGRPCIncentive() {
 			func(resp *types.QueryIncentiveResponse) {
 				suite.Require().Equal(resp.Incentive.Address, mmAddr.String())
 				suite.Require().Equal(resp.Incentive.Claimable.String(), incentiveCoins.String())
-
 			},
 		},
 		{
@@ -241,7 +241,7 @@ func (suite *KeeperTestSuite) TestGRPCIncentive() {
 		},
 	} {
 		suite.Run(tc.name, func() {
-			resp, err := suite.queryClient.Incentive(sdk.WrapSDKContext(suite.ctx), tc.req)
+			resp, err := suite.queryClient.Incentive(suite.ctx, tc.req)
 			if tc.expectErr {
 				suite.Require().Error(err)
 			} else {

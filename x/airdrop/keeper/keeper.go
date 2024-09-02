@@ -5,10 +5,9 @@ import (
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 )
 
 type (

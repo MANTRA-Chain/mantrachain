@@ -9,6 +9,7 @@ import (
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
+	"github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -23,8 +24,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-
-	"github.com/MANTRA-Finance/mantrachain/app"
 )
 
 // NewRootCmd creates a new root command for mantrachaind. It is called once in the main function.

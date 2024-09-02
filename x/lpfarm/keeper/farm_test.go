@@ -2,11 +2,10 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (s *KeeperTestSuite) TestFarm() {
@@ -202,11 +201,11 @@ func (s *KeeperTestSuite) TestHarvest_MultipleTimes() {
 
 	s.nextBlock()
 
-	withdrawnRewards := s.harvest(farmerAddr, "pool1")
+	withdrawnRewards := s.harvest(farmerAddr)
 	s.assertEq(utils.ParseCoins("5787stake"), withdrawnRewards)
-	withdrawnRewards = s.harvest(farmerAddr, "pool1")
+	withdrawnRewards = s.harvest(farmerAddr)
 	s.assertEq(sdk.Coins{}, withdrawnRewards)
-	s.harvest(farmerAddr, "pool1")
+	s.harvest(farmerAddr)
 
 	farm, _ := s.keeper.GetFarmFromStore(s.ctx, "pool1")
 	s.Require().EqualValues(5, farm.Period)

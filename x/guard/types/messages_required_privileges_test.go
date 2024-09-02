@@ -3,10 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMsgUpdateRequiredPrivileges(t *testing.T) {

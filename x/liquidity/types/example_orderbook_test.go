@@ -2,7 +2,6 @@ package types_test
 
 import (
 	"cosmossdk.io/math"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"

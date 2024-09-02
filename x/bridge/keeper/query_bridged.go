@@ -32,7 +32,6 @@ func (k Keeper) BridgedAll(goCtx context.Context, req *types.QueryAllBridgedRequ
 		bridgeds = append(bridgeds, bridged)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

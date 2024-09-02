@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	module "github.com/MANTRA-Finance/mantrachain/x/liquidity/module"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
@@ -22,8 +20,8 @@ func (s *KeeperTestSuite) TestDefaultGenesis() {
 func (s *KeeperTestSuite) TestImportExportGenesis() {
 	s.ctx = s.ctx.WithBlockHeight(1).WithBlockTime(utils.ParseTime("2022-01-01T00:00:00Z"))
 
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
@@ -81,11 +79,11 @@ func (s *KeeperTestSuite) TestImportExportGenesisEmpty() {
 func (s *KeeperTestSuite) TestIndexesAfterImport() {
 	s.ctx = s.ctx.WithBlockHeight(1).WithBlockTime(utils.ParseTime("2022-03-01T00:00:00Z"))
 
-	pair1 := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pair2 := s.createPair(s.addr(1), "denom2", "denom3", true)
+	pair1 := s.createPair(s.addr(0), "denom1", "denom2")
+	pair2 := s.createPair(s.addr(1), "denom2", "denom3")
 
-	pool1 := s.createPool(s.addr(2), pair1.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
-	pool2 := s.createPool(s.addr(3), pair2.Id, utils.ParseCoins("1000000denom2,1000000denom3"), true)
+	pool1 := s.createPool(s.addr(2), pair1.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
+	pool2 := s.createPool(s.addr(3), pair2.Id, utils.ParseCoins("1000000denom2,1000000denom3"))
 
 	s.deposit(s.addr(4), pool1.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.deposit(s.addr(5), pool2.Id, utils.ParseCoins("1000000denom2,1000000denom3"), true)
@@ -113,14 +111,14 @@ func (s *KeeperTestSuite) TestIndexesAfterImport() {
 	s.Require().True(found)
 	s.Require().Equal(pair1.Id, pair.Id)
 
-	resp1, err := s.queryClient.Pairs(sdk.WrapSDKContext(s.ctx), &types.QueryPairsRequest{
+	resp1, err := s.queryClient.Pairs(s.ctx, &types.QueryPairsRequest{
 		Denoms: []string{"denom2", "denom1"},
 	})
 	s.Require().NoError(err)
 	s.Require().Len(resp1.Pairs, 1)
 	s.Require().Equal(pair1.Id, resp1.Pairs[0].Id)
 
-	resp2, err := s.queryClient.Pairs(sdk.WrapSDKContext(s.ctx), &types.QueryPairsRequest{
+	resp2, err := s.queryClient.Pairs(s.ctx, &types.QueryPairsRequest{
 		Denoms: []string{"denom2", "denom3"},
 	})
 	s.Require().NoError(err)

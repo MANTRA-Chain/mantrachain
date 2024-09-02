@@ -19,7 +19,6 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	ctx := sdk.UnwrapSDKContext(c)
 
 	collectionCreator, err := sdk.AccAddressFromBech32(req.CollectionCreator)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -27,13 +26,11 @@ func (k Keeper) Nft(c context.Context, req *types.QueryGetNftRequest) (*types.Qu
 	conf := k.GetParams(ctx)
 
 	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	err = types.ValidateNftId(conf.ValidNftId, req.Id)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -67,7 +64,6 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	collectionCreator, err := sdk.AccAddressFromBech32(req.CollectionCreator)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -75,7 +71,6 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 	conf := k.GetParams(ctx)
 
 	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -98,7 +93,6 @@ func (k Keeper) AllCollectionNfts(goCtx context.Context, req *types.QueryGetAllC
 		nfts = append(nfts, &nftMeta)
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +112,6 @@ func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedReq
 	ctx := sdk.UnwrapSDKContext(c)
 
 	collectionCreator, err := sdk.AccAddressFromBech32(req.CollectionCreator)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -126,13 +119,11 @@ func (k Keeper) NftApproved(c context.Context, req *types.QueryGetNftApprovedReq
 	conf := k.GetParams(ctx)
 
 	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.CollectionId)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	err = types.ValidateNftId(conf.ValidNftId, req.Id)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -179,13 +170,11 @@ func (k Keeper) IsApprovedForAllNfts(c context.Context, req *types.QueryGetIsApp
 	ctx := sdk.UnwrapSDKContext(c)
 
 	owner, err := sdk.AccAddressFromBech32(req.Owner)
-
 	if err != nil {
 		return nil, err
 	}
 
 	operator, err := sdk.AccAddressFromBech32(req.Operator)
-
 	if err != nil {
 		return nil, err
 	}

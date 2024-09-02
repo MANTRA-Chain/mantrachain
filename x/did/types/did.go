@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"cosmossdk.io/errors"
-
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -214,24 +213,24 @@ func IsValidDIDMetadata(didMeta *DidMetadata) bool {
 func ValidateVerification(v *Verification, allowedControllers ...string) (err error) {
 	if v == nil {
 		err = errors.Wrap(ErrInvalidInput, "verification is not defined")
-		return
+		return err
 	}
 	// verify that the method id is correct
 	if !IsValidDIDURL(v.Method.Id) {
 		err = errors.Wrapf(ErrInvalidDIDURLFormat, "verification method id: %v", v.Method.Id)
-		return
+		return err
 	}
 
 	// if the controller is not set return error
 	if !IsValidDID(v.Method.Controller) {
 		err = errors.Wrapf(ErrInvalidDIDFormat, "verification method controller %v", v.Method.Controller)
-		return
+		return err
 	}
 
 	// check for empty method type
 	if IsEmpty(v.Method.Type) {
 		err = errors.Wrapf(ErrInvalidInput, "verification method type not set for verification method %s", v.Method.Id)
-		return
+		return err
 	}
 
 	// check the verification material
@@ -239,72 +238,72 @@ func ValidateVerification(v *Verification, allowedControllers ...string) (err er
 	case *VerificationMethod_BlockchainAccountID:
 		if IsEmpty(x.BlockchainAccountID) {
 			err = errors.Wrapf(ErrInvalidInput, "verification material blockchain account id invalid for verification method %s", v.Method.Id)
-			return
+			return err
 		}
 	case *VerificationMethod_PublicKeyMultibase:
 		if IsEmpty(x.PublicKeyMultibase) {
 			err = errors.Wrapf(ErrInvalidInput, "verification material multibase pubkey invalid for verification method %s", v.Method.Id)
-			return
+			return err
 		}
 	case *VerificationMethod_PublicKeyHex:
 		if IsEmpty(x.PublicKeyHex) {
 			err = errors.Wrapf(ErrInvalidInput, "verification material pubkey invalid for verification method %s", v.Method.Id)
-			return
+			return err
 		}
 	default:
 		err = errors.Wrapf(ErrInvalidInput, "verification material not set for verification method %s", v.Method.Id)
-		return
+		return err
 	}
 
 	// check for empty publickey
 	if v.Method.VerificationMaterial.Size() == 0 {
 		err = errors.Wrapf(ErrInvalidInput, "verification material not set for verification method %s", v.Method.Id)
-		return
+		return err
 	}
 
 	// check that there is at least a relationship
 	if len(v.Relationships) == 0 {
 		err = errors.Wrap(ErrEmptyRelationships, "at least a verification relationship is required")
-		return
+		return err
 	}
-	return
+	return err
 }
 
 // ValidateService performs basic on a service struct
 func ValidateService(s *Service) (err error) {
 	if s == nil {
 		err = errors.Wrap(ErrInvalidInput, "service is not defined")
-		return
+		return err
 	}
 	// verify that the id is not empty and is a valid url (according to RFC3986)
 	if IsEmpty(s.Id) {
 		err = errors.Wrap(ErrInvalidInput, "service id cannot be empty")
-		return
+		return err
 	}
 
 	if !IsValidRFC3986Uri(s.Id) {
 		err = errors.Wrapf(ErrInvalidRFC3986UriFormat, "service id %s is not a valid RFC3986 uri", s.Id)
-		return
+		return err
 	}
 
 	// verify that the endpoint is not empty and is a valid url (according to RFC3986)
 	if IsEmpty(s.ServiceEndpoint) {
 		err = errors.Wrap(ErrInvalidInput, "service endpoint cannot be empty;")
-		return
+		return err
 	}
 
 	if !IsValidRFC3986Uri(s.ServiceEndpoint) {
 		err = errors.Wrapf(ErrInvalidRFC3986UriFormat, "service endpoint %s is not a valid RFC3986 uri", s.ServiceEndpoint)
-		return
+		return err
 	}
 
 	// check that the service type is not empty
 	if IsEmpty(s.Type) {
 		err = errors.Wrap(ErrInvalidInput, "service type cannot be empty")
-		return
+		return err
 	}
 
-	return
+	return err
 }
 
 // IsEmpty tells if the trimmed input is empty
@@ -407,13 +406,13 @@ func (didDoc *DidDocument) AddVerifications(verifications ...*Verification) (err
 	for _, v := range verifications {
 		// perform base validation checks
 		if err = ValidateVerification(v); err != nil {
-			return
+			return err
 		}
 
 		// verify that there are no duplicates in method ids
 		if _, found := index[v.Method.Id]; found {
 			err = errors.Wrapf(ErrInvalidInput, "duplicated verification method id %s", v.Method.Id)
-			return
+			return err
 		}
 		index[v.Method.Id] = struct{}{}
 
@@ -430,7 +429,7 @@ func (didDoc *DidDocument) AddVerifications(verifications ...*Verification) (err
 		// update context
 		didDoc.Context = union(didDoc.Context, v.Context)
 	}
-	return
+	return err
 }
 
 // RevokeVerification revoke a verification method

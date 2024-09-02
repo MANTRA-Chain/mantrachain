@@ -7,13 +7,13 @@ import (
 	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx := keepertest.AirdropKeeper(t)
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+func setupMsgServer(tb testing.TB) (types.MsgServer, context.Context) {
+	tb.Helper()
+	k, ctx := keepertest.AirdropKeeper(tb)
+	return keeper.NewMsgServerImpl(*k), ctx
 }
 
 func TestMsgServer(t *testing.T) {

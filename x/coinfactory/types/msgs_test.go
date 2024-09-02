@@ -5,13 +5,11 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-
 	"github.com/cometbft/cometbft/crypto/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/stretchr/testify/require"
 )
 
 // // Test authz serialize and de-serializes for coinfactory msg.
@@ -19,11 +17,6 @@ func TestAuthzMsg(t *testing.T) {
 	pk1 := ed25519.GenPrivKey().PubKey()
 	addr1 := sdk.AccAddress(pk1.Address()).String()
 	coin := sdk.NewCoin("denom", math.NewInt(1))
-
-	const (
-		mockGranter string = "cosmos1abc"
-		mockGrantee string = "cosmos1xyz"
-	)
 
 	testCases := []struct {
 		name string

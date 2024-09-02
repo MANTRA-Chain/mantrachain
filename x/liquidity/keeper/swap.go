@@ -8,11 +8,10 @@ import (
 
 	"cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func CalculatePairCreatorSwapFeeAmount(ctx sdk.Context, pairCreatorSwapFeeRatio sdkmath.LegacyDec, accumulatedSwapFee sdkmath.Int) sdkmath.Int {
@@ -489,7 +488,7 @@ func (k Keeper) MMOrder(ctx sdk.Context, msg *types.MsgMMOrder) (orders []types.
 			sdk.NewAttribute(types.AttributeKeyCanceledOrderIds, types.FormatUint64s(canceledOrderIds)),
 		),
 	})
-	return
+	return orders, err
 }
 
 // ValidateMsgCancelOrder validates types.MsgCancelOrder and returns the order.
@@ -728,7 +727,7 @@ func (k Keeper) Match(ctx sdk.Context, ob *amm.OrderBook, pools []*types.PoolOrd
 		}
 		matchPrice, quoteCoinDiff, matched = ob.Match(*lastPrice)
 	}
-	return
+	return matchPrice, quoteCoinDiff, matched
 }
 
 func (k Keeper) ApplyMatchResult(ctx sdk.Context, pair types.Pair, orders []amm.Order, quoteCoinDiff sdkmath.Int) error {

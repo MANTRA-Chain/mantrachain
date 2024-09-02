@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const day = 24 * time.Hour
@@ -15,7 +14,8 @@ const day = 24 * time.Hour
 func NewPlan(
 	id uint64, description string, farmingPoolAddr, termAddr sdk.AccAddress,
 	rewardAllocs []RewardAllocation, startTime, endTime time.Time,
-	isPrivate bool) Plan {
+	isPrivate bool,
+) Plan {
 	return Plan{
 		Id:                 id,
 		Description:        description,

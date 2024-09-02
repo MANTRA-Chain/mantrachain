@@ -5,25 +5,22 @@ import (
 	"testing"
 
 	"cosmossdk.io/log"
+	"cosmossdk.io/store"
 	storemetrics "cosmossdk.io/store/metrics"
 	storetypes "cosmossdk.io/store/types"
+	didtestutil "github.com/MANTRA-Finance/mantrachain/x/did/testutil"
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmdb "github.com/cosmos/cosmos-db"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	didtestutil "github.com/MANTRA-Finance/mantrachain/x/did/testutil"
-	"github.com/MANTRA-Finance/mantrachain/x/did/types"
-	tmdb "github.com/cosmos/cosmos-db"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	"cosmossdk.io/store"
-	cbproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/cosmos/cosmos-sdk/baseapp"
 )
 
 // Keeper test suit enables the keeper package to be tested
@@ -164,7 +161,6 @@ func (suite *KeeperTestSuite) TestGenericKeeperDelete() {
 					[]byte(dd.Id),
 				)
 				suite.Require().False(found)
-
 			} else {
 				// TODO write failure cases
 				suite.Require().False(tc.expPass)

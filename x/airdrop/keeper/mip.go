@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
-
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 )
 

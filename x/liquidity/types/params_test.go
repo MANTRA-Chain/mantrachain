@@ -3,13 +3,10 @@ package types_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParams_Validate(t *testing.T) {
@@ -33,21 +30,21 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"invalid FeeCollectorAddress",
 			func(params *types.Params) {
-				params.FeeCollectorAddress = "invalidaddr"
+				params.FeeCollectorAddress = invalidAddr
 			},
 			"invalid fee collector address: decoding bech32 failed: invalid separator index -1",
 		},
 		{
 			"invalid DustCollectorAddress",
 			func(params *types.Params) {
-				params.DustCollectorAddress = "invalidaddr"
+				params.DustCollectorAddress = invalidAddr
 			},
 			"invalid dust collector address: decoding bech32 failed: invalid separator index -1",
 		},
 		{
 			"negative MinInitialPoolCoinSupply",
 			func(params *types.Params) {
-				params.MinInitialPoolCoinSupply = math.NewInt(-1)
+				params.MinInitialPoolCoinSupply = sdkmath.NewInt(-1)
 			},
 			"min initial pool coin supply must be positive: -1",
 		},
@@ -75,7 +72,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"negative MinInitialDepositAmount",
 			func(params *types.Params) {
-				params.MinInitialDepositAmount = math.NewInt(-1)
+				params.MinInitialDepositAmount = sdkmath.NewInt(-1)
 			},
 			"minimum initial deposit amount must not be negative: -1",
 		},

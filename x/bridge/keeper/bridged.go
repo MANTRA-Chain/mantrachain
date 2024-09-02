@@ -31,7 +31,6 @@ func (k Keeper) HasBridged(
 func (k Keeper) GetBridged(
 	ctx sdk.Context,
 	ethTxHash string,
-
 ) (val types.Bridged, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.BridgedKeyPrefix))

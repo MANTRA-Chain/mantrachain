@@ -6,10 +6,9 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // GetParams get all parameters as types.Params

@@ -3,13 +3,12 @@ package cmd
 import (
 	"time"
 
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/MANTRA-Finance/mantrachain/app"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	oracleconfig "github.com/skip-mev/slinky/oracle/config"
-
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Finance/mantrachain/app"
 )
 
 func initSDKConfig() {

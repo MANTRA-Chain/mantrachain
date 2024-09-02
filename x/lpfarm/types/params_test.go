@@ -3,12 +3,10 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParams_Validate(t *testing.T) {
@@ -32,7 +30,7 @@ func TestParams_Validate(t *testing.T) {
 		{
 			"invalid fee collector",
 			func(params *types.Params) {
-				params.FeeCollector = "invalidaddr"
+				params.FeeCollector = invalidAddr
 			},
 			"invalid fee collector address: invalidaddr",
 		},

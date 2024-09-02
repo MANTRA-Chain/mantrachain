@@ -9,20 +9,18 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	chain "github.com/MANTRA-Finance/mantrachain/app"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
-
-	chain "github.com/MANTRA-Finance/mantrachain/app"
 )
 
 type GenerateAccountStrategy func(int) []sdk.AccAddress
@@ -180,12 +178,6 @@ func CheckBalance(t *testing.T, app *chain.App, addr sdk.AccAddress, balances sd
 	t.Helper()
 	ctxCheck := app.BaseApp.NewContext(true)
 	require.True(t, balances.Equal(app.BankKeeper.GetAllBalances(ctxCheck, addr)))
-}
-
-func incrementAllSequenceNumbers(initSeqNums []uint64) {
-	for i := 0; i < len(initSeqNums); i++ {
-		initSeqNums[i]++
-	}
 }
 
 // CreateTestPubKeys returns a total of numPubKeys public keys in ascending order.

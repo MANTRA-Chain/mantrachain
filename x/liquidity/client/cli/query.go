@@ -6,13 +6,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spf13/cobra"
-
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/version"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/spf13/cobra"
 )
 
 // GetQueryCmd returns the cli query commands for this module

@@ -2,7 +2,6 @@ package types
 
 import (
 	"github.com/MANTRA-Finance/mantrachain/internal/conv"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )

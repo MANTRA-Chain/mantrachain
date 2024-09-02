@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
-	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-
 	nft "cosmossdk.io/x/nft"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

@@ -4,9 +4,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
@@ -142,8 +141,7 @@ func TotalFarmingAmountInvariant(k Keeper) sdk.Invariant {
 			return false
 		})
 		k.IterateAllPositions(ctx, func(position types.Position) (stop bool) {
-			farmingAmtSumByDenom[position.Denom] =
-				farmingAmtSumByDenom[position.Denom].Add(position.FarmingAmount)
+			farmingAmtSumByDenom[position.Denom] = farmingAmtSumByDenom[position.Denom].Add(position.FarmingAmount)
 			return false
 		})
 		msg := ""

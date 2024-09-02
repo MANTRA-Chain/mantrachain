@@ -22,7 +22,6 @@ func (k Keeper) SetFeeToken(ctx sdk.Context, feeToken types.FeeToken) {
 func (k Keeper) GetFeeToken(
 	ctx sdk.Context,
 	denom string,
-
 ) (val types.FeeToken, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))
@@ -42,7 +41,6 @@ func (k Keeper) GetFeeToken(
 func (k Keeper) RemoveFeeToken(
 	ctx sdk.Context,
 	denom string,
-
 ) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.KeyPrefix(types.FeeTokenKeyPrefix))

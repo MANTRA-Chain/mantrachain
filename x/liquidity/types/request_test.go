@@ -4,14 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func TestDepositRequest_Validate(t *testing.T) {
@@ -49,7 +47,7 @@ func TestDepositRequest_Validate(t *testing.T) {
 		{
 			"invalid depositor addr",
 			func(req *types.DepositRequest) {
-				req.Depositor = "invalidaddr"
+				req.Depositor = invalidAddr
 			},
 			"invalid depositor address invalidaddr: decoding bech32 failed: invalid separator index -1",
 		},
@@ -92,7 +90,7 @@ func TestDepositRequest_Validate(t *testing.T) {
 		{
 			"invalid minted pool coin",
 			func(req *types.DepositRequest) {
-				req.MintedPoolCoin = sdk.Coin{Denom: "pool1", Amount: math.NewInt(-1)}
+				req.MintedPoolCoin = sdk.Coin{Denom: "pool1", Amount: sdkmath.NewInt(-1)}
 			},
 			"invalid minted pool coin -1pool1: negative coin amount: -1",
 		},
@@ -169,7 +167,7 @@ func TestWithdrawRequest_Validate(t *testing.T) {
 		{
 			"invalid pool coin",
 			func(req *types.WithdrawRequest) {
-				req.PoolCoin = sdk.Coin{Denom: "pool1", Amount: math.NewInt(-1)}
+				req.PoolCoin = sdk.Coin{Denom: "pool1", Amount: sdkmath.NewInt(-1)}
 			},
 			"invalid pool coin -1pool1: negative coin amount: -1",
 		},
@@ -274,7 +272,7 @@ func TestOrder_Validate(t *testing.T) {
 		{
 			"invalid offer coin",
 			func(order *types.Order) {
-				order.OfferCoin = sdk.Coin{Denom: "denom1", Amount: math.NewInt(-1)}
+				order.OfferCoin = sdk.Coin{Denom: "denom1", Amount: sdkmath.NewInt(-1)}
 			},
 			"invalid offer coin -1denom1: negative coin amount: -1",
 		},
@@ -288,7 +286,7 @@ func TestOrder_Validate(t *testing.T) {
 		{
 			"invalid remaining offer coin",
 			func(order *types.Order) {
-				order.RemainingOfferCoin = sdk.Coin{Denom: "denom1", Amount: math.NewInt(-1)}
+				order.RemainingOfferCoin = sdk.Coin{Denom: "denom1", Amount: sdkmath.NewInt(-1)}
 			},
 			"invalid remaining offer coin -1denom1: negative coin amount: -1",
 		},
@@ -310,7 +308,7 @@ func TestOrder_Validate(t *testing.T) {
 		{
 			"invalid received coin",
 			func(order *types.Order) {
-				order.ReceivedCoin = sdk.Coin{Denom: "denom1", Amount: math.NewInt(-1)}
+				order.ReceivedCoin = sdk.Coin{Denom: "denom1", Amount: sdkmath.NewInt(-1)}
 			},
 			"invalid received coin -1denom1: negative coin amount: -1",
 		},
@@ -338,7 +336,7 @@ func TestOrder_Validate(t *testing.T) {
 		{
 			"negative open amount",
 			func(order *types.Order) {
-				order.OpenAmount = math.NewInt(-1)
+				order.OpenAmount = sdkmath.NewInt(-1)
 			},
 			"open amount must not be negative: -1",
 		},

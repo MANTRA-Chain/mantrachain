@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"

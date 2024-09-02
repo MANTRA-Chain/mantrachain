@@ -19,14 +19,12 @@ func (k Keeper) NftCollection(c context.Context, req *types.QueryGetNftCollectio
 	ctx := sdk.UnwrapSDKContext(c)
 
 	creator, err := sdk.AccAddressFromBech32(req.Creator)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	conf := k.GetParams(ctx)
 	err = types.ValidateNftCollectionId(conf.ValidNftCollectionId, req.Id)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -54,7 +52,6 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 	ctx := sdk.UnwrapSDKContext(c)
 
 	creator, err := sdk.AccAddressFromBech32(req.Creator)
-
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -71,7 +68,6 @@ func (k Keeper) NftCollectionsByCreator(c context.Context, req *types.QueryGetNf
 		collections = append(collections, &collection)
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +97,6 @@ func (k Keeper) AllNftCollections(c context.Context, req *types.QueryGetAllNftCo
 		collections = append(collections, &collection)
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}

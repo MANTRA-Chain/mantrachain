@@ -4,15 +4,13 @@ import (
 	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	"github.com/MANTRA-Finance/mantrachain/x/bridge/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	keepertest "github.com/MANTRA-Finance/mantrachain/testutil/keeper"
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	"github.com/MANTRA-Finance/mantrachain/x/bridge/types"
 )
 
 // Prevent strconv unused error
@@ -20,7 +18,7 @@ var _ = strconv.IntSize
 
 func TestBridgedQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.BridgeKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
+	wctx := ctx
 	msgs := createNBridged(keeper, ctx, 2)
 	tests := []struct {
 		desc     string
@@ -72,7 +70,7 @@ func TestBridgedQuerySingle(t *testing.T) {
 
 func TestBridgedQueryPaginated(t *testing.T) {
 	keeper, ctx := keepertest.BridgeKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
+	wctx := ctx
 	msgs := createNBridged(keeper, ctx, 5)
 
 	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllBridgedRequest {

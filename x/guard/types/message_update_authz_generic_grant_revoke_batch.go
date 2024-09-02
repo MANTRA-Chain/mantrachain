@@ -11,8 +11,10 @@ import (
 
 const TypeMsgUpdateAuthzGenericGrantRevokeBatch = "update_authz_generic_grant_revoke_batch"
 
-var _ legacytx.LegacyMsg = &MsgUpdateAuthzGenericGrantRevokeBatch{}
-var _ sdk.Msg = &MsgUpdateAuthzGenericGrantRevokeBatch{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateAuthzGenericGrantRevokeBatch{}
+	_ sdk.Msg            = &MsgUpdateAuthzGenericGrantRevokeBatch{}
+)
 
 func NewMsgUpdateAuthzGenericGrantRevokeBatch(creator string, grantee string, authzGrantRevokeMsgsTypes *AuthzGrantRevokeMsgsTypes) *MsgUpdateAuthzGenericGrantRevokeBatch {
 	return &MsgUpdateAuthzGenericGrantRevokeBatch{

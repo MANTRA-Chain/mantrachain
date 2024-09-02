@@ -2,11 +2,10 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	_ "github.com/stretchr/testify/suite"
-
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 func (suite *KeeperTestSuite) TestMarketMakerProposal() {
@@ -149,12 +148,13 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalDistribution() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[5].String()
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	balanceInitMM := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2})
 	suite.Require().NoError(err)
 
 	err = k.ClaimIncentives(ctx, mmAddr)
@@ -298,12 +298,13 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalHugeCase() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[29].String()
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	incentiveAmount := math.NewInt(100)
 	incentiveCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, incentiveAmount))
 
-	//balanceInitMM := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
+	// balanceInitMM := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
 
 	// apply market maker
 	for i := 0; i < 25; i++ {
@@ -363,10 +364,11 @@ func (suite *KeeperTestSuite) TestMarketMakerProposalAfterResetIncentivePair() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[29].String()
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3})
 	suite.Require().NoError(err)
 
 	// reset incentive pairs after applied
@@ -423,12 +425,13 @@ func (suite *KeeperTestSuite) TestRefundDepositWhenAmountChanged() {
 	mmAddr := suite.addrs[0]
 	params := k.GetParams(ctx)
 	params.DepositAmount = types.DefaultDepositAmount
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	balanceBeforeModuleAcc := suite.app.BankKeeper.GetAllBalances(ctx, types.DepositReserveAcc)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1})
 	suite.Require().NoError(err)
 
 	balanceAfterModuleAcc := suite.app.BankKeeper.GetAllBalances(ctx, types.DepositReserveAcc)
@@ -436,7 +439,8 @@ func (suite *KeeperTestSuite) TestRefundDepositWhenAmountChanged() {
 
 	// change deposit amount
 	params.DepositAmount = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, math.NewInt(500000000)))
-	k.SetParams(ctx, params)
+	err = k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	// apply market maker
 	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{2})
@@ -469,13 +473,14 @@ func (suite *KeeperTestSuite) TestRefundDepositWhenAmountZero() {
 	params := k.GetParams(ctx)
 	test := func(depositAmount sdk.Coins, mmAddr sdk.AccAddress) {
 		params.DepositAmount = depositAmount
-		k.SetParams(ctx, params)
+		err := k.SetParams(ctx, params)
+		suite.Require().NoError(err)
 
 		balanceBeforeModuleAcc := suite.app.BankKeeper.GetAllBalances(ctx, types.DepositReserveAcc)
 		balanceBeforeMMAddr := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
 
 		// apply market maker
-		err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1})
+		err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1})
 		suite.Require().NoError(err)
 
 		balanceAfterModuleAcc := suite.app.BankKeeper.GetAllBalances(ctx, types.DepositReserveAcc)

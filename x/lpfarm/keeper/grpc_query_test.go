@@ -1,16 +1,14 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/stretchr/testify/suite"
 )
 
 func (s *KeeperTestSuite) TestGRPCParams() {
-	resp, err := s.queryClient.Params(sdk.WrapSDKContext(s.ctx), &types.QueryParamsRequest{})
+	resp, err := s.queryClient.Params(s.ctx, &types.QueryParamsRequest{})
 	s.Require().NoError(err)
 	s.Require().Equal(s.keeper.GetParams(s.ctx), resp.Params)
 }
@@ -46,7 +44,7 @@ func (s *KeeperTestSuite) TestGRPCPairs() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Plans(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Plans(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -96,7 +94,7 @@ func (s *KeeperTestSuite) TestGRPCPair() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Plan(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Plan(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -147,7 +145,7 @@ func (s *KeeperTestSuite) TestGRPCFarm() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Farm(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Farm(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -204,7 +202,7 @@ func (s *KeeperTestSuite) TestGRPCPositions() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Positions(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Positions(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -286,7 +284,7 @@ func (s *KeeperTestSuite) TestGRPCPosition() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Position(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Position(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -375,7 +373,7 @@ func (s *KeeperTestSuite) TestGRPCHistoricalRewards() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.HistoricalRewards(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.HistoricalRewards(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)
@@ -438,7 +436,7 @@ func (s *KeeperTestSuite) TestGRPCTotalRewards() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.TotalRewards(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.TotalRewards(s.ctx, tc.req)
 			if tc.expectedErr == "" {
 				s.Require().NoError(err)
 				tc.postRun(resp)

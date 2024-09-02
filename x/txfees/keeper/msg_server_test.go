@@ -6,13 +6,13 @@ import (
 
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {
-	k, ctx := TxfeesKeeper(t)
-	return keeper.NewMsgServerImpl(*k), sdk.WrapSDKContext(ctx)
+func setupMsgServer(tb testing.TB) (types.MsgServer, context.Context) {
+	tb.Helper()
+	k, ctx := TxfeesKeeper(tb)
+	return keeper.NewMsgServerImpl(*k), ctx
 }
 
 func TestMsgServer(t *testing.T) {

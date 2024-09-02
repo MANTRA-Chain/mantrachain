@@ -2,12 +2,11 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (s *KeeperTestSuite) TestCreatePrivatePlan_PastEndTime() {
@@ -88,7 +87,7 @@ func (s *KeeperTestSuite) TestTerminatePrivatePlan() {
 
 	msgServer := keeper.NewMsgServerImpl(s.keeper)
 	msg := types.NewMsgTerminatePrivatePlan(creatorAddr, 1)
-	_, err = msgServer.TerminatePrivatePlan(sdk.WrapSDKContext(s.ctx), msg)
+	_, err = msgServer.TerminatePrivatePlan(s.ctx, msg)
 	s.Require().NoError(err)
 
 	s.assertEq(sdk.Coins{}, s.getBalances(plan.GetFarmingPoolAddress()))
@@ -109,7 +108,7 @@ func (s *KeeperTestSuite) TestTerminatePrivatePlan_Unauthorized() {
 
 	msgServer := keeper.NewMsgServerImpl(s.keeper)
 	msg := types.NewMsgTerminatePrivatePlan(utils.TestAddress(2), 1)
-	_, err = msgServer.TerminatePrivatePlan(sdk.WrapSDKContext(s.ctx), msg)
+	_, err = msgServer.TerminatePrivatePlan(s.ctx, msg)
 	s.Require().ErrorIs(err, sdkerrors.ErrUnauthorized)
 }
 

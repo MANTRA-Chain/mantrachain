@@ -40,6 +40,7 @@ func TestCampaignGet(t *testing.T) {
 		)
 	}
 }
+
 func TestCampaignRemove(t *testing.T) {
 	keeper, ctx := keepertest.AirdropKeeper(t)
 	items := createNCampaign(keeper, ctx, 10)

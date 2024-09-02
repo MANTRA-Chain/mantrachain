@@ -25,7 +25,7 @@ func (k msgServer) CreateFeeToken(goCtx context.Context, msg *types.MsgCreateFee
 		return nil, errors.Wrap(errorstypes.ErrInvalidRequest, "index already set")
 	}
 
-	var feeToken = types.FeeToken{
+	feeToken := types.FeeToken{
 		Denom:  msg.Denom,
 		PairId: msg.PairId,
 	}
@@ -53,7 +53,7 @@ func (k msgServer) UpdateFeeToken(goCtx context.Context, msg *types.MsgUpdateFee
 		return nil, errors.Wrap(errorstypes.ErrKeyNotFound, "index not set")
 	}
 
-	var feeToken = types.FeeToken{
+	feeToken := types.FeeToken{
 		Denom:  msg.Denom,
 		PairId: msg.PairId,
 	}

@@ -33,7 +33,6 @@ func (k Keeper) CampaignAll(goCtx context.Context, req *types.QueryAllCampaignRe
 		campaigns = append(campaigns, campaign)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

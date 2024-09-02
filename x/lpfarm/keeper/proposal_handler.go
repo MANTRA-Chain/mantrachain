@@ -2,10 +2,9 @@ package keeper
 
 import (
 	"cosmossdk.io/errors"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // HandleFarmingPlanProposal is a handler for executing a farming plan proposal.

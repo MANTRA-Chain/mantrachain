@@ -4,10 +4,9 @@ import (
 	"time"
 
 	"cosmossdk.io/errors"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // CreatePrivatePlan creates a new private farming plan.

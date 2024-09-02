@@ -32,7 +32,6 @@ func (k Keeper) FeeTokenAll(goCtx context.Context, req *types.QueryAllFeeTokenRe
 		feeTokens = append(feeTokens, feeToken)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

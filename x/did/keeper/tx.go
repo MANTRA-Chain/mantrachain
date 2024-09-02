@@ -2,23 +2,9 @@ package keeper
 
 import (
 	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/did/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-// deriveVMType derive the verification method type from a public key
-func deriveVMType(pubKeyType string) (vmType types.VerificationMaterialType, err error) {
-	switch pubKeyType {
-	case "ed25519":
-		vmType = types.DIDVMethodTypeEd25519VerificationKey2018
-	case "secp256k1":
-		vmType = types.DIDVMethodTypeEcdsaSecp256k1VerificationKey2019
-	default:
-		err = types.ErrKeyFormatNotSupported
-	}
-	return
-}
 
 func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, controller string) (string, error) {
 	// check that the did is not already taken
@@ -36,7 +22,6 @@ func (k Keeper) CreateNewDidDocument(ctx sdk.Context, id string, controller stri
 	didDocument, err := types.NewDidDocument(did.String(),
 		types.WithControllers(types.NewKeyDID(controller).String()),
 	)
-
 	if err != nil {
 		return "", err
 	}

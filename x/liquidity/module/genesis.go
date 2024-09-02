@@ -1,10 +1,9 @@
 package liquidity
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

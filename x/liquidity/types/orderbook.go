@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	sdkmath "cosmossdk.io/math"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 

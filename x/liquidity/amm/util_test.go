@@ -4,10 +4,9 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMatchableAmount(t *testing.T) {

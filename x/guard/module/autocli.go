@@ -2,7 +2,6 @@ package guard
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-
 	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/guard/v1"
 )
 

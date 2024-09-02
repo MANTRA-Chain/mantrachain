@@ -5,7 +5,6 @@ import (
 	"math/big"
 
 	sdkmath "cosmossdk.io/math"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 )
 
@@ -505,7 +504,7 @@ func Deposit(rx, ry, ps, x, y sdkmath.Int) (ax, ay, pc sdkmath.Int) {
 		ax, ay, pc = sdkmath.ZeroInt(), sdkmath.ZeroInt(), sdkmath.ZeroInt()
 	})
 
-	return
+	return ax, ay, pc
 }
 
 // Withdraw returns withdrawn x and y coin amount when someone withdraws
@@ -516,7 +515,7 @@ func Withdraw(rx, ry, ps, pc sdkmath.Int, feeRate sdkmath.LegacyDec) (x, y sdkma
 		// Redeeming the last pool coin - give all remaining rx and ry.
 		x = rx
 		y = ry
-		return
+		return x, y
 	}
 
 	utils.SafeMath(func() {
@@ -528,7 +527,7 @@ func Withdraw(rx, ry, ps, pc sdkmath.Int, feeRate sdkmath.LegacyDec) (x, y sdkma
 		x, y = sdkmath.ZeroInt(), sdkmath.ZeroInt()
 	})
 
-	return
+	return x, y
 }
 
 func DeriveTranslation(rx, ry sdkmath.Int, minPrice, maxPrice sdkmath.LegacyDec) (transX, transY sdkmath.LegacyDec) {
@@ -580,7 +579,7 @@ func DeriveTranslation(rx, ry sdkmath.Int, minPrice, maxPrice sdkmath.LegacyDec)
 	transX = sqrtK.Mul(sqrtM)
 	transY = sqrtK.Quo(sqrtL)
 
-	return
+	return transX, transY
 }
 
 func PoolOrders(pool Pool, orderer Orderer, lowestPrice, highestPrice sdkmath.LegacyDec, tickPrec int) []Order {

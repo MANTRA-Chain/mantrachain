@@ -34,7 +34,8 @@ const (
 // NewMsgCreatePrivatePlan creates a new MsgCreatePrivatePlan.
 func NewMsgCreatePrivatePlan(
 	creatorAddr sdk.AccAddress, description string, rewardAllocations []RewardAllocation,
-	startTime, endTime time.Time) *MsgCreatePrivatePlan {
+	startTime, endTime time.Time,
+) *MsgCreatePrivatePlan {
 	return &MsgCreatePrivatePlan{
 		Creator:           creatorAddr.String(),
 		Description:       description,
@@ -78,7 +79,8 @@ func (msg MsgCreatePrivatePlan) GetCreatorAddress() sdk.AccAddress {
 
 // NewMsgTerminatePrivatePlan creates a new MsgTerminatePrivatePlan.
 func NewMsgTerminatePrivatePlan(
-	creatorAddr sdk.AccAddress, planId uint64) *MsgTerminatePrivatePlan {
+	creatorAddr sdk.AccAddress, planId uint64,
+) *MsgTerminatePrivatePlan {
 	return &MsgTerminatePrivatePlan{
 		Creator: creatorAddr.String(),
 		PlanId:  planId,

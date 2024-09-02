@@ -9,7 +9,11 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-
+	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/guard/module/v1"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/client/cli"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/exported"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -20,14 +24,6 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
-
-	// this line is used by starport scaffolding # 1
-
-	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/guard/module/v1"
-	"github.com/MANTRA-Finance/mantrachain/x/guard/client/cli"
-	"github.com/MANTRA-Finance/mantrachain/x/guard/exported"
-	"github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 var (

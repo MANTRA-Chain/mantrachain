@@ -7,10 +7,9 @@ import (
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 var (

@@ -2,7 +2,6 @@ package v4
 
 import (
 	"cosmossdk.io/core/store"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/codec"

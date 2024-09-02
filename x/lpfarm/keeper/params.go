@@ -4,10 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 // GetParams get all parameters as types.Params

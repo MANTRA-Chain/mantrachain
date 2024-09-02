@@ -1,10 +1,9 @@
 package keeper_test
 
 import (
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
 	module "github.com/MANTRA-Finance/mantrachain/x/coinfactory/module"
 	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 func (suite *KeeperTestSuite) TestGenesis() {

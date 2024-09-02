@@ -3,9 +3,8 @@ package keeper
 import (
 	"context"
 
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-
 	"cosmossdk.io/errors"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authztypes "github.com/cosmos/cosmos-sdk/x/authz"

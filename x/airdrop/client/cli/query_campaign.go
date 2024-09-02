@@ -4,11 +4,10 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-
-	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
 )
 
 func CmdListCampaign() *cobra.Command {

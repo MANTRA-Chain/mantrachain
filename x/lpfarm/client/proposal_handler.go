@@ -1,9 +1,8 @@
 package client
 
 import (
-	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
-
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/client/cli"
+	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 )
 
 // ProposalHandler is the public plan command handler.

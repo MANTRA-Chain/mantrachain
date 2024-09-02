@@ -2,7 +2,6 @@ package v4
 
 import (
 	"cosmossdk.io/core/store"
-
 	"github.com/MANTRA-Finance/mantrachain/x/token/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	"github.com/cosmos/cosmos-sdk/codec"

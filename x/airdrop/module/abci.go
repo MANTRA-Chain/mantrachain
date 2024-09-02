@@ -3,11 +3,10 @@ package airdrop
 import (
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/airdrop/types"
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {

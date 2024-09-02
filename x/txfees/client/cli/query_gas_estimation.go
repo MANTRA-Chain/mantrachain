@@ -3,12 +3,11 @@ package cli
 import (
 	"context"
 
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
-
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 )
 
 func CmdGasEstimation() *cobra.Command {

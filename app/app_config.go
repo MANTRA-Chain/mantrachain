@@ -31,36 +31,7 @@ import (
 	"cosmossdk.io/x/feegrant"
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/cosmos/cosmos-sdk/runtime"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/group"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
-	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
-	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
-	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
-	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
-	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
-	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
-	"google.golang.org/protobuf/types/known/durationpb"
-
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-
 	airdropmodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/airdrop/module/v1"
 	bridgemodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/bridge/module/v1"
 	coinfactorymodulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/coinfactory/module/v1"
@@ -91,7 +62,33 @@ import (
 	tokenmoduletypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	_ "github.com/MANTRA-Finance/mantrachain/x/txfees/module" // import for side-effects
 	txfeesmoduletypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/cosmos/cosmos-sdk/runtime"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/cosmos/cosmos-sdk/x/group"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
+	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
+	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
+	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
+	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 var (
@@ -274,7 +271,7 @@ var (
 		stakingtypes.NotBondedPoolName,
 		nft.ModuleName,
 
-		//Mantrachain,
+		// Mantrachain,
 		didmoduletypes.ModuleName,
 		guardmoduletypes.ModuleName,
 

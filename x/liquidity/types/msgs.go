@@ -5,11 +5,10 @@ import (
 
 	"cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 var (

@@ -6,15 +6,13 @@ import (
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
-	"github.com/spf13/cobra"
-
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/spf13/cobra"
 )
 
 // GetTxCmd returns the transaction commands for the module

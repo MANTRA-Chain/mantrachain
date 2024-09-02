@@ -5,10 +5,9 @@ import (
 
 	"cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 // getNextPairIdWithUpdate increments pair id by one and set it.

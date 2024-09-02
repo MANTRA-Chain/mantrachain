@@ -5,12 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/MANTRA-Finance/mantrachain/x/token/types"
-	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
-
 	"cosmossdk.io/errors"
 	nft "cosmossdk.io/x/nft"
-
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
+	"github.com/MANTRA-Finance/mantrachain/x/token/utils"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

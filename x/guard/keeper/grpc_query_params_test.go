@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func TestGRPCQueryParams(t *testing.T) {

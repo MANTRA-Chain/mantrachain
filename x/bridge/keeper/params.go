@@ -3,9 +3,8 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/runtime"
-
 	"github.com/MANTRA-Finance/mantrachain/x/bridge/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
 )
 
 // GetParams get all parameters as types.Params

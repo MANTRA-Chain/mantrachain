@@ -6,16 +6,14 @@ import (
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"cosmossdk.io/store/prefix"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Pairs queries all pairs.
@@ -84,7 +82,6 @@ func (k Keeper) Pairs(c context.Context, req *types.QueryPairsRequest) (*types.Q
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -148,7 +145,6 @@ func (k Keeper) PairsByDenoms(c context.Context, req *types.QueryPairsByDenomsRe
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -263,7 +259,6 @@ func (k Keeper) Pools(c context.Context, req *types.QueryPoolsRequest) (*types.Q
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -379,7 +374,6 @@ func (k Keeper) DepositRequests(c context.Context, req *types.QueryDepositReques
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -442,7 +436,6 @@ func (k Keeper) WithdrawRequests(c context.Context, req *types.QueryWithdrawRequ
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -505,7 +498,6 @@ func (k Keeper) Orders(c context.Context, req *types.QueryOrdersRequest) (*types
 
 		return true, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

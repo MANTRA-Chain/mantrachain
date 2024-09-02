@@ -35,7 +35,6 @@ func (k Keeper) RequiredPrivilegesAll(goCtx context.Context, req *types.QueryAll
 		privileges = append(privileges, value)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

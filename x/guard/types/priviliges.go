@@ -16,9 +16,7 @@ type IPrivileges interface {
 	Empty() bool
 }
 
-var (
-	_ IPrivileges = Privileges{}
-)
+var _ IPrivileges = Privileges{}
 
 type Privileges struct {
 	num *big.Int
@@ -32,6 +30,7 @@ func NewEmptyPrivileges() *Privileges {
 		num: pr,
 	}
 }
+
 func NewPrivileges(base *big.Int) *Privileges {
 	return &Privileges{
 		raw: base.Bytes(),

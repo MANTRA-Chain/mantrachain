@@ -4,21 +4,18 @@ import (
 	"context"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/server/types"
-	oracleconfig "github.com/skip-mev/slinky/oracle/config"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/server/types"
 	oraclepreblock "github.com/skip-mev/slinky/abci/preblock/oracle"
+	"github.com/skip-mev/slinky/abci/proposals"
 	"github.com/skip-mev/slinky/abci/strategies/aggregator"
+	compression "github.com/skip-mev/slinky/abci/strategies/codec"
 	"github.com/skip-mev/slinky/abci/strategies/currencypair"
 	"github.com/skip-mev/slinky/abci/ve"
+	oracleconfig "github.com/skip-mev/slinky/oracle/config"
 	"github.com/skip-mev/slinky/pkg/math/voteweighted"
 	oracleclient "github.com/skip-mev/slinky/service/clients/oracle"
 	servicemetrics "github.com/skip-mev/slinky/service/metrics"
-
-	"github.com/skip-mev/slinky/abci/proposals"
-
-	compression "github.com/skip-mev/slinky/abci/strategies/codec"
 )
 
 // initializeOracle initializes the oracle client and metrics.

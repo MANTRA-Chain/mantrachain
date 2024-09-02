@@ -5,14 +5,12 @@ import (
 	"strconv"
 
 	"cosmossdk.io/store/prefix"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 // MarketMakers queries all market makers.
@@ -53,7 +51,7 @@ func (k Keeper) MarketMakers(c context.Context, req *types.QueryMarketMakersRequ
 		}, nil
 	}
 
-	var keyPrefix = types.MarketMakerKeyPrefix
+	keyPrefix := types.MarketMakerKeyPrefix
 	switch {
 	case req.PairId != 0:
 		keyPrefix = types.GetMarketMakerByPairIdPrefix(req.PairId)

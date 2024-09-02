@@ -3,20 +3,18 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/stretchr/testify/suite"
-
 	sdkmath "cosmossdk.io/math"
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	chain "github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 	marketmaker "github.com/MANTRA-Finance/mantrachain/x/marketmaker/module"
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
+	"github.com/stretchr/testify/suite"
 )
 
 const (
@@ -25,13 +23,11 @@ const (
 	denom3 = "denom3"
 )
 
-var (
-	initialBalances = sdk.NewCoins(
-		sdk.NewInt64Coin(sdk.DefaultBondDenom, 1_000_000_000_000),
-		sdk.NewInt64Coin(denom1, 1_000_000_000),
-		sdk.NewInt64Coin(denom2, 1_000_000_000),
-		sdk.NewInt64Coin(denom3, 1_000_000_000))
-)
+var initialBalances = sdk.NewCoins(
+	sdk.NewInt64Coin(sdk.DefaultBondDenom, 1_000_000_000_000),
+	sdk.NewInt64Coin(denom1, 1_000_000_000),
+	sdk.NewInt64Coin(denom2, 1_000_000_000),
+	sdk.NewInt64Coin(denom3, 1_000_000_000))
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -111,13 +107,15 @@ func (suite *KeeperTestSuite) SetIncentivePairs() {
 			PairId: uint64(7),
 		},
 	}
-	suite.keeper.SetParams(suite.ctx, params)
+	err := suite.keeper.SetParams(suite.ctx, params)
+	suite.Require().NoError(err)
 }
 
 func (suite *KeeperTestSuite) ResetIncentivePairs() {
 	params := suite.keeper.GetParams(suite.ctx)
 	params.IncentivePairs = []types.IncentivePair{}
-	suite.keeper.SetParams(suite.ctx, params)
+	err := suite.keeper.SetParams(suite.ctx, params)
+	suite.Require().NoError(err)
 }
 
 func (suite *KeeperTestSuite) handleProposal(content govv1beta1.Content) {

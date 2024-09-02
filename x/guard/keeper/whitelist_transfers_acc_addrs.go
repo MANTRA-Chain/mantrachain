@@ -3,10 +3,9 @@ package keeper
 import (
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func (k Keeper) SetWhitelistTransfersAccAddrs(
@@ -22,7 +21,6 @@ func (k Keeper) SetWhitelistTransfersAccAddrs(
 func (k Keeper) GetWhitelistTransfersAccAddrs(
 	ctx sdk.Context,
 	index []byte,
-
 ) (val types.WhitelistTransfersAccAddrs, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.WhitelistTransfersAccAddrsStoreKey())
@@ -55,7 +53,6 @@ func (k Keeper) GetAllWhitelistTransfersAccAddrs(ctx sdk.Context) (list []types.
 func (k Keeper) IsTransfersAccAddrsWhitelisted(
 	ctx sdk.Context,
 	index []byte,
-
 ) bool {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.WhitelistTransfersAccAddrsStoreKey())

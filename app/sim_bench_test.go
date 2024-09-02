@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/MANTRA-Finance/mantrachain/app"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -13,8 +14,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	"github.com/stretchr/testify/require"
-
-	"github.com/MANTRA-Finance/mantrachain/app"
 )
 
 // Profile with:

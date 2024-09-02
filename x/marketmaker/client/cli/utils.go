@@ -3,9 +3,8 @@ package cli
 import (
 	"os"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 // ParseMarketMakerProposal reads and parses a MarketMakerProposal from a file.

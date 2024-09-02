@@ -3,13 +3,15 @@ package types_test
 import (
 	"testing"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	invalidAddr = "invalidaddr"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
@@ -23,7 +25,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		utils.ParseTime("2022-01-01T00:00:00Z"),
 		utils.ParseTime("2023-01-01T00:00:00Z"), true)
 	validFarm := types.Farm{
-		TotalFarmingAmount: math.NewInt(100_000000),
+		TotalFarmingAmount: sdkmath.NewInt(100_000000),
 		CurrentRewards:     utils.ParseDecCoins("10000stake"),
 		OutstandingRewards: utils.ParseDecCoins("20000stake"),
 		Period:             1,
@@ -31,7 +33,7 @@ func TestGenesisState_Validate(t *testing.T) {
 	validPosition := types.Position{
 		Farmer:              utils.TestAddress(2).String(),
 		Denom:               "pool1",
-		FarmingAmount:       math.NewInt(100_000000),
+		FarmingAmount:       sdkmath.NewInt(100_000000),
 		PreviousPeriod:      3,
 		StartingBlockHeight: 10,
 	}
@@ -53,7 +55,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			"invalid params",
 			func(genState *types.GenesisState) {
-				genState.Params.FeeCollector = "invalidaddr"
+				genState.Params.FeeCollector = invalidAddr
 			},
 			"invalid fee collector address: invalidaddr",
 		},
@@ -86,7 +88,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			"invalid farm: negative total farming amount",
 			func(genState *types.GenesisState) {
 				farm := validFarm
-				farm.TotalFarmingAmount = math.NewInt(-1)
+				farm.TotalFarmingAmount = sdkmath.NewInt(-1)
 				genState.Farms = []types.FarmRecord{{Denom: "pool1", Farm: farm}}
 			},
 			"total farming amount must not be negative: -1",
@@ -138,7 +140,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			"invalid position: invalid farmer",
 			func(genState *types.GenesisState) {
 				position := validPosition
-				position.Farmer = "invalidaddr"
+				position.Farmer = invalidAddr
 				genState.Positions = []types.Position{position}
 			},
 			"invalid farmer address: decoding bech32 failed: invalid separator index -1",

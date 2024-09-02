@@ -3,9 +3,8 @@ package cli
 import (
 	"os"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 func ParseFarmingPlanProposal(cdc codec.JSONCodec, proposalFile string) (types.FarmingPlanProposal, error) {

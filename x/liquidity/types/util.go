@@ -5,11 +5,10 @@ import (
 	"strings"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 )
 
 type sendCoinsTxKey struct {
@@ -179,7 +178,7 @@ func MMOrderTicks(dir OrderDirection, minPrice, maxPrice sdkmath.LegacyDec, amt 
 			Amount:          amt,
 		})
 	}
-	return
+	return ticks
 }
 
 // FormatUint64s returns comma-separated string representation of

@@ -6,18 +6,16 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/stretchr/testify/suite"
-
-	utils "github.com/MANTRA-Finance/mantrachain/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	chain "github.com/MANTRA-Finance/mantrachain/app"
 	"github.com/MANTRA-Finance/mantrachain/testutil"
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/suite"
 )
 
 type KeeperTestSuite struct {
@@ -30,6 +28,8 @@ type KeeperTestSuite struct {
 	queryClient types.QueryClient
 	msgServer   types.MsgServer
 }
+
+const expectedStr = "expected:\t%v\ngot:\t\t%v"
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
@@ -96,11 +96,9 @@ func (s *KeeperTestSuite) fundAddr(addr sdk.AccAddress, amt sdk.Coins) {
 	s.Require().NoError(err)
 }
 
-func (s *KeeperTestSuite) createPair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string, fund bool) types.Pair {
+func (s *KeeperTestSuite) createPair(creator sdk.AccAddress, baseCoinDenom, quoteCoinDenom string) types.Pair {
 	s.T().Helper()
-	if fund {
-		s.fundAddr(creator, s.keeper.GetPairCreationFee(s.ctx))
-	}
+	s.fundAddr(creator, s.keeper.GetPairCreationFee(s.ctx))
 	msg := types.NewMsgCreatePair(creator, baseCoinDenom, quoteCoinDenom, &math.LegacyDec{}, &math.LegacyDec{})
 	s.Require().NoError(msg.ValidateBasic())
 	pair, err := s.keeper.CreatePair(s.ctx, msg)
@@ -108,11 +106,9 @@ func (s *KeeperTestSuite) createPair(creator sdk.AccAddress, baseCoinDenom, quot
 	return pair
 }
 
-func (s *KeeperTestSuite) createPool(creator sdk.AccAddress, pairId uint64, depositCoins sdk.Coins, fund bool) types.Pool {
+func (s *KeeperTestSuite) createPool(creator sdk.AccAddress, pairId uint64, depositCoins sdk.Coins) types.Pool {
 	s.T().Helper()
-	if fund {
-		s.fundAddr(creator, depositCoins.Add(s.keeper.GetPoolCreationFee(s.ctx)...))
-	}
+	s.fundAddr(creator, depositCoins.Add(s.keeper.GetPoolCreationFee(s.ctx)...))
 	msg := types.NewMsgCreatePool(creator, pairId, depositCoins)
 	s.Require().NoError(msg.ValidateBasic())
 	pool, err := s.keeper.CreatePool(s.ctx, msg)
@@ -120,11 +116,9 @@ func (s *KeeperTestSuite) createPool(creator sdk.AccAddress, pairId uint64, depo
 	return pool
 }
 
-func (s *KeeperTestSuite) createRangedPool(creator sdk.AccAddress, pairId uint64, depositCoins sdk.Coins, minPrice, maxPrice, initialPrice math.LegacyDec, fund bool) types.Pool {
+func (s *KeeperTestSuite) createRangedPool(creator sdk.AccAddress, pairId uint64, depositCoins sdk.Coins, minPrice, maxPrice, initialPrice math.LegacyDec) types.Pool {
 	s.T().Helper()
-	if fund {
-		s.fundAddr(creator, depositCoins.Add(s.keeper.GetPoolCreationFee(s.ctx)...))
-	}
+	s.fundAddr(creator, depositCoins.Add(s.keeper.GetPoolCreationFee(s.ctx)...))
 	msg := types.NewMsgCreateRangedPool(creator, pairId, depositCoins, minPrice, maxPrice, initialPrice)
 	s.Require().NoError(msg.ValidateBasic())
 	pool, err := s.keeper.CreateRangedPool(s.ctx, msg)
@@ -151,7 +145,8 @@ func (s *KeeperTestSuite) withdraw(withdrawer sdk.AccAddress, poolId uint64, poo
 
 func (s *KeeperTestSuite) limitOrder(
 	orderer sdk.AccAddress, pairId uint64, dir types.OrderDirection,
-	price math.LegacyDec, amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	price math.LegacyDec, amt math.Int, orderLifespan time.Duration, fund bool,
+) types.Order {
 	s.T().Helper()
 	pair, found := s.keeper.GetPair(s.ctx, pairId)
 	s.Require().True(found)
@@ -180,7 +175,8 @@ func (s *KeeperTestSuite) limitOrder(
 
 func (s *KeeperTestSuite) buyLimitOrder(
 	orderer sdk.AccAddress, pairId uint64, price math.LegacyDec,
-	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool,
+) types.Order {
 	s.T().Helper()
 	return s.limitOrder(
 		orderer, pairId, types.OrderDirectionBuy, price, amt, orderLifespan, fund)
@@ -188,7 +184,8 @@ func (s *KeeperTestSuite) buyLimitOrder(
 
 func (s *KeeperTestSuite) sellLimitOrder(
 	orderer sdk.AccAddress, pairId uint64, price math.LegacyDec,
-	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool,
+) types.Order {
 	s.T().Helper()
 	return s.limitOrder(
 		orderer, pairId, types.OrderDirectionSell, price, amt, orderLifespan, fund)
@@ -196,7 +193,8 @@ func (s *KeeperTestSuite) sellLimitOrder(
 
 func (s *KeeperTestSuite) marketOrder(
 	orderer sdk.AccAddress, pairId uint64, dir types.OrderDirection,
-	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool,
+) types.Order {
 	s.T().Helper()
 	pair, found := s.keeper.GetPair(s.ctx, pairId)
 	s.Require().True(found)
@@ -227,17 +225,19 @@ func (s *KeeperTestSuite) marketOrder(
 
 func (s *KeeperTestSuite) buyMarketOrder(
 	orderer sdk.AccAddress, pairId uint64,
-	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool,
+) {
 	s.T().Helper()
-	return s.marketOrder(
+	s.marketOrder(
 		orderer, pairId, types.OrderDirectionBuy, amt, orderLifespan, fund)
 }
 
 func (s *KeeperTestSuite) sellMarketOrder(
 	orderer sdk.AccAddress, pairId uint64,
-	amt math.Int, orderLifespan time.Duration, fund bool) types.Order {
+	amt math.Int, orderLifespan time.Duration, fund bool,
+) {
 	s.T().Helper()
-	return s.marketOrder(
+	s.marketOrder(
 		orderer, pairId, types.OrderDirectionSell, amt, orderLifespan, fund)
 }
 
@@ -245,7 +245,8 @@ func (s *KeeperTestSuite) mmOrder(
 	orderer sdk.AccAddress, pairId uint64,
 	maxSellPrice, minSellPrice math.LegacyDec, sellAmt math.Int,
 	maxBuyPrice, minBuyPrice math.LegacyDec, buyAmt math.Int,
-	orderLifespan time.Duration, fund bool) []types.Order {
+	orderLifespan time.Duration, fund bool,
+) []types.Order {
 	s.T().Helper()
 	if fund {
 		pair, found := s.keeper.GetPair(s.ctx, pairId)
@@ -309,19 +310,22 @@ func (s *KeeperTestSuite) cancelAllOrders(orderer sdk.AccAddress, pairIds []uint
 }
 
 func coinEq(exp, got sdk.Coin) (bool, string, string, string) {
-	return exp.IsEqual(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
+	if exp.IsEqual(got) {
+		return true, "", "", ""
+	}
+	return false, "Coins not equal", exp.String(), got.String()
 }
 
 func coinsEq(exp, got sdk.Coins) (bool, string, string, string) {
-	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
+	return exp.Equal(got), expectedStr, exp.String(), got.String()
 }
 
 func intEq(exp, got math.Int) (bool, string, string, string) {
-	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
+	return exp.Equal(got), expectedStr, exp.String(), got.String()
 }
 
 func decEq(exp, got math.LegacyDec) (bool, string, string, string) {
-	return exp.Equal(got), "expected:\t%v\ngot:\t\t%v", exp.String(), got.String()
+	return exp.Equal(got), expectedStr, exp.String(), got.String()
 }
 
 func newInt(i int64) math.Int {

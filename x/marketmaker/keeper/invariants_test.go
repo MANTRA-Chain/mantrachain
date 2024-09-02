@@ -2,10 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (suite *KeeperTestSuite) TestDepositReservedAmountInvariant() {
@@ -83,14 +82,14 @@ func (suite *KeeperTestSuite) TestIncentiveReservedAmountInvariant() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[5].String()
-	k.SetParams(ctx, params)
-
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 	// This is normal state, must not be broken.
 	_, broken := keeper.IncentiveReservedAmountInvariant(k)(ctx)
 	suite.Require().False(broken)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2})
 	suite.Require().NoError(err)
 	err = k.ApplyMarketMaker(ctx, mmAddr2, []uint64{3})
 	suite.Require().NoError(err)

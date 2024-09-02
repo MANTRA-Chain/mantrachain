@@ -5,9 +5,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/stretchr/testify/require"
 )
 
 func newOrder(dir OrderDirection, price math.LegacyDec, amt math.Int) *BaseOrder {

@@ -5,6 +5,9 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
+	v3 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v3"
+	v4 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v4"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
@@ -15,10 +18,6 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
 	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
-
-	v2 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v2"
-	v3 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v3"
-	v4 "github.com/MANTRA-Finance/mantrachain/app/upgrades/v4"
 )
 
 func (app *App) RegisterUpgradeHandlers() {
@@ -27,25 +26,25 @@ func (app *App) RegisterUpgradeHandlers() {
 		var customModule bool
 		switch subspace.Name() {
 		case coinfactorytypes.ModuleName:
-			keyTable = coinfactorytypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = coinfactorytypes.ParamKeyTable()
 			customModule = true
 		case guardtypes.ModuleName:
-			keyTable = guardtypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = guardtypes.ParamKeyTable()
 			customModule = true
 		case liquiditytypes.ModuleName:
-			keyTable = liquiditytypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = liquiditytypes.ParamKeyTable()
 			customModule = true
 		case lpfarmtypes.ModuleName:
-			keyTable = lpfarmtypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = lpfarmtypes.ParamKeyTable()
 			customModule = true
 		case marketmakertypes.ModuleName:
-			keyTable = marketmakertypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = marketmakertypes.ParamKeyTable()
 			customModule = true
 		case tokentypes.ModuleName:
-			keyTable = tokentypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = tokentypes.ParamKeyTable()
 			customModule = true
 		case txfeestypes.ModuleName:
-			keyTable = txfeestypes.ParamKeyTable() //nolint:staticcheck
+			keyTable = txfeestypes.ParamKeyTable()
 			customModule = true
 		}
 
@@ -95,7 +94,7 @@ func (app *App) RegisterUpgradeHandlers() {
 	}
 
 	var storeUpgrades *storetypes.StoreUpgrades
-	var upgradeHandler *upgradetypes.UpgradeHandler
+	//	var upgradeHandler *upgradetypes.UpgradeHandler
 
 	switch upgradeInfo.Name {
 	case v2.UpgradeName:
@@ -119,7 +118,11 @@ func (app *App) RegisterUpgradeHandlers() {
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, storeUpgrades))
 	}
 
-	if upgradeHandler != nil {
-		app.UpgradeKeeper.SetUpgradeHandler(upgradeInfo.Name, *upgradeHandler)
-	}
+	// previous code was:
+	// if upgradeHandler != nil {
+	//     app.UpgradeKeeper.SetUpgradeHandler(upgradeInfo.Name, *upgradeHandler)
+	// }
+	// but there is no condition where the upgradehandler is not nil
+
+	// app.UpgradeKeeper.SetUpgradeHandler(upgradeInfo.Name, *upgradeHandler)
 }

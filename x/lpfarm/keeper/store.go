@@ -4,10 +4,9 @@ import (
 	"time"
 
 	storetypes "cosmossdk.io/store/types"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 func (k Keeper) GetLastBlockTime(ctx sdk.Context) (t time.Time, found bool) {

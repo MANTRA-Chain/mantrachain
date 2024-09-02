@@ -3,11 +3,9 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/spf13/cobra"
 )
 
 // GetTxCmd returns the transaction commands for this module

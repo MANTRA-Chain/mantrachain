@@ -4,27 +4,25 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	module "github.com/MANTRA-Finance/mantrachain/x/liquidity/module"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/stretchr/testify/suite"
 )
 
 func (s *KeeperTestSuite) TestGRPCParams() {
-	resp, err := s.queryClient.Params(sdk.WrapSDKContext(s.ctx), &types.QueryParamsRequest{})
+	resp, err := s.queryClient.Params(s.ctx, &types.QueryParamsRequest{})
 	s.Require().NoError(err)
 	s.Require().Equal(s.keeper.GetParams(s.ctx), resp.Params)
 }
 
 func (s *KeeperTestSuite) TestGRPCPairs() {
 	creator := s.addr(0)
-	s.createPair(creator, "denom1", "denom2", true)
-	s.createPair(creator, "denom1", "denom3", true)
-	s.createPair(creator, "denom2", "denom3", true)
-	s.createPair(creator, "denom3", "denom4", true)
+	s.createPair(creator, "denom1", "denom2")
+	s.createPair(creator, "denom1", "denom3")
+	s.createPair(creator, "denom2", "denom3")
+	s.createPair(creator, "denom3", "denom4")
 
 	for _, tc := range []struct {
 		name      string
@@ -88,7 +86,7 @@ func (s *KeeperTestSuite) TestGRPCPairs() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Pairs(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Pairs(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -101,7 +99,7 @@ func (s *KeeperTestSuite) TestGRPCPairs() {
 
 func (s *KeeperTestSuite) TestGRPCPair() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
+	pair := s.createPair(creator, "denom1", "denom2")
 
 	for _, tc := range []struct {
 		name      string
@@ -139,7 +137,7 @@ func (s *KeeperTestSuite) TestGRPCPair() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Pair(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Pair(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -152,14 +150,14 @@ func (s *KeeperTestSuite) TestGRPCPair() {
 
 func (s *KeeperTestSuite) TestGRPCPools() {
 	creator := s.addr(0)
-	s.createPair(creator, "denom1", "denom2", true)
-	s.createPair(creator, "denom1", "denom3", true)
-	s.createPair(creator, "denom2", "denom3", true)
-	s.createPair(creator, "denom3", "denom4", true)
-	s.createPool(creator, 1, utils.ParseCoins("1000000denom1,1000000denom2"), true)
-	s.createPool(creator, 2, utils.ParseCoins("5000000denom1,5000000denom3"), true)
-	s.createPool(creator, 3, utils.ParseCoins("3000000denom2,3000000denom3"), true)
-	pair4 := s.createPool(creator, 4, utils.ParseCoins("3000000denom3,3000000denom4"), true)
+	s.createPair(creator, "denom1", "denom2")
+	s.createPair(creator, "denom1", "denom3")
+	s.createPair(creator, "denom2", "denom3")
+	s.createPair(creator, "denom3", "denom4")
+	s.createPool(creator, 1, utils.ParseCoins("1000000denom1,1000000denom2"))
+	s.createPool(creator, 2, utils.ParseCoins("5000000denom1,5000000denom3"))
+	s.createPool(creator, 3, utils.ParseCoins("3000000denom2,3000000denom3"))
+	pair4 := s.createPool(creator, 4, utils.ParseCoins("3000000denom3,3000000denom4"))
 	pair4.Disabled = true
 	s.keeper.SetPool(s.ctx, pair4)
 
@@ -228,7 +226,7 @@ func (s *KeeperTestSuite) TestGRPCPools() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Pools(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Pools(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -241,14 +239,14 @@ func (s *KeeperTestSuite) TestGRPCPools() {
 
 func (s *KeeperTestSuite) TestGRPCPool() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	rangedPool := s.createRangedPool(
 		creator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 	disabledPool := s.createRangedPool(
 		creator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 	s.withdraw(creator, disabledPool.Id, s.getBalance(creator, disabledPool.PoolCoinDenom))
 	s.nextBlock()
 
@@ -333,7 +331,7 @@ func (s *KeeperTestSuite) TestGRPCPool() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Pool(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Pool(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -346,8 +344,8 @@ func (s *KeeperTestSuite) TestGRPCPool() {
 
 func (s *KeeperTestSuite) TestGRPCPoolByReserveAddress() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("2000000denom1,2000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("2000000denom1,2000000denom2"))
 
 	for _, tc := range []struct {
 		name      string
@@ -394,7 +392,7 @@ func (s *KeeperTestSuite) TestGRPCPoolByReserveAddress() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.PoolByReserveAddress(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.PoolByReserveAddress(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -407,8 +405,8 @@ func (s *KeeperTestSuite) TestGRPCPoolByReserveAddress() {
 
 func (s *KeeperTestSuite) TestGRPCPoolByPoolCoinDenom() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"))
 
 	for _, tc := range []struct {
 		name      string
@@ -455,7 +453,7 @@ func (s *KeeperTestSuite) TestGRPCPoolByPoolCoinDenom() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.PoolByPoolCoinDenom(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.PoolByPoolCoinDenom(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -468,8 +466,8 @@ func (s *KeeperTestSuite) TestGRPCPoolByPoolCoinDenom() {
 
 func (s *KeeperTestSuite) TestGRPCDepositRequests() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"))
 
 	depositor := s.addr(1)
 	s.deposit(depositor, pool.Id, utils.ParseCoins("250000denom1,250000denom2"), true)
@@ -518,7 +516,7 @@ func (s *KeeperTestSuite) TestGRPCDepositRequests() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.DepositRequests(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.DepositRequests(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -531,8 +529,8 @@ func (s *KeeperTestSuite) TestGRPCDepositRequests() {
 
 func (s *KeeperTestSuite) TestGRPCDepositRequest() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"))
 
 	depositor := s.addr(1)
 	req := s.deposit(depositor, pool.Id, utils.ParseCoins("250000denom1,250000denom2"), true)
@@ -584,7 +582,7 @@ func (s *KeeperTestSuite) TestGRPCDepositRequest() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.DepositRequest(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.DepositRequest(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -597,8 +595,8 @@ func (s *KeeperTestSuite) TestGRPCDepositRequest() {
 
 func (s *KeeperTestSuite) TestGRPCWithdrawRequests() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"))
 	poolCoinBalance := s.app.BankKeeper.GetBalance(s.ctx, creator, pool.PoolCoinDenom)
 	s.Require().Equal(s.keeper.GetMinInitialPoolCoinSupply(s.ctx), poolCoinBalance.Amount)
 
@@ -647,7 +645,7 @@ func (s *KeeperTestSuite) TestGRPCWithdrawRequests() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.WithdrawRequests(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.WithdrawRequests(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -660,8 +658,8 @@ func (s *KeeperTestSuite) TestGRPCWithdrawRequests() {
 
 func (s *KeeperTestSuite) TestGRPCWithdrawRequest() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
-	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"), true)
+	pair := s.createPair(creator, "denom1", "denom2")
+	pool := s.createPool(creator, pair.Id, utils.ParseCoins("5000000denom1,5000000denom2"))
 
 	req := s.withdraw(creator, pool.Id, sdk.NewInt64Coin(pool.PoolCoinDenom, 50000))
 	module.EndBlocker(s.ctx, s.keeper)
@@ -710,7 +708,7 @@ func (s *KeeperTestSuite) TestGRPCWithdrawRequest() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.WithdrawRequest(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.WithdrawRequest(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -723,7 +721,7 @@ func (s *KeeperTestSuite) TestGRPCWithdrawRequest() {
 
 func (s *KeeperTestSuite) TestGRPCOrders() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
+	pair := s.createPair(creator, "denom1", "denom2")
 
 	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), 10*time.Second, true)
 	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(5000000), 10*time.Second, true)
@@ -762,7 +760,7 @@ func (s *KeeperTestSuite) TestGRPCOrders() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Orders(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Orders(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -775,7 +773,7 @@ func (s *KeeperTestSuite) TestGRPCOrders() {
 
 func (s *KeeperTestSuite) TestGRPCOrder() {
 	creator := s.addr(0)
-	pair := s.createPair(creator, "denom1", "denom2", true)
+	pair := s.createPair(creator, "denom1", "denom2")
 
 	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), 10*time.Second, true)
 	module.EndBlocker(s.ctx, s.keeper)
@@ -824,7 +822,7 @@ func (s *KeeperTestSuite) TestGRPCOrder() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.Order(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.Order(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -836,8 +834,8 @@ func (s *KeeperTestSuite) TestGRPCOrder() {
 }
 
 func (s *KeeperTestSuite) TestGRPCOrdersByOrderer() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pair2 := s.createPair(s.addr(0), "denom2", "denom3", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pair2 := s.createPair(s.addr(0), "denom2", "denom3")
 
 	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
 	order2 := s.buyLimitOrder(s.addr(1), pair2.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
@@ -900,7 +898,7 @@ func (s *KeeperTestSuite) TestGRPCOrdersByOrderer() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.OrdersByOrderer(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.OrdersByOrderer(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -912,11 +910,11 @@ func (s *KeeperTestSuite) TestGRPCOrdersByOrderer() {
 }
 
 func (s *KeeperTestSuite) TestGRPCOrderBooks() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pair.LastPrice = utils.ParseDecP("1.0")
 	s.keeper.SetPair(s.ctx, pair)
 
-	pair2 := s.createPair(s.addr(0), "denom2", "denom3", true)
+	pair2 := s.createPair(s.addr(0), "denom2", "denom3")
 
 	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), math.NewInt(1000000), time.Minute, true)
 	s.sellLimitOrder(s.addr(2), pair.Id, utils.ParseDec("1.02"), math.NewInt(1000000), time.Minute, true)
@@ -1005,7 +1003,7 @@ func (s *KeeperTestSuite) TestGRPCOrderBooks() {
 		},
 	} {
 		s.Run(tc.name, func() {
-			resp, err := s.queryClient.OrderBooks(sdk.WrapSDKContext(s.ctx), tc.req)
+			resp, err := s.queryClient.OrderBooks(s.ctx, tc.req)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
@@ -1017,11 +1015,11 @@ func (s *KeeperTestSuite) TestGRPCOrderBooks() {
 }
 
 func (s *KeeperTestSuite) TestEmptyOrderBook() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pair.LastPrice = utils.ParseDecP("1.0") // manually set last price
 	s.keeper.SetPair(s.ctx, pair)
 
-	resp, err := s.queryClient.OrderBooks(sdk.WrapSDKContext(s.ctx), &types.QueryOrderBooksRequest{
+	resp, err := s.queryClient.OrderBooks(s.ctx, &types.QueryOrderBooksRequest{
 		PairIds:  []uint64{pair.Id},
 		NumTicks: 20,
 	})
@@ -1031,13 +1029,13 @@ func (s *KeeperTestSuite) TestEmptyOrderBook() {
 }
 
 func (s *KeeperTestSuite) TestBuyOrdersOnlyOrderBook() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pair.LastPrice = utils.ParseDecP("987")
 	s.keeper.SetPair(s.ctx, pair)
 
 	s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), math.NewInt(1000), time.Minute, true)
 
-	resp, err := s.queryClient.OrderBooks(sdk.WrapSDKContext(s.ctx), &types.QueryOrderBooksRequest{
+	resp, err := s.queryClient.OrderBooks(s.ctx, &types.QueryOrderBooksRequest{
 		PairIds:  []uint64{pair.Id},
 		NumTicks: 20,
 	})
@@ -1063,13 +1061,13 @@ func (s *KeeperTestSuite) TestBuyOrdersOnlyOrderBook() {
 }
 
 func (s *KeeperTestSuite) TestSellOrdersOnlyOrderBook() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pair.LastPrice = utils.ParseDecP("987")
 	s.keeper.SetPair(s.ctx, pair)
 
 	s.sellLimitOrder(s.addr(1), pair.Id, utils.ParseDec("987.65"), math.NewInt(1000), time.Minute, true)
 
-	resp, err := s.queryClient.OrderBooks(sdk.WrapSDKContext(s.ctx), &types.QueryOrderBooksRequest{
+	resp, err := s.queryClient.OrderBooks(s.ctx, &types.QueryOrderBooksRequest{
 		PairIds:  []uint64{pair.Id},
 		NumTicks: 20,
 	})

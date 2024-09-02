@@ -6,8 +6,8 @@ import (
 )
 
 func (s *KeeperTestSuite) TestDepositCoinsEscrowInvariant() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	req := s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	_, broken := keeper.DepositCoinsEscrowInvariant(s.keeper)(s.ctx)
@@ -27,8 +27,8 @@ func (s *KeeperTestSuite) TestDepositCoinsEscrowInvariant() {
 }
 
 func (s *KeeperTestSuite) TestPoolCoinEscrowInvariant() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
@@ -51,7 +51,7 @@ func (s *KeeperTestSuite) TestPoolCoinEscrowInvariant() {
 }
 
 func (s *KeeperTestSuite) TestRemainingOfferCoinEscrowInvariant() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	order := s.buyLimitOrder(s.addr(1), pair.Id, utils.ParseDec("1.0"), newInt(1000000), 0, true)
 	_, broken := keeper.RemainingOfferCoinEscrowInvariant(s.keeper)(s.ctx)
@@ -71,8 +71,8 @@ func (s *KeeperTestSuite) TestRemainingOfferCoinEscrowInvariant() {
 }
 
 func (s *KeeperTestSuite) TestPoolStatusInvariant() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	_, broken := keeper.PoolStatusInvariant(s.keeper)(s.ctx)
 	s.Require().False(broken)

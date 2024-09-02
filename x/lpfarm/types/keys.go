@@ -3,10 +3,9 @@ package types
 import (
 	"bytes"
 
+	utils "github.com/MANTRA-Finance/mantrachain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-
-	utils "github.com/MANTRA-Finance/mantrachain/types"
 )
 
 const (

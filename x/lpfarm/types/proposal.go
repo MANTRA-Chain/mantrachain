@@ -14,9 +14,7 @@ const (
 	ProposalTypeFarmingPlan string = "FarmingPlan"
 )
 
-var (
-	_ govv1beta1.Content = &FarmingPlanProposal{}
-)
+var _ govv1beta1.Content = &FarmingPlanProposal{}
 
 func init() {
 	govv1beta1.RegisterProposalType(ProposalTypeFarmingPlan)
@@ -25,7 +23,8 @@ func init() {
 func NewFarmingPlanProposal(
 	title, description string,
 	createPlanReqs []CreatePlanRequest,
-	terminatePlanReqs []TerminatePlanRequest) *FarmingPlanProposal {
+	terminatePlanReqs []TerminatePlanRequest,
+) *FarmingPlanProposal {
 	return &FarmingPlanProposal{
 		Title:                 title,
 		Description:           description,
@@ -64,7 +63,8 @@ func (p FarmingPlanProposal) String() string {
 
 func NewCreatePlanRequest(
 	description string, farmingPoolAddr sdk.AccAddress,
-	rewardAllocs []RewardAllocation, startTime, endTime time.Time) CreatePlanRequest {
+	rewardAllocs []RewardAllocation, startTime, endTime time.Time,
+) CreatePlanRequest {
 	return CreatePlanRequest{
 		Description:        description,
 		FarmingPoolAddress: farmingPoolAddr.String(),

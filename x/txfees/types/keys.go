@@ -8,9 +8,7 @@ const (
 	RouterKey = ModuleName
 )
 
-var (
-	ParamsKey = []byte("p_txfees")
-)
+var ParamsKey = []byte("p_txfees")
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)

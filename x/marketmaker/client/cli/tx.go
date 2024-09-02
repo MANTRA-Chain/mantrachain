@@ -8,8 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spf13/cobra"
-
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -17,8 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	"github.com/spf13/cobra"
 )
 
 // GetTxCmd returns a root CLI command handler for all x/marketmaker transaction commands.

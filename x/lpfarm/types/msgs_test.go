@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMsgFarm(t *testing.T) {
@@ -25,7 +24,7 @@ func TestMsgFarm(t *testing.T) {
 		{
 			"invalid farmer",
 			func(msg *types.MsgFarm) {
-				msg.Farmer = "invalidaddr"
+				msg.Farmer = invalidAddr
 			},
 			"invalid farmer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -73,7 +72,7 @@ func TestMsgUnfarm(t *testing.T) {
 		{
 			"invalid farmer",
 			func(msg *types.MsgUnfarm) {
-				msg.Farmer = "invalidaddr"
+				msg.Farmer = invalidAddr
 			},
 			"invalid farmer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -121,7 +120,7 @@ func TestMsgHarvest(t *testing.T) {
 		{
 			"invalid farmer",
 			func(msg *types.MsgHarvest) {
-				msg.Farmer = "invalidaddr"
+				msg.Farmer = invalidAddr
 			},
 			"invalid farmer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},

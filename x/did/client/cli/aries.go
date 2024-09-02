@@ -5,22 +5,22 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
 
+	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-
-	"github.com/MANTRA-Finance/mantrachain/x/did/types"
 )
 
 // request send a json http request
 func request(method, url string, requestBody io.Reader, val interface{}) (err error) {
-	var netClient = &http.Client{
+	netClient := &http.Client{
 		Timeout: time.Second * 1,
 	}
 	req, err := http.NewRequestWithContext(context.Background(), method, url, requestBody)
@@ -87,9 +87,11 @@ type x25519ECDHKW struct {
 // processAriesKeySet process key in case something else has to be done
 // the key generated for a keyType X25519ECDHKW is actually
 // a json structure containing the key itself
+
+// this function seems to never return an error
 func processAriesKeySet(keyType string, kscr *keySetCreateRsp) (err error) {
 	if keyType != "X25519ECDHKW" {
-		return nil
+		return errors.New("keyType not supported")
 	}
 	/*
 		for this particular key the result from aries is something like this:
@@ -108,36 +110,40 @@ func processAriesKeySet(keyType string, kscr *keySetCreateRsp) (err error) {
 	var xPubKey x25519ECDHKW
 	err = json.Unmarshal(keyRawJSON, &xPubKey)
 	if err != nil {
-		return
+		return err
 	}
 	// now convert the base64 encoding
 	rawPubKey, err := base64.StdEncoding.DecodeString(xPubKey.X)
 	if err != nil {
-		return nil
+		return err
 	}
 	// re-encode as expected
 	kscr.PublicKey = base64.RawURLEncoding.EncodeToString(rawPubKey)
-	return nil
+	return err
 }
+
+// createKeySetOnAgent create a keySet on an aries agent
 
 func createKeySetOnAgent(agentURL, keyType string) (keyID string, pubKey []byte, err error) {
 	var ksr keySetCreateRsp
+
+	// can we move this to where we set errors? (faddat)
 	err = post(fmt.Sprint(agentURL, "/kms/keyset"), &keySetCreateReq{KeyType: keyType}, &ksr)
 	if err != nil {
-		return
+		return "", nil, err
 	}
 	// this is a dodgy one
 	err = processAriesKeySet(keyType, &ksr)
 	if err != nil {
-		return
+		return "", nil, err
 	}
 	// now get the bytes
 	pubKey, err = ksr.toBytes()
 	if err != nil {
-		return
+		return "", nil, err
 	}
 	keyID = ksr.KeyID
-	return
+	return keyID, pubKey, nil
 }
 
 // NewLinkAriesAgentCmd link an aries

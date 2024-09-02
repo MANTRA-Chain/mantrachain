@@ -8,7 +8,6 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	guardkeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
 	tmtypes "github.com/cometbft/cometbft/proto/tendermint/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -16,10 +15,8 @@ import (
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
-
 	"github.com/skip-mev/slinky/cmd/constants/marketmaps"
 	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
 	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
@@ -116,7 +113,8 @@ func CreateUpgradeHandler(
 				// market authority addresses may add and update markets to the x/marketmap module
 				MarketAuthorities: []string{
 					authtypes.NewModuleAddress(govtypes.ModuleName).String(), // governance
-				}},
+				},
+			},
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to set x/marketmap params: %w", err)

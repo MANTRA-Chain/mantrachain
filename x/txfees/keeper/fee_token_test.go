@@ -38,6 +38,7 @@ func TestFeeTokenGet(t *testing.T) {
 		)
 	}
 }
+
 func TestFeeTokenRemove(t *testing.T) {
 	keeper, ctx := TxfeesKeeper(t)
 	items := createNFeeToken(keeper, ctx, 10)

@@ -3,21 +3,18 @@ package ante
 import (
 	"errors"
 
-	circuitante "cosmossdk.io/x/circuit/ante"
-
 	corestoretypes "cosmossdk.io/core/store"
 	storetypes "cosmossdk.io/store/types"
+	circuitante "cosmossdk.io/x/circuit/ante"
 	txsigning "cosmossdk.io/x/tx/signing"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	txfeeskeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	txfeeskeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
-	txfeestypes "github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
 // HandlerOptions are the options required for constructing a default SDK AnteHandler.

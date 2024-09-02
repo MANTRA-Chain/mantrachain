@@ -6,13 +6,11 @@ import (
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 type (
@@ -42,7 +40,6 @@ func NewKeeper(
 
 	authzKeeper types.AuthzKeeper,
 	nftKeeper types.NFTKeeper,
-
 ) *Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))

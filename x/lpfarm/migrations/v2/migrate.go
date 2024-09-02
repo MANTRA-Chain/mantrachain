@@ -2,7 +2,6 @@ package v2
 
 import (
 	"cosmossdk.io/core/store"
-
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/exported"
 	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	"github.com/cosmos/cosmos-sdk/codec"

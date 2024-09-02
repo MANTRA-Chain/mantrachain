@@ -529,7 +529,8 @@ func (msg *MsgApproveNfts) ValidateBasic() error {
 }
 
 func NewMsgApproveAllNfts(creator string, receiver string,
-	approved bool) *MsgApproveAllNfts {
+	approved bool,
+) *MsgApproveAllNfts {
 	return &MsgApproveAllNfts{
 		Creator:  creator,
 		Receiver: receiver,

@@ -13,14 +13,15 @@ const (
 	TypeMsgDeleteFeeToken = "delete_fee_token"
 )
 
-var _ legacytx.LegacyMsg = &MsgCreateFeeToken{}
-var _ sdk.Msg = &MsgCreateFeeToken{}
+var (
+	_ legacytx.LegacyMsg = &MsgCreateFeeToken{}
+	_ sdk.Msg            = &MsgCreateFeeToken{}
+)
 
 func NewMsgCreateFeeToken(
 	creator string,
 	denom string,
 	pairId uint64,
-
 ) *MsgCreateFeeToken {
 	return &MsgCreateFeeToken{
 		Creator: creator,
@@ -50,14 +51,15 @@ func (msg *MsgCreateFeeToken) ValidateBasic() error {
 	return nil
 }
 
-var _ legacytx.LegacyMsg = &MsgUpdateFeeToken{}
-var _ sdk.Msg = &MsgUpdateFeeToken{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateFeeToken{}
+	_ sdk.Msg            = &MsgUpdateFeeToken{}
+)
 
 func NewMsgUpdateFeeToken(
 	creator string,
 	denom string,
 	pairId uint64,
-
 ) *MsgUpdateFeeToken {
 	return &MsgUpdateFeeToken{
 		Creator: creator,
@@ -87,19 +89,21 @@ func (msg *MsgUpdateFeeToken) ValidateBasic() error {
 	return nil
 }
 
-var _ legacytx.LegacyMsg = &MsgDeleteFeeToken{}
-var _ sdk.Msg = &MsgDeleteFeeToken{}
+var (
+	_ legacytx.LegacyMsg = &MsgDeleteFeeToken{}
+	_ sdk.Msg            = &MsgDeleteFeeToken{}
+)
 
 func NewMsgDeleteFeeToken(
 	creator string,
 	denom string,
-
 ) *MsgDeleteFeeToken {
 	return &MsgDeleteFeeToken{
 		Creator: creator,
 		Denom:   denom,
 	}
 }
+
 func (msg *MsgDeleteFeeToken) Route() string {
 	return RouterKey
 }

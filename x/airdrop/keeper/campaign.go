@@ -19,7 +19,6 @@ func (k Keeper) SetClaimed(ctx sdk.Context, claimed types.Claimed) {
 func (k Keeper) GetClaimed(
 	ctx sdk.Context,
 	index []byte,
-
 ) (val types.Claimed, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.ClaimedStoreKey())
@@ -76,7 +75,6 @@ func (k Keeper) SetCampaign(ctx sdk.Context, campaign types.Campaign) {
 func (k Keeper) GetCampaign(
 	ctx sdk.Context,
 	index []byte,
-
 ) (val types.Campaign, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())
@@ -94,7 +92,6 @@ func (k Keeper) GetCampaign(
 func (k Keeper) RemoveCampaign(
 	ctx sdk.Context,
 	index []byte,
-
 ) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.CampaignStoreKey())

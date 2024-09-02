@@ -5,10 +5,9 @@ import (
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/lpfarm/types"
 )
 
 type (
@@ -36,7 +35,6 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	liquidityKeeper types.LiquidityKeeper,
 	guardKeeper types.GuardKeeper,
-
 ) Keeper {
 	if _, err := sdk.AccAddressFromBech32(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address: %s", authority))

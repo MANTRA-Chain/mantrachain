@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
-	_ "github.com/stretchr/testify/suite"
-
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	_ "github.com/stretchr/testify/suite"
 )
 
 func (suite *KeeperTestSuite) TestApplyMarketMaker() {
@@ -70,7 +69,6 @@ func (suite *KeeperTestSuite) TestApplyMarketMaker() {
 
 	balanceAfter2 := suite.app.BankKeeper.GetAllBalances(ctx, mmAddr)
 	suite.EqualValues(balanceAfter, balanceAfter2)
-
 }
 
 func (suite *KeeperTestSuite) TestApplyMarketMakerUnregisteredPair() {

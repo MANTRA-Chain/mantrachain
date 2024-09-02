@@ -4,12 +4,10 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cometbft/cometbft/crypto"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-
-	liquiditytypes "github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 const (

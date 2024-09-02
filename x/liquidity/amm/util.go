@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	sdkmath "cosmossdk.io/math"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 )
 

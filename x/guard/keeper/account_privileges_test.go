@@ -19,7 +19,6 @@ func (s *KeeperTestSuite) TestSetAccountPrivileges() {
 
 	list := s.guardKeeper.GetAccountPrivilegesMany(s.ctx, []sdk.AccAddress{account}, s.defaultPrivileges)
 	s.Require().EqualValues(privileges, list[0])
-
 }
 
 func (s *KeeperTestSuite) TestGetAccountPrivileges() {

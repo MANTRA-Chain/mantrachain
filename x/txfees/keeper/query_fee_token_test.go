@@ -4,14 +4,12 @@ import (
 	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/MANTRA-Finance/mantrachain/testutil/nullify"
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 )
 
 // Prevent strconv unused error
@@ -19,7 +17,6 @@ var _ = strconv.IntSize
 
 func TestFeeTokenQuerySingle(t *testing.T) {
 	keeper, ctx := TxfeesKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNFeeToken(keeper, ctx, 2)
 	tests := []struct {
 		desc     string
@@ -55,7 +52,7 @@ func TestFeeTokenQuerySingle(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := keeper.FeeToken(wctx, tc.request)
+			response, err := keeper.FeeToken(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -71,7 +68,6 @@ func TestFeeTokenQuerySingle(t *testing.T) {
 
 func TestFeeTokenQueryPaginated(t *testing.T) {
 	keeper, ctx := TxfeesKeeper(t)
-	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNFeeToken(keeper, ctx, 5)
 
 	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllFeeTokenRequest {
@@ -87,7 +83,7 @@ func TestFeeTokenQueryPaginated(t *testing.T) {
 	t.Run("ByOffset", func(t *testing.T) {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.FeeTokenAll(wctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := keeper.FeeTokenAll(ctx, request(nil, uint64(i), uint64(step), false))
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.FeeToken), step)
 			require.Subset(t,
@@ -100,7 +96,7 @@ func TestFeeTokenQueryPaginated(t *testing.T) {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.FeeTokenAll(wctx, request(next, 0, uint64(step), false))
+			resp, err := keeper.FeeTokenAll(ctx, request(next, 0, uint64(step), false))
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.FeeToken), step)
 			require.Subset(t,
@@ -111,7 +107,7 @@ func TestFeeTokenQueryPaginated(t *testing.T) {
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
-		resp, err := keeper.FeeTokenAll(wctx, request(nil, 0, 0, true))
+		resp, err := keeper.FeeTokenAll(ctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
 		require.Equal(t, len(msgs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
@@ -120,7 +116,7 @@ func TestFeeTokenQueryPaginated(t *testing.T) {
 		)
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := keeper.FeeTokenAll(wctx, nil)
+		_, err := keeper.FeeTokenAll(ctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

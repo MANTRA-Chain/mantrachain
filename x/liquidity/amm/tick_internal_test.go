@@ -4,9 +4,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_char(t *testing.T) {

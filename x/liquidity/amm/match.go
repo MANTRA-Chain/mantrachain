@@ -295,7 +295,7 @@ func (ob *OrderBook) Match(lastPrice sdkmath.LegacyDec) (matchPrice sdkmath.Lega
 		matchPrice = p
 		matched = true
 	}
-	return
+	return matchPrice, quoteCoinDiff, matched
 }
 
 // DistributeOrderAmountToTick distributes the given order amount to the orders
@@ -393,5 +393,5 @@ func DistributeOrderAmountToOrders(orders []Order, amt sdkmath.Int, price sdkmat
 	for order, matchedAmt := range matchedAmtByOrder {
 		quoteCoinDiff = quoteCoinDiff.Add(FillOrder(order, matchedAmt, price))
 	}
-	return
+	return quoteCoinDiff
 }

@@ -2,7 +2,6 @@ package token
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-
 	modulev1 "github.com/MANTRA-Finance/mantrachain/api/mantrachain/token/v1"
 )
 

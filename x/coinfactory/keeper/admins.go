@@ -1,10 +1,9 @@
 package keeper
 
 import (
+	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/proto"
-
-	"github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
 )
 
 func (k Keeper) HasAdmin(ctx sdk.Context, denom string) bool {

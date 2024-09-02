@@ -4,10 +4,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // HandleMarketMakerProposal is a handler for executing a market maker proposal.

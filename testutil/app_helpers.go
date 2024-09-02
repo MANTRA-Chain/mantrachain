@@ -5,21 +5,19 @@ import (
 	"fmt"
 	"time"
 
+	coreheader "cosmossdk.io/core/header"
+	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-
+	sdkmath "cosmossdk.io/math"
 	"github.com/MANTRA-Finance/mantrachain/app"
-
+	utils "github.com/MANTRA-Finance/mantrachain/types"
+	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtjson "github.com/cometbft/cometbft/libs/json"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	cmttypes "github.com/cometbft/cometbft/types"
 	dbm "github.com/cosmos/cosmos-db"
-
-	coreheader "cosmossdk.io/core/header"
-	"cosmossdk.io/depinject"
-	sdkmath "cosmossdk.io/math"
-
-	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -32,9 +30,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
-	guardtypes "github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 const (
@@ -150,10 +145,6 @@ func NextBlock(app *app.App, ctx sdk.Context, jumpTime time.Duration) (sdk.Conte
 		Height: header.Height,
 		Time:   header.Time,
 	})
-
-	if err != nil {
-		return sdk.Context{}, err
-	}
 
 	return newCtx, err
 }

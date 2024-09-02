@@ -2,8 +2,6 @@ package keeper_test
 
 import (
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (s *KeeperTestSuite) TestUpdateGuardTransferCoins() {
@@ -31,11 +29,9 @@ func (s *KeeperTestSuite) TestUpdateGuardTransferCoins() {
 		},
 	}
 
-	goCtx := sdk.WrapSDKContext(s.ctx)
-
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			_, err := s.msgServer.UpdateGuardTransferCoins(goCtx, tc.req)
+			_, err := s.msgServer.UpdateGuardTransferCoins(s.ctx, tc.req)
 			if tc.expErr {
 				s.Require().Error(err)
 				s.Require().Contains(err.Error(), tc.errMsg)

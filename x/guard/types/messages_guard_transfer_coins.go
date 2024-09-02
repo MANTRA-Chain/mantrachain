@@ -19,8 +19,10 @@ const (
 	AttributeKeyGuardTransferCoins = "guard_transfer_coins"
 )
 
-var _ legacytx.LegacyMsg = &MsgUpdateGuardTransferCoins{}
-var _ sdk.Msg = &MsgUpdateGuardTransferCoins{}
+var (
+	_ legacytx.LegacyMsg = &MsgUpdateGuardTransferCoins{}
+	_ sdk.Msg            = &MsgUpdateGuardTransferCoins{}
+)
 
 func NewMsgUpdateGuardTransferCoins(creator string, enabled bool) *MsgUpdateGuardTransferCoins {
 	return &MsgUpdateGuardTransferCoins{

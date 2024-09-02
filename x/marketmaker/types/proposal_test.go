@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-
-	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
 )
 
 func TestMarketMakerProposal_ValidateBasic(t *testing.T) {

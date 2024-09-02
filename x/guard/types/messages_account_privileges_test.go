@@ -3,10 +3,13 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	invalidAddr = "invalidaddr"
 )
 
 func TestMsgUpdateAccountPrivileges(t *testing.T) {
@@ -23,14 +26,14 @@ func TestMsgUpdateAccountPrivileges(t *testing.T) {
 		{
 			"invalid creator",
 			func(msg *types.MsgUpdateAccountPrivileges) {
-				msg.Creator = "invalidaddr"
+				msg.Creator = invalidAddr
 			},
 			"invalid creator address (decoding bech32 failed: invalid separator index -1): invalid address",
 		},
 		{
 			"invalid account",
 			func(msg *types.MsgUpdateAccountPrivileges) {
-				msg.Account = "invalidaddr"
+				msg.Account = invalidAddr
 			},
 			"invalid account address (decoding bech32 failed: invalid separator index -1): invalid address",
 		},

@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func TestGRPCQueryAccountPrivileges(t *testing.T) {
@@ -31,7 +29,7 @@ func (s *KeeperTestSuite) TestAccountPrivileges() {
 			"success",
 			func(index int, require *require.Assertions) {
 				accountPrivilegesResp = types.QueryGetAccountPrivilegesResponse{
-					Account:    sdk.AccAddress(s.addrs[0]).String(),
+					Account:    s.addrs[0].String(),
 					Privileges: []byte{0x02},
 				}
 				req = &types.QueryGetAccountPrivilegesRequest{

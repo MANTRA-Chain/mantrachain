@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
-
 	"cosmossdk.io/errors"
+	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -58,9 +57,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 		return ctx, errors.Wrap(errorstypes.ErrInvalidGasLimit, "must provide positive gas")
 	}
 
-	var (
-		err error
-	)
+	var err error
 
 	fee := feeTx.GetFee()
 	if !simulate {

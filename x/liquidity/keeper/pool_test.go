@@ -2,23 +2,21 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	module "github.com/MANTRA-Finance/mantrachain/x/liquidity/module"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	_ "github.com/stretchr/testify/suite"
 )
 
 func (s *KeeperTestSuite) TestCreatePool() {
 	// Create a pair.
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// Create a normal pool.
 	poolCreator := s.addr(1)
-	s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	// Check if our pool is set correctly.
 	pool, found := s.keeper.GetPool(s.ctx, 1)
@@ -31,9 +29,10 @@ func (s *KeeperTestSuite) TestCreatePool() {
 func (s *KeeperTestSuite) TestCreateRangedPool() {
 	params := s.keeper.GetParams(s.ctx)
 	params.TickPrecision = 5 // to test too small min price case
-	s.keeper.SetParams(s.ctx, params)
+	err := s.keeper.SetParams(s.ctx, params)
+	s.Require().NoError(err)
 
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	poolCreator := s.addr(1)
 	s.fundAddr(poolCreator, utils.ParseCoins("1000000denom1,1000000denom2,1000000denom3,1000000stake"))
@@ -138,7 +137,7 @@ func (s *KeeperTestSuite) TestCreateRangedPool() {
 }
 
 func (s *KeeperTestSuite) TestPoolCreationFee() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	poolCreator := s.addr(1)
 	depositCoins := utils.ParseCoins("1000000denom1,1000000denom2")
@@ -150,7 +149,7 @@ func (s *KeeperTestSuite) TestPoolCreationFee() {
 }
 
 func (s *KeeperTestSuite) TestCreatePoolWithInsufficientDepositAmount() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// A user tries to create a pool with smaller amounts of coin
 	// than the minimum initial deposit amount.
@@ -165,10 +164,10 @@ func (s *KeeperTestSuite) TestCreatePoolWithInsufficientDepositAmount() {
 }
 
 func (s *KeeperTestSuite) TestCreateSamePool() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// Create a pool with denom1 and denom2.
-	s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	// This will fail since there's already a basic pool.
 	depositCoins := utils.ParseCoins("2000000denom1,1000000denom2")
@@ -181,12 +180,12 @@ func (s *KeeperTestSuite) TestCreateSamePool() {
 	// However, this will not fail since it's creating a ranged pool.
 	s.createRangedPool(
 		s.addr(3), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-		utils.ParseDec("0.9"), utils.ParseDec("1.1"), utils.ParseDec("1.0"), true)
+		utils.ParseDec("0.9"), utils.ParseDec("1.1"), utils.ParseDec("1.0"))
 
 	// Creation of multiple ranged pools with same parameters is allowed.
 	s.createRangedPool(
 		s.addr(4), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-		utils.ParseDec("0.9"), utils.ParseDec("1.1"), utils.ParseDec("1.0"), true)
+		utils.ParseDec("0.9"), utils.ParseDec("1.1"), utils.ParseDec("1.0"))
 }
 
 func (s *KeeperTestSuite) TestDisabledPool() {
@@ -194,12 +193,12 @@ func (s *KeeperTestSuite) TestDisabledPool() {
 	// 1. A pool with at least one side of its x/y coin's balance is 0.
 	// 2. A pool with 0 pool coin supply(all investors has withdrawn their coins)
 
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pair2 := s.createPair(s.addr(0), "denom3", "denom4", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pair2 := s.createPair(s.addr(0), "denom3", "denom4")
 
 	poolCreator := s.addr(1)
 	// Create a pool.
-	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	// Send the pool's balances to somewhere else.
 	s.sendCoins(pool.GetReserveAddress(), s.addr(2), s.getBalances(pool.GetReserveAddress()))
 
@@ -220,7 +219,7 @@ func (s *KeeperTestSuite) TestDisabledPool() {
 
 	// Here's the second example.
 	// This time, the pool creator withdraws all his coins.
-	pool = s.createPool(poolCreator, pair2.Id, utils.ParseCoins("1000000denom3,1000000denom4"), true)
+	pool = s.createPool(poolCreator, pair2.Id, utils.ParseCoins("1000000denom3,1000000denom4"))
 	s.withdraw(poolCreator, pool.Id, s.getBalance(poolCreator, pool.PoolCoinDenom))
 	s.nextBlock()
 
@@ -230,36 +229,36 @@ func (s *KeeperTestSuite) TestDisabledPool() {
 }
 
 func (s *KeeperTestSuite) TestCreatePoolAfterDisabled() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// Create a disabled pool.
 	poolCreator := s.addr(1)
-	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	s.withdraw(poolCreator, pool.Id, s.getBalance(poolCreator, pool.PoolCoinDenom))
 	s.nextBlock()
 
 	// Now a new pool can be created with same denom pair because
 	// all pools with same denom pair are disabled.
-	s.createPool(s.addr(2), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	s.createPool(s.addr(2), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 }
 
 func (s *KeeperTestSuite) TestCreatePoolInitialPoolCoinSupply() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	poolCreator := s.addr(1)
-	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	s.Require().True(intEq(s.keeper.GetMinInitialPoolCoinSupply(s.ctx), s.getBalance(poolCreator, pool.PoolCoinDenom).Amount))
 
-	pair = s.createPair(s.addr(0), "denom2", "denom3", true)
+	pair = s.createPair(s.addr(0), "denom2", "denom3")
 
-	pool = s.createPool(poolCreator, pair.Id, utils.ParseCoins("2000000000000denom2,500000000000000denom3"), true)
+	pool = s.createPool(poolCreator, pair.Id, utils.ParseCoins("2000000000000denom2,500000000000000denom3"))
 	s.Require().True(intEq(math.NewInt(100000000000000), s.getBalance(poolCreator, pool.PoolCoinDenom).Amount))
 }
 
 func (s *KeeperTestSuite) TestPoolIndexes() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
-	pool := s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	pool2, found := s.keeper.GetPoolByReserveAddress(s.ctx, pool.GetReserveAddress())
 	s.Require().True(found)
@@ -271,8 +270,8 @@ func (s *KeeperTestSuite) TestPoolIndexes() {
 }
 
 func (s *KeeperTestSuite) TestDeposit() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
@@ -290,9 +289,9 @@ func (s *KeeperTestSuite) TestDeposit() {
 }
 
 func (s *KeeperTestSuite) TestDepositRefund() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1500000denom2"), true)
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1500000denom2"))
 
 	depositor := s.addr(1)
 	depositCoins := utils.ParseCoins("20000denom1,15000denom2")
@@ -306,8 +305,8 @@ func (s *KeeperTestSuite) TestDepositRefund() {
 	s.Require().True(coinEq(utils.ParseCoin("0denom2"), s.getBalance(depositor, "denom2")))
 	module.BeginBlocker(s.ctx, s.keeper)
 
-	pair = s.createPair(s.addr(0), "denom2", "denom1", true)
-	pool = s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000000denom2,1000000000000000denom1"), true)
+	pair = s.createPair(s.addr(0), "denom2", "denom1")
+	pool = s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000000denom2,1000000000000000denom1"))
 
 	depositor = s.addr(2)
 	depositCoins = utils.ParseCoins("1denom1,1denom2")
@@ -321,9 +320,9 @@ func (s *KeeperTestSuite) TestDepositRefund() {
 }
 
 func (s *KeeperTestSuite) TestDepositRefundTooSmallMintedPoolCoin() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1500000denom2"), true)
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1500000denom2"))
 
 	depositor := s.addr(1)
 	depositCoins := utils.ParseCoins("20000denom1,15000denom2")
@@ -337,8 +336,8 @@ func (s *KeeperTestSuite) TestDepositRefundTooSmallMintedPoolCoin() {
 	s.Require().True(coinEq(utils.ParseCoin("0denom2"), s.getBalance(depositor, "denom2")))
 	module.BeginBlocker(s.ctx, s.keeper)
 
-	pair = s.createPair(s.addr(0), "denom2", "denom1", true)
-	pool = s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000000denom2,1000000000000000denom1"), true)
+	pair = s.createPair(s.addr(0), "denom2", "denom1")
+	pool = s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000000denom2,1000000000000000denom1"))
 
 	depositor = s.addr(2)
 	depositCoins = utils.ParseCoins("1denom1,1denom2")
@@ -352,16 +351,16 @@ func (s *KeeperTestSuite) TestDepositRefundTooSmallMintedPoolCoin() {
 }
 
 func (s *KeeperTestSuite) TestTooLargePool() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	_, err := s.keeper.Deposit(s.ctx, types.NewMsgDeposit(s.addr(1), pool.Id, utils.ParseCoins("10000000000000000000000000000000000000000denom1,10000000000000000000000000000000000000000denom2")))
 	s.Require().ErrorIs(err, types.ErrTooLargePool)
 }
 
 func (s *KeeperTestSuite) TestWithdraw() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	depositor := s.addr(1)
 	depositCoins := utils.ParseCoins("1000000denom1,1000000denom2")
@@ -376,8 +375,8 @@ func (s *KeeperTestSuite) TestWithdraw() {
 }
 
 func (s *KeeperTestSuite) TestWithdrawRefund() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	depositor := s.addr(1)
 	s.deposit(depositor, pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
@@ -394,8 +393,8 @@ func (s *KeeperTestSuite) TestWithdrawRefund() {
 }
 
 func (s *KeeperTestSuite) TestWithdrawRefundTooSmallWithdrawCoins() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 
 	depositor := s.addr(1)
 	s.deposit(depositor, pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
@@ -410,10 +409,10 @@ func (s *KeeperTestSuite) TestWithdrawRefundTooSmallWithdrawCoins() {
 }
 
 func (s *KeeperTestSuite) TestDepositToDisabledPool() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// Create a disabled pool by sending the pool's balances to somewhere else.
-	pool := s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	poolReserveAddr := pool.GetReserveAddress()
 	s.sendCoins(poolReserveAddr, s.addr(2), s.getBalances(poolReserveAddr))
 
@@ -436,11 +435,11 @@ func (s *KeeperTestSuite) TestDepositToDisabledPool() {
 }
 
 func (s *KeeperTestSuite) TestWithdrawFromDisabledPool() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 	// Create a disabled pool by sending the pool's balances to somewhere else.
 	poolCreator := s.addr(1)
-	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pool := s.createPool(poolCreator, pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	poolReserveAddr := pool.GetReserveAddress()
 	s.sendCoins(poolReserveAddr, s.addr(1), s.getBalances(poolReserveAddr))
 
@@ -460,8 +459,8 @@ func (s *KeeperTestSuite) TestWithdrawFromDisabledPool() {
 }
 
 func (s *KeeperTestSuite) TestGetDepositRequestsByDepositor() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	req1 := s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	req2 := s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	reqs := s.keeper.GetDepositRequestsByDepositor(s.ctx, s.addr(1))
@@ -473,8 +472,8 @@ func (s *KeeperTestSuite) TestGetDepositRequestsByDepositor() {
 }
 
 func (s *KeeperTestSuite) TestWithdrawRequestsByWithdrawer() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	s.deposit(s.addr(1), pool.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
 	s.nextBlock()
 	req1 := s.withdraw(s.addr(1), pool.Id, utils.ParseCoin("10000pool1"))
@@ -488,8 +487,8 @@ func (s *KeeperTestSuite) TestWithdrawRequestsByWithdrawer() {
 }
 
 func (s *KeeperTestSuite) TestPoolOrderOverflow_ExternalFunds() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
-	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
+	pool := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 	externalFunds := utils.ParseCoins("10000000000000000000000000000000000000000000denom2")
 	s.fundAddr(s.addr(1), externalFunds)
 	s.sendCoins(s.addr(1), pool.GetReserveAddress(), externalFunds)
@@ -501,10 +500,10 @@ func (s *KeeperTestSuite) TestPoolOrderOverflow_ExternalFunds() {
 }
 
 func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pool := s.createRangedPool(
 		s.addr(1), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
 	ammPool := pool.AMMPool(rx.Amount, ry.Amount, math.Int{})
 	s.Require().True(utils.DecApproxEqual(ammPool.Price(), utils.ParseDec("1.0")))
@@ -524,10 +523,10 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw() {
 }
 
 func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pool := s.createRangedPool(
 		s.addr(1), pair.Id, utils.ParseCoins("1000000denom1"),
-		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("0.5"), true)
+		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("0.5"))
 
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
 	s.Require().True(intEq(math.ZeroInt(), rx.Amount))
@@ -559,10 +558,10 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side() {
 }
 
 func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
-	pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+	pair := s.createPair(s.addr(0), "denom1", "denom2")
 	pool := s.createRangedPool(
 		s.addr(1), pair.Id, utils.ParseCoins("1000000denom2"),
-		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("2.0"), true)
+		utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("2.0"))
 
 	rx, ry := s.keeper.GetPoolBalances(s.ctx, pool)
 	s.Require().True(intEq(math.NewInt(1000000), rx.Amount))
@@ -596,14 +595,14 @@ func (s *KeeperTestSuite) TestRangedPoolDepositWithdraw_single_side2() {
 func (s *KeeperTestSuite) TestMaxNumActivePoolsPerPair() {
 	s.Run("basic pool and ranged pools", func() {
 		s.SetupTest()
-		pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+		pair := s.createPair(s.addr(0), "denom1", "denom2")
 
-		pool1 := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"), true)
+		pool1 := s.createPool(s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"))
 		maxNumActivePools := s.keeper.GetMaxNumActivePoolsPerPair(s.ctx)
 		for i := uint32(0); i < maxNumActivePools-1; i++ {
 			s.createRangedPool(
 				s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-				utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+				utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 		}
 
 		s.fundAddr(s.addr(0), utils.ParseCoins("1000000denom1,1000000denom2"))
@@ -617,18 +616,18 @@ func (s *KeeperTestSuite) TestMaxNumActivePoolsPerPair() {
 
 		s.createRangedPool(
 			s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-			utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+			utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 	})
 
 	s.Run("ranged pools only", func() {
 		s.SetupTest()
-		pair := s.createPair(s.addr(0), "denom1", "denom2", true)
+		pair := s.createPair(s.addr(0), "denom1", "denom2")
 
 		maxNumActivePools := s.keeper.GetMaxNumActivePoolsPerPair(s.ctx)
 		for i := uint32(0); i < maxNumActivePools; i++ {
 			s.createRangedPool(
 				s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-				utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+				utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 		}
 		pool1, _ := s.keeper.GetPool(s.ctx, 1)
 
@@ -643,6 +642,6 @@ func (s *KeeperTestSuite) TestMaxNumActivePoolsPerPair() {
 
 		s.createRangedPool(
 			s.addr(0), pair.Id, utils.ParseCoins("1000000denom1,1000000denom2"),
-			utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"), true)
+			utils.ParseDec("0.5"), utils.ParseDec("2.0"), utils.ParseDec("1.0"))
 	})
 }

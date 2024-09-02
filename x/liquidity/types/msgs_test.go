@@ -4,15 +4,18 @@ import (
 	"testing"
 	"time"
 
-	"cosmossdk.io/math"
 	sdkmath "cosmossdk.io/math"
-	"github.com/stretchr/testify/require"
-
-	"github.com/cometbft/cometbft/crypto"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	"github.com/cometbft/cometbft/crypto"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	invalidAddr  = "invalidaddr"
+	invalidDenom = "invaliddenom!"
+	denomOne     = "denom1"
 )
 
 func TestMsgCreatePair(t *testing.T) {
@@ -29,28 +32,28 @@ func TestMsgCreatePair(t *testing.T) {
 		{
 			"invalid creator",
 			func(msg *types.MsgCreatePair) {
-				msg.Creator = "invalidaddr"
+				msg.Creator = invalidAddr
 			},
 			"invalid creator address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
 		{
 			"invalid base coin denom",
 			func(msg *types.MsgCreatePair) {
-				msg.BaseCoinDenom = "invaliddenom!"
+				msg.BaseCoinDenom = invalidDenom
 			},
 			"invalid denom: invaliddenom!: invalid request",
 		},
 		{
 			"invalid quote coin denom",
 			func(msg *types.MsgCreatePair) {
-				msg.QuoteCoinDenom = "invaliddenom!"
+				msg.QuoteCoinDenom = invalidDenom
 			},
 			"invalid denom: invaliddenom!: invalid request",
 		},
 		{
 			"same denom",
 			func(msg *types.MsgCreatePair) {
-				msg.QuoteCoinDenom = "denom1"
+				msg.QuoteCoinDenom = denomOne
 			},
 			"cannot use same denom for both base coin and quote coin: invalid request",
 		},
@@ -91,7 +94,7 @@ func TestMsgCreatePool(t *testing.T) {
 		{
 			"invalid creator",
 			func(msg *types.MsgCreatePool) {
-				msg.Creator = "invalidaddr"
+				msg.Creator = invalidAddr
 			},
 			"invalid creator address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -160,7 +163,7 @@ func TestMsgCreateRangedPool(t *testing.T) {
 		{
 			"invalid creator",
 			func(msg *types.MsgCreateRangedPool) {
-				msg.Creator = "invalidaddr"
+				msg.Creator = invalidAddr
 			},
 			"invalid creator address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -195,14 +198,14 @@ func TestMsgCreateRangedPool(t *testing.T) {
 		{
 			"too small min price",
 			func(msg *types.MsgCreateRangedPool) {
-				msg.MinPrice = math.LegacyNewDecWithPrec(1, 16)
+				msg.MinPrice = sdkmath.LegacyNewDecWithPrec(1, 16)
 			},
 			"min price must not be lower than 0.000000000000001000: invalid request",
 		},
 		{
 			"too large max price",
 			func(msg *types.MsgCreateRangedPool) {
-				msg.MaxPrice = sdkmath.LegacyNewDecFromInt(math.NewIntWithDecimal(1, 25))
+				msg.MaxPrice = sdkmath.LegacyNewDecFromInt(sdkmath.NewIntWithDecimal(1, 25))
 			},
 			"max price must not be higher than 100000000000000000000.000000000000000000: invalid request",
 		},
@@ -259,7 +262,7 @@ func TestMsgDeposit(t *testing.T) {
 		{
 			"invalid depositor",
 			func(msg *types.MsgDeposit) {
-				msg.Depositor = "invalidaddr"
+				msg.Depositor = invalidAddr
 			},
 			"invalid depositor address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -323,7 +326,7 @@ func TestMsgWithdraw(t *testing.T) {
 		{
 			"invalid withdrawer",
 			func(msg *types.MsgWithdraw) {
-				msg.Withdrawer = "invalidaddr"
+				msg.Withdrawer = invalidAddr
 			},
 			"invalid withdrawer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -372,7 +375,7 @@ func TestMsgLimitOrder(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgLimitOrder) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -416,7 +419,7 @@ func TestMsgLimitOrder(t *testing.T) {
 		{
 			"invalid demand coin denom",
 			func(msg *types.MsgLimitOrder) {
-				msg.DemandCoinDenom = "invaliddenom!"
+				msg.DemandCoinDenom = invalidDenom
 			},
 			"invalid demand coin denom: invalid denom: invaliddenom!",
 		},
@@ -490,7 +493,7 @@ func TestMsgMarketOrder(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgMarketOrder) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -525,7 +528,7 @@ func TestMsgMarketOrder(t *testing.T) {
 		{
 			"invalid demand coin denom",
 			func(msg *types.MsgMarketOrder) {
-				msg.DemandCoinDenom = "invaliddenom!"
+				msg.DemandCoinDenom = invalidDenom
 			},
 			"invalid demand coin denom: invalid denom: invaliddenom!",
 		},
@@ -591,7 +594,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgMMOrder) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -627,7 +630,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small sell amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = math.NewInt(99)
+				msg.SellAmount = sdkmath.NewInt(99)
 			},
 			"sell amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -656,7 +659,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small buy amount",
 			func(msg *types.MsgMMOrder) {
-				msg.BuyAmount = math.NewInt(99)
+				msg.BuyAmount = sdkmath.NewInt(99)
 			},
 			"buy amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -670,7 +673,7 @@ func TestMsgMMOrder(t *testing.T) {
 		{
 			"too small sell amount",
 			func(msg *types.MsgMMOrder) {
-				msg.SellAmount = math.NewInt(99)
+				msg.SellAmount = sdkmath.NewInt(99)
 			},
 			"sell amount 99 is smaller than the min amount 100: invalid request",
 		},
@@ -700,8 +703,8 @@ func TestMsgMMOrder(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			msg := types.NewMsgMMOrder(
 				testAddr, 1,
-				utils.ParseDec("1.5"), utils.ParseDec("1.1"), math.NewInt(1000000),
-				utils.ParseDec("0.9"), utils.ParseDec("0.5"), math.NewInt(1000000),
+				utils.ParseDec("1.5"), utils.ParseDec("1.1"), sdkmath.NewInt(1000000),
+				utils.ParseDec("0.9"), utils.ParseDec("0.5"), sdkmath.NewInt(1000000),
 				orderLifespan)
 			tc.malleate(msg)
 			require.Equal(t, types.TypeMsgMMOrder, msg.Type())
@@ -730,7 +733,7 @@ func TestMsgCancelOrder(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgCancelOrder) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -778,7 +781,7 @@ func TestMsgCancelAllOrders(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgCancelAllOrders) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},
@@ -826,7 +829,7 @@ func TestMsgCancelMMOrder(t *testing.T) {
 		{
 			"invalid orderer",
 			func(msg *types.MsgCancelMMOrder) {
-				msg.Orderer = "invalidaddr"
+				msg.Orderer = invalidAddr
 			},
 			"invalid orderer address: decoding bech32 failed: invalid separator index -1: invalid address",
 		},

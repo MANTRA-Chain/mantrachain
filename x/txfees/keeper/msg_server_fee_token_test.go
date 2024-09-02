@@ -4,12 +4,10 @@ import (
 	"strconv"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
 	"github.com/MANTRA-Finance/mantrachain/x/txfees/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/stretchr/testify/require"
 )
 
 // Prevent strconv unused error
@@ -18,12 +16,11 @@ var _ = strconv.IntSize
 func TestFeeTokenMsgServerCreate(t *testing.T) {
 	k, ctx := TxfeesKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
-	wctx := sdk.WrapSDKContext(ctx)
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateFeeToken{
 			Denom: strconv.Itoa(i),
 		}
-		_, err := srv.CreateFeeToken(wctx, expected)
+		_, err := srv.CreateFeeToken(ctx, expected)
 		require.NoError(t, err)
 		_, found := k.GetFeeToken(ctx,
 			expected.Denom,
@@ -56,14 +53,13 @@ func TestFeeTokenMsgServerUpdate(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := TxfeesKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateFeeToken{
 				Denom: strconv.Itoa(0),
 			}
-			_, err := srv.CreateFeeToken(wctx, expected)
+			_, err := srv.CreateFeeToken(ctx, expected)
 			require.NoError(t, err)
 
-			_, err = srv.UpdateFeeToken(wctx, tc.request)
+			_, err = srv.UpdateFeeToken(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -101,13 +97,12 @@ func TestFeeTokenMsgServerDelete(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			k, ctx := TxfeesKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateFeeToken(wctx, &types.MsgCreateFeeToken{
+			_, err := srv.CreateFeeToken(ctx, &types.MsgCreateFeeToken{
 				Denom: strconv.Itoa(0),
 			})
 			require.NoError(t, err)
-			_, err = srv.DeleteFeeToken(wctx, tc.request)
+			_, err = srv.DeleteFeeToken(ctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {

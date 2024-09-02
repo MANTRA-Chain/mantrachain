@@ -20,6 +20,21 @@ import (
 	_ "cosmossdk.io/x/nft/module" // import for side-effects
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
+	"github.com/MANTRA-Finance/mantrachain/docs"
+	airdropmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
+	bridgemodulekeeper "github.com/MANTRA-Finance/mantrachain/x/bridge/keeper"
+	coinfactorymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
+	didmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/did/keeper"
+	guardmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
+	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
+	lpfarmmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
+	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
+	tokenmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/token/keeper"
+	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
+	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -65,6 +80,9 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -74,39 +92,8 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-
-	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
-	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
-	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
-
-	bridgemodulekeeper "github.com/MANTRA-Finance/mantrachain/x/bridge/keeper"
-
-	airdropmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/airdrop/keeper"
-	coinfactorymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/coinfactory/keeper"
-
-	didmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/did/keeper"
-	tokenmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/token/keeper"
-
-	guardmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/guard/keeper"
-
-	marketmakermodulekeeper "github.com/MANTRA-Finance/mantrachain/x/marketmaker/keeper"
-
-	liquiditymodulekeeper "github.com/MANTRA-Finance/mantrachain/x/liquidity/keeper"
-	lpfarmmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/lpfarm/keeper"
-
-	txfeesmodulekeeper "github.com/MANTRA-Finance/mantrachain/x/txfees/keeper"
-	// this line is used by starport scaffolding # stargate/app/moduleImport
-
 	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
 	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
-
-	"github.com/MANTRA-Finance/mantrachain/docs"
-
-	ante "github.com/MANTRA-Finance/mantrachain/app/ante"
-
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 const (
@@ -114,10 +101,8 @@ const (
 	Name                 = "mantrachain"
 )
 
-var (
-	// DefaultNodeHome default home directories for the application daemon
-	DefaultNodeHome string
-)
+// DefaultNodeHome default home directories for the application daemon
+var DefaultNodeHome string
 
 var (
 	_ runtime.AppI            = (*App)(nil)

@@ -4,11 +4,10 @@ import (
 	"strings"
 
 	"cosmossdk.io/errors"
+	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/MANTRA-Finance/mantrachain/x/token/types"
 )
 
 func (k Keeper) CheckSoulBondedNftsCollection(ctx sdk.Context, collectionCreator string, collectionId string) error {
@@ -17,7 +16,6 @@ func (k Keeper) CheckSoulBondedNftsCollection(ctx sdk.Context, collectionCreator
 	}
 
 	creator, err := sdk.AccAddressFromBech32(collectionCreator)
-
 	if err != nil {
 		return status.Error(codes.InvalidArgument, "invalid collection creator")
 	}

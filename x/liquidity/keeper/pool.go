@@ -6,11 +6,10 @@ import (
 
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	errorstypes "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // getNextPoolIdWithUpdate increments pool id by one and set it.

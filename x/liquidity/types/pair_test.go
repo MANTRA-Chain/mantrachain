@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	sdkmath "cosmossdk.io/math"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cometbft/cometbft/crypto"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 )
 
 func TestPair_Validate(t *testing.T) {
@@ -47,7 +46,7 @@ func TestPair_Validate(t *testing.T) {
 		{
 			"invalid escrow address",
 			func(pair *types.Pair) {
-				pair.EscrowAddress = "invalidaddr"
+				pair.EscrowAddress = invalidAddr
 			},
 			"invalid escrow address invalidaddr: decoding bech32 failed: invalid separator index -1",
 		},

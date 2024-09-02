@@ -6,13 +6,9 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-var (
-	DefaultBaseDenom = "uom"
-)
+var DefaultBaseDenom = "uom"
 
-var (
-	KeyBaseDenom = []byte("BaseDenom")
-)
+var KeyBaseDenom = []byte("BaseDenom")
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 

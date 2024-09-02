@@ -1,13 +1,11 @@
 package keeper
 
 import (
-	gogotypes "github.com/gogo/protobuf/types"
-
 	storetypes "cosmossdk.io/store/types"
+	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/liquidity/types"
+	gogotypes "github.com/gogo/protobuf/types"
 )
 
 // GetLastPairId returns the last pair id.

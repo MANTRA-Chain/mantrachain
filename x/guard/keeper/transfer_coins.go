@@ -6,11 +6,10 @@ import (
 
 	"cosmossdk.io/errors"
 	coinfactorytypes "github.com/MANTRA-Finance/mantrachain/x/coinfactory/types"
+	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 	tokentypes "github.com/MANTRA-Finance/mantrachain/x/token/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/MANTRA-Finance/mantrachain/x/guard/types"
 )
 
 func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, coins sdk.Coins) error {
@@ -54,7 +53,6 @@ func (k Keeper) CheckCanTransferCoins(ctx sdk.Context, address sdk.AccAddress, c
 		}
 
 		err := k.CheckCanTransferCoin(ctx, nftCollectionCreator, nftCollectionIndex, inverseDefaultPrilileges, address, denomBytes)
-
 		if err != nil {
 			return err
 		}
@@ -85,7 +83,6 @@ func (k Keeper) CheckCanTransferCoin(ctx sdk.Context, nftCollectionCreator sdk.A
 	}
 
 	hasPrivileges, err := k.CheckAccountFulfillsRequiredPrivileges(ctx, address, privileges)
-
 	if err != nil {
 		return err
 	}
@@ -134,7 +131,6 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		}
 
 		err = k.CheckCanTransferCoins(ctx, inAddress, in.Coins)
-
 		if err != nil {
 			return err
 		}
@@ -149,7 +145,6 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 		}
 
 		err = k.CheckCanTransferCoins(ctx, outAddress, out.Coins)
-
 		if err != nil {
 			return err
 		}
@@ -157,6 +152,7 @@ func (k Keeper) ValidateCoinsTransfers(ctx sdk.Context, inputs []banktypes.Input
 
 	return nil
 }
+
 func (k Keeper) AddTransferAccAddressesWhitelist(ctx sdk.Context, addresses []sdk.AccAddress) []sdk.AccAddress {
 	updated := make([]sdk.AccAddress, 0)
 

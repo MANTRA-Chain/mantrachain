@@ -182,7 +182,8 @@ func NewOrderForMarketOrder(msg *MsgMarketOrder, id uint64, pair Pair, offerCoin
 
 func NewOrder(
 	typ OrderType, id uint64, pair Pair, orderer sdk.AccAddress,
-	offerCoin sdk.Coin, price sdkmath.LegacyDec, amt sdkmath.Int, expireAt time.Time, msgHeight int64) Order {
+	offerCoin sdk.Coin, price sdkmath.LegacyDec, amt sdkmath.Int, expireAt time.Time, msgHeight int64,
+) Order {
 	var (
 		dir             OrderDirection
 		demandCoinDenom string

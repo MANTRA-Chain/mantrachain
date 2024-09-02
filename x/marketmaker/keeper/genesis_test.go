@@ -2,11 +2,9 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	marketmaker "github.com/MANTRA-Finance/mantrachain/x/marketmaker/module"
 	"github.com/MANTRA-Finance/mantrachain/x/marketmaker/types"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/stretchr/testify/suite"
 )
 
@@ -40,10 +38,11 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 	// set incentive budget
 	params := k.GetParams(ctx)
 	params.IncentiveBudgetAddress = suite.addrs[5].String()
-	k.SetParams(ctx, params)
+	err := k.SetParams(ctx, params)
+	suite.Require().NoError(err)
 
 	// apply market maker
-	err := k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3, 4, 5, 6})
+	err = k.ApplyMarketMaker(ctx, mmAddr, []uint64{1, 2, 3, 4, 5, 6})
 	suite.NoError(err)
 	err = k.ApplyMarketMaker(ctx, mmAddr2, []uint64{2, 3, 4, 5, 6, 7})
 	suite.NoError(err)
@@ -52,7 +51,8 @@ func (suite *KeeperTestSuite) TestInitGenesis() {
 	proposal := types.NewMarketMakerProposal("title", "description",
 		[]types.MarketMakerHandle{
 			{Address: mmAddr.String(), PairId: 1},
-			{Address: mmAddr2.String(), PairId: 3}},
+			{Address: mmAddr2.String(), PairId: 3},
+		},
 		nil, nil, nil)
 	suite.handleProposal(proposal)
 

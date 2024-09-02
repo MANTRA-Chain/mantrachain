@@ -4,10 +4,9 @@ import (
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	utils "github.com/MANTRA-Finance/mantrachain/types"
 	"github.com/MANTRA-Finance/mantrachain/x/liquidity/amm"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // OrderDirectionFromAMM converts amm.OrderDirection to liquidity module's
@@ -92,7 +91,8 @@ type PoolOrder struct {
 
 func NewPoolOrder(
 	poolId uint64, reserveAddr sdk.AccAddress, dir amm.OrderDirection, price sdkmath.LegacyDec, amt sdkmath.Int,
-	offerCoinDenom, demandCoinDenom string) *PoolOrder {
+	offerCoinDenom, demandCoinDenom string,
+) *PoolOrder {
 	return &PoolOrder{
 		BaseOrder:       amm.NewBaseOrder(dir, price, amt, amm.OfferCoinAmount(dir, price, amt)),
 		PoolId:          poolId,

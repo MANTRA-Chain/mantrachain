@@ -6,14 +6,14 @@ type NftCollectionCategory string
 
 const (
 	GeneralNftCollectionCat      NftCollectionCategory = "general"
-	ArtNftCollectionCat                                = "art"
-	CollectiblesNftCollectionCat                       = "collectibles"
-	MusicNftCollectionCat                              = "music"
-	PhotographyNftCollectionCat                        = "photography"
-	SportsNftCollectionCat                             = "sports"
-	TradingCardsNftCollectionCat                       = "trading-cards"
-	UtilityNftCollectionCat                            = "utility"
-	OtherNftCollectionCat                              = "other"
+	ArtNftCollectionCat          NftCollectionCategory = "art"
+	CollectiblesNftCollectionCat NftCollectionCategory = "collectibles"
+	MusicNftCollectionCat        NftCollectionCategory = "music"
+	PhotographyNftCollectionCat  NftCollectionCategory = "photography"
+	SportsNftCollectionCat       NftCollectionCategory = "sports"
+	TradingCardsNftCollectionCat NftCollectionCategory = "trading-cards"
+	UtilityNftCollectionCat      NftCollectionCategory = "utility"
+	OtherNftCollectionCat        NftCollectionCategory = "other"
 )
 
 func ParseNftCollectionCategory(s string) (c NftCollectionCategory, err error) {
