@@ -6,16 +6,16 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server/types"
-	oraclepreblock "github.com/skip-mev/connect/v2/abci/preblock/oracle"
-	"github.com/skip-mev/connect/v2/abci/proposals"
-	"github.com/skip-mev/connect/v2/abci/strategies/aggregator"
-	compression "github.com/skip-mev/connect/v2/abci/strategies/codec"
-	"github.com/skip-mev/connect/v2/abci/strategies/currencypair"
-	"github.com/skip-mev/connect/v2/abci/ve"
-	oracleconfig "github.com/skip-mev/connect/v2/oracle/config"
-	"github.com/skip-mev/connect/v2/pkg/math/voteweighted"
-	oracleclient "github.com/skip-mev/connect/v2/service/clients/oracle"
-	servicemetrics "github.com/skip-mev/connect/v2/service/metrics"
+	oraclepreblock "github.com/skip-mev/slinky/abci/preblock/oracle"
+	"github.com/skip-mev/slinky/abci/proposals"
+	"github.com/skip-mev/slinky/abci/strategies/aggregator"
+	compression "github.com/skip-mev/slinky/abci/strategies/codec"
+	"github.com/skip-mev/slinky/abci/strategies/currencypair"
+	"github.com/skip-mev/slinky/abci/ve"
+	oracleconfig "github.com/skip-mev/slinky/oracle/config"
+	"github.com/skip-mev/slinky/pkg/math/voteweighted"
+	oracleclient "github.com/skip-mev/slinky/service/clients/oracle"
+	servicemetrics "github.com/skip-mev/slinky/service/metrics"
 )
 
 // initializeOracle initializes the oracle client and metrics.
