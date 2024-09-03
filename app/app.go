@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"io"
 
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
@@ -79,6 +80,8 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	_ "github.com/skip-mev/feemarket/x/feemarket" // import for side-effects
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
+	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
+	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
 )
 
 const (
@@ -124,6 +127,10 @@ type App struct {
 	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
 	FeeMarketKeeper      feemarketkeeper.Keeper
+
+	// Slinky
+	OracleKeeper         *oraclekeeper.Keeper
+	MarketMapKeeper      *marketmapkeeper.Keeper
 
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
@@ -255,6 +262,10 @@ func New(
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.FeeMarketKeeper,
+
+		// Slinky Keepers
+		&app.MarketMapKeeper,
+		&app.OracleKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -265,6 +276,16 @@ func New(
 
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
+
+	// oracle initialization
+	client, metrics, err := app.initializeOracle(appOpts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize oracle client and metrics: %w", err)
+	}
+
+	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+
+	app.initializeABCIExtensions(client, metrics)
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
