@@ -2,6 +2,7 @@
 
 # the subcommands are located in the specific makefiles
 include scripts/makefiles/lint.mk
+include scripts/makefiles/proto.mk
 
 .DEFAULT_GOAL := help
 help:
@@ -13,12 +14,14 @@ help:
 	@echo "  make build                 Build mantrachaind binary"
 	@echo "  make lint                  Show available lint commands"
 	@echo "  make test                  Show available test commands"
+	@echo "  make proto                 Show available proto commands"
 	@echo ""
 	@echo "Run 'make [subcommand]' to see the available commands for each subcommand."
 
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
+DOCKER := $(shell which docker)
 PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2> /dev/null)
@@ -137,14 +140,6 @@ test-unit:
 
 test-cover:
 	@VERSION=$(VERSION) go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace' $(PACKAGES_NOSIMULATION)
-
-test-slinky:
-	docker build -f Dockerfile -t mantra-finance/mantrachain .
-	@VERSION=$(VERSION) cd tests/slinky && go test -v -race .
-
-mocks:
-	@go install github.com/golang/mock/mockgen@v1.6.0
-	sh ./scripts/mockgen.sh
 
 ###############################################################################
 ###                                Release                                  ###
