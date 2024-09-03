@@ -12,7 +12,6 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -115,8 +114,12 @@ func (app *App) registerWasmModules(
 }
 
 func (app *App) setPostHandler() error {
-	postHandler, err := posthandler.NewPostHandler(
-		posthandler.HandlerOptions{},
+	postHandler, err := NewPostHandler(
+		PostHandlerOptions{
+			AccountKeeper:   app.AccountKeeper,
+			BankKeeper:      app.BankKeeper,
+			FeeMarketKeeper: &app.FeeMarketKeeper,
+		},
 	)
 	if err != nil {
 		return err
@@ -128,13 +131,16 @@ func (app *App) setPostHandler() error {
 func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) error {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
-			HandlerOptions: ante.HandlerOptions{
+			BaseOptions: ante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
 				SignModeHandler: txConfig.SignModeHandler(),
 				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
+			AccountKeeper:         app.AccountKeeper,
+			BankKeeper:            app.BankKeeper,
+			FeeMarketKeeper:       &app.FeeMarketKeeper,
 			IBCKeeper:             app.IBCKeeper,
 			WasmConfig:            &wasmConfig,
 			WasmKeeper:            &app.WasmKeeper,
