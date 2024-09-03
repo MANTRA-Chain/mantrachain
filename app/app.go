@@ -129,8 +129,8 @@ type App struct {
 	FeeMarketKeeper      feemarketkeeper.Keeper
 
 	// Slinky
-	OracleKeeper         *oraclekeeper.Keeper
-	MarketMapKeeper      *marketmapkeeper.Keeper
+	OracleKeeper    *oraclekeeper.Keeper
+	MarketMapKeeper *marketmapkeeper.Keeper
 
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
