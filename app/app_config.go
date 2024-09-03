@@ -56,9 +56,7 @@ import (
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	marketmapmodulev1 "github.com/skip-mev/slinky/api/slinky/marketmap/module/v1"
 	oraclemodulev1 "github.com/skip-mev/slinky/api/slinky/oracle/module/v1"
-	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
 	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
-	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
 	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
