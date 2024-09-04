@@ -1,6 +1,7 @@
 package app
 
 import (
+	"sort"
 	"time"
 
 	runtimev1alpha1 "cosmossdk.io/api/cosmos/app/runtime/v1alpha1"
@@ -32,6 +33,8 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	tokenfactorymodulev1 "github.com/MANTRA-Finance/mantrachain/api/osmosis/tokenfactory/module/v1"
+	tokenfactorytypes "github.com/MANTRA-Finance/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -93,6 +96,7 @@ var (
 		feemarkettypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -119,6 +123,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -139,6 +144,7 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -162,6 +168,7 @@ var (
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
 		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
+		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
@@ -301,7 +308,22 @@ var (
 				Name:   feemarkettypes.ModuleName,
 				Config: appconfig.WrapAny(&feemarketmodulev1.Module{}),
 			},
+			{
+				Name: tokenfactorytypes.ModuleName,
+				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
+					KnownModules: knownModules(),
+				}),
+			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
 	})
 )
+
+func knownModules() []string {
+	knownModules := make([]string, 0, len(moduleAccPerms))
+	for _, moduleAcc := range moduleAccPerms {
+		knownModules = append(knownModules, moduleAcc.Account)
+	}
+	sort.Strings(knownModules)
+	return knownModules
+}

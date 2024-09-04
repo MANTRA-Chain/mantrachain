@@ -20,6 +20,8 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/MANTRA-Finance/mantrachain/docs"
+	_ "github.com/MANTRA-Finance/mantrachain/x/tokenfactory" // import for side-effects
+	tokenfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -144,6 +146,9 @@ type App struct {
 	WasmKeeper       wasmkeeper.Keeper
 	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
+	// TokenFactory
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
+
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -255,6 +260,7 @@ func New(
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.FeeMarketKeeper,
+		&app.TokenFactoryKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -277,6 +283,7 @@ func New(
 	}
 
 	/****  Module Options ****/
+	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 

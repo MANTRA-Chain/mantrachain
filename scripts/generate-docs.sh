@@ -12,6 +12,7 @@ cp ./proto/buf.gen.swagger.yaml "$SWAGGER_DIR/proto/buf.gen.swagger.yaml"
 # copy existing proto files
 # cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
 cp -r ./proto/mantrachain "$SWAGGER_DIR/proto"
+cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
 
 # create temporary folder to store intermediate results from `buf generate`
 mkdir -p ./tmp-swagger-gen
@@ -22,9 +23,11 @@ cd "$SWAGGER_DIR"
 # create swagger files on an individual basis  w/ `buf build` and `buf generate` (needed for `swagger-combine`)
 proto_dirs=$(find ./proto ./third_party -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 for dir in $proto_dirs; do
+  echo $dir
   # generate swagger files (filter query files)
   query_file=$(find "${dir}" -maxdepth 1 \( -name 'query.proto' -o -name 'service.proto' \))
   if [[ -n "$query_file" ]]; then
+    echo $query_file
     buf generate --template proto/buf.gen.swagger.yaml "$query_file"
   fi
 done
@@ -37,5 +40,5 @@ cd ..
 swagger-combine ./client/docs/config.json -o ./client/docs/static/swagger/swagger.yaml -f yaml --continueOnConflictingPaths true --includeDefinitions true
 
 # clean swagger files
-rm -rf ./tmp-swagger-gen
-rm -rf "$SWAGGER_DIR"
+# rm -rf ./tmp-swagger-gen
+# rm -rf "$SWAGGER_DIR"
