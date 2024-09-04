@@ -22,7 +22,6 @@ var FeeDenom = "uom"
 
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
-	// TODO: fix this
 	genesisState := module.BasicManager{}.DefaultGenesis(cdc)
 
 	feemarketFeeGenesis := feemarkettypes.GenesisState{
