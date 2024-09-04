@@ -30,7 +30,7 @@ require (
 	github.com/bufbuild/buf v1.37.0
 	github.com/cometbft/cometbft v0.38.12
 	github.com/cosmos/cosmos-db v1.0.2
-	github.com/cosmos/cosmos-sdk v0.50.10-0.20240830075646-f2b1a522a5a9
+	github.com/cosmos/cosmos-sdk v0.50.10-0.20240903142520-11039b79327a
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.5.0
