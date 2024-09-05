@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/cosmos/cosmos-sdk v0.50.10-0.20240904192747-c8aec4d15e22
 	github.com/icza/dyno v0.0.0-20230330125955-09f820a8d9c0
-	github.com/skip-mev/connect/v2 v2.0.0-20240904203759-36c682ce9f06
+	github.com/skip-mev/slinky v1.0.10
 	github.com/skip-mev/slinky/tests/integration v1.1.0
 	github.com/strangelove-ventures/interchaintest/v8 v8.6.1
 	github.com/stretchr/testify v1.9.0
@@ -210,7 +210,6 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
-	github.com/skip-mev/slinky v1.0.10 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect

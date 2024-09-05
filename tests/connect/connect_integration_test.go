@@ -1,4 +1,4 @@
-package connect_test
+package slinky_test
 
 import (
 	"encoding/json"
@@ -9,18 +9,21 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/gov"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/icza/dyno"
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	marketmapmodule "github.com/skip-mev/connect/v2/x/marketmap"
-	"github.com/skip-mev/connect/v2/x/oracle"
 	"github.com/skip-mev/slinky/tests/integration"
+	marketmapmodule "github.com/skip-mev/slinky/x/marketmap"
+	"github.com/skip-mev/slinky/x/oracle"
 )
 
 func init() {
@@ -63,6 +66,12 @@ var (
 		marketmapmodule.AppModuleBasic{},
 	)
 
+	defaultGenesis = marketmaptypes.DefaultGenesisState()
+	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	params         = marketmaptypes.Params{
+		MarketAuthorities: []string{govAddr},
+		Admin:             govAddr,
+	}
 	defaultGenesisKV = []cosmos.GenesisKV{
 		{
 			Key:   "consensus.params.abci.vote_extensions_enable_height",
@@ -72,12 +81,16 @@ var (
 			Key:   "consensus.params.block.max_gas",
 			Value: "1000000000",
 		},
+		{
+			Key:   "app_state.feemarket.params.enabled",
+			Value: false,
+		},
 	}
 
 	denom = "uom"
 	spec  = &interchaintest.ChainSpec{
-		ChainName:     "connect",
-		Name:          "connect",
+		ChainName:     "slinky",
+		Name:          "slinky",
 		NumValidators: &numValidators,
 		NumFullNodes:  &numFullNodes,
 		Version:       "latest",
@@ -88,7 +101,7 @@ var (
 				image,
 			},
 			Type:           "cosmos",
-			Name:           "connect",
+			Name:           "slinky",
 			Denom:          denom,
 			ChainID:        "chain-id-0",
 			Bin:            "mantrachaind",
