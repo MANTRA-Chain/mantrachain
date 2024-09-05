@@ -80,12 +80,12 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	_ "github.com/skip-mev/feemarket/x/feemarket" // import for side-effects
-	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
 	_ "github.com/skip-mev/connect/v2/x/oracle" // import for side-effects
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
+	_ "github.com/skip-mev/feemarket/x/feemarket" // import for side-effects
+	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 )
 
 const (
@@ -280,7 +280,7 @@ func New(
 
 	// add to default baseapp options
 	// enable optimistic execution
-	baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
+	// baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
 
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
