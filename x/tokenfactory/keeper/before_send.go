@@ -7,7 +7,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	types2 "cosmossdk.io/store/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
-	"github.com/MANTRA-Finance/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

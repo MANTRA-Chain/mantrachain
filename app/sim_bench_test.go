@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
