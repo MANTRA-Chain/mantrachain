@@ -82,10 +82,10 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	_ "github.com/skip-mev/feemarket/x/feemarket" // import for side-effects
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
-	_ "github.com/skip-mev/slinky/x/marketmap" // import for side-effects
-	marketmapkeeper "github.com/skip-mev/slinky/x/marketmap/keeper"
-	_ "github.com/skip-mev/slinky/x/oracle" // import for side-effects
-	oraclekeeper "github.com/skip-mev/slinky/x/oracle/keeper"
+	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
+	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
+	_ "github.com/skip-mev/connect/v2/x/oracle" // import for side-effects
+	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 )
 
 const (
