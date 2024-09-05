@@ -35,26 +35,16 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
-	mkdir -p "$(THIRD_PARTY_DIR)/cometbft_proto_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/cometbft_proto_tmp" && \
-	git init && \
-	git remote add origin "https://github.com/cometbft/cometbft.git" && \
-	git config core.sparseCheckout true && \
-	printf "proto\n" > .git/info/sparse-checkout && \
-	git pull origin main && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/cometbft_proto_tmp"
-
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	git init && \
 	git remote add origin "https://github.com/cosmos/cosmos-sdk.git" && \
 	git config core.sparseCheckout true && \
 	printf "proto\nthird_party\n" > .git/info/sparse-checkout && \
-	git pull origin main && \
+	git fetch origin release/v0.50.x && \
+	git checkout release/v0.50.x && \
 	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
+	mv ./proto/* .. && \
 	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \

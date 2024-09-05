@@ -10,9 +10,8 @@ printf "version: v1\nname: buf.build/MANTRA-Finance/mantrachain\n" >"$SWAGGER_DI
 cp ./proto/buf.gen.swagger.yaml "$SWAGGER_DIR/proto/buf.gen.swagger.yaml"
 
 # copy existing proto files
-# cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
-cp -r ./proto/mantrachain "$SWAGGER_DIR/proto"
 cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
+# cp -r ./proto/mantrachain "$SWAGGER_DIR/proto"
 
 # create temporary folder to store intermediate results from `buf generate`
 mkdir -p ./tmp-swagger-gen
@@ -40,5 +39,5 @@ cd ..
 swagger-combine ./client/docs/config.json -o ./client/docs/static/swagger/swagger.yaml -f yaml --continueOnConflictingPaths true --includeDefinitions true
 
 # clean swagger files
-# rm -rf ./tmp-swagger-gen
-# rm -rf "$SWAGGER_DIR"
+rm -rf ./tmp-swagger-gen
+rm -rf "$SWAGGER_DIR"
