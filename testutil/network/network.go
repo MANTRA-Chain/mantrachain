@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	"github.com/stretchr/testify/require"
 )

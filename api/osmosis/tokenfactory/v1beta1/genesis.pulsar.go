@@ -3,7 +3,7 @@ package tokenfactoryv1beta1
 
 import (
 	fmt "fmt"
-	tokenfactory "github.com/MANTRA-Finance/mantrachain/api/osmosis/tokenfactory"
+	tokenfactory "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

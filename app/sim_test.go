@@ -15,7 +15,7 @@ import (
 	"cosmossdk.io/store"
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/feegrant"
-	"github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app"
 	abci "github.com/cometbft/cometbft/abci/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"

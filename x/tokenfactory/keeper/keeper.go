@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/store/prefix"
-	"github.com/MANTRA-Finance/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
