@@ -5,9 +5,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
-
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/depinject"
@@ -84,6 +81,8 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
 	_ "github.com/skip-mev/connect/v2/x/oracle" // import for side-effects
