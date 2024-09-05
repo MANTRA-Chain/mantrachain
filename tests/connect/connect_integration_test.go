@@ -1,4 +1,4 @@
-package slinky_test
+package connect_test
 
 import (
 	"encoding/json"
@@ -9,12 +9,9 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/gov"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/icza/dyno"
-	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
@@ -43,7 +40,7 @@ func init() {
 
 var (
 	image = ibc.DockerImage{
-		Repository: "mantra-finance/mantrachain",
+		Repository: "mantra-chain/mantrachain",
 		Version:    "latest",
 		UidGid:     "1025:1025",
 	}
@@ -66,12 +63,6 @@ var (
 		marketmapmodule.AppModuleBasic{},
 	)
 
-	defaultGenesis = marketmaptypes.DefaultGenesisState()
-	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	params         = marketmaptypes.Params{
-		MarketAuthorities: []string{govAddr},
-		Admin:             govAddr,
-	}
 	defaultGenesisKV = []cosmos.GenesisKV{
 		{
 			Key:   "consensus.params.abci.vote_extensions_enable_height",
@@ -85,8 +76,8 @@ var (
 
 	denom = "uom"
 	spec  = &interchaintest.ChainSpec{
-		ChainName:     "slinky",
-		Name:          "slinky",
+		ChainName:     "connect",
+		Name:          "connect",
 		NumValidators: &numValidators,
 		NumFullNodes:  &numFullNodes,
 		Version:       "latest",
@@ -97,7 +88,7 @@ var (
 				image,
 			},
 			Type:           "cosmos",
-			Name:           "slinky",
+			Name:           "connect",
 			Denom:          denom,
 			ChainID:        "chain-id-0",
 			Bin:            "mantrachaind",

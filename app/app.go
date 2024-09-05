@@ -132,7 +132,7 @@ type App struct {
 	CircuitBreakerKeeper circuitkeeper.Keeper
 	FeeMarketKeeper      feemarketkeeper.Keeper
 
-	// Slinky
+	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
 	MarketMapKeeper *marketmapkeeper.Keeper
 
@@ -270,7 +270,7 @@ func New(
 		&app.CircuitBreakerKeeper,
 		&app.FeeMarketKeeper,
 
-		// Slinky Keepers
+		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
 		&app.TokenFactoryKeeper,

@@ -1,7 +1,7 @@
 on: [push, pull_request]
 name: Test
 jobs:
-  slinky-test:
+  connect-test:
     strategy:
       matrix:
         go-version: [1.23.x]
@@ -12,4 +12,4 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
-      - run: make test-slinky
+      - run: make test-connect
