@@ -14,16 +14,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/icza/dyno"
-	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	marketmapmodule "github.com/skip-mev/connect/v2/x/marketmap"
+	"github.com/skip-mev/connect/v2/x/oracle"
 	"github.com/skip-mev/slinky/tests/integration"
-	marketmapmodule "github.com/skip-mev/slinky/x/marketmap"
-	"github.com/skip-mev/slinky/x/oracle"
 )
 
 func init() {
