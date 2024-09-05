@@ -37,48 +37,27 @@ THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 proto-download-deps:
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
-	git init && \
-	git remote add origin "https://github.com/cosmos/cosmos-sdk.git" && \
-	git config core.sparseCheckout true && \
-	printf "proto\nthird_party\n" > .git/info/sparse-checkout && \
-	git fetch origin release/v0.50.x && \
-	git checkout release/v0.50.x && \
+	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
 	rm -f ./proto/buf.* && \
-	mv ./proto/* .. && \
+	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
-	git init && \
-	git remote add origin "https://github.com/cosmos/ibc-go.git" && \
-	git config core.sparseCheckout true && \
-	printf "proto\n" > .git/info/sparse-checkout && \
-	git pull origin main && \
+	git clone --depth 1 https://github.com/cosmos/ibc-go.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
 
-	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/cosmos_proto_tmp" && \
-	git init && \
-	git remote add origin "https://github.com/cosmos/cosmos-proto.git" && \
-	git config core.sparseCheckout true && \
-	printf "proto\n" > .git/info/sparse-checkout && \
-	git pull origin main && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/cosmos_proto_tmp"
-
 	mkdir -p "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
-	git init && \
-	git remote add origin "https://github.com/skip-mev/feemarket.git" && \
-	git config core.sparseCheckout true && \
-	printf "proto\nthird_party\n" > .git/info/sparse-checkout && \
-	git pull origin main && \
+	git clone --depth 1 --branch $(shell grep -o 'feemarket v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/skip-mev/feemarket.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/feemarket_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto" && \
+	curl -SSL https://raw.githubusercontent.com/cosmos/cosmos-proto/main/proto/cosmos_proto/cosmos.proto > "$(THIRD_PARTY_DIR)/cosmos_proto/cosmos.proto"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/gogoproto" && \
 	curl -SSL https://raw.githubusercontent.com/cosmos/gogoproto/main/gogoproto/gogo.proto > "$(THIRD_PARTY_DIR)/gogoproto/gogo.proto"
