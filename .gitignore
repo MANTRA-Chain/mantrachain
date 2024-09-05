@@ -8,3 +8,5 @@ release/
 *.log
 *.ign
 .aider*
+swagger-proto
+tmp-swagger-gen
