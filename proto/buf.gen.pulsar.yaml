@@ -7,7 +7,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/MANTRA-Finance/mantrachain/api
+    default: github.com/MANTRA-Chain/mantrachain/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto
@@ -16,8 +16,8 @@ managed:
       buf.build/cosmos/cosmos-sdk: cosmossdk.io/api
 plugins:
   - name: go-pulsar
-    out: ./api
+    out: ../api
     opt: paths=source_relative
   - name: go-grpc
-    out: ./api
+    out: ../api
     opt: paths=source_relative

@@ -20,9 +20,9 @@ import (
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/MANTRA-Finance/mantrachain/docs"
-	_ "github.com/MANTRA-Finance/mantrachain/x/tokenfactory" // import for side-effects
-	tokenfactorykeeper "github.com/MANTRA-Finance/mantrachain/x/tokenfactory/keeper"
+	"github.com/MANTRA-Chain/mantrachain/docs"
+	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory" // import for side-effects
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"

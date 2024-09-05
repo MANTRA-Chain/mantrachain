@@ -151,7 +151,7 @@ test-slinky: build-image
 ###############################################################################
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
-REPO_OWNER ?= MANTRA-Finance
+REPO_OWNER ?= MANTRA-Chain
 REPO_NAME ?= mantrachain
 
 # Check if GITHUB_TOKEN is defined
