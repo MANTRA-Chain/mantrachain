@@ -1,4 +1,4 @@
-module github.com/MANTRA-Finance/mantrachain/tests/slinky
+module github.com/MANTRA-Chain/mantrachain/tests/slinky
 
 go 1.22.2
 
