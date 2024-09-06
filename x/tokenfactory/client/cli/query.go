@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/MANTRA-Finance/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"

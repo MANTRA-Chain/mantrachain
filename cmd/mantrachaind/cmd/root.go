@@ -7,7 +7,7 @@ import (
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
-	"github.com/MANTRA-Finance/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/flags"

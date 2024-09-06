@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MANTRA-Finance/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

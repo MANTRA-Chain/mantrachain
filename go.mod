@@ -1,4 +1,4 @@
-module github.com/MANTRA-Finance/mantrachain
+module github.com/MANTRA-Chain/mantrachain
 
 go 1.23
 
