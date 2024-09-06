@@ -1,11 +1,9 @@
 package app
 
 import (
+	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
 
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
 	clienthelpers "cosmossdk.io/client/v2/helpers"
@@ -83,6 +81,12 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
+	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
+	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
+	_ "github.com/skip-mev/connect/v2/x/oracle" // import for side-effects
+	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	_ "github.com/skip-mev/feemarket/x/feemarket" // import for side-effects
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 )
@@ -130,6 +134,10 @@ type App struct {
 	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
 	FeeMarketKeeper      feemarketkeeper.Keeper
+
+	// Connect
+	OracleKeeper    *oraclekeeper.Keeper
+	MarketMapKeeper *marketmapkeeper.Keeper
 
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
@@ -264,6 +272,10 @@ func New(
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
 		&app.FeeMarketKeeper,
+
+		// Connect Keepers
+		&app.MarketMapKeeper,
+		&app.OracleKeeper,
 		&app.TokenFactoryKeeper,
 	); err != nil {
 		panic(err)
@@ -271,10 +283,20 @@ func New(
 
 	// add to default baseapp options
 	// enable optimistic execution
-	baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
+	// baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
 
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
+
+	// oracle initialization
+	client, metrics, err := app.initializeOracle(appOpts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize oracle client and metrics: %w", err)
+	}
+
+	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+
+	app.initializeABCIExtensions(client, metrics)
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {

@@ -55,6 +55,10 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
+	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
+	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
+	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarketmodulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -96,6 +100,10 @@ var (
 		feemarkettypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
+		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
@@ -123,6 +131,9 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
@@ -144,6 +155,9 @@ var (
 		ibcfeetypes.ModuleName,
 		// chain modules
 		wasmtypes.ModuleName,
+		// slinky modules
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
@@ -168,6 +182,7 @@ var (
 		{Account: ibcfeetypes.ModuleName},
 		{Account: icatypes.ModuleName},
 		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
+		{Account: oracletypes.ModuleName, Permissions: []string{}},
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -307,6 +322,14 @@ var (
 			{
 				Name:   feemarkettypes.ModuleName,
 				Config: appconfig.WrapAny(&feemarketmodulev1.Module{}),
+			},
+			{
+				Name:   oracletypes.ModuleName,
+				Config: appconfig.WrapAny(&oraclemodulev1.Module{}),
+			},
+			{
+				Name:   marketmaptypes.ModuleName,
+				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
 			{
 				Name: tokenfactorytypes.ModuleName,

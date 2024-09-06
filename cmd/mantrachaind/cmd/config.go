@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"time"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
+	oracleconfig "github.com/skip-mev/connect/v2/oracle/config"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.
@@ -23,6 +27,8 @@ func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 	type CustomAppConfig struct {
 		serverconfig.Config `mapstructure:",squash"`
+		Wasm                wasmtypes.WasmConfig   `mapstructure:"wasm"`
+		Oracle              oracleconfig.AppConfig `mapstructure:"oracle" json:"oracle"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -43,18 +49,23 @@ func initAppConfig() (string, interface{}) {
 	// srvCfg.MinGasPrices = "0stake"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
+	oracleCfg := oracleconfig.AppConfig{
+		Enabled:        false,
+		OracleAddress:  "localhost:8080",
+		ClientTimeout:  time.Second * 2,
+		MetricsEnabled: false,
+	}
+
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
+		Wasm:   wasmtypes.DefaultWasmConfig(),
+		Oracle: oracleCfg,
 	}
 
 	// limit query gas so that it is not possible to DOS the node
-	customAppTemplate := serverconfig.DefaultConfigTemplate + `
-	[wasm]
-	# This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
-	query_gas_limit = 300000
-	# This is the number of wasm vm instances we keep cached in memory for speed-up
-	# Warning: this is currently unstable and may lead to crashes, best to keep for 0 unless testing locally
-	lru_size = 0`
+	customAppTemplate := serverconfig.DefaultConfigTemplate +
+		wasmtypes.DefaultConfigTemplate() +
+		oracleconfig.DefaultConfigTemplate
 
 	return customAppTemplate, customAppConfig
 }

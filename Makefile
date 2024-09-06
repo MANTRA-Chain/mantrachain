@@ -123,6 +123,8 @@ build-arm:
 	GOOS=darwin GOARCH=arm64 $(MAKE) build
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) $(MAKE) build
+build-image:
+	docker build -f Dockerfile -t mantra-chain/mantrachain .
 
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) $(GO_MODULE)/cmd/mantrachaind
@@ -130,7 +132,7 @@ $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 ###############################################################################
-###                           Tests                            							###
+###                           Tests                            				###
 ###############################################################################
 
 test: test-unit
@@ -140,6 +142,9 @@ test-unit:
 
 test-cover:
 	@VERSION=$(VERSION) go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace' $(PACKAGES_NOSIMULATION)
+
+test-connect: build-image
+	@VERSION=$(VERSION) cd tests/connect && go test -v -race .
 
 ###############################################################################
 ###                                Release                                  ###
