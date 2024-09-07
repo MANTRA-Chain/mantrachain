@@ -24,6 +24,7 @@ import (
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
 	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
+	xfeemarketmodulekeeper "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -161,6 +162,7 @@ type App struct {
 	// TokenFactory
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 
+	XfeemarketKeeper xfeemarketmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -277,6 +279,7 @@ func New(
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
 		&app.TokenFactoryKeeper,
+		&app.XfeemarketKeeper,
 	); err != nil {
 		panic(err)
 	}

@@ -35,6 +35,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	_ "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/module"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -62,15 +63,17 @@ import (
 	feemarketmodulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"google.golang.org/protobuf/types/known/durationpb"
-)
 
-var (
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
 	// NOTE: Capability module must occur first so that it can initialize any capabilities
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
+	xfeemarketmoduletypes "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+)
+
+var (
 	genesisModuleOrder = []string{
 		// cosmos-sdk/ibc modules
 		capabilitytypes.ModuleName,
@@ -105,7 +108,8 @@ var (
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
 		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
+		xfeemarketmoduletypes.ModuleName,
+// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -135,7 +139,8 @@ var (
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/beginBlockers
+		xfeemarketmoduletypes.ModuleName,
+// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
 	endBlockers = []string{
@@ -159,7 +164,8 @@ var (
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/endBlockers
+		xfeemarketmoduletypes.ModuleName,
+// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
 	preBlockers = []string{
@@ -337,7 +343,11 @@ var (
 					KnownModules: knownModules(),
 				}),
 			},
-			// this line is used by starport scaffolding # stargate/app/moduleConfig
+			{
+				Name:   xfeemarketmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&xfeemarketmoduletypes.Module{}),
+			},
+// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
 	})
 )
