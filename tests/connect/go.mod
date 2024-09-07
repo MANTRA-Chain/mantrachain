@@ -1,6 +1,8 @@
 module github.com/MANTRA-Chain/mantrachain/tests/connect
 
-go 1.22.2
+go 1.22.5
+
+toolchain go1.23.0
 
 require (
 	github.com/cosmos/cosmos-sdk v0.50.10-0.20240904192747-c8aec4d15e22
@@ -70,7 +72,7 @@ require (
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cometbft/cometbft v0.38.12 // indirect
-	github.com/cometbft/cometbft-db v0.12.0 // indirect
+	github.com/cometbft/cometbft-db v0.14.0 // indirect
 	github.com/consensys/bavard v0.1.13 // indirect
 	github.com/consensys/gnark-crypto v0.12.1 // indirect
 	github.com/cosmos/btcutil v1.0.5 // indirect
