@@ -7,10 +7,13 @@ import (
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
-    "cosmossdk.io/core/store"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/depinject/appconfig"
 	"cosmossdk.io/log"
+	modulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/xfeemarket/module/v1"
+	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
+	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -19,13 +22,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	
-
-	// this line is used by starport scaffolding # 1
-
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
-	
 )
 
 var (
@@ -38,7 +34,6 @@ var (
 	_ appmodule.AppModule       = (*AppModule)(nil)
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
-	
 )
 
 // ----------------------------------------------------------------------------
@@ -91,8 +86,6 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 	}
 }
 
-
-
 // ----------------------------------------------------------------------------
 // AppModule
 // ----------------------------------------------------------------------------
@@ -122,8 +115,8 @@ func NewAppModule(
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-    types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
-    types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
 }
 
 // RegisterInvariants registers the invariants of the module. If an invariant deviates from its predicted value, the InvariantRegistry triggers appropriate logic (most often the chain will be halted)
@@ -136,7 +129,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	cdc.MustUnmarshalJSON(gs, &genState)
 
 	if err := InitGenesis(ctx, am.keeper, genState); err != nil {
-        panic(err)
+		panic(err)
 	}
 }
 
@@ -144,7 +137,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	genState, err := ExportGenesis(ctx, am.keeper)
 	if err != nil {
-	    panic(err)
+		panic(err)
 	}
 	return cdc.MustMarshalJSON(genState)
 }
@@ -178,7 +171,7 @@ func (am AppModule) IsAppModule() {}
 
 func init() {
 	appconfig.Register(
-	    &types.Module{},
+		&modulev1.Module{},
 		appconfig.Provide(ProvideModule),
 	)
 }
@@ -189,20 +182,18 @@ type ModuleInputs struct {
 	AddressCodec address.Codec
 	StoreService store.KVStoreService
 	Cdc          codec.Codec
-	Config       *types.Module
+	Config       *modulev1.Module
 	Logger       log.Logger
 
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
-
-    
 }
 
 type ModuleOutputs struct {
 	depinject.Out
 
 	XfeemarketKeeper keeper.Keeper
-	Module appmodule.AppModule
+	Module           appmodule.AppModule
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
@@ -212,17 +203,17 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
 	}
 	k := keeper.NewKeeper(
-	    in.Cdc,
+		in.Cdc,
 		in.AddressCodec,
 		in.StoreService,
-	    in.Logger,
-	    authority.String(), 
+		in.Logger,
+		authority.String(),
 	)
 	m := NewAppModule(
-	    in.Cdc,
-	    k,
-	    in.AccountKeeper,
-	    in.BankKeeper,
+		in.Cdc,
+		k,
+		in.AccountKeeper,
+		in.BankKeeper,
 	)
 
 	return ModuleOutputs{XfeemarketKeeper: k, Module: m}

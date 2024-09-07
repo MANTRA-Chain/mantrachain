@@ -4,8 +4,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
-
-    "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 )
 
 func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {

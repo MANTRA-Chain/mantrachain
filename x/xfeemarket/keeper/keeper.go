@@ -4,14 +4,11 @@ import (
 	"fmt"
 
 	"cosmossdk.io/collections"
-	"cosmossdk.io/core/store"
 	"cosmossdk.io/core/address"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-    
-
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 type (
@@ -25,22 +22,18 @@ type (
 		// Typically, this should be the x/gov module account.
 		authority string
 
-		Schema       collections.Schema
-		Params       collections.Item[types.Params]
+		Schema collections.Schema
+		Params collections.Item[types.Params]
 		// this line is used by starport scaffolding # collection/type
-
-        
-		
 	}
 )
 
 func NewKeeper(
-    cdc codec.BinaryCodec,
+	cdc codec.BinaryCodec,
 	addressCodec address.Codec,
 	storeService store.KVStoreService,
-    logger log.Logger,
+	logger log.Logger,
 	authority string,
-    
 ) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Sprintf("invalid authority address %s: %s", authority, err))
@@ -54,11 +47,11 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
-		
-		Params:  collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+
+		Params: collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		// this line is used by starport scaffolding # collection/instantiate
 	}
-	
+
 	schema, err := sb.Build()
 	if err != nil {
 		panic(err)
@@ -77,5 +70,3 @@ func (k Keeper) GetAuthority() string {
 func (k Keeper) Logger() log.Logger {
 	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
-
-

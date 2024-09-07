@@ -3,12 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
+	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	"github.com/stretchr/testify/require"
-
-    keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
-    "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
-    "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 )
 
 func TestMsgUpdateParams(t *testing.T) {

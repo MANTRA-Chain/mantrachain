@@ -3,12 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParamsQuery(t *testing.T) {
