@@ -13,8 +13,15 @@ const (
 	MemStoreKey = "mem_xfeemarket"
 )
 
-var ParamsKey = collections.NewPrefix("p_xfeemarket")
+var (
+	ParamsKey             = collections.NewPrefix("p_xfeemarket")
+	PrefixDenomMultiplier = []byte{0x01}
+)
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+func KeyDenomMultiplier(denom string) []byte {
+	return append(PrefixDenomMultiplier, []byte(denom)...)
 }

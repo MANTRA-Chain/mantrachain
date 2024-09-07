@@ -7,6 +7,7 @@ import (
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	math "cosmossdk.io/math"
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
@@ -24,6 +25,9 @@ type (
 
 		Schema collections.Schema
 		Params collections.Item[types.Params]
+
+		// DenomMultipliers is a map of denomination and their multipliers against the default base fee denomination.
+		DenomMultipliers collections.Map[string, math.LegacyDec]
 		// this line is used by starport scaffolding # collection/type
 	}
 )

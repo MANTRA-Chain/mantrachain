@@ -24,7 +24,7 @@ import (
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
 	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
-	xfeemarketmodulekeeper "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
+	xfeemarketkeeper "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -134,7 +134,10 @@ type App struct {
 	GroupKeeper          groupkeeper.Keeper
 	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
-	FeeMarketKeeper      feemarketkeeper.Keeper
+
+	// FeeMarket
+	FeeMarketKeeper  feemarketkeeper.Keeper
+	XFeeMarketKeeper xfeemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -162,7 +165,6 @@ type App struct {
 	// TokenFactory
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 
-	XfeemarketKeeper xfeemarketmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -273,13 +275,17 @@ func New(
 		&app.NFTKeeper,
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
+
+		// Feemarket Keepers
 		&app.FeeMarketKeeper,
+		&app.XFeeMarketKeeper,
 
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
+
+		// Mantrachain Keepers
 		&app.TokenFactoryKeeper,
-		&app.XfeemarketKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -315,6 +321,9 @@ func New(
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+
+	// to support multiple denom as fee token
+	app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewTestDenomResolver(app.XFeeMarketKeeper))
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
