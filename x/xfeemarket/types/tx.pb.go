@@ -5,6 +5,7 @@ package types
 
 import (
 	context "context"
+	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -35,8 +36,6 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgUpdateParams struct {
 	// authority is the address that controls the module (defaults to x/gov unless overwritten).
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	// params defines the module parameters to update.
-	//
 	// NOTE: All parameters must be supplied.
 	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
 }
@@ -126,9 +125,100 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+type MsgUpsertFeeDenom struct {
+	Creator    string                      `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Denom      string                      `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Multiplier cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=multiplier,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"multiplier"`
+}
+
+func (m *MsgUpsertFeeDenom) Reset()         { *m = MsgUpsertFeeDenom{} }
+func (m *MsgUpsertFeeDenom) String() string { return proto.CompactTextString(m) }
+func (*MsgUpsertFeeDenom) ProtoMessage()    {}
+func (*MsgUpsertFeeDenom) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0ff942ee8e5a8b2e, []int{2}
+}
+func (m *MsgUpsertFeeDenom) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpsertFeeDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpsertFeeDenom.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpsertFeeDenom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpsertFeeDenom.Merge(m, src)
+}
+func (m *MsgUpsertFeeDenom) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpsertFeeDenom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpsertFeeDenom.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpsertFeeDenom proto.InternalMessageInfo
+
+func (m *MsgUpsertFeeDenom) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpsertFeeDenom) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+type MsgUpsertFeeDenomResponse struct {
+}
+
+func (m *MsgUpsertFeeDenomResponse) Reset()         { *m = MsgUpsertFeeDenomResponse{} }
+func (m *MsgUpsertFeeDenomResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpsertFeeDenomResponse) ProtoMessage()    {}
+func (*MsgUpsertFeeDenomResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0ff942ee8e5a8b2e, []int{3}
+}
+func (m *MsgUpsertFeeDenomResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpsertFeeDenomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpsertFeeDenomResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpsertFeeDenomResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpsertFeeDenomResponse.Merge(m, src)
+}
+func (m *MsgUpsertFeeDenomResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpsertFeeDenomResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpsertFeeDenomResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpsertFeeDenomResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "mantrachain.xfeemarket.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "mantrachain.xfeemarket.v1.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgUpsertFeeDenom)(nil), "mantrachain.xfeemarket.v1.MsgUpsertFeeDenom")
+	proto.RegisterType((*MsgUpsertFeeDenomResponse)(nil), "mantrachain.xfeemarket.v1.MsgUpsertFeeDenomResponse")
 }
 
 func init() {
@@ -136,30 +226,38 @@ func init() {
 }
 
 var fileDescriptor_0ff942ee8e5a8b2e = []byte{
-	// 357 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xca, 0x4d, 0xcc, 0x2b,
-	0x29, 0x4a, 0x4c, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0xaf, 0x48, 0x4b, 0x4d, 0xcd, 0x4d, 0x2c, 0xca,
-	0x4e, 0x2d, 0xd1, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92,
-	0x44, 0x52, 0xa3, 0x87, 0x50, 0xa3, 0x57, 0x66, 0x28, 0x25, 0x98, 0x98, 0x9b, 0x99, 0x97, 0xaf,
-	0x0f, 0x26, 0x21, 0xaa, 0xa5, 0xc4, 0x93, 0xf3, 0x8b, 0x73, 0xf3, 0x8b, 0xf5, 0x73, 0x8b, 0xd3,
-	0x41, 0xa6, 0xe4, 0x16, 0xa7, 0x43, 0x25, 0x24, 0x21, 0x12, 0xf1, 0x60, 0x9e, 0x3e, 0x84, 0x03,
-	0x95, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x87, 0x88, 0x83, 0x58, 0x50, 0x51, 0x35, 0xdc, 0x6e, 0x2b,
-	0x48, 0x2c, 0x4a, 0xcc, 0x85, 0xea, 0x56, 0x3a, 0xc3, 0xc8, 0xc5, 0xef, 0x5b, 0x9c, 0x1e, 0x5a,
-	0x90, 0x92, 0x58, 0x92, 0x1a, 0x00, 0x96, 0x11, 0x32, 0xe3, 0xe2, 0x4c, 0x2c, 0x2d, 0xc9, 0xc8,
-	0x2f, 0xca, 0x2c, 0xa9, 0x94, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x74, 0x92, 0xb8, 0xb4, 0x45, 0x57,
-	0x04, 0x6a, 0xad, 0x63, 0x4a, 0x4a, 0x51, 0x6a, 0x71, 0x71, 0x70, 0x49, 0x51, 0x66, 0x5e, 0x7a,
-	0x10, 0x42, 0xa9, 0x90, 0x0b, 0x17, 0x1b, 0xc4, 0x6c, 0x09, 0x26, 0x05, 0x46, 0x0d, 0x6e, 0x23,
-	0x45, 0x3d, 0x9c, 0x9e, 0xd7, 0x83, 0x58, 0xe5, 0xc4, 0x79, 0xe2, 0x9e, 0x3c, 0xc3, 0x8a, 0xe7,
-	0x1b, 0xb4, 0x18, 0x83, 0xa0, 0x7a, 0xad, 0xac, 0x9b, 0x9e, 0x6f, 0xd0, 0x42, 0x98, 0xda, 0xf5,
-	0x7c, 0x83, 0x96, 0x06, 0x8a, 0x67, 0x90, 0xbd, 0x83, 0xe6, 0x74, 0x25, 0x49, 0x2e, 0x71, 0x34,
-	0xa1, 0xa0, 0xd4, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0xa3, 0x1a, 0x2e, 0x66, 0xdf, 0xe2, 0x74,
-	0xa1, 0x3c, 0x2e, 0x1e, 0x14, 0xcf, 0x6a, 0xe1, 0x71, 0x24, 0x9a, 0x51, 0x52, 0x46, 0xc4, 0xab,
-	0x85, 0x59, 0x2b, 0xc5, 0xda, 0x00, 0xf2, 0x9d, 0x53, 0xc0, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e,
-	0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37,
-	0x1e, 0xcb, 0x31, 0x44, 0x99, 0xa5, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0xea,
-	0xfb, 0x3a, 0xfa, 0x85, 0x04, 0x39, 0xea, 0x3a, 0x83, 0x3d, 0x8a, 0xd3, 0xd3, 0x25, 0x95, 0x05,
-	0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x08, 0x34, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x0b, 0xc2, 0x37,
-	0x94, 0x86, 0x02, 0x00, 0x00,
+	// 489 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xbf, 0x6f, 0xd3, 0x40,
+	0x14, 0xce, 0x51, 0xb5, 0x28, 0x47, 0x05, 0xaa, 0x15, 0xa9, 0x8e, 0x2b, 0xb9, 0xc5, 0x48, 0x28,
+	0x8a, 0xa8, 0xad, 0x06, 0xd4, 0xa1, 0x4c, 0x49, 0x23, 0x26, 0x82, 0x2a, 0x03, 0x0b, 0x0b, 0xba,
+	0xda, 0x8f, 0x8b, 0xd5, 0x9e, 0xcf, 0xba, 0xbb, 0x54, 0xcd, 0x86, 0x18, 0x99, 0x98, 0xf8, 0x1b,
+	0x18, 0x33, 0xf0, 0x47, 0x74, 0x60, 0xa8, 0x98, 0x10, 0x43, 0x85, 0x92, 0x21, 0x3b, 0x7f, 0x01,
+	0xf2, 0x9d, 0xad, 0xa4, 0x41, 0xe1, 0xc7, 0x62, 0xf9, 0xbd, 0xf7, 0xbd, 0xf7, 0xbd, 0xef, 0xbb,
+	0x87, 0x3d, 0x46, 0x52, 0x25, 0x48, 0xd4, 0x27, 0x49, 0x1a, 0x9c, 0xbf, 0x01, 0x60, 0x44, 0x9c,
+	0x80, 0x0a, 0xce, 0xf6, 0x02, 0x75, 0xee, 0x67, 0x82, 0x2b, 0x6e, 0xd5, 0xe7, 0x30, 0xfe, 0x0c,
+	0xe3, 0x9f, 0xed, 0x39, 0x1b, 0x84, 0x25, 0x29, 0x0f, 0xf4, 0xd7, 0xa0, 0x9d, 0xcd, 0x88, 0x4b,
+	0xc6, 0x65, 0xc0, 0x24, 0xcd, 0xa7, 0x30, 0x49, 0x8b, 0x42, 0xdd, 0x14, 0x5e, 0xeb, 0x28, 0x30,
+	0x41, 0x51, 0xaa, 0x51, 0x4e, 0xb9, 0xc9, 0xe7, 0x7f, 0x45, 0xf6, 0xfe, 0xf2, 0xdd, 0x32, 0x22,
+	0x08, 0x2b, 0xba, 0xbd, 0x2f, 0x08, 0xdf, 0xe9, 0x49, 0xfa, 0x32, 0x8b, 0x89, 0x82, 0x23, 0x5d,
+	0xb1, 0xf6, 0x71, 0x95, 0x0c, 0x54, 0x9f, 0x8b, 0x44, 0x0d, 0x6d, 0xb4, 0x83, 0x1a, 0xd5, 0x8e,
+	0xfd, 0xf5, 0xf3, 0x6e, 0xad, 0xa0, 0x6d, 0xc7, 0xb1, 0x00, 0x29, 0x9f, 0x2b, 0x91, 0xa4, 0x34,
+	0x9c, 0x41, 0xad, 0x2e, 0x5e, 0x33, 0xb3, 0xed, 0x1b, 0x3b, 0xa8, 0x71, 0xab, 0x75, 0xd7, 0x5f,
+	0x2a, 0xde, 0x37, 0x54, 0x9d, 0xea, 0xc5, 0xd5, 0x76, 0xe5, 0xd3, 0x74, 0xd4, 0x44, 0x61, 0xd1,
+	0x7b, 0xf0, 0xf8, 0xdd, 0x74, 0xd4, 0x9c, 0x4d, 0x7d, 0x3f, 0x1d, 0x35, 0x1b, 0xd7, 0xc4, 0xcc,
+	0xcb, 0x59, 0x58, 0xdd, 0xab, 0xe3, 0xcd, 0x85, 0x54, 0x08, 0x32, 0xe3, 0xa9, 0x04, 0xef, 0x23,
+	0xc2, 0x1b, 0xba, 0x26, 0x41, 0xa8, 0x27, 0x00, 0x5d, 0x48, 0x39, 0xb3, 0x6c, 0x7c, 0x33, 0x12,
+	0x40, 0x14, 0x17, 0x46, 0x69, 0x58, 0x86, 0x56, 0x0d, 0xaf, 0xc6, 0x39, 0x44, 0x8b, 0xa9, 0x86,
+	0x26, 0xb0, 0x0e, 0x31, 0x66, 0x83, 0x53, 0x95, 0x64, 0xa7, 0x09, 0x08, 0x7b, 0x45, 0x9b, 0x73,
+	0x2f, 0x17, 0xf1, 0xfd, 0x6a, 0x7b, 0xcb, 0x18, 0x24, 0xe3, 0x13, 0x3f, 0xe1, 0x01, 0x23, 0xaa,
+	0xef, 0x3f, 0x05, 0x4a, 0xa2, 0x61, 0x17, 0xa2, 0x70, 0xae, 0xed, 0x60, 0x3d, 0x97, 0x58, 0x12,
+	0x79, 0x5b, 0xb8, 0xfe, 0xdb, 0x5e, 0xe5, 0xd6, 0xad, 0x9f, 0x08, 0xaf, 0xf4, 0x24, 0xb5, 0x52,
+	0xbc, 0x7e, 0xed, 0x8d, 0x9a, 0x7f, 0xf0, 0x76, 0xc1, 0x01, 0xa7, 0xf5, 0xef, 0xd8, 0x92, 0xd7,
+	0x52, 0xf8, 0xf6, 0x82, 0x53, 0x0f, 0xfe, 0x36, 0x65, 0x1e, 0xed, 0x3c, 0xfa, 0x1f, 0x74, 0xc9,
+	0xea, 0xac, 0xbe, 0xcd, 0x4f, 0xa1, 0x73, 0x74, 0x31, 0x76, 0xd1, 0xe5, 0xd8, 0x45, 0x3f, 0xc6,
+	0x2e, 0xfa, 0x30, 0x71, 0x2b, 0x97, 0x13, 0xb7, 0xf2, 0x6d, 0xe2, 0x56, 0x5e, 0xed, 0xd3, 0x44,
+	0xf5, 0x07, 0xc7, 0x7e, 0xc4, 0x59, 0xd0, 0x6b, 0x3f, 0x7b, 0x11, 0xb6, 0x77, 0x0f, 0xf5, 0x55,
+	0x2c, 0xbd, 0x10, 0x35, 0xcc, 0x40, 0x1e, 0xaf, 0xe9, 0x6b, 0x7f, 0xf8, 0x2b, 0x00, 0x00, 0xff,
+	0xff, 0xbb, 0x40, 0x51, 0x51, 0xb3, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -177,6 +275,7 @@ type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpsertFeeDenom(ctx context.Context, in *MsgUpsertFeeDenom, opts ...grpc.CallOption) (*MsgUpsertFeeDenomResponse, error)
 }
 
 type msgClient struct {
@@ -196,11 +295,21 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) UpsertFeeDenom(ctx context.Context, in *MsgUpsertFeeDenom, opts ...grpc.CallOption) (*MsgUpsertFeeDenomResponse, error) {
+	out := new(MsgUpsertFeeDenomResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.xfeemarket.v1.Msg/UpsertFeeDenom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	UpsertFeeDenom(context.Context, *MsgUpsertFeeDenom) (*MsgUpsertFeeDenomResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -209,6 +318,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) UpsertFeeDenom(ctx context.Context, req *MsgUpsertFeeDenom) (*MsgUpsertFeeDenomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpsertFeeDenom not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -233,6 +345,24 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpsertFeeDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpsertFeeDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpsertFeeDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mantrachain.xfeemarket.v1.Msg/UpsertFeeDenom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpsertFeeDenom(ctx, req.(*MsgUpsertFeeDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "mantrachain.xfeemarket.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -240,6 +370,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "UpsertFeeDenom",
+			Handler:    _Msg_UpsertFeeDenom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -309,6 +443,76 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpsertFeeDenom) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpsertFeeDenom) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpsertFeeDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Multiplier.Size()
+		i -= size
+		if _, err := m.Multiplier.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpsertFeeDenomResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpsertFeeDenomResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpsertFeeDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -336,6 +540,34 @@ func (m *MsgUpdateParams) Size() (n int) {
 }
 
 func (m *MsgUpdateParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpsertFeeDenom) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Multiplier.Size()
+	n += 1 + l + sovTx(uint64(l))
+	return n
+}
+
+func (m *MsgUpsertFeeDenomResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -492,6 +724,204 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpsertFeeDenom) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpsertFeeDenom: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpsertFeeDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Multiplier", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Multiplier.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpsertFeeDenomResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpsertFeeDenomResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpsertFeeDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
