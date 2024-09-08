@@ -25,7 +25,7 @@ func (r *TestDenomResolver) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, de
 	if err != nil {
 		return sdk.DecCoin{}, err
 	}
-	amount := coin.Amount.Mul(multiplier)
+	amount := coin.Amount.Mul(multiplier.Dec)
 
 	return sdk.NewDecCoinFromDec(denom, amount), nil
 }

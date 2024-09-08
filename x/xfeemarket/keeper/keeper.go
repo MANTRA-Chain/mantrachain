@@ -7,9 +7,9 @@ import (
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	math "cosmossdk.io/math"
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type (
@@ -27,7 +27,7 @@ type (
 		Params collections.Item[types.Params]
 
 		// DenomMultipliers is a map of denomination and their multipliers against the default base fee denomination.
-		DenomMultipliers collections.Map[string, math.LegacyDec]
+		DenomMultipliers collections.Map[string, sdk.DecProto]
 		// this line is used by starport scaffolding # collection/type
 	}
 )
@@ -52,7 +52,8 @@ func NewKeeper(
 		authority:    authority,
 		logger:       logger,
 
-		Params: collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		Params:           collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		DenomMultipliers: collections.NewMap(sb, types.PrefixDenomMultiplier, "denom_multipliers", collections.StringKey, codec.CollValue[sdk.DecProto](cdc)),
 		// this line is used by starport scaffolding # collection/instantiate
 	}
 

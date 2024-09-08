@@ -38,8 +38,8 @@ message MsgUpdateParams {
 message MsgUpdateParamsResponse {}
 
 message MsgUpsertFeeDenom {
-  option (cosmos.msg.v1.signer) = "creator";
-  string creator    = 1;
+  option (cosmos.msg.v1.signer) = "authority";
+  string Authority    = 1;
   string denom      = 2;
   string multiplier = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
