@@ -2,7 +2,6 @@ package xfeemarket
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-
 	xfeemarketapi "github.com/MANTRA-Chain/mantrachain/api/mantrachain/xfeemarket/v1"
 )
 

@@ -12,7 +12,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # genesis/module/init
 	for _, denomMultiplier := range genState.GetDenomMultipliers() {
 		multiplier := math.LegacyMustNewDecFromStr(denomMultiplier.Multiplier)
-		k.DenomMultipliers.Set(ctx, denomMultiplier.Denom, sdk.DecProto{Dec: multiplier})
+		if err := k.DenomMultipliers.Set(ctx, denomMultiplier.Denom, sdk.DecProto{Dec: multiplier}); err != nil {
+			return err
+		}
 	}
 	return k.Params.Set(ctx, genState.Params)
 }
