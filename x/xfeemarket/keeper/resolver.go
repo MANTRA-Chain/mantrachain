@@ -35,6 +35,7 @@ func (r *XFeeMarketDenomResolver) ExtraDenoms(ctx sdk.Context) ([]string, error)
 	if err != nil {
 		return nil, err
 	}
+	defer iter.Close()
 	extraDenoms, err := iter.Keys()
 	if err != nil {
 		return nil, err

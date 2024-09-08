@@ -1,5 +1,7 @@
 package types
 
+import "errors"
+
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
@@ -7,7 +9,8 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		Params:           DefaultParams(),
+		DenomMultipliers: []DenomMultiplier{},
 	}
 }
 
@@ -15,6 +18,17 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
-
+	for _, denomMuliplier := range gs.DenomMultipliers {
+		if err := denomMuliplier.Validate(); err != nil {
+			return err
+		}
+	}
 	return gs.Params.Validate()
+}
+
+func (m DenomMultiplier) Validate() error {
+	if m.Denom == "" {
+		return errors.New("denom cannot be empty")
+	}
+	return nil
 }

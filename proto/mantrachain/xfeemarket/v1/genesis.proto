@@ -14,4 +14,14 @@ message GenesisState {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+
+  repeated denom_multiplier denom_multipliers = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+message denom_multiplier {
+  string denom = 1;
+  string multiplier = 2;
 }
