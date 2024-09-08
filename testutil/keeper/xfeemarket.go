@@ -22,7 +22,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func XfeemarketKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
+func XfeemarketKeeper(tb testing.TB, bk types.BankKeeper) (keeper.Keeper, sdk.Context, address.Codec) {
 	tb.Helper()
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
@@ -38,10 +38,10 @@ func XfeemarketKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec)
 
 	k := keeper.NewKeeper(
 		cdc,
-		addressCodec,
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
 		authority.String(),
+		bk,
 	)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())

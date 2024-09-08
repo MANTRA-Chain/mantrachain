@@ -10,7 +10,7 @@ import (
 )
 
 func TestParamsQuery(t *testing.T) {
-	k, ctx, _ := keepertest.XfeemarketKeeper(t)
+	k, ctx, _ := keepertest.XfeemarketKeeper(t, nil)
 
 	qs := keeper.NewQueryServerImpl(k)
 	params := types.DefaultParams()

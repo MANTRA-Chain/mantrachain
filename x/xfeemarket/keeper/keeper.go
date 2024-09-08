@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"cosmossdk.io/collections"
-	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
@@ -15,9 +14,9 @@ import (
 type (
 	Keeper struct {
 		cdc          codec.BinaryCodec
-		addressCodec address.Codec
 		storeService store.KVStoreService
 		logger       log.Logger
+		bankkeeper   types.BankKeeper
 
 		// the address capable of executing a MsgUpdateParams message.
 		// Typically, this should be the x/gov module account.
@@ -34,26 +33,22 @@ type (
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	addressCodec address.Codec,
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
+	bankkeeper types.BankKeeper,
 ) Keeper {
-	if _, err := addressCodec.StringToBytes(authority); err != nil {
-		panic(fmt.Sprintf("invalid authority address %s: %s", authority, err))
-	}
-
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
 		cdc:          cdc,
-		addressCodec: addressCodec,
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
 
 		Params:           collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		DenomMultipliers: collections.NewMap(sb, types.PrefixDenomMultiplier, "denom_multipliers", collections.StringKey, codec.CollValue[sdk.DecProto](cdc)),
+		bankkeeper:       bankkeeper,
 		// this line is used by starport scaffolding # collection/instantiate
 	}
 

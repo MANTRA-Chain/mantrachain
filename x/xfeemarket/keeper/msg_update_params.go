@@ -9,10 +9,6 @@ import (
 )
 
 func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if _, err := k.addressCodec.StringToBytes(req.Authority); err != nil {
-		return nil, errorsmod.Wrap(err, "invalid authority address")
-	}
-
 	if k.GetAuthority() != req.Authority {
 		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}

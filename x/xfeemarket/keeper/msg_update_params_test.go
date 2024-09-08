@@ -10,7 +10,7 @@ import (
 )
 
 func TestMsgUpdateParams(t *testing.T) {
-	k, ctx, _ := keepertest.XfeemarketKeeper(t)
+	k, ctx, _ := keepertest.XfeemarketKeeper(t, nil)
 	ms := keeper.NewMsgServerImpl(k)
 
 	params := types.DefaultParams()

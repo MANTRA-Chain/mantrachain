@@ -17,7 +17,7 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	k, ctx, _ := keepertest.XfeemarketKeeper(t)
+	k, ctx, _ := keepertest.XfeemarketKeeper(t, nil)
 	err := xfeemarket.InitGenesis(ctx, k, genesisState)
 	require.NoError(t, err)
 	got, err := xfeemarket.ExportGenesis(ctx, k)

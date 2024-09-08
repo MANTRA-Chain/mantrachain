@@ -204,10 +204,10 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	}
 	k := keeper.NewKeeper(
 		in.Cdc,
-		in.AddressCodec,
 		in.StoreService,
 		in.Logger,
 		authority.String(),
+		in.BankKeeper,
 	)
 	m := NewAppModule(
 		in.Cdc,
