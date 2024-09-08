@@ -5,18 +5,18 @@ import (
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
-var _ feemarkettypes.DenomResolver = &TestDenomResolver{}
+var _ feemarkettypes.DenomResolver = &DenomResolver{}
 
-type TestDenomResolver struct {
+type DenomResolver struct {
 	k Keeper
 }
 
-func NewTestDenomResolver(k Keeper) *TestDenomResolver {
-	return &TestDenomResolver{k: k}
+func NewTestDenomResolver(k Keeper) *DenomResolver {
+	return &DenomResolver{k: k}
 }
 
 // ConvertToDenom returns "coin.Amount denom" for all coins that are not the denom.
-func (r *TestDenomResolver) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
+func (r *DenomResolver) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) (sdk.DecCoin, error) {
 	if coin.Denom == denom {
 		return coin, nil
 	}
@@ -30,7 +30,7 @@ func (r *TestDenomResolver) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, de
 	return sdk.NewDecCoinFromDec(denom, amount), nil
 }
 
-func (r *TestDenomResolver) ExtraDenoms(ctx sdk.Context) ([]string, error) {
+func (r *DenomResolver) ExtraDenoms(ctx sdk.Context) ([]string, error) {
 	iter, err := r.k.DenomMultipliers.Iterate(ctx, nil)
 	if err != nil {
 		return nil, err
