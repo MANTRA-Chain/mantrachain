@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Msg_UpdateParams_FullMethodName   = "/mantrachain.xfeemarket.v1.Msg/UpdateParams"
 	Msg_UpsertFeeDenom_FullMethodName = "/mantrachain.xfeemarket.v1.Msg/UpsertFeeDenom"
+	Msg_RemoveFeeDenom_FullMethodName = "/mantrachain.xfeemarket.v1.Msg/RemoveFeeDenom"
 )
 
 // MsgClient is the client API for Msg service.
@@ -33,6 +34,7 @@ type MsgClient interface {
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpsertFeeDenom(ctx context.Context, in *MsgUpsertFeeDenom, opts ...grpc.CallOption) (*MsgUpsertFeeDenomResponse, error)
+	RemoveFeeDenom(ctx context.Context, in *MsgRemoveFeeDenom, opts ...grpc.CallOption) (*MsgRemoveFeeDenomResponse, error)
 }
 
 type msgClient struct {
@@ -63,6 +65,16 @@ func (c *msgClient) UpsertFeeDenom(ctx context.Context, in *MsgUpsertFeeDenom, o
 	return out, nil
 }
 
+func (c *msgClient) RemoveFeeDenom(ctx context.Context, in *MsgRemoveFeeDenom, opts ...grpc.CallOption) (*MsgRemoveFeeDenomResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MsgRemoveFeeDenomResponse)
+	err := c.cc.Invoke(ctx, Msg_RemoveFeeDenom_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility.
@@ -73,6 +85,7 @@ type MsgServer interface {
 	// parameters. The authority defaults to the x/gov module account.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	UpsertFeeDenom(context.Context, *MsgUpsertFeeDenom) (*MsgUpsertFeeDenomResponse, error)
+	RemoveFeeDenom(context.Context, *MsgRemoveFeeDenom) (*MsgRemoveFeeDenomResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -88,6 +101,9 @@ func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*
 }
 func (UnimplementedMsgServer) UpsertFeeDenom(context.Context, *MsgUpsertFeeDenom) (*MsgUpsertFeeDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpsertFeeDenom not implemented")
+}
+func (UnimplementedMsgServer) RemoveFeeDenom(context.Context, *MsgRemoveFeeDenom) (*MsgRemoveFeeDenomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFeeDenom not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -146,6 +162,24 @@ func _Msg_UpsertFeeDenom_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RemoveFeeDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveFeeDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveFeeDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RemoveFeeDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveFeeDenom(ctx, req.(*MsgRemoveFeeDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -160,6 +194,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpsertFeeDenom",
 			Handler:    _Msg_UpsertFeeDenom_Handler,
+		},
+		{
+			MethodName: "RemoveFeeDenom",
+			Handler:    _Msg_RemoveFeeDenom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

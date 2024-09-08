@@ -26,6 +26,10 @@ opWeightMsgUpsertFeeDenom = "op_weight_msg_upsert_fee_denom"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpsertFeeDenom int = 100
 
+	opWeightMsgRemoveFeeDenom = "op_weight_msg_remove_fee_denom"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgRemoveFeeDenom int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -60,6 +64,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		xfeemarketsimulation.SimulateMsgUpsertFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgRemoveFeeDenom int
+	simState.AppParams.GetOrGenerate(opWeightMsgRemoveFeeDenom, &weightMsgRemoveFeeDenom, nil,
+		func(_ *rand.Rand) {
+			weightMsgRemoveFeeDenom = defaultWeightMsgRemoveFeeDenom
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgRemoveFeeDenom,
+		xfeemarketsimulation.SimulateMsgRemoveFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -73,6 +88,14 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 	defaultWeightMsgUpsertFeeDenom,
 	func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 		xfeemarketsimulation.SimulateMsgUpsertFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
+		return nil
+	},
+),
+simulation.NewWeightedProposalMsg(
+	opWeightMsgRemoveFeeDenom,
+	defaultWeightMsgRemoveFeeDenom,
+	func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+		xfeemarketsimulation.SimulateMsgRemoveFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
 		return nil
 	},
 ),

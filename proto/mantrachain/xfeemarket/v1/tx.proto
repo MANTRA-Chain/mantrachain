@@ -18,6 +18,7 @@ service Msg {
   // parameters. The authority defaults to the x/gov module account.
   rpc UpdateParams   (MsgUpdateParams  ) returns (MsgUpdateParamsResponse  );
   rpc UpsertFeeDenom (MsgUpsertFeeDenom) returns (MsgUpsertFeeDenomResponse);
+  rpc RemoveFeeDenom (MsgRemoveFeeDenom) returns (MsgRemoveFeeDenomResponse);
 }
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
@@ -39,13 +40,18 @@ message MsgUpdateParamsResponse {}
 
 message MsgUpsertFeeDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  string Authority    = 1;
+  string Authority  = 1;
   string denom      = 2;
-  string multiplier = 3 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable) = false
-  ];
+  string multiplier = 3 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
 }
 
 message MsgUpsertFeeDenomResponse {}
+
+message MsgRemoveFeeDenom {
+  option (cosmos.msg.v1.signer) = "authority";
+  string Authority = 1;
+  string denom   = 2;
+}
+
+message MsgRemoveFeeDenomResponse {}
 

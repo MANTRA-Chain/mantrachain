@@ -25,3 +25,20 @@ func (k msgServer) UpsertFeeDenom(ctx context.Context, msg *types.MsgUpsertFeeDe
 
 	return &types.MsgUpsertFeeDenomResponse{}, nil
 }
+
+func (k msgServer) RemoveFeeDenom(ctx context.Context,  msg *types.MsgRemoveFeeDenom) (*types.MsgRemoveFeeDenomResponse, error) {
+	if err := msg.Validate(); err != nil {
+		return nil, err
+	}
+
+	authority := k.GetAuthority()
+	if authority != msg.Authority {
+		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid authority; expected %s, got %s", authority, msg.Authority)
+	}
+
+	if err := k.DenomMultipliers.Remove(ctx, msg.Denom); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgRemoveFeeDenomResponse{}, nil
+}

@@ -34,6 +34,12 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Short:          "Send a upsert-fee-denom tx",
 					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "multiplier"}},
 				},
+				{
+					RpcMethod:      "RemoveFeeDenom",
+					Use:            "remove-fee-denom [denom]",
+					Short:          "Send a remove-fee-denom tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
