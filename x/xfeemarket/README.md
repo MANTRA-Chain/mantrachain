@@ -30,7 +30,9 @@ accurate gas fee calculations.
 
 ## PostHandler
 
-The custom `PostHandler` refunds tips to fee payer and burns the required minimum fees.
+The custom `PostHandler` refunds tips to fee payer and burns/locks the required 
+minimum fees. The minimum fees is burned if it is the default fee denom and locked
+otherwise.
 
 ## State
 
