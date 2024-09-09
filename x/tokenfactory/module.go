@@ -104,18 +104,13 @@ var _ appmodule.AppModule = AppModule{}
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
+	keeper keeper.Keeper
 }
 
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
-
-		accountKeeper: accountKeeper,
-		bankKeeper:    bankKeeper,
 	}
 }
 
@@ -228,8 +223,6 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	m := NewAppModule(
 		in.Cdc,
 		k,
-		in.AccountKeeper,
-		in.BankKeeper,
 	)
 
 	return ModuleOutputs{CoinfactoryKeeper: k, Module: m}
