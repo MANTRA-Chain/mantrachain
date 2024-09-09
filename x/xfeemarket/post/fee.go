@@ -121,7 +121,7 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 
 	feePayer := feeTx.FeePayer()
 
-	if err := dfd.BurnFeeAndRefund(ctx, payCoin, tip, feePayer); err != nil {
+	if err := dfd.BurnFeeAndRefund(ctx, payCoin, tip, feePayer, params.FeeDenom); err != nil {
 		return ctx, err
 	}
 
@@ -144,11 +144,11 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 }
 
 // BurnFeeAndRefund burns the fees and refunds the extra/tip to the fee payer.
-func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip sdk.Coin, feePayer sdk.AccAddress) error {
+func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip sdk.Coin, feePayer sdk.AccAddress, defaultFeeDenom string) error {
 	var events sdk.Events
 
-	// burn the fees and refund the tips
-	if !fee.IsNil() {
+	// burn the fees if it is the default fee denom
+	if !fee.IsNil() && fee.Denom == defaultFeeDenom {
 		err := BurnCoins(dfd.bankKeeper, ctx, sdk.NewCoins(fee))
 		if err != nil {
 			return err
@@ -160,6 +160,7 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 		))
 	}
 
+	// refund the tip if it is not nil
 	if !tip.IsNil() {
 		err := RefundTip(dfd.bankKeeper, ctx, feePayer, sdk.NewCoins(tip))
 		if err != nil {
