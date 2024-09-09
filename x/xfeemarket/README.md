@@ -30,7 +30,7 @@ accurate gas fee calculations.
 
 ## PostHandler
 
-The custom `PostHandler` eliminates tips and burns all fees paid by users.
+The custom `PostHandler` refunds tips to fee payer and burns the required minimum fees.
 
 ## State
 
