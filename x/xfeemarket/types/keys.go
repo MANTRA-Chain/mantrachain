@@ -16,6 +16,8 @@ const (
 var (
 	ParamsKey             = collections.NewPrefix("p_xfeemarket")
 	PrefixDenomMultiplier = []byte{0x01}
+
+	EventTypeTipRefund = "tip_refund"
 )
 
 func KeyPrefix(p string) []byte {
