@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
