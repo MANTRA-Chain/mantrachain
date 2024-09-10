@@ -20,6 +20,9 @@ func (app *App) registerTokenFactoryModule() error {
 		return err
 	}
 
+	// Ensure the subspace is properly initialized
+	app.ParamsKeeper.Subspace(tokenfactorytypes.ModuleName)
+
 	// Create TokenFactory Keeper
 	tokenFactoryKeeper := tokenfactorykeeper.NewKeeper(
 		app.GetKey(tokenfactorytypes.StoreKey),
