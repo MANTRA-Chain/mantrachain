@@ -305,6 +305,10 @@ func New(
 		return nil, err
 	}
 
+	if err := app.registerIBCRateLimit(); err != nil {
+		return nil, err
+	}
+
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
 		return nil, err
