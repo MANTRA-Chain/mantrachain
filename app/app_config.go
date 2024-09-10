@@ -53,8 +53,6 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-
-	//	tokenfactorymodulev1 "github.com/osmosis-labs/osmosis/v26/api/osmosis/tokenfactory/module/v1"
 	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
 	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
 	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
