@@ -21,6 +21,7 @@ import (
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -79,8 +80,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
-	_ "github.com/osmosis-labs/osmosis/v26/client/docs/statik" // import for side-effects
-	_ "github.com/osmosis-labs/osmosis/v26/x/tokenfactory"     // import for side-effects
+
 	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects

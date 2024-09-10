@@ -20,7 +20,7 @@ func (app *App) registerTokenFactoryModule() error {
 
 	// Create TokenFactory Keeper
 	tokenFactoryKeeper := tokenfactorykeeper.NewKeeper(
-		app.keys[tokenfactorytypes.StoreKey],
+		app.GetKey(tokenfactorytypes.StoreKey),
 		app.GetSubspace(tokenfactorytypes.ModuleName),
 		GetMaccPerms(),
 		app.AccountKeeper,
