@@ -1,6 +1,6 @@
 # Mantrachain
 - name: mantrachain
-  github-organization: MANTRA-Finance
+  github-organization: MANTRA-Chain
   github-repo: mantrachain
   dockerfile: cosmos
   # TODO: should fix in heighliner cosmos/dockerfile once heighliner v1.6.4 is released
