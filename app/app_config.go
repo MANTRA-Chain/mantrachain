@@ -343,6 +343,9 @@ var (
 	})
 )
 
+// knownModules returns a list of module names that are known to the app.  It is not being used right now, but it is being preserved for future use.
+//
+//nolint:unused
 func knownModules() []string {
 	knownModules := make([]string, 0, len(moduleAccPerms))
 	for _, moduleAcc := range moduleAccPerms {
