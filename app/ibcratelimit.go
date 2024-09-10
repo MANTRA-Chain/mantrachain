@@ -5,8 +5,6 @@ import (
 )
 
 func (app *App) registerIBCRateLimit() {
-
 	// Ensure the subspace is properly initialized
 	app.ParamsKeeper.Subspace(ibcratelimittypes.ModuleName)
-
 }
