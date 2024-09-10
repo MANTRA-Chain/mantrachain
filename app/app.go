@@ -276,9 +276,6 @@ func New(
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
-
-		// TokenFactory Keeper
-		&app.TokenFactoryKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -302,6 +299,10 @@ func New(
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
+		return nil, err
+	}
+
+	if err := app.registerTokenFactoryModule(); err != nil {
 		return nil, err
 	}
 

@@ -4,9 +4,7 @@ import (
 	"fmt"
 
 	storetypes "cosmossdk.io/store/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/osmosis-labs/osmosis/v26/x/tokenfactory"
 	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
@@ -21,14 +19,15 @@ func (app *App) registerTokenFactoryModule() error {
 	}
 
 	// Create TokenFactory Keeper
-	app.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
-		app.appCodec,
-		app.GetKey(tokenfactorytypes.StoreKey),
+	tokenFactoryKeeper := tokenfactorykeeper.NewKeeper(
+		app.keys[tokenfactorytypes.StoreKey],
+		app.GetSubspace(tokenfactorytypes.ModuleName),
+		GetMaccPerms(),
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.DistrKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.TokenFactoryKeeper = tokenFactoryKeeper
 
 	// Create TokenFactory Module
 	tokenFactoryModule := tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper)
@@ -38,19 +37,10 @@ func (app *App) registerTokenFactoryModule() error {
 		return fmt.Errorf("failed to register TokenFactory module: %w", err)
 	}
 
-	// Add TokenFactory module to the begin blocker
-	app.ModuleManager.SetOrderBeginBlockers(tokenfactorytypes.ModuleName)
-
-	// Add TokenFactory module to the end blocker
-	app.ModuleManager.SetOrderEndBlockers(tokenfactorytypes.ModuleName)
-
-	// Add TokenFactory module to the init genesis
-	app.ModuleManager.SetOrderInitGenesis(tokenfactorytypes.ModuleName)
-
 	return nil
 }
 
 // RegisterTokenFactory registers the TokenFactory module's types for the given codec.
-func RegisterTokenFactory(registry codec.InterfaceRegistry) {
-	tokenfactory.RegisterInterfaces(registry)
+func RegisterTokenFactory(registry codectypes.InterfaceRegistry) {
+	tokenfactorytypes.RegisterInterfaces(registry)
 }

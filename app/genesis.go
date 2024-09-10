@@ -6,6 +6,7 @@ import (
 	math "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
@@ -23,6 +24,13 @@ var FeeDenom = "uom"
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 	genesisState := module.BasicManager{}.DefaultGenesis(cdc)
+
+	tokenFactoryGenesis := tokenfactorytypes.DefaultGenesis()
+	tokenFactoryGenesisStateBytes, err := json.Marshal(tokenFactoryGenesis)
+	if err != nil {
+		panic("cannot marshal tokenfactory genesis state for tests")
+	}
+	genesisState[tokenfactorytypes.ModuleName] = tokenFactoryGenesisStateBytes
 
 	feemarketFeeGenesis := feemarkettypes.GenesisState{
 		Params: feemarkettypes.Params{
