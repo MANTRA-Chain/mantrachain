@@ -42,7 +42,7 @@
     "consensus": null,
     "crisis": {
       "constant_fee": {
-        "denom": "stake",
+        "denom": "uom",
         "amount": "1000"
       }
     },
@@ -89,7 +89,7 @@
         "max_learning_rate": "0.125000000000000000",
         "max_block_utilization": "30000000",
         "window": "1",
-        "fee_denom": "stake",
+        "fee_denom": "uom",
         "enabled": true,
         "distribute_fees": false
       },
@@ -116,7 +116,7 @@
       "params": {
         "min_deposit": [
           {
-            "denom": "stake",
+            "denom": "uom",
             "amount": "10000000"
           }
         ],
@@ -132,7 +132,7 @@
         "expedited_threshold": "0.667000000000000000",
         "expedited_min_deposit": [
           {
-            "denom": "stake",
+            "denom": "uom",
             "amount": "50000000"
           }
         ],
@@ -473,7 +473,7 @@
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "stake",
+        "mint_denom": "uom",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -572,7 +572,7 @@
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,
-        "bond_denom": "stake",
+        "bond_denom": "uom",
         "min_commission_rate": "0.000000000000000000"
       },
       "last_total_power": "0",
