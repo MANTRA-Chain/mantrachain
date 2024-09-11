@@ -13,6 +13,6 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
       - name: install
-        run: go install ./...
+        run: make install
       - name: validate genesis
         run: mantrachaind genesis validate-genesis networks/dukong/genesis.json
