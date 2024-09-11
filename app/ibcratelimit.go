@@ -19,7 +19,7 @@ func (app *App) registerIBCRateLimit() {
 		&app.AccountKeeper,
 		// wasm keeper we set later.
 		nil,
-		app.BankKeeper,
+		app.BankKeeper.BaseKeeper,
 		app.GetSubspace(ibcratelimittypes.ModuleName),
 	)
 	app.RateLimitingICS4Wrapper = &rateLimitingICS4Wrapper

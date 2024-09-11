@@ -69,6 +69,7 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -79,7 +80,6 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
-	ibchooks "github.com/neutron-org/neutron/x/ibc-hooks"
 	ibcratelimit "github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit"
 	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
@@ -116,7 +116,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
-	BankKeeper            bankkeeper.Keeper
+	BankKeeper            *bankkeeper.BaseKeeper
 	StakingKeeper         *stakingkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
