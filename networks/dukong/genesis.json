@@ -117,7 +117,7 @@
         "min_deposit": [
           {
             "denom": "uom",
-            "amount": "10000000"
+            "amount": "88888000000"
           }
         ],
         "max_deposit_period": "172800s",
@@ -133,7 +133,7 @@
         "expedited_min_deposit": [
           {
             "denom": "uom",
-            "amount": "50000000"
+            "amount": "888888000000"
           }
         ],
         "burn_vote_quorum": false,
@@ -469,14 +469,14 @@
     },
     "mint": {
       "minter": {
-        "inflation": "0.130000000000000000",
+        "inflation": "0.080000000000000000",
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
         "mint_denom": "uom",
         "inflation_rate_change": "0.130000000000000000",
-        "inflation_max": "0.200000000000000000",
-        "inflation_min": "0.070000000000000000",
+        "inflation_max": "0.0800000000000000000",
+        "inflation_min": "0.080000000000000000",
         "goal_bonded": "0.670000000000000000",
         "blocks_per_year": "6311520"
       }
@@ -568,7 +568,7 @@
     },
     "staking": {
       "params": {
-        "unbonding_time": "1814400s",
+        "unbonding_time": "691200s",
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,
