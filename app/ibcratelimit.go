@@ -16,7 +16,7 @@ func (app *App) registerIBCRateLimit() {
 	// ChannelKeeper wrapper for rate limiting SendPacket(). The wasmKeeper needs to be added after it's created
 	rateLimitingICS4Wrapper := ibcratelimit.NewICS4Middleware(
 		app.HooksICS4Wrapper,
-		app.AccountKeeper,
+		&app.AccountKeeper,
 		// wasm keeper we set later.
 		nil,
 		app.BankKeeper,
