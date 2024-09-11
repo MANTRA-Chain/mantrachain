@@ -22,8 +22,6 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
-	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -32,7 +30,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -82,6 +79,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
+	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
@@ -276,7 +274,6 @@ func New(
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
-		&app.TokenFactoryKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -300,6 +297,10 @@ func New(
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
+		return nil, err
+	}
+
+	if err := app.registerTokenFactoryModule(); err != nil {
 		return nil, err
 	}
 
@@ -416,11 +417,11 @@ func (app *App) SimulationManager() *module.SimulationManager {
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 
-	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
-	// register swagger API in app.go so that other applications can override easily
-	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
-		panic(err)
-	}
+	// app.App.RegisterAPIRoutes(apiSvr, apiConfig)
+	// // register swagger API in app.go so that other applications can override easily
+	// if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
+	// 	panic(err)
+	// }
 
 	// register app's OpenAPI routes.
 	if apiConfig.Swagger {
@@ -436,7 +437,7 @@ func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
 	}
 
 	staticServer := http.FileServer(statikFS)
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
+	// rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
 	rtr.PathPrefix("/swagger/").Handler(staticServer)
 }
 

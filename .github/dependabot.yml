@@ -14,7 +14,19 @@ updates:
     directory: "/"
     schedule:
       interval: daily
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
   - package-ecosystem: gomod
     directory: "/"
+    schedule:
+      interval: daily
+  - package-ecosystem: gomod
+    directory: "/tests/connect"
+    schedule:
+      interval: daily
+  - package-ecosystem: gomod
+    directory: "/tests/feemarket"
     schedule:
       interval: daily
