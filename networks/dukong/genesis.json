@@ -1338,7 +1338,7 @@
         "max_entries": 7,
         "historical_entries": 10000,
         "bond_denom": "uom",
-        "min_commission_rate": "0.100000000000000000"
+        "min_commission_rate": "0.050000000000000000"
       },
       "last_total_power": "0",
       "last_validator_powers": [],
