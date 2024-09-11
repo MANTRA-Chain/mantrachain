@@ -881,8 +881,8 @@
       "params": {
         "min_deposit": [
           {
-            "amount": "88888000000",
-            "denom": "uom"
+            "denom": "uom",
+            "amount": "88888000000"
           }
         ],
         "max_deposit_period": "691200s",
@@ -897,8 +897,8 @@
         "expedited_threshold": "0.667000000000000000",
         "expedited_min_deposit": [
           {
-            "amount": "888888000000",
-            "denom": "uom"
+            "denom": "uom",
+            "amount": "888888000000"
           }
         ],
         "burn_vote_quorum": false,
@@ -1234,14 +1234,14 @@
     },
     "mint": {
       "minter": {
-        "inflation": "0.08",
-        "annual_provisions": "0.0"
+        "inflation": "0.080000000000000000",
+        "annual_provisions": "0.000000000000000000"
       },
       "params": {
         "mint_denom": "uom",
         "inflation_rate_change": "0.130000000000000000",
-        "inflation_max": "0.08",
-        "inflation_min": "0.08",
+        "inflation_max": "0.080000000000000000",
+        "inflation_min": "0.080000000000000000",
         "goal_bonded": "0.670000000000000000",
         "blocks_per_year": "6311520"
       }
@@ -1381,7 +1381,7 @@
       "evidence": {
         "max_age_num_blocks": "100000",
         "max_age_duration": "172800000000000",
-        "max_bytes": "1048576"
+        "max_bytes": "1000000"
       },
       "validator": {
         "pub_key_types": [
