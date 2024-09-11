@@ -4,7 +4,65 @@ info:
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
-  /osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata:
+  /osmosis/tokenfactory/v1beta1/all_before_send_hooks:
+    get:
+      summary: >-
+        AllBeforeSendHooksAddresses defines a gRPC query method for
+
+        getting all addresses with before send hook registered.
+
+        The response returns two arrays, an array with a list of denom and an
+        array
+
+        of before send hook addresses. The idx of denom corresponds to before
+        send
+
+        hook addresse's idx.
+      operationId: AllBeforeSendHooksAddresses
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denoms:
+                type: array
+                items:
+                  type: string
+              before_send_hook_addresses:
+                type: array
+                items:
+                  type: string
+            description: >-
+              QueryAllBeforeSendHooksAddressesResponse defines the response
+              structure for
+
+              the AllBeforeSendHooksAddresses gRPC query.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /osmosis/tokenfactory/v1beta1/denoms/{denom}/authority_metadata:
     get:
       summary: |-
         DenomAuthorityMetadata defines a gRPC query method for fetching
@@ -19,7 +77,7 @@ paths:
               authority_metadata:
                 type: object
                 properties:
-                  Admin:
+                  admin:
                     type: string
                     title: Can be empty for no admin, or a valid osmosis address
                 description: >-
@@ -58,17 +116,13 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: subdenom
+        - name: denom
           in: path
           required: true
           type: string
       tags:
         - Query
-  /osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/before_send_hook:
+  /osmosis/tokenfactory/v1beta1/denoms/{denom}/before_send_hook:
     get:
       summary: |-
         BeforeSendHookAddress defines a gRPC query method for
@@ -80,7 +134,7 @@ paths:
           schema:
             type: object
             properties:
-              contract_addr:
+              cosmwasm_address:
                 type: string
             description: >-
               QueryBeforeSendHookAddressResponse defines the response structure
@@ -110,11 +164,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: subdenom
+        - name: denom
           in: path
           required: true
           type: string
@@ -224,34 +274,6 @@ paths:
 
 
                       See: https://github.com/CosmWasm/token-factory/issues/11
-                  fee_collector_address:
-                    type: string
-                    title: >-
-                      FeeCollectorAddress is the address where fees collected
-                      from denom creation
-
-                      are sent to
-                  whitelisted_hooks:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        code_id:
-                          type: string
-                          format: uint64
-                        denom_creator:
-                          type: string
-                      title: >-
-                        WhitelistedHook describes a beforeSendHook which is
-                        allowed to be added and executed
-
-                        SetBeforeSendHook can only be called on denoms where the
-                        denom creator and
-
-                        code_id for the `contract_addr` match a WhitelistedHook
-                    title: >-
-                      whitelisted_hooks is the list of hooks which are allowed
-                      to be added and executed
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
@@ -44974,7 +44996,17 @@ definitions:
                   "@type": "type.googleapis.com/google.protobuf.Duration",
                   "value": "1.212s"
                 }
-  osmosis.tokenfactory.Params:
+  osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
+    type: object
+    properties:
+      admin:
+        type: string
+        title: Can be empty for no admin, or a valid osmosis address
+    description: |-
+      DenomAuthorityMetadata specifies metadata for addresses that have specific
+      capabilities over a token factory denom. Right now there is only one Admin
+      permission, but is planned to be extended to the future.
+  osmosis.tokenfactory.v1beta1.Params:
     type: object
     properties:
       denom_creation_fee:
@@ -45006,64 +45038,27 @@ definitions:
           This is intended as a spam deterrence mechanism.
 
           See: https://github.com/CosmWasm/token-factory/issues/11
-      fee_collector_address:
-        type: string
-        title: >-
-          FeeCollectorAddress is the address where fees collected from denom
-          creation
-
-          are sent to
-      whitelisted_hooks:
+    description: Params defines the parameters for the tokenfactory module.
+  osmosis.tokenfactory.v1beta1.QueryAllBeforeSendHooksAddressesResponse:
+    type: object
+    properties:
+      denoms:
         type: array
         items:
-          type: object
-          properties:
-            code_id:
-              type: string
-              format: uint64
-            denom_creator:
-              type: string
-          title: >-
-            WhitelistedHook describes a beforeSendHook which is allowed to be
-            added and executed
+          type: string
+      before_send_hook_addresses:
+        type: array
+        items:
+          type: string
+    description: >-
+      QueryAllBeforeSendHooksAddressesResponse defines the response structure
+      for
 
-            SetBeforeSendHook can only be called on denoms where the denom
-            creator and
-
-            code_id for the `contract_addr` match a WhitelistedHook
-        title: >-
-          whitelisted_hooks is the list of hooks which are allowed to be added
-          and executed
-    description: Params defines the parameters for the tokenfactory module.
-  osmosis.tokenfactory.WhitelistedHook:
-    type: object
-    properties:
-      code_id:
-        type: string
-        format: uint64
-      denom_creator:
-        type: string
-    title: >-
-      WhitelistedHook describes a beforeSendHook which is allowed to be added
-      and executed
-
-      SetBeforeSendHook can only be called on denoms where the denom creator and
-
-      code_id for the `contract_addr` match a WhitelistedHook
-  osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
-    type: object
-    properties:
-      Admin:
-        type: string
-        title: Can be empty for no admin, or a valid osmosis address
-    description: |-
-      DenomAuthorityMetadata specifies metadata for addresses that have specific
-      capabilities over a token factory denom. Right now there is only one Admin
-      permission, but is planned to be extended to the future.
+      the AllBeforeSendHooksAddresses gRPC query.
   osmosis.tokenfactory.v1beta1.QueryBeforeSendHookAddressResponse:
     type: object
     properties:
-      contract_addr:
+      cosmwasm_address:
         type: string
     description: |-
       QueryBeforeSendHookAddressResponse defines the response structure for the
@@ -45074,7 +45069,7 @@ definitions:
       authority_metadata:
         type: object
         properties:
-          Admin:
+          admin:
             type: string
             title: Can be empty for no admin, or a valid osmosis address
         description: >-
@@ -45141,34 +45136,6 @@ definitions:
 
 
               See: https://github.com/CosmWasm/token-factory/issues/11
-          fee_collector_address:
-            type: string
-            title: >-
-              FeeCollectorAddress is the address where fees collected from denom
-              creation
-
-              are sent to
-          whitelisted_hooks:
-            type: array
-            items:
-              type: object
-              properties:
-                code_id:
-                  type: string
-                  format: uint64
-                denom_creator:
-                  type: string
-              title: >-
-                WhitelistedHook describes a beforeSendHook which is allowed to
-                be added and executed
-
-                SetBeforeSendHook can only be called on denoms where the denom
-                creator and
-
-                code_id for the `contract_addr` match a WhitelistedHook
-            title: >-
-              whitelisted_hooks is the list of hooks which are allowed to be
-              added and executed
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   cosmos.base.v1beta1.DecCoin:
     type: object

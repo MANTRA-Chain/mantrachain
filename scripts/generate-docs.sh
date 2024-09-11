@@ -10,8 +10,10 @@ printf "version: v1\nname: buf.build/MANTRA-Chain/mantrachain\n" >"$SWAGGER_DIR/
 cp ./proto/buf.gen.swagger.yaml "$SWAGGER_DIR/proto/buf.gen.swagger.yaml"
 
 # copy existing proto files
-cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
-# cp -r ./proto/mantrachain "$SWAGGER_DIR/proto"
+# cp -r ./proto/osmosis "$SWAGGER_DIR/proto"
+if [ -d "./proto/mantrachain" ]; then
+  cp -r ./proto/mantrachain "$SWAGGER_DIR/proto"
+fi
 
 # create temporary folder to store intermediate results from `buf generate`
 mkdir -p ./tmp-swagger-gen
