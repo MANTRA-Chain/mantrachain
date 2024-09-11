@@ -45,9 +45,7 @@ func (app *App) registerTokenFactoryModule() error {
 	return nil
 }
 
-// RegisterIBC Since the IBC modules don't support dependency injection,
-// we need to manually register the modules on the client side.
-// This needs to be removed after IBC supports App Wiring.
+// RegisterTokenFactory registers the TokenFactory module with the given interface registry.
 func RegisterTokenFactory(registry codectypes.InterfaceRegistry) map[string]appmodule.AppModule {
 	modules := map[string]appmodule.AppModule{
 		tokenfactorytypes.ModuleName: tokenfactory.AppModule{},

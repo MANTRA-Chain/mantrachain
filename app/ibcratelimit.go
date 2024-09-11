@@ -1,10 +1,27 @@
 package app
 
 import (
+	"cosmossdk.io/core/appmodule"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	ibcratelimit "github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit/ibcratelimitmodule"
 	ibcratelimittypes "github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit/types"
 )
 
 func (app *App) registerIBCRateLimit() {
 	// Ensure the subspace is properly initialized
 	app.ParamsKeeper.Subspace(ibcratelimittypes.ModuleName)
+}
+
+// RegisterTokenFactory registers the TokenFactory module with the given interface registry.
+func RegisterIBCRateLimit(registry codectypes.InterfaceRegistry) map[string]appmodule.AppModule {
+	modules := map[string]appmodule.AppModule{
+		ibcratelimittypes.ModuleName: ibcratelimit.AppModule{},
+	}
+
+	for name, m := range modules {
+		module.CoreAppModuleBasicAdaptor(name, m).RegisterInterfaces(registry)
+	}
+
+	return modules
 }
