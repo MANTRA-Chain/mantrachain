@@ -11,69 +11,69 @@ before:
     - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/checksums.txt -O /tmp/checksums.txt
 
 builds:
-  - id: mantrachaind-darwin-amd64
-    main: ./cmd/mantrachaind/main.go
-    binary: mantrachaind
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-        # verify checksum
-        - sha256sum /lib/libwasmvmstatic_darwin.a | grep $(cat /tmp/checksums.txt | grep libwasmvmstatic_darwin | cut -d ' ' -f 1) || exit 1
-    env:
-      - CC=o64-clang
-      - CGO_LDFLAGS=-L/lib
-    goos:
-      - darwin
-    goarch:
-      - amd64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .ShortCommit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
-      - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
-      - -w -s
-      - -linkmode=external
-    tags:
-      - netgo
-      - ledger
-      - static_wasm
+  # - id: mantrachaind-darwin-amd64
+  #   main: ./cmd/mantrachaind/main.go
+  #   binary: mantrachaind
+  #   hooks:
+  #     pre:
+  #       - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+  #       # verify checksum
+  #       - sha256sum /lib/libwasmvmstatic_darwin.a | grep $(cat /tmp/checksums.txt | grep libwasmvmstatic_darwin | cut -d ' ' -f 1) || exit 1
+  #   env:
+  #     - CC=o64-clang
+  #     - CGO_LDFLAGS=-L/lib
+  #   goos:
+  #     - darwin
+  #   goarch:
+  #     - amd64
+  #   flags:
+  #     - -mod=readonly
+  #     - -trimpath
+  #   ldflags:
+  #     - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
+  #     - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
+  #     - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .ShortCommit }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+  #     - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
+  #     - -w -s
+  #     - -linkmode=external
+  #   tags:
+  #     - netgo
+  #     - ledger
+  #     - static_wasm
 
-  - id: mantrachaind-darwin-arm64
-    main: ./cmd/mantrachaind/main.go
-    binary: mantrachaind
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-        # verify checksum
-        - sha256sum /lib/libwasmvmstatic_darwin.a | grep $(cat /tmp/checksums.txt | grep libwasmvmstatic_darwin | cut -d ' ' -f 1) || exit 1
-    env:
-      - CC=oa64-clang
-      - CGO_LDFLAGS=-L/lib
-    goos:
-      - darwin
-    goarch:
-      - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .ShortCommit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
-      - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
-      - -w -s
-      - -linkmode=external
-    tags:
-      - netgo
-      - ledger
-      - static_wasm
+  # - id: mantrachaind-darwin-arm64
+  #   main: ./cmd/mantrachaind/main.go
+  #   binary: mantrachaind
+  #   hooks:
+  #     pre:
+  #       - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+  #       # verify checksum
+  #       - sha256sum /lib/libwasmvmstatic_darwin.a | grep $(cat /tmp/checksums.txt | grep libwasmvmstatic_darwin | cut -d ' ' -f 1) || exit 1
+  #   env:
+  #     - CC=oa64-clang
+  #     - CGO_LDFLAGS=-L/lib
+  #   goos:
+  #     - darwin
+  #   goarch:
+  #     - arm64
+  #   flags:
+  #     - -mod=readonly
+  #     - -trimpath
+  #   ldflags:
+  #     - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
+  #     - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
+  #     - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .ShortCommit }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+  #     - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
+  #     - -w -s
+  #     - -linkmode=external
+  #   tags:
+  #     - netgo
+  #     - ledger
+  #     - static_wasm
 
   - id: mantrachaind-linux-amd64
     main: ./cmd/mantrachaind
@@ -154,8 +154,8 @@ archives:
       # - mantrachaind-darwin-universal
       - mantrachaind-linux-amd64
       - mantrachaind-linux-arm64
-      - mantrachaind-darwin-amd64
-      - mantrachaind-darwin-arm64
+      # - mantrachaind-darwin-amd64
+      # - mantrachaind-darwin-arm64
     name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
     files:
@@ -165,8 +165,8 @@ archives:
       # - mantrachaind-darwin-universal
       - mantrachaind-linux-amd64
       - mantrachaind-linux-arm64
-      - mantrachaind-darwin-amd64
-      - mantrachaind-darwin-arm64
+      # - mantrachaind-darwin-amd64
+      # - mantrachaind-darwin-arm64
     name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: binary
     files:

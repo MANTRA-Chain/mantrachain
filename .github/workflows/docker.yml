@@ -43,6 +43,8 @@ jobs:
           chain: mantrachain
           chains-spec-file: chains.yaml
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
+          heighliner-owner: ${{ github.repository_owner }}
+          heighliner-tag: v1.6.4
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
           registry: ghcr.io/${{ env.OWNER_LC }}
