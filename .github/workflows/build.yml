@@ -1,5 +1,5 @@
 on: [push, pull_request]
-name: Test
+name: Build and validate genesis
 jobs:
   test:
     strategy:
@@ -12,4 +12,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
-      - run: go build ./...
+      - name: install
+        run: go install ./...
+      - name: validate genesis
+          mantrachaind genesis validate-genesis networks/dukong/genesis.json
