@@ -1,7 +1,7 @@
 {
-  "app_name": "\u003cappd\u003e",
-  "app_version": "",
-  "genesis_time": "2024-09-11T05:58:38.602027Z",
+  "app_name": "mantrachaind",
+  "app_version": "mantrachain-genesis-346faa0",
+  "genesis_time": "2024-09-11T05:59:35.55195Z",
   "chain_id": "mantrachain",
   "initial_height": 1,
   "app_hash": null,
