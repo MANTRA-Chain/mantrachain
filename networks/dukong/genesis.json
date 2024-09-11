@@ -43,7 +43,7 @@
     "crisis": {
       "constant_fee": {
         "denom": "uom",
-        "amount": "8000"
+        "amount": "1000"
       }
     },
     "distribution": {
