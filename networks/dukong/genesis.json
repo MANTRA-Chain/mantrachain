@@ -117,7 +117,7 @@
         "min_deposit": [
           {
             "denom": "uom",
-            "amount": " 88888000000"
+            "amount": "88888000000"
           }
         ],
         "max_deposit_period": "172800s",
@@ -133,7 +133,7 @@
         "expedited_min_deposit": [
           {
             "denom": "uom",
-            "amount": " 888888000000 "
+            "amount": "888888000000 "
           }
         ],
         "burn_vote_quorum": false,
