@@ -79,6 +79,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
+	ibchooks "github.com/neutron-org/neutron/x/ibc-hooks"
 	ibcratelimit "github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit"
 	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
@@ -145,6 +146,7 @@ type App struct {
 	ICAControllerKeeper     icacontrollerkeeper.Keeper
 	ICAHostKeeper           icahostkeeper.Keeper
 	TransferKeeper          ibctransferkeeper.Keeper
+	HooksICS4Wrapper        ibchooks.ICS4Middleware
 	RateLimitingICS4Wrapper *ibcratelimit.ICS4Wrapper
 
 	// Scoped IBC
