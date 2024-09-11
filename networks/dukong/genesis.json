@@ -1,7 +1,7 @@
 {
   "app_name": "mantrachaind",
   "app_version": "v1.0.0-alpha.1",
-  "genesis_time": "2024-09-12T08:00:00Z",
+  "genesis_time": "2024-09-11T14:00:00Z",
   "chain_id": "mantra-dukong-1",
   "initial_height": 1,
   "app_hash": null,
