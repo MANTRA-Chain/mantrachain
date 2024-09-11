@@ -79,6 +79,7 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
+	ibcratelimit "github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit"
 	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
@@ -138,12 +139,13 @@ type App struct {
 	MarketMapKeeper *marketmapkeeper.Keeper
 
 	// IBC
-	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	CapabilityKeeper    *capabilitykeeper.Keeper
-	IBCFeeKeeper        ibcfeekeeper.Keeper
-	ICAControllerKeeper icacontrollerkeeper.Keeper
-	ICAHostKeeper       icahostkeeper.Keeper
-	TransferKeeper      ibctransferkeeper.Keeper
+	IBCKeeper               *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	CapabilityKeeper        *capabilitykeeper.Keeper
+	IBCFeeKeeper            ibcfeekeeper.Keeper
+	ICAControllerKeeper     icacontrollerkeeper.Keeper
+	ICAHostKeeper           icahostkeeper.Keeper
+	TransferKeeper          ibctransferkeeper.Keeper
+	RateLimitingICS4Wrapper *ibcratelimit.ICS4Wrapper
 
 	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
@@ -305,7 +307,6 @@ func New(
 	}
 
 	app.registerIBCRateLimit()
-
 
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
