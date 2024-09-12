@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 
 	math "cosmossdk.io/math"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
