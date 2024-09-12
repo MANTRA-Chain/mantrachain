@@ -1372,18 +1372,18 @@
       "sequences": []
     }
   },
- "tokenfactory": {
-      "params": {
-        "denom_creation_fee": [
-          {
-            "denom": "uom",
-            "amount": "88888888888"
-          }
-        ],
-        "fee_collector_address": "mantra1q8mgs55hfgkm7d5rret439997x87s2ekwcxlv0"
-      },
-      "factory_denoms": []
+  "tokenfactory": {
+    "params": {
+      "denom_creation_fee": [
+        {
+          "denom": "uom",
+          "amount": "88888888888"
+        }
+      ],
+      "fee_collector_address": "mantra1q8mgs55hfgkm7d5rret439997x87s2ekwcxlv0"
     },
+    "factory_denoms": []
+  },
   "consensus": {
     "params": {
       "block": {
