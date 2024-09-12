@@ -342,8 +342,10 @@ var (
 				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
 			{
-				Name:   ratelimittypes.ModuleName,
-				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{}),
+				Name: ratelimittypes.ModuleName,
+				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{
+					Authority: govtypes.ModuleName,
+				}),
 			},
 			//			{
 			//				Name: tokenfactorytypes.ModuleName,
