@@ -44,6 +44,7 @@ require (
 	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/cosmos-sdk v0.50.10-0.20240906103735-f516a1eb7c3c
 	github.com/cosmos/gogoproto v1.7.0
+	github.com/cosmos/ibc-apps/modules/rate-limiting/v8 v8.0.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.5.0
 	github.com/gorilla/mux v1.8.1
