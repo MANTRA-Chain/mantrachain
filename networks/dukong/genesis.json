@@ -1372,6 +1372,18 @@
       "sequences": []
     }
   },
+  "tokenfactory": {
+    "params": {
+      "denom_creation_fee": [
+        {
+          "denom": "uom",
+          "amount": "88888888888"
+        }
+      ],
+      "denom_creation_gas_consume": "1000000"
+    },
+    "factory_denoms": []
+  },
   "consensus": {
     "params": {
       "block": {
