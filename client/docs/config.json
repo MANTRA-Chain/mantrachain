@@ -7,6 +7,14 @@
   },
   "apis": [
     {
+      "url": "./tmp-swagger-gen/ratelimit/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "RateLimitParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/osmosis/tokenfactory/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {

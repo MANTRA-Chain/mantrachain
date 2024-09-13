@@ -12,6 +12,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v8"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
@@ -105,7 +106,7 @@ func (app *App) registerIBCModules(appOpts servertypes.AppOptions) error {
 		app.appCodec,
 		app.GetKey(ibctransfertypes.StoreKey),
 		app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCFeeKeeper,
+		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
@@ -143,7 +144,10 @@ func (app *App) registerIBCModules(appOpts servertypes.AppOptions) error {
 	app.GovKeeper.SetLegacyRouter(govRouter)
 
 	// Create IBC modules with ibcfee middleware
+	// channel.RecvPacket -> ratelimit.OnRecvPacket -> ibcfee.OnRecvPacket -> transfer.OnRecvPacket
 	transferIBCModule := ibcfee.NewIBCMiddleware(ibctransfer.NewIBCModule(app.TransferKeeper), app.IBCFeeKeeper)
+	transferStack := ratelimit.NewIBCMiddleware(*app.RateLimitKeeper, transferIBCModule)
+	app.TransferKeeper.WithICS4Wrapper(transferStack)
 
 	// integration point for custom authentication modules
 	var noAuthzModule porttypes.IBCModule
@@ -156,7 +160,7 @@ func (app *App) registerIBCModules(appOpts servertypes.AppOptions) error {
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter().
-		AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
+		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerIBCModule).
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule)
 
