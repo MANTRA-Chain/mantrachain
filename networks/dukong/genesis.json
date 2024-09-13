@@ -6,6 +6,18 @@
   "initial_height": 1,
   "app_hash": null,
   "app_state": {
+    "tokenfactory": {
+      "params": {
+        "denom_creation_fee": [
+          {
+            "denom": "uom",
+            "amount": "88888888888"
+          }
+        ],
+        "fee_collector_address": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
+      },
+      "factory_denoms": []
+    },
     "06-solomachine": null,
     "07-tendermint": null,
     "auth": {
@@ -1408,17 +1420,5 @@
         "vote_extensions_enable_height": "1"
       }
     }
-  },
-  "tokenfactory": {
-    "params": {
-      "denom_creation_fee": [
-        {
-          "denom": "uom",
-          "amount": "88888888888"
-        }
-      ],
-      "fee_collector_address": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
-    },
-    "factory_denoms": []
   }
 }
