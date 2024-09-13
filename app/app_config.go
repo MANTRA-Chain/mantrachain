@@ -50,6 +50,8 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ratelimitmodulev1 "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/api/ratelimit/module/v1"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
@@ -104,7 +106,10 @@ var (
 		oracletypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -134,7 +139,10 @@ var (
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -158,7 +166,10 @@ var (
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -337,6 +348,18 @@ var (
 					KnownModules: knownModules(),
 				}),
 			},
+			{
+				Name: ratelimittypes.ModuleName,
+				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{
+					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+				}),
+			},
+			//			{
+			//				Name: tokenfactorytypes.ModuleName,
+			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
+			//					KnownModules: knownModules(),
+			//				}),
+			//			}
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
 	})

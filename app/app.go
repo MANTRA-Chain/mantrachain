@@ -72,6 +72,8 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	_ "github.com/cosmos/ibc-apps/modules/rate-limiting/v8" // import for side-effects
+	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/keeper"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -153,6 +155,9 @@ type App struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
+
+	// IBC Rate Limit
+	RateLimitKeeper *ratelimitkeeper.Keeper
 
 	// CosmWasm
 	WasmKeeper       wasmkeeper.Keeper
@@ -277,6 +282,9 @@ func New(
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
 		&app.TokenFactoryKeeper,
+
+		// IBCRateLimitKeeper
+		&app.RateLimitKeeper,
 	); err != nil {
 		panic(err)
 	}
