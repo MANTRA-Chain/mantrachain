@@ -344,7 +344,7 @@ var (
 			{
 				Name: ratelimittypes.ModuleName,
 				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{
-					Authority: govtypes.ModuleName,
+					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
 				}),
 			},
 			//			{
