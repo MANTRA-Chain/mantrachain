@@ -4,9 +4,6 @@ info:
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
-<<<<<<< HEAD
-  "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata":
-=======
   /Stride-Labs/ibc-rate-limiting/ratelimit/blacklisted_denoms:
     get:
       summary: Queries all blacklisted denoms
@@ -568,68 +565,7 @@ paths:
                           format: byte
       tags:
         - Query
-  /osmosis/tokenfactory/v1beta1/all_before_send_hooks:
-    get:
-      summary: >-
-        AllBeforeSendHooksAddresses defines a gRPC query method for
-
-        getting all addresses with before send hook registered.
-
-        The response returns two arrays, an array with a list of denom and an array
-
-        of before send hook addresses. The idx of denom corresponds to before send
-
-        hook addresse's idx.
-      operationId: AllBeforeSendHooksAddresses
-      responses:
-        "200":
-          description: A successful response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  denoms:
-                    type: array
-                    items:
-                      type: string
-                  before_send_hook_addresses:
-                    type: array
-                    items:
-                      type: string
-                description: >-
-                  QueryAllBeforeSendHooksAddressesResponse defines the response
-                  structure for
-
-                  the AllBeforeSendHooksAddresses gRPC query.
-        default:
-          description: An unexpected error response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  code:
-                    type: integer
-                    format: int32
-                  message:
-                    type: string
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type_url:
-                          type: string
-                        value:
-                          type: string
-                          format: byte
-      tags:
-        - Query
-  "/osmosis/tokenfactory/v1beta1/denoms/{denom}/authority_metadata":
->>>>>>> origin/main
+  "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata":
     get:
       summary: |-
         DenomAuthorityMetadata defines a gRPC query method for fetching
@@ -42239,9 +42175,6 @@ components:
                     "@type": "type.googleapis.com/google.protobuf.Duration",
                     "value": "1.212s"
                   }
-<<<<<<< HEAD
-    osmosis.tokenfactory.Params:
-=======
     ratelimit.v1.Flow:
       type: object
       properties:
@@ -42694,21 +42627,7 @@ components:
 
         NOTE: The amount field is an Int which implements the custom method
         signatures required by gogoproto.
-    osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
-      type: object
-      properties:
-        admin:
-          type: string
-          title: Can be empty for no admin, or a valid osmosis address
-      description: >-
-        DenomAuthorityMetadata specifies metadata for addresses that have
-        specific
-
-        capabilities over a token factory denom. Right now there is only one Admin
-
-        permission, but is planned to be extended to the future.
-    osmosis.tokenfactory.v1beta1.Params:
->>>>>>> origin/main
+    osmosis.tokenfactory.Params:
       type: object
       properties:
         denom_creation_fee:
