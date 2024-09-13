@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	math "cosmossdk.io/math"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
@@ -26,13 +25,6 @@ var FeeDenom = "uom"
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 	genesisState := module.BasicManager{}.DefaultGenesis(cdc)
-
-	tokenFactoryGenesis := tokenfactorytypes.DefaultGenesis()
-	tokenFactoryGenesisStateBytes, err := json.Marshal(tokenFactoryGenesis)
-	if err != nil {
-		panic("cannot marshal tokenfactory genesis state for tests")
-	}
-	genesisState[tokenfactorytypes.ModuleName] = tokenFactoryGenesisStateBytes
 
 	oracleGenesis := oracletypes.DefaultGenesisState()
 	oracleGenesisStateBytes, err := json.Marshal(oracleGenesis)
