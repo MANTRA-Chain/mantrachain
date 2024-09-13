@@ -305,3 +305,5 @@ require (
 	pluginrpc.com/pluginrpc v0.3.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
+
+replace github.com/skip-mev/feemarket => github.com/faddat/feemarket v1.1.2-0.20240913065148-b6a541c9c44e
