@@ -33,6 +33,8 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -55,7 +57,6 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
 	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
 	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
@@ -342,6 +343,12 @@ var (
 				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
 			{
+				Name: tokenfactorytypes.ModuleName,
+				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
+					KnownModules: knownModules(),
+				}),
+			},
+			{
 				Name: ratelimittypes.ModuleName,
 				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{
 					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
@@ -358,9 +365,6 @@ var (
 	})
 )
 
-// knownModules returns a list of module names that are known to the app.  It is not being used right now, but it is being preserved for future use.
-//
-//nolint:unused
 func knownModules() []string {
 	knownModules := make([]string, 0, len(moduleAccPerms))
 	for _, moduleAcc := range moduleAccPerms {
