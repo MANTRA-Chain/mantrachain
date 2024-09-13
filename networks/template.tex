@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\setmainfont{Arial}
+
+% Set custom colors (replace with your branding colors)
+\definecolor{primary}{HTML}{0B3D91}
+\definecolor{secondary}{HTML}{00A3E0}
+
+% Header and Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\includegraphics[height=1.2cm]{company_logo.png}}
+\rhead{\textcolor{secondary}{Genesis Report}}
+\cfoot{\thepage}
+
+% Title formatting
+\titleformat{\section}
+  {\color{primary}\normalfont\Large\bfseries}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\color{secondary}\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=secondary,
+}
+
+% Paragraph formatting
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{\textcolor{primary}{Genesis Report}}
+\author{\textcolor{secondary}{Mantrachain Team}}
+\date{\today}
+
+\begin{document}
+\maketitle
+$body$
+\end{document}
+
