@@ -1,6 +1,9 @@
 name: Generate Genesis PDF Report
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
