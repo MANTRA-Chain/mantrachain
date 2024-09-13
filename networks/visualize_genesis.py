@@ -71,7 +71,7 @@ def main():
     # Generate Markdown report with enhanced styling
     with open('report.md', 'w') as f:
         f.write('# Genesis Report\n\n')
-        f.write('![Company Logo](company_logo.png){ width=150px }\n\n')
+        f.write('![Company Logo](mantra.png){ width=150px }\n\n')
 
         f.write('## General Information\n')
         for key, value in general_info.items():
