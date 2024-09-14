@@ -33,11 +33,8 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	xfeemarketmodulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/xfeemarket/module/v1"
 	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
-	_ "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/module"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -105,7 +102,6 @@ var (
 		marketmaptypes.ModuleName,
 		// tokenfactory
 		tokenfactorytypes.ModuleName,
-		xfeemarkettypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
@@ -139,7 +135,6 @@ var (
 		marketmaptypes.ModuleName,
 		// tokenfactory
 		tokenfactorytypes.ModuleName,
-		xfeemarkettypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
@@ -167,7 +162,6 @@ var (
 		marketmaptypes.ModuleName,
 		// tokenfactory
 		tokenfactorytypes.ModuleName,
-		xfeemarkettypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
@@ -347,10 +341,6 @@ var (
 				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
 					KnownModules: knownModules(),
 				}),
-			},
-			{
-				Name:   xfeemarkettypes.ModuleName,
-				Config: appconfig.WrapAny(&xfeemarketmodulev1.Module{}),
 			},
 			{
 				Name: ratelimittypes.ModuleName,

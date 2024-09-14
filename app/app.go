@@ -24,7 +24,6 @@ import (
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
 	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
-	xfeemarketkeeper "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -138,7 +137,6 @@ type App struct {
 
 	// FeeMarket
 	FeeMarketKeeper  feemarketkeeper.Keeper
-	XFeeMarketKeeper xfeemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -282,8 +280,7 @@ func New(
 
 		// Feemarket Keepers
 		&app.FeeMarketKeeper,
-		&app.XFeeMarketKeeper,
-
+=
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
@@ -330,7 +327,7 @@ func New(
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
 	// to support multiple denom as fee token
-	app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
+	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
