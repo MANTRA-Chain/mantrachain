@@ -33,7 +33,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -73,6 +72,8 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	_ "github.com/cosmos/ibc-apps/modules/rate-limiting/v8" // import for side-effects
+	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/keeper"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -157,6 +158,9 @@ type App struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
+
+	// IBC Rate Limit
+	RateLimitKeeper *ratelimitkeeper.Keeper
 
 	// CosmWasm
 	WasmKeeper       wasmkeeper.Keeper
@@ -286,6 +290,9 @@ func New(
 
 		// Mantrachain Keepers
 		&app.TokenFactoryKeeper,
+
+		// IBCRateLimitKeeper
+		&app.RateLimitKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -430,9 +437,9 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
 	// register swagger API in app.go so that other applications can override easily
-	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
-		panic(err)
-	}
+	// if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
+	// 	panic(err)
+	// }
 
 	// register app's OpenAPI routes.
 	if apiConfig.Swagger {
@@ -448,7 +455,7 @@ func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
 	}
 
 	staticServer := http.FileServer(statikFS)
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
+	// rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
 	rtr.PathPrefix("/swagger/").Handler(staticServer)
 }
 
