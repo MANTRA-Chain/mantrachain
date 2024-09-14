@@ -136,7 +136,7 @@ type App struct {
 	CircuitBreakerKeeper circuitkeeper.Keeper
 
 	// FeeMarket
-	FeeMarketKeeper  feemarketkeeper.Keeper
+	FeeMarketKeeper feemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -280,7 +280,7 @@ func New(
 
 		// Feemarket Keepers
 		&app.FeeMarketKeeper,
-=
+
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
