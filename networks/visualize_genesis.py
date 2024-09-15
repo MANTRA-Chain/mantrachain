@@ -2,6 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 from datetime import datetime
+import matplotlib.ticker as mtick
 
 def main():
     # Define the path to the genesis file
@@ -61,24 +62,13 @@ def main():
                     'Self-Delegation': msg['value']['amount'] + ' ' + msg['value']['denom'],
                 })
 
-    # Recursively extract all nested parameters
-    def extract_params(data, depth=0):
-        result = ""
-        indent = "  " * depth
-        if isinstance(data, dict):
-            for key, value in data.items():
-                if isinstance(value, (dict, list)):
-                    result += f"{indent}- **{key.replace('_', ' ').title()}**:\n"
-                    result += extract_params(value, depth + 1)
-                else:
-                    result += f"{indent}- **{key.replace('_', ' ').title()}**: {value}\n"
-        elif isinstance(data, list):
-            for index, item in enumerate(data):
-                result += f"{indent}- **Item {index + 1}**:\n"
-                result += extract_params(item, depth + 1)
-        return result
+    # Extract governance parameters
+    gov_params = genesis['app_state']['gov']['params']
 
-    # Generate Markdown report with enhanced styling and all parameters
+    # Extract market map
+    market_map = genesis['app_state']['marketmap']['market_map']['markets']
+
+    # Generate Markdown report with enhanced styling
     with open('report.md', 'w') as f:
         f.write('# Genesis Report\n\n')
         f.write('![Company Logo](mantra.png){ width=150px }\n\n')
@@ -107,18 +97,42 @@ def main():
             f.write(f'- Validator Address: `{val["Validator Address"]}`\n')
             f.write(f'- Self-Delegation: {int(val["Self-Delegation"].split()[0]):,} {val["Self-Delegation"].split()[1]}\n\n')
 
-        f.write('## Full Application State and Parameters\n')
-        f.write(extract_params(genesis['app_state']))
+        f.write('## Governance Parameters\n')
+        for key, value in gov_params.items():
+            # Format durations
+            if 'period' in key or 'duration' in key:
+                value = format_duration(value)
+            # Format percentages
+            elif 'threshold' in key or 'quorum' in key or 'ratio' in key:
+                value = f"{float(value)*100:.2f}%"
+            f.write(f'- **{key.replace("_", " ").title()}**: {value}\n')
         f.write('\n')
 
-        f.write('## Full Consensus Parameters\n')
-        f.write(extract_params(genesis['consensus']['params']))
-        f.write('\n')
+        f.write('## Market Map\n')
+        for market, data in market_map.items():
+            f.write(f'### {market}\n')
+            f.write(f'- Decimals: {data["ticker"]["decimals"]}\n')
+            f.write(f'- Enabled: {"Yes" if data["ticker"]["enabled"] else "No"}\n')
+            f.write('- Providers:\n')
+            for provider in data.get('provider_configs', []):
+                f.write(f'  - **{provider["name"]}**: {provider["off_chain_ticker"]}\n')
+            f.write('\n')
 
         f.write('---\n')
         f.write(f'Report generated on {datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")}\n')
 
     print("Report generated: report.md")
 
+def format_duration(duration_str):
+    # Assuming duration_str is in the format '3600s'
+    if duration_str.endswith('s'):
+        total_seconds = int(duration_str[:-1])
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        return f"{hours}h {minutes}m {seconds}s"
+    return duration_str
+
 if __name__ == '__main__':
     main()
+
