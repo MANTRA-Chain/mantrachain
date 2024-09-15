@@ -42,6 +42,7 @@ linters:
     - tenv
     - testableexamples
     - testifylint
+    - thelper
     - tparallel
     - typecheck
     - unconvert
