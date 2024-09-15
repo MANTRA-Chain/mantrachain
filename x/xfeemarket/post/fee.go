@@ -148,7 +148,7 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 	var events sdk.Events
 
 	// burn the fees if it is the default fee denom
-	if !fee.IsNil() && fee.Denom == defaultFeeDenom {
+	if !fee.IsNil() && !fee.IsZero() && fee.Denom == defaultFeeDenom {
 		err := BurnCoins(dfd.bankKeeper, ctx, sdk.NewCoins(fee))
 		if err != nil {
 			return err
@@ -160,8 +160,8 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 		))
 	}
 
-	// refund the tip if it is not nil
-	if !tip.IsNil() {
+	// refund the tip if it is not nil and non zero
+	if !tip.IsNil() && !tip.IsZero() {
 		err := RefundTip(dfd.bankKeeper, ctx, feePayer, sdk.NewCoins(tip))
 		if err != nil {
 			return err
@@ -188,8 +188,8 @@ func BurnCoins(bankKeeper BankKeeper, ctx sdk.Context, coins sdk.Coins) error {
 }
 
 // RefundTip sends a tip to the txfee payer.
-func RefundTip(bankKeeper BankKeeper, ctx sdk.Context, proposer sdk.AccAddress, coins sdk.Coins) error {
-	err := bankKeeper.SendCoinsFromModuleToAccount(ctx, feemarkettypes.FeeCollectorName, proposer, coins)
+func RefundTip(bankKeeper BankKeeper, ctx sdk.Context, feePayer sdk.AccAddress, coins sdk.Coins) error {
+	err := bankKeeper.SendCoinsFromModuleToAccount(ctx, feemarkettypes.FeeCollectorName, feePayer, coins)
 	if err != nil {
 		return err
 	}

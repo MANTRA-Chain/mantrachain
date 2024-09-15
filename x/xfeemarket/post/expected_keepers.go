@@ -1,9 +1,8 @@
 package post
 
 import (
-	"context"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
@@ -11,8 +10,7 @@ import (
 //
 //go:generate mockery --name BankKeeper --filename mock_bank_keeper.go
 type BankKeeper interface {
-	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
+	bankkeeper.Keeper
 }
 
 // FeeMarketKeeper defines the expected feemarket keeper.
