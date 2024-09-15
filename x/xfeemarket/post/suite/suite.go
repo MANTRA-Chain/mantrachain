@@ -104,6 +104,7 @@ func (s *TestSuite) SetAccountBalances(accounts []TestAccountBalance) {
 
 // SetupTestSuite setups a new test, with new app, context, and anteHandler.
 func SetupTestSuite(t *testing.T, mock bool) *TestSuite {
+	t.Helper()
 	s := &TestSuite{}
 
 	s.EncCfg = MakeTestEncodingConfig()
@@ -199,6 +200,7 @@ type TestCaseArgs struct {
 // DeliverMsgs constructs a tx and runs it through the ante handler. This is used to set the context for a test case, for
 // example to test for replay protection.
 func (s *TestSuite) DeliverMsgs(t *testing.T, privs []cryptotypes.PrivKey, msgs []sdk.Msg, feeAmount sdk.Coins, gasLimit uint64, accNums, accSeqs []uint64, chainID string, simulate bool) (sdk.Context, error) {
+	t.Helper()
 	require.NoError(t, s.TxBuilder.SetMsgs(msgs...))
 	s.TxBuilder.SetFeeAmount(feeAmount)
 	s.TxBuilder.SetGasLimit(gasLimit)
@@ -209,6 +211,7 @@ func (s *TestSuite) DeliverMsgs(t *testing.T, privs []cryptotypes.PrivKey, msgs 
 }
 
 func (s *TestSuite) RunTestCase(t *testing.T, tc TestCase, args TestCaseArgs) {
+	t.Helper()
 	require.NoError(t, s.TxBuilder.SetMsgs(args.Msgs...))
 	s.TxBuilder.SetFeeAmount(args.FeeAmount)
 	s.TxBuilder.SetGasLimit(args.GasLimit)
