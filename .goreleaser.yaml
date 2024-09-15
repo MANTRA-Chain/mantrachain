@@ -80,6 +80,7 @@ builds:
     binary: mantrachaind
     hooks:
       pre:
+        - apk add --update linux-headers
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muslc.x86_64.a
         # verify checksum
         - sha256sum /lib/libwasmvm_muslc.x86_64.a | grep $(cat /tmp/checksums.txt | grep libwasmvm_muslc.x86_64 | cut -d ' ' -f 1) || exit 1
@@ -87,8 +88,6 @@ builds:
       - linux
     goarch:
       - amd64
-    env:
-      - CC=x86_64-linux-gnu-gcc
     flags:
       - -mod=readonly
       - -trimpath
@@ -113,6 +112,7 @@ builds:
     binary: mantrachaind
     hooks:
       pre:
+        - apk add --update linux-headers
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /lib/libwasmvm_muslc.aarch64.a
         # verify checksum
         - sha256sum /lib/libwasmvm_muslc.aarch64.a | grep $(cat /tmp/checksums.txt | grep libwasmvm_muslc.aarch64 | cut -d ' ' -f 1) || exit 1
@@ -120,8 +120,6 @@ builds:
       - linux
     goarch:
       - arm64
-    env:
-      - CC=aarch64-linux-gnu-gcc
     flags:
       - -mod=readonly
       - -trimpath
@@ -141,17 +139,9 @@ builds:
       - muslc
       - osusergo
 
-universal_binaries:
-  - id: mantrachaind-darwin-universal
-    ids:
-      - mantrachaind-darwin-amd64
-      - mantrachaind-darwin-arm64
-    replace: false
-
 archives:
   - id: zipped
     builds:
-      # - mantrachaind-darwin-universal
       - mantrachaind-linux-amd64
       - mantrachaind-linux-arm64
       - mantrachaind-darwin-amd64
@@ -162,7 +152,6 @@ archives:
       - none*
   - id: binaries
     builds:
-      # - mantrachaind-darwin-universal
       - mantrachaind-linux-amd64
       - mantrachaind-linux-arm64
       - mantrachaind-darwin-amd64
@@ -206,9 +195,6 @@ release:
   name_template: "Mantrachain v{{.Version}}"
   mode: replace
   draft: true
-
-snapshot:
-  name_template: SNAPSHOT-{{ .Commit }}
 
 # Docs: https://goreleaser.com/customization/announce/
 # We could automatically announce the release in
