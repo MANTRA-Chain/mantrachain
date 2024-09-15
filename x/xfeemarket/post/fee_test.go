@@ -128,6 +128,7 @@ func TestRefund(t *testing.T) {
 	}
 }
 
+//nolint:maintidx
 func TestPostHandleMock(t *testing.T) {
 	// Same data for every test case
 	const (
@@ -421,6 +422,7 @@ func TestPostHandleMock(t *testing.T) {
 	}
 }
 
+//nolint:maintidx
 func TestPostHandle(t *testing.T) {
 	// Same data for every test case
 	const (

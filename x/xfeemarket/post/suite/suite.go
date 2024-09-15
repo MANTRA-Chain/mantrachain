@@ -4,10 +4,9 @@ import (
 	"testing"
 
 	storetypes "cosmossdk.io/store/types"
-
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
 	txsigning "cosmossdk.io/x/tx/signing"
+	feemarketpost "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post"
+	xfeemarketpostmocks "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post/mocks"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -24,18 +23,15 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/gogoproto/proto"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
-
-	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
-
-	feemarketpost "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post"
-	xfeemarketpostmocks "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post/mocks"
 	testkeeper "github.com/skip-mev/feemarket/testutils/keeper"
 	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
 	"github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
+	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
 
 type TestSuite struct {
@@ -255,7 +251,6 @@ func (s *TestSuite) RunTestCase(t *testing.T, tc TestCase, args TestCaseArgs) {
 			consumedGas := newCtx.GasMeter().GasConsumed()
 			require.Equal(t, tc.ExpectConsumedGas, consumedGas)
 		}
-
 	} else {
 		switch {
 		case txErr != nil:
