@@ -3,7 +3,6 @@
   github-organization: MANTRA-Chain
   github-repo: mantrachain
   dockerfile: cosmos
-  # TODO: should fix in heighliner cosmos/dockerfile once heighliner v1.6.4 is released
   build-target: |
     LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
   binaries:

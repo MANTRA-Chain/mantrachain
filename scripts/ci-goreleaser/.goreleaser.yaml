@@ -1,0 +1,119 @@
+---
+version: 2
+project_name: mantrachaind
+
+builds:
+  - id: mantrachaind-darwin-amd64
+    main: ./scripts/ci-goreleaser/goreleaser.go
+    binary: mantrachaind
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    hooks:
+      post:
+        - ./scripts/ci-goreleaser/.goreleaser_hook.sh {{ .Arch }} {{ .Os }} {{ .ProjectName }}
+
+  - id: mantrachaind-darwin-arm64
+    main: ./scripts/ci-goreleaser/goreleaser.go
+    binary: mantrachaind
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    hooks:
+      post:
+        - ./scripts/ci-goreleaser/.goreleaser_hook.sh {{ .Arch }} {{ .Os }} {{ .ProjectName }}
+
+  - id: mantrachaind-linux-amd64
+    main: ./scripts/ci-goreleaser/goreleaser.go
+    binary: mantrachaind
+    goos:
+      - linux
+    goarch:
+      - amd64
+    hooks:
+      post:
+        - ./scripts/ci-goreleaser/.goreleaser_hook.sh {{ .Arch }} {{ .Os }} {{ .ProjectName }}
+
+  - id: mantrachaind-linux-arm64
+    main: ./scripts/ci-goreleaser/goreleaser.go
+    binary: mantrachaind
+    goos:
+      - linux
+    goarch:
+      - arm64
+    hooks:
+      post:
+        - ./scripts/ci-goreleaser/.goreleaser_hook.sh {{ .Arch }} {{ .Os }} {{ .ProjectName }}
+
+archives:
+  - id: zipped
+    builds:
+      - mantrachaind-linux-amd64
+      - mantrachaind-linux-arm64
+      - mantrachaind-darwin-amd64
+      - mantrachaind-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+    files:
+      - none*
+  - id: binaries
+    builds:
+      - mantrachaind-linux-amd64
+      - mantrachaind-linux-arm64
+      - mantrachaind-darwin-amd64
+      - mantrachaind-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: binary
+    files:
+      - none*
+
+checksum:
+  name_template: "sha256sum.txt"
+  algorithm: sha256
+
+# Docs: https://goreleaser.com/customization/changelog/
+changelog:
+  disable: true
+
+# Docs: https://goreleaser.com/customization/release/
+release:
+  github:
+    owner: "{{ .Env.REPO_OWNER }}"
+    name: "{{ .Env.REPO_NAME }}"
+  replace_existing_draft: true
+  header: |
+    < DESCRIPTION OF RELEASE >
+
+    ## Changelog
+
+    See the full changelog [here](https://github.com/{{ .Env.REPO_OWNER }}/{{ .Env.REPO_NAME }}/blob/v{{ .Version }}/CHANGELOG.md)
+
+    #### 🔨 Build from source
+
+    If you prefer to build from source, you can use the following commands:
+
+    ````bash
+    git clone https://github.com/{{ .Env.REPO_OWNER }}/{{ .Env.REPO_NAME }}
+    cd mantrachain && git checkout v{{ .Version }}
+    make install
+    ````
+
+  name_template: "Mantrachain v{{.Version}}"
+  mode: replace
+  draft: true
+
+# Docs: https://goreleaser.com/customization/announce/
+# We could automatically announce the release in
+# - discord
+# - slack
+# - twitter
+# - webhooks
+# - telegram
+# - reddit
+#
+# announce:
+  # discord:
+  #   enabled: true
+  #   message_template: 'New {{.Tag}} is out!'
