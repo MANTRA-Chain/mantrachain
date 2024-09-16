@@ -44,7 +44,7 @@ jobs:
         pandoc report.md -o report.pdf --from markdown --template=template.tex --pdf-engine=xelatex
 
     - name: Upload PDF Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Genesis Report
         path: networks/report.pdf
