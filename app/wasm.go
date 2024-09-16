@@ -116,7 +116,6 @@ func (app *App) registerWasmModules(
 func (app *App) setPostHandler() error {
 	postHandler, err := NewPostHandler(
 		PostHandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
 			BankKeeper:      app.BankKeeper,
 			FeeMarketKeeper: &app.FeeMarketKeeper,
 		},

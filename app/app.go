@@ -134,7 +134,9 @@ type App struct {
 	GroupKeeper          groupkeeper.Keeper
 	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
-	FeeMarketKeeper      feemarketkeeper.Keeper
+
+	// FeeMarket
+	FeeMarketKeeper feemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -275,11 +277,15 @@ func New(
 		&app.NFTKeeper,
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
+
+		// Feemarket Keepers
 		&app.FeeMarketKeeper,
 
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
+
+		// Mantrachain Keepers
 		&app.TokenFactoryKeeper,
 
 		// IBCRateLimitKeeper
@@ -319,6 +325,9 @@ func New(
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+
+	// to support multiple denom as fee token
+	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
