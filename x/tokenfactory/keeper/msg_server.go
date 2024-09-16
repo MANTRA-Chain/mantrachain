@@ -230,10 +230,6 @@ func (server msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSe
 }
 
 func (server msgServer) SetBeforeSendHook(goCtx context.Context, msg *types.MsgSetBeforeSendHook) (*types.MsgSetBeforeSendHookResponse, error) {
-	if err := msg.Validate(); err != nil {
-		return nil, errors.Wrap(err, "failed to validate MsgSetBeforeSendHook")
-	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Denom)
@@ -243,15 +239,6 @@ func (server msgServer) SetBeforeSendHook(goCtx context.Context, msg *types.MsgS
 
 	if msg.Sender != authorityMetadata.GetAdmin() {
 		return nil, types.ErrUnauthorized
-	}
-
-	// If we are not removing a hook make sure it has been already whitelisted
-	if msg.ContractAddr != "" {
-		// msg.ContractAddr has already been validated
-		cwAddr := sdk.MustAccAddressFromBech32(msg.ContractAddr)
-		if err := server.Keeper.AssertIsHookWhitelisted(ctx, msg.Denom, cwAddr); err != nil {
-			return nil, err
-		}
 	}
 
 	err = server.Keeper.setBeforeSendHook(ctx, msg.Denom, msg.ContractAddr)
