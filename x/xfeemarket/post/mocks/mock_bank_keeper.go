@@ -1233,6 +1233,8 @@ func (_m *BankKeeper) SupplyOf(_a0 context.Context, _a1 *types.QuerySupplyOfRequ
 	return r0, r1
 }
 
+/*
+
 // SupplyOfWithoutOffset provides a mock function with given fields: _a0, _a1
 func (_m *BankKeeper) SupplyOfWithoutOffset(_a0 context.Context, _a1 *types.QuerySupplyOfWithoutOffsetRequest) (*types.QuerySupplyOfWithoutOffsetResponse, error) {
 	ret := _m.Called(_a0, _a1)
@@ -1262,6 +1264,7 @@ func (_m *BankKeeper) SupplyOfWithoutOffset(_a0 context.Context, _a1 *types.Quer
 
 	return r0, r1
 }
+*/
 
 // TotalSupply provides a mock function with given fields: _a0, _a1
 func (_m *BankKeeper) TotalSupply(_a0 context.Context, _a1 *types.QueryTotalSupplyRequest) (*types.QueryTotalSupplyResponse, error) {
