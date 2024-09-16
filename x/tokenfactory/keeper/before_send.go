@@ -61,7 +61,7 @@ func (k Keeper) setBeforeSendHook(ctx sdk.Context, denom string, cosmwasmAddress
 	return nil
 }
 
-func (k Keeper) GetBeforeSendHook(ctx sdk.Context, denom string) string {
+func (k Keeper) GetBeforeSendHook(ctx context.Context, denom string) string {
 	store := k.GetDenomPrefixStore(ctx, denom)
 
 	bz := store.Get([]byte(types.BeforeSendHookAddressPrefixKey))
