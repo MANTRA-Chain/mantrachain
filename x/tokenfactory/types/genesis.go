@@ -44,10 +44,6 @@ func validateDenom(denom GenesisDenom, seenDenoms map[string]bool) error {
 		if _, err := sdk.AccAddressFromBech32(denom.AuthorityMetadata.Admin); err != nil {
 			return errorsmod.Wrapf(ErrInvalidAuthorityMetadata, "invalid admin address: %s", err)
 		}
-	case denom.HookContractAddress != "":
-		if _, err := sdk.AccAddressFromBech32(denom.HookContractAddress); err != nil {
-			return errorsmod.Wrapf(ErrInvalidHookContractAddress, "invalid hook contract address: %s", err)
-		}
 	}
 
 	seenDenoms[denom.GetDenom()] = true

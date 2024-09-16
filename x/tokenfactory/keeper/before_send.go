@@ -3,15 +3,18 @@ package keeper
 import (
 	"context"
 	"encoding/json"
+	"strings"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	"github.com/osmosis-labs/osmosis/osmoutils"
 
 	errorsmod "cosmossdk.io/errors"
-	types2 "cosmossdk.io/store/types"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
-	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "cosmossdk.io/store/types"
 )
 
-func (k Keeper) setBeforeSendHook(ctx sdk.Context, denom, contractAddr string) error {
+func (k Keeper) setBeforeSendHook(ctx sdk.Context, denom string, cosmwasmAddress string) error {
 	// verify that denom is an x/tokenfactory denom
 	_, _, err := types.DeconstructDenom(denom)
 	if err != nil {
@@ -21,22 +24,44 @@ func (k Keeper) setBeforeSendHook(ctx sdk.Context, denom, contractAddr string) e
 	store := k.GetDenomPrefixStore(ctx, denom)
 
 	// delete the store for denom prefix store when cosmwasm address is nil
-	if contractAddr == "" {
+	if cosmwasmAddress == "" {
 		store.Delete([]byte(types.BeforeSendHookAddressPrefixKey))
 		return nil
+	} else {
+		// if a contract is being set, call the contract using cache context
+		// to test if the contract is an existing, valid contract.
+		cacheCtx, _ := ctx.CacheContext()
+
+		cwAddr, err := sdk.AccAddressFromBech32(cosmwasmAddress)
+		if err != nil {
+			return err
+		}
+
+		tempMsg := types.TrackBeforeSendSudoMsg{
+			TrackBeforeSend: types.TrackBeforeSendMsg{},
+		}
+		msgBz, err := json.Marshal(tempMsg)
+		if err != nil {
+			return err
+		}
+		_, err = k.contractKeeper.Sudo(cacheCtx, cwAddr, msgBz)
+
+		if err != nil && strings.Contains(err.Error(), "no such contract") {
+			return err
+		}
 	}
 
-	_, err = sdk.AccAddressFromBech32(contractAddr)
+	_, err = sdk.AccAddressFromBech32(cosmwasmAddress)
 	if err != nil {
 		return err
 	}
 
-	store.Set([]byte(types.BeforeSendHookAddressPrefixKey), []byte(contractAddr))
+	store.Set([]byte(types.BeforeSendHookAddressPrefixKey), []byte(cosmwasmAddress))
 
 	return nil
 }
 
-func (k Keeper) GetBeforeSendHook(ctx context.Context, denom string) string {
+func (k Keeper) GetBeforeSendHook(ctx sdk.Context, denom string) string {
 	store := k.GetDenomPrefixStore(ctx, denom)
 
 	bz := store.Get([]byte(types.BeforeSendHookAddressPrefixKey))
@@ -47,11 +72,22 @@ func (k Keeper) GetBeforeSendHook(ctx context.Context, denom string) string {
 	return string(bz)
 }
 
-func CWCoinFromSDKCoin(in sdk.Coin) wasmvmtypes.Coin {
-	return wasmvmtypes.Coin{
-		Denom:  in.GetDenom(),
-		Amount: in.Amount.String(),
+func (k Keeper) GetAllBeforeSendHooks(ctx sdk.Context) ([]string, []string) {
+	denomsList := []string{}
+	beforeSendHooksList := []string{}
+
+	iterator := k.GetAllDenomsIterator(ctx)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		denom := string(iterator.Value())
+
+		beforeSendHook := k.GetBeforeSendHook(ctx, denom)
+		if beforeSendHook != "" {
+			denomsList = append(denomsList, denom)
+			beforeSendHooksList = append(beforeSendHooksList, beforeSendHook)
+		}
 	}
+	return denomsList, beforeSendHooksList
 }
 
 // Hooks wrapper struct for bank keeper
@@ -64,27 +100,6 @@ var _ types.BankHooks = Hooks{}
 // Return the wrapper struct
 func (k Keeper) Hooks() Hooks {
 	return Hooks{k}
-}
-
-func (k Keeper) AssertIsHookWhitelisted(ctx sdk.Context, denom string, contractAddress sdk.AccAddress) error {
-	contractInfo := k.contractKeeper.GetContractInfo(ctx, contractAddress)
-	if contractInfo == nil {
-		return types.ErrBeforeSendHookNotWhitelisted.Wrapf("contract with address (%s) does not exist", contractAddress.String())
-	}
-	codeID := contractInfo.CodeID
-	whitelistedHooks := k.GetParams(ctx).WhitelistedHooks
-	denomCreator, _, err := types.DeconstructDenom(denom)
-	if err != nil {
-		return types.ErrBeforeSendHookNotWhitelisted.Wrapf("invalid denom: %s", denom)
-	}
-
-	for _, hook := range whitelistedHooks {
-		if hook.CodeID == codeID && hook.DenomCreator == denomCreator {
-			return nil
-		}
-	}
-
-	return types.ErrBeforeSendHookNotWhitelisted.Wrapf("no whitelist for contract with codeID (%d) and denomCreator (%s) ", codeID, denomCreator)
 }
 
 // TrackBeforeSend calls the before send listener contract suppresses any errors
@@ -101,35 +116,20 @@ func (h Hooks) BlockBeforeSend(ctx context.Context, from, to sdk.AccAddress, amo
 // If blockBeforeSend is true, sudoMsg wraps BlockBeforeSendMsg, otherwise sudoMsg wraps TrackBeforeSendMsg.
 // Note that we gas meter trackBeforeSend to prevent infinite contract calls.
 // CONTRACT: this should not be called in beginBlock or endBlock since out of gas will cause this method to panic.
-func (k Keeper) callBeforeSendListener(ctx context.Context, from, to sdk.AccAddress, amount sdk.Coins, blockBeforeSend bool) (err error) {
-	c := sdk.UnwrapSDKContext(ctx)
-
+func (k Keeper) callBeforeSendListener(context context.Context, from, to sdk.AccAddress, amount sdk.Coins, blockBeforeSend bool) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			err = types.ErrTrackBeforeSendOutOfGas
+			err = errorsmod.Wrapf(types.ErrBeforeSendHookOutOfGas, "%v", r)
 		}
 	}()
 
+	ctx := sdk.UnwrapSDKContext(context)
 	for _, coin := range amount {
-		contractAddr := k.GetBeforeSendHook(ctx, coin.Denom)
-		if contractAddr != "" {
-			cwAddr, err := sdk.AccAddressFromBech32(contractAddr)
+		cosmwasmAddress := k.GetBeforeSendHook(ctx, coin.Denom)
+		if cosmwasmAddress != "" {
+			cwAddr, err := sdk.AccAddressFromBech32(cosmwasmAddress)
 			if err != nil {
 				return err
-			}
-
-			// Do not invoke hook if denom is not whitelisted
-			// NOTE: hooks must already be whitelisted before they can be added, so under normal operation this check should never fail.
-			// It is here as an emergency override if we want to shutoff a hook. We do not return the error because once it is removed from the whitelist
-			// a hook should not be able to block a send.
-			if err := k.AssertIsHookWhitelisted(c, coin.Denom, cwAddr); err != nil {
-				c.Logger().Error(
-					"Skipped hook execution due to missing whitelist",
-					"err", err,
-					"denom", coin.Denom,
-					"contract", cwAddr.String(),
-				)
-				continue
 			}
 
 			var msgBz []byte
@@ -143,7 +143,7 @@ func (k Keeper) callBeforeSendListener(ctx context.Context, from, to sdk.AccAddr
 					BlockBeforeSend: types.BlockBeforeSendMsg{
 						From:   from.String(),
 						To:     to.String(),
-						Amount: CWCoinFromSDKCoin(coin),
+						Amount: osmoutils.CWCoinFromSDKCoin(coin),
 					},
 				}
 				msgBz, err = json.Marshal(msg)
@@ -152,7 +152,7 @@ func (k Keeper) callBeforeSendListener(ctx context.Context, from, to sdk.AccAddr
 					TrackBeforeSend: types.TrackBeforeSendMsg{
 						From:   from.String(),
 						To:     to.String(),
-						Amount: CWCoinFromSDKCoin(coin),
+						Amount: osmoutils.CWCoinFromSDKCoin(coin),
 					},
 				}
 				msgBz, err = json.Marshal(msg)
@@ -160,23 +160,23 @@ func (k Keeper) callBeforeSendListener(ctx context.Context, from, to sdk.AccAddr
 			if err != nil {
 				return err
 			}
+			em := sdk.NewEventManager()
 
-			// if its track before send, apply gas meter to prevent infinite loop
-			if blockBeforeSend {
-				_, err = k.contractKeeper.Sudo(c, cwAddr, msgBz)
-				if err != nil {
-					return errorsmod.Wrapf(err, "failed to call before send hook for denom %s", coin.Denom)
+			childCtx := ctx.WithGasMeter(storetypes.NewGasMeter(types.BeforeSendHookGasLimit))
+			_, err = k.contractKeeper.Sudo(childCtx.WithEventManager(em), cwAddr, msgBz)
+			if err != nil {
+				if strings.Contains(err.Error(), "no such contract") {
+					return nil
 				}
-			} else {
-				childCtx := c.WithGasMeter(types2.NewGasMeter(types.TrackBeforeSendGasLimit))
-				_, err = k.contractKeeper.Sudo(childCtx, cwAddr, msgBz)
-				if err != nil {
-					return errorsmod.Wrapf(err, "failed to call before send hook for denom %s", coin.Denom)
+				if k.isModuleAccount(ctx, from) {
+					return nil
 				}
 
-				// consume gas used for calling contract to the parent ctx
-				c.GasMeter().ConsumeGas(childCtx.GasMeter().GasConsumed(), "track before send gas")
+				return errorsmod.Wrapf(err, "failed to call before send hook for denom %s", coin.Denom)
 			}
+
+			// consume gas used for calling contract to the parent ctx
+			ctx.GasMeter().ConsumeGas(childCtx.GasMeter().GasConsumed(), "track before send gas")
 		}
 	}
 	return nil

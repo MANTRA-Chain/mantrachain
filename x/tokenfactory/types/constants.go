@@ -1,5 +1,6 @@
 package types
 
-const ConsensusVersion = 2
-
-var TrackBeforeSendGasLimit = uint64(100_000)
+var (
+	BeforeSendHookGasLimit  = uint64(500_000)
+	TrackBeforeSendGasLimit = uint64(100_000)
+)
