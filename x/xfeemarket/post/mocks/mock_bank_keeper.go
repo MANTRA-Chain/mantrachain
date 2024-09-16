@@ -1296,6 +1296,7 @@ func (_m *BankKeeper) TotalSupply(_a0 context.Context, _a1 *types.QueryTotalSupp
 	return r0, r1
 }
 
+/*
 // TotalSupplyWithoutOffset provides a mock function with given fields: _a0, _a1
 func (_m *BankKeeper) TotalSupplyWithoutOffset(_a0 context.Context, _a1 *types.QueryTotalSupplyWithoutOffsetRequest) (*types.QueryTotalSupplyWithoutOffsetResponse, error) {
 	ret := _m.Called(_a0, _a1)
@@ -1325,6 +1326,8 @@ func (_m *BankKeeper) TotalSupplyWithoutOffset(_a0 context.Context, _a1 *types.Q
 
 	return r0, r1
 }
+	*/
+
 
 // UndelegateCoins provides a mock function with given fields: ctx, moduleAccAddr, delegatorAddr, amt
 func (_m *BankKeeper) UndelegateCoins(ctx context.Context, moduleAccAddr cosmos_sdktypes.AccAddress, delegatorAddr cosmos_sdktypes.AccAddress, amt cosmos_sdktypes.Coins) error {
