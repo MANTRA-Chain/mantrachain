@@ -149,7 +149,12 @@ test-connect: build-image
 ###############################################################################
 ###                                Release                                  ###
 ###############################################################################
+ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
+GORELEASER_IMAGE := goreleaser/goreleaser:v2.3.1
+else
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
+endif
+GORELEASER_PLATFORM ?= linux/amd64
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
 REPO_OWNER ?= MANTRA-Chain
 REPO_NAME ?= mantrachain
@@ -170,16 +175,16 @@ release:
 		-e REPO_NAME=$(REPO_NAME) \
 		-v `pwd`:/go/src/mantrachaind \
 		-w /go/src/mantrachaind \
-		--platform=linux/amd64 \
+		--platform=$(GORELEASER_PLATFORM) \
 		$(GORELEASER_IMAGE) \
-		release \
+		release $(if $(GORELEASER_SKIP),--skip=$(GORELEASER_SKIP)) $(if $(GORELEASER_CONFIG),--config=$(GORELEASER_CONFIG)) \
 		--clean
 else
 release:
 	@echo "Error: $(MISSING_TOKEN) is not defined. Please define it before running 'make release'."
 endif
 
-# uses goreleaser to create static binaries for linux an darwin on local machine
+# uses goreleaser to create static binaries for linux and darwin on local machine
 # platform is set because not setting it results in broken builds for linux-amd64
 goreleaser-build-local:
 	docker run \
@@ -190,11 +195,11 @@ goreleaser-build-local:
 		-e REPO_NAME=$(REPO_NAME) \
 		-v `pwd`:/go/src/mantrachaind \
 		-w /go/src/mantrachaind \
-		--platform=linux/amd64 \
+		--platform=$(GORELEASER_PLATFORM) \
 		$(GORELEASER_IMAGE) \
-		release \
-		--snapshot \
-		--skip=publish \
+		build $(if $(GORELEASER_IDS),$(shell echo $(GORELEASER_IDS) | tr ',' ' ' | sed 's/[^ ]*/--id=&/g')) \
+		--skip=validate \
+		--clean \
 		--timeout 90m \
 		--verbose
 

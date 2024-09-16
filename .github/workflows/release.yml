@@ -1,6 +1,4 @@
 # This workflow creates a release using goreleaser
-# via the 'make release' command.
-
 name: Create release
 
 on:
@@ -17,8 +15,49 @@ permissions:
   contents: write
 
 jobs:
+  build:
+    name: Build - ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.runner || 'chain-runner' }}
+    strategy:
+      matrix:
+        platform:
+          - name: Linux x86_64
+            ids: mantrachaind-linux-amd64
+            cross: false
+          - name: Linux aarch64
+            ids: mantrachaind-linux-arm64
+            runner: ubuntu-arm64
+            docker-platform: linux/arm64
+            cross: false
+          - name: MacOS x86_64 and aarch64
+            ids: mantrachaind-darwin-amd64,mantrachaind-darwin-arm64
+            cross: true
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.release_tag || github.ref }}
+
+      - name: Make goreleaser build
+        run: |
+          make goreleaser-build-local
+        env:
+          GORELEASER_IDS: ${{ matrix.platform.ids }}
+          GORELEASER_CROSS_DISABLE: ${{ !matrix.platform.cross }}
+          GORELEASER_PLATFORM: ${{ matrix.platform.docker-platform || 'linux/amd64' }}
+      
+      - name: Store artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}-${{ matrix.platform.name }}
+          path: dist/*/
+          retention-days: 1
+
   release:
     name: Create release
+    needs: [build]
     runs-on: chain-runner
     steps:
       - name: Check out repository code
@@ -26,6 +65,13 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
+
+      # Download all artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist-merged
+          pattern: release-${{ github.sha }}-*
+          merge-multiple: true
       - name: Make release
         run: |
           make release
@@ -33,3 +79,5 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_SKIP: validate
+          GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
