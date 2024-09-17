@@ -5,16 +5,8 @@ go 1.23
 toolchain go1.23.0
 
 replace (
-	// Replace the store
-	// Needs to be replaced due to iavlFastNodeModuleWhitelist feature
-	// Disabling fast nodes makes nodes sync faster.
-	// All nodes need to have the lockup fast nodes enabled though or else we process epoch slowly.
-	// Also, snapshot nodes need to have all fast nodes enabled in order to prune quickly.
-	// mantrachain won't use this feature
-	cosmossdk.io/store => github.com/osmosis-labs/cosmos-sdk/store v0.1.0-alpha.1.0.20240909100828-a40c83ee7722
-
-	//use osmosis-sdk
-	github.com/cosmos/cosmos-sdk => github.com/osmosis-labs/cosmos-sdk v0.50.6-v26-osmo-2.0.20240909100828-a40c83ee7722
+	// use mantra-sdk
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240916080203-7ab87d77fdf9
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
 	// replace broken goleveldb
