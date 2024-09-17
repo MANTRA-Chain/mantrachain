@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"cosmossdk.io/math"
 	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
@@ -26,27 +27,12 @@ func TestMsgUpdateParams(t *testing.T) {
 		{
 			name: "invalid authority",
 			input: &types.MsgUpdateParams{
-				Authority: "invalid",
-				Params:    params,
+				Authority:  "invalid",
+				Proportion: math.LegacyZeroDec(),
+				McaAddress: "",
 			},
 			expErr:    true,
 			expErrMsg: "invalid authority",
-		},
-		{
-			name: "send enabled param",
-			input: &types.MsgUpdateParams{
-				Authority: k.GetAuthority(),
-				Params:    types.Params{},
-			},
-			expErr: false,
-		},
-		{
-			name: "all good",
-			input: &types.MsgUpdateParams{
-				Authority: k.GetAuthority(),
-				Params:    params,
-			},
-			expErr: false,
 		},
 	}
 

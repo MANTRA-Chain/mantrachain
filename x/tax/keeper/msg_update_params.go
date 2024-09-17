@@ -16,11 +16,13 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
 
-	if err := req.Params.Validate(); err != nil {
+	newParams := types.NewParams(req.Proportion, req.McaAddress)
+
+	if err := newParams.Validate(); err != nil {
 		return nil, err
 	}
 
-	if err := k.Params.Set(ctx, req.Params); err != nil {
+	if err := k.Params.Set(ctx, newParams); err != nil {
 		return nil, err
 	}
 
