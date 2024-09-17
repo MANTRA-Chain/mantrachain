@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - "v*.*.*"
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -47,6 +49,7 @@ jobs:
           GORELEASER_IDS: ${{ matrix.platform.ids }}
           GORELEASER_CROSS_DISABLE: ${{ !matrix.platform.cross }}
           GORELEASER_PLATFORM: ${{ matrix.platform.docker-platform || 'linux/amd64' }}
+          GORELEASER_SNAPSHOT: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
       
       - name: Store artifact
         uses: actions/upload-artifact@v4
@@ -56,6 +59,7 @@ jobs:
           retention-days: 1
 
   release:
+    if: github.event_name != 'pull_request'
     name: Create release
     needs: [build]
     runs-on: chain-runner
