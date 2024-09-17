@@ -1,0 +1,51 @@
+name: Generate Genesis PDF Report
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths:
+      - 'networks/dukong/genesis.json'
+      - 'networks/visualize_genesis.py'
+      - 'networks/template.tex'
+      - '.github/workflows/generate_pdf.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-recommended texlive-fonts-extra
+        pip install matplotlib
+
+    - name: Run visualize_genesis.py
+      working-directory: networks
+      run: |
+        python visualize_genesis.py
+
+    - name: Convert Markdown to PDF
+      working-directory: networks
+      run: |
+        pandoc report.md -o report.pdf --from markdown --template=template.tex --pdf-engine=xelatex
+
+    - name: Upload PDF Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Genesis Report
+        path: networks/report.pdf
+

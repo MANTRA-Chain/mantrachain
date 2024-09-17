@@ -1,22 +1,13 @@
 openapi: 3.0.0
 info:
-  title: Osmosis - gRPC Gateway docs
+  title: DuKong - gRPC Gateway docs
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
-  /osmosis/tokenfactory/v1beta1/all_before_send_hooks:
+  /Stride-Labs/ibc-rate-limiting/ratelimit/blacklisted_denoms:
     get:
-      summary: >-
-        AllBeforeSendHooksAddresses defines a gRPC query method for
-
-        getting all addresses with before send hook registered.
-
-        The response returns two arrays, an array with a list of denom and an array
-
-        of before send hook addresses. The idx of denom corresponds to before send
-
-        hook addresse's idx.
-      operationId: AllBeforeSendHooksAddresses
+      summary: Queries all blacklisted denoms
+      operationId: AllBlacklistedDenoms
       responses:
         "200":
           description: A successful response.
@@ -29,15 +20,6 @@ paths:
                     type: array
                     items:
                       type: string
-                  before_send_hook_addresses:
-                    type: array
-                    items:
-                      type: string
-                description: >-
-                  QueryAllBeforeSendHooksAddressesResponse defines the response
-                  structure for
-
-                  the AllBeforeSendHooksAddresses gRPC query.
         default:
           description: An unexpected error response.
           content:
@@ -64,7 +46,526 @@ paths:
                           format: byte
       tags:
         - Query
-  "/osmosis/tokenfactory/v1beta1/denoms/{denom}/authority_metadata":
+  "/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/{channel_id}/by_denom":
+    get:
+      summary: |-
+        Queries a specific rate limit by channel ID and denom
+        Ex:
+         - /ratelimit/{channel_id}/by_denom?denom={denom}
+      operationId: RateLimit
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  rate_limit:
+                    type: object
+                    properties:
+                      path:
+                        type: object
+                        properties:
+                          denom:
+                            type: string
+                          channel_id:
+                            type: string
+                        title: Path holds the denom and channelID that define the rate limited route
+                      quota:
+                        type: object
+                        properties:
+                          max_percent_send:
+                            type: string
+                            title: >-
+                              MaxPercentSend defines the threshold for outflows
+
+                              The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                          max_percent_recv:
+                            type: string
+                            title: >-
+                              MaxPercentSend defines the threshold for inflows
+
+                              The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                          duration_hours:
+                            type: string
+                            format: uint64
+                            title: >-
+                              DurationHours specifies the number of hours before
+                              the rate limit
+
+                              is reset (e.g. 24 indicates that the rate limit is reset each day)
+                        title: Quota defines the rate limit thresholds for transfer packets
+                      flow:
+                        type: object
+                        properties:
+                          inflow:
+                            type: string
+                            title: >-
+                              Inflow defines the total amount of inbound
+                              transfers for the given
+
+                              rate limit in the current window
+                          outflow:
+                            type: string
+                            title: >-
+                              Outflow defines the total amount of outbound
+                              transfers for the given
+
+                              rate limit in the current window
+                          channel_value:
+                            type: string
+                            title: >-
+                              ChannelValue stores the total supply of the denom
+                              at the start of
+
+                              the rate limit. This is used as the denominator when checking
+
+                              the rate limit threshold
+
+                              The ChannelValue is fixed for the duration of the rate limit window
+                    title: >-
+                      RateLimit stores all the context about a given rate limit,
+                      including
+
+                      the relevant denom and channel, rate limit thresholds, and current
+
+                      progress towards the limits
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: channel_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: denom
+          in: query
+          required: false
+          schema:
+            type: string
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits:
+    get:
+      summary: Queries all rate limits
+      operationId: AllRateLimits
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  rate_limits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            channel_id:
+                              type: string
+                          title: Path holds the denom and channelID that define the rate limited route
+                        quota:
+                          type: object
+                          properties:
+                            max_percent_send:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for
+                                outflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            max_percent_recv:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for inflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            duration_hours:
+                              type: string
+                              format: uint64
+                              title: >-
+                                DurationHours specifies the number of hours
+                                before the rate limit
+
+                                is reset (e.g. 24 indicates that the rate limit is reset each day)
+                          title: Quota defines the rate limit thresholds for transfer packets
+                        flow:
+                          type: object
+                          properties:
+                            inflow:
+                              type: string
+                              title: >-
+                                Inflow defines the total amount of inbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            outflow:
+                              type: string
+                              title: >-
+                                Outflow defines the total amount of outbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            channel_value:
+                              type: string
+                              title: >-
+                                ChannelValue stores the total supply of the
+                                denom at the start of
+
+                                the rate limit. This is used as the denominator when checking
+
+                                the rate limit threshold
+
+                                The ChannelValue is fixed for the duration of the rate limit window
+                      title: >-
+                        RateLimit stores all the context about a given rate
+                        limit, including
+
+                        the relevant denom and channel, rate limit thresholds, and current
+
+                        progress towards the limits
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
+  "/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{chain_id}":
+    get:
+      summary: Queries all the rate limits for a given chain
+      operationId: RateLimitsByChainId
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  rate_limits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            channel_id:
+                              type: string
+                          title: Path holds the denom and channelID that define the rate limited route
+                        quota:
+                          type: object
+                          properties:
+                            max_percent_send:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for
+                                outflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            max_percent_recv:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for inflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            duration_hours:
+                              type: string
+                              format: uint64
+                              title: >-
+                                DurationHours specifies the number of hours
+                                before the rate limit
+
+                                is reset (e.g. 24 indicates that the rate limit is reset each day)
+                          title: Quota defines the rate limit thresholds for transfer packets
+                        flow:
+                          type: object
+                          properties:
+                            inflow:
+                              type: string
+                              title: >-
+                                Inflow defines the total amount of inbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            outflow:
+                              type: string
+                              title: >-
+                                Outflow defines the total amount of outbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            channel_value:
+                              type: string
+                              title: >-
+                                ChannelValue stores the total supply of the
+                                denom at the start of
+
+                                the rate limit. This is used as the denominator when checking
+
+                                the rate limit threshold
+
+                                The ChannelValue is fixed for the duration of the rate limit window
+                      title: >-
+                        RateLimit stores all the context about a given rate
+                        limit, including
+
+                        the relevant denom and channel, rate limit thresholds, and current
+
+                        progress towards the limits
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: chain_id
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Query
+  "/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{channel_id}":
+    get:
+      summary: Queries all the rate limits for a given channel ID
+      operationId: RateLimitsByChannelId
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  rate_limits:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            channel_id:
+                              type: string
+                          title: Path holds the denom and channelID that define the rate limited route
+                        quota:
+                          type: object
+                          properties:
+                            max_percent_send:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for
+                                outflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            max_percent_recv:
+                              type: string
+                              title: >-
+                                MaxPercentSend defines the threshold for inflows
+
+                                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                            duration_hours:
+                              type: string
+                              format: uint64
+                              title: >-
+                                DurationHours specifies the number of hours
+                                before the rate limit
+
+                                is reset (e.g. 24 indicates that the rate limit is reset each day)
+                          title: Quota defines the rate limit thresholds for transfer packets
+                        flow:
+                          type: object
+                          properties:
+                            inflow:
+                              type: string
+                              title: >-
+                                Inflow defines the total amount of inbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            outflow:
+                              type: string
+                              title: >-
+                                Outflow defines the total amount of outbound
+                                transfers for the given
+
+                                rate limit in the current window
+                            channel_value:
+                              type: string
+                              title: >-
+                                ChannelValue stores the total supply of the
+                                denom at the start of
+
+                                the rate limit. This is used as the denominator when checking
+
+                                the rate limit threshold
+
+                                The ChannelValue is fixed for the duration of the rate limit window
+                      title: >-
+                        RateLimit stores all the context about a given rate
+                        limit, including
+
+                        the relevant denom and channel, rate limit thresholds, and current
+
+                        progress towards the limits
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: channel_id
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/whitelisted_addresses:
+    get:
+      summary: Queries all whitelisted address pairs
+      operationId: AllWhitelistedAddresses
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  address_pairs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sender:
+                          type: string
+                        receiver:
+                          type: string
+                      title: >-
+                        WhitelistedAddressPair represents a sender-receiver
+                        combo that is
+
+                        not subject to rate limit restrictions
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
+  "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata":
     get:
       summary: |-
         DenomAuthorityMetadata defines a gRPC query method for fetching
@@ -81,7 +582,7 @@ paths:
                   authority_metadata:
                     type: object
                     properties:
-                      admin:
+                      Admin:
                         type: string
                         title: Can be empty for no admin, or a valid osmosis address
                     description: >-
@@ -121,14 +622,19 @@ paths:
                           type: string
                           format: byte
       parameters:
-        - name: denom
+        - name: creator
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: subdenom
           in: path
           required: true
           schema:
             type: string
       tags:
         - Query
-  "/osmosis/tokenfactory/v1beta1/denoms/{denom}/before_send_hook":
+  "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/before_send_hook":
     get:
       summary: |-
         BeforeSendHookAddress defines a gRPC query method for
@@ -142,7 +648,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  cosmwasm_address:
+                  contract_addr:
                     type: string
                 description: >-
                   QueryBeforeSendHookAddressResponse defines the response
@@ -174,7 +680,12 @@ paths:
                           type: string
                           format: byte
       parameters:
-        - name: denom
+        - name: creator
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: subdenom
           in: path
           required: true
           schema:
@@ -291,6 +802,32 @@ paths:
 
 
                           See: https://github.com/CosmWasm/token-factory/issues/11
+                      fee_collector_address:
+                        type: string
+                        title: >-
+                          FeeCollectorAddress is the address where fees
+                          collected from denom creation
+
+                          are sent to
+                      whitelisted_hooks:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code_id:
+                              type: string
+                              format: uint64
+                            denom_creator:
+                              type: string
+                          title: >-
+                            WhitelistedHook describes a beforeSendHook which is
+                            allowed to be added and executed
+
+                            SetBeforeSendHook can only be called on denoms where the denom creator and
+
+                            code_id for the `contract_addr` match a WhitelistedHook
+                        title: whitelisted_hooks is the list of hooks which are allowed to be added and
+                          executed
                 description: QueryParamsResponse is the response type for the Query/Params RPC
                   method.
         default:
@@ -41308,18 +41845,6 @@ paths:
         - Query
 components:
   schemas:
-    cosmos.base.v1beta1.Coin:
-      type: object
-      properties:
-        denom:
-          type: string
-        amount:
-          type: string
-      description: |-
-        Coin defines a token with a denomination and an amount.
-
-        NOTE: The amount field is an Int which implements the custom method
-        signatures required by gogoproto.
     google.protobuf.Any:
       type: object
       properties:
@@ -41650,20 +42175,459 @@ components:
                     "@type": "type.googleapis.com/google.protobuf.Duration",
                     "value": "1.212s"
                   }
-    osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
+    ratelimit.v1.Flow:
       type: object
       properties:
-        admin:
+        inflow:
           type: string
-          title: Can be empty for no admin, or a valid osmosis address
-      description: >-
-        DenomAuthorityMetadata specifies metadata for addresses that have
-        specific
+          title: |-
+            Inflow defines the total amount of inbound transfers for the given
+            rate limit in the current window
+        outflow:
+          type: string
+          title: |-
+            Outflow defines the total amount of outbound transfers for the given
+            rate limit in the current window
+        channel_value:
+          type: string
+          title: |-
+            ChannelValue stores the total supply of the denom at the start of
+            the rate limit. This is used as the denominator when checking
+            the rate limit threshold
+            The ChannelValue is fixed for the duration of the rate limit window
+    ratelimit.v1.Path:
+      type: object
+      properties:
+        denom:
+          type: string
+        channel_id:
+          type: string
+      title: Path holds the denom and channelID that define the rate limited route
+    ratelimit.v1.QueryAllBlacklistedDenomsResponse:
+      type: object
+      properties:
+        denoms:
+          type: array
+          items:
+            type: string
+    ratelimit.v1.QueryAllRateLimitsResponse:
+      type: object
+      properties:
+        rate_limits:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  channel_id:
+                    type: string
+                title: Path holds the denom and channelID that define the rate limited route
+              quota:
+                type: object
+                properties:
+                  max_percent_send:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for outflows
 
-        capabilities over a token factory denom. Right now there is only one Admin
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  max_percent_recv:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for inflows
 
-        permission, but is planned to be extended to the future.
-    osmosis.tokenfactory.v1beta1.Params:
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  duration_hours:
+                    type: string
+                    format: uint64
+                    title: >-
+                      DurationHours specifies the number of hours before the
+                      rate limit
+
+                      is reset (e.g. 24 indicates that the rate limit is reset each day)
+                title: Quota defines the rate limit thresholds for transfer packets
+              flow:
+                type: object
+                properties:
+                  inflow:
+                    type: string
+                    title: >-
+                      Inflow defines the total amount of inbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  outflow:
+                    type: string
+                    title: >-
+                      Outflow defines the total amount of outbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  channel_value:
+                    type: string
+                    title: >-
+                      ChannelValue stores the total supply of the denom at the
+                      start of
+
+                      the rate limit. This is used as the denominator when checking
+
+                      the rate limit threshold
+
+                      The ChannelValue is fixed for the duration of the rate limit window
+            title: >-
+              RateLimit stores all the context about a given rate limit,
+              including
+
+              the relevant denom and channel, rate limit thresholds, and current
+
+              progress towards the limits
+    ratelimit.v1.QueryAllWhitelistedAddressesResponse:
+      type: object
+      properties:
+        address_pairs:
+          type: array
+          items:
+            type: object
+            properties:
+              sender:
+                type: string
+              receiver:
+                type: string
+            title: |-
+              WhitelistedAddressPair represents a sender-receiver combo that is
+              not subject to rate limit restrictions
+    ratelimit.v1.QueryRateLimitResponse:
+      type: object
+      properties:
+        rate_limit:
+          type: object
+          properties:
+            path:
+              type: object
+              properties:
+                denom:
+                  type: string
+                channel_id:
+                  type: string
+              title: Path holds the denom and channelID that define the rate limited route
+            quota:
+              type: object
+              properties:
+                max_percent_send:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for outflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                max_percent_recv:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for inflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                duration_hours:
+                  type: string
+                  format: uint64
+                  title: >-
+                    DurationHours specifies the number of hours before the rate
+                    limit
+
+                    is reset (e.g. 24 indicates that the rate limit is reset each day)
+              title: Quota defines the rate limit thresholds for transfer packets
+            flow:
+              type: object
+              properties:
+                inflow:
+                  type: string
+                  title: >-
+                    Inflow defines the total amount of inbound transfers for the
+                    given
+
+                    rate limit in the current window
+                outflow:
+                  type: string
+                  title: >-
+                    Outflow defines the total amount of outbound transfers for
+                    the given
+
+                    rate limit in the current window
+                channel_value:
+                  type: string
+                  title: >-
+                    ChannelValue stores the total supply of the denom at the
+                    start of
+
+                    the rate limit. This is used as the denominator when checking
+
+                    the rate limit threshold
+
+                    The ChannelValue is fixed for the duration of the rate limit window
+          title: |-
+            RateLimit stores all the context about a given rate limit, including
+            the relevant denom and channel, rate limit thresholds, and current
+            progress towards the limits
+    ratelimit.v1.QueryRateLimitsByChainIdResponse:
+      type: object
+      properties:
+        rate_limits:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  channel_id:
+                    type: string
+                title: Path holds the denom and channelID that define the rate limited route
+              quota:
+                type: object
+                properties:
+                  max_percent_send:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for outflows
+
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  max_percent_recv:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for inflows
+
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  duration_hours:
+                    type: string
+                    format: uint64
+                    title: >-
+                      DurationHours specifies the number of hours before the
+                      rate limit
+
+                      is reset (e.g. 24 indicates that the rate limit is reset each day)
+                title: Quota defines the rate limit thresholds for transfer packets
+              flow:
+                type: object
+                properties:
+                  inflow:
+                    type: string
+                    title: >-
+                      Inflow defines the total amount of inbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  outflow:
+                    type: string
+                    title: >-
+                      Outflow defines the total amount of outbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  channel_value:
+                    type: string
+                    title: >-
+                      ChannelValue stores the total supply of the denom at the
+                      start of
+
+                      the rate limit. This is used as the denominator when checking
+
+                      the rate limit threshold
+
+                      The ChannelValue is fixed for the duration of the rate limit window
+            title: >-
+              RateLimit stores all the context about a given rate limit,
+              including
+
+              the relevant denom and channel, rate limit thresholds, and current
+
+              progress towards the limits
+    ratelimit.v1.QueryRateLimitsByChannelIdResponse:
+      type: object
+      properties:
+        rate_limits:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  channel_id:
+                    type: string
+                title: Path holds the denom and channelID that define the rate limited route
+              quota:
+                type: object
+                properties:
+                  max_percent_send:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for outflows
+
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  max_percent_recv:
+                    type: string
+                    title: >-
+                      MaxPercentSend defines the threshold for inflows
+
+                      The threshold is defined as a percentage (e.g. 10 indicates 10%)
+                  duration_hours:
+                    type: string
+                    format: uint64
+                    title: >-
+                      DurationHours specifies the number of hours before the
+                      rate limit
+
+                      is reset (e.g. 24 indicates that the rate limit is reset each day)
+                title: Quota defines the rate limit thresholds for transfer packets
+              flow:
+                type: object
+                properties:
+                  inflow:
+                    type: string
+                    title: >-
+                      Inflow defines the total amount of inbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  outflow:
+                    type: string
+                    title: >-
+                      Outflow defines the total amount of outbound transfers for
+                      the given
+
+                      rate limit in the current window
+                  channel_value:
+                    type: string
+                    title: >-
+                      ChannelValue stores the total supply of the denom at the
+                      start of
+
+                      the rate limit. This is used as the denominator when checking
+
+                      the rate limit threshold
+
+                      The ChannelValue is fixed for the duration of the rate limit window
+            title: >-
+              RateLimit stores all the context about a given rate limit,
+              including
+
+              the relevant denom and channel, rate limit thresholds, and current
+
+              progress towards the limits
+    ratelimit.v1.Quota:
+      type: object
+      properties:
+        max_percent_send:
+          type: string
+          title: |-
+            MaxPercentSend defines the threshold for outflows
+            The threshold is defined as a percentage (e.g. 10 indicates 10%)
+        max_percent_recv:
+          type: string
+          title: |-
+            MaxPercentSend defines the threshold for inflows
+            The threshold is defined as a percentage (e.g. 10 indicates 10%)
+        duration_hours:
+          type: string
+          format: uint64
+          title: |-
+            DurationHours specifies the number of hours before the rate limit
+            is reset (e.g. 24 indicates that the rate limit is reset each day)
+      title: Quota defines the rate limit thresholds for transfer packets
+    ratelimit.v1.RateLimit:
+      type: object
+      properties:
+        path:
+          type: object
+          properties:
+            denom:
+              type: string
+            channel_id:
+              type: string
+          title: Path holds the denom and channelID that define the rate limited route
+        quota:
+          type: object
+          properties:
+            max_percent_send:
+              type: string
+              title: |-
+                MaxPercentSend defines the threshold for outflows
+                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+            max_percent_recv:
+              type: string
+              title: |-
+                MaxPercentSend defines the threshold for inflows
+                The threshold is defined as a percentage (e.g. 10 indicates 10%)
+            duration_hours:
+              type: string
+              format: uint64
+              title: >-
+                DurationHours specifies the number of hours before the rate
+                limit
+
+                is reset (e.g. 24 indicates that the rate limit is reset each day)
+          title: Quota defines the rate limit thresholds for transfer packets
+        flow:
+          type: object
+          properties:
+            inflow:
+              type: string
+              title: >-
+                Inflow defines the total amount of inbound transfers for the
+                given
+
+                rate limit in the current window
+            outflow:
+              type: string
+              title: >-
+                Outflow defines the total amount of outbound transfers for the
+                given
+
+                rate limit in the current window
+            channel_value:
+              type: string
+              title: >-
+                ChannelValue stores the total supply of the denom at the start
+                of
+
+                the rate limit. This is used as the denominator when checking
+
+                the rate limit threshold
+
+                The ChannelValue is fixed for the duration of the rate limit window
+      title: |-
+        RateLimit stores all the context about a given rate limit, including
+        the relevant denom and channel, rate limit thresholds, and current
+        progress towards the limits
+    ratelimit.v1.WhitelistedAddressPair:
+      type: object
+      properties:
+        sender:
+          type: string
+        receiver:
+          type: string
+      title: |-
+        WhitelistedAddressPair represents a sender-receiver combo that is
+        not subject to rate limit restrictions
+    cosmos.base.v1beta1.Coin:
+      type: object
+      properties:
+        denom:
+          type: string
+        amount:
+          type: string
+      description: |-
+        Coin defines a token with a denomination and an amount.
+
+        NOTE: The amount field is an Int which implements the custom method
+        signatures required by gogoproto.
+    osmosis.tokenfactory.Params:
       type: object
       properties:
         denom_creation_fee:
@@ -41700,27 +42664,65 @@ components:
 
 
             See: https://github.com/CosmWasm/token-factory/issues/11
+        fee_collector_address:
+          type: string
+          title: >-
+            FeeCollectorAddress is the address where fees collected from denom
+            creation
+
+            are sent to
+        whitelisted_hooks:
+          type: array
+          items:
+            type: object
+            properties:
+              code_id:
+                type: string
+                format: uint64
+              denom_creator:
+                type: string
+            title: >-
+              WhitelistedHook describes a beforeSendHook which is allowed to be
+              added and executed
+
+              SetBeforeSendHook can only be called on denoms where the denom creator and
+
+              code_id for the `contract_addr` match a WhitelistedHook
+          title: whitelisted_hooks is the list of hooks which are allowed to be added and
+            executed
       description: Params defines the parameters for the tokenfactory module.
-    osmosis.tokenfactory.v1beta1.QueryAllBeforeSendHooksAddressesResponse:
+    osmosis.tokenfactory.WhitelistedHook:
       type: object
       properties:
-        denoms:
-          type: array
-          items:
-            type: string
-        before_send_hook_addresses:
-          type: array
-          items:
-            type: string
-      description: >-
-        QueryAllBeforeSendHooksAddressesResponse defines the response structure
-        for
+        code_id:
+          type: string
+          format: uint64
+        denom_creator:
+          type: string
+      title: >-
+        WhitelistedHook describes a beforeSendHook which is allowed to be added
+        and executed
 
-        the AllBeforeSendHooksAddresses gRPC query.
+        SetBeforeSendHook can only be called on denoms where the denom creator and
+
+        code_id for the `contract_addr` match a WhitelistedHook
+    osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
+      type: object
+      properties:
+        Admin:
+          type: string
+          title: Can be empty for no admin, or a valid osmosis address
+      description: >-
+        DenomAuthorityMetadata specifies metadata for addresses that have
+        specific
+
+        capabilities over a token factory denom. Right now there is only one Admin
+
+        permission, but is planned to be extended to the future.
     osmosis.tokenfactory.v1beta1.QueryBeforeSendHookAddressResponse:
       type: object
       properties:
-        cosmwasm_address:
+        contract_addr:
           type: string
       description: >-
         QueryBeforeSendHookAddressResponse defines the response structure for
@@ -41733,7 +42735,7 @@ components:
         authority_metadata:
           type: object
           properties:
-            admin:
+            Admin:
               type: string
               title: Can be empty for no admin, or a valid osmosis address
           description: >-
@@ -41799,6 +42801,32 @@ components:
 
 
                 See: https://github.com/CosmWasm/token-factory/issues/11
+            fee_collector_address:
+              type: string
+              title: >-
+                FeeCollectorAddress is the address where fees collected from
+                denom creation
+
+                are sent to
+            whitelisted_hooks:
+              type: array
+              items:
+                type: object
+                properties:
+                  code_id:
+                    type: string
+                    format: uint64
+                  denom_creator:
+                    type: string
+                title: >-
+                  WhitelistedHook describes a beforeSendHook which is allowed to
+                  be added and executed
+
+                  SetBeforeSendHook can only be called on denoms where the denom creator and
+
+                  code_id for the `contract_addr` match a WhitelistedHook
+              title: whitelisted_hooks is the list of hooks which are allowed to be added and
+                executed
       description: QueryParamsResponse is the response type for the Query/Params RPC method.
     cosmos.base.v1beta1.DecCoin:
       type: object

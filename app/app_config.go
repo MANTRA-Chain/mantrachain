@@ -33,6 +33,8 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -48,12 +50,13 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	ratelimitmodulev1 "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/api/ratelimit/module/v1"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	tokenfactorytypes "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/types"
 	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
 	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
@@ -103,7 +106,10 @@ var (
 		oracletypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -133,7 +139,10 @@ var (
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -157,7 +166,10 @@ var (
 		// slinky modules
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		// tokenfactory
 		tokenfactorytypes.ModuleName,
+		// rate limit
+		ratelimittypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -330,6 +342,18 @@ var (
 				Name:   marketmaptypes.ModuleName,
 				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
 			},
+			{
+				Name: tokenfactorytypes.ModuleName,
+				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
+					KnownModules: knownModules(),
+				}),
+			},
+			{
+				Name: ratelimittypes.ModuleName,
+				Config: appconfig.WrapAny(&ratelimitmodulev1.Module{
+					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+				}),
+			},
 			//			{
 			//				Name: tokenfactorytypes.ModuleName,
 			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
@@ -341,9 +365,6 @@ var (
 	})
 )
 
-// knownModules returns a list of module names that are known to the app.  It is not being used right now, but it is being preserved for future use.
-//
-//nolint:unused
 func knownModules() []string {
 	knownModules := make([]string, 0, len(moduleAccPerms))
 	for _, moduleAcc := range moduleAccPerms {

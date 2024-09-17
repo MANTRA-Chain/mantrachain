@@ -45,7 +45,6 @@ linters:
     - thelper
     - tparallel
     - typecheck
-    - thelper
     - unconvert
     - unused
     - whitespace

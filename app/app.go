@@ -22,6 +22,8 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
+	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -69,6 +71,8 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	_ "github.com/cosmos/ibc-apps/modules/rate-limiting/v8" // import for side-effects
+	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/keeper"
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -79,7 +83,6 @@ import (
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	"github.com/gorilla/mux"
-	tokenfactorykeeper "github.com/osmosis-labs/osmosis/v26/x/tokenfactory/keeper"
 	"github.com/rakyll/statik/fs"
 	_ "github.com/skip-mev/connect/v2/x/marketmap" // import for side-effects
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
@@ -131,7 +134,9 @@ type App struct {
 	GroupKeeper          groupkeeper.Keeper
 	NFTKeeper            nftkeeper.Keeper
 	CircuitBreakerKeeper circuitkeeper.Keeper
-	FeeMarketKeeper      feemarketkeeper.Keeper
+
+	// FeeMarket
+	FeeMarketKeeper feemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -151,6 +156,9 @@ type App struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedKeepers             map[string]capabilitykeeper.ScopedKeeper
+
+	// IBC Rate Limit
+	RateLimitKeeper *ratelimitkeeper.Keeper
 
 	// CosmWasm
 	WasmKeeper       wasmkeeper.Keeper
@@ -269,11 +277,19 @@ func New(
 		&app.NFTKeeper,
 		&app.GroupKeeper,
 		&app.CircuitBreakerKeeper,
+
+		// Feemarket Keepers
 		&app.FeeMarketKeeper,
 
 		// Connect Keepers
 		&app.MarketMapKeeper,
 		&app.OracleKeeper,
+
+		// Mantrachain Keepers
+		&app.TokenFactoryKeeper,
+
+		// IBCRateLimitKeeper
+		&app.RateLimitKeeper,
 	); err != nil {
 		panic(err)
 	}
@@ -300,10 +316,6 @@ func New(
 		return nil, err
 	}
 
-	if err := app.registerTokenFactoryModule(); err != nil {
-		return nil, err
-	}
-
 	// register streaming services
 	if err := app.RegisterStreamingServices(appOpts, app.kvStoreKeys()); err != nil {
 		return nil, err
@@ -313,6 +325,9 @@ func New(
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+
+	// to support multiple denom as fee token
+	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
@@ -417,8 +432,8 @@ func (app *App) SimulationManager() *module.SimulationManager {
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 
-	// app.App.RegisterAPIRoutes(apiSvr, apiConfig)
-	// // register swagger API in app.go so that other applications can override easily
+	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
+	// register swagger API in app.go so that other applications can override easily
 	// if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
 	// 	panic(err)
 	// }

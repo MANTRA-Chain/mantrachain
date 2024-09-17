@@ -49,13 +49,6 @@ proto-download-deps:
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
 
-	mkdir -p "$(THIRD_PARTY_DIR)/osmosis_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/osmosis_tmp" && \
-	git clone --depth 1 --branch v26.x https://github.com/osmosis-labs/osmosis.git . && \
-	mkdir -p "../osmosis" && \
-	mv ./proto/osmosis/tokenfactory ../osmosis
-	rm -rf "$(THIRD_PARTY_DIR)/osmosis_tmp"
-
 	mkdir -p "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
 	git clone --depth 1 --branch $(shell grep -o 'feemarket v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/skip-mev/feemarket.git . && \
@@ -69,6 +62,13 @@ proto-download-deps:
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/connect_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
+	git clone --depth 1 https://github.com/cosmos/ibc-apps.git . && \
+	mkdir -p "../ratelimit" && \
+	mv ./modules/rate-limiting/proto/ratelimit ..
+	rm -rf "$(THIRD_PARTY_DIR)/ibc_apps_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto" && \
 	curl -SSL https://raw.githubusercontent.com/cosmos/cosmos-proto/main/proto/cosmos_proto/cosmos.proto > "$(THIRD_PARTY_DIR)/cosmos_proto/cosmos.proto"

@@ -3,10 +3,7 @@
   github-organization: MANTRA-Chain
   github-repo: mantrachain
   dockerfile: cosmos
-  # TODO: should fix in heighliner cosmos/dockerfile once heighliner v1.6.4 is released
   build-target: |
-    [ -f /lib/libwasmvm_muslc.a ] && cp /lib/libwasmvm_muslc.a /lib/libwasmvm_muslc.x86_64.a
-    [ -f /usr/aarch64-linux-musl/lib/libwasmvm_muslc.a ] && cp /usr/aarch64-linux-musl/lib/libwasmvm_muslc.a /usr/aarch64-linux-musl/lib/libwasmvm_muslc.aarch64.a
     LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
   binaries:
     - build/mantrachaind

@@ -7,7 +7,7 @@ toolchain go1.23.0
 require (
 	github.com/cosmos/cosmos-sdk v0.50.10-0.20240904192747-c8aec4d15e22
 	github.com/icza/dyno v0.0.0-20230330125955-09f820a8d9c0
-	github.com/skip-mev/slinky v1.0.10
+	github.com/skip-mev/slinky v1.0.12
 	github.com/skip-mev/slinky/tests/integration v1.1.0
 	github.com/strangelove-ventures/interchaintest/v8 v8.7.0
 	github.com/stretchr/testify v1.9.0
