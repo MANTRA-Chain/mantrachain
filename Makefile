@@ -198,7 +198,7 @@ goreleaser-build-local:
 		--platform=$(GORELEASER_PLATFORM) \
 		$(GORELEASER_IMAGE) \
 		build $(if $(GORELEASER_IDS),$(shell echo $(GORELEASER_IDS) | tr ',' ' ' | sed 's/[^ ]*/--id=&/g')) \
-		--skip=validate \
+		--skip=validate $(if $(filter true,$(GORELEASER_SNAPSHOT)),--snapshot) \
 		--clean \
 		--timeout 90m \
 		--verbose
