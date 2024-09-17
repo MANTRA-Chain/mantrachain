@@ -356,8 +356,10 @@ var (
 				}),
 			},
 			{
-				Name:   taxmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&taxmodulev1.Module{}),
+				Name: taxmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&taxmodulev1.Module{
+					Authority: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+				}),
 			},
 			//			{
 			//				Name: tokenfactorytypes.ModuleName,

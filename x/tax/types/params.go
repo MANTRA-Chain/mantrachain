@@ -11,15 +11,16 @@ import (
 
 // DefaultProportion represents the Proportion default value.
 var (
-	DefaultProportion    = math.LegacyMustNewDecFromStr("0.5")
+	DefaultProportion    = "0.5"
 	DefaultMcaAddress, _ = bech32.ConvertAndEncode("mantra", authtypes.NewModuleAddress(govtypes.ModuleName))
 )
 
 // NewParams creates a new Params instance.
 func NewParams(
-	proportion math.LegacyDec,
+	proportionStr string,
 	mcaAddress string,
 ) Params {
+	proportion := math.LegacyMustNewDecFromStr(proportionStr)
 	return Params{
 		Proportion: proportion,
 		McaAddress: mcaAddress,

@@ -30,7 +30,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					FlagOptions: map[string]*autocliv1.FlagOptions{
 						"proportion": {
 							Usage:        "proportion for the mca allocation in decimal",
-							DefaultValue: "0",
+							DefaultValue: "",
 						},
 						"mca_address": {
 							Usage:        "mca address for the allocation",
