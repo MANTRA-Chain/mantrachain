@@ -5,7 +5,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distribute "github.com/cosmos/cosmos-sdk/x/distribution"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock
@@ -22,10 +21,8 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) error {
 		return nil
 	}
 
-	blockHeight := ctx.BlockHeight()
 	// only allocate rewards if the block height is greater than 1
-	// and follow the block multiple to distribute rewards
-	if blockHeight > 1 && blockHeight%distribute.BlockMultipleToDistributeRewards == 0 {
+	if ctx.BlockHeight() > 1 {
 		McaAddress, err := sdk.AccAddressFromBech32(params.McaAddress)
 		if err != nil {
 			return err
