@@ -6,6 +6,7 @@ import (
 	math "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
@@ -39,6 +40,20 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 		panic("cannot marshal connect genesis state for tests")
 	}
 	genesisState[marketmaptypes.ModuleName] = marketmapGenesisStateBytes
+
+	distributionGenesis := distributiontypes.GenesisState{
+		Params: distributiontypes.Params{
+			CommunityTax:        math.LegacyMustNewDecFromStr("0.01"),
+			McaTax:              math.LegacyMustNewDecFromStr("0.4"),
+			McaAddress:          "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+			WithdrawAddrEnabled: true,
+		},
+	}
+	distributionGenesisStateBytes, err := json.Marshal(distributionGenesis)
+	if err != nil {
+		panic("cannot marshal distribution genesis state for tests")
+	}
+	genesisState[distributiontypes.ModuleName] = distributionGenesisStateBytes
 
 	feemarketFeeGenesis := feemarkettypes.GenesisState{
 		Params: feemarkettypes.Params{
