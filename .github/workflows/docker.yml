@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - "v*.*.*"
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
     inputs:
       release_tag:
@@ -55,4 +57,6 @@ jobs:
           heighliner-tag: v1.6.4
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
+          git-ref: ${{ github.event.inputs.release_tag || github.ref }}
           registry: ghcr.io/${{ env.OWNER_LC }}
+          skip: ${{ github.event_name == 'pull_request' }}
