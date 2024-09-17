@@ -8,9 +8,9 @@ import (
 
 // ValidateBasic implements Authorization.ValidateBasic.
 func (msg MsgUpdateParams) ValidateBasic() error {
-	proportion, err := math.LegacyNewDecFromStr(msg.Proportion)
-	if err != nil {
-		return err
+	proportion := math.LegacyZeroDec()
+	if msg.Proportion != "" {
+		proportion = math.LegacyMustNewDecFromStr(msg.Proportion)
 	}
 	if proportion.IsNegative() {
 		return errors.New("proportion cannot be negative")
