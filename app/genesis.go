@@ -48,7 +48,7 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 			MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1"),
 			MinLearningRate:     math.LegacyMustNewDecFromStr("0.5"),
 			MaxLearningRate:     math.LegacyMustNewDecFromStr("1.5"),
-			MaxBlockUtilization: 30_000_000,
+			MaxBlockUtilization: 75_000_000,
 			Window:              1,
 			FeeDenom:            FeeDenom,
 			Enabled:             false,
