@@ -25,7 +25,20 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
 					RpcMethod: "UpdateParams",
-					Skip:      true, // skipped because authority gated
+					Use:       "update-params",
+					Skip:      false,
+					FlagOptions: map[string]*autocliv1.FlagOptions{
+						"proportion": {
+							Usage:        "proportion for the mca allocation in decimal",
+							DefaultValue: "0",
+						},
+						"mca_address": {
+							Usage:        "mca address for the allocation",
+							DefaultValue: "",
+						},
+					},
+					Short:   "Update the parameters of the tax module",
+					Example: "mantrachaind tx tax update-params --proportion 0.5 --mca_address mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
