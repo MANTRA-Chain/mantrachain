@@ -3,6 +3,7 @@ package mantrachain.tax.v1;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/MANTRA-Chain/mantrachain/x/tax/types";
 
@@ -12,4 +13,5 @@ message Params {
   option (gogoproto.equal) = true;
   
   string proportion = 1 [(gogoproto.customtype) = "cosmossdk.io/math.LegacyDec", (gogoproto.nullable) = false];
+  string mca_address = 2 [(cosmos_proto.scalar) = "cosmos.AddressString", (amino.dont_omitempty) = true];
 }

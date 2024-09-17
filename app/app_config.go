@@ -33,8 +33,10 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	taxmodulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/module/v1"
 	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
 	_ "github.com/MANTRA-Chain/mantrachain/x/tax/module"
+	taxmoduletypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -65,14 +67,12 @@ import (
 	feemarketmodulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"google.golang.org/protobuf/types/known/durationpb"
-
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
 	// NOTE: Capability module must occur first so that it can initialize any capabilities
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
-	taxmoduletypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 )
 
 var (
@@ -114,7 +114,7 @@ var (
 		// rate limit
 		ratelimittypes.ModuleName,
 		taxmoduletypes.ModuleName,
-// this line is used by starport scaffolding # stargate/app/initGenesis
+		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -126,6 +126,8 @@ var (
 		// cosmos sdk modules
 		minttypes.ModuleName,
 		feemarkettypes.ModuleName,
+		// mca tax before distribution
+		taxmoduletypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -147,8 +149,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		taxmoduletypes.ModuleName,
-// this line is used by starport scaffolding # stargate/app/beginBlockers
+		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
 	endBlockers = []string{
@@ -176,7 +177,7 @@ var (
 		// rate limit
 		ratelimittypes.ModuleName,
 		taxmoduletypes.ModuleName,
-// this line is used by starport scaffolding # stargate/app/endBlockers
+		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
 	preBlockers = []string{
@@ -360,17 +361,17 @@ var (
 					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
 				}),
 			},
+			{
+				Name:   taxmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&taxmodulev1.Module{}),
+			},
 			//			{
 			//				Name: tokenfactorytypes.ModuleName,
 			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
 			//					KnownModules: knownModules(),
 			//				}),
 			//			}
-			{
-				Name:   taxmoduletypes.ModuleName,
-				Config: appconfig.WrapAny(&taxmoduletypes.Module{}),
-			},
-// this line is used by starport scaffolding # stargate/app/moduleConfig
+			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
 	})
 )
