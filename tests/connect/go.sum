@@ -243,8 +243,8 @@ github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e/go.mod h1:kGUq
 github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec h1:1Qb69mGp/UtRPn422BH4/Y4Q3SLUrD9KHuDkm8iodFc=
 github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec/go.mod h1:CD8UlnlLDiqb36L110uqiP2iSflVjx9g/3U9hCI4q2U=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917024159-b58cb5d3c0f1 h1:g1m2fa+ou2Oz0TSWqaPz2DL8qwzbIyyanmD5kaH3ukY=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917024159-b58cb5d3c0f1/go.mod h1:1iMX2ZvMo/+qzlzU2qGuFL2tMzLBDXItNE8g590m8AY=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917040128-a97d91b79561 h1:ywxun1WpCHE73ctLW/Lmk+t6iQ/6L6Yd1ddLmrDqS4s=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917040128-a97d91b79561/go.mod h1:1iMX2ZvMo/+qzlzU2qGuFL2tMzLBDXItNE8g590m8AY=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 h1:TngWCqHvy9oXAN6lEVMRuU21PR1EtLVZJmdB18Gu3Rw=
