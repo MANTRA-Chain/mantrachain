@@ -3,11 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMsgUpdateParams(t *testing.T) {

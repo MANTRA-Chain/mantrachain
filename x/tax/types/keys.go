@@ -11,16 +11,10 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_tax"
-
-    
 )
 
-var (
-	ParamsKey = collections.NewPrefix("p_tax")
-)
-
-
+var ParamsKey = collections.NewPrefix("p_tax")
 
 func KeyPrefix(p string) []byte {
-    return []byte(p)
+	return []byte(p)
 }

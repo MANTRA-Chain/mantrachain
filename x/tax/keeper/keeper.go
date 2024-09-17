@@ -9,10 +9,9 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
+	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 )
 
 type (
@@ -33,7 +32,6 @@ type (
 
 		feeCollectorName string // name of the FeeCollector ModuleAccount
 		// this line is used by starport scaffolding # collection/type
-
 	}
 )
 
@@ -98,5 +96,14 @@ func (k Keeper) AllocateMcaTax(ctx context.Context, proportion math.LegacyDec, m
 	if err != nil {
 		return err
 	}
+	// emit event
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	sdkCtx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeMcaTaxAmount,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, mcaTaxAllocation.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, mcaAddress.String()),
+		),
+	)
 	return nil
 }

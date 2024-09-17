@@ -12,6 +12,8 @@ import (
 	"cosmossdk.io/depinject/appconfig"
 	"cosmossdk.io/log"
 	modulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/module/v1"
+	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
+	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -20,11 +22,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	// this line is used by starport scaffolding # 1
-
-	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
-	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 )
 
 var (

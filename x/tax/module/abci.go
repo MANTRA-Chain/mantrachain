@@ -30,7 +30,9 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) error {
 		if err != nil {
 			return err
 		}
-		k.AllocateMcaTax(ctx, params.Proportion, McaAddress)
+		if err := k.AllocateMcaTax(ctx, params.Proportion, McaAddress); err != nil {
+			return err
+		}
 	}
 
 	return nil

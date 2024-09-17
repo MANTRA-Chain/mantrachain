@@ -2,7 +2,6 @@ package tax
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-
 	taxapi "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/v1"
 )
 
