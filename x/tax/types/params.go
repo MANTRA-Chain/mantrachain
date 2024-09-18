@@ -40,6 +40,10 @@ func (p Params) Validate() error {
 	if p.Proportion.IsNegative() {
 		return fmt.Errorf("proportion cannot be negative: %s", p.Proportion)
 	}
+	_, _, err := bech32.DecodeAndConvert(p.McaAddress)
+	if err != nil {
+		return fmt.Errorf("invalid mca address: %s", p.McaAddress)
+	}
 
 	return nil
 }

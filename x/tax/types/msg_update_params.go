@@ -13,7 +13,7 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 		var err error
 		proportion, err = math.LegacyNewDecFromStr(msg.Proportion)
 		if err != nil {
-		    return err
+			return err
 		}
 	}
 	if proportion.IsNegative() {

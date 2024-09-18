@@ -19,12 +19,18 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "negative proportion is invalid",
 			genState: &types.GenesisState{
-
-				// this line is used by starport scaffolding # types/genesis/validField
+				Params: types.NewParams("-0.5", types.DefaultMcaAddress),
 			},
-			valid: true,
+			valid: false,
+		},
+		{
+			desc: "invalid bech32 address",
+			genState: &types.GenesisState{
+				Params: types.NewParams(types.DefaultProportion, "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qkb"),
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}
