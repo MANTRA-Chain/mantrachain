@@ -356,12 +356,6 @@ var (
 					Authority: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				}),
 			},
-			//			{
-			//				Name: tokenfactorytypes.ModuleName,
-			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
-			//					KnownModules: knownModules(),
-			//				}),
-			//			}
 		},
 	})
 )
