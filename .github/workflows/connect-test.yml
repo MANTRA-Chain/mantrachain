@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         go-version: [1.23.x]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+#        os: [ubuntu-latest]
+    runs-on: chain-runner
     steps:
       - uses: actions/setup-go@v5
         with:
