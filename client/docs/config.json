@@ -15,6 +15,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/mantrachain/tax/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "TaxParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/osmosis/tokenfactory/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -200,7 +208,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/slinky/marketmap/v1/query.swagger.json",
+      "url": "./tmp-swagger-gen/connect/marketmap/v2/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "MarketMapParams"
@@ -208,7 +216,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/slinky/oracle/v1/query.swagger.json"
+      "url": "./tmp-swagger-gen/connect/oracle/v2/query.swagger.json"
     }
   ]
 }
