@@ -66,10 +66,12 @@ var (
 		marketmapmodule.AppModuleBasic{},
 	)
 
+	//nolint:unused // may need to be updated to reflect mantra genesis
 	defaultGenesis = marketmaptypes.DefaultGenesisState()
-	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	params         = marketmaptypes.Params{
-
+	//nolint:unused // may need to be updated to reflect mantra genesis
+	govAddr = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	//nolint:unused // may need to be updated to reflect mantra genesis
+	params = marketmaptypes.Params{
 		MarketAuthorities: []string{govAddr},
 		Admin:             govAddr,
 	}
