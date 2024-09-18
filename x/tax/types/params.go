@@ -5,14 +5,12 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 // DefaultProportion represents the Proportion default value.
 var (
-	DefaultProportion    = "0.5"
-	DefaultMcaAddress, _ = bech32.ConvertAndEncode("mantra", authtypes.NewModuleAddress(govtypes.ModuleName))
+	DefaultProportion = "0.5"
+	DefaultMcaAddress = "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
 )
 
 // NewParams creates a new Params instance.
