@@ -108,7 +108,6 @@ var (
 		// rate limit
 		ratelimittypes.ModuleName,
 		taxmoduletypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that

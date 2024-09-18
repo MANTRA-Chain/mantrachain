@@ -7,7 +7,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/testutil/nullify"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
-
 	"github.com/stretchr/testify/require"
 )
 
