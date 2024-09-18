@@ -431,14 +431,14 @@
         "min_base_gas_price": "1.000000000000000000",
         "min_learning_rate": "0.125000000000000000",
         "max_learning_rate": "0.125000000000000000",
-        "max_block_utilization": "30000000",
+        "max_block_utilization": "75000000",
         "window": "1",
         "fee_denom": "uom",
         "enabled": true,
         "distribute_fees": false
       },
       "state": {
-        "base_gas_price": "1.000000000000000000",
+        "base_gas_price": "0.010000000000000000",
         "learning_rate": "0.125000000000000000",
         "window": [
           "0"
