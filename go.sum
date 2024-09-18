@@ -1109,8 +1109,6 @@ github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
-github.com/skip-mev/connect/v2 v2.0.0 h1:w7UZMqrWLVia5LjwJAfyGtphlDDo3fAka2wrqudTbNI=
-github.com/skip-mev/connect/v2 v2.0.0/go.mod h1:d+jdjRncjhdQJ4lkYoXSd6kTmcXF31kYI7GlGyioHZE=
 github.com/skip-mev/connect/v2 v2.0.1-0.20240918152634-04c8ba59dddc h1:h6Bw9i6S+hO+A1Mt0NkfmxyDAu2Wo8jOW741xIw3guM=
 github.com/skip-mev/connect/v2 v2.0.1-0.20240918152634-04c8ba59dddc/go.mod h1:d+jdjRncjhdQJ4lkYoXSd6kTmcXF31kYI7GlGyioHZE=
 github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
