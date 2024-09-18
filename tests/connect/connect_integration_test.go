@@ -69,6 +69,7 @@ var (
 	defaultGenesis = marketmaptypes.DefaultGenesisState()
 	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	params         = marketmaptypes.Params{
+
 		MarketAuthorities: []string{govAddr},
 		Admin:             govAddr,
 	}
