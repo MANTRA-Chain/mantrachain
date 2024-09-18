@@ -7,14 +7,13 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/testutil/nullify"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
-
-		// this line is used by starport scaffolding # genesis/test/state
 	}
 
 	k, ctx, _ := keepertest.TaxKeeper(t)
@@ -26,8 +25,21 @@ func TestGenesis(t *testing.T) {
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
+}
 
-	// this line is used by starport scaffolding # genesis/test/assert
+func init() {
+	accountAddressPrefix := "mantra"
+	accountPubKeyPrefix := accountAddressPrefix + "pub"
+	validatorAddressPrefix := accountAddressPrefix + "valoper"
+	validatorPubKeyPrefix := accountAddressPrefix + "valoperpub"
+	consNodeAddressPrefix := accountAddressPrefix + "valcons"
+	consNodePubKeyPrefix := accountAddressPrefix + "valconspub"
+
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(accountAddressPrefix, accountPubKeyPrefix)
+	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
+	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+	config.Seal()
 }
 
 func TestGenesisState_Validate(t *testing.T) {
@@ -49,14 +61,14 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: true,
 		},
 		{
-			desc: "negative proportion is invalid",
+			desc: "negative MCA tax is invalid",
 			genState: &types.GenesisState{
 				Params: types.NewParams("-0.5", types.DefaultMcaAddress),
 			},
 			valid: false,
 		},
 		{
-			desc: "proportion greater than 1 is invalid",
+			desc: "MCA tax greater than 1 is invalid",
 			genState: &types.GenesisState{
 				Params: types.NewParams("1.5", types.DefaultMcaAddress),
 			},
@@ -65,14 +77,14 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid bech32 address",
 			genState: &types.GenesisState{
-				Params: types.NewParams(types.DefaultProportion, "invalid_address"),
+				Params: types.NewParams(types.DefaultMcaTax, "invalid_address"),
 			},
 			valid: false,
 		},
 		{
 			desc: "empty mca address is invalid",
 			genState: &types.GenesisState{
-				Params: types.NewParams(types.DefaultProportion, ""),
+				Params: types.NewParams(types.DefaultMcaTax, ""),
 			},
 			valid: false,
 		},
@@ -106,13 +118,18 @@ func TestParams_Validate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid proportion",
+			name:    "invalid mca tax",
 			params:  types.NewParams("-0.1", types.DefaultMcaAddress),
 			wantErr: true,
 		},
 		{
 			name:    "invalid mca address",
-			params:  types.NewParams(types.DefaultProportion, "invalid_address"),
+			params:  types.NewParams(types.DefaultMcaTax, "invalid_address"),
+			wantErr: true,
+		},
+		{
+			name:    "mca tax too high",
+			params:  types.NewParams("1.1", "mantra1qypqxpq9qcrsszg2pvxq6rs0zqg3yyc5lzutu9"),
 			wantErr: true,
 		},
 	}
@@ -159,7 +176,7 @@ func TestParams_ValidateMcaAddress(t *testing.T) {
 		address string
 		wantErr bool
 	}{
-		{"valid address", "cosmos15m77x4pe6w9vtpuqm22qxu0ds7vn4ehz9dd9u2", false},
+		{"valid address", "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls", false},
 		{"empty address", "", true},
 		{"invalid bech32", "invalid_address", true},
 		{"wrong prefix", "cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a", true},
