@@ -22,7 +22,7 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
-	taxmodulekeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory" // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -165,10 +165,9 @@ type App struct {
 	WasmKeeper       wasmkeeper.Keeper
 	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
-	// TokenFactory
+	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
-
-	TaxKeeper taxmodulekeeper.Keeper
+	TaxKeeper          taxkeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -289,10 +288,10 @@ func New(
 
 		// Mantrachain Keepers
 		&app.TokenFactoryKeeper,
+		&app.TaxKeeper,
 
 		// IBCRateLimitKeeper
 		&app.RateLimitKeeper,
-		&app.TaxKeeper,
 	); err != nil {
 		panic(err)
 	}
