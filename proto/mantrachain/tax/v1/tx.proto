@@ -21,10 +21,9 @@ service Msg {
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
   option (amino.name) = "mantrachain/x/tax/MsgUpdateParams";
-  option (cosmos.msg.v1.signer) =
-      "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls";
+  option (cosmos.msg.v1.signer) = "admin";
 
-  // authority is the address that controls the module (defaults to x/gov unless
+  // admin is the address that controls the module (defaults to x/gov unless
   // overwritten).
   string admin = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string mca_tax = 2;
