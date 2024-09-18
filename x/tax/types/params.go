@@ -15,12 +15,12 @@ var (
 
 // NewParams creates a new Params instance.
 func NewParams(
-	proportionStr string,
+	mcaTaxStr string,
 	mcaAddress string,
 ) Params {
-	proportion := math.LegacyMustNewDecFromStr(proportionStr)
+	mcaTax := math.LegacyMustNewDecFromStr(mcaTaxStr)
 	return Params{
-		Proportion: proportion,
+		McaTax:     mcaTax,
 		McaAddress: mcaAddress,
 	}
 }
@@ -35,8 +35,8 @@ func DefaultParams() Params {
 
 // Validate validates the set of params.
 func (p Params) Validate() error {
-	if p.Proportion.IsNegative() {
-		return fmt.Errorf("proportion cannot be negative: %s", p.Proportion)
+	if p.McaTax.IsNegative() {
+		return fmt.Errorf("mca tax cannot be negative: %s", p.McaTax)
 	}
 	_, _, err := bech32.DecodeAndConvert(p.McaAddress)
 	if err != nil {

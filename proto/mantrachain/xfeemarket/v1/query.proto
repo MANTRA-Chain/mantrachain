@@ -13,7 +13,8 @@ option go_package = "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/MANTRA-Chain/mantrachain/xfeemarket/v1/params";
+    option (google.api.http).get =
+        "/MANTRA-Chain/mantrachain/xfeemarket/v1/params";
   }
 }
 
@@ -23,8 +24,6 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1 [
-    (gogoproto.nullable) = false,
-    (amino.dont_omitempty) = true
-  ];
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

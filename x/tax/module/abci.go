@@ -17,7 +17,7 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) error {
 		return err
 	}
 	// if the mca tax is zero, no need to continue
-	if params.Proportion.IsZero() {
+	if params.McaTax.IsZero() {
 		return nil
 	}
 
@@ -27,7 +27,7 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) error {
 		if err != nil {
 			return err
 		}
-		if err := k.AllocateMcaTax(ctx, params.Proportion, McaAddress); err != nil {
+		if err := k.AllocateMcaTax(ctx, params.McaTax, McaAddress); err != nil {
 			return err
 		}
 	}

@@ -9,12 +9,12 @@ import (
 )
 
 func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if _, err := k.addressCodec.StringToBytes(req.Authority); err != nil {
+	if _, err := k.addressCodec.StringToBytes(req.Admin); err != nil {
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	if k.GetAuthority() != req.Admin {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Admin)
 	}
 
 	updateParams, err := k.Params.Get(ctx)
@@ -22,8 +22,8 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		return nil, err
 	}
 
-	if req.Proportion != "" {
-		updateParams.Proportion, err = math.LegacyNewDecFromStr(req.Proportion)
+	if req.McaTax != "" {
+		updateParams.McaTax, err = math.LegacyNewDecFromStr(req.McaTax)
 		if err != nil {
 			return nil, err
 		}
