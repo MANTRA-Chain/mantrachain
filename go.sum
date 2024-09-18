@@ -256,8 +256,8 @@ github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
 github.com/DataDog/zstd v1.5.5/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917024159-b58cb5d3c0f1 h1:g1m2fa+ou2Oz0TSWqaPz2DL8qwzbIyyanmD5kaH3ukY=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240917024159-b58cb5d3c0f1/go.mod h1:1iMX2ZvMo/+qzlzU2qGuFL2tMzLBDXItNE8g590m8AY=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240916140102-852934319e43 h1:FGAVsYKkS8Tv/Hw1DrckEYUoQLf8YJ9vaycEtWd/g2A=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240916140102-852934319e43/go.mod h1:1iMX2ZvMo/+qzlzU2qGuFL2tMzLBDXItNE8g590m8AY=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.6 h1:qEnZjoHXv+4/s0LmKZWE0/AiZmMWEIkFfWBSf1a0wlU=
@@ -1109,8 +1109,6 @@ github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
-github.com/skip-mev/connect/v2 v2.0.0 h1:w7UZMqrWLVia5LjwJAfyGtphlDDo3fAka2wrqudTbNI=
-github.com/skip-mev/connect/v2 v2.0.0/go.mod h1:d+jdjRncjhdQJ4lkYoXSd6kTmcXF31kYI7GlGyioHZE=
 github.com/skip-mev/connect/v2 v2.0.1-0.20240918152634-04c8ba59dddc h1:h6Bw9i6S+hO+A1Mt0NkfmxyDAu2Wo8jOW741xIw3guM=
 github.com/skip-mev/connect/v2 v2.0.1-0.20240918152634-04c8ba59dddc/go.mod h1:d+jdjRncjhdQJ4lkYoXSd6kTmcXF31kYI7GlGyioHZE=
 github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
