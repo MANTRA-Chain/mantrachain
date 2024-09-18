@@ -57,8 +57,8 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
-	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
+	marketmapmodule "github.com/skip-mev/connect/v2/api/connect/marketmap/module/v2"
+	oraclemodule "github.com/skip-mev/connect/v2/api/connect/oracle/module/v2"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarketmodulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
@@ -336,11 +336,11 @@ var (
 			},
 			{
 				Name:   oracletypes.ModuleName,
-				Config: appconfig.WrapAny(&oraclemodulev1.Module{}),
+				Config: appconfig.WrapAny(&oraclemodule.Module{}),
 			},
 			{
 				Name:   marketmaptypes.ModuleName,
-				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
+				Config: appconfig.WrapAny(&marketmapmodule.Module{}),
 			},
 			{
 				Name: tokenfactorytypes.ModuleName,
