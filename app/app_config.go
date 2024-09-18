@@ -108,7 +108,6 @@ var (
 		// rate limit
 		ratelimittypes.ModuleName,
 		taxmoduletypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -143,7 +142,6 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
 	endBlockers = []string{
@@ -171,12 +169,10 @@ var (
 		// rate limit
 		ratelimittypes.ModuleName,
 		taxmoduletypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
 	preBlockers = []string{
 		upgradetypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/preBlockers
 	}
 
 	// module account permissions
@@ -196,7 +192,6 @@ var (
 		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: oracletypes.ModuleName, Permissions: []string{}},
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
-		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
 	// blocked account addresses
@@ -361,13 +356,6 @@ var (
 					Authority: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				}),
 			},
-			//			{
-			//				Name: tokenfactorytypes.ModuleName,
-			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
-			//					KnownModules: knownModules(),
-			//				}),
-			//			}
-			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},
 	})
 )
