@@ -26,10 +26,7 @@ message MsgUpdateParams {
   // overwritten).
   string admin = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string mca_tax = 2;
-  string mca_address = 3 [
-    (cosmos_proto.scalar) = "cosmos.AddressString",
-    (amino.dont_omitempty) = true
-  ];
+  string mca_address = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
