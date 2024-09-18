@@ -170,8 +170,6 @@ func (app *App) registerIBCModules(appOpts servertypes.AppOptions) error {
 	}
 	ibcRouter.AddRoute(wasmtypes.ModuleName, wasmStack)
 
-	// this line is used by starport scaffolding # ibc/app/module
-
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.ScopedIBCKeeper = scopedIBCKeeper
