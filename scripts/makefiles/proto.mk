@@ -58,7 +58,7 @@ proto-download-deps:
 
 	mkdir -p "$(THIRD_PARTY_DIR)/connect_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/connect_tmp" && \
-	git clone --depth 1 https://github.com/skip-mev/connect.git . && \
+	git clone --depth 1 https://github.com/skip-mev/connect.git --branch release/v1.0.12 . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/connect_tmp"
