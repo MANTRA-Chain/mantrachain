@@ -4,7 +4,7 @@ on:
    pull_request:
      branches: main
   
-name: Test
+name: Skip Connect Integration Test
 jobs:
   connect-test:
     strategy:
@@ -17,4 +17,4 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
-      - run: echo "Replace me"
+      - run: make test-connect
