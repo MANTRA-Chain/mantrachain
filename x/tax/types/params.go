@@ -6,12 +6,11 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/bech32"
 )
 
-// DefaultProportion represents the Proportion default value.
+// Declare defaults for MCA tax and MCA address
 var (
-	DefaultProportion = "0.5"
+	DefaultMcaTax     = "0.4"
 	DefaultMcaAddress = "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
 )
 
@@ -30,24 +29,23 @@ func NewParams(
 // DefaultParams returns a default set of parameters.
 func DefaultParams() Params {
 	return NewParams(
-		DefaultProportion,
+		DefaultMcaTax,
 		DefaultMcaAddress,
 	)
 }
 
 // Validate validates the set of params.
 func (p Params) Validate() error {
-	if p.McaTax.IsNegative() {
-		return fmt.Errorf("mca tax cannot be negative: %s", p.McaTax)
+	if err := ValidateMcaTax(p.McaTax.String()); err != nil {
+		return err
 	}
-	_, _, err := bech32.DecodeAndConvert(p.McaAddress)
-	if err != nil {
-		return fmt.Errorf("invalid mca address: %s", p.McaAddress)
+	if err := ValidateMcaAddress(p.McaAddress); err != nil {
+		return err
 	}
-
 	return nil
 }
 
+// ValidateMcaTax validates the mca tax.
 func ValidateMcaTax(i interface{}) error {
 	v, ok := i.(string)
 	if !ok {
@@ -66,6 +64,7 @@ func ValidateMcaTax(i interface{}) error {
 	return nil
 }
 
+// ValidateMcaAddress validates the mca address.
 func ValidateMcaAddress(address string) error {
 	if address == "" {
 		return fmt.Errorf("mca address cannot be empty")
