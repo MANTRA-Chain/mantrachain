@@ -8,7 +8,6 @@ import (
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +25,6 @@ func TestGenesis(t *testing.T) {
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
-
 }
 
 func init() {
