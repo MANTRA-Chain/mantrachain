@@ -15,15 +15,15 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/icza/dyno"
 	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
-	"github.com/skip-mev/slinky/x/oracle"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	integration "github.com/skip-mev/slinky/tests/integration"
+	"github.com/skip-mev/slinky/tests/integration"
 	marketmapmodule "github.com/skip-mev/slinky/x/marketmap"
+	"github.com/skip-mev/slinky/x/oracle"
 )
 
 func init() {
@@ -54,7 +54,7 @@ var (
 	gasAdjustment = 1.5
 
 	oracleImage = ibc.DockerImage{
-		Repository: "skip-mev/slinky-e2e-oracle",
+		Repository: "ghcr.io/skip-mev/slinky-sidecar",
 		Version:    "latest",
 		UidGid:     "1000:1000",
 	}
@@ -66,12 +66,9 @@ var (
 		marketmapmodule.AppModuleBasic{},
 	)
 
-	//nolint:unused // may need to be updated to reflect mantra genesis
 	defaultGenesis = marketmaptypes.DefaultGenesisState()
-	//nolint:unused // may need to be updated to reflect mantra genesis
-	govAddr = authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	//nolint:unused // may need to be updated to reflect mantra genesis
-	params = marketmaptypes.Params{
+	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	params         = marketmaptypes.Params{
 		MarketAuthorities: []string{govAddr},
 		Admin:             govAddr,
 	}
