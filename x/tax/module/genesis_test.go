@@ -127,6 +127,11 @@ func TestParams_Validate(t *testing.T) {
 			params:  types.NewParams(types.DefaultMcaTax, "invalid_address"),
 			wantErr: true,
 		},
+		{
+			name:    "mca tax too high",
+			params:  types.NewParams("1.1", "mantra1qypqxpq9qcrsszg2pvxq6rs0zqg3yyc5lzutu9"),
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

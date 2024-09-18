@@ -48,6 +48,27 @@ func TestGenesisState_Validate(t *testing.T) {
 			},
 			valid: false,
 		},
+		{
+			desc: "valid custom parameters",
+			genState: &types.GenesisState{
+				Params: types.NewParams("0.1", "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"),
+			},
+			valid: true,
+		},
+		{
+			desc: "mca tax greater than 1 is invalid",
+			genState: &types.GenesisState{
+				Params: types.NewParams("1.5", types.DefaultMcaAddress),
+			},
+			valid: false,
+		},
+		{
+			desc: "empty mca address is invalid",
+			genState: &types.GenesisState{
+				Params: types.NewParams(types.DefaultMcaTax, ""),
+			},
+			valid: false,
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
