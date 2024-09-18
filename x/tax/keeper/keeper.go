@@ -84,12 +84,12 @@ func (k Keeper) Logger() log.Logger {
 	return k.logger.With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) AllocateMcaTax(ctx context.Context, proportion math.LegacyDec, mcaAddress sdk.AccAddress) error {
+func (k Keeper) AllocateMcaTax(ctx context.Context, mcaTax math.LegacyDec, mcaAddress sdk.AccAddress) error {
 	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
-	mcaTaxAllocation, _ := feesCollected.MulDec(proportion).TruncateDecimal()
+	mcaTaxAllocation, _ := feesCollected.MulDec(mcaTax).TruncateDecimal()
 
 	// transfer allocated mca tax to the specified account
 	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, k.feeCollectorName, mcaAddress, mcaTaxAllocation)

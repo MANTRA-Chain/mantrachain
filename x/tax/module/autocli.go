@@ -16,7 +16,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},
-				// this line is used by ignite scaffolding # autocli/query
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
@@ -28,8 +27,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "update-params",
 					Skip:      false,
 					FlagOptions: map[string]*autocliv1.FlagOptions{
-						"proportion": {
-							Usage:        "proportion for the mca allocation in decimal",
+						"mca_tax": {
+							Usage:        "mca tax for the allocation in decimal",
 							DefaultValue: "",
 						},
 						"mca_address": {
@@ -38,9 +37,8 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 						},
 					},
 					Short:   "Update the parameters of the tax module",
-					Example: "mantrachaind tx tax update-params --proportion 0.5 --mca_address mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+					Example: "mantrachaind tx tax update-params --mca_tax 0.4--mca_address mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				},
-				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},
 	}

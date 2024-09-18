@@ -28,7 +28,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid bech32 address",
 			genState: &types.GenesisState{
-				Params: types.NewParams(types.DefaultProportion, "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qkb"),
+				Params: types.NewParams(types.DefaultMcaTax, "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qkb"),
 			},
 			valid: false,
 		},
