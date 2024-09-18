@@ -2,8 +2,10 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 )
 
@@ -43,5 +45,30 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid mca address: %s", p.McaAddress)
 	}
 
+	return nil
+}
+
+func ValidateMcaTax(mcaTaxStr string) error {
+	mcaTax, err := math.LegacyNewDecFromStr(mcaTaxStr)
+	if err != nil {
+		return fmt.Errorf("invalid mca tax: %w", err)
+	}
+	if mcaTax.IsNegative() || mcaTax.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("mca tax must be between 0 and 1")
+	}
+	return nil
+}
+
+func ValidateMcaAddress(address string) error {
+	if address == "" {
+		return fmt.Errorf("mca address cannot be empty")
+	}
+	_, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return fmt.Errorf("invalid mca address: %w", err)
+	}
+	if !strings.HasPrefix(address, "mantra") {
+		return fmt.Errorf("mca address must have 'mantra' prefix")
+	}
 	return nil
 }
