@@ -4,7 +4,7 @@ on:
    pull_request:
      branches: main
   
-name: Test
+name: Skip Connect Integration Test
 jobs:
   connect-test:
     strategy:
