@@ -1109,8 +1109,6 @@ github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
-github.com/skip-mev/connect/v2 v2.0.0-20240904203759-36c682ce9f06 h1:FJ+v87/YmZjOMknCBsNO8HC2HDgrNH4Tum91nx4AF4I=
-github.com/skip-mev/connect/v2 v2.0.0-20240904203759-36c682ce9f06/go.mod h1:EKlKHS16gx+Gh5aEM2PUCYfy4WkxIQw1BcLQ0WGf94k=
 github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
 github.com/skip-mev/feemarket v1.1.1/go.mod h1:DUa6djUsTeMOrbrcIZqWSVxU9IZNCXp96ruaojyBNpc=
 github.com/skip-mev/slinky v1.0.12 h1:qmZHB6c5fgDhO/pv67YcZc2M25t3gZcceVmJtA9zjOo=

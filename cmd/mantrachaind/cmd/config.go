@@ -6,7 +6,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
-	oracleconfig "github.com/skip-mev/connect/v2/oracle/config"
+	oracleconfig "github.com/skip-mev/slinky/oracle/config"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.

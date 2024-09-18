@@ -47,7 +47,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0
 	github.com/rakyll/statik v0.1.7
-	github.com/skip-mev/connect/v2 v2.0.0-20240904203759-36c682ce9f06
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/skip-mev/slinky v1.0.12
 	github.com/spf13/cobra v1.8.1

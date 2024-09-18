@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 )
 
 // GenesisState of the blockchain is represented here as a map of raw json
