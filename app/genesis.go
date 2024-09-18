@@ -7,9 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	oracletypes "github.com/skip-mev/slinky/x/oracle/types"
 )
 
 // GenesisState of the blockchain is represented here as a map of raw json
@@ -43,9 +43,7 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 
 	distributionGenesis := distributiontypes.GenesisState{
 		Params: distributiontypes.Params{
-			CommunityTax: math.LegacyMustNewDecFromStr("0.01"),
-			//			McaTax:              math.LegacyMustNewDecFromStr("0.4"),
-			//			McaAddress:          "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+			CommunityTax:        math.LegacyMustNewDecFromStr("0.01"),
 			WithdrawAddrEnabled: true,
 		},
 	}
