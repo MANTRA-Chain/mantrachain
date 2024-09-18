@@ -48,14 +48,21 @@ func (p Params) Validate() error {
 	return nil
 }
 
-func ValidateMcaTax(mcaTaxStr string) error {
-	mcaTax, err := math.LegacyNewDecFromStr(mcaTaxStr)
-	if err != nil {
-		return fmt.Errorf("invalid mca tax: %w", err)
+func ValidateMcaTax(i interface{}) error {
+	v, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
+
+	mcaTax, err := math.LegacyNewDecFromStr(v)
+	if err != nil {
+		return fmt.Errorf("invalid mca tax: %s", err)
+	}
+
 	if mcaTax.IsNegative() || mcaTax.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("mca tax must be between 0 and 1")
 	}
+
 	return nil
 }
 

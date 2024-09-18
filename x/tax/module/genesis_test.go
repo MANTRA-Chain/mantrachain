@@ -45,7 +45,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-				Params: types.NewParams("0.1", "mantra1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a"),
+				Params: types.NewParams("0.1", "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"),
 			},
 			valid: true,
 		},
@@ -103,7 +103,7 @@ func TestParams_Validate(t *testing.T) {
 		},
 		{
 			name:    "valid params",
-			params:  types.NewParams("0.1", "mantra1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a"),
+			params:  types.NewParams("0.1", "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"),
 			wantErr: false,
 		},
 		{
@@ -160,7 +160,7 @@ func TestParams_ValidateMcaAddress(t *testing.T) {
 		address string
 		wantErr bool
 	}{
-		{"valid address", "mantra1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a", false},
+		{"valid address", "cosmos15m77x4pe6w9vtpuqm22qxu0ds7vn4ehz9dd9u2", false},
 		{"empty address", "", true},
 		{"invalid bech32", "invalid_address", true},
 		{"wrong prefix", "cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a", true},
