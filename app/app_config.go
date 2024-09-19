@@ -33,7 +33,10 @@ import (
 	"cosmossdk.io/x/nft"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	taxmodulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/module/v1"
 	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
+	_ "github.com/MANTRA-Chain/mantrachain/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -57,8 +60,8 @@ import (
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	marketmapmodulev1 "github.com/skip-mev/connect/v2/api/slinky/marketmap/module/v1"
-	oraclemodulev1 "github.com/skip-mev/connect/v2/api/slinky/oracle/module/v1"
+	marketmapmodule "github.com/skip-mev/connect/v2/api/connect/marketmap/module/v2"
+	oraclemodule "github.com/skip-mev/connect/v2/api/connect/oracle/module/v2"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	feemarketmodulev1 "github.com/skip-mev/feemarket/api/feemarket/feemarket/module/v1"
@@ -67,12 +70,6 @@ import (
 )
 
 var (
-	// NOTE: The genutils module must occur after staking so that pools are
-	// properly initialized with tokens from genesis accounts.
-	// NOTE: The genutils module must also occur after auth so that it can access the params from auth.
-	// NOTE: Capability module must occur first so that it can initialize any capabilities
-	// so that other modules that want to create or claim capabilities afterwards in InitChain
-	// can do so safely.
 	genesisModuleOrder = []string{
 		// cosmos-sdk/ibc modules
 		capabilitytypes.ModuleName,
@@ -110,7 +107,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
+		taxtypes.ModuleName,
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -122,6 +119,8 @@ var (
 		// cosmos sdk modules
 		minttypes.ModuleName,
 		feemarkettypes.ModuleName,
+		// mca tax before distribution
+		taxtypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -143,7 +142,6 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
 	endBlockers = []string{
@@ -170,12 +168,11 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/endBlockers
+		taxtypes.ModuleName,
 	}
 
 	preBlockers = []string{
 		upgradetypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/preBlockers
 	}
 
 	// module account permissions
@@ -195,7 +192,6 @@ var (
 		{Account: wasmtypes.ModuleName, Permissions: []string{authtypes.Burner}},
 		{Account: oracletypes.ModuleName, Permissions: []string{}},
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
-		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 
 	// blocked account addresses
@@ -336,11 +332,11 @@ var (
 			},
 			{
 				Name:   oracletypes.ModuleName,
-				Config: appconfig.WrapAny(&oraclemodulev1.Module{}),
+				Config: appconfig.WrapAny(&oraclemodule.Module{}),
 			},
 			{
 				Name:   marketmaptypes.ModuleName,
-				Config: appconfig.WrapAny(&marketmapmodulev1.Module{}),
+				Config: appconfig.WrapAny(&marketmapmodule.Module{}),
 			},
 			{
 				Name: tokenfactorytypes.ModuleName,
@@ -354,13 +350,12 @@ var (
 					Authority: "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
 				}),
 			},
-			//			{
-			//				Name: tokenfactorytypes.ModuleName,
-			//				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
-			//					KnownModules: knownModules(),
-			//				}),
-			//			}
-			// this line is used by starport scaffolding # stargate/app/moduleConfig
+			{
+				Name: taxtypes.ModuleName,
+				Config: appconfig.WrapAny(&taxmodulev1.Module{
+					Authority: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
+				}),
+			},
 		},
 	})
 )

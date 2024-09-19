@@ -10,15 +10,11 @@ option go_package = "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types";
 // GenesisState defines the xfeemarket module's genesis state.
 message GenesisState {
   // params defines all the parameters of the module.
-  Params params = 1 [
-    (gogoproto.nullable) = false,
-    (amino.dont_omitempty) = true
-  ];
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
-  repeated denom_multiplier denom_multipliers = 2 [
-    (gogoproto.nullable) = false,
-    (amino.dont_omitempty) = true
-  ];
+  repeated denom_multiplier denom_multipliers = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
 message denom_multiplier {
