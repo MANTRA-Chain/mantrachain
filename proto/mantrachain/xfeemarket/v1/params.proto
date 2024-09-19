@@ -10,6 +10,4 @@ option go_package = "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types";
 message Params {
   option (amino.name) = "mantrachain/x/xfeemarket/Params";
   option (gogoproto.equal) = true;
-
-  
 }

@@ -7,8 +7,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types";
 
-
-
 // Params defines the parameters for the tokenfactory module.
 message Params {
   // DenomCreationFee defines the fee to be charged on the creation of a new
@@ -32,5 +30,4 @@ message Params {
   // FeeCollectorAddress is the address where fees collected from denom creation
   // are sent to
   string fee_collector_address = 3;
-
 }

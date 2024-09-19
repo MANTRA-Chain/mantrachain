@@ -27,7 +27,6 @@ type (
 
 		// DenomMultipliers is a map of denomination and their multipliers against the default base fee denomination.
 		DenomMultipliers collections.Map[string, sdk.DecProto]
-		// this line is used by starport scaffolding # collection/type
 	}
 )
 
@@ -49,7 +48,6 @@ func NewKeeper(
 		Params:           collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		DenomMultipliers: collections.NewMap(sb, types.PrefixDenomMultiplier, "denom_multipliers", collections.StringKey, codec.CollValue[sdk.DecProto](cdc)),
 		bankkeeper:       bankkeeper,
-		// this line is used by starport scaffolding # collection/instantiate
 	}
 
 	schema, err := sb.Build()
