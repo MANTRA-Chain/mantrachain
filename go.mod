@@ -15,7 +15,7 @@ replace (
 
 require (
 	cosmossdk.io/api v0.7.5
-	cosmossdk.io/client/v2 v2.0.0-beta.4
+	cosmossdk.io/client/v2 v2.0.0-beta.5
 	cosmossdk.io/collections v0.4.0
 	cosmossdk.io/core v0.11.1
 	cosmossdk.io/depinject v1.0.0
@@ -28,7 +28,7 @@ require (
 	cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/nft v0.1.1
-	cosmossdk.io/x/tx v0.13.4
+	cosmossdk.io/x/tx v0.13.5
 	cosmossdk.io/x/upgrade v0.1.4
 	github.com/CosmWasm/wasmd v0.53.0
 	github.com/CosmWasm/wasmvm/v2 v2.1.2
