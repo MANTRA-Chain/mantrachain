@@ -393,9 +393,7 @@
         "community_tax": "0.010000000000000000",
         "base_proposer_reward": "0.000000000000000000",
         "bonus_proposer_reward": "0.000000000000000000",
-        "withdraw_addr_enabled": true,
-        "mca_tax": "0.400000000000000000",
-        "mca_address": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
+        "withdraw_addr_enabled": true
       },
       "fee_pool": {
         "community_pool": []
@@ -1374,6 +1372,13 @@
       "unbonding_delegations": [],
       "redelegations": [],
       "exported": false
+    },
+    "tax": {
+      "params": {
+        "admin": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+        "mca_tax": "0.400000000000000000",
+        "mca_address": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
+      }
     },
     "transfer": {
       "port_id": "transfer",

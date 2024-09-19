@@ -43,9 +43,9 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 
 	distributionGenesis := distributiontypes.GenesisState{
 		Params: distributiontypes.Params{
-			CommunityTax:        math.LegacyMustNewDecFromStr("0.01"),
-			McaTax:              math.LegacyMustNewDecFromStr("0.4"),
-			McaAddress:          "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
+			CommunityTax: math.LegacyMustNewDecFromStr("0.01"),
+			//			McaTax:              math.LegacyMustNewDecFromStr("0.4"),
+			//			McaAddress:          "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
 			WithdrawAddrEnabled: true,
 		},
 	}

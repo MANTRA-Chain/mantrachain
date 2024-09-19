@@ -22,7 +22,8 @@ import (
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
-	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory"     // import for side-effects
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
+	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory" // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -164,10 +165,9 @@ type App struct {
 	WasmKeeper       wasmkeeper.Keeper
 	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
-	// TokenFactory
+	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
-
-	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
+	TaxKeeper          taxkeeper.Keeper
 
 	// simulation manager
 	sm *module.SimulationManager
@@ -192,11 +192,9 @@ func MantraCoinDenomRegex() string {
 // getGovProposalHandlers return the chain proposal handlers.
 func getGovProposalHandlers() []govclient.ProposalHandler {
 	var govProposalHandlers []govclient.ProposalHandler
-	// this line is used by starport scaffolding # stargate/app/govProposalHandlers
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
 
 	return govProposalHandlers
@@ -213,7 +211,6 @@ func AppConfig() depinject.Config {
 			map[string]module.AppModuleBasic{
 				genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 				govtypes.ModuleName:     gov.NewAppModuleBasic(getGovProposalHandlers()),
-				// this line is used by starport scaffolding # stargate/appConfig/moduleBasic
 			},
 		),
 	)
@@ -287,6 +284,7 @@ func New(
 
 		// Mantrachain Keepers
 		&app.TokenFactoryKeeper,
+		&app.TaxKeeper,
 
 		// IBCRateLimitKeeper
 		&app.RateLimitKeeper,
