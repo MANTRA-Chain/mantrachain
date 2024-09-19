@@ -8,16 +8,17 @@ import (
 
 // ValidateBasic implements Authorization.ValidateBasic.
 func (msg MsgUpdateParams) ValidateBasic() error {
-	proportion := math.LegacyZeroDec()
+	mcaTax := math.LegacyZeroDec()
 	if msg.McaTax != "" {
 		var err error
-		proportion, err = math.LegacyNewDecFromStr(msg.McaTax)
+		mcaTax, err = math.LegacyNewDecFromStr(msg.McaTax)
 		if err != nil {
 			return err
 		}
 	}
-	if proportion.IsNegative() {
-		return errors.New("proportion cannot be negative")
+	if mcaTax.IsNegative() {
+		return errors.New("mcaTax cannot be negative")
 	}
+
 	return nil
 }
