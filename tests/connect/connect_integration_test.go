@@ -54,7 +54,7 @@ var (
 	gasAdjustment = 1.5
 
 	oracleImage = ibc.DockerImage{
-		Repository: "skip-mev/connect-e2e-sidecar",
+		Repository: "ghcr.io/skip-mev/slinky-sidecar",
 		Version:    "latest",
 		UidGid:     "1000:1000",
 	}
