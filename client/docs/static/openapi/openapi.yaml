@@ -1358,7 +1358,9 @@ paths:
                     description: params holds all the parameters of this module.
                     type: object
                     properties:
-                      proportion:
+                      admin:
+                        type: string
+                      mca_tax:
                         type: string
                       mca_address:
                         type: string
@@ -42711,7 +42713,9 @@ components:
     mantrachain.tax.v1.Params:
       type: object
       properties:
-        proportion:
+        admin:
+          type: string
+        mca_tax:
           type: string
         mca_address:
           type: string
@@ -42723,7 +42727,9 @@ components:
           description: params holds all the parameters of this module.
           type: object
           properties:
-            proportion:
+            admin:
+              type: string
+            mca_tax:
               type: string
             mca_address:
               type: string

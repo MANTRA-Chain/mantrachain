@@ -36,7 +36,7 @@ import (
 	taxmodulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/module/v1"
 	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
 	_ "github.com/MANTRA-Chain/mantrachain/x/tax/module"
-	taxmoduletypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -107,7 +107,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		taxmoduletypes.ModuleName,
+		taxtypes.ModuleName,
 	}
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -120,7 +120,7 @@ var (
 		minttypes.ModuleName,
 		feemarkettypes.ModuleName,
 		// mca tax before distribution
-		taxmoduletypes.ModuleName,
+		taxtypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -168,7 +168,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		// rate limit
 		ratelimittypes.ModuleName,
-		taxmoduletypes.ModuleName,
+		taxtypes.ModuleName,
 	}
 
 	preBlockers = []string{
@@ -351,7 +351,7 @@ var (
 				}),
 			},
 			{
-				Name: taxmoduletypes.ModuleName,
+				Name: taxtypes.ModuleName,
 				Config: appconfig.WrapAny(&taxmodulev1.Module{
 					Authority: "mantra1axznhnm82lah8qqvp9hxdad49yx3s5dcj66qka",
 				}),
