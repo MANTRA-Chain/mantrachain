@@ -1367,6 +1367,8 @@ paths:
                     type: string
                   mca_address:
                     type: string
+                  max_mca_tax:
+                    type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -46125,6 +46127,8 @@ definitions:
         type: string
       mca_address:
         type: string
+      max_mca_tax:
+        type: string
     description: Params defines the parameters for the module.
   mantrachain.tax.v1.QueryParamsResponse:
     type: object
@@ -46138,6 +46142,8 @@ definitions:
           mca_tax:
             type: string
           mca_address:
+            type: string
+          max_mca_tax:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   cosmos.base.v1beta1.Coin:
