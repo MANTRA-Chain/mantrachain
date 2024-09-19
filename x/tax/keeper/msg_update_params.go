@@ -14,6 +14,15 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
+	params, err := k.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Admin != params.Admin {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid admin; expected %s, got %s", params.Admin, req.Admin)
+	}
+
 	if k.GetAuthority() != req.Admin {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Admin)
 	}
