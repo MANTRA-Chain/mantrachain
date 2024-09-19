@@ -60,25 +60,26 @@ func ValidateMcaTax(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	maxTax, err := math.LegacyNewDecFromStr(MaxMcaTax)
-	if err != nil {
-		return fmt.Errorf("invalid mca max tax: %s", err)
-	}
-	if maxTax.IsNegative() || maxTax.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("mca max tax must be between 0 and 1")
-	}
-
 	mcaTax, err := math.LegacyNewDecFromStr(v)
 	if err != nil {
 		return fmt.Errorf("invalid mca tax: %s", err)
 	}
 
-	if mcaTax.GT(maxTax) {
-		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
-	}
-
 	if mcaTax.IsNegative() {
 		return fmt.Errorf("mca tax cannot be negative")
+	}
+
+	if mcaTax.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("mca tax cannot exceed 100%%")
+	}
+
+	maxTax, err := math.LegacyNewDecFromStr(MaxMcaTax)
+	if err != nil {
+		return fmt.Errorf("invalid mca max tax: %s", err)
+	}
+
+	if mcaTax.GT(maxTax) {
+		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
 	}
 
 	return nil

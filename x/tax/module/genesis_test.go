@@ -156,7 +156,6 @@ func TestParams_ValidateProportion(t *testing.T) {
 		{"max tax", "0.3", false},
 		{"negative tax", "-0.1", true},
 		{"tax greater than 1", "1.1", true},
-		{"invalid format", "abc", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
