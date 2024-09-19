@@ -14,15 +14,19 @@ var (
 	DefaultMcaAddress = "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
 )
 
+const MaxMcaTax = "0.4" // 40%
+
 // NewParams creates a new Params instance.
 func NewParams(
 	mcaTaxStr string,
 	mcaAddress string,
 ) Params {
 	mcaTax := math.LegacyMustNewDecFromStr(mcaTaxStr)
+	maxMcaTax := math.LegacyMustNewDecFromStr(MaxMcaTax)
 	return Params{
 		McaTax:     mcaTax,
 		McaAddress: mcaAddress,
+		MaxMcaTax:  maxMcaTax,
 	}
 }
 
@@ -42,6 +46,10 @@ func (p Params) Validate() error {
 	if err := ValidateMcaAddress(p.McaAddress); err != nil {
 		return err
 	}
+	maxTax, _ := math.LegacyNewDecFromStr(MaxMcaTax)
+	if p.McaTax.GT(maxTax) {
+		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
+	}
 	return nil
 }
 
@@ -57,8 +65,13 @@ func ValidateMcaTax(i interface{}) error {
 		return fmt.Errorf("invalid mca tax: %s", err)
 	}
 
-	if mcaTax.IsNegative() || mcaTax.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("mca tax must be between 0 and 1")
+	maxTax, _ := math.LegacyNewDecFromStr(MaxMcaTax)
+	if mcaTax.GT(maxTax) {
+		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
+	}
+
+	if mcaTax.IsNegative() {
+		return fmt.Errorf("mca tax cannot be negative")
 	}
 
 	return nil

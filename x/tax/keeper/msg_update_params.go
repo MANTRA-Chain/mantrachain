@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -26,6 +27,10 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		updateParams.McaTax, err = math.LegacyNewDecFromStr(req.McaTax)
 		if err != nil {
 			return nil, err
+		}
+		// Check against MaxMcaTax
+		if updateParams.McaTax.GT(updateParams.MaxMcaTax) {
+			return nil, fmt.Errorf("mca tax cannot exceed maximum of %s", updateParams.MaxMcaTax)
 		}
 	}
 
