@@ -9,7 +9,7 @@ require (
 	github.com/icza/dyno v0.0.0-20230330125955-09f820a8d9c0
 	github.com/skip-mev/connect/tests/integration/v2 v2.0.0-20240918152634-04c8ba59dddc
 	github.com/skip-mev/connect/v2 v2.0.1
-	github.com/strangelove-ventures/interchaintest/v8 v8.7.1-0.20240912131431-9b1dbc375e5b
+	github.com/strangelove-ventures/interchaintest/v8 v8.7.1
 	github.com/stretchr/testify v1.9.0
 )
 
