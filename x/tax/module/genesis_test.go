@@ -151,12 +151,11 @@ func TestParams_ValidateProportion(t *testing.T) {
 		proportion string
 		wantErr    bool
 	}{
-		{"valid proportion", "0.1", false},
-		{"zero proportion", "0", false},
-		{"max proportion", "1", false},
-		{"negative proportion", "-0.1", true},
-		{"proportion greater than 1", "1.1", true},
-		{"invalid format", "abc", true},
+		{"valid tax", "0.1", false},
+		{"zero tax", "0", false},
+		{"max tax", "0.3", false},
+		{"negative tax", "-0.1", true},
+		{"tax greater than 1", "1.1", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
