@@ -14,16 +14,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/icza/dyno"
-	marketmaptypes "github.com/skip-mev/slinky/x/marketmap/types"
+	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
+	"github.com/skip-mev/connect/v2/x/oracle"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
 	"github.com/strangelove-ventures/interchaintest/v8/ibc"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/skip-mev/slinky/tests/integration"
-	marketmapmodule "github.com/skip-mev/slinky/x/marketmap"
-	"github.com/skip-mev/slinky/x/oracle"
+	integration "github.com/skip-mev/connect/tests/integration/v2"
+	marketmapmodule "github.com/skip-mev/connect/v2/x/marketmap"
 )
 
 func init() {
@@ -66,9 +66,12 @@ var (
 		marketmapmodule.AppModuleBasic{},
 	)
 
+	//nolint:unused // may need to be updated to reflect mantra genesis
 	defaultGenesis = marketmaptypes.DefaultGenesisState()
-	govAddr        = authtypes.NewModuleAddress(govtypes.ModuleName).String()
-	params         = marketmaptypes.Params{
+	//nolint:unused // may need to be updated to reflect mantra genesis
+	govAddr = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	//nolint:unused // may need to be updated to reflect mantra genesis
+	params = marketmaptypes.Params{
 		MarketAuthorities: []string{govAddr},
 		Admin:             govAddr,
 	}
@@ -117,7 +120,7 @@ var (
 )
 
 func TestSlinkyOracleIntegration(t *testing.T) {
-	baseSuite := integration.NewSlinkyIntegrationSuite(
+	baseSuite := integration.NewConnectIntegrationSuite(
 		spec,
 		oracleImage,
 		integration.WithDenom(denom),
