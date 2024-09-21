@@ -13,11 +13,12 @@ message GenesisState {
   Params params = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 
-  repeated denom_multiplier denom_multipliers = 2
+  repeated DenomMultiplier denom_multipliers = 2
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
-message denom_multiplier {
+// DenomMultiplier is a struct that contains the denom and the multiplier.
+message DenomMultiplier {
   string denom = 1;
   string multiplier = 2;
 }
