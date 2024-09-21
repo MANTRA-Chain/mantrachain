@@ -15,7 +15,7 @@ linters:
     - durationcheck
     - errcheck
     - errname
-    - exportloopref
+    - copyloopvar
     - fatcontext
     - forcetypeassert
     - gci
@@ -45,7 +45,6 @@ linters:
     - thelper
     - tparallel
     - typecheck
-    - thelper
     - unconvert
     - unused
     - whitespace

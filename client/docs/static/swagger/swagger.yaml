@@ -1,9 +1,1401 @@
 swagger: '2.0'
 info:
-  title: Osmosis - gRPC Gateway docs
+  title: DuKong - gRPC Gateway docs
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
+  /connect/marketmap/v2/last_updated:
+    get:
+      summary: LastUpdated returns the last height the market map was updated at.
+      operationId: LastUpdated
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              last_updated:
+                type: string
+                format: uint64
+            description: >-
+              LastUpdatedResponse is the response type for the Query/LastUpdated
+              RPC
+
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /connect/marketmap/v2/market:
+    get:
+      summary: |-
+        Market returns a market stored in the x/marketmap
+        module.
+      operationId: Market
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              market:
+                description: >-
+                  Market is the configuration of a single market to be
+                  price-fetched for.
+                type: object
+                properties:
+                  ticker:
+                    description: >-
+                      Ticker represents a price feed for a given asset pair i.e.
+                      BTC/USD. The
+
+                      price feed is scaled to a number of decimal places and has
+                      a minimum number
+
+                      of providers required to consider the ticker valid.
+                    type: object
+                    properties:
+                      currency_pair:
+                        description: CurrencyPair is the currency pair for this ticker.
+                        type: object
+                        properties:
+                          Base:
+                            type: string
+                          Quote:
+                            type: string
+                        title: >-
+                          CurrencyPair is the standard representation of a pair
+                          of assets, where one
+
+                          (Base) is priced in terms of the other (Quote)
+                      decimals:
+                        type: string
+                        format: uint64
+                        description: >-
+                          Decimals is the number of decimal places for the
+                          ticker. The number of
+
+                          decimal places is used to convert the price to a
+                          human-readable format.
+                      min_provider_count:
+                        type: string
+                        format: uint64
+                        description: >-
+                          MinProviderCount is the minimum number of providers
+                          required to consider
+
+                          the ticker valid.
+                      enabled:
+                        type: boolean
+                        description: >-
+                          Enabled is the flag that denotes if the Ticker is
+                          enabled for price
+
+                          fetching by an oracle.
+                      metadata_JSON:
+                        type: string
+                        description: >-
+                          MetadataJSON is a string of JSON that encodes any
+                          extra configuration
+
+                          for the given ticker.
+                  provider_configs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: >-
+                            Name corresponds to the name of the provider for
+                            which the configuration is
+
+                            being set.
+                        off_chain_ticker:
+                          type: string
+                          description: >-
+                            OffChainTicker is the off-chain representation of
+                            the ticker i.e. BTC/USD.
+
+                            The off-chain ticker is unique to a given provider
+                            and is used to fetch the
+
+                            price of the ticker from the provider.
+                        normalize_by_pair:
+                          description: >-
+                            NormalizeByPair is the currency pair for this ticker
+                            to be normalized by.
+
+                            For example, if the desired Ticker is BTC/USD, this
+                            market could be reached
+
+                            using: OffChainTicker = BTC/USDT NormalizeByPair =
+                            USDT/USD This field is
+
+                            optional and nullable.
+                          type: object
+                          properties:
+                            Base:
+                              type: string
+                            Quote:
+                              type: string
+                          title: >-
+                            CurrencyPair is the standard representation of a
+                            pair of assets, where one
+
+                            (Base) is priced in terms of the other (Quote)
+                        invert:
+                          type: boolean
+                          title: >-
+                            Invert is a boolean indicating if the BASE and QUOTE
+                            of the market should
+
+                            be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                        metadata_JSON:
+                          type: string
+                          description: >-
+                            MetadataJSON is a string of JSON that encodes any
+                            extra configuration
+
+                            for the given provider config.
+                    description: >-
+                      ProviderConfigs is the list of provider-specific configs
+                      for this Market.
+            description: MarketResponse is the query response for the Market query.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: currency_pair.Base
+          in: query
+          required: false
+          type: string
+        - name: currency_pair.Quote
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /connect/marketmap/v2/marketmap:
+    get:
+      summary: |-
+        MarketMap returns the full market map stored in the x/marketmap
+        module.
+      operationId: MarketMap
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              market_map:
+                description: >-
+                  MarketMap defines the global set of market configurations for
+                  all providers
+
+                  and markets.
+                type: object
+                properties:
+                  markets:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        ticker:
+                          description: >-
+                            Ticker represents a price feed for a given asset
+                            pair i.e. BTC/USD. The
+
+                            price feed is scaled to a number of decimal places
+                            and has a minimum number
+
+                            of providers required to consider the ticker valid.
+                          type: object
+                          properties:
+                            currency_pair:
+                              description: >-
+                                CurrencyPair is the currency pair for this
+                                ticker.
+                              type: object
+                              properties:
+                                Base:
+                                  type: string
+                                Quote:
+                                  type: string
+                              title: >-
+                                CurrencyPair is the standard representation of a
+                                pair of assets, where one
+
+                                (Base) is priced in terms of the other (Quote)
+                            decimals:
+                              type: string
+                              format: uint64
+                              description: >-
+                                Decimals is the number of decimal places for the
+                                ticker. The number of
+
+                                decimal places is used to convert the price to a
+                                human-readable format.
+                            min_provider_count:
+                              type: string
+                              format: uint64
+                              description: >-
+                                MinProviderCount is the minimum number of
+                                providers required to consider
+
+                                the ticker valid.
+                            enabled:
+                              type: boolean
+                              description: >-
+                                Enabled is the flag that denotes if the Ticker
+                                is enabled for price
+
+                                fetching by an oracle.
+                            metadata_JSON:
+                              type: string
+                              description: >-
+                                MetadataJSON is a string of JSON that encodes
+                                any extra configuration
+
+                                for the given ticker.
+                        provider_configs:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: >-
+                                  Name corresponds to the name of the provider
+                                  for which the configuration is
+
+                                  being set.
+                              off_chain_ticker:
+                                type: string
+                                description: >-
+                                  OffChainTicker is the off-chain representation
+                                  of the ticker i.e. BTC/USD.
+
+                                  The off-chain ticker is unique to a given
+                                  provider and is used to fetch the
+
+                                  price of the ticker from the provider.
+                              normalize_by_pair:
+                                description: >-
+                                  NormalizeByPair is the currency pair for this
+                                  ticker to be normalized by.
+
+                                  For example, if the desired Ticker is BTC/USD,
+                                  this market could be reached
+
+                                  using: OffChainTicker = BTC/USDT
+                                  NormalizeByPair = USDT/USD This field is
+
+                                  optional and nullable.
+                                type: object
+                                properties:
+                                  Base:
+                                    type: string
+                                  Quote:
+                                    type: string
+                                title: >-
+                                  CurrencyPair is the standard representation of
+                                  a pair of assets, where one
+
+                                  (Base) is priced in terms of the other (Quote)
+                              invert:
+                                type: boolean
+                                title: >-
+                                  Invert is a boolean indicating if the BASE and
+                                  QUOTE of the market should
+
+                                  be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                              metadata_JSON:
+                                type: string
+                                description: >-
+                                  MetadataJSON is a string of JSON that encodes
+                                  any extra configuration
+
+                                  for the given provider config.
+                          description: >-
+                            ProviderConfigs is the list of provider-specific
+                            configs for this Market.
+                      description: >-
+                        Market encapsulates a Ticker and its provider-specific
+                        configuration.
+                    description: >-
+                      Markets is the full list of tickers and their associated
+                      configurations
+
+                      to be stored on-chain.
+              last_updated:
+                type: string
+                format: uint64
+                description: >-
+                  LastUpdated is the last block height that the market map was
+                  updated.
+
+                  This field can be used as an optimization for clients checking
+                  if there
+
+                  is a new update to the map.
+              chain_id:
+                type: string
+                description: ChainId is the chain identifier for the market map.
+            description: MarketMapResponse is the query response for the MarketMap query.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /connect/marketmap/v2/params:
+    get:
+      summary: Params returns the current x/marketmap module parameters.
+      operationId: MarketMapParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  market_authorities:
+                    type: array
+                    items:
+                      type: string
+                    description: >-
+                      MarketAuthorities is the list of authority accounts that
+                      are able to
+
+                      control updating the marketmap.
+                  admin:
+                    type: string
+                    description: >-
+                      Admin is an address that can remove addresses from the
+                      MarketAuthorities
+
+                      list. Only governance can add to the MarketAuthorities or
+                      change the Admin.
+                description: Params defines the parameters for the x/marketmap module.
+            description: >-
+              ParamsResponse is the response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /connect/oracle/v2/get_all_tickers:
+    get:
+      summary: >-
+        Get all the currency pairs the x/oracle module is tracking price-data
+        for.
+      operationId: GetAllCurrencyPairs
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              currency_pairs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    Base:
+                      type: string
+                    Quote:
+                      type: string
+                  title: >-
+                    CurrencyPair is the standard representation of a pair of
+                    assets, where one
+
+                    (Base) is priced in terms of the other (Quote)
+            description: >-
+              GetAllCurrencyPairsResponse returns all CurrencyPairs that the
+              module is
+
+              currently tracking.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /connect/oracle/v2/get_currency_pair_mapping:
+    get:
+      summary: >-
+        Get the mapping of currency pair ID -> currency pair. This is useful for
+
+        indexers that have access to the ID of a currency pair, but no way to
+        get
+
+        the underlying currency pair from it.
+      operationId: GetCurrencyPairMapping
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              currency_pair_mapping:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    Base:
+                      type: string
+                    Quote:
+                      type: string
+                  title: >-
+                    CurrencyPair is the standard representation of a pair of
+                    assets, where one
+
+                    (Base) is priced in terms of the other (Quote)
+                description: >-
+                  currency_pair_mapping is a mapping of the id representing the
+                  currency pair
+
+                  to the currency pair itself.
+            description: >-
+              GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
+              response type.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /connect/oracle/v2/get_price:
+    get:
+      summary: >-
+        Given a CurrencyPair (or its identifier) return the latest QuotePrice
+        for
+
+        that CurrencyPair.
+      operationId: GetPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                title: >-
+                  QuotePrice represents the quote-price for the CurrencyPair
+                  given in
+
+                  GetPriceRequest (possibly nil if no update has been made)
+                type: object
+                properties:
+                  price:
+                    type: string
+                  block_timestamp:
+                    type: string
+                    format: date-time
+                    title: >-
+                      BlockTimestamp tracks the block height associated with
+                      this price update.
+
+                      We include block timestamp alongside the price to ensure
+                      that smart
+
+                      contracts and applications are not utilizing stale oracle
+                      prices
+                  block_height:
+                    type: string
+                    format: uint64
+                    title: BlockHeight is height of block mentioned above
+              nonce:
+                type: string
+                format: uint64
+                title: >-
+                  nonce represents the nonce for the CurrencyPair if it exists
+                  in state
+              decimals:
+                type: string
+                format: uint64
+                description: >-
+                  decimals represents the number of decimals that the
+                  quote-price is
+
+                  represented in. It is used to scale the QuotePrice to its
+                  proper value.
+              id:
+                type: string
+                format: uint64
+                description: ID represents the identifier for the CurrencyPair.
+            description: >-
+              GetPriceResponse is the response from the GetPrice grpc method
+              exposed from
+
+              the x/oracle query service.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: currency_pair
+          description: CurrencyPair represents the pair that the user wishes to query.
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /connect/oracle/v2/get_prices:
+    get:
+      operationId: GetPrices
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              prices:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    price:
+                      title: >-
+                        QuotePrice represents the quote-price for the
+                        CurrencyPair given in
+
+                        GetPriceRequest (possibly nil if no update has been
+                        made)
+                      type: object
+                      properties:
+                        price:
+                          type: string
+                        block_timestamp:
+                          type: string
+                          format: date-time
+                          title: >-
+                            BlockTimestamp tracks the block height associated
+                            with this price update.
+
+                            We include block timestamp alongside the price to
+                            ensure that smart
+
+                            contracts and applications are not utilizing stale
+                            oracle prices
+                        block_height:
+                          type: string
+                          format: uint64
+                          title: BlockHeight is height of block mentioned above
+                    nonce:
+                      type: string
+                      format: uint64
+                      title: >-
+                        nonce represents the nonce for the CurrencyPair if it
+                        exists in state
+                    decimals:
+                      type: string
+                      format: uint64
+                      description: >-
+                        decimals represents the number of decimals that the
+                        quote-price is
+
+                        represented in. It is used to scale the QuotePrice to
+                        its proper value.
+                    id:
+                      type: string
+                      format: uint64
+                      description: ID represents the identifier for the CurrencyPair.
+                  description: >-
+                    GetPriceResponse is the response from the GetPrice grpc
+                    method exposed from
+
+                    the x/oracle query service.
+            description: >-
+              GetPricesResponse is the response from the GetPrices grpc method
+              exposed from
+
+              the x/oracle query service.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: currency_pair_ids
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/blacklisted_denoms:
+    get:
+      summary: Queries all blacklisted denoms
+      operationId: AllBlacklistedDenoms
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denoms:
+                type: array
+                items:
+                  type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/{channel_id}/by_denom:
+    get:
+      summary: |-
+        Queries a specific rate limit by channel ID and denom
+        Ex:
+         - /ratelimit/{channel_id}/by_denom?denom={denom}
+      operationId: RateLimit
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rate_limit:
+                type: object
+                properties:
+                  path:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      channel_id:
+                        type: string
+                    title: >-
+                      Path holds the denom and channelID that define the rate
+                      limited route
+                  quota:
+                    type: object
+                    properties:
+                      max_percent_send:
+                        type: string
+                        title: >-
+                          MaxPercentSend defines the threshold for outflows
+
+                          The threshold is defined as a percentage (e.g. 10
+                          indicates 10%)
+                      max_percent_recv:
+                        type: string
+                        title: >-
+                          MaxPercentSend defines the threshold for inflows
+
+                          The threshold is defined as a percentage (e.g. 10
+                          indicates 10%)
+                      duration_hours:
+                        type: string
+                        format: uint64
+                        title: >-
+                          DurationHours specifies the number of hours before the
+                          rate limit
+
+                          is reset (e.g. 24 indicates that the rate limit is
+                          reset each day)
+                    title: >-
+                      Quota defines the rate limit thresholds for transfer
+                      packets
+                  flow:
+                    type: object
+                    properties:
+                      inflow:
+                        type: string
+                        title: >-
+                          Inflow defines the total amount of inbound transfers
+                          for the given
+
+                          rate limit in the current window
+                      outflow:
+                        type: string
+                        title: >-
+                          Outflow defines the total amount of outbound transfers
+                          for the given
+
+                          rate limit in the current window
+                      channel_value:
+                        type: string
+                        title: >-
+                          ChannelValue stores the total supply of the denom at
+                          the start of
+
+                          the rate limit. This is used as the denominator when
+                          checking
+
+                          the rate limit threshold
+
+                          The ChannelValue is fixed for the duration of the rate
+                          limit window
+                title: >-
+                  RateLimit stores all the context about a given rate limit,
+                  including
+
+                  the relevant denom and channel, rate limit thresholds, and
+                  current
+
+                  progress towards the limits
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: channel_id
+          in: path
+          required: true
+          type: string
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits:
+    get:
+      summary: Queries all rate limits
+      operationId: AllRateLimits
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rate_limits:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        channel_id:
+                          type: string
+                      title: >-
+                        Path holds the denom and channelID that define the rate
+                        limited route
+                    quota:
+                      type: object
+                      properties:
+                        max_percent_send:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for outflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        max_percent_recv:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for inflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        duration_hours:
+                          type: string
+                          format: uint64
+                          title: >-
+                            DurationHours specifies the number of hours before
+                            the rate limit
+
+                            is reset (e.g. 24 indicates that the rate limit is
+                            reset each day)
+                      title: >-
+                        Quota defines the rate limit thresholds for transfer
+                        packets
+                    flow:
+                      type: object
+                      properties:
+                        inflow:
+                          type: string
+                          title: >-
+                            Inflow defines the total amount of inbound transfers
+                            for the given
+
+                            rate limit in the current window
+                        outflow:
+                          type: string
+                          title: >-
+                            Outflow defines the total amount of outbound
+                            transfers for the given
+
+                            rate limit in the current window
+                        channel_value:
+                          type: string
+                          title: >-
+                            ChannelValue stores the total supply of the denom at
+                            the start of
+
+                            the rate limit. This is used as the denominator when
+                            checking
+
+                            the rate limit threshold
+
+                            The ChannelValue is fixed for the duration of the
+                            rate limit window
+                  title: >-
+                    RateLimit stores all the context about a given rate limit,
+                    including
+
+                    the relevant denom and channel, rate limit thresholds, and
+                    current
+
+                    progress towards the limits
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{chain_id}:
+    get:
+      summary: Queries all the rate limits for a given chain
+      operationId: RateLimitsByChainId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rate_limits:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        channel_id:
+                          type: string
+                      title: >-
+                        Path holds the denom and channelID that define the rate
+                        limited route
+                    quota:
+                      type: object
+                      properties:
+                        max_percent_send:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for outflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        max_percent_recv:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for inflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        duration_hours:
+                          type: string
+                          format: uint64
+                          title: >-
+                            DurationHours specifies the number of hours before
+                            the rate limit
+
+                            is reset (e.g. 24 indicates that the rate limit is
+                            reset each day)
+                      title: >-
+                        Quota defines the rate limit thresholds for transfer
+                        packets
+                    flow:
+                      type: object
+                      properties:
+                        inflow:
+                          type: string
+                          title: >-
+                            Inflow defines the total amount of inbound transfers
+                            for the given
+
+                            rate limit in the current window
+                        outflow:
+                          type: string
+                          title: >-
+                            Outflow defines the total amount of outbound
+                            transfers for the given
+
+                            rate limit in the current window
+                        channel_value:
+                          type: string
+                          title: >-
+                            ChannelValue stores the total supply of the denom at
+                            the start of
+
+                            the rate limit. This is used as the denominator when
+                            checking
+
+                            the rate limit threshold
+
+                            The ChannelValue is fixed for the duration of the
+                            rate limit window
+                  title: >-
+                    RateLimit stores all the context about a given rate limit,
+                    including
+
+                    the relevant denom and channel, rate limit thresholds, and
+                    current
+
+                    progress towards the limits
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: chain_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{channel_id}:
+    get:
+      summary: Queries all the rate limits for a given channel ID
+      operationId: RateLimitsByChannelId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rate_limits:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    path:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        channel_id:
+                          type: string
+                      title: >-
+                        Path holds the denom and channelID that define the rate
+                        limited route
+                    quota:
+                      type: object
+                      properties:
+                        max_percent_send:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for outflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        max_percent_recv:
+                          type: string
+                          title: >-
+                            MaxPercentSend defines the threshold for inflows
+
+                            The threshold is defined as a percentage (e.g. 10
+                            indicates 10%)
+                        duration_hours:
+                          type: string
+                          format: uint64
+                          title: >-
+                            DurationHours specifies the number of hours before
+                            the rate limit
+
+                            is reset (e.g. 24 indicates that the rate limit is
+                            reset each day)
+                      title: >-
+                        Quota defines the rate limit thresholds for transfer
+                        packets
+                    flow:
+                      type: object
+                      properties:
+                        inflow:
+                          type: string
+                          title: >-
+                            Inflow defines the total amount of inbound transfers
+                            for the given
+
+                            rate limit in the current window
+                        outflow:
+                          type: string
+                          title: >-
+                            Outflow defines the total amount of outbound
+                            transfers for the given
+
+                            rate limit in the current window
+                        channel_value:
+                          type: string
+                          title: >-
+                            ChannelValue stores the total supply of the denom at
+                            the start of
+
+                            the rate limit. This is used as the denominator when
+                            checking
+
+                            the rate limit threshold
+
+                            The ChannelValue is fixed for the duration of the
+                            rate limit window
+                  title: >-
+                    RateLimit stores all the context about a given rate limit,
+                    including
+
+                    the relevant denom and channel, rate limit thresholds, and
+                    current
+
+                    progress towards the limits
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: channel_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /Stride-Labs/ibc-rate-limiting/ratelimit/whitelisted_addresses:
+    get:
+      summary: Queries all whitelisted address pairs
+      operationId: AllWhitelistedAddresses
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address_pairs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    sender:
+                      type: string
+                    receiver:
+                      type: string
+                  title: >-
+                    WhitelistedAddressPair represents a sender-receiver combo
+                    that is
+
+                    not subject to rate limit restrictions
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /MANTRA-Chain/mantrachain/tax/v1/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: TaxParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  admin:
+                    type: string
+                  mca_tax:
+                    type: string
+                  mca_address:
+                    type: string
+                  max_mca_tax:
+                    type: string
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
   /osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata:
     get:
       summary: |-
@@ -231,27 +1623,6 @@ paths:
                       from denom creation
 
                       are sent to
-                  whitelisted_hooks:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        code_id:
-                          type: string
-                          format: uint64
-                        denom_creator:
-                          type: string
-                      title: >-
-                        WhitelistedHook describes a beforeSendHook which is
-                        allowed to be added and executed
-
-                        SetBeforeSendHook can only be called on denoms where the
-                        denom creator and
-
-                        code_id for the `contract_addr` match a WhitelistedHook
-                    title: >-
-                      whitelisted_hooks is the list of hooks which are allowed
-                      to be added and executed
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
@@ -43062,1571 +44433,711 @@ paths:
                         }
       tags:
         - Query
-  /connect/marketmap/v1/last_updated:
-    get:
-      summary: LastUpdated returns the last height the market map was updated at.
-      operationId: LastUpdated
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              last_updated:
-                type: string
-                format: uint64
-            description: >-
-              LastUpdatedResponse is the response type for the Query/LastUpdated
-              RPC
-
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /connect/marketmap/v1/market:
-    get:
-      summary: |-
-        Market returns a market stored in the x/marketmap
-        module.
-      operationId: Market
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              market:
-                description: >-
-                  Market is the configuration of a single market to be
-                  price-fetched for.
-                type: object
-                properties:
-                  ticker:
-                    description: >-
-                      Ticker represents a price feed for a given asset pair i.e.
-                      BTC/USD. The
-
-                      price feed is scaled to a number of decimal places and has
-                      a minimum number
-
-                      of providers required to consider the ticker valid.
-                    type: object
-                    properties:
-                      currency_pair:
-                        description: CurrencyPair is the currency pair for this ticker.
-                        type: object
-                        properties:
-                          Base:
-                            type: string
-                          Quote:
-                            type: string
-                        title: >-
-                          CurrencyPair is the standard representation of a pair
-                          of assets, where one
-
-                          (Base) is priced in terms of the other (Quote)
-                      decimals:
-                        type: string
-                        format: uint64
-                        description: >-
-                          Decimals is the number of decimal places for the
-                          ticker. The number of
-
-                          decimal places is used to convert the price to a
-                          human-readable format.
-                      min_provider_count:
-                        type: string
-                        format: uint64
-                        description: >-
-                          MinProviderCount is the minimum number of providers
-                          required to consider
-
-                          the ticker valid.
-                      enabled:
-                        type: boolean
-                        description: >-
-                          Enabled is the flag that denotes if the Ticker is
-                          enabled for price
-
-                          fetching by an oracle.
-                      metadata_JSON:
-                        type: string
-                        description: >-
-                          MetadataJSON is a string of JSON that encodes any
-                          extra configuration
-
-                          for the given ticker.
-                  provider_configs:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          description: >-
-                            Name corresponds to the name of the provider for
-                            which the configuration is
-
-                            being set.
-                        off_chain_ticker:
-                          type: string
-                          description: >-
-                            OffChainTicker is the off-chain representation of
-                            the ticker i.e. BTC/USD.
-
-                            The off-chain ticker is unique to a given provider
-                            and is used to fetch the
-
-                            price of the ticker from the provider.
-                        normalize_by_pair:
-                          description: >-
-                            NormalizeByPair is the currency pair for this ticker
-                            to be normalized by.
-
-                            For example, if the desired Ticker is BTC/USD, this
-                            market could be reached
-
-                            using: OffChainTicker = BTC/USDT NormalizeByPair =
-                            USDT/USD This field is
-
-                            optional and nullable.
-                          type: object
-                          properties:
-                            Base:
-                              type: string
-                            Quote:
-                              type: string
-                          title: >-
-                            CurrencyPair is the standard representation of a
-                            pair of assets, where one
-
-                            (Base) is priced in terms of the other (Quote)
-                        invert:
-                          type: boolean
-                          title: >-
-                            Invert is a boolean indicating if the BASE and QUOTE
-                            of the market should
-
-                            be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                        metadata_JSON:
-                          type: string
-                          description: >-
-                            MetadataJSON is a string of JSON that encodes any
-                            extra configuration
-
-                            for the given provider config.
-                    description: >-
-                      ProviderConfigs is the list of provider-specific configs
-                      for this Market.
-            description: MarketResponse is the query response for the Market query.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair.Base
-          in: query
-          required: false
-          type: string
-        - name: currency_pair.Quote
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /connect/marketmap/v1/marketmap:
-    get:
-      summary: |-
-        MarketMap returns the full market map stored in the x/marketmap
-        module.
-      operationId: MarketMap
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              market_map:
-                description: >-
-                  MarketMap defines the global set of market configurations for
-                  all providers
-
-                  and markets.
-                type: object
-                properties:
-                  markets:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        ticker:
-                          description: >-
-                            Ticker represents a price feed for a given asset
-                            pair i.e. BTC/USD. The
-
-                            price feed is scaled to a number of decimal places
-                            and has a minimum number
-
-                            of providers required to consider the ticker valid.
-                          type: object
-                          properties:
-                            currency_pair:
-                              description: >-
-                                CurrencyPair is the currency pair for this
-                                ticker.
-                              type: object
-                              properties:
-                                Base:
-                                  type: string
-                                Quote:
-                                  type: string
-                              title: >-
-                                CurrencyPair is the standard representation of a
-                                pair of assets, where one
-
-                                (Base) is priced in terms of the other (Quote)
-                            decimals:
-                              type: string
-                              format: uint64
-                              description: >-
-                                Decimals is the number of decimal places for the
-                                ticker. The number of
-
-                                decimal places is used to convert the price to a
-                                human-readable format.
-                            min_provider_count:
-                              type: string
-                              format: uint64
-                              description: >-
-                                MinProviderCount is the minimum number of
-                                providers required to consider
-
-                                the ticker valid.
-                            enabled:
-                              type: boolean
-                              description: >-
-                                Enabled is the flag that denotes if the Ticker
-                                is enabled for price
-
-                                fetching by an oracle.
-                            metadata_JSON:
-                              type: string
-                              description: >-
-                                MetadataJSON is a string of JSON that encodes
-                                any extra configuration
-
-                                for the given ticker.
-                        provider_configs:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                                description: >-
-                                  Name corresponds to the name of the provider
-                                  for which the configuration is
-
-                                  being set.
-                              off_chain_ticker:
-                                type: string
-                                description: >-
-                                  OffChainTicker is the off-chain representation
-                                  of the ticker i.e. BTC/USD.
-
-                                  The off-chain ticker is unique to a given
-                                  provider and is used to fetch the
-
-                                  price of the ticker from the provider.
-                              normalize_by_pair:
-                                description: >-
-                                  NormalizeByPair is the currency pair for this
-                                  ticker to be normalized by.
-
-                                  For example, if the desired Ticker is BTC/USD,
-                                  this market could be reached
-
-                                  using: OffChainTicker = BTC/USDT
-                                  NormalizeByPair = USDT/USD This field is
-
-                                  optional and nullable.
-                                type: object
-                                properties:
-                                  Base:
-                                    type: string
-                                  Quote:
-                                    type: string
-                                title: >-
-                                  CurrencyPair is the standard representation of
-                                  a pair of assets, where one
-
-                                  (Base) is priced in terms of the other (Quote)
-                              invert:
-                                type: boolean
-                                title: >-
-                                  Invert is a boolean indicating if the BASE and
-                                  QUOTE of the market should
-
-                                  be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                              metadata_JSON:
-                                type: string
-                                description: >-
-                                  MetadataJSON is a string of JSON that encodes
-                                  any extra configuration
-
-                                  for the given provider config.
-                          description: >-
-                            ProviderConfigs is the list of provider-specific
-                            configs for this Market.
-                      description: >-
-                        Market encapsulates a Ticker and its provider-specific
-                        configuration.
-                    description: >-
-                      Markets is the full list of tickers and their associated
-                      configurations
-
-                      to be stored on-chain.
-              last_updated:
-                type: string
-                format: uint64
-                description: >-
-                  LastUpdated is the last block height that the market map was
-                  updated.
-
-                  This field can be used as an optimization for clients checking
-                  if there
-
-                  is a new update to the map.
-              chain_id:
-                type: string
-                description: ChainId is the chain identifier for the market map.
-            description: MarketMapResponse is the query response for the MarketMap query.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /connect/marketmap/v1/params:
-    get:
-      summary: Params returns the current x/marketmap module parameters.
-      operationId: MarketMapParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                type: object
-                properties:
-                  market_authorities:
-                    type: array
-                    items:
-                      type: string
-                    description: >-
-                      MarketAuthorities is the list of authority accounts that
-                      are able to
-
-                      control updating the marketmap.
-                  admin:
-                    type: string
-                    description: >-
-                      Admin is an address that can remove addresses from the
-                      MarketAuthorities
-
-                      list. Only governance can add to the MarketAuthorities or
-                      change the Admin.
-                description: Params defines the parameters for the x/marketmap module.
-            description: >-
-              ParamsResponse is the response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /slinky/marketmap/v1/last_updated:
-    get:
-      summary: LastUpdated returns the last height the market map was updated at.
-      operationId: LastUpdated2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              last_updated:
-                type: string
-                format: uint64
-            description: >-
-              LastUpdatedResponse is the response type for the Query/LastUpdated
-              RPC
-
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /slinky/marketmap/v1/market:
-    get:
-      summary: |-
-        Market returns a market stored in the x/marketmap
-        module.
-      operationId: Market2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              market:
-                description: >-
-                  Market is the configuration of a single market to be
-                  price-fetched for.
-                type: object
-                properties:
-                  ticker:
-                    description: >-
-                      Ticker represents a price feed for a given asset pair i.e.
-                      BTC/USD. The
-
-                      price feed is scaled to a number of decimal places and has
-                      a minimum number
-
-                      of providers required to consider the ticker valid.
-                    type: object
-                    properties:
-                      currency_pair:
-                        description: CurrencyPair is the currency pair for this ticker.
-                        type: object
-                        properties:
-                          Base:
-                            type: string
-                          Quote:
-                            type: string
-                        title: >-
-                          CurrencyPair is the standard representation of a pair
-                          of assets, where one
-
-                          (Base) is priced in terms of the other (Quote)
-                      decimals:
-                        type: string
-                        format: uint64
-                        description: >-
-                          Decimals is the number of decimal places for the
-                          ticker. The number of
-
-                          decimal places is used to convert the price to a
-                          human-readable format.
-                      min_provider_count:
-                        type: string
-                        format: uint64
-                        description: >-
-                          MinProviderCount is the minimum number of providers
-                          required to consider
-
-                          the ticker valid.
-                      enabled:
-                        type: boolean
-                        description: >-
-                          Enabled is the flag that denotes if the Ticker is
-                          enabled for price
-
-                          fetching by an oracle.
-                      metadata_JSON:
-                        type: string
-                        description: >-
-                          MetadataJSON is a string of JSON that encodes any
-                          extra configuration
-
-                          for the given ticker.
-                  provider_configs:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          description: >-
-                            Name corresponds to the name of the provider for
-                            which the configuration is
-
-                            being set.
-                        off_chain_ticker:
-                          type: string
-                          description: >-
-                            OffChainTicker is the off-chain representation of
-                            the ticker i.e. BTC/USD.
-
-                            The off-chain ticker is unique to a given provider
-                            and is used to fetch the
-
-                            price of the ticker from the provider.
-                        normalize_by_pair:
-                          description: >-
-                            NormalizeByPair is the currency pair for this ticker
-                            to be normalized by.
-
-                            For example, if the desired Ticker is BTC/USD, this
-                            market could be reached
-
-                            using: OffChainTicker = BTC/USDT NormalizeByPair =
-                            USDT/USD This field is
-
-                            optional and nullable.
-                          type: object
-                          properties:
-                            Base:
-                              type: string
-                            Quote:
-                              type: string
-                          title: >-
-                            CurrencyPair is the standard representation of a
-                            pair of assets, where one
-
-                            (Base) is priced in terms of the other (Quote)
-                        invert:
-                          type: boolean
-                          title: >-
-                            Invert is a boolean indicating if the BASE and QUOTE
-                            of the market should
-
-                            be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                        metadata_JSON:
-                          type: string
-                          description: >-
-                            MetadataJSON is a string of JSON that encodes any
-                            extra configuration
-
-                            for the given provider config.
-                    description: >-
-                      ProviderConfigs is the list of provider-specific configs
-                      for this Market.
-            description: MarketResponse is the query response for the Market query.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair.Base
-          in: query
-          required: false
-          type: string
-        - name: currency_pair.Quote
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /slinky/marketmap/v1/marketmap:
-    get:
-      summary: |-
-        MarketMap returns the full market map stored in the x/marketmap
-        module.
-      operationId: MarketMap2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              market_map:
-                description: >-
-                  MarketMap defines the global set of market configurations for
-                  all providers
-
-                  and markets.
-                type: object
-                properties:
-                  markets:
-                    type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        ticker:
-                          description: >-
-                            Ticker represents a price feed for a given asset
-                            pair i.e. BTC/USD. The
-
-                            price feed is scaled to a number of decimal places
-                            and has a minimum number
-
-                            of providers required to consider the ticker valid.
-                          type: object
-                          properties:
-                            currency_pair:
-                              description: >-
-                                CurrencyPair is the currency pair for this
-                                ticker.
-                              type: object
-                              properties:
-                                Base:
-                                  type: string
-                                Quote:
-                                  type: string
-                              title: >-
-                                CurrencyPair is the standard representation of a
-                                pair of assets, where one
-
-                                (Base) is priced in terms of the other (Quote)
-                            decimals:
-                              type: string
-                              format: uint64
-                              description: >-
-                                Decimals is the number of decimal places for the
-                                ticker. The number of
-
-                                decimal places is used to convert the price to a
-                                human-readable format.
-                            min_provider_count:
-                              type: string
-                              format: uint64
-                              description: >-
-                                MinProviderCount is the minimum number of
-                                providers required to consider
-
-                                the ticker valid.
-                            enabled:
-                              type: boolean
-                              description: >-
-                                Enabled is the flag that denotes if the Ticker
-                                is enabled for price
-
-                                fetching by an oracle.
-                            metadata_JSON:
-                              type: string
-                              description: >-
-                                MetadataJSON is a string of JSON that encodes
-                                any extra configuration
-
-                                for the given ticker.
-                        provider_configs:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                                description: >-
-                                  Name corresponds to the name of the provider
-                                  for which the configuration is
-
-                                  being set.
-                              off_chain_ticker:
-                                type: string
-                                description: >-
-                                  OffChainTicker is the off-chain representation
-                                  of the ticker i.e. BTC/USD.
-
-                                  The off-chain ticker is unique to a given
-                                  provider and is used to fetch the
-
-                                  price of the ticker from the provider.
-                              normalize_by_pair:
-                                description: >-
-                                  NormalizeByPair is the currency pair for this
-                                  ticker to be normalized by.
-
-                                  For example, if the desired Ticker is BTC/USD,
-                                  this market could be reached
-
-                                  using: OffChainTicker = BTC/USDT
-                                  NormalizeByPair = USDT/USD This field is
-
-                                  optional and nullable.
-                                type: object
-                                properties:
-                                  Base:
-                                    type: string
-                                  Quote:
-                                    type: string
-                                title: >-
-                                  CurrencyPair is the standard representation of
-                                  a pair of assets, where one
-
-                                  (Base) is priced in terms of the other (Quote)
-                              invert:
-                                type: boolean
-                                title: >-
-                                  Invert is a boolean indicating if the BASE and
-                                  QUOTE of the market should
-
-                                  be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                              metadata_JSON:
-                                type: string
-                                description: >-
-                                  MetadataJSON is a string of JSON that encodes
-                                  any extra configuration
-
-                                  for the given provider config.
-                          description: >-
-                            ProviderConfigs is the list of provider-specific
-                            configs for this Market.
-                      description: >-
-                        Market encapsulates a Ticker and its provider-specific
-                        configuration.
-                    description: >-
-                      Markets is the full list of tickers and their associated
-                      configurations
-
-                      to be stored on-chain.
-              last_updated:
-                type: string
-                format: uint64
-                description: >-
-                  LastUpdated is the last block height that the market map was
-                  updated.
-
-                  This field can be used as an optimization for clients checking
-                  if there
-
-                  is a new update to the map.
-              chain_id:
-                type: string
-                description: ChainId is the chain identifier for the market map.
-            description: MarketMapResponse is the query response for the MarketMap query.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /slinky/marketmap/v1/params:
-    get:
-      summary: Params returns the current x/marketmap module parameters.
-      operationId: Params2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                type: object
-                properties:
-                  market_authorities:
-                    type: array
-                    items:
-                      type: string
-                    description: >-
-                      MarketAuthorities is the list of authority accounts that
-                      are able to
-
-                      control updating the marketmap.
-                  admin:
-                    type: string
-                    description: >-
-                      Admin is an address that can remove addresses from the
-                      MarketAuthorities
-
-                      list. Only governance can add to the MarketAuthorities or
-                      change the Admin.
-                description: Params defines the parameters for the x/marketmap module.
-            description: >-
-              ParamsResponse is the response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /connect/oracle/v1/get_all_tickers:
-    get:
-      summary: >-
-        Get all the currency pairs the x/oracle module is tracking price-data
-        for.
-      operationId: GetAllCurrencyPairs
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              currency_pairs:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-            description: >-
-              GetAllCurrencyPairsResponse returns all CurrencyPairs that the
-              module is
-
-              currently tracking.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /connect/oracle/v1/get_currency_pair_mapping:
-    get:
-      summary: >-
-        Get the mapping of currency pair ID -> currency pair. This is useful for
-
-        indexers that have access to the ID of a currency pair, but no way to
-        get
-
-        the underlying currency pair from it.
-      operationId: GetCurrencyPairMapping
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              currency_pair_mapping:
-                type: object
-                additionalProperties:
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-                description: >-
-                  currency_pair_mapping is a mapping of the id representing the
-                  currency pair
-
-                  to the currency pair itself.
-            description: >-
-              GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
-              response type.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /connect/oracle/v1/get_price:
-    get:
-      summary: >-
-        Given a CurrencyPair (or its identifier) return the latest QuotePrice
-        for
-
-        that CurrencyPair.
-      operationId: GetPrice
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              price:
-                title: >-
-                  QuotePrice represents the quote-price for the CurrencyPair
-                  given in
-
-                  GetPriceRequest (possibly nil if no update has been made)
-                type: object
-                properties:
-                  price:
-                    type: string
-                  block_timestamp:
-                    type: string
-                    format: date-time
-                    title: >-
-                      BlockTimestamp tracks the block height associated with
-                      this price update.
-
-                      We include block timestamp alongside the price to ensure
-                      that smart
-
-                      contracts and applications are not utilizing stale oracle
-                      prices
-                  block_height:
-                    type: string
-                    format: uint64
-                    title: BlockHeight is height of block mentioned above
-              nonce:
-                type: string
-                format: uint64
-                title: >-
-                  nonce represents the nonce for the CurrencyPair if it exists
-                  in state
-              decimals:
-                type: string
-                format: uint64
-                description: >-
-                  decimals represents the number of decimals that the
-                  quote-price is
-
-                  represented in. It is used to scale the QuotePrice to its
-                  proper value.
-              id:
-                type: string
-                format: uint64
-                description: ID represents the identifier for the CurrencyPair.
-            description: >-
-              GetPriceResponse is the response from the GetPrice grpc method
-              exposed from
-
-              the x/oracle query service.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair.Base
-          in: query
-          required: false
-          type: string
-        - name: currency_pair.Quote
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /connect/oracle/v1/get_prices:
-    get:
-      operationId: GetPrices
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              prices:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    price:
-                      title: >-
-                        QuotePrice represents the quote-price for the
-                        CurrencyPair given in
-
-                        GetPriceRequest (possibly nil if no update has been
-                        made)
-                      type: object
-                      properties:
-                        price:
-                          type: string
-                        block_timestamp:
-                          type: string
-                          format: date-time
-                          title: >-
-                            BlockTimestamp tracks the block height associated
-                            with this price update.
-
-                            We include block timestamp alongside the price to
-                            ensure that smart
-
-                            contracts and applications are not utilizing stale
-                            oracle prices
-                        block_height:
-                          type: string
-                          format: uint64
-                          title: BlockHeight is height of block mentioned above
-                    nonce:
-                      type: string
-                      format: uint64
-                      title: >-
-                        nonce represents the nonce for the CurrencyPair if it
-                        exists in state
-                    decimals:
-                      type: string
-                      format: uint64
-                      description: >-
-                        decimals represents the number of decimals that the
-                        quote-price is
-
-                        represented in. It is used to scale the QuotePrice to
-                        its proper value.
-                    id:
-                      type: string
-                      format: uint64
-                      description: ID represents the identifier for the CurrencyPair.
-                  description: >-
-                    GetPriceResponse is the response from the GetPrice grpc
-                    method exposed from
-
-                    the x/oracle query service.
-            description: >-
-              GetPricesResponse is the response from the GetPrices grpc method
-              exposed from
-
-              the x/oracle query service.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair_ids
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-      tags:
-        - Query
-  /slinky/oracle/v1/get_all_tickers:
-    get:
-      summary: >-
-        Get all the currency pairs the x/oracle module is tracking price-data
-        for.
-      operationId: GetAllCurrencyPairs2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              currency_pairs:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-            description: >-
-              GetAllCurrencyPairsResponse returns all CurrencyPairs that the
-              module is
-
-              currently tracking.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /slinky/oracle/v1/get_currency_pair_mapping:
-    get:
-      summary: >-
-        Get the mapping of currency pair ID -> currency pair. This is useful for
-
-        indexers that have access to the ID of a currency pair, but no way to
-        get
-
-        the underlying currency pair from it.
-      operationId: GetCurrencyPairMapping2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              currency_pair_mapping:
-                type: object
-                additionalProperties:
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-                description: >-
-                  currency_pair_mapping is a mapping of the id representing the
-                  currency pair
-
-                  to the currency pair itself.
-            description: >-
-              GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
-              response type.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
-  /slinky/oracle/v1/get_price:
-    get:
-      summary: >-
-        Given a CurrencyPair (or its identifier) return the latest QuotePrice
-        for
-
-        that CurrencyPair.
-      operationId: GetPrice2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              price:
-                title: >-
-                  QuotePrice represents the quote-price for the CurrencyPair
-                  given in
-
-                  GetPriceRequest (possibly nil if no update has been made)
-                type: object
-                properties:
-                  price:
-                    type: string
-                  block_timestamp:
-                    type: string
-                    format: date-time
-                    title: >-
-                      BlockTimestamp tracks the block height associated with
-                      this price update.
-
-                      We include block timestamp alongside the price to ensure
-                      that smart
-
-                      contracts and applications are not utilizing stale oracle
-                      prices
-                  block_height:
-                    type: string
-                    format: uint64
-                    title: BlockHeight is height of block mentioned above
-              nonce:
-                type: string
-                format: uint64
-                title: >-
-                  nonce represents the nonce for the CurrencyPair if it exists
-                  in state
-              decimals:
-                type: string
-                format: uint64
-                description: >-
-                  decimals represents the number of decimals that the
-                  quote-price is
-
-                  represented in. It is used to scale the QuotePrice to its
-                  proper value.
-              id:
-                type: string
-                format: uint64
-                description: ID represents the identifier for the CurrencyPair.
-            description: >-
-              GetPriceResponse is the response from the GetPrice grpc method
-              exposed from
-
-              the x/oracle query service.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair.Base
-          in: query
-          required: false
-          type: string
-        - name: currency_pair.Quote
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /slinky/oracle/v1/get_prices:
-    get:
-      operationId: GetPrices2
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              prices:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    price:
-                      title: >-
-                        QuotePrice represents the quote-price for the
-                        CurrencyPair given in
-
-                        GetPriceRequest (possibly nil if no update has been
-                        made)
-                      type: object
-                      properties:
-                        price:
-                          type: string
-                        block_timestamp:
-                          type: string
-                          format: date-time
-                          title: >-
-                            BlockTimestamp tracks the block height associated
-                            with this price update.
-
-                            We include block timestamp alongside the price to
-                            ensure that smart
-
-                            contracts and applications are not utilizing stale
-                            oracle prices
-                        block_height:
-                          type: string
-                          format: uint64
-                          title: BlockHeight is height of block mentioned above
-                    nonce:
-                      type: string
-                      format: uint64
-                      title: >-
-                        nonce represents the nonce for the CurrencyPair if it
-                        exists in state
-                    decimals:
-                      type: string
-                      format: uint64
-                      description: >-
-                        decimals represents the number of decimals that the
-                        quote-price is
-
-                        represented in. It is used to scale the QuotePrice to
-                        its proper value.
-                    id:
-                      type: string
-                      format: uint64
-                      description: ID represents the identifier for the CurrencyPair.
-                  description: >-
-                    GetPriceResponse is the response from the GetPrice grpc
-                    method exposed from
-
-                    the x/oracle query service.
-            description: >-
-              GetPricesResponse is the response from the GetPrices grpc method
-              exposed from
-
-              the x/oracle query service.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: currency_pair_ids
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-      tags:
-        - Query
 definitions:
-  cosmos.base.v1beta1.Coin:
+  connect.marketmap.v2.LastUpdatedResponse:
     type: object
     properties:
-      denom:
+      last_updated:
         type: string
-      amount:
-        type: string
+        format: uint64
     description: |-
-      Coin defines a token with a denomination and an amount.
+      LastUpdatedResponse is the response type for the Query/LastUpdated RPC
+      method.
+  connect.marketmap.v2.Market:
+    type: object
+    properties:
+      ticker:
+        description: >-
+          Ticker represents a price feed for a given asset pair i.e. BTC/USD.
+          The
 
-      NOTE: The amount field is an Int which implements the custom method
-      signatures required by gogoproto.
+          price feed is scaled to a number of decimal places and has a minimum
+          number
+
+          of providers required to consider the ticker valid.
+        type: object
+        properties:
+          currency_pair:
+            description: CurrencyPair is the currency pair for this ticker.
+            type: object
+            properties:
+              Base:
+                type: string
+              Quote:
+                type: string
+            title: >-
+              CurrencyPair is the standard representation of a pair of assets,
+              where one
+
+              (Base) is priced in terms of the other (Quote)
+          decimals:
+            type: string
+            format: uint64
+            description: >-
+              Decimals is the number of decimal places for the ticker. The
+              number of
+
+              decimal places is used to convert the price to a human-readable
+              format.
+          min_provider_count:
+            type: string
+            format: uint64
+            description: >-
+              MinProviderCount is the minimum number of providers required to
+              consider
+
+              the ticker valid.
+          enabled:
+            type: boolean
+            description: >-
+              Enabled is the flag that denotes if the Ticker is enabled for
+              price
+
+              fetching by an oracle.
+          metadata_JSON:
+            type: string
+            description: >-
+              MetadataJSON is a string of JSON that encodes any extra
+              configuration
+
+              for the given ticker.
+      provider_configs:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: >-
+                Name corresponds to the name of the provider for which the
+                configuration is
+
+                being set.
+            off_chain_ticker:
+              type: string
+              description: >-
+                OffChainTicker is the off-chain representation of the ticker
+                i.e. BTC/USD.
+
+                The off-chain ticker is unique to a given provider and is used
+                to fetch the
+
+                price of the ticker from the provider.
+            normalize_by_pair:
+              description: >-
+                NormalizeByPair is the currency pair for this ticker to be
+                normalized by.
+
+                For example, if the desired Ticker is BTC/USD, this market could
+                be reached
+
+                using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This
+                field is
+
+                optional and nullable.
+              type: object
+              properties:
+                Base:
+                  type: string
+                Quote:
+                  type: string
+              title: >-
+                CurrencyPair is the standard representation of a pair of assets,
+                where one
+
+                (Base) is priced in terms of the other (Quote)
+            invert:
+              type: boolean
+              title: >-
+                Invert is a boolean indicating if the BASE and QUOTE of the
+                market should
+
+                be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+            metadata_JSON:
+              type: string
+              description: >-
+                MetadataJSON is a string of JSON that encodes any extra
+                configuration
+
+                for the given provider config.
+        description: >-
+          ProviderConfigs is the list of provider-specific configs for this
+          Market.
+    description: Market encapsulates a Ticker and its provider-specific configuration.
+  connect.marketmap.v2.MarketMap:
+    type: object
+    properties:
+      markets:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            ticker:
+              description: >-
+                Ticker represents a price feed for a given asset pair i.e.
+                BTC/USD. The
+
+                price feed is scaled to a number of decimal places and has a
+                minimum number
+
+                of providers required to consider the ticker valid.
+              type: object
+              properties:
+                currency_pair:
+                  description: CurrencyPair is the currency pair for this ticker.
+                  type: object
+                  properties:
+                    Base:
+                      type: string
+                    Quote:
+                      type: string
+                  title: >-
+                    CurrencyPair is the standard representation of a pair of
+                    assets, where one
+
+                    (Base) is priced in terms of the other (Quote)
+                decimals:
+                  type: string
+                  format: uint64
+                  description: >-
+                    Decimals is the number of decimal places for the ticker. The
+                    number of
+
+                    decimal places is used to convert the price to a
+                    human-readable format.
+                min_provider_count:
+                  type: string
+                  format: uint64
+                  description: >-
+                    MinProviderCount is the minimum number of providers required
+                    to consider
+
+                    the ticker valid.
+                enabled:
+                  type: boolean
+                  description: >-
+                    Enabled is the flag that denotes if the Ticker is enabled
+                    for price
+
+                    fetching by an oracle.
+                metadata_JSON:
+                  type: string
+                  description: >-
+                    MetadataJSON is a string of JSON that encodes any extra
+                    configuration
+
+                    for the given ticker.
+            provider_configs:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: >-
+                      Name corresponds to the name of the provider for which the
+                      configuration is
+
+                      being set.
+                  off_chain_ticker:
+                    type: string
+                    description: >-
+                      OffChainTicker is the off-chain representation of the
+                      ticker i.e. BTC/USD.
+
+                      The off-chain ticker is unique to a given provider and is
+                      used to fetch the
+
+                      price of the ticker from the provider.
+                  normalize_by_pair:
+                    description: >-
+                      NormalizeByPair is the currency pair for this ticker to be
+                      normalized by.
+
+                      For example, if the desired Ticker is BTC/USD, this market
+                      could be reached
+
+                      using: OffChainTicker = BTC/USDT NormalizeByPair =
+                      USDT/USD This field is
+
+                      optional and nullable.
+                    type: object
+                    properties:
+                      Base:
+                        type: string
+                      Quote:
+                        type: string
+                    title: >-
+                      CurrencyPair is the standard representation of a pair of
+                      assets, where one
+
+                      (Base) is priced in terms of the other (Quote)
+                  invert:
+                    type: boolean
+                    title: >-
+                      Invert is a boolean indicating if the BASE and QUOTE of
+                      the market should
+
+                      be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                  metadata_JSON:
+                    type: string
+                    description: >-
+                      MetadataJSON is a string of JSON that encodes any extra
+                      configuration
+
+                      for the given provider config.
+              description: >-
+                ProviderConfigs is the list of provider-specific configs for
+                this Market.
+          description: >-
+            Market encapsulates a Ticker and its provider-specific
+            configuration.
+        description: >-
+          Markets is the full list of tickers and their associated
+          configurations
+
+          to be stored on-chain.
+    description: MarketMap maps ticker strings to their Markets.
+  connect.marketmap.v2.MarketMapResponse:
+    type: object
+    properties:
+      market_map:
+        description: >-
+          MarketMap defines the global set of market configurations for all
+          providers
+
+          and markets.
+        type: object
+        properties:
+          markets:
+            type: object
+            additionalProperties:
+              type: object
+              properties:
+                ticker:
+                  description: >-
+                    Ticker represents a price feed for a given asset pair i.e.
+                    BTC/USD. The
+
+                    price feed is scaled to a number of decimal places and has a
+                    minimum number
+
+                    of providers required to consider the ticker valid.
+                  type: object
+                  properties:
+                    currency_pair:
+                      description: CurrencyPair is the currency pair for this ticker.
+                      type: object
+                      properties:
+                        Base:
+                          type: string
+                        Quote:
+                          type: string
+                      title: >-
+                        CurrencyPair is the standard representation of a pair of
+                        assets, where one
+
+                        (Base) is priced in terms of the other (Quote)
+                    decimals:
+                      type: string
+                      format: uint64
+                      description: >-
+                        Decimals is the number of decimal places for the ticker.
+                        The number of
+
+                        decimal places is used to convert the price to a
+                        human-readable format.
+                    min_provider_count:
+                      type: string
+                      format: uint64
+                      description: >-
+                        MinProviderCount is the minimum number of providers
+                        required to consider
+
+                        the ticker valid.
+                    enabled:
+                      type: boolean
+                      description: >-
+                        Enabled is the flag that denotes if the Ticker is
+                        enabled for price
+
+                        fetching by an oracle.
+                    metadata_JSON:
+                      type: string
+                      description: >-
+                        MetadataJSON is a string of JSON that encodes any extra
+                        configuration
+
+                        for the given ticker.
+                provider_configs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: >-
+                          Name corresponds to the name of the provider for which
+                          the configuration is
+
+                          being set.
+                      off_chain_ticker:
+                        type: string
+                        description: >-
+                          OffChainTicker is the off-chain representation of the
+                          ticker i.e. BTC/USD.
+
+                          The off-chain ticker is unique to a given provider and
+                          is used to fetch the
+
+                          price of the ticker from the provider.
+                      normalize_by_pair:
+                        description: >-
+                          NormalizeByPair is the currency pair for this ticker
+                          to be normalized by.
+
+                          For example, if the desired Ticker is BTC/USD, this
+                          market could be reached
+
+                          using: OffChainTicker = BTC/USDT NormalizeByPair =
+                          USDT/USD This field is
+
+                          optional and nullable.
+                        type: object
+                        properties:
+                          Base:
+                            type: string
+                          Quote:
+                            type: string
+                        title: >-
+                          CurrencyPair is the standard representation of a pair
+                          of assets, where one
+
+                          (Base) is priced in terms of the other (Quote)
+                      invert:
+                        type: boolean
+                        title: >-
+                          Invert is a boolean indicating if the BASE and QUOTE
+                          of the market should
+
+                          be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                      metadata_JSON:
+                        type: string
+                        description: >-
+                          MetadataJSON is a string of JSON that encodes any
+                          extra configuration
+
+                          for the given provider config.
+                  description: >-
+                    ProviderConfigs is the list of provider-specific configs for
+                    this Market.
+              description: >-
+                Market encapsulates a Ticker and its provider-specific
+                configuration.
+            description: >-
+              Markets is the full list of tickers and their associated
+              configurations
+
+              to be stored on-chain.
+      last_updated:
+        type: string
+        format: uint64
+        description: >-
+          LastUpdated is the last block height that the market map was updated.
+
+          This field can be used as an optimization for clients checking if
+          there
+
+          is a new update to the map.
+      chain_id:
+        type: string
+        description: ChainId is the chain identifier for the market map.
+    description: MarketMapResponse is the query response for the MarketMap query.
+  connect.marketmap.v2.MarketResponse:
+    type: object
+    properties:
+      market:
+        description: >-
+          Market is the configuration of a single market to be price-fetched
+          for.
+        type: object
+        properties:
+          ticker:
+            description: >-
+              Ticker represents a price feed for a given asset pair i.e.
+              BTC/USD. The
+
+              price feed is scaled to a number of decimal places and has a
+              minimum number
+
+              of providers required to consider the ticker valid.
+            type: object
+            properties:
+              currency_pair:
+                description: CurrencyPair is the currency pair for this ticker.
+                type: object
+                properties:
+                  Base:
+                    type: string
+                  Quote:
+                    type: string
+                title: >-
+                  CurrencyPair is the standard representation of a pair of
+                  assets, where one
+
+                  (Base) is priced in terms of the other (Quote)
+              decimals:
+                type: string
+                format: uint64
+                description: >-
+                  Decimals is the number of decimal places for the ticker. The
+                  number of
+
+                  decimal places is used to convert the price to a
+                  human-readable format.
+              min_provider_count:
+                type: string
+                format: uint64
+                description: >-
+                  MinProviderCount is the minimum number of providers required
+                  to consider
+
+                  the ticker valid.
+              enabled:
+                type: boolean
+                description: >-
+                  Enabled is the flag that denotes if the Ticker is enabled for
+                  price
+
+                  fetching by an oracle.
+              metadata_JSON:
+                type: string
+                description: >-
+                  MetadataJSON is a string of JSON that encodes any extra
+                  configuration
+
+                  for the given ticker.
+          provider_configs:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: >-
+                    Name corresponds to the name of the provider for which the
+                    configuration is
+
+                    being set.
+                off_chain_ticker:
+                  type: string
+                  description: >-
+                    OffChainTicker is the off-chain representation of the ticker
+                    i.e. BTC/USD.
+
+                    The off-chain ticker is unique to a given provider and is
+                    used to fetch the
+
+                    price of the ticker from the provider.
+                normalize_by_pair:
+                  description: >-
+                    NormalizeByPair is the currency pair for this ticker to be
+                    normalized by.
+
+                    For example, if the desired Ticker is BTC/USD, this market
+                    could be reached
+
+                    using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD
+                    This field is
+
+                    optional and nullable.
+                  type: object
+                  properties:
+                    Base:
+                      type: string
+                    Quote:
+                      type: string
+                  title: >-
+                    CurrencyPair is the standard representation of a pair of
+                    assets, where one
+
+                    (Base) is priced in terms of the other (Quote)
+                invert:
+                  type: boolean
+                  title: >-
+                    Invert is a boolean indicating if the BASE and QUOTE of the
+                    market should
+
+                    be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                metadata_JSON:
+                  type: string
+                  description: >-
+                    MetadataJSON is a string of JSON that encodes any extra
+                    configuration
+
+                    for the given provider config.
+            description: >-
+              ProviderConfigs is the list of provider-specific configs for this
+              Market.
+    description: MarketResponse is the query response for the Market query.
+  connect.marketmap.v2.Params:
+    type: object
+    properties:
+      market_authorities:
+        type: array
+        items:
+          type: string
+        description: |-
+          MarketAuthorities is the list of authority accounts that are able to
+          control updating the marketmap.
+      admin:
+        type: string
+        description: >-
+          Admin is an address that can remove addresses from the
+          MarketAuthorities
+
+          list. Only governance can add to the MarketAuthorities or change the
+          Admin.
+    description: Params defines the parameters for the x/marketmap module.
+  connect.marketmap.v2.ParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          market_authorities:
+            type: array
+            items:
+              type: string
+            description: >-
+              MarketAuthorities is the list of authority accounts that are able
+              to
+
+              control updating the marketmap.
+          admin:
+            type: string
+            description: >-
+              Admin is an address that can remove addresses from the
+              MarketAuthorities
+
+              list. Only governance can add to the MarketAuthorities or change
+              the Admin.
+        description: Params defines the parameters for the x/marketmap module.
+    description: ParamsResponse is the response type for the Query/Params RPC method.
+  connect.marketmap.v2.ProviderConfig:
+    type: object
+    properties:
+      name:
+        type: string
+        description: >-
+          Name corresponds to the name of the provider for which the
+          configuration is
+
+          being set.
+      off_chain_ticker:
+        type: string
+        description: >-
+          OffChainTicker is the off-chain representation of the ticker i.e.
+          BTC/USD.
+
+          The off-chain ticker is unique to a given provider and is used to
+          fetch the
+
+          price of the ticker from the provider.
+      normalize_by_pair:
+        description: >-
+          NormalizeByPair is the currency pair for this ticker to be normalized
+          by.
+
+          For example, if the desired Ticker is BTC/USD, this market could be
+          reached
+
+          using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This field
+          is
+
+          optional and nullable.
+        type: object
+        properties:
+          Base:
+            type: string
+          Quote:
+            type: string
+        title: >-
+          CurrencyPair is the standard representation of a pair of assets, where
+          one
+
+          (Base) is priced in terms of the other (Quote)
+      invert:
+        type: boolean
+        title: >-
+          Invert is a boolean indicating if the BASE and QUOTE of the market
+          should
+
+          be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+      metadata_JSON:
+        type: string
+        description: |-
+          MetadataJSON is a string of JSON that encodes any extra configuration
+          for the given provider config.
+  connect.marketmap.v2.Ticker:
+    type: object
+    properties:
+      currency_pair:
+        description: CurrencyPair is the currency pair for this ticker.
+        type: object
+        properties:
+          Base:
+            type: string
+          Quote:
+            type: string
+        title: >-
+          CurrencyPair is the standard representation of a pair of assets, where
+          one
+
+          (Base) is priced in terms of the other (Quote)
+      decimals:
+        type: string
+        format: uint64
+        description: >-
+          Decimals is the number of decimal places for the ticker. The number of
+
+          decimal places is used to convert the price to a human-readable
+          format.
+      min_provider_count:
+        type: string
+        format: uint64
+        description: >-
+          MinProviderCount is the minimum number of providers required to
+          consider
+
+          the ticker valid.
+      enabled:
+        type: boolean
+        description: |-
+          Enabled is the flag that denotes if the Ticker is enabled for price
+          fetching by an oracle.
+      metadata_JSON:
+        type: string
+        description: |-
+          MetadataJSON is a string of JSON that encodes any extra configuration
+          for the given ticker.
+    description: >-
+      Ticker represents a price feed for a given asset pair i.e. BTC/USD. The
+      price
+
+      feed is scaled to a number of decimal places and has a minimum number of
+
+      providers required to consider the ticker valid.
+  connect.types.v2.CurrencyPair:
+    type: object
+    properties:
+      Base:
+        type: string
+      Quote:
+        type: string
+    title: |-
+      CurrencyPair is the standard representation of a pair of assets, where one
+      (Base) is priced in terms of the other (Quote)
   google.protobuf.Any:
     type: object
     properties:
@@ -44974,6 +45485,679 @@ definitions:
                   "@type": "type.googleapis.com/google.protobuf.Duration",
                   "value": "1.212s"
                 }
+  connect.oracle.v2.GetAllCurrencyPairsResponse:
+    type: object
+    properties:
+      currency_pairs:
+        type: array
+        items:
+          type: object
+          properties:
+            Base:
+              type: string
+            Quote:
+              type: string
+          title: >-
+            CurrencyPair is the standard representation of a pair of assets,
+            where one
+
+            (Base) is priced in terms of the other (Quote)
+    description: |-
+      GetAllCurrencyPairsResponse returns all CurrencyPairs that the module is
+      currently tracking.
+  connect.oracle.v2.GetCurrencyPairMappingResponse:
+    type: object
+    properties:
+      currency_pair_mapping:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            Base:
+              type: string
+            Quote:
+              type: string
+          title: >-
+            CurrencyPair is the standard representation of a pair of assets,
+            where one
+
+            (Base) is priced in terms of the other (Quote)
+        description: >-
+          currency_pair_mapping is a mapping of the id representing the currency
+          pair
+
+          to the currency pair itself.
+    description: >-
+      GetCurrencyPairMappingResponse is the GetCurrencyPairMapping response
+      type.
+  connect.oracle.v2.GetPriceResponse:
+    type: object
+    properties:
+      price:
+        title: |-
+          QuotePrice represents the quote-price for the CurrencyPair given in
+          GetPriceRequest (possibly nil if no update has been made)
+        type: object
+        properties:
+          price:
+            type: string
+          block_timestamp:
+            type: string
+            format: date-time
+            title: >-
+              BlockTimestamp tracks the block height associated with this price
+              update.
+
+              We include block timestamp alongside the price to ensure that
+              smart
+
+              contracts and applications are not utilizing stale oracle prices
+          block_height:
+            type: string
+            format: uint64
+            title: BlockHeight is height of block mentioned above
+      nonce:
+        type: string
+        format: uint64
+        title: nonce represents the nonce for the CurrencyPair if it exists in state
+      decimals:
+        type: string
+        format: uint64
+        description: >-
+          decimals represents the number of decimals that the quote-price is
+
+          represented in. It is used to scale the QuotePrice to its proper
+          value.
+      id:
+        type: string
+        format: uint64
+        description: ID represents the identifier for the CurrencyPair.
+    description: >-
+      GetPriceResponse is the response from the GetPrice grpc method exposed
+      from
+
+      the x/oracle query service.
+  connect.oracle.v2.GetPricesResponse:
+    type: object
+    properties:
+      prices:
+        type: array
+        items:
+          type: object
+          properties:
+            price:
+              title: >-
+                QuotePrice represents the quote-price for the CurrencyPair given
+                in
+
+                GetPriceRequest (possibly nil if no update has been made)
+              type: object
+              properties:
+                price:
+                  type: string
+                block_timestamp:
+                  type: string
+                  format: date-time
+                  title: >-
+                    BlockTimestamp tracks the block height associated with this
+                    price update.
+
+                    We include block timestamp alongside the price to ensure
+                    that smart
+
+                    contracts and applications are not utilizing stale oracle
+                    prices
+                block_height:
+                  type: string
+                  format: uint64
+                  title: BlockHeight is height of block mentioned above
+            nonce:
+              type: string
+              format: uint64
+              title: >-
+                nonce represents the nonce for the CurrencyPair if it exists in
+                state
+            decimals:
+              type: string
+              format: uint64
+              description: >-
+                decimals represents the number of decimals that the quote-price
+                is
+
+                represented in. It is used to scale the QuotePrice to its proper
+                value.
+            id:
+              type: string
+              format: uint64
+              description: ID represents the identifier for the CurrencyPair.
+          description: >-
+            GetPriceResponse is the response from the GetPrice grpc method
+            exposed from
+
+            the x/oracle query service.
+    description: >-
+      GetPricesResponse is the response from the GetPrices grpc method exposed
+      from
+
+      the x/oracle query service.
+  connect.oracle.v2.QuotePrice:
+    type: object
+    properties:
+      price:
+        type: string
+      block_timestamp:
+        type: string
+        format: date-time
+        title: >-
+          BlockTimestamp tracks the block height associated with this price
+          update.
+
+          We include block timestamp alongside the price to ensure that smart
+
+          contracts and applications are not utilizing stale oracle prices
+      block_height:
+        type: string
+        format: uint64
+        title: BlockHeight is height of block mentioned above
+    title: >-
+      QuotePrice is the representation of the aggregated prices for a
+      CurrencyPair,
+
+      where price represents the price of Base in terms of Quote
+  ratelimit.v1.Flow:
+    type: object
+    properties:
+      inflow:
+        type: string
+        title: |-
+          Inflow defines the total amount of inbound transfers for the given
+          rate limit in the current window
+      outflow:
+        type: string
+        title: |-
+          Outflow defines the total amount of outbound transfers for the given
+          rate limit in the current window
+      channel_value:
+        type: string
+        title: |-
+          ChannelValue stores the total supply of the denom at the start of
+          the rate limit. This is used as the denominator when checking
+          the rate limit threshold
+          The ChannelValue is fixed for the duration of the rate limit window
+  ratelimit.v1.Path:
+    type: object
+    properties:
+      denom:
+        type: string
+      channel_id:
+        type: string
+    title: Path holds the denom and channelID that define the rate limited route
+  ratelimit.v1.QueryAllBlacklistedDenomsResponse:
+    type: object
+    properties:
+      denoms:
+        type: array
+        items:
+          type: string
+  ratelimit.v1.QueryAllRateLimitsResponse:
+    type: object
+    properties:
+      rate_limits:
+        type: array
+        items:
+          type: object
+          properties:
+            path:
+              type: object
+              properties:
+                denom:
+                  type: string
+                channel_id:
+                  type: string
+              title: >-
+                Path holds the denom and channelID that define the rate limited
+                route
+            quota:
+              type: object
+              properties:
+                max_percent_send:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for outflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                max_percent_recv:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for inflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                duration_hours:
+                  type: string
+                  format: uint64
+                  title: >-
+                    DurationHours specifies the number of hours before the rate
+                    limit
+
+                    is reset (e.g. 24 indicates that the rate limit is reset
+                    each day)
+              title: Quota defines the rate limit thresholds for transfer packets
+            flow:
+              type: object
+              properties:
+                inflow:
+                  type: string
+                  title: >-
+                    Inflow defines the total amount of inbound transfers for the
+                    given
+
+                    rate limit in the current window
+                outflow:
+                  type: string
+                  title: >-
+                    Outflow defines the total amount of outbound transfers for
+                    the given
+
+                    rate limit in the current window
+                channel_value:
+                  type: string
+                  title: >-
+                    ChannelValue stores the total supply of the denom at the
+                    start of
+
+                    the rate limit. This is used as the denominator when
+                    checking
+
+                    the rate limit threshold
+
+                    The ChannelValue is fixed for the duration of the rate limit
+                    window
+          title: |-
+            RateLimit stores all the context about a given rate limit, including
+            the relevant denom and channel, rate limit thresholds, and current
+            progress towards the limits
+  ratelimit.v1.QueryAllWhitelistedAddressesResponse:
+    type: object
+    properties:
+      address_pairs:
+        type: array
+        items:
+          type: object
+          properties:
+            sender:
+              type: string
+            receiver:
+              type: string
+          title: |-
+            WhitelistedAddressPair represents a sender-receiver combo that is
+            not subject to rate limit restrictions
+  ratelimit.v1.QueryRateLimitResponse:
+    type: object
+    properties:
+      rate_limit:
+        type: object
+        properties:
+          path:
+            type: object
+            properties:
+              denom:
+                type: string
+              channel_id:
+                type: string
+            title: >-
+              Path holds the denom and channelID that define the rate limited
+              route
+          quota:
+            type: object
+            properties:
+              max_percent_send:
+                type: string
+                title: >-
+                  MaxPercentSend defines the threshold for outflows
+
+                  The threshold is defined as a percentage (e.g. 10 indicates
+                  10%)
+              max_percent_recv:
+                type: string
+                title: >-
+                  MaxPercentSend defines the threshold for inflows
+
+                  The threshold is defined as a percentage (e.g. 10 indicates
+                  10%)
+              duration_hours:
+                type: string
+                format: uint64
+                title: >-
+                  DurationHours specifies the number of hours before the rate
+                  limit
+
+                  is reset (e.g. 24 indicates that the rate limit is reset each
+                  day)
+            title: Quota defines the rate limit thresholds for transfer packets
+          flow:
+            type: object
+            properties:
+              inflow:
+                type: string
+                title: >-
+                  Inflow defines the total amount of inbound transfers for the
+                  given
+
+                  rate limit in the current window
+              outflow:
+                type: string
+                title: >-
+                  Outflow defines the total amount of outbound transfers for the
+                  given
+
+                  rate limit in the current window
+              channel_value:
+                type: string
+                title: >-
+                  ChannelValue stores the total supply of the denom at the start
+                  of
+
+                  the rate limit. This is used as the denominator when checking
+
+                  the rate limit threshold
+
+                  The ChannelValue is fixed for the duration of the rate limit
+                  window
+        title: |-
+          RateLimit stores all the context about a given rate limit, including
+          the relevant denom and channel, rate limit thresholds, and current
+          progress towards the limits
+  ratelimit.v1.QueryRateLimitsByChainIdResponse:
+    type: object
+    properties:
+      rate_limits:
+        type: array
+        items:
+          type: object
+          properties:
+            path:
+              type: object
+              properties:
+                denom:
+                  type: string
+                channel_id:
+                  type: string
+              title: >-
+                Path holds the denom and channelID that define the rate limited
+                route
+            quota:
+              type: object
+              properties:
+                max_percent_send:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for outflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                max_percent_recv:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for inflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                duration_hours:
+                  type: string
+                  format: uint64
+                  title: >-
+                    DurationHours specifies the number of hours before the rate
+                    limit
+
+                    is reset (e.g. 24 indicates that the rate limit is reset
+                    each day)
+              title: Quota defines the rate limit thresholds for transfer packets
+            flow:
+              type: object
+              properties:
+                inflow:
+                  type: string
+                  title: >-
+                    Inflow defines the total amount of inbound transfers for the
+                    given
+
+                    rate limit in the current window
+                outflow:
+                  type: string
+                  title: >-
+                    Outflow defines the total amount of outbound transfers for
+                    the given
+
+                    rate limit in the current window
+                channel_value:
+                  type: string
+                  title: >-
+                    ChannelValue stores the total supply of the denom at the
+                    start of
+
+                    the rate limit. This is used as the denominator when
+                    checking
+
+                    the rate limit threshold
+
+                    The ChannelValue is fixed for the duration of the rate limit
+                    window
+          title: |-
+            RateLimit stores all the context about a given rate limit, including
+            the relevant denom and channel, rate limit thresholds, and current
+            progress towards the limits
+  ratelimit.v1.QueryRateLimitsByChannelIdResponse:
+    type: object
+    properties:
+      rate_limits:
+        type: array
+        items:
+          type: object
+          properties:
+            path:
+              type: object
+              properties:
+                denom:
+                  type: string
+                channel_id:
+                  type: string
+              title: >-
+                Path holds the denom and channelID that define the rate limited
+                route
+            quota:
+              type: object
+              properties:
+                max_percent_send:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for outflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                max_percent_recv:
+                  type: string
+                  title: >-
+                    MaxPercentSend defines the threshold for inflows
+
+                    The threshold is defined as a percentage (e.g. 10 indicates
+                    10%)
+                duration_hours:
+                  type: string
+                  format: uint64
+                  title: >-
+                    DurationHours specifies the number of hours before the rate
+                    limit
+
+                    is reset (e.g. 24 indicates that the rate limit is reset
+                    each day)
+              title: Quota defines the rate limit thresholds for transfer packets
+            flow:
+              type: object
+              properties:
+                inflow:
+                  type: string
+                  title: >-
+                    Inflow defines the total amount of inbound transfers for the
+                    given
+
+                    rate limit in the current window
+                outflow:
+                  type: string
+                  title: >-
+                    Outflow defines the total amount of outbound transfers for
+                    the given
+
+                    rate limit in the current window
+                channel_value:
+                  type: string
+                  title: >-
+                    ChannelValue stores the total supply of the denom at the
+                    start of
+
+                    the rate limit. This is used as the denominator when
+                    checking
+
+                    the rate limit threshold
+
+                    The ChannelValue is fixed for the duration of the rate limit
+                    window
+          title: |-
+            RateLimit stores all the context about a given rate limit, including
+            the relevant denom and channel, rate limit thresholds, and current
+            progress towards the limits
+  ratelimit.v1.Quota:
+    type: object
+    properties:
+      max_percent_send:
+        type: string
+        title: |-
+          MaxPercentSend defines the threshold for outflows
+          The threshold is defined as a percentage (e.g. 10 indicates 10%)
+      max_percent_recv:
+        type: string
+        title: |-
+          MaxPercentSend defines the threshold for inflows
+          The threshold is defined as a percentage (e.g. 10 indicates 10%)
+      duration_hours:
+        type: string
+        format: uint64
+        title: |-
+          DurationHours specifies the number of hours before the rate limit
+          is reset (e.g. 24 indicates that the rate limit is reset each day)
+    title: Quota defines the rate limit thresholds for transfer packets
+  ratelimit.v1.RateLimit:
+    type: object
+    properties:
+      path:
+        type: object
+        properties:
+          denom:
+            type: string
+          channel_id:
+            type: string
+        title: Path holds the denom and channelID that define the rate limited route
+      quota:
+        type: object
+        properties:
+          max_percent_send:
+            type: string
+            title: |-
+              MaxPercentSend defines the threshold for outflows
+              The threshold is defined as a percentage (e.g. 10 indicates 10%)
+          max_percent_recv:
+            type: string
+            title: |-
+              MaxPercentSend defines the threshold for inflows
+              The threshold is defined as a percentage (e.g. 10 indicates 10%)
+          duration_hours:
+            type: string
+            format: uint64
+            title: |-
+              DurationHours specifies the number of hours before the rate limit
+              is reset (e.g. 24 indicates that the rate limit is reset each day)
+        title: Quota defines the rate limit thresholds for transfer packets
+      flow:
+        type: object
+        properties:
+          inflow:
+            type: string
+            title: |-
+              Inflow defines the total amount of inbound transfers for the given
+              rate limit in the current window
+          outflow:
+            type: string
+            title: >-
+              Outflow defines the total amount of outbound transfers for the
+              given
+
+              rate limit in the current window
+          channel_value:
+            type: string
+            title: >-
+              ChannelValue stores the total supply of the denom at the start of
+
+              the rate limit. This is used as the denominator when checking
+
+              the rate limit threshold
+
+              The ChannelValue is fixed for the duration of the rate limit
+              window
+    title: |-
+      RateLimit stores all the context about a given rate limit, including
+      the relevant denom and channel, rate limit thresholds, and current
+      progress towards the limits
+  ratelimit.v1.WhitelistedAddressPair:
+    type: object
+    properties:
+      sender:
+        type: string
+      receiver:
+        type: string
+    title: |-
+      WhitelistedAddressPair represents a sender-receiver combo that is
+      not subject to rate limit restrictions
+  mantrachain.tax.v1.Params:
+    type: object
+    properties:
+      admin:
+        type: string
+      mca_tax:
+        type: string
+      mca_address:
+        type: string
+      max_mca_tax:
+        type: string
+    description: Params defines the parameters for the module.
+  mantrachain.tax.v1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          admin:
+            type: string
+          mca_tax:
+            type: string
+          mca_address:
+            type: string
+          max_mca_tax:
+            type: string
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  cosmos.base.v1beta1.Coin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
+    description: |-
+      Coin defines a token with a denomination and an amount.
+
+      NOTE: The amount field is an Int which implements the custom method
+      signatures required by gogoproto.
   osmosis.tokenfactory.Params:
     type: object
     properties:
@@ -45013,43 +46197,7 @@ definitions:
           creation
 
           are sent to
-      whitelisted_hooks:
-        type: array
-        items:
-          type: object
-          properties:
-            code_id:
-              type: string
-              format: uint64
-            denom_creator:
-              type: string
-          title: >-
-            WhitelistedHook describes a beforeSendHook which is allowed to be
-            added and executed
-
-            SetBeforeSendHook can only be called on denoms where the denom
-            creator and
-
-            code_id for the `contract_addr` match a WhitelistedHook
-        title: >-
-          whitelisted_hooks is the list of hooks which are allowed to be added
-          and executed
     description: Params defines the parameters for the tokenfactory module.
-  osmosis.tokenfactory.WhitelistedHook:
-    type: object
-    properties:
-      code_id:
-        type: string
-        format: uint64
-      denom_creator:
-        type: string
-    title: >-
-      WhitelistedHook describes a beforeSendHook which is allowed to be added
-      and executed
-
-      SetBeforeSendHook can only be called on denoms where the denom creator and
-
-      code_id for the `contract_addr` match a WhitelistedHook
   osmosis.tokenfactory.v1beta1.DenomAuthorityMetadata:
     type: object
     properties:
@@ -45148,27 +46296,6 @@ definitions:
               creation
 
               are sent to
-          whitelisted_hooks:
-            type: array
-            items:
-              type: object
-              properties:
-                code_id:
-                  type: string
-                  format: uint64
-                denom_creator:
-                  type: string
-              title: >-
-                WhitelistedHook describes a beforeSendHook which is allowed to
-                be added and executed
-
-                SetBeforeSendHook can only be called on denoms where the denom
-                creator and
-
-                code_id for the `contract_addr` match a WhitelistedHook
-            title: >-
-              whitelisted_hooks is the list of hooks which are allowed to be
-              added and executed
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   cosmos.base.v1beta1.DecCoin:
     type: object
@@ -72650,886 +73777,3 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC version in
       the connection handshake.
-  slinky.marketmap.v1.LastUpdatedResponse:
-    type: object
-    properties:
-      last_updated:
-        type: string
-        format: uint64
-    description: |-
-      LastUpdatedResponse is the response type for the Query/LastUpdated RPC
-      method.
-  slinky.marketmap.v1.Market:
-    type: object
-    properties:
-      ticker:
-        description: >-
-          Ticker represents a price feed for a given asset pair i.e. BTC/USD.
-          The
-
-          price feed is scaled to a number of decimal places and has a minimum
-          number
-
-          of providers required to consider the ticker valid.
-        type: object
-        properties:
-          currency_pair:
-            description: CurrencyPair is the currency pair for this ticker.
-            type: object
-            properties:
-              Base:
-                type: string
-              Quote:
-                type: string
-            title: >-
-              CurrencyPair is the standard representation of a pair of assets,
-              where one
-
-              (Base) is priced in terms of the other (Quote)
-          decimals:
-            type: string
-            format: uint64
-            description: >-
-              Decimals is the number of decimal places for the ticker. The
-              number of
-
-              decimal places is used to convert the price to a human-readable
-              format.
-          min_provider_count:
-            type: string
-            format: uint64
-            description: >-
-              MinProviderCount is the minimum number of providers required to
-              consider
-
-              the ticker valid.
-          enabled:
-            type: boolean
-            description: >-
-              Enabled is the flag that denotes if the Ticker is enabled for
-              price
-
-              fetching by an oracle.
-          metadata_JSON:
-            type: string
-            description: >-
-              MetadataJSON is a string of JSON that encodes any extra
-              configuration
-
-              for the given ticker.
-      provider_configs:
-        type: array
-        items:
-          type: object
-          properties:
-            name:
-              type: string
-              description: >-
-                Name corresponds to the name of the provider for which the
-                configuration is
-
-                being set.
-            off_chain_ticker:
-              type: string
-              description: >-
-                OffChainTicker is the off-chain representation of the ticker
-                i.e. BTC/USD.
-
-                The off-chain ticker is unique to a given provider and is used
-                to fetch the
-
-                price of the ticker from the provider.
-            normalize_by_pair:
-              description: >-
-                NormalizeByPair is the currency pair for this ticker to be
-                normalized by.
-
-                For example, if the desired Ticker is BTC/USD, this market could
-                be reached
-
-                using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This
-                field is
-
-                optional and nullable.
-              type: object
-              properties:
-                Base:
-                  type: string
-                Quote:
-                  type: string
-              title: >-
-                CurrencyPair is the standard representation of a pair of assets,
-                where one
-
-                (Base) is priced in terms of the other (Quote)
-            invert:
-              type: boolean
-              title: >-
-                Invert is a boolean indicating if the BASE and QUOTE of the
-                market should
-
-                be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-            metadata_JSON:
-              type: string
-              description: >-
-                MetadataJSON is a string of JSON that encodes any extra
-                configuration
-
-                for the given provider config.
-        description: >-
-          ProviderConfigs is the list of provider-specific configs for this
-          Market.
-    description: Market encapsulates a Ticker and its provider-specific configuration.
-  slinky.marketmap.v1.MarketMap:
-    type: object
-    properties:
-      markets:
-        type: object
-        additionalProperties:
-          type: object
-          properties:
-            ticker:
-              description: >-
-                Ticker represents a price feed for a given asset pair i.e.
-                BTC/USD. The
-
-                price feed is scaled to a number of decimal places and has a
-                minimum number
-
-                of providers required to consider the ticker valid.
-              type: object
-              properties:
-                currency_pair:
-                  description: CurrencyPair is the currency pair for this ticker.
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-                decimals:
-                  type: string
-                  format: uint64
-                  description: >-
-                    Decimals is the number of decimal places for the ticker. The
-                    number of
-
-                    decimal places is used to convert the price to a
-                    human-readable format.
-                min_provider_count:
-                  type: string
-                  format: uint64
-                  description: >-
-                    MinProviderCount is the minimum number of providers required
-                    to consider
-
-                    the ticker valid.
-                enabled:
-                  type: boolean
-                  description: >-
-                    Enabled is the flag that denotes if the Ticker is enabled
-                    for price
-
-                    fetching by an oracle.
-                metadata_JSON:
-                  type: string
-                  description: >-
-                    MetadataJSON is a string of JSON that encodes any extra
-                    configuration
-
-                    for the given ticker.
-            provider_configs:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: >-
-                      Name corresponds to the name of the provider for which the
-                      configuration is
-
-                      being set.
-                  off_chain_ticker:
-                    type: string
-                    description: >-
-                      OffChainTicker is the off-chain representation of the
-                      ticker i.e. BTC/USD.
-
-                      The off-chain ticker is unique to a given provider and is
-                      used to fetch the
-
-                      price of the ticker from the provider.
-                  normalize_by_pair:
-                    description: >-
-                      NormalizeByPair is the currency pair for this ticker to be
-                      normalized by.
-
-                      For example, if the desired Ticker is BTC/USD, this market
-                      could be reached
-
-                      using: OffChainTicker = BTC/USDT NormalizeByPair =
-                      USDT/USD This field is
-
-                      optional and nullable.
-                    type: object
-                    properties:
-                      Base:
-                        type: string
-                      Quote:
-                        type: string
-                    title: >-
-                      CurrencyPair is the standard representation of a pair of
-                      assets, where one
-
-                      (Base) is priced in terms of the other (Quote)
-                  invert:
-                    type: boolean
-                    title: >-
-                      Invert is a boolean indicating if the BASE and QUOTE of
-                      the market should
-
-                      be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                  metadata_JSON:
-                    type: string
-                    description: >-
-                      MetadataJSON is a string of JSON that encodes any extra
-                      configuration
-
-                      for the given provider config.
-              description: >-
-                ProviderConfigs is the list of provider-specific configs for
-                this Market.
-          description: >-
-            Market encapsulates a Ticker and its provider-specific
-            configuration.
-        description: >-
-          Markets is the full list of tickers and their associated
-          configurations
-
-          to be stored on-chain.
-    description: MarketMap maps ticker strings to their Markets.
-  slinky.marketmap.v1.MarketMapResponse:
-    type: object
-    properties:
-      market_map:
-        description: >-
-          MarketMap defines the global set of market configurations for all
-          providers
-
-          and markets.
-        type: object
-        properties:
-          markets:
-            type: object
-            additionalProperties:
-              type: object
-              properties:
-                ticker:
-                  description: >-
-                    Ticker represents a price feed for a given asset pair i.e.
-                    BTC/USD. The
-
-                    price feed is scaled to a number of decimal places and has a
-                    minimum number
-
-                    of providers required to consider the ticker valid.
-                  type: object
-                  properties:
-                    currency_pair:
-                      description: CurrencyPair is the currency pair for this ticker.
-                      type: object
-                      properties:
-                        Base:
-                          type: string
-                        Quote:
-                          type: string
-                      title: >-
-                        CurrencyPair is the standard representation of a pair of
-                        assets, where one
-
-                        (Base) is priced in terms of the other (Quote)
-                    decimals:
-                      type: string
-                      format: uint64
-                      description: >-
-                        Decimals is the number of decimal places for the ticker.
-                        The number of
-
-                        decimal places is used to convert the price to a
-                        human-readable format.
-                    min_provider_count:
-                      type: string
-                      format: uint64
-                      description: >-
-                        MinProviderCount is the minimum number of providers
-                        required to consider
-
-                        the ticker valid.
-                    enabled:
-                      type: boolean
-                      description: >-
-                        Enabled is the flag that denotes if the Ticker is
-                        enabled for price
-
-                        fetching by an oracle.
-                    metadata_JSON:
-                      type: string
-                      description: >-
-                        MetadataJSON is a string of JSON that encodes any extra
-                        configuration
-
-                        for the given ticker.
-                provider_configs:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                        description: >-
-                          Name corresponds to the name of the provider for which
-                          the configuration is
-
-                          being set.
-                      off_chain_ticker:
-                        type: string
-                        description: >-
-                          OffChainTicker is the off-chain representation of the
-                          ticker i.e. BTC/USD.
-
-                          The off-chain ticker is unique to a given provider and
-                          is used to fetch the
-
-                          price of the ticker from the provider.
-                      normalize_by_pair:
-                        description: >-
-                          NormalizeByPair is the currency pair for this ticker
-                          to be normalized by.
-
-                          For example, if the desired Ticker is BTC/USD, this
-                          market could be reached
-
-                          using: OffChainTicker = BTC/USDT NormalizeByPair =
-                          USDT/USD This field is
-
-                          optional and nullable.
-                        type: object
-                        properties:
-                          Base:
-                            type: string
-                          Quote:
-                            type: string
-                        title: >-
-                          CurrencyPair is the standard representation of a pair
-                          of assets, where one
-
-                          (Base) is priced in terms of the other (Quote)
-                      invert:
-                        type: boolean
-                        title: >-
-                          Invert is a boolean indicating if the BASE and QUOTE
-                          of the market should
-
-                          be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                      metadata_JSON:
-                        type: string
-                        description: >-
-                          MetadataJSON is a string of JSON that encodes any
-                          extra configuration
-
-                          for the given provider config.
-                  description: >-
-                    ProviderConfigs is the list of provider-specific configs for
-                    this Market.
-              description: >-
-                Market encapsulates a Ticker and its provider-specific
-                configuration.
-            description: >-
-              Markets is the full list of tickers and their associated
-              configurations
-
-              to be stored on-chain.
-      last_updated:
-        type: string
-        format: uint64
-        description: >-
-          LastUpdated is the last block height that the market map was updated.
-
-          This field can be used as an optimization for clients checking if
-          there
-
-          is a new update to the map.
-      chain_id:
-        type: string
-        description: ChainId is the chain identifier for the market map.
-    description: MarketMapResponse is the query response for the MarketMap query.
-  slinky.marketmap.v1.MarketResponse:
-    type: object
-    properties:
-      market:
-        description: >-
-          Market is the configuration of a single market to be price-fetched
-          for.
-        type: object
-        properties:
-          ticker:
-            description: >-
-              Ticker represents a price feed for a given asset pair i.e.
-              BTC/USD. The
-
-              price feed is scaled to a number of decimal places and has a
-              minimum number
-
-              of providers required to consider the ticker valid.
-            type: object
-            properties:
-              currency_pair:
-                description: CurrencyPair is the currency pair for this ticker.
-                type: object
-                properties:
-                  Base:
-                    type: string
-                  Quote:
-                    type: string
-                title: >-
-                  CurrencyPair is the standard representation of a pair of
-                  assets, where one
-
-                  (Base) is priced in terms of the other (Quote)
-              decimals:
-                type: string
-                format: uint64
-                description: >-
-                  Decimals is the number of decimal places for the ticker. The
-                  number of
-
-                  decimal places is used to convert the price to a
-                  human-readable format.
-              min_provider_count:
-                type: string
-                format: uint64
-                description: >-
-                  MinProviderCount is the minimum number of providers required
-                  to consider
-
-                  the ticker valid.
-              enabled:
-                type: boolean
-                description: >-
-                  Enabled is the flag that denotes if the Ticker is enabled for
-                  price
-
-                  fetching by an oracle.
-              metadata_JSON:
-                type: string
-                description: >-
-                  MetadataJSON is a string of JSON that encodes any extra
-                  configuration
-
-                  for the given ticker.
-          provider_configs:
-            type: array
-            items:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: >-
-                    Name corresponds to the name of the provider for which the
-                    configuration is
-
-                    being set.
-                off_chain_ticker:
-                  type: string
-                  description: >-
-                    OffChainTicker is the off-chain representation of the ticker
-                    i.e. BTC/USD.
-
-                    The off-chain ticker is unique to a given provider and is
-                    used to fetch the
-
-                    price of the ticker from the provider.
-                normalize_by_pair:
-                  description: >-
-                    NormalizeByPair is the currency pair for this ticker to be
-                    normalized by.
-
-                    For example, if the desired Ticker is BTC/USD, this market
-                    could be reached
-
-                    using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD
-                    This field is
-
-                    optional and nullable.
-                  type: object
-                  properties:
-                    Base:
-                      type: string
-                    Quote:
-                      type: string
-                  title: >-
-                    CurrencyPair is the standard representation of a pair of
-                    assets, where one
-
-                    (Base) is priced in terms of the other (Quote)
-                invert:
-                  type: boolean
-                  title: >-
-                    Invert is a boolean indicating if the BASE and QUOTE of the
-                    market should
-
-                    be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-                metadata_JSON:
-                  type: string
-                  description: >-
-                    MetadataJSON is a string of JSON that encodes any extra
-                    configuration
-
-                    for the given provider config.
-            description: >-
-              ProviderConfigs is the list of provider-specific configs for this
-              Market.
-    description: MarketResponse is the query response for the Market query.
-  slinky.marketmap.v1.Params:
-    type: object
-    properties:
-      market_authorities:
-        type: array
-        items:
-          type: string
-        description: |-
-          MarketAuthorities is the list of authority accounts that are able to
-          control updating the marketmap.
-      admin:
-        type: string
-        description: >-
-          Admin is an address that can remove addresses from the
-          MarketAuthorities
-
-          list. Only governance can add to the MarketAuthorities or change the
-          Admin.
-    description: Params defines the parameters for the x/marketmap module.
-  slinky.marketmap.v1.ParamsResponse:
-    type: object
-    properties:
-      params:
-        type: object
-        properties:
-          market_authorities:
-            type: array
-            items:
-              type: string
-            description: >-
-              MarketAuthorities is the list of authority accounts that are able
-              to
-
-              control updating the marketmap.
-          admin:
-            type: string
-            description: >-
-              Admin is an address that can remove addresses from the
-              MarketAuthorities
-
-              list. Only governance can add to the MarketAuthorities or change
-              the Admin.
-        description: Params defines the parameters for the x/marketmap module.
-    description: ParamsResponse is the response type for the Query/Params RPC method.
-  slinky.marketmap.v1.ProviderConfig:
-    type: object
-    properties:
-      name:
-        type: string
-        description: >-
-          Name corresponds to the name of the provider for which the
-          configuration is
-
-          being set.
-      off_chain_ticker:
-        type: string
-        description: >-
-          OffChainTicker is the off-chain representation of the ticker i.e.
-          BTC/USD.
-
-          The off-chain ticker is unique to a given provider and is used to
-          fetch the
-
-          price of the ticker from the provider.
-      normalize_by_pair:
-        description: >-
-          NormalizeByPair is the currency pair for this ticker to be normalized
-          by.
-
-          For example, if the desired Ticker is BTC/USD, this market could be
-          reached
-
-          using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This field
-          is
-
-          optional and nullable.
-        type: object
-        properties:
-          Base:
-            type: string
-          Quote:
-            type: string
-        title: >-
-          CurrencyPair is the standard representation of a pair of assets, where
-          one
-
-          (Base) is priced in terms of the other (Quote)
-      invert:
-        type: boolean
-        title: >-
-          Invert is a boolean indicating if the BASE and QUOTE of the market
-          should
-
-          be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
-      metadata_JSON:
-        type: string
-        description: |-
-          MetadataJSON is a string of JSON that encodes any extra configuration
-          for the given provider config.
-  slinky.marketmap.v1.Ticker:
-    type: object
-    properties:
-      currency_pair:
-        description: CurrencyPair is the currency pair for this ticker.
-        type: object
-        properties:
-          Base:
-            type: string
-          Quote:
-            type: string
-        title: >-
-          CurrencyPair is the standard representation of a pair of assets, where
-          one
-
-          (Base) is priced in terms of the other (Quote)
-      decimals:
-        type: string
-        format: uint64
-        description: >-
-          Decimals is the number of decimal places for the ticker. The number of
-
-          decimal places is used to convert the price to a human-readable
-          format.
-      min_provider_count:
-        type: string
-        format: uint64
-        description: >-
-          MinProviderCount is the minimum number of providers required to
-          consider
-
-          the ticker valid.
-      enabled:
-        type: boolean
-        description: |-
-          Enabled is the flag that denotes if the Ticker is enabled for price
-          fetching by an oracle.
-      metadata_JSON:
-        type: string
-        description: |-
-          MetadataJSON is a string of JSON that encodes any extra configuration
-          for the given ticker.
-    description: >-
-      Ticker represents a price feed for a given asset pair i.e. BTC/USD. The
-      price
-
-      feed is scaled to a number of decimal places and has a minimum number of
-
-      providers required to consider the ticker valid.
-  slinky.types.v1.CurrencyPair:
-    type: object
-    properties:
-      Base:
-        type: string
-      Quote:
-        type: string
-    title: |-
-      CurrencyPair is the standard representation of a pair of assets, where one
-      (Base) is priced in terms of the other (Quote)
-  slinky.oracle.v1.GetAllCurrencyPairsResponse:
-    type: object
-    properties:
-      currency_pairs:
-        type: array
-        items:
-          type: object
-          properties:
-            Base:
-              type: string
-            Quote:
-              type: string
-          title: >-
-            CurrencyPair is the standard representation of a pair of assets,
-            where one
-
-            (Base) is priced in terms of the other (Quote)
-    description: |-
-      GetAllCurrencyPairsResponse returns all CurrencyPairs that the module is
-      currently tracking.
-  slinky.oracle.v1.GetCurrencyPairMappingResponse:
-    type: object
-    properties:
-      currency_pair_mapping:
-        type: object
-        additionalProperties:
-          type: object
-          properties:
-            Base:
-              type: string
-            Quote:
-              type: string
-          title: >-
-            CurrencyPair is the standard representation of a pair of assets,
-            where one
-
-            (Base) is priced in terms of the other (Quote)
-        description: >-
-          currency_pair_mapping is a mapping of the id representing the currency
-          pair
-
-          to the currency pair itself.
-    description: >-
-      GetCurrencyPairMappingResponse is the GetCurrencyPairMapping response
-      type.
-  slinky.oracle.v1.GetPriceResponse:
-    type: object
-    properties:
-      price:
-        title: |-
-          QuotePrice represents the quote-price for the CurrencyPair given in
-          GetPriceRequest (possibly nil if no update has been made)
-        type: object
-        properties:
-          price:
-            type: string
-          block_timestamp:
-            type: string
-            format: date-time
-            title: >-
-              BlockTimestamp tracks the block height associated with this price
-              update.
-
-              We include block timestamp alongside the price to ensure that
-              smart
-
-              contracts and applications are not utilizing stale oracle prices
-          block_height:
-            type: string
-            format: uint64
-            title: BlockHeight is height of block mentioned above
-      nonce:
-        type: string
-        format: uint64
-        title: nonce represents the nonce for the CurrencyPair if it exists in state
-      decimals:
-        type: string
-        format: uint64
-        description: >-
-          decimals represents the number of decimals that the quote-price is
-
-          represented in. It is used to scale the QuotePrice to its proper
-          value.
-      id:
-        type: string
-        format: uint64
-        description: ID represents the identifier for the CurrencyPair.
-    description: >-
-      GetPriceResponse is the response from the GetPrice grpc method exposed
-      from
-
-      the x/oracle query service.
-  slinky.oracle.v1.GetPricesResponse:
-    type: object
-    properties:
-      prices:
-        type: array
-        items:
-          type: object
-          properties:
-            price:
-              title: >-
-                QuotePrice represents the quote-price for the CurrencyPair given
-                in
-
-                GetPriceRequest (possibly nil if no update has been made)
-              type: object
-              properties:
-                price:
-                  type: string
-                block_timestamp:
-                  type: string
-                  format: date-time
-                  title: >-
-                    BlockTimestamp tracks the block height associated with this
-                    price update.
-
-                    We include block timestamp alongside the price to ensure
-                    that smart
-
-                    contracts and applications are not utilizing stale oracle
-                    prices
-                block_height:
-                  type: string
-                  format: uint64
-                  title: BlockHeight is height of block mentioned above
-            nonce:
-              type: string
-              format: uint64
-              title: >-
-                nonce represents the nonce for the CurrencyPair if it exists in
-                state
-            decimals:
-              type: string
-              format: uint64
-              description: >-
-                decimals represents the number of decimals that the quote-price
-                is
-
-                represented in. It is used to scale the QuotePrice to its proper
-                value.
-            id:
-              type: string
-              format: uint64
-              description: ID represents the identifier for the CurrencyPair.
-          description: >-
-            GetPriceResponse is the response from the GetPrice grpc method
-            exposed from
-
-            the x/oracle query service.
-    description: >-
-      GetPricesResponse is the response from the GetPrices grpc method exposed
-      from
-
-      the x/oracle query service.
-  slinky.oracle.v1.QuotePrice:
-    type: object
-    properties:
-      price:
-        type: string
-      block_timestamp:
-        type: string
-        format: date-time
-        title: >-
-          BlockTimestamp tracks the block height associated with this price
-          update.
-
-          We include block timestamp alongside the price to ensure that smart
-
-          contracts and applications are not utilizing stale oracle prices
-      block_height:
-        type: string
-        format: uint64
-        title: BlockHeight is height of block mentioned above
-    title: >-
-      QuotePrice is the representation of the aggregated prices for a
-      CurrencyPair,
-
-      where price represents the price of Base in terms of Quote

@@ -1,7 +1,13 @@
-on: [push, pull_request]
-name: Test
+on: 
+   push: 
+     branches: main
+   pull_request:
+     branches: main
+
+
+name: Build and validate genesis
 jobs:
-  test:
+  build:
     strategy:
       matrix:
         go-version: [1.23.x]
@@ -12,4 +18,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
-      - run: go build ./...
+      - name: install
+        run: make install
+      - name: validate genesis
+        run: mantrachaind genesis validate-genesis networks/dukong/genesis.json

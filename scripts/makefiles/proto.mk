@@ -16,20 +16,32 @@ proto-help:
 proto: proto-help
 proto-all: proto-format proto-gen
 
-PROTO_BUILDER_IMAGE=ghcr.io/cosmos/proto-builder:0.14.0
-protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(PROTO_BUILDER_IMAGE)
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
 
-proto-all: proto-format proto-gen
+protoVer=0.14.0
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
+proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@$(DOCKER) run --rm -u 0 -v $(CURDIR):/workspace --workdir /workspace $(PROTO_BUILDER_IMAGE) sh ./scripts/protocgen.sh
+	@$(protoImage) sh ./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@echo "Generating Protobuf Swagger"
+	@$(protoImage) sh ./scripts/protoc-swagger-gen.sh
 
 proto-format:
-	@echo "Formatting Protobuf files"
-	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/docker-build-proto \
-		find ./proto -name "*.proto" -exec clang-format -i {} \;
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
+proto-lint:
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
 
 SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
@@ -62,6 +74,13 @@ proto-download-deps:
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/connect_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
+	git clone --depth 1 https://github.com/cosmos/ibc-apps.git . && \
+	mkdir -p "../ratelimit" && \
+	mv ./modules/rate-limiting/proto/ratelimit ..
+	rm -rf "$(THIRD_PARTY_DIR)/ibc_apps_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto" && \
 	curl -SSL https://raw.githubusercontent.com/cosmos/cosmos-proto/main/proto/cosmos_proto/cosmos.proto > "$(THIRD_PARTY_DIR)/cosmos_proto/cosmos.proto"

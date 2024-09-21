@@ -1,11 +1,38 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Osmosis - gRPC Gateway docs",
+    "title": "DuKong - gRPC Gateway docs",
     "description": "A REST interface for state queries, legacy transactions",
     "version": "1.0.0"
   },
   "apis": [
+    {
+      "url": "./tmp-swagger-gen/connect/marketmap/v2/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "MarketMapParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/connect/oracle/v2/query.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/ratelimit/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "RateLimitParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/mantrachain/tax/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "TaxParams"
+        }
+      }
+    },
     {
       "url": "./tmp-swagger-gen/osmosis/tokenfactory/v1beta1/query.swagger.json",
       "operationIds": {
@@ -190,17 +217,6 @@
           "Params": "ConnectionParams"
         }
       }
-    },
-    {
-      "url": "./tmp-swagger-gen/slinky/marketmap/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "MarketMapParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/slinky/oracle/v1/query.swagger.json"
     }
   ]
 }

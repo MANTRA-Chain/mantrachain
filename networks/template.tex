@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% Define \tightlist to fix the error
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{fontspec}
+
+% Set Liberation Sans as the main font
+\setmainfont{Liberation Sans}
+
+% Set custom colors (replace with your branding colors)
+\definecolor{primary}{HTML}{0B3D91}
+\definecolor{secondary}{HTML}{00A3E0}
+
+% Header and Footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+
+% Remove or comment out the logo if you want to ignore it
+\lhead{\includegraphics[height=1.2cm]{mantra.png}}
+\lhead{\textcolor{primary}{Mantrachain Dukong Testnet}}
+\rhead{\textcolor{secondary}{Genesis Report}}
+\cfoot{\thepage}
+
+% Title formatting
+\titleformat{\section}
+  {\color{primary}\normalfont\Large\bfseries}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\color{secondary}\normalfont\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=secondary,
+}
+
+% Paragraph formatting
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\title{\textcolor{primary}{Genesis Report}}
+\author{\textcolor{secondary}{Mantrachain Team}}
+\date{\today}
+
+\begin{document}
+\maketitle
+$body$
+\end{document}

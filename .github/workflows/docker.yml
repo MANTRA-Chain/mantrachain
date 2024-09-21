@@ -5,6 +5,11 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "The desired tag for the release (e.g. v0.1.0)."
+        required: true
 
 env:
   REGISTRY: ghcr.io
@@ -22,6 +27,9 @@ jobs:
     runs-on: chain-runner
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.release_tag || github.ref }}
 
       - uses: docker/setup-qemu-action@v3
 
@@ -43,6 +51,10 @@ jobs:
           chain: mantrachain
           chains-spec-file: chains.yaml
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
+          heighliner-owner: ${{ github.repository_owner }}
+          heighliner-tag: v1.6.4
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
+          git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}
           registry: ghcr.io/${{ env.OWNER_LC }}
+          skip: ${{ github.event_name == 'pull_request' }}
