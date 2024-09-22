@@ -371,17 +371,7 @@
       "account_permissions": [],
       "disabled_type_urls": []
     },
-    "consensus": {
-      "params": {
-        "block": {
-          "max_bytes": "10000000",
-          "max_gas": "1000000000"
-        },
-        "abci": {
-          "vote_extensions_enable_height": "1"
-        }
-      }
-    },
+    "consensus": null,
     "crisis": {
       "constant_fee": {
         "denom": "uom",
