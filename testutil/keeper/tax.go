@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
 	storetypes "cosmossdk.io/store/types"
+	_ "github.com/MANTRA-Chain/mantrachain/app"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
