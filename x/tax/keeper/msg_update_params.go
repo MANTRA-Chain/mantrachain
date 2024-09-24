@@ -23,10 +23,6 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid admin; expected %s, got %s", params.Admin, req.Admin)
 	}
 
-	if k.GetAuthority() != req.Admin {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Admin)
-	}
-
 	updateParams, err := k.Params.Get(ctx)
 	if err != nil {
 		return nil, err
