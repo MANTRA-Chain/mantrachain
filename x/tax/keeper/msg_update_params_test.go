@@ -26,7 +26,7 @@ func TestMsgUpdateParams(t *testing.T) {
 		{
 			name: "invalid authority",
 			input: &types.MsgUpdateParams{
-				Admin:      "invalid",
+				Authority:      "invalid",
 				McaTax:     "",
 				McaAddress: "",
 			},
