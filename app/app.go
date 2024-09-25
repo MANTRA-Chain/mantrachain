@@ -324,9 +324,6 @@ func New(
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
-	// to support multiple denom as fee token
-	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
-
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	overrideModules := map[string]module.AppModuleSimulation{
 		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
