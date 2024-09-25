@@ -25,16 +25,16 @@ jobs:
         platform:
           - name: Linux x86_64
             ids: mantrachaind-linux-amd64
-            runner: warp-ubuntu-latest-x64-32x-spot
+            runner: ubuntu-latest-x64-xlarge
             cross: false
           - name: Linux aarch64
             ids: mantrachaind-linux-arm64
-            runner: warp-ubuntu-latest-arm64-32x-spot
+            runner: ubuntu-latest-arm64-xlarge
             docker-platform: linux/arm64
             cross: false
           - name: MacOS x86_64 and aarch64
             ids: mantrachaind-darwin-amd64,mantrachaind-darwin-arm64
-            runner: warp-ubuntu-latest-x64-32x-spot
+            runner: ubuntu-latest-x64-xlarge
             cross: true
 
     steps:

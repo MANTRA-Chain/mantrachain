@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   heighliner-docker:
-    runs-on: warp-ubuntu-latest-arm64-32x-spot
+    runs-on: ubuntu-latest-x64-xlarge
     steps:
       - uses: actions/checkout@v4
         with:
