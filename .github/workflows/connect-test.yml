@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.23.x]
-        os: [warp-ubuntu-latest-x64-32x-spot]
+        os: [warp-ubuntu-latest-arm64-32x-spot]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-go@v5
