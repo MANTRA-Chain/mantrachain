@@ -1,16 +1,16 @@
-on: 
-   push: 
-     branches: main
-   pull_request:
-     branches: main
-  
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+
 name: Skip Connect Integration Test
 jobs:
   connect-test:
     strategy:
       matrix:
         go-version: [1.23.x]
-        os: [ubuntu-latest]
+        os: [warp-ubuntu-latest-x64-32x-spot]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-go@v5
