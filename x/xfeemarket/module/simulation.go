@@ -95,8 +95,8 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			opWeightMsgRemoveFeeDenom,
 			defaultWeightMsgRemoveFeeDenom,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				xfeemarketsimulation.SimulateMsgRemoveFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
+				op := xfeemarketsimulation.SimulateMsgRemoveFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
+				return op.
 			},
 		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
