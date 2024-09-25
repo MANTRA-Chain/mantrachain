@@ -1365,7 +1365,6 @@
     },
     "tax": {
       "params": {
-        "admin": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls",
         "mca_tax": "0.400000000000000000",
         "mca_address": "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
       }
