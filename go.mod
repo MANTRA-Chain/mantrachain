@@ -6,7 +6,7 @@ toolchain go1.23.0
 
 replace (
 	// use mantra-sdk
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240921121850-fd40ce65a69f
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20240925084046-52b8bb01b6bf
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
@@ -191,8 +191,8 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
-	github.com/hdevalence/ed25519consensus v0.1.0 // indirect
-	github.com/huandu/skiplist v1.2.0 // indirect
+	github.com/hdevalence/ed25519consensus v0.2.0 // indirect
+	github.com/huandu/skiplist v1.2.1 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
