@@ -8,7 +8,7 @@ ARG BUILD_TAGS="netgo,ledger,muslc"
 # Builder
 # --------------------------------------------------------
 
-FROM golang:${GO_VERSION}-alpine3.20 as builder
+FROM golang:${GO_VERSION}-alpine3.20 AS builder
 
 ARG GIT_VERSION
 ARG GIT_COMMIT
@@ -16,11 +16,12 @@ ARG BUILD_TAGS
 ARG CMT_VERSION
 
 RUN apk add --no-cache \
-    ca-certificates \
-    build-base \
-    linux-headers \
     binutils-gold \
-    git
+    build-base \
+    ca-certificates \
+    git \
+    linux-headers 
+
 
 # Download go dependencies
 WORKDIR /mantrachain
@@ -54,7 +55,7 @@ FROM ${FINAL_IMAGE}
 
 COPY --from=builder /mantrachain/build/mantrachaind /bin/mantrachaind
 
-ENV HOME /mantrachain
+ENV HOME=/mantrachain
 WORKDIR $HOME
 
 EXPOSE 26656
