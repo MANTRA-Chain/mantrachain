@@ -57,7 +57,7 @@ func (app *App) registerWasmModules(
 		app.GRPCQueryRouter(),
 		DefaultNodeHome,
 		wasmConfig,
-		wasmkeeper.BuiltInCapabilities(),
+		append(wasmkeeper.BuiltInCapabilities(), "token_factory"),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		wasmOpts...,
 	)

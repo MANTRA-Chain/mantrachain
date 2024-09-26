@@ -8,6 +8,7 @@ import (
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
 	storetypes "cosmossdk.io/store/types"
+	_ "github.com/MANTRA-Chain/mantrachain/app"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -18,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -33,7 +33,6 @@ func TaxKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
 	addressCodec := addresscodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix())
 
 	k := keeper.NewKeeper(
@@ -41,7 +40,6 @@ func TaxKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 		addressCodec,
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
-		authority.String(),
 		nil,
 		nil,
 		authtypes.FeeCollectorName,
