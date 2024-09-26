@@ -54,8 +54,8 @@ var (
 	gasAdjustment = 1.5
 
 	oracleImage = ibc.DockerImage{
-		Repository: "ghcr.io/skip-mev/slinky-sidecar",
-		Version:    "latest",
+		Repository: "ghcr.io/skip-mev/connect-sidecar",
+		Version:    "v2.0.1",
 		UidGid:     "1000:1000",
 	}
 	encodingConfig = testutil.MakeTestEncodingConfig(
