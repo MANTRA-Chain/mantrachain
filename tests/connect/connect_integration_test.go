@@ -44,7 +44,7 @@ func init() {
 var (
 	image = ibc.DockerImage{
 		Repository: "mantra-chain/mantrachain",
-		Version:    "latest",
+		Version:    "local",
 		UidGid:     "1025:1025",
 	}
 
@@ -54,8 +54,8 @@ var (
 	gasAdjustment = 1.5
 
 	oracleImage = ibc.DockerImage{
-		Repository: "ghcr.io/skip-mev/slinky-sidecar",
-		Version:    "latest",
+		Repository: "ghcr.io/skip-mev/connect-sidecar",
+		Version:    "v2.0.1",
 		UidGid:     "1000:1000",
 	}
 	encodingConfig = testutil.MakeTestEncodingConfig(
@@ -96,7 +96,7 @@ var (
 		Name:          "slinky",
 		NumValidators: &numValidators,
 		NumFullNodes:  &numFullNodes,
-		Version:       "latest",
+		Version:       "local",
 		NoHostMount:   &noHostMount,
 		ChainConfig: ibc.ChainConfig{
 			EncodingConfig: &encodingConfig,
