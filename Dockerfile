@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG GO_VERSION="1.23"
-ARG FINAL_IMAGE="alpine:latest"
-ARG BUILD_TAGS="netgo,ledger,muslc"
+ARG GO_VERSION=1.23
+ARG FINAL_IMAGE=alpine:latest
 
 # --------------------------------------------------------
 # Builder
@@ -10,42 +9,42 @@ ARG BUILD_TAGS="netgo,ledger,muslc"
 
 FROM golang:${GO_VERSION}-alpine3.20 AS builder
 
+ARG BUILD_TAGS="netgo,ledger,muslc"
 ARG GIT_VERSION
 ARG GIT_COMMIT
-ARG BUILD_TAGS
 ARG CMT_VERSION
 
+# Install build dependencies
 RUN apk add --no-cache \
     binutils-gold \
     build-base \
     ca-certificates \
     git \
-    linux-headers 
+    linux-headers
 
+WORKDIR /mantrachain
 
 # Download go dependencies
-WORKDIR /mantrachain
+# Download and verify libwasmvm
 COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
-    go mod download
+    go mod download \
+    ARCH=$(uname -m) && \
+    WASMVM_VERSION=$(go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //') && \
+    wget -O /lib/libwasmvm_muslc."$ARCH".a \
+    "https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/libwasmvm_muslc.$ARCH.a" && \
+    wget -O /tmp/checksums.txt \
+    "https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt" && \
+    sha256sum /lib/libwasmvm_muslc."$ARCH".a | \
+    grep $(grep libwasmvm_muslc."$ARCH" /tmp/checksums.txt | cut -d ' ' -f 1) && \
+    rm /tmp/checksums.txt
 
-# Cosmwasm - Download correct libwasmvm version
-RUN ARCH=$(uname -m) && WASMVM_VERSION=$(go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //') && \
-    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/libwasmvm_muslc.$ARCH.a \
-    -O /lib/libwasmvm_muslc.$ARCH.a  && \
-    # verify checksum
-    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt -O /tmp/checksums.txt && \
-    sha256sum /lib/libwasmvm_muslc.$ARCH.a | grep $(cat /tmp/checksums.txt | grep libwasmvm_muslc.$ARCH | cut -d ' ' -f 1)
-
-# Copy the remaining files
+# Copy the remaining files and build
 COPY . .
-
-# Build mantrachaind binary
-# build tag info: https://github.com/cosmos/wasmd/blob/master/README.md#supported-systems
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
-    LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
+    LEDGER_ENABLED=true BUILD_TAGS="${BUILD_TAGS}" LINK_STATICALLY=true make build
 
 # --------------------------------------------------------
 # Runner
@@ -53,16 +52,11 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 FROM ${FINAL_IMAGE}
 
-COPY --from=builder /mantrachain/build/mantrachaind /bin/mantrachaind
+COPY --from=builder /mantrachain/build/mantrachaind /usr/local/bin/
 
 ENV HOME=/mantrachain
 WORKDIR $HOME
 
-EXPOSE 26656
-EXPOSE 26657
-EXPOSE 1317
-# Note: uncomment the line below if you need pprof in local mantrachain
-# We disable it by default in out main Dockerfile for security reasons
-# EXPOSE 6060
+EXPOSE 26656 26657 1317
 
 ENTRYPOINT ["mantrachaind"]
