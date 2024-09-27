@@ -888,7 +888,7 @@
           }
         ],
         "max_deposit_period": "172800s",
-        "voting_period": "691200s",
+        "voting_period": "172800s",
         "quorum": "0.334000000000000000",
         "threshold": "0.500000000000000000",
         "veto_threshold": "0.667000000000000000",
@@ -1236,16 +1236,16 @@
     },
     "mint": {
       "minter": {
-        "inflation": "0.080000000000000000",
+        "inflation": "0.000100000000000000",
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
         "mint_denom": "uom",
         "inflation_rate_change": "0.130000000000000000",
-        "inflation_max": "0.080000000000000000",
-        "inflation_min": "0.080000000000000000",
+        "inflation_max": "0.000100000000000000",
+        "inflation_min": "0.000100000000000000",
         "goal_bonded": "0.670000000000000000",
-        "blocks_per_year": "5256000"
+        "blocks_per_year": "10512000"
       }
     },
     "nft": {
