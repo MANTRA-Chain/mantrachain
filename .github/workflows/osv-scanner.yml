@@ -26,6 +26,8 @@ permissions:
   security-events: write
   # Read commit contents
   contents: read
+  # Read Actions
+  actions: read
 
 jobs:
   scan-scheduled:

@@ -12,9 +12,8 @@ import (
 var (
 	DefaultMcaTax     = "0.4"
 	DefaultMcaAddress = "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
+	MaxMcaTax         = math.LegacyMustNewDecFromStr("0.4") // 40 %
 )
-
-const MaxMcaTax = "0.4" // 40%
 
 // NewParams creates a new Params instance.
 func NewParams(
@@ -22,11 +21,10 @@ func NewParams(
 	mcaAddress string,
 ) Params {
 	mcaTax := math.LegacyMustNewDecFromStr(mcaTaxStr)
-	maxMcaTax := math.LegacyMustNewDecFromStr(MaxMcaTax)
 	return Params{
 		McaTax:     mcaTax,
 		McaAddress: mcaAddress,
-		MaxMcaTax:  maxMcaTax,
+		MaxMcaTax:  MaxMcaTax,
 	}
 }
 
@@ -46,8 +44,7 @@ func (p Params) Validate() error {
 	if err := ValidateMcaAddress(p.McaAddress); err != nil {
 		return err
 	}
-	maxTax, _ := math.LegacyNewDecFromStr(MaxMcaTax)
-	if p.McaTax.GT(maxTax) {
+	if p.McaTax.GT(MaxMcaTax) {
 		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
 	}
 	return nil
@@ -73,12 +70,7 @@ func ValidateMcaTax(i interface{}) error {
 		return fmt.Errorf("mca tax cannot exceed 100%%")
 	}
 
-	maxTax, err := math.LegacyNewDecFromStr(MaxMcaTax)
-	if err != nil {
-		return fmt.Errorf("invalid mca max tax: %s", err)
-	}
-
-	if mcaTax.GT(maxTax) {
+	if mcaTax.GT(MaxMcaTax) {
 		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
 	}
 
