@@ -25,17 +25,22 @@ jobs:
         platform:
           - name: Linux x86_64
             ids: mantrachaind-linux-amd64
+            runner: ubuntu-latest-x64-xlarge
             cross: false
           - name: Linux aarch64
             ids: mantrachaind-linux-arm64
-            runner: ubuntu-arm64
+            runner: ubuntu-latest-arm64-xlarge
             docker-platform: linux/arm64
             cross: false
           - name: MacOS x86_64 and aarch64
             ids: mantrachaind-darwin-amd64,mantrachaind-darwin-arm64
+            runner: ubuntu-latest-x64-xlarge
             cross: true
 
     steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.23.0' # The Go version to download (if necessary) and use.
       - name: Checkout Git repo
         uses: actions/checkout@v4
         with:
