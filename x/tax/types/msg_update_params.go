@@ -28,11 +28,9 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 		if mcaTax.IsNegative() {
 			return fmt.Errorf("mca tax cannot be negative")
 		}
-		if mcaTax.GT(math.LegacyOneDec()) {
-			return fmt.Errorf("mca tax cannot exceed 100%%")
+		if mcaTax.GT(MaxMcaTax) {
+			return fmt.Errorf("mca tax %s cannot exceed maximum of %s", mcaTax, MaxMcaTax)
 		}
-		// We should also check against MaxMcaTax, but it's not available in this context
-		// This check will be done in the keeper's UpdateParams function
 	}
 
 	// Validate McaAddress

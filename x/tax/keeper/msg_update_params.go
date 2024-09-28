@@ -34,8 +34,8 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 			return nil, err
 		}
 		// Check against MaxMcaTax
-		if updateParams.McaTax.GT(updateParams.MaxMcaTax) {
-			return nil, fmt.Errorf("mca tax cannot exceed maximum of %s", updateParams.MaxMcaTax)
+		if updateParams.McaTax.GT(types.MaxMcaTax) {
+			return nil, fmt.Errorf("mca tax %s cannot exceed maximum of %s", updateParams.McaTax, types.MaxMcaTax)
 		}
 	}
 
