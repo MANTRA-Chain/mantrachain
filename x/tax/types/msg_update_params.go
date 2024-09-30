@@ -10,13 +10,13 @@ import (
 
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgUpdateParams) ValidateBasic() error {
-	// Validate Admin address
-	if msg.Admin == "" {
-		return fmt.Errorf("admin address cannot be empty")
+	// Validate Authority address
+	if msg.Authority == "" {
+		return fmt.Errorf("Authority address cannot be empty")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Admin)
+	_, err := sdk.AccAddressFromBech32(msg.Authority)
 	if err != nil {
-		return fmt.Errorf("invalid admin address: %w", err)
+		return fmt.Errorf("invalid Authority address: %w", err)
 	}
 
 	// Validate McaTax
@@ -28,11 +28,9 @@ func (msg MsgUpdateParams) ValidateBasic() error {
 		if mcaTax.IsNegative() {
 			return fmt.Errorf("mca tax cannot be negative")
 		}
-		if mcaTax.GT(math.LegacyOneDec()) {
-			return fmt.Errorf("mca tax cannot exceed 100%%")
+		if mcaTax.GT(MaxMcaTax) {
+			return fmt.Errorf("mca tax %s cannot exceed maximum of %s", mcaTax, MaxMcaTax)
 		}
-		// We should also check against MaxMcaTax, but it's not available in this context
-		// This check will be done in the keeper's UpdateParams function
 	}
 
 	// Validate McaAddress

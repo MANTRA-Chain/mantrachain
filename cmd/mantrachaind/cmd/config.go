@@ -17,6 +17,7 @@ func initCometBFTConfig() *cmtcfg.Config {
 	// increase the number of inbound and outbound peers
 	cfg.P2P.MaxNumInboundPeers = 100
 	cfg.P2P.MaxNumOutboundPeers = 40
+	cfg.Consensus.TimeoutCommit = 2 * time.Second
 
 	return cfg
 }
