@@ -23,7 +23,6 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik" // import for side-effects
 	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
-	_ "github.com/MANTRA-Chain/mantrachain/x/tokenfactory" // import for side-effects
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -258,6 +257,7 @@ func New(
 		&app.txConfig,
 		&app.interfaceRegistry,
 		&app.AccountKeeper,
+		&app.BankKeeper,
 		&app.StakingKeeper,
 		&app.DistrKeeper,
 		&app.ConsensusParamsKeeper,
@@ -282,7 +282,6 @@ func New(
 		&app.OracleKeeper,
 
 		// Mantrachain Keepers
-		&app.TokenFactoryKeeper,
 		&app.TaxKeeper,
 
 		// IBCRateLimitKeeper
@@ -309,7 +308,7 @@ func New(
 	app.initializeABCIExtensions(client, metrics)
 
 	// register bank module
-	app.registerBankModule()
+	//	app.registerBankModule()
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
@@ -328,6 +327,8 @@ func New(
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+
+	app.registerTokenFactoryModule(app.appCodec, GetMaccPerms())
 
 	// to support multiple denom as fee token
 	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))

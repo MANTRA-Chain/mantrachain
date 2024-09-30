@@ -34,7 +34,6 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	taxmodulev1 "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/module/v1"
-	tokenfactorymodulev1 "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory/module/v1"
 	_ "github.com/MANTRA-Chain/mantrachain/x/tax/module"
 	taxtypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
@@ -337,12 +336,6 @@ var (
 			{
 				Name:   marketmaptypes.ModuleName,
 				Config: appconfig.WrapAny(&marketmapmodule.Module{}),
-			},
-			{
-				Name: tokenfactorytypes.ModuleName,
-				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{
-					KnownModules: knownModules(),
-				}),
 			},
 			{
 				Name: ratelimittypes.ModuleName,
