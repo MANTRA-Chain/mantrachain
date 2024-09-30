@@ -322,14 +322,14 @@ func New(
 
 	/****  Module Options ****/
 
+	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
+
+	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
 		banktypes.NewMultiBankHooks(
 			app.TokenFactoryKeeper.Hooks(),
 		))
-
-	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
-
-	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
 	// to support multiple denom as fee token
 	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
