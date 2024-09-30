@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	storetypes "cosmossdk.io/store/types"
+	bindings "github.com/CosmWasm/token-factory/x/tokenfactory/bindings"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -31,6 +32,9 @@ func (app *App) registerWasmModules(
 	); err != nil {
 		panic(err)
 	}
+
+	tfOpts := bindings.RegisterCustomPlugins(&app.BankKeeper, &app.TokenFactoryKeeper)
+	wasmOpts = append(wasmOpts, tfOpts...)
 
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
 
