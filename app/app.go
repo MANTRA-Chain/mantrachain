@@ -119,7 +119,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
-	BankKeeper            bankkeeper.BaseKeeper
+	BankKeeper            *bankkeeper.BaseKeeper
 	StakingKeeper         *stakingkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
