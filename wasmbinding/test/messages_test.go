@@ -7,10 +7,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/MANTRA-Chain/mantrachain/app/apptesting"
+	"github.com/MANTRA-Chain/mantrachain/wasmbinding"
+	"github.com/MANTRA-Chain/mantrachain/wasmbinding/bindings"
 	"github.com/osmosis-labs/osmosis/osmomath"
-	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
-	"github.com/osmosis-labs/osmosis/v26/wasmbinding"
-	"github.com/osmosis-labs/osmosis/v26/wasmbinding/bindings"
 
 	"github.com/stretchr/testify/require"
 )

@@ -3,48 +3,30 @@ package wasmbinding_test
 import (
 	"encoding/hex"
 	"fmt"
-	"math/rand"
 	"os"
 	"testing"
-	"time"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
-	"github.com/cometbft/cometbft/crypto/ed25519"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	proto "github.com/golang/protobuf/proto" //nolint:staticcheck // we're intentionally using this deprecated package to be compatible with cosmos protos
 	"github.com/stretchr/testify/suite"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
-	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
-	"github.com/osmosis-labs/osmosis/v26/x/gamm/pool-models/balancer"
-	gammv2types "github.com/osmosis-labs/osmosis/v26/x/gamm/v2types"
 
-	"github.com/osmosis-labs/osmosis/v26/app"
-	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
-	lockuptypes "github.com/osmosis-labs/osmosis/v26/x/lockup/types"
-	epochtypes "github.com/osmosis-labs/osmosis/x/epochs/types"
+	"github.com/MANTRA-Chain/mantrachain/app"
 
-	"github.com/osmosis-labs/osmosis/v26/wasmbinding"
+	"github.com/MANTRA-Chain/mantrachain/wasmbinding"
 )
 
 type StargateTestSuite struct {
 	suite.Suite
 
 	ctx     sdk.Context
-	app     *app.OsmosisApp
+	app     *app.App
 	HomeDir string
-}
-
-func (suite *StargateTestSuite) SetupTestInternal() {
-	suite.HomeDir = fmt.Sprintf("%d", rand.Int())
-	suite.app = app.SetupWithCustomHome(false, suite.HomeDir)
-	suite.ctx = suite.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
 }
 
 func (suite *StargateTestSuite) TearDownTestInternal() {
@@ -53,255 +35,6 @@ func (suite *StargateTestSuite) TearDownTestInternal() {
 
 func TestStargateTestSuite(t *testing.T) {
 	suite.Run(t, new(StargateTestSuite))
-}
-
-func (suite *StargateTestSuite) TestStargateQuerier() {
-	testCases := []struct {
-		name                   string
-		testSetup              func()
-		path                   string
-		requestData            func() []byte
-		responseProtoStruct    proto.Message
-		expectedQuerierError   bool
-		expectedUnMarshalError bool
-		resendRequest          bool
-		checkResponseStruct    bool
-	}{
-		{
-			name: "happy path",
-			path: "/osmosis.epochs.v1beta1.Query/EpochInfos",
-			requestData: func() []byte {
-				epochrequest := epochtypes.QueryEpochsInfoRequest{}
-				bz, err := proto.Marshal(&epochrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			responseProtoStruct: &epochtypes.QueryEpochsInfoResponse{},
-		},
-		{
-			name: "happy path gamm spot price",
-			path: "/osmosis.gamm.v2.Query/SpotPrice",
-			testSetup: func() {
-				pk := ed25519.GenPrivKey().PubKey()
-				sender := sdk.AccAddress(pk.Address())
-				err := testutil.FundAccount(suite.ctx, suite.app.BankKeeper, sender, apptesting.DefaultAcctFunds)
-				suite.Require().NoError(err)
-				msg := balancer.NewMsgCreateBalancerPool(sender,
-					balancer.NewPoolParams(osmomath.ZeroDec(), osmomath.ZeroDec(), nil),
-					apptesting.DefaultPoolAssets, "")
-				_, err = suite.app.PoolManagerKeeper.CreatePool(suite.ctx, msg)
-				suite.NoError(err)
-			},
-			requestData: func() []byte {
-				queryrequest := gammv2types.QuerySpotPriceRequest{ //nolint:staticcheck // we're intentionally using this deprecated package for testing
-					PoolId:          1,
-					BaseAssetDenom:  "bar",
-					QuoteAssetDenom: appparams.BaseCoinUnit,
-				}
-				bz, err := proto.Marshal(&queryrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			checkResponseStruct: true,
-			responseProtoStruct: &gammv2types.QuerySpotPriceResponse{ //nolint:staticcheck // we're intentionally using this deprecated package for testing
-				SpotPrice: osmomath.NewDecWithPrec(5, 1).String(),
-			},
-		},
-		{
-			name: "happy path pool manager",
-			path: "/osmosis.poolmanager.v1beta1.Query/SpotPrice",
-			testSetup: func() {
-				pk := ed25519.GenPrivKey().PubKey()
-				sender := sdk.AccAddress(pk.Address())
-				err := testutil.FundAccount(suite.ctx, suite.app.BankKeeper, sender, apptesting.DefaultAcctFunds)
-				suite.Require().NoError(err)
-				msg := balancer.NewMsgCreateBalancerPool(sender,
-					balancer.NewPoolParams(osmomath.ZeroDec(), osmomath.ZeroDec(), nil),
-					apptesting.DefaultPoolAssets, "")
-				_, err = suite.app.PoolManagerKeeper.CreatePool(suite.ctx, msg)
-				suite.NoError(err)
-			},
-			requestData: func() []byte {
-				queryrequest := gammv2types.QuerySpotPriceRequest{ //nolint:staticcheck // we're intentionally using this deprecated package for testing
-					PoolId:          1,
-					BaseAssetDenom:  "bar",
-					QuoteAssetDenom: appparams.BaseCoinUnit,
-				}
-				bz, err := proto.Marshal(&queryrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			checkResponseStruct: true,
-			responseProtoStruct: &gammv2types.QuerySpotPriceResponse{ //nolint:staticcheck // we're intentionally using this deprecated package for testing
-				SpotPrice: osmomath.NewDecWithPrec(5, 1).String(),
-			},
-		},
-		{
-			name: "unregistered path(not whitelisted)",
-			path: "/osmosis.lockup.Query/AccountLockedLongerDuration",
-			requestData: func() []byte {
-				request := lockuptypes.AccountLockedLongerDurationRequest{}
-				bz, err := proto.Marshal(&request)
-				suite.Require().NoError(err)
-				return bz
-			},
-			expectedQuerierError: true,
-		},
-		{
-			name: "test query using iterator",
-			testSetup: func() {
-				accAddr, err := sdk.AccAddressFromBech32("osmo1t7egva48prqmzl59x5ngv4zx0dtrwewc9m7z44")
-				suite.Require().NoError(err)
-
-				// fund account to receive non-empty response
-				err = testutil.FundAccount(suite.ctx, suite.app.BankKeeper, accAddr, sdk.Coins{sdk.NewCoin("stake", osmomath.NewInt(10))})
-				suite.Require().NoError(err)
-
-				wasmbinding.SetWhitelistedQuery("/cosmos.bank.v1beta1.Query/AllBalances", &banktypes.QueryAllBalancesResponse{})
-			},
-			path: "/cosmos.bank.v1beta1.Query/AllBalances",
-			requestData: func() []byte {
-				bankrequest := banktypes.QueryAllBalancesRequest{
-					Address: "osmo1t7egva48prqmzl59x5ngv4zx0dtrwewc9m7z44",
-				}
-				bz, err := proto.Marshal(&bankrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			responseProtoStruct: &banktypes.QueryAllBalancesResponse{},
-		},
-		{
-			name: "edge case: resending request",
-			testSetup: func() {
-				accAddr, err := sdk.AccAddressFromBech32("osmo1t7egva48prqmzl59x5ngv4zx0dtrwewc9m7z44")
-				suite.Require().NoError(err)
-
-				// fund account to receive non-empty response
-				err = testutil.FundAccount(suite.ctx, suite.app.BankKeeper, accAddr, sdk.Coins{sdk.NewCoin("stake", osmomath.NewInt(10))})
-				suite.Require().NoError(err)
-
-				wasmbinding.SetWhitelistedQuery("/cosmos.bank.v1beta1.Query/AllBalances", &banktypes.QueryAllBalancesResponse{})
-			},
-			path: "/cosmos.bank.v1beta1.Query/AllBalances",
-			requestData: func() []byte {
-				bankrequest := banktypes.QueryAllBalancesRequest{
-					Address: "osmo1t7egva48prqmzl59x5ngv4zx0dtrwewc9m7z44",
-				}
-				bz, err := proto.Marshal(&bankrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			responseProtoStruct: &banktypes.QueryAllBalancesResponse{},
-			resendRequest:       true,
-		},
-		{
-			name: "invalid query router route",
-			testSetup: func() {
-				wasmbinding.SetWhitelistedQuery("invalid/query/router/route", &epochtypes.QueryEpochsInfoRequest{})
-			},
-			path: "invalid/query/router/route",
-			requestData: func() []byte {
-				return []byte{}
-			},
-			expectedQuerierError: true,
-		},
-		{
-			name: "unmatching path and data in request",
-			path: "/osmosis.epochs.v1beta1.Query/EpochInfos",
-			requestData: func() []byte {
-				epochrequest := epochtypes.QueryCurrentEpochRequest{}
-				bz, err := proto.Marshal(&epochrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			responseProtoStruct:    &epochtypes.QueryCurrentEpochResponse{},
-			expectedUnMarshalError: true,
-		},
-		{
-			name: "error in unmarshalling response",
-			// set up whitelist with wrong data
-			testSetup: func() {
-				wasmbinding.SetWhitelistedQuery("/osmosis.epochs.v1beta1.Query/EpochInfos",
-					&banktypes.QueryAllBalancesResponse{})
-			},
-			path: "/osmosis.epochs.v1beta1.Query/EpochInfos",
-			requestData: func() []byte {
-				return []byte{}
-			},
-			responseProtoStruct:  &epochtypes.QueryCurrentEpochResponse{},
-			expectedQuerierError: true,
-		},
-		{
-			name: "error in grpc querier",
-			// set up whitelist with wrong data
-			testSetup: func() {
-				wasmbinding.SetWhitelistedQuery("/cosmos.bank.v1beta1.Query/AllBalances", &banktypes.QueryAllBalancesRequest{})
-			},
-			path: "/cosmos.bank.v1beta1.Query/AllBalances",
-			requestData: func() []byte {
-				bankrequest := banktypes.QueryAllBalancesRequest{}
-				bz, err := proto.Marshal(&bankrequest)
-				suite.Require().NoError(err)
-				return bz
-			},
-			responseProtoStruct:  &banktypes.QueryAllBalancesRequest{},
-			expectedQuerierError: true,
-		},
-		// TODO: errors in wrong query in state machine
-	}
-
-	for _, tc := range testCases {
-		suite.Run(fmt.Sprintf("Case %s", tc.name), func() {
-			suite.SetupTestInternal()
-			defer suite.TearDownTestInternal()
-			if tc.testSetup != nil {
-				tc.testSetup()
-			}
-
-			stargateQuerier := wasmbinding.StargateQuerier(*suite.app.GRPCQueryRouter(), suite.app.AppCodec())
-			stargateRequest := &wasmvmtypes.StargateQuery{
-				Path: tc.path,
-				Data: tc.requestData(),
-			}
-			stargateResponse, err := stargateQuerier(suite.ctx, stargateRequest)
-			if tc.expectedQuerierError {
-				suite.Require().Error(err)
-				return
-			}
-			if tc.checkResponseStruct {
-				expectedResponse, err := proto.Marshal(tc.responseProtoStruct)
-				suite.Require().NoError(err)
-				expJsonResp, err := wasmbinding.ConvertProtoToJSONMarshal(tc.responseProtoStruct, expectedResponse, suite.app.AppCodec())
-				suite.Require().NoError(err)
-				suite.Require().Equal(expJsonResp, stargateResponse)
-			}
-
-			suite.Require().NoError(err)
-
-			protoResponse, ok := tc.responseProtoStruct.(proto.Message)
-			suite.Require().True(ok)
-
-			// test correctness by unmarshalling json response into proto struct
-			err = suite.app.AppCodec().UnmarshalJSON(stargateResponse, protoResponse)
-			if tc.expectedUnMarshalError {
-				suite.Require().Error(err)
-			} else {
-				suite.Require().NoError(err)
-				suite.Require().NotNil(protoResponse)
-			}
-
-			if tc.resendRequest {
-				stargateQuerier = wasmbinding.StargateQuerier(*suite.app.GRPCQueryRouter(), suite.app.AppCodec())
-				stargateRequest = &wasmvmtypes.StargateQuery{
-					Path: tc.path,
-					Data: tc.requestData(),
-				}
-				resendResponse, err := stargateQuerier(suite.ctx, stargateRequest)
-				suite.Require().NoError(err)
-				suite.Require().Equal(stargateResponse, resendResponse)
-			}
-		})
-	}
 }
 
 func (suite *StargateTestSuite) TestConvertProtoToJsonMarshal() {

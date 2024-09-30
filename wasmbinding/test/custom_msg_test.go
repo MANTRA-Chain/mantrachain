@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/MANTRA-Chain/mantrachain/app/apptesting"
 	"github.com/osmosis-labs/osmosis/osmomath"
-	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
 
 	"github.com/stretchr/testify/require"
 
@@ -15,8 +15,8 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/osmosis-labs/osmosis/v26/app"
-	"github.com/osmosis-labs/osmosis/v26/wasmbinding/bindings"
+	"github.com/MANTRA-Chain/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/wasmbinding/bindings"
 )
 
 func TestCreateDenomMsg(t *testing.T) {
@@ -251,7 +251,7 @@ type ReflectSubMsgs struct {
 	Msgs []wasmvmtypes.SubMsg `json:"msgs"`
 }
 
-func executeCustom(t *testing.T, ctx sdk.Context, osmosis *app.OsmosisApp, contract sdk.AccAddress, sender sdk.AccAddress, msg bindings.OsmosisMsg, funds sdk.Coin) error {
+func executeCustom(t *testing.T, ctx sdk.Context, osmosis *app.App, contract sdk.AccAddress, sender sdk.AccAddress, msg bindings.OsmosisMsg, funds sdk.Coin) error {
 	t.Helper()
 
 	customBz, err := json.Marshal(msg)

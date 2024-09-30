@@ -15,9 +15,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/osmosis-labs/osmosis/v26/app"
-	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
-	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
+	"github.com/MANTRA-Chain/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app/apptesting"
+	appparams "github.com/MANTRA-Chain/mantrachain/app/params"
 )
 
 func TestNoStorageWithoutProposal(t *testing.T) {
@@ -38,7 +38,7 @@ func TestNoStorageWithoutProposal(t *testing.T) {
 	require.Error(t, err)
 }
 
-func storeCodeViaProposal(t *testing.T, ctx sdk.Context, osmosis *app.OsmosisApp, addr sdk.AccAddress) {
+func storeCodeViaProposal(t *testing.T, ctx sdk.Context, osmosis *app.App, addr sdk.AccAddress) {
 	t.Helper()
 	govKeeper := osmosis.GovKeeper
 	wasmCode, err := os.ReadFile("../testdata/hackatom.wasm")
