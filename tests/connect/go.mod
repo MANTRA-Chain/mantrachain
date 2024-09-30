@@ -56,7 +56,7 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/StirlingMarketingGroup/go-namecase v1.0.0 // indirect
 	github.com/avast/retry-go/v4 v4.6.0 // indirect
-	github.com/aws/aws-sdk-go v1.53.1 // indirect
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816 // indirect
