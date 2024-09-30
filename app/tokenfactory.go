@@ -13,7 +13,6 @@ import (
 
 func (app *App) registerTokenFactoryModule(
 	appCodec codec.Codec,
-	maccPerms map[string][]string,
 ) {
 	// Initialize the token factory keeper
 	tokenFactoryKeeper := tokenfactorykeeper.NewKeeper(

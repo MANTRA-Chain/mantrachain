@@ -328,7 +328,7 @@ func New(
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
-	app.registerTokenFactoryModule(app.appCodec, GetMaccPerms())
+	app.registerTokenFactoryModule(app.appCodec)
 
 	// to support multiple denom as fee token
 	// app.FeeMarketKeeper.SetDenomResolver(xfeemarketkeeper.NewXFeeMarketDenomResolver(app.XFeeMarketKeeper))
