@@ -9,7 +9,7 @@ import (
 )
 
 // registerBankModule sets up the bank module for the app.
-func (app *App) registerBankModule() error {
+func (app *App) registerBankModule() {
 	// Initialize the bank keeper
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		app.AppCodec(),
@@ -27,6 +27,4 @@ func (app *App) registerBankModule() error {
 			app.TokenFactoryKeeper.Hooks(),
 		),
 	)
-
-	return nil
 }

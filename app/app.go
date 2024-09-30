@@ -308,9 +308,8 @@ func New(
 
 	app.initializeABCIExtensions(client, metrics)
 
-	if err := app.registerBankModule(); err != nil {
-		return nil, err
-	}
+	// register bank module
+	app.registerBankModule()
 
 	// register legacy modules
 	if err := app.registerIBCModules(appOpts); err != nil {
