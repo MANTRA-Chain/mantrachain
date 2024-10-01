@@ -119,7 +119,7 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 	//	}, govAuthority)
 
 	// err = suite.feemarketKeeper.SetState(suite.ctx, feemarkettypes.DefaultState())
-	//require.NoError(t, err)
+	// require.NoError(t, err)
 	return suite
 }
 
