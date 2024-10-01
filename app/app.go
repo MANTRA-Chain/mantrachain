@@ -423,7 +423,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[stakingtypes.StoreKey]),
 		app.AccountKeeper,
-		app.BankKeeper,
+		&app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
@@ -434,7 +434,7 @@ func New(
 		runtime.NewKVStoreService(keys[minttypes.StoreKey]),
 		app.StakingKeeper,
 		app.AccountKeeper,
-		app.BankKeeper,
+		&app.BankKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -443,7 +443,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[distrtypes.StoreKey]),
 		app.AccountKeeper,
-		app.BankKeeper,
+		&app.BankKeeper,
 		app.StakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -462,7 +462,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[crisistypes.StoreKey]),
 		invCheckPeriod,
-		app.BankKeeper,
+		&app.BankKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper.AddressCodec(),
@@ -542,19 +542,9 @@ func New(
 		runtime.NewKVStoreService(keys[tokenfactorytypes.StoreKey]),
 		sortedKnownModules,
 		app.AccountKeeper,
-		app.BankKeeper,
-		app.WasmKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	app.TaxKeeper = taxkeeper.NewKeeper(
-		appCodec,
-		app.AccountKeeper.AddressCodec(),
-		runtime.NewKVStoreService(keys[taxtypes.StoreKey]),
-		logger,
-		app.AccountKeeper,
 		&app.BankKeeper,
-		authtypes.FeeCollectorName,
+		&app.WasmKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
@@ -595,6 +585,16 @@ func New(
 		govtypes.NewMultiGovHooks(
 		// register the governance hooks
 		),
+	)
+
+	app.TaxKeeper = taxkeeper.NewKeeper(
+		appCodec,
+		app.AccountKeeper.AddressCodec(),
+		runtime.NewKVStoreService(keys[taxtypes.StoreKey]),
+		logger,
+		app.AccountKeeper,
+		app.BankKeeper,
+		authtypes.FeeCollectorName,
 	)
 
 	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(
@@ -687,7 +687,7 @@ func New(
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack porttypes.IBCModule
-	wasmStack = wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
+	wasmStack = wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
 	// Create static IBC router, add app routes, then set and seal it
