@@ -136,6 +136,12 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
+	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
+	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
+	oracle "github.com/skip-mev/connect/v2/x/oracle"
+	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
+	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	"github.com/skip-mev/feemarket/x/feemarket"
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
@@ -195,6 +201,7 @@ var maccPerms = map[string][]string{
 
 	feemarkettypes.ModuleName:       {authtypes.Burner},
 	feemarkettypes.FeeCollectorName: {authtypes.Burner},
+	oracletypes.ModuleName:          nil,
 }
 
 var (
@@ -234,8 +241,15 @@ type App struct {
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
-	FeeMarketKeeper       *feemarketkeeper.Keeper
 
+	// FeeMarket
+	FeeMarketKeeper *feemarketkeeper.Keeper
+
+	// Connect
+	OracleKeeper    *oraclekeeper.Keeper
+	MarketMapKeeper *marketmapkeeper.Keeper
+
+	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCFeeKeeper        ibcfeekeeper.Keeper
 	ICAControllerKeeper icacontrollerkeeper.Keeper
@@ -328,7 +342,7 @@ func New(
 		wasmtypes.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey, tokenfactorytypes.StoreKey,
 		ibchookstypes.StoreKey,
-		feemarkettypes.StoreKey,
+		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -567,11 +581,28 @@ func New(
 		),
 	)
 
-	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(appCodec, keys[feemarkettypes.StoreKey], app.AccountKeeper, &feemarkettypes.TestDenomResolver{}, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-
+	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(
+		appCodec, keys[feemarkettypes.StoreKey],
+		app.AccountKeeper,
+		nil,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	app.MarketMapKeeper = marketmapkeeper.NewKeeper(
+		runtime.NewKVStoreService(keys[marketmaptypes.StoreKey]),
+		appCodec,
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+	)
+	marketmapModule := marketmap.NewAppModule(appCodec, app.MarketMapKeeper)
 	app.IBCHooksKeeper = ibchookskeeper.NewKeeper(
 		keys[ibchookstypes.StoreKey],
 	)
+
+	oracleKeeper := oraclekeeper.NewKeeper(runtime.NewKVStoreService(keys[oracletypes.StoreKey]),
+		appCodec,
+		app.MarketMapKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName))
+	app.OracleKeeper = &oracleKeeper
+	oracleModule := oracle.NewAppModule(appCodec, *app.OracleKeeper)
 
 	ics20WasmHooks := ibchooks.NewWasmHooks(&app.IBCHooksKeeper, nil, sdk.GetConfig().GetBech32AccountAddrPrefix())
 	hooksICS4Wrapper := ibchooks.NewICS4Middleware(app.IBCKeeper.ChannelKeeper, ics20WasmHooks)
@@ -760,6 +791,9 @@ func New(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(),
 		ibchooks.NewAppModule(app.AccountKeeper),
+		// connect
+		marketmapModule,
+		oracleModule,
 
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them,
@@ -813,6 +847,8 @@ func New(
 		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -832,6 +868,8 @@ func New(
 		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -876,6 +914,9 @@ func New(
 		tokenfactorytypes.ModuleName,
 
 		feemarkettypes.ModuleName,
+		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
+		oracletypes.ModuleName,
+		marketmaptypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -952,6 +993,16 @@ func New(
 
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
 	app.setPostHandler()
+
+	// oracle initialization
+	client, metrics, err := app.initializeOracle(appOpts)
+	if err != nil {
+		panic(fmt.Errorf("failed to initialize oracle client and metrics: %w", err))
+	}
+
+	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+
+	app.initializeABCIExtensions(client, metrics)
 
 	// At startup, after all modules have been registered, check that all proto
 	// annotations are correct.
