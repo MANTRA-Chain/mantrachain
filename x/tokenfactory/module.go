@@ -183,7 +183,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetBankKeeperHooks),
+		appmodule.Invoke(InvokeSetContractKeeper, InvokeSetBankKeeperHooks),
 	)
 }
 
@@ -237,5 +237,16 @@ func InvokeSetBankKeeperHooks(
 		return fmt.Errorf("bank keeper is required")
 	}
 	bankKeeper.AppendHooks(k.Hooks())
+	return nil
+}
+
+func InvokeSetContractKeeper(
+	k keeper.Keeper,
+	wasmKeeper types.WasmKeeper,
+) error {
+	if wasmKeeper == nil {
+		return fmt.Errorf("wasm keeper is required")
+	}
+	k.SetContractKeeper(wasmKeeper)
 	return nil
 }

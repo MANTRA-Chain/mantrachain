@@ -295,6 +295,7 @@ func New(
 	// add to default baseapp options
 	// enable optimistic execution
 	// baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
+	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
@@ -320,8 +321,6 @@ func New(
 	}
 
 	/****  Module Options ****/
-
-	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
 
