@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"sync"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
@@ -286,7 +285,6 @@ type App struct {
 
 	// module configurator
 	configurator module.Configurator
-	once         sync.Once
 }
 
 func init() {

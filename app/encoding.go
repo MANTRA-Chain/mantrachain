@@ -11,11 +11,11 @@ import (
 )
 
 // MakeEncodingConfig creates a new EncodingConfig with all modules registered. For testing only
-func MakeEncodingConfig(t testing.TB) params.EncodingConfig {
-	t.Helper()
+func MakeEncodingConfig(tb testing.TB) params.EncodingConfig {
+	tb.Helper()
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
 	// note, this is not necessary when using app wiring, as depinject can be directly used (see root_v2.go)
-	tempApp := New(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(t.TempDir()), []wasmkeeper.Option{})
+	tempApp := New(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(tb.TempDir()), []wasmkeeper.Option{})
 	return makeEncodingConfig(tempApp)
 }
 
