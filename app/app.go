@@ -36,6 +36,9 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
 	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
@@ -272,6 +275,7 @@ type App struct {
 	ScopedFeeabsKeeper        capabilitykeeper.ScopedKeeper
 
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	TaxKeeper          taxkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -344,7 +348,7 @@ func New(
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey, icahosttypes.StoreKey,
-		icacontrollertypes.StoreKey, tokenfactorytypes.StoreKey,
+		icacontrollertypes.StoreKey, tokenfactorytypes.StoreKey, taxtypes.StoreKey,
 		ibchookstypes.StoreKey,
 		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
@@ -543,6 +547,16 @@ func New(
 		app.BankKeeper,
 		app.WasmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.TaxKeeper = taxkeeper.NewKeeper(
+		appCodec,
+		app.AccountKeeper.AddressCodec(),
+		runtime.NewKVStoreService(keys[taxtypes.StoreKey]),
+		logger,
+		app.AccountKeeper,
+		&app.BankKeeper,
+		authtypes.FeeCollectorName,
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
@@ -802,6 +816,7 @@ func New(
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them,
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
+		tax.NewAppModule(appCodec, app.TaxKeeper),
 		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
 	)
 
@@ -834,6 +849,8 @@ func New(
 	app.ModuleManager.SetOrderBeginBlockers(
 		minttypes.ModuleName,
 		feemarkettypes.ModuleName,
+		// mca tax before distribution
+		taxtypes.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -872,6 +889,7 @@ func New(
 		ibchookstypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		taxtypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 	)
@@ -916,6 +934,7 @@ func New(
 
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
+		taxtypes.ModuleName,
 
 		feemarkettypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
