@@ -13,7 +13,6 @@ import (
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
 	"cosmossdk.io/core/appmodule"
-	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/circuit"
@@ -35,7 +34,6 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/app/ante"
 	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
@@ -58,7 +56,6 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	sigtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -139,10 +136,8 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	feemarketapp "github.com/skip-mev/feemarket/tests/app"
 	"github.com/skip-mev/feemarket/x/feemarket"
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
-	feemarketpost "github.com/skip-mev/feemarket/x/feemarket/post"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"github.com/spf13/cast"
 )
@@ -1010,8 +1005,8 @@ func (app *App) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFin
 }
 
 func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) {
-	anteHandler, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
+	anteHandler, err := NewAnteHandler(
+		HandlerOptions{
 			BaseOptions: authante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
@@ -1038,13 +1033,12 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 }
 
 func (app *App) setPostHandler() {
-	postHandler := feemarketapp.PostHandlerOptions{
-		AccountKeeper:   app.AccountKeeper,
+	postHandler := PostHandlerOptions{
 		BankKeeper:      app.BankKeeper,
 		FeeMarketKeeper: app.FeeMarketKeeper,
 	}
 	// Set the PostHandler for the app
-	sdkPostHandler, err := feemarketapp.NewPostHandler(postHandler)
+	sdkPostHandler, err := NewPostHandler(postHandler)
 	if err != nil {
 		panic(fmt.Errorf("failed to create PostHandler: %s", err))
 	}
@@ -1282,29 +1276,4 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(feemarkettypes.ModuleName)
 
 	return paramsKeeper
-}
-
-// NewPostHandler returns a PostHandler chain with the fee deduct decorator.
-func NewPostHandler(options feemarketapp.PostHandlerOptions) (sdk.PostHandler, error) {
-	if options.AccountKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for post builder")
-	}
-
-	if options.BankKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "bank keeper is required for post builder")
-	}
-
-	if options.FeeMarketKeeper == nil {
-		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "feemarket keeper is required for post builder")
-	}
-
-	postDecorators := []sdk.PostDecorator{
-		feemarketpost.NewFeeMarketDeductDecorator(
-			options.AccountKeeper,
-			options.BankKeeper,
-			options.FeeMarketKeeper,
-		),
-	}
-
-	return sdk.ChainPostDecorators(postDecorators...), nil
 }
