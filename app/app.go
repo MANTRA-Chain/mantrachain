@@ -225,7 +225,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
-	BankKeeper            bankkeeper.Keeper
+	BankKeeper            bankkeeper.BaseKeeper
 	CapabilityKeeper      *capabilitykeeper.Keeper
 	StakingKeeper         stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
@@ -511,13 +511,18 @@ func New(
 
 	app.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
 		appCodec,
-		app.keys[tokenfactorytypes.StoreKey],
+		runtime.NewKVStoreService(keys[tokenfactorytypes.StoreKey]),
+		maccPerms,
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.DistrKeeper,
-
+		app.WasmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+
+	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
+		banktypes.NewMultiBankHooks(
+			app.TokenFactoryKeeper.Hooks(),
+		))
 
 	// TODO: add tokenfactory bindings
 	// wasmOpts = append(wasmOpts, bindings.RegisterCustomPlugins(app.BankKeeper, &app.TokenFactoryKeeper)...)
@@ -750,7 +755,7 @@ func New(
 
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them,
-		tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(tokenfactorytypes.ModuleName)),
+		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
 		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
 	)
 
@@ -915,9 +920,10 @@ func New(
 	app.SetEndBlocker(app.EndBlocker)
 
 	// set denom resolver to test variant.
-	app.FeeMarketKeeper.SetDenomResolver(&ante.DenomResolverImpl{
-		StakingKeeper: &app.StakingKeeper,
-	})
+	//app.FeeMarketKeeper.SetDenomResolver(&ante.DenomResolverImpl{
+	//	StakingKeeper: &app.StakingKeeper,
+	//})
+
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
 
 	// must be before Loading version
@@ -995,7 +1001,7 @@ func (app *App) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFin
 func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) {
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
-			HandlerOptions: authante.HandlerOptions{
+			BaseOptions: authante.HandlerOptions{
 				AccountKeeper:   app.AccountKeeper,
 				BankKeeper:      app.BankKeeper,
 				SignModeHandler: txConfig.SignModeHandler(),

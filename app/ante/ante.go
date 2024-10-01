@@ -17,16 +17,19 @@ import (
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
 // channel keeper.
+// HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
+// channel keeper.
 type HandlerOptions struct {
-	BaseOptions           ante.HandlerOptions
+	BaseOptions ante.HandlerOptions
+
 	IBCKeeper             *keeper.Keeper
 	WasmConfig            *wasmTypes.WasmConfig
 	WasmKeeper            *wasmkeeper.Keeper
 	TXCounterStoreService corestoretypes.KVStoreService
 	CircuitKeeper         *circuitkeeper.Keeper
-	BankKeeper            feemarketante.BankKeeper
-	AccountKeeper         feemarketante.AccountKeeper
 	FeeMarketKeeper       feemarketante.FeeMarketKeeper
+	AccountKeeper         feemarketante.AccountKeeper
+	BankKeeper            feemarketante.BankKeeper
 }
 
 // NewAnteHandler constructor

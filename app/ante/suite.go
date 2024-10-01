@@ -12,7 +12,6 @@ import (
 	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
 	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
 	feemarketmocks "github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
-	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"github.com/stretchr/testify/require"
 	ubermock "go.uber.org/mock/gomock"
@@ -115,15 +114,15 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 
 	// setup feemarket
 	feemarketParams := feemarkettypes.DefaultParams()
-	feemarketParams.FeeDenom = "ueve"
-	suite.feemarketKeeper = feemarketkeeper.NewKeeper(suite.encCfg.Codec, key, suite.accountKeeper, &DenomResolverImpl{
-		FeeabsKeeper:  suite.feeabsKeeper,
-		StakingKeeper: suite.stakingKeeper,
-	}, govAuthority)
-	err = suite.feemarketKeeper.SetParams(suite.ctx, feemarketParams)
-	require.NoError(t, err)
-	err = suite.feemarketKeeper.SetState(suite.ctx, feemarkettypes.DefaultState())
-	require.NoError(t, err)
+	feemarketParams.FeeDenom = "uom"
+	//	suite.feemarketKeeper = feemarketkeeper.NewKeeper(suite.encCfg.Codec, key, suite.accountKeeper, &DenomResolverImpl{
+	//		FeeabsKeeper:  suite.feeabsKeeper,
+	//		StakingKeeper: suite.stakingKeeper,
+	//	}, govAuthority)
+	//err = suite.feemarketKeeper.SetParams(suite.ctx, feemarketParams)
+	//require.NoError(t, err)
+	//err = suite.feemarketKeeper.SetState(suite.ctx, feemarkettypes.DefaultState())
+	//require.NoError(t, err)
 	return suite
 }
 
