@@ -20,7 +20,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -232,15 +231,11 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 
 func InvokeSetBankKeeperHooks(
 	k keeper.Keeper,
-	bankKeeper *types.BankKeeper,
+	bankKeeper types.BankKeeper,
 ) error {
 	if bankKeeper == nil {
 		return fmt.Errorf("bank keeper is required")
 	}
-	multihooks := banktypes.NewMultiBankHooks(
-		k.Hooks(),
-	)
-
-	(*bankKeeper).SetHooks(multihooks)
+	bankKeeper.AppendHooks(k.Hooks())
 	return nil
 }
