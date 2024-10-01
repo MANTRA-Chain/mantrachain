@@ -1,10 +1,8 @@
 package network
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/MANTRA-Chain/mantrachain/app"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
 	"github.com/stretchr/testify/require"
 )
@@ -23,7 +21,7 @@ func New(t *testing.T, configs ...Config) *Network {
 	}
 	var cfg network.Config
 	if len(configs) == 0 {
-		cfg = DefaultConfig()
+		//		cfg = DefaultConfig()
 	} else {
 		cfg = configs[0]
 	}
@@ -37,26 +35,25 @@ func New(t *testing.T, configs ...Config) *Network {
 
 // DefaultConfig will initialize config for the network with custom application,
 // genesis and single validator. All other parameters are inherited from cosmos-sdk/testutil/network.DefaultConfig
-func DefaultConfig() network.Config {
-	cfg, err := network.DefaultConfigWithAppConfig(app.AppConfig())
-	if err != nil {
-		panic(err)
-	}
-	ports, err := freePorts(3)
-	if err != nil {
-		panic(err)
-	}
-	if cfg.APIAddress == "" {
-		cfg.APIAddress = fmt.Sprintf("tcp://0.0.0.0:%s", ports[0])
-	}
-	if cfg.RPCAddress == "" {
-		cfg.RPCAddress = fmt.Sprintf("tcp://0.0.0.0:%s", ports[1])
-	}
-	if cfg.GRPCAddress == "" {
-		cfg.GRPCAddress = fmt.Sprintf("0.0.0.0:%s", ports[2])
-	}
-	return cfg
-}
+// func DefaultConfig() network.Config {
+//	cfg := network.DefaultConfig(network.TestFixture(func(cfg *network.Config) {
+//		cfg.NumValidators = 1
+//	}))
+//	ports, err := freePorts(3)
+//	if err != nil {
+//		panic(err)
+//	}
+//	if cfg.APIAddress == "" {
+//		cfg.APIAddress = fmt.Sprintf("tcp://0.0.0.0:%s", ports[0])
+//	}
+//	if cfg.RPCAddress == "" {
+//		cfg.RPCAddress = fmt.Sprintf("tcp://0.0.0.0:%s", ports[1])
+//	}
+//	if cfg.GRPCAddress == "" {
+//		cfg.GRPCAddress = fmt.Sprintf("0.0.0.0:%s", ports[2])
+//	}
+//	return cfg
+//}
 
 // freePorts return the available ports based on the number of requested ports.
 func freePorts(n int) ([]string, error) {

@@ -3,21 +3,7 @@ package ante
 import (
 	"testing"
 
-	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
-	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
-	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
-	portkeeper "github.com/cosmos/ibc-go/v8/modules/core/05-port/keeper"
-	feeabskeeper "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/keeper"
-	feeabstestutil "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/testutil"
-	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
-	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
-	feemarketmocks "github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
-	"github.com/stretchr/testify/require"
-	ubermock "go.uber.org/mock/gomock"
-
 	storetypes "cosmossdk.io/store/types"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -31,6 +17,18 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
+	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
+	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
+	portkeeper "github.com/cosmos/ibc-go/v8/modules/core/05-port/keeper"
+	feeabskeeper "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/keeper"
+	feeabstestutil "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/testutil"
+	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
+	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
+	feemarketmocks "github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
+	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	"github.com/stretchr/testify/require"
+	ubermock "go.uber.org/mock/gomock"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -119,9 +117,8 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 	//		FeeabsKeeper:  suite.feeabsKeeper,
 	//		StakingKeeper: suite.stakingKeeper,
 	//	}, govAuthority)
-	//err = suite.feemarketKeeper.SetParams(suite.ctx, feemarketParams)
-	//require.NoError(t, err)
-	//err = suite.feemarketKeeper.SetState(suite.ctx, feemarkettypes.DefaultState())
+
+	// err = suite.feemarketKeeper.SetState(suite.ctx, feemarkettypes.DefaultState())
 	//require.NoError(t, err)
 	return suite
 }
