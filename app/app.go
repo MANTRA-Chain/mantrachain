@@ -116,6 +116,9 @@ import (
 	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
+	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v8"
+	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/keeper"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
@@ -201,6 +204,7 @@ var maccPerms = map[string][]string{
 	// non sdk modules
 	ibctransfertypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:       nil,
+	ratelimittypes.ModuleName:    nil,
 	icatypes.ModuleName:          nil,
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
@@ -262,9 +266,11 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
+	RateLimitKeeper     *ratelimitkeeper.Keeper
 
 	IBCHooksKeeper ibchookskeeper.Keeper
 
+	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
@@ -273,6 +279,7 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 	ScopedFeeabsKeeper        capabilitykeeper.ScopedKeeper
 
+	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 	TaxKeeper          taxkeeper.Keeper
 
@@ -345,7 +352,7 @@ func New(
 		group.StoreKey,
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
-		wasmtypes.StoreKey, icahosttypes.StoreKey,
+		wasmtypes.StoreKey, icahosttypes.StoreKey, ratelimittypes.StoreKey,
 		icacontrollertypes.StoreKey, tokenfactorytypes.StoreKey, taxtypes.StoreKey,
 		ibchookstypes.StoreKey,
 		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
@@ -631,6 +638,16 @@ func New(
 		app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
 	)
 
+	app.RateLimitKeeper = ratelimitkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[ratelimittypes.StoreKey]),
+		app.GetSubspace(ratelimittypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.BankKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCFeeKeeper,
+	)
+
 	app.NFTKeeper = nftkeeper.NewKeeper(
 		runtime.NewKVStoreService(keys[nftkeeper.StoreKey]),
 		appCodec,
@@ -655,7 +672,7 @@ func New(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
 		app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
+		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
@@ -680,10 +697,12 @@ func New(
 	icaHostStack = icahost.NewIBCModule(app.ICAHostKeeper)
 	icaHostStack = ibcfee.NewIBCMiddleware(icaHostStack, app.IBCFeeKeeper)
 
-	// Transfer stack
+	// Create IBC modules with ratelimit middleware
+	// channel.RecvPacket -> ratelimit.OnRecvPacket -> ibcfee.OnRecvPacket -> transfer.OnRecvPacket	var transferStack porttypes.IBCModule
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
+	transferStack = ratelimit.NewIBCMiddleware(*app.RateLimitKeeper, transferStack)
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack porttypes.IBCModule
@@ -807,6 +826,7 @@ func New(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(),
 		ibchooks.NewAppModule(app.AccountKeeper),
+		ratelimit.NewAppModule(appCodec, *app.RateLimitKeeper),
 		// connect
 		marketmapModule,
 		oracleModule,
@@ -864,6 +884,7 @@ func New(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
+		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		oracletypes.ModuleName,
@@ -885,6 +906,7 @@ func New(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
+		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		taxtypes.ModuleName,
@@ -928,6 +950,7 @@ func New(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
+		ratelimittypes.ModuleName,
 		// wasm after ibc transfer
 
 		wasmtypes.ModuleName,

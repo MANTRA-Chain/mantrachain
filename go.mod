@@ -44,6 +44,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.50.10-0.20240906103735-f516a1eb7c3c
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
+	github.com/cosmos/ibc-apps/modules/rate-limiting/v8 v8.0.0
 	github.com/cosmos/ibc-go/modules/capability v1.0.1
 	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/gogo/protobuf v1.3.2
