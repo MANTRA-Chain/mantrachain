@@ -22,6 +22,7 @@ type BankKeeper interface {
 
 	SendCoins(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
 	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+	SetHooks(hooks banktypes.BankHooks)
 }
 
 type AccountKeeper interface {

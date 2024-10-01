@@ -48,7 +48,6 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/authz/module" // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/bank"         // import for side-effects
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	_ "github.com/cosmos/cosmos-sdk/x/consensus" // import for side-effects
 	consensuskeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/crisis" // import for side-effects
@@ -296,7 +295,6 @@ func New(
 	// add to default baseapp options
 	// enable optimistic execution
 	// baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
-
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
@@ -321,11 +319,8 @@ func New(
 	}
 
 	/****  Module Options ****/
-
-	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
-		banktypes.NewMultiBankHooks(
-			app.TokenFactoryKeeper.Hooks(),
-		))
+	// bankBaseSendKeeper := app.BankKeeper.BaseSendKeeper.SetHooks(
+	// 	aaa)
 
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 

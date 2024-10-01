@@ -20,6 +20,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -183,6 +184,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
+		appmodule.Invoke(InvokeSetBankKeeperHooks),
 	)
 }
 
@@ -201,8 +203,8 @@ type ModuleInputs struct {
 type ModuleOutputs struct {
 	depinject.Out
 
-	CoinfactoryKeeper keeper.Keeper
-	Module            appmodule.AppModule
+	TokenFactoryKeeper keeper.Keeper
+	Module             appmodule.AppModule
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
@@ -225,5 +227,20 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		k,
 	)
 
-	return ModuleOutputs{CoinfactoryKeeper: k, Module: m}
+	return ModuleOutputs{TokenFactoryKeeper: k, Module: m}
+}
+
+func InvokeSetBankKeeperHooks(
+	k keeper.Keeper,
+	bankKeeper *types.BankKeeper,
+) error {
+	if bankKeeper == nil {
+		return fmt.Errorf("bank keeper is required")
+	}
+	multihooks := banktypes.NewMultiBankHooks(
+		k.Hooks(),
+	)
+
+	(*bankKeeper).SetHooks(multihooks)
+	return nil
 }
