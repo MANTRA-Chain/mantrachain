@@ -275,6 +275,16 @@ type App struct {
 	once         sync.Once
 }
 
+func init() {
+	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
+}
+
+// MantraCoinDenomRegex returns the mantra regex string
+// this is used to override the default sdk coin denom regex
+func MantraCoinDenomRegex() string {
+	return `[a-zA-Z][a-zA-Z0-9/:._-]{1,127}`
+}
+
 // New returns a reference to an initialized App.
 func New(
 	logger log.Logger,
@@ -509,10 +519,16 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	sortedKnownModules := make([]string, 0, len(maccPerms))
+	for moduleName := range maccPerms {
+		sortedKnownModules = append(sortedKnownModules, moduleName)
+	}
+	sort.Strings(sortedKnownModules)
+
 	app.TokenFactoryKeeper = tokenfactorykeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[tokenfactorytypes.StoreKey]),
-		maccPerms,
+		sortedKnownModules,
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.WasmKeeper,
@@ -884,7 +900,6 @@ func New(
 
 	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
 	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
-	app.RegisterUpgradeHandlers()
 
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
@@ -924,8 +939,6 @@ func New(
 	//	StakingKeeper: &app.StakingKeeper,
 	//})
 
-	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
-
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
 	// see cmd/wasmd/root.go: 206 - 214 approx
@@ -945,6 +958,7 @@ func New(
 	app.ScopedICAControllerKeeper = scopedICAControllerKeeper
 	app.ScopedIBCFeeKeeper = scopedIBCFeeKeeper
 
+	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
 	app.setPostHandler()
 
 	// At startup, after all modules have been registered, check that all proto
@@ -1015,6 +1029,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 			CircuitKeeper:         &app.CircuitKeeper,
 			FeeMarketKeeper:       app.FeeMarketKeeper,
 			AccountKeeper:         app.AccountKeeper,
+			BankKeeper:            app.BankKeeper,
 		},
 	)
 	if err != nil {
