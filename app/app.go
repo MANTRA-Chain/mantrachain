@@ -9,7 +9,6 @@ import (
 	"sort"
 	"sync"
 
-	wasmvm "github.com/CosmWasm/wasmvm/v2"
 	"github.com/MANTRA-Chain/mantrachain/app/ante"
 	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
@@ -500,18 +499,6 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	wasmDir := filepath.Join(homePath, "wasm")
-	wasmer, err := wasmvm.NewVM(
-		wasmDir,
-		AllCapabilities(),
-		ContractMemoryLimit,
-		wasmtypes.DefaultWasmConfig().ContractDebugMode,
-		wasmtypes.DefaultWasmConfig().MemoryCacheSize,
-	)
-	if err != nil {
-		panic(err)
-	}
-
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
 		keys[ibcexported.StoreKey],
@@ -681,6 +668,8 @@ func New(
 	if err != nil {
 		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
+
+	wasmDir := filepath.Join(homePath, "wasm")
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
