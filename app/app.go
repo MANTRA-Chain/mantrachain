@@ -266,7 +266,7 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
-	RateLimitKeeper     *ratelimitkeeper.Keeper
+	RateLimitKeeper     ratelimitkeeper.Keeper
 
 	IBCHooksKeeper ibchookskeeper.Keeper
 
@@ -638,7 +638,7 @@ func New(
 		app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
 	)
 
-	app.RateLimitKeeper = ratelimitkeeper.NewKeeper(
+	app.RateLimitKeeper = *ratelimitkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ratelimittypes.StoreKey]),
 		app.GetSubspace(ratelimittypes.ModuleName),
@@ -702,7 +702,7 @@ func New(
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
-	transferStack = ratelimit.NewIBCMiddleware(*app.RateLimitKeeper, transferStack)
+	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack porttypes.IBCModule
@@ -826,7 +826,7 @@ func New(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(),
 		ibchooks.NewAppModule(app.AccountKeeper),
-		ratelimit.NewAppModule(appCodec, *app.RateLimitKeeper),
+		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
 		// connect
 		marketmapModule,
 		oracleModule,
@@ -1360,6 +1360,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(tokenfactorytypes.ModuleName).WithKeyTable(tokenfactorytypes.ParamKeyTable())
 	paramsKeeper.Subspace(wasmtypes.ModuleName)
 	paramsKeeper.Subspace(feemarkettypes.ModuleName)
+	paramsKeeper.Subspace(ratelimittypes.ModuleName)
 
 	return paramsKeeper
 }
