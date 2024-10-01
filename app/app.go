@@ -295,6 +295,7 @@ func New(
 	// add to default baseapp options
 	// enable optimistic execution
 	// baseAppOptions = append(baseAppOptions, baseapp.SetOptimisticExecution())
+
 	// build app
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
@@ -319,8 +320,6 @@ func New(
 	}
 
 	/****  Module Options ****/
-	// bankBaseSendKeeper := app.BankKeeper.BaseSendKeeper.SetHooks(
-	// 	aaa)
 
 	app.TokenFactoryKeeper.SetContractKeeper(app.WasmKeeper)
 
