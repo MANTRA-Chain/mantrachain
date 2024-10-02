@@ -1,6 +1,7 @@
 package params
 
 import (
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -28,5 +29,6 @@ func SetAddressPrefixes() {
 	config.SetBech32PrefixForAccount(Bech32Prefix, Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
+	config.SetAddressVerifier(wasmtypes.VerifyAddressLen())
 	config.Seal()
 }
