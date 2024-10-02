@@ -9,15 +9,7 @@ This work has been adapted from Osmosis, and was placed into `mantrachain` at co
 We've selected the Osmosis approach due to the fixes to non-determinism when working with SDK modules.
 
 
-This package provides first class support for:
-
-- Queries
-  - Denoms
-  - Pools
-  - Prices
-- Messages / Execution
-  - Minting / controlling of new native tokens
-  - Swap
+This package provides first class support for queries from the token factory. 
 
 ## Command line interface (CLI)
 
