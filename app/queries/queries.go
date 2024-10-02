@@ -1,4 +1,4 @@
-package app
+package queries
 
 import (
 	"fmt"
