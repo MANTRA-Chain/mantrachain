@@ -530,9 +530,6 @@ func New(
 			app.TokenFactoryKeeper.Hooks(),
 		))
 
-	// TODO: add tokenfactory bindings
-	// wasmOpts = append(wasmOpts, bindings.RegisterCustomPlugins(app.BankKeeper, &app.TokenFactoryKeeper)...)
-
 	// Register the proposal types
 	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
 	// by granting the governance module the right to execute the message.
@@ -676,6 +673,14 @@ func New(
 	}
 
 	wasmDir := filepath.Join(homePath, "wasm")
+
+	// Register custom plugins for the wasm module
+	// in this case, we are registering the custom query handlers for the wasm module
+	wasmOpts = RegisterCustomPlugins(
+		&app.TokenFactoryKeeper,
+		*app.GRPCQueryRouter(),
+		app.AppCodec(),
+	)
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
