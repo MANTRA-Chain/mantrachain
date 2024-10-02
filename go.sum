@@ -428,8 +428,8 @@ github.com/cosmos/ibc-go/v8 v8.5.1 h1:3JleEMKBjRKa3FeTKt4fjg22za/qygLBo7mDkoYTNB
 github.com/cosmos/ibc-go/v8 v8.5.1/go.mod h1:P5hkAvq0Qbg0h18uLxDVA9q1kOJ0l36htMsskiNwXbo=
 github.com/cosmos/ics23/go v0.11.0 h1:jk5skjT0TqX5e5QJbEnwXIS2yI2vnmLOgpQPeM5RtnU=
 github.com/cosmos/ics23/go v0.11.0/go.mod h1:A8OjxPE67hHST4Icw94hOxxFEJMBG031xIGF/JHNIY0=
-github.com/cosmos/interchain-security/v6 v6.0.0 h1:BieZEefykqrD2Vvt3onsYjEAa5O+aWoRWSF8nN5aidE=
-github.com/cosmos/interchain-security/v6 v6.0.0/go.mod h1:+5zIZEzkL4yNHB/UWXCu75t6GeEgEmWHbz5OnBWiL0o=
+github.com/cosmos/interchain-security/v6 v6.1.0 h1:ycTpT+If90nSEvRVu86ThPJxNtcmnOMjJmFC9ptd/yo=
+github.com/cosmos/interchain-security/v6 v6.1.0/go.mod h1:+5zIZEzkL4yNHB/UWXCu75t6GeEgEmWHbz5OnBWiL0o=
 github.com/cosmos/ledger-cosmos-go v0.13.3 h1:7ehuBGuyIytsXbd4MP43mLeoN2LTOEnk5nvue4rK+yM=
 github.com/cosmos/ledger-cosmos-go v0.13.3/go.mod h1:HENcEP+VtahZFw38HZ3+LS3Iv5XV6svsnkk9vdJtLr8=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsrgA7czyZG/E6dU=
@@ -1118,8 +1118,8 @@ github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
 github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
-github.com/skip-mev/connect/v2 v2.0.1 h1:HEPdUio+uDtoSCKfCzKgQqs2jSQWgFQRYF+zyuhnGqs=
-github.com/skip-mev/connect/v2 v2.0.1/go.mod h1:EaPc1lnDHt0WzEisfctMIeJ3EXkpCO/4wUZrzdROr7s=
+github.com/skip-mev/connect/v2 v2.1.0 h1:YYGtVBug3ZDy+uE+iGrlWtSd+shKt82vajEzddiciiw=
+github.com/skip-mev/connect/v2 v2.1.0/go.mod h1:O/575IPwdz/VSJQip4ETrabACsBbesv5h2E7nsExU/Q=
 github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
 github.com/skip-mev/feemarket v1.1.1/go.mod h1:DUa6djUsTeMOrbrcIZqWSVxU9IZNCXp96ruaojyBNpc=
 github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
