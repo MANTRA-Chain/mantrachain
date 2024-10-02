@@ -3,6 +3,7 @@ package tax_test
 import (
 	"testing"
 
+	_ "github.com/MANTRA-Chain/mantrachain/app/params"
 	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/testutil/nullify"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"

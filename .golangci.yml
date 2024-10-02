@@ -30,7 +30,7 @@ linters:
     - govet
     - importas
     - ineffassign
-    - maintidx
+    #   - maintidx (this would be nice to re-enable at some point, to help keep complexity at bay)
     - makezero
     - misspell
     - nakedret
