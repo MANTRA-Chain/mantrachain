@@ -6,7 +6,6 @@ import (
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -127,7 +126,6 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 
 // RegisterCustomPlugins registers custom plugins for the wasm module.
 func RegisterCustomPlugins(
-	tokenFactoryKeeper *tokenfactorykeeper.Keeper,
 	queryRouter baseapp.GRPCQueryRouter,
 	cdc codec.Codec,
 ) []wasmkeeper.Option {

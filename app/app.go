@@ -677,10 +677,10 @@ func New(
 
 	// Register custom plugins for the wasm module by appending them to the existing options
 	wasmOpts = append(wasmOpts, queries.RegisterCustomPlugins(
-		&app.TokenFactoryKeeper,
 		*app.GRPCQueryRouter(),
 		app.AppCodec(),
 	)...)
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	app.WasmKeeper = wasmkeeper.NewKeeper(
