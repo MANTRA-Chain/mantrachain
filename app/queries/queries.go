@@ -127,7 +127,7 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 
 // RegisterCustomPlugins registers custom plugins for the wasm module.
 func RegisterCustomPlugins(
-	tokenFactoryKeeper *tokenfactorykeeper.Keeper,
+func RegisterCustomPlugins(
 	queryRouter baseapp.GRPCQueryRouter,
 	cdc codec.Codec,
 ) []wasmkeeper.Option {
