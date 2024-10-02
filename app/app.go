@@ -249,20 +249,20 @@ type App struct {
 	MarketMapKeeper *marketmapkeeper.Keeper
 
 	// IBC
-	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	IBCFeeKeeper        ibcfeekeeper.Keeper
-	TransferKeeper      ibctransferkeeper.Keeper
-	WasmKeeper          wasmkeeper.Keeper
-	RateLimitKeeper     ratelimitkeeper.Keeper
+	IBCKeeper       *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	IBCFeeKeeper    ibcfeekeeper.Keeper
+	TransferKeeper  ibctransferkeeper.Keeper
+	WasmKeeper      wasmkeeper.Keeper
+	RateLimitKeeper ratelimitkeeper.Keeper
 
 	IBCHooksKeeper ibchookskeeper.Keeper
 
 	// Scoped IBC
-	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
-	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
-	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
-	ScopedFeeabsKeeper        capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
+	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+	ScopedIBCFeeKeeper   capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
+	ScopedFeeabsKeeper   capabilitykeeper.ScopedKeeper
 
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
@@ -337,7 +337,7 @@ func New(
 		group.StoreKey,
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
-		wasmtypes.StoreKey, 
+		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey,
 		ibchookstypes.StoreKey,
@@ -1142,8 +1142,8 @@ func (app *App) AutoCliOpts() autocli.AppOptions {
 }
 
 // DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
-func (a *App) DefaultGenesis() map[string]json.RawMessage {
-	return a.BasicModuleManager.DefaultGenesis(a.appCodec)
+func (app *App) DefaultGenesis() map[string]json.RawMessage {
+	return app.BasicModuleManager.DefaultGenesis(app.appCodec)
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
