@@ -115,7 +115,7 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 		// Marshal to JSON for the contract.
 		bz, err := cdc.MarshalJSON(protoResponseType)
 		if err != nil {
-			return nil, wasmvmtypes.Unknown{}
+			return nil, fmt.Errorf("failed to marshal response to JSON: %w", err)
 		}
 
 		return bz, nil
