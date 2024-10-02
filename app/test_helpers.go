@@ -51,6 +51,7 @@ type SetupOptions struct {
 }
 
 func setup(tb testing.TB, chainID string, withGenesis bool, invCheckPeriod uint, opts ...wasmkeeper.Option) (*App, GenesisState) {
+	tb.Helper()
 	db := dbm.NewMemDB()
 	nodeHome := tb.TempDir()
 	snapshotDir := filepath.Join(nodeHome, "data", "snapshots")
@@ -184,6 +185,7 @@ func SetupWithGenesisValSet(
 
 // SetupWithEmptyStore set up a wasmd app instance with empty DB
 func SetupWithEmptyStore(tb testing.TB) *App {
+	tb.Helper()
 	app, _ := setup(tb, "testing", false, 0)
 	return app
 }
