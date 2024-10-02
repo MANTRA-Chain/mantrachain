@@ -41,11 +41,11 @@ func NewRootCmd() *cobra.Command {
 		WithInput(os.Stdin).
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithHomeDir(app.DefaultNodeHome).
-		WithViper("") // In wasmd, we don't use any prefix for env variables.
+		WithViper("MANTRA")
 
 	rootCmd := &cobra.Command{
 		Use:           version.AppName,
-		Short:         "Eve Daemon (server)",
+		Short:         "Mantra Daemon (server)",
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
