@@ -4,8 +4,27 @@ import (
 	"testing"
 
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
+
+// init() is required to set the bech32 prefix for the test
+// most likely, we can remove this post-launch by simply using the default prefixes and updating the addresses in the test.
+// it is here so that we can test against the precise values that will be used in genesis.
+func init() {
+	accountAddressPrefix := "mantra"
+	accountPubKeyPrefix := accountAddressPrefix + "pub"
+	validatorAddressPrefix := accountAddressPrefix + "valoper"
+	validatorPubKeyPrefix := accountAddressPrefix + "valoperpub"
+	consNodeAddressPrefix := accountAddressPrefix + "valcons"
+	consNodePubKeyPrefix := accountAddressPrefix + "valconspub"
+
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(accountAddressPrefix, accountPubKeyPrefix)
+	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
+	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+	config.Seal()
+}
 
 func TestGenesisState_Validate(t *testing.T) {
 	tests := []struct {
