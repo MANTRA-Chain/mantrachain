@@ -41,7 +41,7 @@ require (
 	github.com/cometbft/cometbft v0.38.12
 	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.50.10-0.20240906103735-f516a1eb7c3c
+	github.com/cosmos/cosmos-sdk v0.50.10
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v8 v8.0.0
@@ -54,7 +54,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0
 	github.com/prometheus/client_golang v1.20.4
 	github.com/rakyll/statik v0.1.7
-	github.com/skip-mev/connect/v2 v2.0.1
+	github.com/skip-mev/connect/v2 v2.1.0
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.7.0
 	github.com/spf13/cobra v1.8.1
@@ -128,7 +128,7 @@ require (
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.2.0 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
-	github.com/cosmos/interchain-security/v6 v6.0.0 // indirect
+	github.com/cosmos/interchain-security/v6 v6.1.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/creachadair/atomicfile v0.3.3 // indirect
