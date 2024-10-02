@@ -8,12 +8,10 @@ func AllCapabilities() []string {
 		"iterator",
 		"staking",
 		"stargate",
-		"tokenfactory",
 		"cosmwasm_1_1",
 		"cosmwasm_1_2",
 		"cosmwasm_1_3",
 		"cosmwasm_1_4",
 		"cosmwasm_2_0",
-		"cosmwasm_2_1",
 	}
 }
