@@ -35,6 +35,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	_ "github.com/MANTRA-Chain/mantrachain/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/app/queries"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik"
 	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
@@ -675,7 +676,7 @@ func New(
 	wasmDir := filepath.Join(homePath, "wasm")
 
 	// Register custom plugins for the wasm module by appending them to the existing options
-	wasmOpts = append(wasmOpts, RegisterCustomPlugins(
+	wasmOpts = append(wasmOpts, queries.RegisterCustomPlugins(
 		&app.TokenFactoryKeeper,
 		*app.GRPCQueryRouter(),
 		app.AppCodec(),

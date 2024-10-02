@@ -1,22 +1,19 @@
 package app
 
 import (
-	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	// Import tokenfactory keeper and types
 	"fmt"
 	"sync"
 
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	// Import tokenfactory keeper and types
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-
+	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 )
 
@@ -74,12 +71,12 @@ func getWhitelistedQuery(queryPath string) (proto.Message, error) {
 
 // returnStargateResponseToPool returns the provided proto message to the appropriate pool based on its query path.
 func returnStargateResponseToPool(queryPath string, pb proto.Message) {
-    pool, exists := stargateResponsePools[queryPath]
-    if !exists {
-        // Optional: handle the unexpected queryPath
-        return
-    }
-    pool.Put(pb)
+	pool, exists := stargateResponsePools[queryPath]
+	if !exists {
+		// Optional: handle the unexpected queryPath
+		return
+	}
+	pool.Put(pb)
 }
 
 // StargateQuerier dispatches whitelisted stargate queries.
