@@ -122,14 +122,6 @@ import (
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
-	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
-	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
-	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
-	icahost "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host"
-	icahostkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/keeper"
-	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
-	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
 	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
@@ -203,7 +195,6 @@ var maccPerms = map[string][]string{
 	ibctransfertypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:       nil,
 	ratelimittypes.ModuleName:    nil,
-	icatypes.ModuleName:          nil,
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
@@ -260,8 +251,6 @@ type App struct {
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	IBCFeeKeeper        ibcfeekeeper.Keeper
-	ICAControllerKeeper icacontrollerkeeper.Keeper
-	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
@@ -270,8 +259,6 @@ type App struct {
 
 	// Scoped IBC
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
-	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
-	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
@@ -350,9 +337,9 @@ func New(
 		group.StoreKey,
 		// non sdk store keys
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
-		wasmtypes.StoreKey, icahosttypes.StoreKey,
-		// ratelimittypes.StoreKey,
-		icacontrollertypes.StoreKey, tokenfactorytypes.StoreKey, taxtypes.StoreKey,
+		wasmtypes.StoreKey, 
+		ratelimittypes.StoreKey,
+		tokenfactorytypes.StoreKey, taxtypes.StoreKey,
 		ibchookstypes.StoreKey,
 		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
@@ -400,8 +387,6 @@ func New(
 	)
 
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
-	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
-	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
 	scopedIBCFeeKeeper := app.CapabilityKeeper.ScopeToModule(ibcfeetypes.ModuleName)
@@ -680,22 +665,6 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create Interchain Accounts Stack
-	// SendPacket, since it is originating from the application to core IBC:
-	// icaAuthModuleKeeper.SendTx -> icaController.SendPacket -> fee.SendPacket -> channel.SendPacket
-	var icaControllerStack porttypes.IBCModule
-	// integration point for custom authentication modules
-	// see https://medium.com/the-interchain-foundation/ibc-go-v6-changes-to-interchain-accounts-and-how-it-impacts-your-chain-806c185300d7
-	var noAuthzModule porttypes.IBCModule
-	icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, app.ICAControllerKeeper)
-	icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper)
-
-	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
-	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
-	var icaHostStack porttypes.IBCModule
-	icaHostStack = icahost.NewIBCModule(app.ICAHostKeeper)
-	icaHostStack = ibcfee.NewIBCMiddleware(icaHostStack, app.IBCFeeKeeper)
-
 	// Create IBC modules with ratelimit middleware
 	// channel.RecvPacket -> ratelimit.OnRecvPacket -> ibcfee.OnRecvPacket -> transfer.OnRecvPacket	var transferStack porttypes.IBCModule
 	var transferStack porttypes.IBCModule
@@ -711,36 +680,8 @@ func New(
 	// Create static IBC router, add app routes, then set and seal it
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
-		AddRoute(wasmtypes.ModuleName, wasmStack).
-		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
-		AddRoute(icahosttypes.SubModuleName, icaHostStack)
+		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
-
-	app.ICAHostKeeper = icahostkeeper.NewKeeper(
-		appCodec,
-		keys[icahosttypes.StoreKey],
-		nil,
-		app.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper,
-		app.AccountKeeper,
-		scopedICAHostKeeper,
-		app.MsgServiceRouter(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	app.ICAHostKeeper.WithQueryRouter(app.GRPCQueryRouter())
-
-	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
-		appCodec,
-		keys[icacontrollertypes.StoreKey],
-		nil,
-		app.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
-		app.IBCKeeper.ChannelKeeper,
-		app.IBCKeeper.PortKeeper,
-		scopedICAControllerKeeper,
-		app.MsgServiceRouter(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
 
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
@@ -822,7 +763,6 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transfer.NewAppModule(app.TransferKeeper),
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(),
 		ibchooks.NewAppModule(app.AccountKeeper),
 		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
@@ -880,7 +820,6 @@ func New(
 		capabilitytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
-		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -902,7 +841,6 @@ func New(
 		capabilitytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
-		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -946,7 +884,6 @@ func New(
 		ibcexported.ModuleName,
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
-		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		ibchookstypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -1030,8 +967,6 @@ func New(
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedWasmKeeper = scopedWasmKeeper
-	app.ScopedICAHostKeeper = scopedICAHostKeeper
-	app.ScopedICAControllerKeeper = scopedICAControllerKeeper
 	app.ScopedIBCFeeKeeper = scopedIBCFeeKeeper
 
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
