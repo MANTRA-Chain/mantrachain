@@ -109,7 +109,7 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 		// Unmarshal the response.
 		err = cdc.Unmarshal(res.Value, protoResponseType)
 		if err != nil {
-			return nil, wasmvmtypes.Unknown{}
+			return nil, fmt.Errorf("failed to unmarshal response for query path '%s': %w", request.Path, err)
 		}
 
 		// Marshal to JSON for the contract.
