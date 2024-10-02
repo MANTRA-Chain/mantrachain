@@ -165,7 +165,7 @@ var (
 // These are the ones we will want to use in the code, based on
 // any overrides above
 var (
-	// DefaultNodeHome default home directories for wasmd
+	// DefaultNodeHome default home directories for mantrachaind
 	DefaultNodeHome = os.ExpandEnv("$HOME/") + NodeDir
 )
 
@@ -941,7 +941,7 @@ func New(
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
-	// see cmd/wasmd/root.go: 206 - 214 approx
+	// see cmd/mantrachaind/root.go: 206 - 214 approx
 	if manager := app.SnapshotManager(); manager != nil {
 		err := manager.RegisterExtensions(
 			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
