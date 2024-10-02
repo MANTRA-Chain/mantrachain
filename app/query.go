@@ -71,7 +71,12 @@ func getWhitelistedQuery(queryPath string) (proto.Message, error) {
 
 // returnStargateResponseToPool returns the provided proto message to the appropriate pool based on its query path.
 func returnStargateResponseToPool(queryPath string, pb proto.Message) {
-	stargateResponsePools[queryPath].Put(pb)
+    pool, exists := stargateResponsePools[queryPath]
+    if !exists {
+        // Optional: handle the unexpected queryPath
+        return
+    }
+    pool.Put(pb)
 }
 
 // StargateQuerier dispatches whitelisted stargate queries.
