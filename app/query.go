@@ -63,6 +63,9 @@ func getWhitelistedQuery(queryPath string) (proto.Message, error) {
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: fmt.Sprintf("'%s' path is not allowed from the contract", queryPath)}
 	}
 	protoMsg, ok := pool.Get().(proto.Message)
+	if protoMsg == nil {
+		return nil, fmt.Errorf("pool returned nil for query path '%s'", queryPath)
+	}
 	if !ok {
 		return nil, fmt.Errorf("failed to assert type to proto.Message")
 	}
