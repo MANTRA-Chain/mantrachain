@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"sync"
 
-	// Import tokenfactory keeper and types
-
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
