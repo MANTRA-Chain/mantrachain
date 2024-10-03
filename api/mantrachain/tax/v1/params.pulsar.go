@@ -17,17 +17,17 @@ import (
 
 var (
 	md_Params             protoreflect.MessageDescriptor
-	fd_Params_admin       protoreflect.FieldDescriptor
 	fd_Params_mca_tax     protoreflect.FieldDescriptor
 	fd_Params_mca_address protoreflect.FieldDescriptor
+	fd_Params_max_mca_tax protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_mantrachain_tax_v1_params_proto_init()
 	md_Params = File_mantrachain_tax_v1_params_proto.Messages().ByName("Params")
-	fd_Params_admin = md_Params.Fields().ByName("admin")
 	fd_Params_mca_tax = md_Params.Fields().ByName("mca_tax")
 	fd_Params_mca_address = md_Params.Fields().ByName("mca_address")
+	fd_Params_max_mca_tax = md_Params.Fields().ByName("max_mca_tax")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -95,12 +95,6 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Admin != "" {
-		value := protoreflect.ValueOfString(x.Admin)
-		if !f(fd_Params_admin, value) {
-			return
-		}
-	}
 	if x.McaTax != "" {
 		value := protoreflect.ValueOfString(x.McaTax)
 		if !f(fd_Params_mca_tax, value) {
@@ -110,6 +104,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 	if x.McaAddress != "" {
 		value := protoreflect.ValueOfString(x.McaAddress)
 		if !f(fd_Params_mca_address, value) {
+			return
+		}
+	}
+	if x.MaxMcaTax != "" {
+		value := protoreflect.ValueOfString(x.MaxMcaTax)
+		if !f(fd_Params_max_mca_tax, value) {
 			return
 		}
 	}
@@ -128,12 +128,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		return x.Admin != ""
 	case "mantrachain.tax.v1.Params.mca_tax":
 		return x.McaTax != ""
 	case "mantrachain.tax.v1.Params.mca_address":
 		return x.McaAddress != ""
+	case "mantrachain.tax.v1.Params.max_mca_tax":
+		return x.MaxMcaTax != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.tax.v1.Params"))
@@ -150,12 +150,12 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		x.Admin = ""
 	case "mantrachain.tax.v1.Params.mca_tax":
 		x.McaTax = ""
 	case "mantrachain.tax.v1.Params.mca_address":
 		x.McaAddress = ""
+	case "mantrachain.tax.v1.Params.max_mca_tax":
+		x.MaxMcaTax = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.tax.v1.Params"))
@@ -172,14 +172,14 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		value := x.Admin
-		return protoreflect.ValueOfString(value)
 	case "mantrachain.tax.v1.Params.mca_tax":
 		value := x.McaTax
 		return protoreflect.ValueOfString(value)
 	case "mantrachain.tax.v1.Params.mca_address":
 		value := x.McaAddress
+		return protoreflect.ValueOfString(value)
+	case "mantrachain.tax.v1.Params.max_mca_tax":
+		value := x.MaxMcaTax
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -201,12 +201,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		x.Admin = value.Interface().(string)
 	case "mantrachain.tax.v1.Params.mca_tax":
 		x.McaTax = value.Interface().(string)
 	case "mantrachain.tax.v1.Params.mca_address":
 		x.McaAddress = value.Interface().(string)
+	case "mantrachain.tax.v1.Params.max_mca_tax":
+		x.MaxMcaTax = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.tax.v1.Params"))
@@ -227,12 +227,12 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		panic(fmt.Errorf("field admin of message mantrachain.tax.v1.Params is not mutable"))
 	case "mantrachain.tax.v1.Params.mca_tax":
 		panic(fmt.Errorf("field mca_tax of message mantrachain.tax.v1.Params is not mutable"))
 	case "mantrachain.tax.v1.Params.mca_address":
 		panic(fmt.Errorf("field mca_address of message mantrachain.tax.v1.Params is not mutable"))
+	case "mantrachain.tax.v1.Params.max_mca_tax":
+		panic(fmt.Errorf("field max_mca_tax of message mantrachain.tax.v1.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.tax.v1.Params"))
@@ -246,11 +246,11 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.tax.v1.Params.admin":
-		return protoreflect.ValueOfString("")
 	case "mantrachain.tax.v1.Params.mca_tax":
 		return protoreflect.ValueOfString("")
 	case "mantrachain.tax.v1.Params.mca_address":
+		return protoreflect.ValueOfString("")
+	case "mantrachain.tax.v1.Params.max_mca_tax":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -321,15 +321,15 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Admin)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		l = len(x.McaTax)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.McaAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaxMcaTax)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -362,24 +362,24 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.MaxMcaTax) > 0 {
+			i -= len(x.MaxMcaTax)
+			copy(dAtA[i:], x.MaxMcaTax)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxMcaTax)))
+			i--
+			dAtA[i] = 0x1a
+		}
 		if len(x.McaAddress) > 0 {
 			i -= len(x.McaAddress)
 			copy(dAtA[i:], x.McaAddress)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.McaAddress)))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
 		if len(x.McaTax) > 0 {
 			i -= len(x.McaTax)
 			copy(dAtA[i:], x.McaTax)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.McaTax)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.Admin) > 0 {
-			i -= len(x.Admin)
-			copy(dAtA[i:], x.Admin)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Admin)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -434,38 +434,6 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Admin", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Admin = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field McaTax", wireType)
 				}
 				var stringLen uint64
@@ -496,7 +464,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				}
 				x.McaTax = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 3:
+			case 2:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field McaAddress", wireType)
 				}
@@ -527,6 +495,38 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.McaAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxMcaTax", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaxMcaTax = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -582,9 +582,9 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Admin      string `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
-	McaTax     string `protobuf:"bytes,2,opt,name=mca_tax,json=mcaTax,proto3" json:"mca_tax,omitempty"`
-	McaAddress string `protobuf:"bytes,3,opt,name=mca_address,json=mcaAddress,proto3" json:"mca_address,omitempty"`
+	McaTax     string `protobuf:"bytes,1,opt,name=mca_tax,json=mcaTax,proto3" json:"mca_tax,omitempty"`
+	McaAddress string `protobuf:"bytes,2,opt,name=mca_address,json=mcaAddress,proto3" json:"mca_address,omitempty"`
+	MaxMcaTax  string `protobuf:"bytes,3,opt,name=max_mca_tax,json=maxMcaTax,proto3" json:"max_mca_tax,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -607,13 +607,6 @@ func (*Params) Descriptor() ([]byte, []int) {
 	return file_mantrachain_tax_v1_params_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Params) GetAdmin() string {
-	if x != nil {
-		return x.Admin
-	}
-	return ""
-}
-
 func (x *Params) GetMcaTax() string {
 	if x != nil {
 		return x.McaTax
@@ -628,6 +621,13 @@ func (x *Params) GetMcaAddress() string {
 	return ""
 }
 
+func (x *Params) GetMaxMcaTax() string {
+	if x != nil {
+		return x.MaxMcaTax
+	}
+	return ""
+}
+
 var File_mantrachain_tax_v1_params_proto protoreflect.FileDescriptor
 
 var file_mantrachain_tax_v1_params_proto_rawDesc = []byte{
@@ -638,35 +638,36 @@ var file_mantrachain_tax_v1_params_proto_rawDesc = []byte{
 	0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19,
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xde, 0x01, 0x0a, 0x06, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x12, 0x2e, 0x0a, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x05, 0x61,
-	0x64, 0x6d, 0x69, 0x6e, 0x12, 0x41, 0x0a, 0x07, 0x6d, 0x63, 0x61, 0x5f, 0x74, 0x61, 0x78, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x28, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
+	0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf8, 0x01, 0x0a, 0x06, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x12, 0x41, 0x0a, 0x07, 0x6d, 0x63, 0x61, 0x5f, 0x74, 0x61, 0x78, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x28, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63,
 	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
 	0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52,
 	0x06, 0x6d, 0x63, 0x61, 0x54, 0x61, 0x78, 0x12, 0x3e, 0x0a, 0x0b, 0x6d, 0x63, 0x61, 0x5f, 0x61,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xd2, 0xb4,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x1d, 0xd2, 0xb4,
 	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
 	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x0a, 0x6d, 0x63, 0x61,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x21, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0,
-	0x2a, 0x18, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x78, 0x2f,
-	0x74, 0x61, 0x78, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0xd1, 0x01, 0x0a, 0x16, 0x63,
-	0x6f, 0x6d, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x74,
-	0x61, 0x78, 0x2e, 0x76, 0x31, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x40, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x4d, 0x41, 0x4e, 0x54, 0x52, 0x41, 0x2d, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x6d, 0x61,
-	0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61,
-	0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x74, 0x61, 0x78, 0x2f, 0x76, 0x31,
-	0x3b, 0x74, 0x61, 0x78, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4d, 0x54, 0x58, 0xaa, 0x02, 0x12, 0x4d,
-	0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x54, 0x61, 0x78, 0x2e, 0x56,
-	0x31, 0xca, 0x02, 0x12, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c,
-	0x54, 0x61, 0x78, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x1e, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63,
-	0x68, 0x61, 0x69, 0x6e, 0x5c, 0x54, 0x61, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x14, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61,
-	0x63, 0x68, 0x61, 0x69, 0x6e, 0x3a, 0x3a, 0x54, 0x61, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x48, 0x0a, 0x0b, 0x6d, 0x61, 0x78, 0x5f, 0x6d,
+	0x63, 0x61, 0x5f, 0x74, 0x61, 0x78, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x28, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x09, 0x6d, 0x61, 0x78, 0x4d, 0x63, 0x61, 0x54, 0x61,
+	0x78, 0x3a, 0x21, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x18, 0x6d, 0x61, 0x6e, 0x74,
+	0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x78, 0x2f, 0x74, 0x61, 0x78, 0x2f, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x42, 0xd1, 0x01, 0x0a, 0x16, 0x63, 0x6f, 0x6d, 0x2e, 0x6d, 0x61, 0x6e,
+	0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x74, 0x61, 0x78, 0x2e, 0x76, 0x31, 0x42,
+	0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x40,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4d, 0x41, 0x4e, 0x54, 0x52,
+	0x41, 0x2d, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68,
+	0x61, 0x69, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68,
+	0x61, 0x69, 0x6e, 0x2f, 0x74, 0x61, 0x78, 0x2f, 0x76, 0x31, 0x3b, 0x74, 0x61, 0x78, 0x76, 0x31,
+	0xa2, 0x02, 0x03, 0x4d, 0x54, 0x58, 0xaa, 0x02, 0x12, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63,
+	0x68, 0x61, 0x69, 0x6e, 0x2e, 0x54, 0x61, 0x78, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x12, 0x4d, 0x61,
+	0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x54, 0x61, 0x78, 0x5c, 0x56, 0x31,
+	0xe2, 0x02, 0x1e, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x54,
+	0x61, 0x78, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x14, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x3a,
+	0x3a, 0x54, 0x61, 0x78, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

@@ -124,7 +124,7 @@ build-arm:
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) $(MAKE) build
 build-image:
-	docker build -f Dockerfile -t mantra-chain/mantrachain .
+	docker build -f Dockerfile -t mantra-chain/mantrachain:local .
 
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) $(GO_MODULE)/cmd/mantrachaind
@@ -211,3 +211,22 @@ goreleaser-build-local:
 
 mocks:
 	go generate ./...
+
+
+###############################################################################
+###                           Single Node Test                              ###
+###############################################################################
+
+build-and-run-single-node: build
+	@echo "Building and running a single node for testing..."
+	@mkdir -p .mantrasinglenodetest
+	@if [ ! -f .mantrasinglenodetest/config.toml ]; then \
+		./build/mantrachaind init single-node-test --chain-id test-chain --home .mantrasinglenodetest; \
+		./build/mantrachaind keys add validator --keyring-backend test --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis add-genesis-account $$(./build/mantrachaind keys show validator -a --keyring-backend test --home .mantrasinglenodetest) 100000000stake --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis gentx validator 100000000stake --chain-id test-chain --keyring-backend test --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis collect-gentxs --home .mantrasinglenodetest; \
+	fi
+	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0stake
+
+.PHONY: build-and-run-single-node

@@ -12,16 +12,20 @@ message Params {
   option (amino.name) = "mantrachain/x/tax/Params";
   option (gogoproto.equal) = true;
 
-  string admin = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  string mca_tax = 2 [
+  string mca_tax = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (amino.dont_omitempty) = true,
     (gogoproto.nullable) = false
   ];
 
-  string mca_address = 3 [
+  string mca_address = 2 [
     (cosmos_proto.scalar) = "cosmos.AddressString",
     (amino.dont_omitempty) = true
+  ];
+
+  string max_mca_tax = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (amino.dont_omitempty) = true,
+    (gogoproto.nullable) = false
   ];
 }

@@ -3,11 +3,11 @@ package tax_test
 import (
 	"testing"
 
+	_ "github.com/MANTRA-Chain/mantrachain/app/params"
 	keepertest "github.com/MANTRA-Chain/mantrachain/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/testutil/nullify"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,21 +25,6 @@ func TestGenesis(t *testing.T) {
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
-}
-
-func init() {
-	accountAddressPrefix := "mantra"
-	accountPubKeyPrefix := accountAddressPrefix + "pub"
-	validatorAddressPrefix := accountAddressPrefix + "valoper"
-	validatorPubKeyPrefix := accountAddressPrefix + "valoperpub"
-	consNodeAddressPrefix := accountAddressPrefix + "valcons"
-	consNodePubKeyPrefix := accountAddressPrefix + "valconspub"
-
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(accountAddressPrefix, accountPubKeyPrefix)
-	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
-	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
-	config.Seal()
 }
 
 func TestGenesisState_Validate(t *testing.T) {
@@ -151,12 +136,11 @@ func TestParams_ValidateProportion(t *testing.T) {
 		proportion string
 		wantErr    bool
 	}{
-		{"valid proportion", "0.1", false},
-		{"zero proportion", "0", false},
-		{"max proportion", "1", false},
-		{"negative proportion", "-0.1", true},
-		{"proportion greater than 1", "1.1", true},
-		{"invalid format", "abc", true},
+		{"valid tax", "0.1", false},
+		{"zero tax", "0", false},
+		{"max tax", "0.3", false},
+		{"negative tax", "-0.1", true},
+		{"tax greater than 1", "1.1", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

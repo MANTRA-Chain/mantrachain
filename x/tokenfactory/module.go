@@ -201,8 +201,8 @@ type ModuleInputs struct {
 type ModuleOutputs struct {
 	depinject.Out
 
-	CoinfactoryKeeper keeper.Keeper
-	Module            appmodule.AppModule
+	TokenFactoryKeeper keeper.Keeper
+	Module             appmodule.AppModule
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
@@ -225,5 +225,5 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		k,
 	)
 
-	return ModuleOutputs{CoinfactoryKeeper: k, Module: m}
+	return ModuleOutputs{TokenFactoryKeeper: k, Module: m}
 }

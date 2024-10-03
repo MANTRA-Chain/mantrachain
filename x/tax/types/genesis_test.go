@@ -3,25 +3,10 @@ package types_test
 import (
 	"testing"
 
+	_ "github.com/MANTRA-Chain/mantrachain/app/params"
 	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
-
-func init() {
-	accountAddressPrefix := "mantra"
-	accountPubKeyPrefix := accountAddressPrefix + "pub"
-	validatorAddressPrefix := accountAddressPrefix + "valoper"
-	validatorPubKeyPrefix := accountAddressPrefix + "valoperpub"
-	consNodeAddressPrefix := accountAddressPrefix + "valcons"
-	consNodePubKeyPrefix := accountAddressPrefix + "valconspub"
-
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(accountAddressPrefix, accountPubKeyPrefix)
-	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
-	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
-	config.Seal()
-}
 
 func TestGenesisState_Validate(t *testing.T) {
 	tests := []struct {
@@ -66,6 +51,34 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "empty mca address is invalid",
 			genState: &types.GenesisState{
 				Params: types.NewParams(types.DefaultMcaTax, ""),
+			},
+			valid: false,
+		},
+		{
+			desc: "mca tax of 0.5 is invalid",
+			genState: &types.GenesisState{
+				Params: types.NewParams("0.5", types.DefaultMcaAddress),
+			},
+			valid: false,
+		},
+		{
+			desc: "mca tax of 0 is valid",
+			genState: &types.GenesisState{
+				Params: types.NewParams("0", types.DefaultMcaAddress),
+			},
+			valid: true,
+		},
+		{
+			desc: "mca tax of 1 is invalid",
+			genState: &types.GenesisState{
+				Params: types.NewParams("1", types.DefaultMcaAddress),
+			},
+			valid: false,
+		},
+		{
+			desc: "mca address with wrong prefix is invalid",
+			genState: &types.GenesisState{
+				Params: types.NewParams(types.DefaultMcaTax, "cosmos1qypqxpq9qcrsszg2pvxq6rs0zqg3yyc5lzutu9"),
 			},
 			valid: false,
 		},

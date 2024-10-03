@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -9,12 +10,17 @@ import (
 )
 
 func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if _, err := k.addressCodec.StringToBytes(req.Admin); err != nil {
+	if _, err := k.addressCodec.StringToBytes(req.Authority); err != nil {
 		return nil, errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	if k.GetAuthority() != req.Admin {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Admin)
+	params, err := k.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Authority != params.McaAddress {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid sender; expected mcaAddress %s, got %s", params.McaAddress, req.Authority)
 	}
 
 	updateParams, err := k.Params.Get(ctx)
@@ -26,6 +32,10 @@ func (k msgServer) UpdateParams(ctx context.Context, req *types.MsgUpdateParams)
 		updateParams.McaTax, err = math.LegacyNewDecFromStr(req.McaTax)
 		if err != nil {
 			return nil, err
+		}
+		// Check against MaxMcaTax
+		if updateParams.McaTax.GT(types.MaxMcaTax) {
+			return nil, fmt.Errorf("mca tax %s cannot exceed maximum of %s", updateParams.McaTax, types.MaxMcaTax)
 		}
 	}
 
