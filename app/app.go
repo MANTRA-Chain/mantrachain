@@ -35,6 +35,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	_ "github.com/MANTRA-Chain/mantrachain/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/app/queries"
 	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik"
 	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
 	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
@@ -530,9 +531,6 @@ func New(
 			app.TokenFactoryKeeper.Hooks(),
 		))
 
-	// TODO: add tokenfactory bindings
-	// wasmOpts = append(wasmOpts, bindings.RegisterCustomPlugins(app.BankKeeper, &app.TokenFactoryKeeper)...)
-
 	// Register the proposal types
 	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
 	// by granting the governance module the right to execute the message.
@@ -676,6 +674,12 @@ func New(
 	}
 
 	wasmDir := filepath.Join(homePath, "wasm")
+
+	// Register custom plugins for the wasm module by appending them to the existing options
+	wasmOpts = append(wasmOpts, queries.RegisterCustomPlugins(
+		*app.GRPCQueryRouter(),
+		app.AppCodec(),
+	)...)
 
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
