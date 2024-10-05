@@ -31,8 +31,10 @@ def main():
     balance_data = []
     for balance in balances:
         address = balance['address']
-        amount = int(balance['coins'][0]['amount'])
-        balance_data.append({'address': address, 'amount': amount})
+        coins = balance.get('coins', [])
+        if coins:  # Check if the coins list is not empty
+            amount = int(coins[0]['amount'])
+            balance_data.append({'address': address, 'amount': amount})
 
     # Sort balance data by amount
     balance_data.sort(key=lambda x: x['amount'], reverse=True)
