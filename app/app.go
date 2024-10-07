@@ -43,6 +43,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -579,6 +580,8 @@ func New(
 		nil,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.FeeMarketKeeper.SetDenomResolver(&xfeemarkettypes.DefaultFeemarketDenomResolver{})
+
 	app.MarketMapKeeper = marketmapkeeper.NewKeeper(
 		runtime.NewKVStoreService(keys[marketmaptypes.StoreKey]),
 		appCodec,
