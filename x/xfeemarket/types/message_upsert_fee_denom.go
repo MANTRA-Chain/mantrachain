@@ -24,8 +24,8 @@ func (m MsgUpsertFeeDenom) Validate() error {
 	if m.Multiplier.IsNil() {
 		return errors.New("multiplier cannot be nil")
 	}
-	if m.Multiplier.IsZero() {
-		return errors.New("multiplier cannot be zero")
+	if m.Multiplier.LTE(math.LegacyZeroDec()) {
+		return errors.New("multiplier cannot be less than equal 0")
 	}
 	return nil
 }

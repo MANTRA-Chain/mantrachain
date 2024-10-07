@@ -16,7 +16,7 @@ const BankSendGasConsumption = 12490
 // FeeMarketDeductDecorator deducts fees from the fee payer based off of the current state of the feemarket.
 // The fee payer is the fee granter (if specified) or first signer of the tx.
 // If the fee payer does not have the funds to pay for the fees, return an InsufficientFunds error.
-// If there is an excess between the given fee and the on-chain min base fee is given as a tip.
+// Excess between the given fee and the on-chain min base fee is refunded to payer.
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeeMarketDeductDecorator struct {
