@@ -137,10 +137,10 @@ builds:
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
     tags:
+      - netgo
       - ledger
       - muslc
       - osusergo
-      - netgo
       - pebbledb
 
 archives:
