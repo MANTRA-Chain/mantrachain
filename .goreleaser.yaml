@@ -109,7 +109,6 @@ builds:
       - muslc
       - osusergo
       - pebbledb
-      - static_wasm
 
   - id: mantrachaind-linux-arm64
     main: ./cmd/mantrachaind
@@ -143,7 +142,6 @@ builds:
       - osusergo
       - netgo
       - pebbledb
-      - static_wasm
 
 archives:
   - id: zipped
