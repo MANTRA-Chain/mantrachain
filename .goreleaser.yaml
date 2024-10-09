@@ -41,6 +41,7 @@ builds:
     tags:
       - netgo
       - ledger
+      - pebbledb
       - static_wasm
 
   - id: mantrachaind-darwin-arm64
@@ -73,6 +74,7 @@ builds:
     tags:
       - netgo
       - ledger
+      - pebbledb
       - static_wasm
 
   - id: mantrachaind-linux-amd64
@@ -106,6 +108,7 @@ builds:
       - ledger
       - muslc
       - osusergo
+      - pebbledb
 
   - id: mantrachaind-linux-arm64
     main: ./cmd/mantrachaind
@@ -124,9 +127,9 @@ builds:
       - -mod=readonly
       - -trimpath
     ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain 
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind 
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }} 
+      - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .ShortCommit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
       - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
@@ -138,6 +141,7 @@ builds:
       - ledger
       - muslc
       - osusergo
+      - pebbledb
 
 archives:
   - id: zipped
@@ -195,7 +199,6 @@ release:
   name_template: "Mantrachain v{{.Version}}"
   mode: replace
   draft: true
-
 # Docs: https://goreleaser.com/customization/announce/
 # We could automatically announce the release in
 # - discord
@@ -206,6 +209,6 @@ release:
 # - reddit
 #
 # announce:
-  # discord:
-  #   enabled: true
-  #   message_template: 'New {{.Tag}} is out!'
+# discord:
+#   enabled: true
+#   message_template: 'New {{.Tag}} is out!'
