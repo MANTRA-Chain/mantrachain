@@ -104,9 +104,10 @@ builds:
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
     tags:
+      - netgo
       - ledger
       - muslc
-      - netgo
+      - osusergo
       - pebbledb
       - static_wasm
 
@@ -139,6 +140,7 @@ builds:
     tags:
       - ledger
       - muslc
+      - osusergo
       - netgo
       - pebbledb
       - static_wasm
