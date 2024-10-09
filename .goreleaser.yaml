@@ -39,8 +39,8 @@ builds:
       - -w -s
       - -linkmode=external
     tags:
-      - ledger
       - netgo
+      - ledger
       - pebbledb
       - static_wasm
 
