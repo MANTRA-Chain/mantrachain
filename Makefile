@@ -53,7 +53,7 @@ ifeq ($(LEDGER_ENABLED),true)
     ifeq ($(GCCEXE),)
       $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
     else
-      build_tags += ledger
+      build_tags += ledger pebbledb
     endif
   else
     UNAME_S = $(shell uname -s)
@@ -64,7 +64,7 @@ ifeq ($(LEDGER_ENABLED),true)
       ifeq ($(GCC),)
         $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
       else
-        build_tags += ledger
+        build_tags += ledger pebbledb
       endif
     endif
   endif
@@ -87,6 +87,7 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain \
 	-X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind \
+        -X github.com/cosmos/cosmos-sdk/types.DBBackend=pebbledb \
 	-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 	-X github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep) \
@@ -137,7 +138,7 @@ $(BUILDDIR)/:
 
 test: test-unit
 
-test-unit: 
+test-unit:
 	@VERSION=$(VERSION) go test ./x/... -mod=readonly -vet=all -tags='norace' $(PACKAGES_NOSIMULATION)
 
 test-cover:
