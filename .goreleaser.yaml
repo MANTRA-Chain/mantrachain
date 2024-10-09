@@ -39,8 +39,9 @@ builds:
       - -w -s
       - -linkmode=external
     tags:
-      - netgo
       - ledger
+      - netgo
+      - pebbledb
       - static_wasm
 
   - id: mantrachaind-darwin-arm64
@@ -71,8 +72,9 @@ builds:
       - -w -s
       - -linkmode=external
     tags:
-      - netgo
       - ledger
+      - netgo
+      - pebbledb
       - static_wasm
 
   - id: mantrachaind-linux-amd64
@@ -102,10 +104,10 @@ builds:
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
     tags:
-      - netgo
       - ledger
-      - muslc
-      - osusergo
+      - netgo
+      - pebbledb
+      - static_wasm
 
   - id: mantrachaind-linux-arm64
     main: ./cmd/mantrachaind
@@ -134,10 +136,10 @@ builds:
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static -lm'
     tags:
-      - netgo
       - ledger
-      - muslc
-      - osusergo
+      - netgo
+      - pebbledb
+      - static_wasm
 
 archives:
   - id: zipped
