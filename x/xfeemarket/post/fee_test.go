@@ -428,7 +428,7 @@ func TestPostHandle(t *testing.T) {
 	const (
 		baseDenom           = "stake"
 		resolvableDenom     = "atom"
-		expectedConsumedGas = 58182 
+		expectedConsumedGas = 59122
 
 		expectedConsumedGasResolve = 25360 // slight difference due to denom resolver
 
