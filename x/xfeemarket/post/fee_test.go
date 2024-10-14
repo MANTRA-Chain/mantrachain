@@ -136,7 +136,7 @@ func TestPostHandleMock(t *testing.T) {
 		resolvableDenom        = "atom"
 		expectedConsumedGas    = 9307
 		expectedConsumedSimGas = expectedConsumedGas + post.BankSendGasConsumption
-		gasLimit               = expectedConsumedSimGas
+		gasLimit               = expectedConsumedSimGas //152800 12490 + 36385
 	)
 
 	validFeeAmount := types.DefaultMinBaseGasPrice.MulInt64(int64(gasLimit))
@@ -428,7 +428,7 @@ func TestPostHandle(t *testing.T) {
 	const (
 		baseDenom           = "stake"
 		resolvableDenom     = "atom"
-		expectedConsumedGas = 21797
+		expectedConsumedGas = 58182 
 
 		expectedConsumedGasResolve = 25360 // slight difference due to denom resolver
 

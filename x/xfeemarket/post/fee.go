@@ -11,7 +11,8 @@ import (
 )
 
 // BankSendGasConsumption is the gas consumption of the bank sends that occur during feemarket handler execution.
-const BankSendGasConsumption = 12490
+// 36385 is the additional gas consumed for burning the fees instead of just transferring them.
+const BankSendGasConsumption = 12490 + 36385
 
 // FeeMarketDeductDecorator deducts fees from the fee payer based off of the current state of the feemarket.
 // The fee payer is the fee granter (if specified) or first signer of the tx.
