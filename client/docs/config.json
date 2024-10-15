@@ -18,6 +18,14 @@
       "url": "./tmp-swagger-gen/connect/oracle/v2/query.swagger.json"
     },
     {
+      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "WasmParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/ratelimit/v1/query.swagger.json",
       "operationIds": {
         "rename": {
