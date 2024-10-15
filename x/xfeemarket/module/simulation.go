@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 )
 
@@ -86,19 +87,47 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgUpsertFeeDenom,
 			defaultWeightMsgUpsertFeeDenom,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				xfeemarketsimulation.SimulateMsgUpsertFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) govtypes.Content {
+				return xfeemarketsimulation.RandomUpsertFeeDenomProposalContent(r, ctx, accs)
 			},
 		),
 		simulation.NewWeightedProposalMsg(
 			opWeightMsgRemoveFeeDenom,
 			defaultWeightMsgRemoveFeeDenom,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				xfeemarketsimulation.SimulateMsgRemoveFeeDenom(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) govtypes.Content {
+				return xfeemarketsimulation.RandomRemoveFeeDenomProposalContent(r, ctx, accs)
 			},
 		),
 		// this line is used by starport scaffolding # simapp/module/OpMsg
 	}
+}
+
+// RandomUpsertFeeDenomProposalContent generates random proposal content for UpsertFeeDenom
+func RandomUpsertFeeDenomProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) govtypes.Content {
+	title := simtypes.RandStringOfLength(r, 10)
+	description := simtypes.RandStringOfLength(r, 50)
+	feeDenom := simtypes.RandStringOfLength(r, 3)
+
+	content := &types.UpsertFeeDenomProposal{
+		Title:       title,
+		Description: description,
+		FeeDenom:    feeDenom,
+	}
+
+	return content
+}
+
+// RandomRemoveFeeDenomProposalContent generates random proposal content for RemoveFeeDenom
+func RandomRemoveFeeDenomProposalContent(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) govtypes.Content {
+	title := simtypes.RandStringOfLength(r, 10)
+	description := simtypes.RandStringOfLength(r, 50)
+	feeDenom := simtypes.RandStringOfLength(r, 3)
+
+	content := &types.RemoveFeeDenomProposal{
+		Title:       title,
+		Description: description,
+		FeeDenom:    feeDenom,
+	}
+
+	return content
 }
