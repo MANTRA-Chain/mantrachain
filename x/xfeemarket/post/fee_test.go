@@ -134,11 +134,12 @@ func TestPostHandleMock(t *testing.T) {
 	const (
 		baseDenom              = "stake"
 		resolvableDenom        = "atom"
-		expectedConsumedGas    = 9307
+		expectedConsumedGas    = 25250
 		expectedConsumedSimGas = expectedConsumedGas + post.BankSendGasConsumption
 		gasLimit               = expectedConsumedSimGas // 152800 12490 + 36385
 	)
 
+	zeroInt := math.ZeroInt()
 	validFeeAmount := types.DefaultMinBaseGasPrice.MulInt64(int64(gasLimit))
 	validFee := sdk.NewCoins(sdk.NewCoin(baseDenom, validFeeAmount.TruncateInt()))
 	validResolvableFee := sdk.NewCoins(sdk.NewCoin(resolvableDenom, validFeeAmount.TruncateInt()))
@@ -208,6 +209,7 @@ func TestPostHandleMock(t *testing.T) {
 				accs := s.CreateTestAccounts(1)
 				s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
 					types.FeeCollectorName, mock.Anything).Return(nil).Once()
+				s.MockBankKeeper.On("GetBalance", mock.Anything, mock.Anything, mock.Anything).Return(sdk.NewCoin(baseDenom, zeroInt)).Once()
 
 				return postsuite.TestCaseArgs{
 					Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
@@ -229,7 +231,7 @@ func TestPostHandleMock(t *testing.T) {
 				accs := s.CreateTestAccounts(1)
 				s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
 					types.FeeCollectorName, mock.Anything).Return(nil)
-				s.MockBankKeeper.On("BurnCoins", mock.Anything, types.FeeCollectorName, mock.Anything).Return(nil).Once()
+				s.MockBankKeeper.On("GetBalance", mock.Anything, mock.Anything, mock.Anything).Return(sdk.NewCoin(baseDenom, zeroInt)).Once()
 				s.MockBankKeeper.On("SendCoinsFromModuleToAccount", mock.Anything, types.FeeCollectorName,
 					accs[0].Account.GetAddress(), mock.Anything).Return(nil).Once()
 				return postsuite.TestCaseArgs{
@@ -296,6 +298,7 @@ func TestPostHandleMock(t *testing.T) {
 				accs := s.CreateTestAccounts(1)
 				s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
 					types.FeeCollectorName, mock.Anything).Return(nil).Once()
+				s.MockBankKeeper.On("GetBalance", mock.Anything, mock.Anything, mock.Anything).Return(sdk.NewCoin(baseDenom, zeroInt)).Once()
 				s.MockBankKeeper.On("SendCoinsFromModuleToAccount", mock.Anything, types.FeeCollectorName,
 					accs[0].Account.GetAddress(), mock.Anything).Return(nil).Once()
 
@@ -319,6 +322,7 @@ func TestPostHandleMock(t *testing.T) {
 				accs := s.CreateTestAccounts(1)
 				s.MockBankKeeper.On("SendCoinsFromAccountToModule", mock.Anything, accs[0].Account.GetAddress(),
 					types.FeeCollectorName, mock.Anything).Return(nil).Once()
+				s.MockBankKeeper.On("GetBalance", mock.Anything, mock.Anything, mock.Anything).Return(sdk.NewCoin(baseDenom, zeroInt)).Once()
 
 				return postsuite.TestCaseArgs{
 					Msgs:      []sdk.Msg{testdata.NewTestMsg(accs[0].Account.GetAddress())},
@@ -428,9 +432,9 @@ func TestPostHandle(t *testing.T) {
 	const (
 		baseDenom           = "stake"
 		resolvableDenom     = "atom"
-		expectedConsumedGas = 59122
+		expectedConsumedGas = 61632
 
-		expectedConsumedGasResolve = 25360 // slight difference due to denom resolver
+		expectedConsumedGasResolve = 27870 // slight difference due to denom resolver
 
 		gasLimit = 100000
 	)
@@ -536,7 +540,7 @@ func TestPostHandle(t *testing.T) {
 			Simulate:          false,
 			ExpPass:           true,
 			ExpErr:            nil,
-			ExpectConsumedGas: 34836,
+			ExpectConsumedGas: 37325,
 			Mock:              false,
 		},
 		{
