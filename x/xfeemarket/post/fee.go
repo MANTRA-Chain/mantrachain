@@ -168,7 +168,10 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 	// burn both the fee and the stuck escrowed fees
 	feemarketCollector := dfd.accountKeeper.GetModuleAccount(ctx, feemarkettypes.FeeCollectorName)
 	burnCoin := dfd.bankKeeper.GetBalance(ctx, feemarketCollector.GetAddress(), defaultFeeDenom)
-	stuckEscrowedFee := burnCoin.Sub(fee)
+	stuckEscrowedFee := sdk.NewCoin(defaultFeeDenom, math.ZeroInt())
+	if fee.Denom == defaultFeeDenom && burnCoin.Amount.GT(fee.Amount) {
+		stuckEscrowedFee = burnCoin.Sub(fee)
+	}
 	if burnCoin.IsPositive() {
 		err := BurnCoins(dfd.bankKeeper, ctx, sdk.NewCoins(burnCoin))
 		if err != nil {
