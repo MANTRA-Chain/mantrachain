@@ -20,4 +20,9 @@ jobs:
       - name: install
         run: make install
       - name: validate genesis
-        run: mantrachaind genesis validate-genesis networks/dukong/genesis.json
+        run: |
+          for dir in networks/*/; do
+            if [ -f "$dir/genesis.json" ]; then
+              mantrachaind genesis validate-genesis "$dir/genesis.json"
+            fi
+          done

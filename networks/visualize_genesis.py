@@ -6,7 +6,7 @@ import matplotlib.ticker as mtick
 
 def main():
     # Define the path to the genesis file
-    genesis_file = os.path.join('dukong', 'genesis.json')
+    genesis_file = os.path.join('mantra-1', 'genesis.json')
 
     # Load genesis.json
     with open(genesis_file, 'r') as f:

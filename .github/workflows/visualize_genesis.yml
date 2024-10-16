@@ -8,7 +8,8 @@ on:
     branches:
       - main
     paths:
-      - 'networks/dukong/genesis.json'
+      - 'networks/mantra-dukong-1/genesis.json'
+      - 'networks/mantra-1/genesis.json'
       - 'networks/visualize_genesis.py'
       - 'networks/template.tex'
       - '.github/workflows/generate_pdf.yml'
@@ -48,4 +49,3 @@ jobs:
       with:
         name: Genesis Report
         path: networks/report.pdf
-
