@@ -9,12 +9,17 @@ import (
 
 // PostHandlerOptions are the options required for constructing a FeeMarket PostHandler.
 type PostHandlerOptions struct {
+	AccountKeeper   xfeemarketpost.AccountKeeper
 	BankKeeper      xfeemarketpost.BankKeeper
 	FeeMarketKeeper xfeemarketpost.FeeMarketKeeper
 }
 
 // NewPostHandler returns a PostHandler chain with the fee deduct decorator.
 func NewPostHandler(options PostHandlerOptions) (sdk.PostHandler, error) {
+	if options.AccountKeeper == nil {
+		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "account keeper is required for post builder")
+	}
+
 	if options.BankKeeper == nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrLogic, "bank keeper is required for post builder")
 	}
@@ -25,6 +30,7 @@ func NewPostHandler(options PostHandlerOptions) (sdk.PostHandler, error) {
 
 	postDecorators := []sdk.PostDecorator{
 		xfeemarketpost.NewFeeMarketDeductDecorator(
+			options.AccountKeeper,
 			options.BankKeeper,
 			options.FeeMarketKeeper,
 		),

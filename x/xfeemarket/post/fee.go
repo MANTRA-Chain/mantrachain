@@ -21,12 +21,14 @@ const BankSendGasConsumption = 12490 + 37325
 // Call next PostHandler if fees successfully deducted.
 // CONTRACT: Tx must implement FeeTx interface
 type FeeMarketDeductDecorator struct {
+	accountKeeper   AccountKeeper
 	bankKeeper      BankKeeper
 	feemarketKeeper FeeMarketKeeper
 }
 
-func NewFeeMarketDeductDecorator(bk BankKeeper, fmk FeeMarketKeeper) FeeMarketDeductDecorator {
+func NewFeeMarketDeductDecorator(ak AccountKeeper, bk BankKeeper, fmk FeeMarketKeeper) FeeMarketDeductDecorator {
 	return FeeMarketDeductDecorator{
+		accountKeeper:   ak,
 		bankKeeper:      bk,
 		feemarketKeeper: fmk,
 	}
@@ -148,19 +150,6 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip sdk.Coin, feePayer sdk.AccAddress, defaultFeeDenom string) error {
 	var events sdk.Events
 
-	// burn the fees if it is the default fee denom
-	if !fee.IsNil() && !fee.IsZero() && fee.Denom == defaultFeeDenom {
-		err := BurnCoins(dfd.bankKeeper, ctx, sdk.NewCoins(fee))
-		if err != nil {
-			return err
-		}
-
-		events = append(events, sdk.NewEvent(
-			feemarkettypes.EventTypeFeePay,
-			sdk.NewAttribute(sdk.AttributeKeyFee, fee.String()),
-		))
-	}
-
 	// refund the tip if it is not nil and non zero
 	if !tip.IsNil() && !tip.IsZero() {
 		err := RefundTip(dfd.bankKeeper, ctx, feePayer, sdk.NewCoins(tip))
@@ -173,6 +162,32 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 			sdk.NewAttribute(feemarkettypes.AttributeKeyTip, tip.String()),
 			sdk.NewAttribute(feemarkettypes.AttributeKeyTipPayee, feePayer.String()),
 		))
+	}
+
+	// fees from previous transactions may be stuck in escrow if transaction is out of gas
+	// burn both the fee and the stuck escrowed fees
+	feemarketCollector := dfd.accountKeeper.GetModuleAccount(ctx, feemarkettypes.FeeCollectorName)
+	burnCoin := dfd.bankKeeper.GetBalance(ctx, feemarketCollector.GetAddress(), defaultFeeDenom)
+	stuckEscrowedFee := burnCoin.Sub(fee)
+	if burnCoin.IsPositive() {
+		err := BurnCoins(dfd.bankKeeper, ctx, sdk.NewCoins(burnCoin))
+		if err != nil {
+			return err
+		}
+
+		if !fee.IsNil() && !fee.IsZero() && fee.Denom == defaultFeeDenom {
+			events = append(events, sdk.NewEvent(
+				feemarkettypes.EventTypeFeePay,
+				sdk.NewAttribute(sdk.AttributeKeyFee, fee.String()),
+			))
+		}
+
+		if stuckEscrowedFee.IsPositive() {
+			events = append(events, sdk.NewEvent(
+				xfeemarkettypes.EventTypeBurnStuckEscrowedFee,
+				sdk.NewAttribute(sdk.AttributeKeyFee, stuckEscrowedFee.String()),
+			))
+		}
 	}
 
 	ctx.EventManager().EmitEvents(events)
