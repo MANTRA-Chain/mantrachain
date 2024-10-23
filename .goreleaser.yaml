@@ -199,16 +199,3 @@ release:
   name_template: "Mantrachain v{{.Version}}"
   mode: replace
   draft: true
-# Docs: https://goreleaser.com/customization/announce/
-# We could automatically announce the release in
-# - discord
-# - slack
-# - twitter
-# - webhooks
-# - telegram
-# - reddit
-#
-# announce:
-# discord:
-#   enabled: true
-#   message_template: 'New {{.Tag}} is out!'
