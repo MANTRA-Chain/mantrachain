@@ -41,3 +41,10 @@ swagger-combine ./client/docs/config.json -o ./client/docs/static/swagger/swagge
 # clean swagger files
 rm -rf ./tmp-swagger-gen
 rm -rf "$SWAGGER_DIR"
+
+# cd client/docs
+cd client/docs
+yarn
+yarn convert
+yarn build
+cd ../..
