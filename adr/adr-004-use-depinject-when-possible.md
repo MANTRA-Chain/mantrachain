@@ -8,9 +8,9 @@ We observed that it causes an enormous reduction in the complexity of our code, 
 
 ## Decision
 
-When possible, we'll use depinject to integrate mantra's external dependencies.
-
+We decided not to use depinject at this time because it is not yet fully supported up and down the cosmos stack.  We will revisit this decision when it is more widely supported.
+For now, we will continue to manually register all of our dependencies in the app.go file.
 
 ## Status
 
-Accepted
+Rejected
