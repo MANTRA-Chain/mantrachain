@@ -52,7 +52,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0
-	github.com/prometheus/client_golang v1.20.4
+	github.com/prometheus/client_golang v1.20.5
 	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.1.0
 	github.com/skip-mev/feemarket v1.1.1
