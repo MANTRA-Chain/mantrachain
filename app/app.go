@@ -268,16 +268,6 @@ type App struct {
 	configurator module.Configurator
 }
 
-func init() {
-	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
-}
-
-// MantraCoinDenomRegex returns the mantra regex string
-// this is used to override the default sdk coin denom regex
-func MantraCoinDenomRegex() string {
-	return `[a-zA-Z][a-zA-Z0-9/:._-]{1,127}`
-}
-
 // New returns a reference to an initialized App.
 func New(
 	logger log.Logger,
