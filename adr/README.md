@@ -48,9 +48,7 @@ When writing ADRs, follow the same best practices for writing RFCs. When writing
 
 ### Draft
 
-* [ADR 002: Moving of guard permission checks to Message level](./adr-002-guard-checks-at-msg-level.md)
-* [ADR 003: Using of official Cosmos-SDK and IBC-Go](./adr-003-use-official-cosmos-modules.md)
-* [ADR 004: Allow users to create permissionless coins](./adr-004-create-permissionless-coins.md)
-* [ADR 005: Default coinfactory coins to be permissionless](./adr-005-default-permissionless-coins.md)
-* [ADR 006: Standardise coinfactory protobuf](./adr-006-standardise-coinfactory.md)
-* [ADR 007: KVStore key prefix](./adr-007-kvstore-key-prefix.md)
+* [ADR 002: Using of official Cosmos modules](./adr-002-use-official-cosmos-modules.md)
+* [ADR 003: Adopt Neutron TokenFactory](./adr-003-use-neutron-tokenfactory.md)
+* [ADR 004: Usage of Depinject](./adr-004-use-depinject-when-possible.md)
+* [ADR 005: Maintain a cosmos-sdk fork for the bank module](./adr-005-maintain-sdk-fork.md)
