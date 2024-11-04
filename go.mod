@@ -51,7 +51,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.23.0
 	github.com/prometheus/client_golang v1.20.4
 	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.1.0
@@ -62,7 +62,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/tools v0.26.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240930140551-af27646dc61f
+	google.golang.org/genproto/googleapis/api v0.0.0-20241021214115-324edc3d5d38
 	google.golang.org/grpc v1.67.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 	google.golang.org/protobuf v1.35.1
@@ -295,7 +295,7 @@ require (
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/oauth2 v0.22.0 // indirect
+	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/term v0.25.0 // indirect
@@ -303,7 +303,7 @@ require (
 	golang.org/x/time v0.6.0 // indirect
 	google.golang.org/api v0.189.0 // indirect
 	google.golang.org/genproto v0.0.0-20240722135656-d784300faade // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240930140551-af27646dc61f // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241021214115-324edc3d5d38 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
