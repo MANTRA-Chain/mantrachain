@@ -3,63 +3,20 @@
   - changed-files:
       - any-glob-to-any-file:
           - app/*.go
-          - app/apptesting/**
-          - app/keepers/**
           - app/params/**
-          - app/upgrades/**
-          - x/**/module.go
-"C:wasm":
+          - app/queries/**
+"C:x/tax":
   - changed-files:
       - any-glob-to-any-file:
-          - wasmbinding/**
-"C:x/guard":
+          - x/tax/**
+"C:x/tokenfactory":
   - changed-files:
       - any-glob-to-any-file:
-          - x/guard/**
-"C:x/txfees":
+          - x/tokenfactory/**
+"C:x/xfeemarket":
   - changed-files:
       - any-glob-to-any-file:
-          - x/txfees/**
-"C:x/airdrop":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/airdrop/**
-"C:x/bridge":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/bridge/**
-"C:x/coinfactory":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/coinfactory/**
-"C:x/did":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/did/**
-"C:x/farming":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/farming/**
-"C:x/liquidity":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/liquidity/**
-"C:x/lpfarm":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/lpfarm/**
-"C:x/marketmaker":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/marketmaker/**
-"C:x/rewards":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/rewards/**
-"C:x/token":
-  - changed-files:
-      - any-glob-to-any-file:
-          - x/token/**
+          - x/xfeemarket/**
 
 "T:build":
   - changed-files:
@@ -78,6 +35,7 @@
       - any-glob-to-any-file:
           - client/**
           - x/*/client/**
+          - x/**/autocli.go
 "C:docs":
   - changed-files:
       - any-glob-to-any-file:
@@ -88,3 +46,4 @@
           - x/**/*.md
           - x/**/*/*.md
           - tests/**/*.md
+          - adr/*.md
