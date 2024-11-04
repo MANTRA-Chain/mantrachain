@@ -47,6 +47,13 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
+	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
+	git clone --depth 1 --branch $(shell grep -o 'wasmd v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/CosmWasm/wasmd.git . && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
+
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
@@ -56,7 +63,7 @@ proto-download-deps:
 
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
-	git clone --depth 1 https://github.com/cosmos/ibc-go.git . && \
+	git clone --depth 1 --branch release/v8.5.x https://github.com/cosmos/ibc-go.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
