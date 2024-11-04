@@ -1,4 +1,4 @@
-# ADR 003: Using of official Cosmos-SDK and IBC-Go
+# ADR 002: Using of official Cosmos-SDK and IBC-Go
 
 ## Context
 
