@@ -4,7 +4,7 @@ import (
 	"context"
 
 	errorsmod "cosmossdk.io/errors"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 

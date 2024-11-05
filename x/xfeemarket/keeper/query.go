@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 )
 
 var _ types.QueryServer = queryServer{}
