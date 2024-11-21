@@ -1,0 +1,24 @@
+#
+# List of approvers/reviewers for MANTRA Chain, a Layer 1 Blockchain, 
+# capable of adherence to real world regulatory requirements.
+#
+##############################################################
+#
+# Get in touch with us via the MANTRA Chain Association Community
+#  https://github.com/MANTRA-Chain/community
+# 
+#
+# Learn about CODEOWNERS file format: 
+#  https://help.github.com/en/articles/about-code-owners
+#
+
+######################
+# Default CODEOWNERS
+######################
+*       @devops-admins-team @development-team-blockchain
+
+######################
+# DevOps/Infrastructure
+######################
+.k8s/  @devops-team @devops-team-admins @development-team-blockchain-admins
+.github/ @devops-team @devops-team-admins @development-team-blockchain-admins
