@@ -1,10 +1,11 @@
 name: Run Gosec
 on:
   pull_request:
+    branches:
+      [main,release/**]
   push:
     branches:
-      - main
-      - release/**
+      [main,release/**]
 
 jobs:
   Gosec:

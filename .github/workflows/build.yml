@@ -7,15 +7,11 @@ on:
 name: Build and validate genesis
 jobs:
   build:
-    strategy:
-      matrix:
-        go-version: [1.23.x]
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.23
       - uses: actions/checkout@v4
       - name: install
         run: make install

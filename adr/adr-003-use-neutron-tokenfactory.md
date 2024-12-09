@@ -1,4 +1,4 @@
-# ADR 008: Use Neutron Token Factory by copying code into Mantrachain
+# ADR 003: Use Neutron Token Factory by copying code into Mantrachain
 
 ## Context
 
