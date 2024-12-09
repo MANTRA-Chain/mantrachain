@@ -14,9 +14,11 @@ import (
 func initCometBFTConfig() *cmtcfg.Config {
 	cfg := cmtcfg.DefaultConfig()
 
+	cfg.DBBackend = "pebbledb"
+
 	// increase the number of inbound and outbound peers
-	cfg.P2P.MaxNumInboundPeers = 100
-	cfg.P2P.MaxNumOutboundPeers = 40
+	cfg.P2P.MaxNumInboundPeers = 400
+	cfg.P2P.MaxNumOutboundPeers = 100
 	cfg.Consensus.TimeoutCommit = 2 * time.Second
 
 	return cfg
