@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
 )
 
 type msgServer struct {
