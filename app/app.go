@@ -1026,6 +1026,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 
 func (app *App) setPostHandler() {
 	postHandler := PostHandlerOptions{
+		AccountKeeper:   app.AccountKeeper,
 		BankKeeper:      app.BankKeeper,
 		FeeMarketKeeper: app.FeeMarketKeeper,
 	}
