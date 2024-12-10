@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"cosmossdk.io/collections"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
