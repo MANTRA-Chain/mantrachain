@@ -1,10 +1,20 @@
 package post
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
+
+// AccountKeeper defines the contract needed for AccountKeeper related APIs.
+// Interface provides support to use non-sdk AccountKeeper for AnteHandler's decorators.
+//
+//go:generate mockery --name AccountKeeper --filename mock_account_keeper.go
+type AccountKeeper interface {
+	GetModuleAccount(ctx context.Context, name string) sdk.ModuleAccountI
+}
 
 // BankKeeper defines the contract needed for supply related APIs.
 //

@@ -134,6 +134,7 @@ func SetupTestSuite(t *testing.T, mock bool) *TestSuite {
 }
 
 func (s *TestSuite) SetupHandlers(mock bool) {
+	accountkeeper := s.AccountKeeper
 	bankKeeper := s.BankKeeper
 	feeGrantKeeper := s.FeeGrantKeeper
 
@@ -165,6 +166,7 @@ func (s *TestSuite) SetupHandlers(mock bool) {
 	// create basic postHandler with the feemarket decorator
 	postDecorators := []sdk.PostDecorator{
 		feemarketpost.NewFeeMarketDeductDecorator(
+			accountkeeper,
 			bankKeeper,
 			s.FeeMarketKeeper,
 		),
