@@ -5,8 +5,10 @@ go 1.23
 toolchain go1.23.0
 
 replace (
-	// use mantra-sdk
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20241001101155-992121f93c3d
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.10, current branch: mantra/v0.50.10
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/cfc36838ae32a2772d86bafa0cb192125f0ffbaf
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.10-v2-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.10-v2-mantra-1
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
