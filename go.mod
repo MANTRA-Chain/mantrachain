@@ -5,7 +5,8 @@ go 1.23
 toolchain go1.23.0
 
 replace (
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/f6d95f0a4962dc451b909a059c808ffb0827de7a
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.10, current branch: mantra/v0.50.10
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/cfc36838ae32a2772d86bafa0cb192125f0ffbaf
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.10-v2-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.10-v2-mantra-1
 
