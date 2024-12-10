@@ -37,8 +37,8 @@ require (
 	cosmossdk.io/x/nft v0.1.1
 	cosmossdk.io/x/tx v0.13.5
 	cosmossdk.io/x/upgrade v0.1.4
-	github.com/CosmWasm/wasmd v0.53.0
-	github.com/CosmWasm/wasmvm/v2 v2.1.3
+	github.com/CosmWasm/wasmd v0.53.2
+	github.com/CosmWasm/wasmvm/v2 v2.1.4
 	github.com/bufbuild/buf v1.46.0
 	github.com/cometbft/cometbft v0.38.15
 	github.com/cosmos/cosmos-db v1.1.0
@@ -253,7 +253,7 @@ require (
 	github.com/prometheus/common v0.60.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
-	github.com/quic-go/quic-go v0.48.1 // indirect
+	github.com/quic-go/quic-go v0.48.2 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
