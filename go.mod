@@ -22,7 +22,7 @@ replace (
 
 require (
 	cosmossdk.io/api v0.7.6
-	cosmossdk.io/client/v2 v2.0.0-beta.5
+	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v0.4.0
 	cosmossdk.io/core v0.11.1
 	cosmossdk.io/depinject v1.1.0
