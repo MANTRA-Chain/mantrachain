@@ -2,7 +2,7 @@ package tax
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	taxapi "github.com/MANTRA-Chain/mantrachain/api/mantrachain/tax/v1"
+	taxapi "github.com/MANTRA-Chain/mantrachain/v2/api/mantrachain/tax/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

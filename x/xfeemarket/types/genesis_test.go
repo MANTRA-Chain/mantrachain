@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	"github.com/stretchr/testify/require"
 )
 

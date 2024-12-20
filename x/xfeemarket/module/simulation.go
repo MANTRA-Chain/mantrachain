@@ -3,9 +3,9 @@ package xfeemarket
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Chain/mantrachain/testutil/sample"
-	xfeemarketsimulation "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/simulation"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/testutil/sample"
+	xfeemarketsimulation "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/simulation"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
