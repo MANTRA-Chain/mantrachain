@@ -134,15 +134,17 @@ $(BUILDDIR)/:
 ###                           Tests                            		        ###
 ###############################################################################
 
-PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e')
+PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e' | grep -v '/simulation')
 PACKAGES_E2E=$(shell cd tests/e2e && go list ./... | grep '/e2e')
 TEST_PACKAGES=./...
-TEST_TARGETS := test-unit test-e2e
+TEST_TARGETS := test-unit test-e2e test-cover
 
 test-unit: ARGS=-timeout=5m -tags='norace'
 test-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
 test-e2e: ARGS=-timeout=35m -v
 test-e2e: TEST_PACKAGES=$(PACKAGES_E2E)
+test-cover: ARGS=-timeout=30m -coverprofile=coverage.txt -covermode=atomic -tags='norace'
+test-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
 $(TEST_TARGETS): run-tests
 
 run-tests:
@@ -153,12 +155,6 @@ else
 	@echo "--> Running tests"
 	@go test -mod=readonly $(ARGS) $(TEST_PACKAGES)
 endif
-
-test-unit:
-	@VERSION=$(VERSION) go test ./x/... -mod=readonly -vet=all -tags='norace' $(PACKAGES_NOSIMULATION)
-
-test-cover:
-	@VERSION=$(VERSION) go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace' $(PACKAGES_NOSIMULATION)
 
 test-connect: build-image
 	@VERSION=$(VERSION) cd tests/connect && go test -v -race .
