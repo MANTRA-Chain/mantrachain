@@ -11,3 +11,6 @@ release/
 swagger-proto
 tmp-swagger-gen
 client/docs/node_modules
+build
+exclusive.lock
+coverage.txt

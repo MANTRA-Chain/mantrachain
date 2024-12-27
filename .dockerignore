@@ -1,0 +1,40 @@
+# Ignore the git related directory
+.git
+.github
+.devcontainer
+
+# Ignore local environment files
+.env
+*.local
+
+# Ignore build artifacts
+bin/
+build/
+obj/
+dist/
+
+# Ignore test files
+/tests/
+
+# Ignore any other unnecessary directories
+/proto
+/networks
+/adr
+
+# Ignore any other unnecessary files
+*.log
+*.tmp
+*.bak
+.golangci.yml
+.goreleaser.yml
+.lycheeignore
+.markdownlint.yml
+.markdownlintignore
+buf.work.yaml
+chains.yaml
+coderabbit.yaml
+config.yml
+LICENSE
+README.md
+SECURITY.md
+sonar-project.properties
