@@ -85,7 +85,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceUomBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(sdk.NewCoin(uomDenom, math.NewInt(963))).IsEqual(afterAliceUomBalance)
+				decremented := beforeAliceUomBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(sdk.NewCoin(uomDenom, math.NewInt(1006))).IsEqual(afterAliceUomBalance)
 				incremented := beforeBobUomBalance.Add(tokenAmount).IsEqual(afterBobUomBalance) &&
 					beforeCharlieUomBalance.Add(tokenAmount).IsEqual(afterCharlieUomBalance)
 
