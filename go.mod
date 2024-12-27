@@ -5,10 +5,10 @@ go 1.23
 toolchain go1.23.0
 
 replace (
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.10, current branch: mantra/v0.50.10
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/cfc36838ae32a2772d86bafa0cb192125f0ffbaf
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.10-v2-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.10-v2-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.11, current branch: mantra/v0.50.11
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/0b3817cefa94e68b24a7b4f3c949cf469339047d
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.11-v2-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.11-v2-mantra-1
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
@@ -35,7 +35,7 @@ require (
 	cosmossdk.io/x/evidence v0.1.1
 	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/nft v0.1.1
-	cosmossdk.io/x/tx v0.13.5
+	cosmossdk.io/x/tx v0.13.7
 	cosmossdk.io/x/upgrade v0.1.4
 	github.com/CosmWasm/wasmd v0.53.0
 	github.com/CosmWasm/wasmvm/v2 v2.1.3
@@ -131,7 +131,7 @@ require (
 	github.com/cosmos/btcutil v1.0.5 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
-	github.com/cosmos/iavl v1.2.0 // indirect
+	github.com/cosmos/iavl v1.2.2 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
 	github.com/cosmos/interchain-security/v6 v6.3.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
