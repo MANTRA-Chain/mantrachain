@@ -29,5 +29,8 @@ jobs:
           repository: MANTRA-Chain/cosmos-sdk
           path: cosmos-sdk
           ref: ${{ env.SDK_VERSION }}
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
       - run: make test-all
         working-directory: cosmos-sdk
