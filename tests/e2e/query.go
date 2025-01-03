@@ -7,11 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
-
 	evidencetypes "cosmossdk.io/x/evidence/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -29,7 +25,7 @@ func queryTx(endpoint, txHash string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
 	}
 
@@ -76,33 +72,33 @@ func queryAllBalances(endpoint, addr string) (sdk.Coins, error) {
 	return balancesResp.Balances, nil
 }
 
-func querySupplyOf(endpoint, denom string) (sdk.Coin, error) {
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/by_denom?denom=%s", endpoint, denom))
-	if err != nil {
-		return sdk.Coin{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// func querySupplyOf(endpoint, denom string) (sdk.Coin, error) {
+// 	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/by_denom?denom=%s", endpoint, denom))
+// 	if err != nil {
+// 		return sdk.Coin{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	var supplyOfResp banktypes.QuerySupplyOfResponse
-	if err := cdc.UnmarshalJSON(body, &supplyOfResp); err != nil {
-		return sdk.Coin{}, err
-	}
+// 	var supplyOfResp banktypes.QuerySupplyOfResponse
+// 	if err := cdc.UnmarshalJSON(body, &supplyOfResp); err != nil {
+// 		return sdk.Coin{}, err
+// 	}
 
-	return supplyOfResp.Amount, nil
-}
+// 	return supplyOfResp.Amount, nil
+// }
 
-func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) {
-	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
-	if err != nil {
-		return stakingtypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) {
+// 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
+// 	if err != nil {
+// 		return stakingtypes.QueryParamsResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	var params stakingtypes.QueryParamsResponse
-	if err := cdc.UnmarshalJSON(body, &params); err != nil {
-		return stakingtypes.QueryParamsResponse{}, err
-	}
+// 	var params stakingtypes.QueryParamsResponse
+// 	if err := cdc.UnmarshalJSON(body, &params); err != nil {
+// 		return stakingtypes.QueryParamsResponse{}, err
+// 	}
 
-	return params, nil
-}
+// 	return params, nil
+// }
 
 func queryDelegation(endpoint string, validatorAddr string, delegatorAddr string) (stakingtypes.QueryDelegationResponse, error) {
 	var res stakingtypes.QueryDelegationResponse
@@ -221,7 +217,7 @@ func queryContinuousVestingAccount(endpoint, address string) (authvesting.Contin
 	return *acc, nil
 }
 
-func queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) { //nolint:unused // this is called during e2e tests
+func queryPeriodicVestingAccount(endpoint, address string) (authvesting.PeriodicVestingAccount, error) {
 	baseAcc, err := queryAccount(endpoint, address)
 	if err != nil {
 		return authvesting.PeriodicVestingAccount{}, err
@@ -288,62 +284,62 @@ func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, 
 	return res, nil
 }
 
-func queryAllRateLimits(endpoint string) ([]ratelimittypes.RateLimit, error) {
-	var res ratelimittypes.QueryAllRateLimitsResponse
+// func queryAllRateLimits(endpoint string) ([]ratelimittypes.RateLimit, error) {
+// 	var res ratelimittypes.QueryAllRateLimitsResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits", endpoint))
-	if err != nil {
-		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// 	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits", endpoint))
+// 	if err != nil {
+// 		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
-		return []ratelimittypes.RateLimit{}, err
-	}
-	return res.RateLimits, nil
-}
+// 	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+// 		return []ratelimittypes.RateLimit{}, err
+// 	}
+// 	return res.RateLimits, nil
+// }
 
-//nolint:unparam
-func queryRateLimit(endpoint, channelID, denom string) (ratelimittypes.QueryRateLimitResponse, error) {
-	var res ratelimittypes.QueryRateLimitResponse
+// //nolint:unparam
+// func queryRateLimit(endpoint, channelID, denom string) (ratelimittypes.QueryRateLimitResponse, error) {
+// 	var res ratelimittypes.QueryRateLimitResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/%s/by_denom?denom=%s", endpoint, channelID, denom))
-	if err != nil {
-		return ratelimittypes.QueryRateLimitResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// 	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/%s/by_denom?denom=%s", endpoint, channelID, denom))
+// 	if err != nil {
+// 		return ratelimittypes.QueryRateLimitResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
-		return ratelimittypes.QueryRateLimitResponse{}, err
-	}
-	return res, nil
-}
+// 	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+// 		return ratelimittypes.QueryRateLimitResponse{}, err
+// 	}
+// 	return res, nil
+// }
 
-func queryRateLimitsByChainID(endpoint, channelID string) ([]ratelimittypes.RateLimit, error) {
-	var res ratelimittypes.QueryRateLimitsByChainIdResponse
+// func queryRateLimitsByChainID(endpoint, channelID string) ([]ratelimittypes.RateLimit, error) {
+// 	var res ratelimittypes.QueryRateLimitsByChainIdResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/%s", endpoint, channelID))
-	if err != nil {
-		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// 	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/%s", endpoint, channelID))
+// 	if err != nil {
+// 		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	if err := cdc.UnmarshalJSON(body, &res); err != nil {
-		return []ratelimittypes.RateLimit{}, err
-	}
-	return res.RateLimits, nil
-}
+// 	if err := cdc.UnmarshalJSON(body, &res); err != nil {
+// 		return []ratelimittypes.RateLimit{}, err
+// 	}
+// 	return res.RateLimits, nil
+// }
 
-func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error) {
-	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/interchain_accounts/controller/v1/owners/%s/connections/%s", endpoint, owner, connectionID))
-	if err != nil {
-		return "", fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
+// func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error) {
+// 	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/interchain_accounts/controller/v1/owners/%s/connections/%s", endpoint, owner, connectionID))
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
 
-	var icaAccountResp icacontrollertypes.QueryInterchainAccountResponse
-	if err := cdc.UnmarshalJSON(body, &icaAccountResp); err != nil {
-		return "", err
-	}
+// 	var icaAccountResp icacontrollertypes.QueryInterchainAccountResponse
+// 	if err := cdc.UnmarshalJSON(body, &icaAccountResp); err != nil {
+// 		return "", err
+// 	}
 
-	return icaAccountResp.Address, nil
-}
+// 	return icaAccountResp.Address, nil
+// }
 
 // TODO: Uncomment this function when CCV module is added
 // func queryBlocksPerEpoch(endpoint string) (int64, error) {

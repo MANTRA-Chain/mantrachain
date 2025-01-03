@@ -4,16 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	tmrand "github.com/cometbft/cometbft/libs/rand"
-
-	dbm "github.com/cosmos/cosmos-db"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
-
 	"cosmossdk.io/log"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/MANTRA-Chain/mantrachain/app"
+	"github.com/MANTRA-Chain/mantrachain/app/params"
+	tmrand "github.com/cometbft/cometbft/libs/rand"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -26,9 +24,7 @@ import (
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	"github.com/MANTRA-Chain/mantrachain/app"
-	"github.com/MANTRA-Chain/mantrachain/app/params"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
 )
 
 const (

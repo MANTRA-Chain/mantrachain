@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -197,8 +196,7 @@ func (s *IntegrationTestSuite) testContinuousVestingAccount(api string) {
 	})
 }
 
-func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) { //nolint:unused
-
+func (s *IntegrationTestSuite) testPeriodicVestingAccount(api string) {
 	s.Run("test periodic vesting genesis account", func() {
 		var (
 			valIdx              = 0

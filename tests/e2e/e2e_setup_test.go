@@ -14,21 +14,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ory/dockertest/v3"
-	// "github.com/cosmos/cosmos-sdk/crypto/hd"
-	// "github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/ory/dockertest/v3/docker"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/suite"
-
+	"cosmossdk.io/math"
+	evidencetypes "cosmossdk.io/x/evidence/types"
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-
-	"cosmossdk.io/math"
-	evidencetypes "cosmossdk.io/x/evidence/types"
-
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -42,6 +33,10 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/ory/dockertest/v3"
+	"github.com/ory/dockertest/v3/docker"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/suite"
 )
 
 const (
@@ -80,6 +75,7 @@ const (
 	transferPort              = "transfer"
 	transferChannel           = "channel-0"
 
+	//nolint:unused
 	govAuthority = "mantra10d07y265gmmuvt4z0w9aw880jnsr700j3fep4f"
 )
 
@@ -609,6 +605,8 @@ func noRestart(config *docker.HostConfig) {
 
 // runIBCRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
 // a transfer channel between chainA and chainB.
+//
+//nolint:unused
 func (s *IntegrationTestSuite) runIBCRelayer() {
 	s.T().Log("starting Hermes relayer container")
 
@@ -746,6 +744,7 @@ func (s *IntegrationTestSuite) writeCancelSoftwareUpgradeProposal(c *chain) {
 	s.Require().NoError(err)
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, oldParams stakingtypes.Params) {
 	template := `
 	{
@@ -791,6 +790,8 @@ func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, 
 
 // writeGovParamChangeProposalBlocksPerEpoch writes a governance proposal JSON file to change the `BlocksPerEpoch`
 // parameter to the provided `blocksPerEpoch`
+//
+//nolint:unused
 func (s *IntegrationTestSuite) writeGovParamChangeProposalBlocksPerEpoch(c *chain, paramsJSON string) {
 	template := `
 	{
@@ -820,6 +821,8 @@ func (s *IntegrationTestSuite) writeGovParamChangeProposalBlocksPerEpoch(c *chai
 
 // writeFailingExpeditedProposal writes a governance proposal JSON file.
 // The proposal fails because only SoftwareUpgrade and CancelSoftwareUpgrade can be expedited.
+//
+//nolint:unused
 func (s *IntegrationTestSuite) writeFailingExpeditedProposal(c *chain, blocksPerEpoch int64) {
 	template := `
 	{

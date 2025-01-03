@@ -7,7 +7,6 @@ import (
 
 	"cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
@@ -98,7 +97,7 @@ func (s *IntegrationTestSuite) GovCancelSoftwareUpgrade() {
 GovCommunityPoolSpend tests passing a community spend proposal.
 Test Benchmarks:
 1. Fund Community Pool
-2. Submission, deposit and vote of proposal to spend from the community pool to send oms to a recipient
+2. Submission, deposit and vote of proposal to spend from the community pool to send atoms to a recipient
 3. Validation that the recipient balance has increased by proposal amount
 */
 func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
@@ -204,6 +203,7 @@ func (s *IntegrationTestSuite) submitGovCommand(chainAAPIEndpoint, sender string
 	})
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) submitGovCommandExpectingFailure(sender string, govCommand string, proposalFlags []string) {
 	s.Run(fmt.Sprintf("Running failing expedited tx gov %s -- expecting error", govCommand), func() {
 		// should return an error -- the Tx fails at the ante handler

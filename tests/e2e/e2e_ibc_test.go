@@ -26,7 +26,6 @@ type PacketMetadata struct {
 	Forward *ForwardMetadata `json:"forward"`
 }
 
-//nolint:unparam
 func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, fees, note string, expErr bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -60,7 +59,7 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 	}
 }
 
-func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, portID, channelID string) (success bool) { //nolint:unparam
+func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, portID, channelID string) (success bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -95,6 +94,7 @@ type RelayerPacketsOutput struct {
 	Status string `json:"status"`
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) createConnection() {
 	s.T().Logf("connecting %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 
@@ -118,6 +118,7 @@ func (s *IntegrationTestSuite) createConnection() {
 	s.T().Logf("connected %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) createChannel() {
 	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 
@@ -320,7 +321,7 @@ func (s *IntegrationTestSuite) testFailedMultihopIBCTokenTransfer() {
 
 		var (
 			beforeSenderUOmBalance sdk.Coin
-			err                      error
+			err                    error
 		)
 
 		s.Require().Eventually(

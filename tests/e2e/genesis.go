@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
-
 	"cosmossdk.io/math"
-
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -20,6 +17,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govlegacytypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
 func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, basefee string, denom string) error {

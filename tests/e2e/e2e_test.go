@@ -12,7 +12,7 @@ var (
 	runStakingAndDistributionTest = true
 	runVestingTest                = true
 	runRestInterfacesTest         = true
-	runRateLimitTest              = false // TODO: enable after IBC is fixed
+	// runRateLimitTest              = false // TODO: enable after IBC is fixed
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {

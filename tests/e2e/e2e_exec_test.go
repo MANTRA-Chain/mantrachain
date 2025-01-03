@@ -11,10 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ory/dockertest/v3/docker"
-
 	"cosmossdk.io/x/feegrant"
-
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -23,6 +20,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/ory/dockertest/v3/docker"
 )
 
 const (
@@ -132,8 +130,7 @@ func (s *IntegrationTestSuite) execDecode(
 	return decoded
 }
 
-func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
-
+func (s *IntegrationTestSuite) execVestingTx(
 	c *chain,
 	method string,
 	args []string,
@@ -161,8 +158,7 @@ func (s *IntegrationTestSuite) execVestingTx( //nolint:unused
 	s.T().Logf("successfully %s with %v", method, args)
 }
 
-func (s *IntegrationTestSuite) execCreatePeriodicVestingAccount( //nolint:unused
-
+func (s *IntegrationTestSuite) execCreatePeriodicVestingAccount(
 	c *chain,
 	address,
 	jsonPath string,
@@ -198,6 +194,7 @@ func (s *IntegrationTestSuite) execUnjail(
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grantee, spendLimit string, opt ...flagOption) {
 	opt = append(opt, withKeyValue(flagFrom, granter))
 	opt = append(opt, withKeyValue(flagSpendLimit, spendLimit))
@@ -229,31 +226,32 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
 }
 
-func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter, grantee string, opt ...flagOption) {
-	opt = append(opt, withKeyValue(flagFrom, granter))
-	opts := applyOptions(c.id, opt)
+// func (s *IntegrationTestSuite) execFeeGrantRevoke(c *chain, valIdx int, granter, grantee string, opt ...flagOption) {
+// 	opt = append(opt, withKeyValue(flagFrom, granter))
+// 	opts := applyOptions(c.id, opt)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+// 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+// 	defer cancel()
 
-	s.T().Logf("revoking %s fee grant from %s on chain %s", grantee, granter, c.id)
+// 	s.T().Logf("revoking %s fee grant from %s on chain %s", grantee, granter, c.id)
 
-	mantraCommand := []string{
-		mantrachaindBinary,
-		txCommand,
-		feegrant.ModuleName,
-		"revoke",
-		granter,
-		grantee,
-		"-y",
-	}
-	for flag, value := range opts {
-		mantraCommand = append(mantraCommand, fmt.Sprintf("--%s=%v", flag, value))
-	}
+// 	mantraCommand := []string{
+// 		mantrachaindBinary,
+// 		txCommand,
+// 		feegrant.ModuleName,
+// 		"revoke",
+// 		granter,
+// 		grantee,
+// 		"-y",
+// 	}
+// 	for flag, value := range opts {
+// 		mantraCommand = append(mantraCommand, fmt.Sprintf("--%s=%v", flag, value))
+// 	}
 
-	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
-}
+// 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+// }
 
+//nolint:unparam
 func (s *IntegrationTestSuite) execBankSend(
 	c *chain,
 	valIdx int,
@@ -430,7 +428,6 @@ func (s *IntegrationTestSuite) runGovExec(c *chain, valIdx int, submitterAddr, g
 // }
 
 func (s *IntegrationTestSuite) execDelegate(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home, delegateFees string) { //nolint:unparam
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -767,6 +764,7 @@ func (s *IntegrationTestSuite) defaultExecValidation(chain *chain, valIdx int) f
 	}
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) expectTxSubmitError(expectErrString string) func([]byte, []byte) bool {
 	return func(stdOut []byte, stdErr []byte) bool {
 		var txResp sdk.TxResponse
@@ -780,59 +778,60 @@ func (s *IntegrationTestSuite) expectTxSubmitError(expectErrString string) func(
 	}
 }
 
-func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOperAddress, delegatorAddr, home, delegateFees string) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+// func (s *IntegrationTestSuite) executeValidatorBond(c *chain, valIdx int, valOperAddress, delegatorAddr, home, delegateFees string) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+// 	defer cancel()
 
-	s.T().Logf("Executing mantrachaind tx staking validator-bond %s", c.id)
+// 	s.T().Logf("Executing mantrachaind tx staking validator-bond %s", c.id)
 
-	mantraCommand := []string{
-		mantrachaindBinary,
-		txCommand,
-		stakingtypes.ModuleName,
-		"validator-bond",
-		valOperAddress,
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
-		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
-		"--keyring-backend=test",
-		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
-		"--output=json",
-		"-y",
-	}
+// 	mantraCommand := []string{
+// 		mantrachaindBinary,
+// 		txCommand,
+// 		stakingtypes.ModuleName,
+// 		"validator-bond",
+// 		valOperAddress,
+// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
+// 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+// 		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+// 		"--keyring-backend=test",
+// 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
+// 		"--output=json",
+// 		"-y",
+// 	}
 
-	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
-	s.T().Logf("%s successfully executed validator bond tx to %s", delegatorAddr, valOperAddress)
-}
+// 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+// 	s.T().Logf("%s successfully executed validator bond tx to %s", delegatorAddr, valOperAddress)
+// }
 
-func (s *IntegrationTestSuite) executeTokenizeShares(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home, delegateFees string) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
+// func (s *IntegrationTestSuite) executeTokenizeShares(c *chain, valIdx int, amount, valOperAddress, delegatorAddr, home, delegateFees string) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+// 	defer cancel()
 
-	s.T().Logf("Executing mantrachaind tx staking tokenize-share %s", c.id)
+// 	s.T().Logf("Executing mantrachaind tx staking tokenize-share %s", c.id)
 
-	mantraCommand := []string{
-		mantrachaindBinary,
-		txCommand,
-		stakingtypes.ModuleName,
-		"tokenize-share",
-		valOperAddress,
-		amount,
-		delegatorAddr,
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
-		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
-		fmt.Sprintf("--%s=%d", flags.FlagGas, 1000000),
-		"--keyring-backend=test",
-		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
-		"--output=json",
-		"-y",
-	}
+// 	mantraCommand := []string{
+// 		mantrachaindBinary,
+// 		txCommand,
+// 		stakingtypes.ModuleName,
+// 		"tokenize-share",
+// 		valOperAddress,
+// 		amount,
+// 		delegatorAddr,
+// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddr),
+// 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+// 		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, delegateFees),
+// 		fmt.Sprintf("--%s=%d", flags.FlagGas, 1000000),
+// 		"--keyring-backend=test",
+// 		fmt.Sprintf("--%s=%s", flags.FlagHome, home),
+// 		"--output=json",
+// 		"-y",
+// 	}
 
-	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
-	s.T().Logf("%s successfully executed tokenize share tx from %s", delegatorAddr, valOperAddress)
-}
+// 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+// 	s.T().Logf("%s successfully executed tokenize share tx from %s", delegatorAddr, valOperAddress)
+// }
 
+//nolint:unused
 func (s *IntegrationTestSuite) executeRedeemShares(c *chain, valIdx int, amount, delegatorAddr, home, delegateFees string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -859,6 +858,7 @@ func (s *IntegrationTestSuite) executeRedeemShares(c *chain, valIdx int, amount,
 	s.T().Logf("%s successfully executed redeem share tx for %s", delegatorAddr, amount)
 }
 
+//nolint:unused
 func (s *IntegrationTestSuite) executeTransferTokenizeShareRecord(c *chain, valIdx int, recordID, owner, newOwner, home, txFees string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -888,6 +888,8 @@ func (s *IntegrationTestSuite) executeTransferTokenizeShareRecord(c *chain, valI
 // signTxFileOnline signs a transaction file using the mantracli tx sign command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
+//
+//nolint:unused
 func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -923,6 +925,8 @@ func (s *IntegrationTestSuite) signTxFileOnline(chain *chain, valIdx int, from s
 // broadcastTxFile broadcasts a signed transaction file using the mantracli tx broadcast command
 // the from flag is used to specify the keyring account to sign the transaction
 // the from account must be registered in the keyring and exist on chain (have a balance or be a genesis account)
+//
+//nolint:unused
 func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from string, txFilePath string) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
