@@ -19,8 +19,8 @@ RUN apk add --no-cache \
 
 # Download go dependencies
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    --mount=type=cache,target=/root/go/pkg/mod \
+RUN --mount=type=cache,target=/nonroot/.cache/go-build \
+    --mount=type=cache,target=/nonroot/go/pkg/mod \
     go mod download
 
 # Cosmwasm - Download correct libwasmvm version
