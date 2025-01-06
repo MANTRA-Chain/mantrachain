@@ -32,7 +32,8 @@ jobs:
       - name: Install tparse
         run: |
           go install github.com/mfridman/tparse@latest
-      - run: |
+      - name: Run all tests
+        run: |
           # skip test on tools
           rm -rf tools
           make test-all
