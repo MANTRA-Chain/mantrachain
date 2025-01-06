@@ -22,8 +22,7 @@ jobs:
             # This is a regular version tag
             SDK_VERSION=$FULL_VERSION
           fi
-          echo "SDK_VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "SDK_VERSION=${SDK_VERSION}"
+          echo "SDK_VERSION=${SDK_VERSION}" | tee -a $GITHUB_ENV
       - name: Checkout MANTRA-Chain/cosmos-sdk
         uses: actions/checkout@v4
         with:
