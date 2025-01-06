@@ -22,7 +22,6 @@ LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
 DOCKER := $(shell which docker)
-PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2> /dev/null)
 BRANCH_PRETTY := $(subst /,-,$(BRANCH))
@@ -124,7 +123,7 @@ build-arm:
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) $(MAKE) build
 build-image:
-	docker build -f Dockerfile -t mantra-chain/mantrachain:local .
+	docker build -f Dockerfile -t mantra-chain/mantrachain .
 
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) $(GO_MODULE)/cmd/mantrachaind
@@ -132,19 +131,35 @@ $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 ###############################################################################
-###                           Tests                            		    ###
+###                           Tests                            		        ###
 ###############################################################################
 
-test: test-unit
+PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e' | grep -v '/simulation')
+PACKAGES_E2E=$(shell cd tests/e2e && go list ./... | grep '/e2e')
+TEST_PACKAGES=./...
+TEST_TARGETS := test-unit test-e2e test-cover test-connect
 
-test-unit:
-	@VERSION=$(VERSION) go test ./x/... -mod=readonly -vet=all -tags='norace' $(PACKAGES_NOSIMULATION)
-
-test-cover:
-	@VERSION=$(VERSION) go test ./x/... -mod=readonly -timeout 30m -coverprofile=coverage.txt -covermode=atomic -tags='norace' $(PACKAGES_NOSIMULATION)
-
+DIR=$(CURDIR)
+test-unit: ARGS=-timeout=5m -tags='norace'
+test-unit: TEST_PACKAGES=$(PACKAGES_UNIT)
+test-e2e: ARGS=-timeout=35m -v
+test-e2e: TEST_PACKAGES=$(PACKAGES_E2E)
+test-e2e: build-image
+test-cover: ARGS=-timeout=30m -coverprofile=coverage.txt -covermode=atomic -tags='norace'
+test-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
+test-connect: ARGS=-v -race
+test-connect: DIR=$(CURDIR)/tests/connect
 test-connect: build-image
-	@VERSION=$(VERSION) cd tests/connect && go test -v -race .
+$(TEST_TARGETS): run-tests
+
+run-tests:
+ifneq (,$(shell which tparse 2>/dev/null))
+	@echo "--> Running tests"
+	@cd $(DIR) && go test -mod=readonly -json $(ARGS) $(TEST_PACKAGES) | tparse
+else
+	@echo "--> Running tests"
+	cd $(DIR) && go test -mod=readonly $(ARGS) $(TEST_PACKAGES)
+endif
 
 ###############################################################################
 ###                                Release                                  ###
@@ -220,13 +235,14 @@ mocks:
 build-and-run-single-node: build
 	@echo "Building and running a single node for testing..."
 	@mkdir -p .mantrasinglenodetest
-	@if [ ! -f .mantrasinglenodetest/config.toml ]; then \
-		./build/mantrachaind init single-node-test --chain-id test-chain --home .mantrasinglenodetest; \
+	@if [ ! -f .mantrasinglenodetest/config/config.toml ]; then \
+		./build/mantrachaind init single-node-test --chain-id test-chain --home .mantrasinglenodetest --default-denom uom; \
 		./build/mantrachaind keys add validator --keyring-backend test --home .mantrasinglenodetest; \
-		./build/mantrachaind genesis add-genesis-account $$(./build/mantrachaind keys show validator -a --keyring-backend test --home .mantrasinglenodetest) 100000000stake --home .mantrasinglenodetest; \
-		./build/mantrachaind genesis gentx validator 100000000stake --chain-id test-chain --keyring-backend test --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis add-genesis-account $$(./build/mantrachaind keys show validator -a --keyring-backend test --home .mantrasinglenodetest) 100000000000000uom --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis gentx validator 100000000uom --chain-id test-chain --keyring-backend test --home .mantrasinglenodetest; \
 		./build/mantrachaind genesis collect-gentxs --home .mantrasinglenodetest; \
+		sed -i'' -e 's/"fee_denom": "stake"/"fee_denom": "uom"/' .mantrasinglenodetest/config/genesis.json; \
 	fi
-	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0stake
+	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0uom
 
 .PHONY: build-and-run-single-node

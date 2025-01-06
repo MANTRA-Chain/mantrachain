@@ -80,7 +80,7 @@ var (
 		Name:          "slinky",
 		NumValidators: &numValidators,
 		NumFullNodes:  &numFullNodes,
-		Version:       "local",
+		Version:       "latest",
 		NoHostMount:   &noHostMount,
 		ChainConfig: ibc.ChainConfig{
 			EncodingConfig: &encodingConfig,

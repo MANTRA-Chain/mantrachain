@@ -17,4 +17,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v4
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
       - run: make test-connect
