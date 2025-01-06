@@ -32,5 +32,8 @@ jobs:
       - name: Install tparse
         run: |
           go install github.com/mfridman/tparse@latest
-      - run: make test-all
+      - run: |
+          # skip test on tools
+          rm -rf tools
+          make test-all
         working-directory: cosmos-sdk
