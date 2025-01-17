@@ -13,7 +13,7 @@ func (k Keeper) ConvertToDenom(ctx sdk.Context, coin sdk.DecCoin, denom string) 
 		return coin, nil
 	}
 
-	multiplier, err := k.DenomMultipliers.Get(ctx, denom)
+	multiplier, err := k.DenomMultipliers.Get(ctx, coin.Denom)
 	if err != nil {
 		return sdk.DecCoin{}, err
 	}

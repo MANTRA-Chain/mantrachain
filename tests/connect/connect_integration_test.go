@@ -28,7 +28,7 @@ import (
 var (
 	image = ibc.DockerImage{
 		Repository: "mantra-chain/mantrachain",
-		Version:    "local",
+		Version:    "latest",
 		UidGid:     "1025:1025",
 	}
 

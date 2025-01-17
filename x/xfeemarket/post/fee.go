@@ -3,7 +3,7 @@ package post
 import (
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/skip-mev/feemarket/x/feemarket/ante"
@@ -33,7 +33,7 @@ func NewFeeMarketDeductDecorator(bk BankKeeper, fmk FeeMarketKeeper) FeeMarketDe
 }
 
 // PostHandle deducts the fee from the fee payer based on the min base fee and the gas consumed in the gasmeter.
-// If there is a difference between the provided fee and the min-base fee, the difference is paid as a tip.
+// If there is a difference between the provided fee and the min-base fee, the difference is the excess.
 // Fees are sent to the x/feemarket fee-collector address.
 func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simulate, success bool, next sdk.PostHandler) (sdk.Context, error) {
 	// GenTx consume no fee
@@ -89,7 +89,7 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 
 	// if simulating and user did not provider a fee - create a dummy value for them
 	var (
-		tip     = sdk.NewCoin(params.FeeDenom, math.ZeroInt())
+		excess  = sdk.NewCoin(params.FeeDenom, math.ZeroInt())
 		payCoin = sdk.NewCoin(params.FeeDenom, math.ZeroInt())
 	)
 	if !simulate {
@@ -109,20 +109,28 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 	)
 
 	if !simulate {
-		payCoin, tip, err = ante.CheckTxFee(ctx, minGasPrice, payCoin, feeGas, false)
+		payCoin, excess, err = ante.CheckTxFee(ctx, minGasPrice, payCoin, feeGas, false)
 		if err != nil {
 			return ctx, err
+		}
+
+		// calculate the excess, it can be a maximum of the actual fee
+		if excess.Amount.GT(payCoin.Amount) {
+			payCoin, excess = excess, payCoin
 		}
 	}
 
 	ctx.Logger().Info("fee deduct post handle",
 		"fee", payCoin,
-		"tip", tip,
+		"excess", excess,
 	)
 
 	feePayer := feeTx.FeePayer()
+	if feeTx.FeeGranter() != nil {
+		feePayer = feeTx.FeeGranter()
+	}
 
-	if err := dfd.BurnFeeAndRefund(ctx, payCoin, tip, feePayer, params.FeeDenom); err != nil {
+	if err := dfd.BurnFeeAndRefund(ctx, payCoin, excess, feePayer, params.FeeDenom); err != nil {
 		return ctx, err
 	}
 
@@ -144,8 +152,8 @@ func (dfd FeeMarketDeductDecorator) PostHandle(ctx sdk.Context, tx sdk.Tx, simul
 	return next(ctx, tx, simulate, success)
 }
 
-// BurnFeeAndRefund burns the fees and refunds the extra/tip to the fee payer.
-func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip sdk.Coin, feePayer sdk.AccAddress, defaultFeeDenom string) error {
+// BurnFeeAndRefund burns the fees and refunds the excess to the fee payer.
+func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, excess sdk.Coin, feePayer sdk.AccAddress, defaultFeeDenom string) error {
 	var events sdk.Events
 
 	// burn the fees if it is the default fee denom
@@ -161,17 +169,17 @@ func (dfd FeeMarketDeductDecorator) BurnFeeAndRefund(ctx sdk.Context, fee, tip s
 		))
 	}
 
-	// refund the tip if it is not nil and non zero
-	if !tip.IsNil() && !tip.IsZero() {
-		err := RefundTip(dfd.bankKeeper, ctx, feePayer, sdk.NewCoins(tip))
+	// refund the excess if it is not nil and non zero
+	if !excess.IsNil() && !excess.IsZero() {
+		err := RefundExcess(dfd.bankKeeper, ctx, feePayer, sdk.NewCoins(excess))
 		if err != nil {
 			return err
 		}
 
 		events = append(events, sdk.NewEvent(
-			xfeemarkettypes.EventTypeTipRefund,
-			sdk.NewAttribute(feemarkettypes.AttributeKeyTip, tip.String()),
-			sdk.NewAttribute(feemarkettypes.AttributeKeyTipPayee, feePayer.String()),
+			xfeemarkettypes.EventTypeExcessRefund,
+			sdk.NewAttribute(xfeemarkettypes.AttributeKeyExcess, excess.String()),
+			sdk.NewAttribute(xfeemarkettypes.AttributeKeyExcessPayee, feePayer.String()),
 		))
 	}
 
@@ -188,8 +196,8 @@ func BurnCoins(bankKeeper BankKeeper, ctx sdk.Context, coins sdk.Coins) error {
 	return nil
 }
 
-// RefundTip sends a tip to the txfee payer.
-func RefundTip(bankKeeper BankKeeper, ctx sdk.Context, feePayer sdk.AccAddress, coins sdk.Coins) error {
+// RefundExcess sends a excess to the txfee payer.
+func RefundExcess(bankKeeper BankKeeper, ctx sdk.Context, feePayer sdk.AccAddress, coins sdk.Coins) error {
 	err := bankKeeper.SendCoinsFromModuleToAccount(ctx, feemarkettypes.FeeCollectorName, feePayer, coins)
 	if err != nil {
 		return err

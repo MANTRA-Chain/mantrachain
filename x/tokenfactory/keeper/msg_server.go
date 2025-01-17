@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
-	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -80,7 +80,7 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.TypeMsgMint,
-			sdk.NewAttribute(types.AttributeMintToAddress, msg.Sender),
+			sdk.NewAttribute(types.AttributeMintToAddress, msg.MintToAddress),
 			sdk.NewAttribute(types.AttributeAmount, msg.Amount.String()),
 		),
 	})

@@ -2,7 +2,7 @@ package xfeemarket
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	xfeemarketapi "github.com/MANTRA-Chain/mantrachain/api/mantrachain/xfeemarket/v1"
+	xfeemarketapi "github.com/MANTRA-Chain/mantrachain/v2/api/mantrachain/xfeemarket/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

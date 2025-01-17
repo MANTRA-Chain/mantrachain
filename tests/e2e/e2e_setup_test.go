@@ -75,7 +75,6 @@ const (
 	transferPort              = "transfer"
 	transferChannel           = "channel-0"
 
-	//nolint:unused
 	govAuthority = "mantra10d07y265gmmuvt4z0w9aw880jnsr700j3fep4f"
 )
 
@@ -152,14 +151,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
 
-	// s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
-	// s.initNodes(s.chainB)
-	// s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
-	// s.initValidatorConfigs(s.chainB)
-	// s.runValidators(s.chainB, 10)
+	s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
+	s.initNodes(s.chainB)
+	s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
+	s.initValidatorConfigs(s.chainB)
+	s.runValidators(s.chainB, 10)
 
-	// time.Sleep(10 * time.Second)
-	// s.runIBCRelayer()
+	time.Sleep(10 * time.Second)
+	s.runIBCRelayer()
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -174,7 +173,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 	s.T().Log("tearing down e2e integration test suite...")
 
-	// s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
+	s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
 
 	for _, vr := range s.valResources {
 		for _, r := range vr {
@@ -543,6 +542,7 @@ func (s *IntegrationTestSuite) runValidators(c *chain, portOffset int) {
 				fmt.Sprintf("%s/:%s", val.configDir(), mantraHomePath),
 			},
 			Repository: "mantra-chain/mantrachain",
+			Tag:        "latest",
 		}
 
 		s.Require().NoError(exec.Command("chmod", "-R", "0777", val.configDir()).Run()) //nolint:gosec // this is a test
@@ -605,8 +605,6 @@ func noRestart(config *docker.HostConfig) {
 
 // runIBCRelayer bootstraps an IBC Hermes relayer by creating an IBC connection and
 // a transfer channel between chainA and chainB.
-//
-//nolint:unused
 func (s *IntegrationTestSuite) runIBCRelayer() {
 	s.T().Log("starting Hermes relayer container")
 
@@ -632,8 +630,8 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 	s.hermesResource, err = s.dkrPool.RunWithOptions(
 		&dockertest.RunOptions{
 			Name:       fmt.Sprintf("%s-%s-relayer", s.chainA.id, s.chainB.id),
-			Repository: "ghcr.io/cosmos/hermes-e2e",
-			Tag:        "1.0.0",
+			Repository: "ghcr.io/informalsystems/hermes",
+			Tag:        "1.10.4",
 			NetworkID:  s.dkrNet.Network.ID,
 			Mounts: []string{
 				fmt.Sprintf("%s/:/root/hermes", hermesCfgPath),

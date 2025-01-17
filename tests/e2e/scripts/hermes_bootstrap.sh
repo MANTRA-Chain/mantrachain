@@ -47,7 +47,7 @@ port = 3001
 id = '$MANTRA_A_E2E_CHAIN_ID'
 rpc_addr = 'http://$MANTRA_A_E2E_VAL_HOST:26657'
 grpc_addr = 'http://$MANTRA_A_E2E_VAL_HOST:9090'
-websocket_addr = 'ws://$MANTRA_A_E2E_VAL_HOST:26657/websocket'
+event_source = { mode = 'pull', interval = '1s', max_retries = 4 }
 rpc_timeout = '10s'
 account_prefix = 'mantra'
 key_name = 'rly01-mantra-a'
@@ -64,7 +64,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 id = '$MANTRA_B_E2E_CHAIN_ID'
 rpc_addr = 'http://$MANTRA_B_E2E_VAL_HOST:26657'
 grpc_addr = 'http://$MANTRA_B_E2E_VAL_HOST:9090'
-websocket_addr = 'ws://$MANTRA_B_E2E_VAL_HOST:26657/websocket'
+event_source = { mode = 'pull', interval = '1s', max_retries = 4 }
 rpc_timeout = '10s'
 account_prefix = 'mantra'
 key_name = 'rly01-mantra-b'

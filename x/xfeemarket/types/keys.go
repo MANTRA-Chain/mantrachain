@@ -17,7 +17,10 @@ var (
 	ParamsKey             = collections.NewPrefix("p_xfeemarket")
 	PrefixDenomMultiplier = []byte{0x01}
 
-	EventTypeTipRefund = "tip_refund"
+	EventTypeExcessRefund   = "excess_refund"
+	AttributeKeyExcess      = "excess"
+	AttributeKeyExcessPayer = "excess_payer"
+	AttributeKeyExcessPayee = "excess_payee"
 )
 
 func KeyPrefix(p string) []byte {

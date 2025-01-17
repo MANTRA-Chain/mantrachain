@@ -28,7 +28,7 @@ func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 	type CustomAppConfig struct {
 		serverconfig.Config `mapstructure:",squash"`
-		Wasm                wasmtypes.WasmConfig   `mapstructure:"wasm"`
+		Wasm                wasmtypes.NodeConfig   `mapstructure:"wasm"`
 		Oracle              oracleconfig.AppConfig `mapstructure:"oracle" json:"oracle"`
 	}
 
@@ -59,7 +59,7 @@ func initAppConfig() (string, interface{}) {
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		Wasm:   wasmtypes.DefaultWasmConfig(),
+		Wasm:   wasmtypes.DefaultNodeConfig(),
 		Oracle: oracleCfg,
 	}
 

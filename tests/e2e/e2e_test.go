@@ -7,12 +7,13 @@ var (
 	runEncodeTest                 = true
 	runEvidenceTest               = true
 	runGovTest                    = true
-	runIBCTest                    = false // TODO: enable after IBC test is fixed
+	runIBCTest                    = true
 	runSlashingTest               = true
 	runStakingAndDistributionTest = true
 	runVestingTest                = true
 	runRestInterfacesTest         = true
-	// runRateLimitTest              = false // TODO: enable after IBC is fixed
+	runRateLimitTest              = true
+	runTokenfactoryTest           = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -52,7 +53,7 @@ func (s *IntegrationTestSuite) TestGov() {
 	s.GovCancelSoftwareUpgrade()
 	s.GovCommunityPoolSpend()
 
-	// TODO: add back when CCV is enabled
+	// TODO: uncomment in future if CCV is enabled
 	// s.testSetBlocksPerEpoch()
 	// s.ExpeditedProposalRejected()
 	s.GovSoftwareUpgradeExpedited()
@@ -64,8 +65,9 @@ func (s *IntegrationTestSuite) TestIBC() {
 	}
 
 	s.testIBCTokenTransfer()
-	s.testMultihopIBCTokenTransfer()
-	s.testFailedMultihopIBCTokenTransfer()
+	// TODO: uncomment in future if we add PFM
+	// s.testMultihopIBCTokenTransfer()
+	// s.testFailedMultihopIBCTokenTransfer()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
@@ -95,14 +97,23 @@ func (s *IntegrationTestSuite) TestVesting() {
 	s.testPeriodicVestingAccount(chainAAPI)
 }
 
-// func (s *IntegrationTestSuite) TestRateLimit() {
-// 	if !runRateLimitTest {
-// 		s.T().Skip()
-// 	}
-// 	s.testAddRateLimits()
-// 	s.testIBCTransfer(true)
-// 	s.testUpdateRateLimit()
-// 	s.testIBCTransfer(false)
-// 	s.testResetRateLimit()
-// 	s.testRemoveRateLimit()
-// }
+func (s *IntegrationTestSuite) TestRateLimit() {
+	if !runRateLimitTest {
+		s.T().Skip()
+	}
+	s.testAddRateLimits()
+	s.testIBCTransfer(true)
+	s.testUpdateRateLimit()
+	s.testIBCTransfer(false)
+	s.testResetRateLimit()
+	s.testRemoveRateLimit()
+}
+
+func (s *IntegrationTestSuite) TestTokenfactory() {
+	if !runTokenfactoryTest {
+		s.T().Skip()
+	}
+	s.testTokenfactoryCreate()
+	s.testTokenfactoryMint()
+	s.testTokenfactoryBurn()
+}

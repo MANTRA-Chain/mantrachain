@@ -50,6 +50,7 @@ jobs:
         with:
           chain: mantrachain
           chains-spec-file: chains.yaml
+          clone-key: ${{ secrets.GIT_CLONE_KEY }}
           heighliner-owner: strangelove-ventures
           heighliner-tag: v1.7.1
           github-organization: ${{ github.repository_owner }}

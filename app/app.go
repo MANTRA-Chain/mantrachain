@@ -34,16 +34,18 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	_ "github.com/MANTRA-Chain/mantrachain/app/params"
-	queries "github.com/MANTRA-Chain/mantrachain/app/queries"
-	_ "github.com/MANTRA-Chain/mantrachain/client/docs/statik"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v2/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/v2/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v2/app/upgrades"
+	v2 "github.com/MANTRA-Chain/mantrachain/v2/app/upgrades/v2"
+	_ "github.com/MANTRA-Chain/mantrachain/v2/client/docs/statik"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v2/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -186,11 +188,14 @@ var maccPerms = map[string][]string{
 	ratelimittypes.ModuleName:    nil,
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+	taxtypes.ModuleName:          nil,
 
 	feemarkettypes.ModuleName:       {authtypes.Burner},
 	feemarkettypes.FeeCollectorName: {authtypes.Burner},
 	oracletypes.ModuleName:          nil,
 }
+
+var Upgrades = []upgrades.Upgrade{v2.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -644,11 +649,13 @@ func New(
 	)
 
 	// Create IBC modules with ratelimit middleware
-	// channel.RecvPacket -> ratelimit.OnRecvPacket -> ibcfee.OnRecvPacket -> transfer.OnRecvPacket	var transferStack porttypes.IBCModule
+	// channel.RecvPacket -> ratelimit.OnRecvPacket -> ibcfee.OnRecvPacket -> transfer.OnRecvPacket
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
+	// register escrow address for tokenfactory when channel opens
+	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack porttypes.IBCModule
@@ -661,7 +668,7 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	wasmConfig, err := wasm.ReadNodeConfig(appOpts)
 	if err != nil {
 		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
@@ -692,6 +699,7 @@ func New(
 		app.GRPCQueryRouter(),
 		wasmDir,
 		wasmConfig,
+		wasmtypes.VMConfig{},
 		AllCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		wasmOpts...,
@@ -895,9 +903,6 @@ func New(
 		panic(err)
 	}
 
-	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
-	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
-
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
 	reflectionSvc, err := runtimeservices.NewReflectionService()
@@ -966,6 +971,10 @@ func New(
 
 	app.initializeABCIExtensions(client, metrics)
 
+	// Register any on-chain upgrades.
+	app.setupUpgradeHandlers()
+	app.setupUpgradeStoreLoaders()
+
 	// At startup, after all modules have been registered, check that all proto
 	// annotations are correct.
 	protoFiles, err := proto.MergedRegistry()
@@ -996,7 +1005,7 @@ func New(
 	return app
 }
 
-func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) {
+func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.NodeConfig, txCounterStoreKey *storetypes.KVStoreKey) {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			BaseOptions: authante.HandlerOptions{
@@ -1228,6 +1237,42 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 
 func (app *App) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
+}
+
+// configure store loader that checks if version == upgradeHeight and applies store upgrades
+func (app *App) setupUpgradeStoreLoaders() {
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		return
+	}
+
+	for _, upgrade := range Upgrades {
+		if upgradeInfo.Name == upgrade.UpgradeName {
+			storeUpgrades := upgrade.StoreUpgrades
+			app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
+		}
+	}
+}
+
+func (app *App) setupUpgradeHandlers() {
+	for _, upgrade := range Upgrades {
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgrade.UpgradeName,
+			upgrade.CreateUpgradeHandler(
+				app.ModuleManager,
+				app.configurator,
+				&upgrades.UpgradeKeepers{
+					ChannelKeeper:      &app.IBCKeeper.ChannelKeeper,
+					TransferKeeper:     app.TransferKeeper,
+					TokenFactoryKeeper: &app.TokenFactoryKeeper,
+				},
+			),
+		)
+	}
 }
 
 // GetMaccPerms returns a copy of the module account permissions
