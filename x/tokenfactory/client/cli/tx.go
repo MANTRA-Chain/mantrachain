@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/MANTRA-Chain/mantrachain/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -71,9 +70,9 @@ func NewCreateDenomCmd() *cobra.Command {
 // NewMintCmd broadcast MsgMint
 func NewMintCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [amount] [flags]",
+		Use:   "mint [amount] [address](optional) [flags]",
 		Short: "Mint a denom to an address. Must have admin authority to do so.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -90,10 +89,23 @@ func NewMintCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgMint(
-				clientCtx.GetFromAddress().String(),
-				amount,
-			)
+			var msg sdk.Msg
+			if len(args) == 2 {
+				addr, err := sdk.AccAddressFromBech32(args[1])
+				if err != nil {
+					return err
+				}
+				msg = types.NewMsgMintTo(
+					clientCtx.GetFromAddress().String(),
+					amount,
+					addr.String(),
+				)
+			} else {
+				msg = types.NewMsgMint(
+					clientCtx.GetFromAddress().String(),
+					amount,
+				)
+			}
 
 			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf.WithTxConfig(clientCtx.TxConfig).WithAccountRetriever(clientCtx.AccountRetriever), msg)
 		},
@@ -106,9 +118,9 @@ func NewMintCmd() *cobra.Command {
 // NewBurnCmd broadcast MsgBurn
 func NewBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [amount] [flags]",
+		Use:   "burn [amount] [address](optional) [flags]",
 		Short: "Burn tokens from an address. Must have admin authority to do so.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -125,10 +137,23 @@ func NewBurnCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgBurn(
-				clientCtx.GetFromAddress().String(),
-				amount,
-			)
+			var msg sdk.Msg
+			if len(args) == 2 {
+				addr, err := sdk.AccAddressFromBech32(args[1])
+				if err != nil {
+					return err
+				}
+				msg = types.NewMsgBurnFrom(
+					clientCtx.GetFromAddress().String(),
+					amount,
+					addr.String(),
+				)
+			} else {
+				msg = types.NewMsgBurn(
+					clientCtx.GetFromAddress().String(),
+					amount,
+				)
+			}
 
 			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf.WithTxConfig(clientCtx.TxConfig).WithAccountRetriever(clientCtx.AccountRetriever), msg)
 		},

@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post"
-	postsuite "github.com/MANTRA-Chain/mantrachain/x/xfeemarket/post/suite"
+	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/post"
+	postsuite "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/post/suite"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -85,7 +85,7 @@ func TestBurnCoinsAndRefund(t *testing.T) {
 
 			s.MockBankKeeper.On("SendCoinsFromModuleToAccount", s.Ctx, types.FeeCollectorName, accs[0].Account.GetAddress(),
 				tc.coins).Return(nil).Once()
-			if err := post.RefundTip(s.MockBankKeeper, s.Ctx, accs[0].Account.GetAddress(), tc.coins); (err != nil) != tc.wantErr {
+			if err := post.RefundExcess(s.MockBankKeeper, s.Ctx, accs[0].Account.GetAddress(), tc.coins); (err != nil) != tc.wantErr {
 				s.Errorf(err, "DeductCoins() error = %v, wantErr %v", err, tc.wantErr)
 			}
 		})
@@ -121,7 +121,7 @@ func TestRefund(t *testing.T) {
 			s.MockBankKeeper.On("SendCoinsFromModuleToAccount", s.Ctx, types.FeeCollectorName, accs[0].Account.GetAddress(),
 				tc.coins).Return(nil).Once()
 
-			if err := post.RefundTip(s.MockBankKeeper, s.Ctx, accs[0].Account.GetAddress(), tc.coins); (err != nil) != tc.wantErr {
+			if err := post.RefundExcess(s.MockBankKeeper, s.Ctx, accs[0].Account.GetAddress(), tc.coins); (err != nil) != tc.wantErr {
 				s.Errorf(err, "SendTip() error = %v, wantErr %v", err, tc.wantErr)
 			}
 		})
@@ -536,7 +536,7 @@ func TestPostHandle(t *testing.T) {
 			Simulate:          false,
 			ExpPass:           true,
 			ExpErr:            nil,
-			ExpectConsumedGas: 34836,
+			ExpectConsumedGas: 34743,
 			Mock:              false,
 		},
 		{

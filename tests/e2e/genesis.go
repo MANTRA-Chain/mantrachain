@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -140,6 +141,17 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 		return fmt.Errorf("failed to marshal gov genesis state: %w", err)
 	}
 	appState[govtypes.ModuleName] = govGenStateBz
+
+	tokenfactoryGenState := tokenfactorytypes.DefaultGenesis()
+	tokenfactoryGenState.Params.DenomCreationFee = sdk.NewCoins(sdk.NewCoin(denom, amnt))
+	tokenfactoryGenState.Params.DenomCreationGasConsume = 0
+	tokenfactoryGenState.Params.FeeCollectorAddress = genAccounts[0].GetAddress().String()
+
+	tokenfactoryGenStateBz, err := cdc.MarshalJSON(tokenfactoryGenState)
+	if err != nil {
+		return fmt.Errorf("failed to marshal tokenfactory genesis state: %w", err)
+	}
+	appState[tokenfactorytypes.ModuleName] = tokenfactoryGenStateBz
 
 	appStateJSON, err := json.Marshal(appState)
 	if err != nil {

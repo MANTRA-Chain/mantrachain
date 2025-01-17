@@ -2,7 +2,6 @@ package e2e
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -94,7 +93,6 @@ type RelayerPacketsOutput struct {
 	Status string `json:"status"`
 }
 
-//nolint:unused
 func (s *IntegrationTestSuite) createConnection() {
 	s.T().Logf("connecting %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 
@@ -118,7 +116,6 @@ func (s *IntegrationTestSuite) createConnection() {
 	s.T().Logf("connected %s and %s chains via IBC", s.chainA.id, s.chainB.id)
 }
 
-//nolint:unused
 func (s *IntegrationTestSuite) createChannel() {
 	s.T().Logf("creating IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 
@@ -216,165 +213,165 @@ Steps:
 
 */
 // TODO: Add back only if packet forward middleware has a working version compatible with IBC v3.0.x
-func (s *IntegrationTestSuite) testMultihopIBCTokenTransfer() {
-	time.Sleep(30 * time.Second)
+// func (s *IntegrationTestSuite) testMultihopIBCTokenTransfer() {
+// 	time.Sleep(30 * time.Second)
 
-	s.Run("send_successful_multihop_uom_to_chainA_from_chainA", func() {
-		// require the recipient account receives the IBC tokens (IBC packets ACKd)
-		var (
-			err error
-		)
+// 	s.Run("send_successful_multihop_uom_to_chainA_from_chainA", func() {
+// 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
+// 		var (
+// 			err error
+// 		)
 
-		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
-		sender := address.String()
+// 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
+// 		sender := address.String()
 
-		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
-		middlehop := address.String()
+// 		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
+// 		middlehop := address.String()
 
-		address, _ = s.chainA.validators[1].keyInfo.GetAddress()
-		recipient := address.String()
+// 		address, _ = s.chainA.validators[1].keyInfo.GetAddress()
+// 		recipient := address.String()
 
-		forwardPort := "transfer"
-		forwardChannel := "channel-0"
+// 		forwardPort := "transfer"
+// 		forwardChannel := "channel-0"
 
-		tokenAmt := 3300000000
+// 		tokenAmt := 3300000000
 
-		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+// 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
-		var (
-			beforeSenderUOmBalance    sdk.Coin
-			beforeRecipientUOmBalance sdk.Coin
-		)
+// 		var (
+// 			beforeSenderUOmBalance    sdk.Coin
+// 			beforeRecipientUOmBalance sdk.Coin
+// 		)
 
-		s.Require().Eventually(
-			func() bool {
-				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
-				s.Require().NoError(err)
+// 		s.Require().Eventually(
+// 			func() bool {
+// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				s.Require().NoError(err)
 
-				beforeRecipientUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
-				s.Require().NoError(err)
+// 				beforeRecipientUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+// 				s.Require().NoError(err)
 
-				return beforeSenderUOmBalance.IsValid() && beforeRecipientUOmBalance.IsValid()
-			},
-			1*time.Minute,
-			5*time.Second,
-		)
+// 				return beforeSenderUOmBalance.IsValid() && beforeRecipientUOmBalance.IsValid()
+// 			},
+// 			1*time.Minute,
+// 			5*time.Second,
+// 		)
 
-		firstHopMetadata := &PacketMetadata{
-			Forward: &ForwardMetadata{
-				Receiver: recipient,
-				Channel:  forwardChannel,
-				Port:     forwardPort,
-			},
-		}
+// 		firstHopMetadata := &PacketMetadata{
+// 			Forward: &ForwardMetadata{
+// 				Receiver: recipient,
+// 				Channel:  forwardChannel,
+// 				Port:     forwardPort,
+// 			},
+// 		}
 
-		memo, err := json.Marshal(firstHopMetadata)
-		s.Require().NoError(err)
+// 		memo, err := json.Marshal(firstHopMetadata)
+// 		s.Require().NoError(err)
 
-		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
+// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
 
-		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
-		s.Require().True(pass)
+// 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 		s.Require().True(pass)
 
-		s.Require().Eventually(
-			func() bool {
-				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
-				s.Require().NoError(err)
+// 		s.Require().Eventually(
+// 			func() bool {
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				s.Require().NoError(err)
 
-				afterRecipientUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
-				s.Require().NoError(err)
+// 				afterRecipientUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+// 				s.Require().NoError(err)
 
-				decremented := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
-				incremented := beforeRecipientUOmBalance.Add(tokenAmount).IsEqual(afterRecipientUOmBalance)
+// 				decremented := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
+// 				incremented := beforeRecipientUOmBalance.Add(tokenAmount).IsEqual(afterRecipientUOmBalance)
 
-				return decremented && incremented
-			},
-			1*time.Minute,
-			5*time.Second,
-		)
-	})
-}
+// 				return decremented && incremented
+// 			},
+// 			1*time.Minute,
+// 			5*time.Second,
+// 		)
+// 	})
+// }
 
 /*
 TestFailedMultihopIBCTokenTransfer tests that sending a failing IBC transfer using the IBC Packet Forward
 Middleware will send the tokens back to the original account after failing.
 */
-func (s *IntegrationTestSuite) testFailedMultihopIBCTokenTransfer() {
-	time.Sleep(30 * time.Second)
+// func (s *IntegrationTestSuite) testFailedMultihopIBCTokenTransfer() {
+// 	time.Sleep(30 * time.Second)
 
-	s.Run("send_failed_multihop_uom_to_chainA_from_chainA", func() {
-		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
-		sender := address.String()
+// 	s.Run("send_failed_multihop_uom_to_chainA_from_chainA", func() {
+// 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
+// 		sender := address.String()
 
-		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
-		middlehop := address.String()
+// 		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
+// 		middlehop := address.String()
 
-		address, _ = s.chainA.validators[1].keyInfo.GetAddress()
-		recipient := strings.Replace(address.String(), "cosmos", "foobar", 1) // this should be an invalid recipient to force the tx to fail
+// 		address, _ = s.chainA.validators[1].keyInfo.GetAddress()
+// 		recipient := strings.Replace(address.String(), "cosmos", "foobar", 1) // this should be an invalid recipient to force the tx to fail
 
-		forwardPort := "transfer"
-		forwardChannel := "channel-0"
+// 		forwardPort := "transfer"
+// 		forwardChannel := "channel-0"
 
-		tokenAmt := 3300000000
+// 		tokenAmt := 3300000000
 
-		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+// 		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
-		var (
-			beforeSenderUOmBalance sdk.Coin
-			err                    error
-		)
+// 		var (
+// 			beforeSenderUOmBalance sdk.Coin
+// 			err                    error
+// 		)
 
-		s.Require().Eventually(
-			func() bool {
-				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
-				s.Require().NoError(err)
+// 		s.Require().Eventually(
+// 			func() bool {
+// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				s.Require().NoError(err)
 
-				return beforeSenderUOmBalance.IsValid()
-			},
-			1*time.Minute,
-			5*time.Second,
-		)
+// 				return beforeSenderUOmBalance.IsValid()
+// 			},
+// 			1*time.Minute,
+// 			5*time.Second,
+// 		)
 
-		firstHopMetadata := &PacketMetadata{
-			Forward: &ForwardMetadata{
-				Receiver: recipient,
-				Channel:  forwardChannel,
-				Port:     forwardPort,
-			},
-		}
+// 		firstHopMetadata := &PacketMetadata{
+// 			Forward: &ForwardMetadata{
+// 				Receiver: recipient,
+// 				Channel:  forwardChannel,
+// 				Port:     forwardPort,
+// 			},
+// 		}
 
-		memo, err := json.Marshal(firstHopMetadata)
-		s.Require().NoError(err)
+// 		memo, err := json.Marshal(firstHopMetadata)
+// 		s.Require().NoError(err)
 
-		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
+// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
 
-		// Sender account should be initially decremented the full amount
-		s.Require().Eventually(
-			func() bool {
-				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
-				s.Require().NoError(err)
+// 		// Sender account should be initially decremented the full amount
+// 		s.Require().Eventually(
+// 			func() bool {
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				s.Require().NoError(err)
 
-				returned := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
+// 				returned := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
 
-				return returned
-			},
-			1*time.Minute,
-			5*time.Second,
-		)
+// 				return returned
+// 			},
+// 			1*time.Minute,
+// 			5*time.Second,
+// 		)
 
-		// since the forward receiving account is invalid, it should be refunded to the original sender (minus the original fee)
-		s.Require().Eventually(
-			func() bool {
-				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
-				s.Require().True(pass)
+// 		// since the forward receiving account is invalid, it should be refunded to the original sender (minus the original fee)
+// 		s.Require().Eventually(
+// 			func() bool {
+// 				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 				s.Require().True(pass)
 
-				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
-				s.Require().NoError(err)
-				returned := beforeSenderUOmBalance.Sub(standardFees).IsEqual(afterSenderUOmBalance)
-				return returned
-			},
-			5*time.Minute,
-			10*time.Second,
-		)
-	})
-}
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				s.Require().NoError(err)
+// 				returned := beforeSenderUOmBalance.Sub(standardFees).IsEqual(afterSenderUOmBalance)
+// 				return returned
+// 			},
+// 			5*time.Minute,
+// 			10*time.Second,
+// 		)
+// 	})
+// }

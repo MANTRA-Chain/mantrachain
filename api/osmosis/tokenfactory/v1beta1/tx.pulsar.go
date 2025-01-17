@@ -7,7 +7,7 @@ import (
 	v1beta1 "cosmossdk.io/api/cosmos/base/v1beta1"
 	_ "cosmossdk.io/api/cosmos/msg/v1"
 	fmt "fmt"
-	tokenfactory "github.com/MANTRA-Chain/mantrachain/api/osmosis/tokenfactory"
+	tokenfactory "github.com/MANTRA-Chain/mantrachain/v2/api/osmosis/tokenfactory"
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
