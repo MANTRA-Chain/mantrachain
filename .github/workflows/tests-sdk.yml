@@ -1,0 +1,40 @@
+on: 
+  push: 
+    branches: main
+  pull_request:
+    branches: main
+name: SDK Tests
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - uses: actions/checkout@v4
+      - name: Extract Tag or Commit
+        run: |
+          FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
+          if [[ $FULL_VERSION == *"-0."* ]]; then
+            # This is a pseudo-version (commit-based)
+            SDK_VERSION=${FULL_VERSION##*-}
+          else
+            # This is a regular version tag
+            SDK_VERSION=$FULL_VERSION
+          fi
+          echo "SDK_VERSION=${SDK_VERSION}" | tee -a $GITHUB_ENV
+      - name: Checkout MANTRA-Chain/cosmos-sdk
+        uses: actions/checkout@v4
+        with:
+          repository: MANTRA-Chain/cosmos-sdk
+          path: cosmos-sdk
+          ref: ${{ env.SDK_VERSION }}
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
+      - name: Run all tests
+        run: |
+          # skip test on tools
+          rm -rf tools
+          make test-all
+        working-directory: cosmos-sdk

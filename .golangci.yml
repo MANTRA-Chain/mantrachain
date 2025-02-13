@@ -17,7 +17,6 @@ linters:
     - errname
     - copyloopvar
     - fatcontext
-    - forcetypeassert
     - gci
     - goconst
     - gochecksumtype

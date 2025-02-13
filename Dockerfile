@@ -1,20 +1,15 @@
 # syntax=docker/dockerfile:1
 
 ARG GO_VERSION="1.23"
-ARG FINAL_IMAGE="alpine:latest"
+ARG IMG_TAG="latest"
 ARG BUILD_TAGS="netgo,ledger,muslc"
 
 # --------------------------------------------------------
 # Builder
 # --------------------------------------------------------
 
-FROM golang:${GO_VERSION}-alpine3.20 as builder
-
-ARG GIT_VERSION
-ARG GIT_COMMIT
-ARG BUILD_TAGS
-ARG CMT_VERSION
-
+FROM golang:${GO_VERSION}-alpine3.20 AS mantra-builder
+WORKDIR /src/app/
 RUN apk add --no-cache \
     ca-certificates \
     build-base \
@@ -23,10 +18,9 @@ RUN apk add --no-cache \
     git
 
 # Download go dependencies
-WORKDIR /mantrachain
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    --mount=type=cache,target=/root/go/pkg/mod \
+RUN --mount=type=cache,target=/nonroot/.cache/go-build \
+    --mount=type=cache,target=/nonroot/go/pkg/mod \
     go mod download
 
 # Cosmwasm - Download correct libwasmvm version
@@ -42,26 +36,21 @@ COPY . .
 
 # Build mantrachaind binary
 # build tag info: https://github.com/cosmos/wasmd/blob/master/README.md#supported-systems
-RUN --mount=type=cache,target=/root/.cache/go-build \
-    --mount=type=cache,target=/root/go/pkg/mod \
+RUN --mount=type=cache,target=/nonroot/.cache/go-build \
+    --mount=type=cache,target=/nonroot/go/pkg/mod \
     LEDGER_ENABLED=true BUILD_TAGS='muslc osusergo' LINK_STATICALLY=true make build
 
 # --------------------------------------------------------
 # Runner
 # --------------------------------------------------------
 
-FROM ${FINAL_IMAGE}
+FROM alpine:$IMG_TAG
+RUN apk add --no-cache build-base jq
+RUN addgroup -g 1025 nonroot
+RUN adduser -D nonroot -u 1025 -G nonroot
+ARG IMG_TAG
+COPY --from=mantra-builder /src/app/build/mantrachaind /usr/local/bin/
+EXPOSE 26656 26657 1317 9090
+USER nonroot
 
-COPY --from=builder /mantrachain/build/mantrachaind /bin/mantrachaind
-
-ENV HOME /mantrachain
-WORKDIR $HOME
-
-EXPOSE 26656
-EXPOSE 26657
-EXPOSE 1317
-# Note: uncomment the line below if you need pprof in local mantrachain
-# We disable it by default in out main Dockerfile for security reasons
-# EXPOSE 6060
-
-ENTRYPOINT ["mantrachaind"]
+ENTRYPOINT ["mantrachaind", "start"]
