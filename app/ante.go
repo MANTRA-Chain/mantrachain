@@ -8,6 +8,7 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
@@ -27,6 +28,7 @@ type HandlerOptions struct {
 	BankKeeper            feemarketante.BankKeeper
 	AccountKeeper         feemarketante.AccountKeeper
 	FeeMarketKeeper       feemarketante.FeeMarketKeeper
+	SanctionKeeper        *sanctionkeeper.Keeper
 }
 
 // NewAnteHandler constructor
@@ -58,6 +60,9 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.CircuitKeeper == nil {
 		return nil, errors.New("circuit keeper is required for ante builder")
 	}
+	if options.SanctionKeeper == nil {
+		return nil, errors.New("sanction keeper is required for ante builder")
+	}
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
@@ -65,6 +70,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
 		wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
 		circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
+		sanctionkeeper.NewBlacklistCheckDecorator(*options.SanctionKeeper),
 		ante.NewExtensionOptionsDecorator(options.BaseOptions.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),

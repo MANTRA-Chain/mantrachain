@@ -39,6 +39,9 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v2/app/upgrades"
 	v2 "github.com/MANTRA-Chain/mantrachain/v2/app/upgrades/v2"
 	_ "github.com/MANTRA-Chain/mantrachain/v2/client/docs/statik"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/types"
 	taxkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tax/keeper"
 	tax "github.com/MANTRA-Chain/mantrachain/v2/x/tax/module"
 	taxtypes "github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
@@ -189,6 +192,7 @@ var maccPerms = map[string][]string{
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	taxtypes.ModuleName:          nil,
+	sanctiontypes.ModuleName:     nil,
 
 	feemarkettypes.ModuleName:       {authtypes.Burner},
 	feemarkettypes.FeeCollectorName: {authtypes.Burner},
@@ -261,6 +265,7 @@ type App struct {
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 	TaxKeeper          taxkeeper.Keeper
+	SanctionKeeper     sanctionkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -332,7 +337,7 @@ func New(
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
-		tokenfactorytypes.StoreKey, taxtypes.StoreKey,
+		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
 		ibchookstypes.StoreKey,
 		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
@@ -529,6 +534,13 @@ func New(
 		&app.BankKeeper,
 		&app.WasmKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.SanctionKeeper = sanctionkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
+		logger,
+		"mantra1hz88lcv4xmfzsrsvmtynhc2medke0m20zq0tex",
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
@@ -773,9 +785,12 @@ func New(
 
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), // always be last to make sure that it checks for all invariants and not only part of them,
+
+		// mantrachain modules
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
 		tax.NewAppModule(appCodec, app.TaxKeeper),
 		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
+		sanction.NewAppModule(appCodec, app.SanctionKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -828,6 +843,7 @@ func New(
 		tokenfactorytypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		sanctiontypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -850,6 +866,7 @@ func New(
 		taxtypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		sanctiontypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -893,6 +910,7 @@ func New(
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		taxtypes.ModuleName,
+		sanctiontypes.ModuleName,
 
 		feemarkettypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
@@ -1032,6 +1050,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 			FeeMarketKeeper:       app.FeeMarketKeeper,
 			AccountKeeper:         app.AccountKeeper,
 			BankKeeper:            app.BankKeeper,
+			SanctionKeeper:        &app.SanctionKeeper,
 		},
 	)
 	if err != nil {
