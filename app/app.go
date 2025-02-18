@@ -37,7 +37,7 @@ import (
 	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v3/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
-	v2 "github.com/MANTRA-Chain/mantrachain/v3/app/upgrades/v2"
+	v3 "github.com/MANTRA-Chain/mantrachain/v3/app/upgrades/v3"
 	_ "github.com/MANTRA-Chain/mantrachain/v3/client/docs/statik"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/module"
@@ -199,7 +199,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName:          nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v2.Upgrade}
+var Upgrades = []upgrades.Upgrade{v3.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -1297,6 +1297,7 @@ func (app *App) setupUpgradeHandlers() {
 					ChannelKeeper:      &app.IBCKeeper.ChannelKeeper,
 					TransferKeeper:     app.TransferKeeper,
 					TokenFactoryKeeper: &app.TokenFactoryKeeper,
+					SanctionKeeper:     app.SanctionKeeper,
 				},
 			),
 		)
