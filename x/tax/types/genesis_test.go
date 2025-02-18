@@ -3,8 +3,8 @@ package types_test
 import (
 	"testing"
 
-	_ "github.com/MANTRA-Chain/mantrachain/v2/app/params"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
 	"github.com/stretchr/testify/require"
 )
 

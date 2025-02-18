@@ -3,7 +3,8 @@ package upgrades
 import (
 	store "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/keeper"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
@@ -45,4 +46,6 @@ type UpgradeKeepers struct {
 	ChannelKeeper      *channelkeeper.Keeper
 	TransferKeeper     transferkeeper.Keeper
 	TokenFactoryKeeper *tokenfactorykeeper.Keeper
+	// v3
+	SanctionKeeper sanctionkeeper.Keeper
 }

@@ -3,10 +3,10 @@ package sanction_test
 import (
 	"testing"
 
-	keepertest "github.com/MANTRA-Chain/mantrachain/v2/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/testutil/nullify"
-	xfeemarket "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/module"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v3/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/testutil/nullify"
+	xfeemarket "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/module"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	keepertest "github.com/MANTRA-Chain/mantrachain/v2/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tax/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v3/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tax/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
 	"github.com/stretchr/testify/require"
 )
 

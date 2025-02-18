@@ -1,8 +1,8 @@
 package sanction
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v2/x/sanction/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

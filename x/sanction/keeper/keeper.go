@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 

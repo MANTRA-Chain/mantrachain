@@ -7,7 +7,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 )
 
 func CreateUpgradeHandler(
@@ -24,15 +23,12 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		transferChannels := keepers.ChannelKeeper.GetAllChannelsWithPortPrefix(ctx, keepers.TransferKeeper.GetPort(ctx))
-		for _, channel := range transferChannels {
-			escrowAddress := transfertypes.GetEscrowAddress(channel.PortId, channel.ChannelId)
-			ctx.Logger().Info("Saving escrow address", "port_id", channel.PortId, "channel_id",
-				channel.ChannelId, "address", escrowAddress.String())
-			keepers.TokenFactoryKeeper.StoreEscrowAddress(ctx, escrowAddress)
+		err = keepers.SanctionKeeper.BlacklistAccounts.Set(ctx, "mantra14t56rzvxzw0yp9plcf9dy6rr53chyvxt4cqtt5")
+		if err != nil {
+			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v2 complete")
+		ctx.Logger().Info("Upgrade v3 complete")
 		return vm, nil
 	}
 }

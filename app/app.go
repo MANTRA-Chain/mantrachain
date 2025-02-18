@@ -34,21 +34,21 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	_ "github.com/MANTRA-Chain/mantrachain/v2/app/params"
-	queries "github.com/MANTRA-Chain/mantrachain/v2/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v2/app/upgrades"
-	v2 "github.com/MANTRA-Chain/mantrachain/v2/app/upgrades/v2"
-	_ "github.com/MANTRA-Chain/mantrachain/v2/client/docs/statik"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v2/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v2/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/v3/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
+	v2 "github.com/MANTRA-Chain/mantrachain/v3/app/upgrades/v2"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/client/docs/statik"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v3/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -999,8 +999,8 @@ func New(
 	app.initializeABCIExtensions(client, metrics)
 
 	// Register any on-chain upgrades.
-	app.setupUpgradeHandlers()
 	app.setupUpgradeStoreLoaders()
+	app.setupUpgradeHandlers()
 
 	// At startup, after all modules have been registered, check that all proto
 	// annotations are correct.
