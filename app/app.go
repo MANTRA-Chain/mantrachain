@@ -540,7 +540,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
 		logger,
-		"mantra1hz88lcv4xmfzsrsvmtynhc2medke0m20zq0tex",
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
