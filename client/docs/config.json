@@ -42,6 +42,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/mantrachain/sanction/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "SanctionParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/osmosis/tokenfactory/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {
