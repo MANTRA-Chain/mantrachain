@@ -3,10 +3,10 @@ module github.com/MANTRA-Chain/mantrachain/v2
 go 1.23.1
 
 replace (
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.11, current branch: mantra/v0.50.11
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/0b3817cefa94e68b24a7b4f3c949cf469339047d
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.11-v2-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.11-v2-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.12, current branch: mantra/v0.50.12
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/b0ce2a2aa738752237cb25f55a0e9c0f2cbcade0
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.12-v2-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v2-mantra-1
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
@@ -136,7 +136,7 @@ require (
 	github.com/cosmos/iavl v1.2.4 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
 	github.com/cosmos/interchain-security/v6 v6.3.0 // indirect
-	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
+	github.com/cosmos/ledger-cosmos-go v0.14.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/creachadair/atomicfile v0.3.3 // indirect
 	github.com/creachadair/tomledit v0.0.26 // indirect
