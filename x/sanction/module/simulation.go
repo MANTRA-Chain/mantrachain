@@ -22,11 +22,11 @@ var (
 )
 
 const (
-	opWeightMsgAddBlacklistAccount = "op_weight_msg_upsert_fee_denom"
+	opWeightMsgAddBlacklistAccount = "op_weight_msg_add_blacklist_account"
 
 	defaultWeightMsgAddBlacklistAccount int = 5
 
-	opWeightMsgRemoveBlacklistAccount = "op_weight_msg_remove_fee_denom"
+	opWeightMsgRemoveBlacklistAccount = "op_weight_msg_remove_blacklist_account"
 
 	defaultWeightMsgRemoveBlacklistAccount int = 5
 
