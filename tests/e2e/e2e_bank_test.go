@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterBobUomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uomDenom)
 				s.Require().NoError(err)
 
-				gasFeesBurnt := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1024)))
+				gasFeesBurnt := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1180)))
 				decremented := beforeAliceUomBalance.Sub(tokenAmount).Sub(gasFeesBurnt).IsEqual(afterAliceUomBalance)
 				incremented := beforeBobUomBalance.Add(tokenAmount).IsEqual(afterBobUomBalance)
 
@@ -86,7 +86,7 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
 				s.Require().NoError(err)
 
-				gasFeesBurnt := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1006)))
+				gasFeesBurnt := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1016)))
 				decremented := beforeAliceUomBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(gasFeesBurnt).IsEqual(afterAliceUomBalance)
 				incremented := beforeBobUomBalance.Add(tokenAmount).IsEqual(afterBobUomBalance) &&
 					beforeCharlieUomBalance.Add(tokenAmount).IsEqual(afterCharlieUomBalance)
