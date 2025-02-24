@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,12 +19,20 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
-
 				// this line is used by starport scaffolding # types/genesis/validField
+				BlacklistAccounts: []string{"mantra1hz88lcv4xmfzsrsvmtynhc2medke0m20zq0tex", "mantra1nmefvq9aa7t5p85vp8weuuwrmrppjgm6r9ccpa"},
 			},
 			valid: true,
+		},
+		{
+			desc: "valid genesis state",
+			genState: &types.GenesisState{
+				// this line is used by starport scaffolding # types/genesis/validField
+				BlacklistAccounts: []string{"not-a-valid-bech32"},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}

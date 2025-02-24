@@ -21,7 +21,3 @@ var (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
-
-func KeyDenomMultiplier(account string) []byte {
-	return append(PrefixBlackListAccounts, []byte(account)...)
-}

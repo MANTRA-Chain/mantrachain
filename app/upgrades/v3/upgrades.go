@@ -9,6 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
+const BLACKLIST_ACCOUNT = "mantra14t56rzvxzw0yp9plcf9dy6rr53chyvxt4cqtt5"
+
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,
@@ -23,7 +25,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		err = keepers.SanctionKeeper.BlacklistAccounts.Set(ctx, "mantra14t56rzvxzw0yp9plcf9dy6rr53chyvxt4cqtt5")
+		err = keepers.SanctionKeeper.BlacklistAccounts.Set(ctx, BLACKLIST_ACCOUNT)
 		if err != nil {
 			return vm, err
 		}

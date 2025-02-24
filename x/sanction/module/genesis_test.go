@@ -5,27 +5,23 @@ import (
 
 	keepertest "github.com/MANTRA-Chain/mantrachain/v3/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v3/testutil/nullify"
-	xfeemarket "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/module"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
+	sanction "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/module"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
-
-		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	k, ctx, _ := keepertest.XfeemarketKeeper(t, nil)
-	err := xfeemarket.InitGenesis(ctx, k, genesisState)
+	k, ctx, _ := keepertest.SanctionKeeper(t)
+	err := sanction.InitGenesis(ctx, k, genesisState)
 	require.NoError(t, err)
-	got, err := xfeemarket.ExportGenesis(ctx, k)
+	got, err := sanction.ExportGenesis(ctx, k)
 	require.NoError(t, err)
 	require.NotNil(t, got)
 
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
-
-	// this line is used by starport scaffolding # genesis/test/assert
 }

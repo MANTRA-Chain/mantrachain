@@ -22,13 +22,13 @@ var (
 )
 
 const (
-	opWeightMsgUpsertFeeDenom = "op_weight_msg_upsert_fee_denom"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpsertFeeDenom int = 100
+	opWeightMsgAddBlacklistAccount = "op_weight_msg_upsert_fee_denom"
 
-	opWeightMsgRemoveFeeDenom = "op_weight_msg_remove_fee_denom"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgRemoveFeeDenom int = 100
+	defaultWeightMsgAddBlacklistAccount int = 5
+
+	opWeightMsgRemoveBlacklistAccount = "op_weight_msg_remove_fee_denom"
+
+	defaultWeightMsgRemoveBlacklistAccount int = 5
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -53,25 +53,25 @@ func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {}
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgUpsertFeeDenom int
-	simState.AppParams.GetOrGenerate(opWeightMsgUpsertFeeDenom, &weightMsgUpsertFeeDenom, nil,
+	var weightMsgAddBlacklistAccount int
+	simState.AppParams.GetOrGenerate(opWeightMsgAddBlacklistAccount, &weightMsgAddBlacklistAccount, nil,
 		func(_ *rand.Rand) {
-			weightMsgUpsertFeeDenom = defaultWeightMsgUpsertFeeDenom
+			weightMsgAddBlacklistAccount = defaultWeightMsgAddBlacklistAccount
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpsertFeeDenom,
+		weightMsgAddBlacklistAccount,
 		sanctionsimulation.SimulateMsgAddBlacklistAccount(am.keeper),
 	))
 
-	var weightMsgRemoveFeeDenom int
-	simState.AppParams.GetOrGenerate(opWeightMsgRemoveFeeDenom, &weightMsgRemoveFeeDenom, nil,
+	var weightMsgRemoveBlacklistAccount int
+	simState.AppParams.GetOrGenerate(opWeightMsgRemoveBlacklistAccount, &weightMsgRemoveBlacklistAccount, nil,
 		func(_ *rand.Rand) {
-			weightMsgRemoveFeeDenom = defaultWeightMsgRemoveFeeDenom
+			weightMsgRemoveBlacklistAccount = defaultWeightMsgRemoveBlacklistAccount
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgRemoveFeeDenom,
+		weightMsgRemoveBlacklistAccount,
 		sanctionsimulation.SimulateMsgRemoveBlacklistAccount(am.keeper),
 	))
 
@@ -84,16 +84,16 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgUpsertFeeDenom,
-			defaultWeightMsgUpsertFeeDenom,
+			opWeightMsgAddBlacklistAccount,
+			defaultWeightMsgAddBlacklistAccount,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				sanctionsimulation.SimulateMsgAddBlacklistAccount(am.keeper)
 				return nil
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgRemoveFeeDenom,
-			defaultWeightMsgRemoveFeeDenom,
+			opWeightMsgRemoveBlacklistAccount,
+			defaultWeightMsgRemoveBlacklistAccount,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				sanctionsimulation.SimulateMsgRemoveBlacklistAccount(am.keeper)
 				return nil
