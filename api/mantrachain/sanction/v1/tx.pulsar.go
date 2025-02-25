@@ -14,28 +14,74 @@ import (
 	sync "sync"
 )
 
+var _ protoreflect.List = (*_MsgAddBlacklistAccounts_2_list)(nil)
+
+type _MsgAddBlacklistAccounts_2_list struct {
+	list *[]string
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgAddBlacklistAccounts at list field BlacklistAccounts as it is not of Message kind"))
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_MsgAddBlacklistAccounts_2_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_MsgAddBlacklistAccount                   protoreflect.MessageDescriptor
-	fd_MsgAddBlacklistAccount_authority         protoreflect.FieldDescriptor
-	fd_MsgAddBlacklistAccount_blacklist_account protoreflect.FieldDescriptor
+	md_MsgAddBlacklistAccounts                    protoreflect.MessageDescriptor
+	fd_MsgAddBlacklistAccounts_authority          protoreflect.FieldDescriptor
+	fd_MsgAddBlacklistAccounts_blacklist_accounts protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_mantrachain_sanction_v1_tx_proto_init()
-	md_MsgAddBlacklistAccount = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgAddBlacklistAccount")
-	fd_MsgAddBlacklistAccount_authority = md_MsgAddBlacklistAccount.Fields().ByName("authority")
-	fd_MsgAddBlacklistAccount_blacklist_account = md_MsgAddBlacklistAccount.Fields().ByName("blacklist_account")
+	md_MsgAddBlacklistAccounts = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgAddBlacklistAccounts")
+	fd_MsgAddBlacklistAccounts_authority = md_MsgAddBlacklistAccounts.Fields().ByName("authority")
+	fd_MsgAddBlacklistAccounts_blacklist_accounts = md_MsgAddBlacklistAccounts.Fields().ByName("blacklist_accounts")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgAddBlacklistAccount)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgAddBlacklistAccounts)(nil)
 
-type fastReflection_MsgAddBlacklistAccount MsgAddBlacklistAccount
+type fastReflection_MsgAddBlacklistAccounts MsgAddBlacklistAccounts
 
-func (x *MsgAddBlacklistAccount) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgAddBlacklistAccount)(x)
+func (x *MsgAddBlacklistAccounts) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAddBlacklistAccounts)(x)
 }
 
-func (x *MsgAddBlacklistAccount) slowProtoReflect() protoreflect.Message {
+func (x *MsgAddBlacklistAccounts) slowProtoReflect() protoreflect.Message {
 	mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -47,43 +93,43 @@ func (x *MsgAddBlacklistAccount) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAddBlacklistAccount_messageType fastReflection_MsgAddBlacklistAccount_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAddBlacklistAccount_messageType{}
+var _fastReflection_MsgAddBlacklistAccounts_messageType fastReflection_MsgAddBlacklistAccounts_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAddBlacklistAccounts_messageType{}
 
-type fastReflection_MsgAddBlacklistAccount_messageType struct{}
+type fastReflection_MsgAddBlacklistAccounts_messageType struct{}
 
-func (x fastReflection_MsgAddBlacklistAccount_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgAddBlacklistAccount)(nil)
+func (x fastReflection_MsgAddBlacklistAccounts_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAddBlacklistAccounts)(nil)
 }
-func (x fastReflection_MsgAddBlacklistAccount_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgAddBlacklistAccount)
+func (x fastReflection_MsgAddBlacklistAccounts_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAddBlacklistAccounts)
 }
-func (x fastReflection_MsgAddBlacklistAccount_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAddBlacklistAccount
+func (x fastReflection_MsgAddBlacklistAccounts_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAddBlacklistAccounts
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgAddBlacklistAccount) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAddBlacklistAccount
+func (x *fastReflection_MsgAddBlacklistAccounts) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAddBlacklistAccounts
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgAddBlacklistAccount) Type() protoreflect.MessageType {
-	return _fastReflection_MsgAddBlacklistAccount_messageType
+func (x *fastReflection_MsgAddBlacklistAccounts) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAddBlacklistAccounts_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgAddBlacklistAccount) New() protoreflect.Message {
-	return new(fastReflection_MsgAddBlacklistAccount)
+func (x *fastReflection_MsgAddBlacklistAccounts) New() protoreflect.Message {
+	return new(fastReflection_MsgAddBlacklistAccounts)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgAddBlacklistAccount) Interface() protoreflect.ProtoMessage {
-	return (*MsgAddBlacklistAccount)(x)
+func (x *fastReflection_MsgAddBlacklistAccounts) Interface() protoreflect.ProtoMessage {
+	return (*MsgAddBlacklistAccounts)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -91,16 +137,16 @@ func (x *fastReflection_MsgAddBlacklistAccount) Interface() protoreflect.ProtoMe
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgAddBlacklistAccount) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgAddBlacklistAccounts) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Authority != "" {
 		value := protoreflect.ValueOfString(x.Authority)
-		if !f(fd_MsgAddBlacklistAccount_authority, value) {
+		if !f(fd_MsgAddBlacklistAccounts_authority, value) {
 			return
 		}
 	}
-	if x.BlacklistAccount != "" {
-		value := protoreflect.ValueOfString(x.BlacklistAccount)
-		if !f(fd_MsgAddBlacklistAccount_blacklist_account, value) {
+	if len(x.BlacklistAccounts) != 0 {
+		value := protoreflect.ValueOfList(&_MsgAddBlacklistAccounts_2_list{list: &x.BlacklistAccounts})
+		if !f(fd_MsgAddBlacklistAccounts_blacklist_accounts, value) {
 			return
 		}
 	}
@@ -117,17 +163,17 @@ func (x *fastReflection_MsgAddBlacklistAccount) Range(f func(protoreflect.FieldD
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgAddBlacklistAccount) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgAddBlacklistAccounts) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
 		return x.Authority != ""
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		return x.BlacklistAccount != ""
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		return len(x.BlacklistAccounts) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -137,17 +183,17 @@ func (x *fastReflection_MsgAddBlacklistAccount) Has(fd protoreflect.FieldDescrip
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccount) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgAddBlacklistAccounts) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
 		x.Authority = ""
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		x.BlacklistAccount = ""
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		x.BlacklistAccounts = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -157,19 +203,22 @@ func (x *fastReflection_MsgAddBlacklistAccount) Clear(fd protoreflect.FieldDescr
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgAddBlacklistAccount) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccounts) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
 		value := x.Authority
 		return protoreflect.ValueOfString(value)
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		value := x.BlacklistAccount
-		return protoreflect.ValueOfString(value)
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		if len(x.BlacklistAccounts) == 0 {
+			return protoreflect.ValueOfList(&_MsgAddBlacklistAccounts_2_list{})
+		}
+		listValue := &_MsgAddBlacklistAccounts_2_list{list: &x.BlacklistAccounts}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -183,17 +232,19 @@ func (x *fastReflection_MsgAddBlacklistAccount) Get(descriptor protoreflect.Fiel
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccount) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgAddBlacklistAccounts) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
 		x.Authority = value.Interface().(string)
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		x.BlacklistAccount = value.Interface().(string)
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		lv := value.List()
+		clv := lv.(*_MsgAddBlacklistAccounts_2_list)
+		x.BlacklistAccounts = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -207,44 +258,49 @@ func (x *fastReflection_MsgAddBlacklistAccount) Set(fd protoreflect.FieldDescrip
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccount) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccounts) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
-		panic(fmt.Errorf("field authority of message mantrachain.sanction.v1.MsgAddBlacklistAccount is not mutable"))
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		panic(fmt.Errorf("field blacklist_account of message mantrachain.sanction.v1.MsgAddBlacklistAccount is not mutable"))
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		if x.BlacklistAccounts == nil {
+			x.BlacklistAccounts = []string{}
+		}
+		value := &_MsgAddBlacklistAccounts_2_list{list: &x.BlacklistAccounts}
+		return protoreflect.ValueOfList(value)
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
+		panic(fmt.Errorf("field authority of message mantrachain.sanction.v1.MsgAddBlacklistAccounts is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgAddBlacklistAccount) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccounts) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.authority":
 		return protoreflect.ValueOfString("")
-	case "mantrachain.sanction.v1.MsgAddBlacklistAccount.blacklist_account":
-		return protoreflect.ValueOfString("")
+	case "mantrachain.sanction.v1.MsgAddBlacklistAccounts.blacklist_accounts":
+		list := []string{}
+		return protoreflect.ValueOfList(&_MsgAddBlacklistAccounts_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgAddBlacklistAccount) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgAddBlacklistAccounts) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgAddBlacklistAccount", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgAddBlacklistAccounts", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -252,7 +308,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) WhichOneof(d protoreflect.OneofD
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgAddBlacklistAccount) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgAddBlacklistAccounts) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -263,7 +319,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) GetUnknown() protoreflect.RawFie
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccount) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgAddBlacklistAccounts) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -275,7 +331,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) SetUnknown(fields protoreflect.R
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgAddBlacklistAccount) IsValid() bool {
+func (x *fastReflection_MsgAddBlacklistAccounts) IsValid() bool {
 	return x != nil
 }
 
@@ -285,9 +341,9 @@ func (x *fastReflection_MsgAddBlacklistAccount) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgAddBlacklistAccounts) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgAddBlacklistAccount)
+		x := input.Message.Interface().(*MsgAddBlacklistAccounts)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -303,9 +359,11 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.BlacklistAccount)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if len(x.BlacklistAccounts) > 0 {
+			for _, s := range x.BlacklistAccounts {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -317,7 +375,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAddBlacklistAccount)
+		x := input.Message.Interface().(*MsgAddBlacklistAccounts)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -336,12 +394,14 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.BlacklistAccount) > 0 {
-			i -= len(x.BlacklistAccount)
-			copy(dAtA[i:], x.BlacklistAccount)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BlacklistAccount)))
-			i--
-			dAtA[i] = 0x12
+		if len(x.BlacklistAccounts) > 0 {
+			for iNdEx := len(x.BlacklistAccounts) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.BlacklistAccounts[iNdEx])
+				copy(dAtA[i:], x.BlacklistAccounts[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BlacklistAccounts[iNdEx])))
+				i--
+				dAtA[i] = 0x12
+			}
 		}
 		if len(x.Authority) > 0 {
 			i -= len(x.Authority)
@@ -361,7 +421,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAddBlacklistAccount)
+		x := input.Message.Interface().(*MsgAddBlacklistAccounts)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -393,10 +453,10 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccount: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccounts: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccounts: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -433,7 +493,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccount", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccounts", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -461,7 +521,7 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.BlacklistAccount = string(dAtA[iNdEx:postIndex])
+				x.BlacklistAccounts = append(x.BlacklistAccounts, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -499,23 +559,23 @@ func (x *fastReflection_MsgAddBlacklistAccount) ProtoMethods() *protoiface.Metho
 }
 
 var (
-	md_MsgAddBlacklistAccountResponse protoreflect.MessageDescriptor
+	md_MsgAddBlacklistAccountsResponse protoreflect.MessageDescriptor
 )
 
 func init() {
 	file_mantrachain_sanction_v1_tx_proto_init()
-	md_MsgAddBlacklistAccountResponse = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgAddBlacklistAccountResponse")
+	md_MsgAddBlacklistAccountsResponse = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgAddBlacklistAccountsResponse")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgAddBlacklistAccountResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgAddBlacklistAccountsResponse)(nil)
 
-type fastReflection_MsgAddBlacklistAccountResponse MsgAddBlacklistAccountResponse
+type fastReflection_MsgAddBlacklistAccountsResponse MsgAddBlacklistAccountsResponse
 
-func (x *MsgAddBlacklistAccountResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgAddBlacklistAccountResponse)(x)
+func (x *MsgAddBlacklistAccountsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAddBlacklistAccountsResponse)(x)
 }
 
-func (x *MsgAddBlacklistAccountResponse) slowProtoReflect() protoreflect.Message {
+func (x *MsgAddBlacklistAccountsResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -527,43 +587,43 @@ func (x *MsgAddBlacklistAccountResponse) slowProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAddBlacklistAccountResponse_messageType fastReflection_MsgAddBlacklistAccountResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAddBlacklistAccountResponse_messageType{}
+var _fastReflection_MsgAddBlacklistAccountsResponse_messageType fastReflection_MsgAddBlacklistAccountsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAddBlacklistAccountsResponse_messageType{}
 
-type fastReflection_MsgAddBlacklistAccountResponse_messageType struct{}
+type fastReflection_MsgAddBlacklistAccountsResponse_messageType struct{}
 
-func (x fastReflection_MsgAddBlacklistAccountResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgAddBlacklistAccountResponse)(nil)
+func (x fastReflection_MsgAddBlacklistAccountsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAddBlacklistAccountsResponse)(nil)
 }
-func (x fastReflection_MsgAddBlacklistAccountResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgAddBlacklistAccountResponse)
+func (x fastReflection_MsgAddBlacklistAccountsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAddBlacklistAccountsResponse)
 }
-func (x fastReflection_MsgAddBlacklistAccountResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAddBlacklistAccountResponse
+func (x fastReflection_MsgAddBlacklistAccountsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAddBlacklistAccountsResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAddBlacklistAccountResponse
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAddBlacklistAccountsResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Type() protoreflect.MessageType {
-	return _fastReflection_MsgAddBlacklistAccountResponse_messageType
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAddBlacklistAccountsResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) New() protoreflect.Message {
-	return new(fastReflection_MsgAddBlacklistAccountResponse)
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgAddBlacklistAccountsResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Interface() protoreflect.ProtoMessage {
-	return (*MsgAddBlacklistAccountResponse)(x)
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgAddBlacklistAccountsResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -571,7 +631,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Interface() protoreflect
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 }
 
 // Has reports whether a field is populated.
@@ -585,13 +645,13 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Range(f func(protoreflec
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -601,13 +661,13 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Has(fd protoreflect.Fiel
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -617,13 +677,13 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Clear(fd protoreflect.Fi
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -637,13 +697,13 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Get(descriptor protorefl
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -657,36 +717,36 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) Set(fd protoreflect.Fiel
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgAddBlacklistAccountResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -694,7 +754,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) WhichOneof(d protoreflec
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -705,7 +765,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) GetUnknown() protoreflec
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -717,7 +777,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) SetUnknown(fields protor
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) IsValid() bool {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -727,9 +787,9 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgAddBlacklistAccountResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgAddBlacklistAccountsResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgAddBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgAddBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -751,7 +811,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) ProtoMethods() *protoifa
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAddBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgAddBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -781,7 +841,7 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) ProtoMethods() *protoifa
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAddBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgAddBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -813,10 +873,10 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) ProtoMethods() *protoifa
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccountResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			default:
@@ -854,28 +914,74 @@ func (x *fastReflection_MsgAddBlacklistAccountResponse) ProtoMethods() *protoifa
 	}
 }
 
+var _ protoreflect.List = (*_MsgRemoveBlacklistAccounts_2_list)(nil)
+
+type _MsgRemoveBlacklistAccounts_2_list struct {
+	list *[]string
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message MsgRemoveBlacklistAccounts at list field BlacklistAccounts as it is not of Message kind"))
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_MsgRemoveBlacklistAccounts_2_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_MsgRemoveBlacklistAccount                   protoreflect.MessageDescriptor
-	fd_MsgRemoveBlacklistAccount_authority         protoreflect.FieldDescriptor
-	fd_MsgRemoveBlacklistAccount_blacklist_account protoreflect.FieldDescriptor
+	md_MsgRemoveBlacklistAccounts                    protoreflect.MessageDescriptor
+	fd_MsgRemoveBlacklistAccounts_authority          protoreflect.FieldDescriptor
+	fd_MsgRemoveBlacklistAccounts_blacklist_accounts protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_mantrachain_sanction_v1_tx_proto_init()
-	md_MsgRemoveBlacklistAccount = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgRemoveBlacklistAccount")
-	fd_MsgRemoveBlacklistAccount_authority = md_MsgRemoveBlacklistAccount.Fields().ByName("authority")
-	fd_MsgRemoveBlacklistAccount_blacklist_account = md_MsgRemoveBlacklistAccount.Fields().ByName("blacklist_account")
+	md_MsgRemoveBlacklistAccounts = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgRemoveBlacklistAccounts")
+	fd_MsgRemoveBlacklistAccounts_authority = md_MsgRemoveBlacklistAccounts.Fields().ByName("authority")
+	fd_MsgRemoveBlacklistAccounts_blacklist_accounts = md_MsgRemoveBlacklistAccounts.Fields().ByName("blacklist_accounts")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgRemoveBlacklistAccount)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgRemoveBlacklistAccounts)(nil)
 
-type fastReflection_MsgRemoveBlacklistAccount MsgRemoveBlacklistAccount
+type fastReflection_MsgRemoveBlacklistAccounts MsgRemoveBlacklistAccounts
 
-func (x *MsgRemoveBlacklistAccount) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgRemoveBlacklistAccount)(x)
+func (x *MsgRemoveBlacklistAccounts) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgRemoveBlacklistAccounts)(x)
 }
 
-func (x *MsgRemoveBlacklistAccount) slowProtoReflect() protoreflect.Message {
+func (x *MsgRemoveBlacklistAccounts) slowProtoReflect() protoreflect.Message {
 	mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -887,43 +993,43 @@ func (x *MsgRemoveBlacklistAccount) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgRemoveBlacklistAccount_messageType fastReflection_MsgRemoveBlacklistAccount_messageType
-var _ protoreflect.MessageType = fastReflection_MsgRemoveBlacklistAccount_messageType{}
+var _fastReflection_MsgRemoveBlacklistAccounts_messageType fastReflection_MsgRemoveBlacklistAccounts_messageType
+var _ protoreflect.MessageType = fastReflection_MsgRemoveBlacklistAccounts_messageType{}
 
-type fastReflection_MsgRemoveBlacklistAccount_messageType struct{}
+type fastReflection_MsgRemoveBlacklistAccounts_messageType struct{}
 
-func (x fastReflection_MsgRemoveBlacklistAccount_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgRemoveBlacklistAccount)(nil)
+func (x fastReflection_MsgRemoveBlacklistAccounts_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgRemoveBlacklistAccounts)(nil)
 }
-func (x fastReflection_MsgRemoveBlacklistAccount_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgRemoveBlacklistAccount)
+func (x fastReflection_MsgRemoveBlacklistAccounts_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgRemoveBlacklistAccounts)
 }
-func (x fastReflection_MsgRemoveBlacklistAccount_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgRemoveBlacklistAccount
+func (x fastReflection_MsgRemoveBlacklistAccounts_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgRemoveBlacklistAccounts
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgRemoveBlacklistAccount
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgRemoveBlacklistAccounts
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Type() protoreflect.MessageType {
-	return _fastReflection_MsgRemoveBlacklistAccount_messageType
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Type() protoreflect.MessageType {
+	return _fastReflection_MsgRemoveBlacklistAccounts_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgRemoveBlacklistAccount) New() protoreflect.Message {
-	return new(fastReflection_MsgRemoveBlacklistAccount)
+func (x *fastReflection_MsgRemoveBlacklistAccounts) New() protoreflect.Message {
+	return new(fastReflection_MsgRemoveBlacklistAccounts)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Interface() protoreflect.ProtoMessage {
-	return (*MsgRemoveBlacklistAccount)(x)
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Interface() protoreflect.ProtoMessage {
+	return (*MsgRemoveBlacklistAccounts)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -931,16 +1037,16 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Interface() protoreflect.Prot
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Authority != "" {
 		value := protoreflect.ValueOfString(x.Authority)
-		if !f(fd_MsgRemoveBlacklistAccount_authority, value) {
+		if !f(fd_MsgRemoveBlacklistAccounts_authority, value) {
 			return
 		}
 	}
-	if x.BlacklistAccount != "" {
-		value := protoreflect.ValueOfString(x.BlacklistAccount)
-		if !f(fd_MsgRemoveBlacklistAccount_blacklist_account, value) {
+	if len(x.BlacklistAccounts) != 0 {
+		value := protoreflect.ValueOfList(&_MsgRemoveBlacklistAccounts_2_list{list: &x.BlacklistAccounts})
+		if !f(fd_MsgRemoveBlacklistAccounts_blacklist_accounts, value) {
 			return
 		}
 	}
@@ -957,17 +1063,17 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Range(f func(protoreflect.Fie
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
 		return x.Authority != ""
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		return x.BlacklistAccount != ""
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		return len(x.BlacklistAccounts) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -977,17 +1083,17 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Has(fd protoreflect.FieldDesc
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
 		x.Authority = ""
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		x.BlacklistAccount = ""
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		x.BlacklistAccounts = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -997,19 +1103,22 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Clear(fd protoreflect.FieldDe
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
 		value := x.Authority
 		return protoreflect.ValueOfString(value)
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		value := x.BlacklistAccount
-		return protoreflect.ValueOfString(value)
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		if len(x.BlacklistAccounts) == 0 {
+			return protoreflect.ValueOfList(&_MsgRemoveBlacklistAccounts_2_list{})
+		}
+		listValue := &_MsgRemoveBlacklistAccounts_2_list{list: &x.BlacklistAccounts}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1023,17 +1132,19 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Get(descriptor protoreflect.F
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
 		x.Authority = value.Interface().(string)
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		x.BlacklistAccount = value.Interface().(string)
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		lv := value.List()
+		clv := lv.(*_MsgRemoveBlacklistAccounts_2_list)
+		x.BlacklistAccounts = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1047,44 +1158,49 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) Set(fd protoreflect.FieldDesc
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccount) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
-		panic(fmt.Errorf("field authority of message mantrachain.sanction.v1.MsgRemoveBlacklistAccount is not mutable"))
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		panic(fmt.Errorf("field blacklist_account of message mantrachain.sanction.v1.MsgRemoveBlacklistAccount is not mutable"))
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		if x.BlacklistAccounts == nil {
+			x.BlacklistAccounts = []string{}
+		}
+		value := &_MsgRemoveBlacklistAccounts_2_list{list: &x.BlacklistAccounts}
+		return protoreflect.ValueOfList(value)
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
+		panic(fmt.Errorf("field authority of message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgRemoveBlacklistAccount) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.authority":
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.authority":
 		return protoreflect.ValueOfString("")
-	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccount.blacklist_account":
-		return protoreflect.ValueOfString("")
+	case "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts.blacklist_accounts":
+		list := []string{}
+		return protoreflect.ValueOfList(&_MsgRemoveBlacklistAccounts_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccount"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccount does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccounts does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgRemoveBlacklistAccount) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgRemoveBlacklistAccount", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgRemoveBlacklistAccounts", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1092,7 +1208,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) WhichOneof(d protoreflect.One
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgRemoveBlacklistAccount) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1103,7 +1219,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) GetUnknown() protoreflect.Raw
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccount) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1115,7 +1231,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) SetUnknown(fields protoreflec
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgRemoveBlacklistAccount) IsValid() bool {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) IsValid() bool {
 	return x != nil
 }
 
@@ -1125,9 +1241,9 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgRemoveBlacklistAccounts) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccount)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccounts)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1143,9 +1259,11 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.BlacklistAccount)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if len(x.BlacklistAccounts) > 0 {
+			for _, s := range x.BlacklistAccounts {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1157,7 +1275,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccount)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccounts)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1176,12 +1294,14 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.BlacklistAccount) > 0 {
-			i -= len(x.BlacklistAccount)
-			copy(dAtA[i:], x.BlacklistAccount)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BlacklistAccount)))
-			i--
-			dAtA[i] = 0x12
+		if len(x.BlacklistAccounts) > 0 {
+			for iNdEx := len(x.BlacklistAccounts) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.BlacklistAccounts[iNdEx])
+				copy(dAtA[i:], x.BlacklistAccounts[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BlacklistAccounts[iNdEx])))
+				i--
+				dAtA[i] = 0x12
+			}
 		}
 		if len(x.Authority) > 0 {
 			i -= len(x.Authority)
@@ -1201,7 +1321,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccount)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccounts)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1233,10 +1353,10 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccount: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccounts: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccounts: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1273,7 +1393,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccount", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccounts", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1301,7 +1421,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.BlacklistAccount = string(dAtA[iNdEx:postIndex])
+				x.BlacklistAccounts = append(x.BlacklistAccounts, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1339,23 +1459,23 @@ func (x *fastReflection_MsgRemoveBlacklistAccount) ProtoMethods() *protoiface.Me
 }
 
 var (
-	md_MsgRemoveBlacklistAccountResponse protoreflect.MessageDescriptor
+	md_MsgRemoveBlacklistAccountsResponse protoreflect.MessageDescriptor
 )
 
 func init() {
 	file_mantrachain_sanction_v1_tx_proto_init()
-	md_MsgRemoveBlacklistAccountResponse = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgRemoveBlacklistAccountResponse")
+	md_MsgRemoveBlacklistAccountsResponse = File_mantrachain_sanction_v1_tx_proto.Messages().ByName("MsgRemoveBlacklistAccountsResponse")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgRemoveBlacklistAccountResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgRemoveBlacklistAccountsResponse)(nil)
 
-type fastReflection_MsgRemoveBlacklistAccountResponse MsgRemoveBlacklistAccountResponse
+type fastReflection_MsgRemoveBlacklistAccountsResponse MsgRemoveBlacklistAccountsResponse
 
-func (x *MsgRemoveBlacklistAccountResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgRemoveBlacklistAccountResponse)(x)
+func (x *MsgRemoveBlacklistAccountsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgRemoveBlacklistAccountsResponse)(x)
 }
 
-func (x *MsgRemoveBlacklistAccountResponse) slowProtoReflect() protoreflect.Message {
+func (x *MsgRemoveBlacklistAccountsResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1367,43 +1487,43 @@ func (x *MsgRemoveBlacklistAccountResponse) slowProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgRemoveBlacklistAccountResponse_messageType fastReflection_MsgRemoveBlacklistAccountResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgRemoveBlacklistAccountResponse_messageType{}
+var _fastReflection_MsgRemoveBlacklistAccountsResponse_messageType fastReflection_MsgRemoveBlacklistAccountsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgRemoveBlacklistAccountsResponse_messageType{}
 
-type fastReflection_MsgRemoveBlacklistAccountResponse_messageType struct{}
+type fastReflection_MsgRemoveBlacklistAccountsResponse_messageType struct{}
 
-func (x fastReflection_MsgRemoveBlacklistAccountResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgRemoveBlacklistAccountResponse)(nil)
+func (x fastReflection_MsgRemoveBlacklistAccountsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgRemoveBlacklistAccountsResponse)(nil)
 }
-func (x fastReflection_MsgRemoveBlacklistAccountResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgRemoveBlacklistAccountResponse)
+func (x fastReflection_MsgRemoveBlacklistAccountsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgRemoveBlacklistAccountsResponse)
 }
-func (x fastReflection_MsgRemoveBlacklistAccountResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgRemoveBlacklistAccountResponse
+func (x fastReflection_MsgRemoveBlacklistAccountsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgRemoveBlacklistAccountsResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgRemoveBlacklistAccountResponse
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgRemoveBlacklistAccountsResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Type() protoreflect.MessageType {
-	return _fastReflection_MsgRemoveBlacklistAccountResponse_messageType
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgRemoveBlacklistAccountsResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) New() protoreflect.Message {
-	return new(fastReflection_MsgRemoveBlacklistAccountResponse)
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgRemoveBlacklistAccountsResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Interface() protoreflect.ProtoMessage {
-	return (*MsgRemoveBlacklistAccountResponse)(x)
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgRemoveBlacklistAccountsResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1411,7 +1531,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Interface() protorefl
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 }
 
 // Has reports whether a field is populated.
@@ -1425,13 +1545,13 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Range(f func(protoref
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1441,13 +1561,13 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Has(fd protoreflect.F
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1457,13 +1577,13 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Clear(fd protoreflect
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1477,13 +1597,13 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Get(descriptor protor
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1497,36 +1617,36 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Set(fd protoreflect.F
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse"))
 		}
-		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1534,7 +1654,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) WhichOneof(d protoref
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1545,7 +1665,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) GetUnknown() protoref
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1557,7 +1677,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) SetUnknown(fields pro
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) IsValid() bool {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -1567,9 +1687,9 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgRemoveBlacklistAccountResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgRemoveBlacklistAccountsResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1591,7 +1711,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) ProtoMethods() *proto
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1621,7 +1741,7 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) ProtoMethods() *proto
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgRemoveBlacklistAccountResponse)
+		x := input.Message.Interface().(*MsgRemoveBlacklistAccountsResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1653,10 +1773,10 @@ func (x *fastReflection_MsgRemoveBlacklistAccountResponse) ProtoMethods() *proto
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccountResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			default:
@@ -1707,18 +1827,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// MsgAddBlacklistAccount is the message type for adding an account to the blacklist.
-type MsgAddBlacklistAccount struct {
+// MsgAddBlacklistAccounts is the message type for adding an account to the blacklist.
+type MsgAddBlacklistAccounts struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Authority        string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	BlacklistAccount string `protobuf:"bytes,2,opt,name=blacklist_account,json=blacklistAccount,proto3" json:"blacklist_account,omitempty"`
+	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
 }
 
-func (x *MsgAddBlacklistAccount) Reset() {
-	*x = MsgAddBlacklistAccount{}
+func (x *MsgAddBlacklistAccounts) Reset() {
+	*x = MsgAddBlacklistAccounts{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1726,40 +1846,40 @@ func (x *MsgAddBlacklistAccount) Reset() {
 	}
 }
 
-func (x *MsgAddBlacklistAccount) String() string {
+func (x *MsgAddBlacklistAccounts) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAddBlacklistAccount) ProtoMessage() {}
+func (*MsgAddBlacklistAccounts) ProtoMessage() {}
 
-// Deprecated: Use MsgAddBlacklistAccount.ProtoReflect.Descriptor instead.
-func (*MsgAddBlacklistAccount) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAddBlacklistAccounts.ProtoReflect.Descriptor instead.
+func (*MsgAddBlacklistAccounts) Descriptor() ([]byte, []int) {
 	return file_mantrachain_sanction_v1_tx_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *MsgAddBlacklistAccount) GetAuthority() string {
+func (x *MsgAddBlacklistAccounts) GetAuthority() string {
 	if x != nil {
 		return x.Authority
 	}
 	return ""
 }
 
-func (x *MsgAddBlacklistAccount) GetBlacklistAccount() string {
+func (x *MsgAddBlacklistAccounts) GetBlacklistAccounts() []string {
 	if x != nil {
-		return x.BlacklistAccount
+		return x.BlacklistAccounts
 	}
-	return ""
+	return nil
 }
 
-// MsgAddBlacklistAccountResponse defines the response type for adding an account to the blacklist.
-type MsgAddBlacklistAccountResponse struct {
+// MsgAddBlacklistAccountsResponse defines the response type for adding an account to the blacklist.
+type MsgAddBlacklistAccountsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *MsgAddBlacklistAccountResponse) Reset() {
-	*x = MsgAddBlacklistAccountResponse{}
+func (x *MsgAddBlacklistAccountsResponse) Reset() {
+	*x = MsgAddBlacklistAccountsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1767,29 +1887,29 @@ func (x *MsgAddBlacklistAccountResponse) Reset() {
 	}
 }
 
-func (x *MsgAddBlacklistAccountResponse) String() string {
+func (x *MsgAddBlacklistAccountsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAddBlacklistAccountResponse) ProtoMessage() {}
+func (*MsgAddBlacklistAccountsResponse) ProtoMessage() {}
 
-// Deprecated: Use MsgAddBlacklistAccountResponse.ProtoReflect.Descriptor instead.
-func (*MsgAddBlacklistAccountResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAddBlacklistAccountsResponse.ProtoReflect.Descriptor instead.
+func (*MsgAddBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
 	return file_mantrachain_sanction_v1_tx_proto_rawDescGZIP(), []int{1}
 }
 
-// MsgRemoveBlacklistAccount is the message type for removing an account from the blacklist.
-type MsgRemoveBlacklistAccount struct {
+// MsgRemoveBlacklistAccounts is the message type for removing an account from the blacklist.
+type MsgRemoveBlacklistAccounts struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Authority        string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	BlacklistAccount string `protobuf:"bytes,2,opt,name=blacklist_account,json=blacklistAccount,proto3" json:"blacklist_account,omitempty"`
+	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
 }
 
-func (x *MsgRemoveBlacklistAccount) Reset() {
-	*x = MsgRemoveBlacklistAccount{}
+func (x *MsgRemoveBlacklistAccounts) Reset() {
+	*x = MsgRemoveBlacklistAccounts{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1797,40 +1917,40 @@ func (x *MsgRemoveBlacklistAccount) Reset() {
 	}
 }
 
-func (x *MsgRemoveBlacklistAccount) String() string {
+func (x *MsgRemoveBlacklistAccounts) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgRemoveBlacklistAccount) ProtoMessage() {}
+func (*MsgRemoveBlacklistAccounts) ProtoMessage() {}
 
-// Deprecated: Use MsgRemoveBlacklistAccount.ProtoReflect.Descriptor instead.
-func (*MsgRemoveBlacklistAccount) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgRemoveBlacklistAccounts.ProtoReflect.Descriptor instead.
+func (*MsgRemoveBlacklistAccounts) Descriptor() ([]byte, []int) {
 	return file_mantrachain_sanction_v1_tx_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *MsgRemoveBlacklistAccount) GetAuthority() string {
+func (x *MsgRemoveBlacklistAccounts) GetAuthority() string {
 	if x != nil {
 		return x.Authority
 	}
 	return ""
 }
 
-func (x *MsgRemoveBlacklistAccount) GetBlacklistAccount() string {
+func (x *MsgRemoveBlacklistAccounts) GetBlacklistAccounts() []string {
 	if x != nil {
-		return x.BlacklistAccount
+		return x.BlacklistAccounts
 	}
-	return ""
+	return nil
 }
 
-// MsgRemoveBlacklistAccountResponse defines the response type for removing an account from the blacklist.
-type MsgRemoveBlacklistAccountResponse struct {
+// MsgRemoveBlacklistAccountsResponse defines the response type for removing an account from the blacklist.
+type MsgRemoveBlacklistAccountsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *MsgRemoveBlacklistAccountResponse) Reset() {
-	*x = MsgRemoveBlacklistAccountResponse{}
+func (x *MsgRemoveBlacklistAccountsResponse) Reset() {
+	*x = MsgRemoveBlacklistAccountsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_mantrachain_sanction_v1_tx_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1838,14 +1958,14 @@ func (x *MsgRemoveBlacklistAccountResponse) Reset() {
 	}
 }
 
-func (x *MsgRemoveBlacklistAccountResponse) String() string {
+func (x *MsgRemoveBlacklistAccountsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgRemoveBlacklistAccountResponse) ProtoMessage() {}
+func (*MsgRemoveBlacklistAccountsResponse) ProtoMessage() {}
 
-// Deprecated: Use MsgRemoveBlacklistAccountResponse.ProtoReflect.Descriptor instead.
-func (*MsgRemoveBlacklistAccountResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgRemoveBlacklistAccountsResponse.ProtoReflect.Descriptor instead.
+func (*MsgRemoveBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
 	return file_mantrachain_sanction_v1_tx_proto_rawDescGZIP(), []int{3}
 }
 
@@ -1859,66 +1979,67 @@ var file_mantrachain_sanction_v1_tx_proto_rawDesc = []byte{
 	0x6d, 0x6f, 0x73, 0x2f, 0x6d, 0x73, 0x67, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x73, 0x67, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0xa7, 0x01, 0x0a, 0x16, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c,
-	0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75,
-	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
-	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69,
-	0x74, 0x79, 0x12, 0x45, 0x0a, 0x11, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x5f,
-	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
-	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
-	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x10, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69,
-	0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x0e, 0x82, 0xe7, 0xb0, 0x2a, 0x09,
-	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22, 0x20, 0x0a, 0x1e, 0x4d, 0x73, 0x67,
-	0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xaa, 0x01, 0x0a, 0x19,
-	0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69,
-	0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74,
-	0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
-	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74,
-	0x79, 0x12, 0x45, 0x0a, 0x11, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x5f, 0x61,
-	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4,
-	0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x10, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73,
-	0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x0e, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61,
-	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22, 0x23, 0x0a, 0x21, 0x4d, 0x73, 0x67, 0x52,
-	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63,
-	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x98, 0x02,
-	0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x7f, 0x0a, 0x13, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63,
-	0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2f, 0x2e, 0x6d,
-	0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61,
-	0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x1a, 0x37, 0x2e,
-	0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c,
-	0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x88, 0x01, 0x0a, 0x16, 0x52, 0x65, 0x6d, 0x6f, 0x76,
-	0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x12, 0x32, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e,
-	0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x52,
-	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63,
-	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x1a, 0x3a, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68,
-	0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e,
-	0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69,
-	0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xf0, 0x01, 0x0a, 0x1b, 0x63, 0x6f, 0x6d,
+	0xaa, 0x01, 0x0a, 0x17, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c,
+	0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x36, 0x0a, 0x09, 0x61,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18,
+	0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
+	0x69, 0x74, 0x79, 0x12, 0x47, 0x0a, 0x12, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74,
+	0x5f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x42,
+	0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x11, 0x62, 0x6c, 0x61, 0x63, 0x6b,
+	0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x3a, 0x0e, 0x82, 0xe7,
+	0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22, 0x21, 0x0a, 0x1f,
+	0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41,
+	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0xad, 0x01, 0x0a, 0x1a, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61,
+	0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x36,
+	0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x47, 0x0a, 0x12, 0x62, 0x6c, 0x61, 0x63, 0x6b, 0x6c,
+	0x69, 0x73, 0x74, 0x5f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x11, 0x62, 0x6c,
+	0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x3a,
+	0x0e, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22,
+	0x24, 0x0a, 0x22, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63,
+	0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x9f, 0x02, 0x0a, 0x03, 0x4d, 0x73, 0x67, 0x12, 0x82, 0x01,
+	0x0a, 0x14, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x30, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63,
+	0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
+	0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74,
+	0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x1a, 0x38, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72,
+	0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e,
+	0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x64, 0x64, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69,
+	0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x8b, 0x01, 0x0a, 0x17, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61,
+	0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x33,
 	0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x4a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x4d, 0x41, 0x4e, 0x54, 0x52, 0x41, 0x2d, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x6d, 0x61, 0x6e,
-	0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x6e,
-	0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x2f, 0x76, 0x31, 0x3b, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x76, 0x31, 0xa2,
-	0x02, 0x03, 0x4d, 0x53, 0x58, 0xaa, 0x02, 0x17, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68,
-	0x61, 0x69, 0x6e, 0x2e, 0x53, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca,
-	0x02, 0x17, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x53, 0x61,
-	0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x23, 0x4d, 0x61, 0x6e, 0x74,
-	0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x53, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
-	0x02, 0x19, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x3a, 0x3a, 0x53,
-	0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x73, 0x1a, 0x3b, 0x2e, 0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69,
+	0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73,
+	0x67, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x42, 0x6c, 0x61, 0x63, 0x6b, 0x6c, 0x69, 0x73, 0x74,
+	0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0xf0, 0x01, 0x0a, 0x1b, 0x63, 0x6f, 0x6d, 0x2e,
+	0x6d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2e, 0x73, 0x61, 0x6e, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x07, 0x54, 0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f,
+	0x50, 0x01, 0x5a, 0x4a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x4d,
+	0x41, 0x4e, 0x54, 0x52, 0x41, 0x2d, 0x43, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x6d, 0x61, 0x6e, 0x74,
+	0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x6e, 0x74,
+	0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x2f, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x2f, 0x76, 0x31, 0x3b, 0x73, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x4d, 0x53, 0x58, 0xaa, 0x02, 0x17, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61,
+	0x69, 0x6e, 0x2e, 0x53, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02,
+	0x17, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x53, 0x61, 0x6e,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x23, 0x4d, 0x61, 0x6e, 0x74, 0x72,
+	0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5c, 0x53, 0x61, 0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5c,
+	0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x19, 0x4d, 0x61, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x3a, 0x3a, 0x53, 0x61,
+	0x6e, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -1935,16 +2056,16 @@ func file_mantrachain_sanction_v1_tx_proto_rawDescGZIP() []byte {
 
 var file_mantrachain_sanction_v1_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_mantrachain_sanction_v1_tx_proto_goTypes = []interface{}{
-	(*MsgAddBlacklistAccount)(nil),            // 0: mantrachain.sanction.v1.MsgAddBlacklistAccount
-	(*MsgAddBlacklistAccountResponse)(nil),    // 1: mantrachain.sanction.v1.MsgAddBlacklistAccountResponse
-	(*MsgRemoveBlacklistAccount)(nil),         // 2: mantrachain.sanction.v1.MsgRemoveBlacklistAccount
-	(*MsgRemoveBlacklistAccountResponse)(nil), // 3: mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse
+	(*MsgAddBlacklistAccounts)(nil),            // 0: mantrachain.sanction.v1.MsgAddBlacklistAccounts
+	(*MsgAddBlacklistAccountsResponse)(nil),    // 1: mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse
+	(*MsgRemoveBlacklistAccounts)(nil),         // 2: mantrachain.sanction.v1.MsgRemoveBlacklistAccounts
+	(*MsgRemoveBlacklistAccountsResponse)(nil), // 3: mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse
 }
 var file_mantrachain_sanction_v1_tx_proto_depIdxs = []int32{
-	0, // 0: mantrachain.sanction.v1.Msg.AddBlacklistAccount:input_type -> mantrachain.sanction.v1.MsgAddBlacklistAccount
-	2, // 1: mantrachain.sanction.v1.Msg.RemoveBlacklistAccount:input_type -> mantrachain.sanction.v1.MsgRemoveBlacklistAccount
-	1, // 2: mantrachain.sanction.v1.Msg.AddBlacklistAccount:output_type -> mantrachain.sanction.v1.MsgAddBlacklistAccountResponse
-	3, // 3: mantrachain.sanction.v1.Msg.RemoveBlacklistAccount:output_type -> mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse
+	0, // 0: mantrachain.sanction.v1.Msg.AddBlacklistAccounts:input_type -> mantrachain.sanction.v1.MsgAddBlacklistAccounts
+	2, // 1: mantrachain.sanction.v1.Msg.RemoveBlacklistAccounts:input_type -> mantrachain.sanction.v1.MsgRemoveBlacklistAccounts
+	1, // 2: mantrachain.sanction.v1.Msg.AddBlacklistAccounts:output_type -> mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse
+	3, // 3: mantrachain.sanction.v1.Msg.RemoveBlacklistAccounts:output_type -> mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -1959,7 +2080,7 @@ func file_mantrachain_sanction_v1_tx_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_mantrachain_sanction_v1_tx_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAddBlacklistAccount); i {
+			switch v := v.(*MsgAddBlacklistAccounts); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1971,7 +2092,7 @@ func file_mantrachain_sanction_v1_tx_proto_init() {
 			}
 		}
 		file_mantrachain_sanction_v1_tx_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAddBlacklistAccountResponse); i {
+			switch v := v.(*MsgAddBlacklistAccountsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1983,7 +2104,7 @@ func file_mantrachain_sanction_v1_tx_proto_init() {
 			}
 		}
 		file_mantrachain_sanction_v1_tx_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemoveBlacklistAccount); i {
+			switch v := v.(*MsgRemoveBlacklistAccounts); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1995,7 +2116,7 @@ func file_mantrachain_sanction_v1_tx_proto_init() {
 			}
 		}
 		file_mantrachain_sanction_v1_tx_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgRemoveBlacklistAccountResponse); i {
+			switch v := v.(*MsgRemoveBlacklistAccountsResponse); i {
 			case 0:
 				return &v.state
 			case 1:

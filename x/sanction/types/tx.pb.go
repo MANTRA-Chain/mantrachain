@@ -29,24 +29,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgAddBlacklistAccount is the message type for adding an account to the blacklist.
-type MsgAddBlacklistAccount struct {
-	Authority        string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	BlacklistAccount string `protobuf:"bytes,2,opt,name=blacklist_account,json=blacklistAccount,proto3" json:"blacklist_account,omitempty"`
+// MsgAddBlacklistAccounts is the message type for adding an account to the blacklist.
+type MsgAddBlacklistAccounts struct {
+	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
 }
 
-func (m *MsgAddBlacklistAccount) Reset()         { *m = MsgAddBlacklistAccount{} }
-func (m *MsgAddBlacklistAccount) String() string { return proto.CompactTextString(m) }
-func (*MsgAddBlacklistAccount) ProtoMessage()    {}
-func (*MsgAddBlacklistAccount) Descriptor() ([]byte, []int) {
+func (m *MsgAddBlacklistAccounts) Reset()         { *m = MsgAddBlacklistAccounts{} }
+func (m *MsgAddBlacklistAccounts) String() string { return proto.CompactTextString(m) }
+func (*MsgAddBlacklistAccounts) ProtoMessage()    {}
+func (*MsgAddBlacklistAccounts) Descriptor() ([]byte, []int) {
 	return fileDescriptor_420bae018367226c, []int{0}
 }
-func (m *MsgAddBlacklistAccount) XXX_Unmarshal(b []byte) error {
+func (m *MsgAddBlacklistAccounts) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddBlacklistAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAddBlacklistAccounts) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddBlacklistAccount.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAddBlacklistAccounts.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -56,48 +56,48 @@ func (m *MsgAddBlacklistAccount) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *MsgAddBlacklistAccount) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddBlacklistAccount.Merge(m, src)
+func (m *MsgAddBlacklistAccounts) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddBlacklistAccounts.Merge(m, src)
 }
-func (m *MsgAddBlacklistAccount) XXX_Size() int {
+func (m *MsgAddBlacklistAccounts) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddBlacklistAccount) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddBlacklistAccount.DiscardUnknown(m)
+func (m *MsgAddBlacklistAccounts) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddBlacklistAccounts.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddBlacklistAccount proto.InternalMessageInfo
+var xxx_messageInfo_MsgAddBlacklistAccounts proto.InternalMessageInfo
 
-func (m *MsgAddBlacklistAccount) GetAuthority() string {
+func (m *MsgAddBlacklistAccounts) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAddBlacklistAccount) GetBlacklistAccount() string {
+func (m *MsgAddBlacklistAccounts) GetBlacklistAccounts() []string {
 	if m != nil {
-		return m.BlacklistAccount
+		return m.BlacklistAccounts
 	}
-	return ""
+	return nil
 }
 
-// MsgAddBlacklistAccountResponse defines the response type for adding an account to the blacklist.
-type MsgAddBlacklistAccountResponse struct {
+// MsgAddBlacklistAccountsResponse defines the response type for adding an account to the blacklist.
+type MsgAddBlacklistAccountsResponse struct {
 }
 
-func (m *MsgAddBlacklistAccountResponse) Reset()         { *m = MsgAddBlacklistAccountResponse{} }
-func (m *MsgAddBlacklistAccountResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgAddBlacklistAccountResponse) ProtoMessage()    {}
-func (*MsgAddBlacklistAccountResponse) Descriptor() ([]byte, []int) {
+func (m *MsgAddBlacklistAccountsResponse) Reset()         { *m = MsgAddBlacklistAccountsResponse{} }
+func (m *MsgAddBlacklistAccountsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddBlacklistAccountsResponse) ProtoMessage()    {}
+func (*MsgAddBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_420bae018367226c, []int{1}
 }
-func (m *MsgAddBlacklistAccountResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAddBlacklistAccountsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAddBlacklistAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAddBlacklistAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAddBlacklistAccountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAddBlacklistAccountsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -107,36 +107,36 @@ func (m *MsgAddBlacklistAccountResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *MsgAddBlacklistAccountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddBlacklistAccountResponse.Merge(m, src)
+func (m *MsgAddBlacklistAccountsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddBlacklistAccountsResponse.Merge(m, src)
 }
-func (m *MsgAddBlacklistAccountResponse) XXX_Size() int {
+func (m *MsgAddBlacklistAccountsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAddBlacklistAccountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddBlacklistAccountResponse.DiscardUnknown(m)
+func (m *MsgAddBlacklistAccountsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddBlacklistAccountsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAddBlacklistAccountResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAddBlacklistAccountsResponse proto.InternalMessageInfo
 
-// MsgRemoveBlacklistAccount is the message type for removing an account from the blacklist.
-type MsgRemoveBlacklistAccount struct {
-	Authority        string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	BlacklistAccount string `protobuf:"bytes,2,opt,name=blacklist_account,json=blacklistAccount,proto3" json:"blacklist_account,omitempty"`
+// MsgRemoveBlacklistAccounts is the message type for removing an account from the blacklist.
+type MsgRemoveBlacklistAccounts struct {
+	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
 }
 
-func (m *MsgRemoveBlacklistAccount) Reset()         { *m = MsgRemoveBlacklistAccount{} }
-func (m *MsgRemoveBlacklistAccount) String() string { return proto.CompactTextString(m) }
-func (*MsgRemoveBlacklistAccount) ProtoMessage()    {}
-func (*MsgRemoveBlacklistAccount) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveBlacklistAccounts) Reset()         { *m = MsgRemoveBlacklistAccounts{} }
+func (m *MsgRemoveBlacklistAccounts) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveBlacklistAccounts) ProtoMessage()    {}
+func (*MsgRemoveBlacklistAccounts) Descriptor() ([]byte, []int) {
 	return fileDescriptor_420bae018367226c, []int{2}
 }
-func (m *MsgRemoveBlacklistAccount) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveBlacklistAccounts) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRemoveBlacklistAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveBlacklistAccounts) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRemoveBlacklistAccount.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveBlacklistAccounts.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -146,48 +146,48 @@ func (m *MsgRemoveBlacklistAccount) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgRemoveBlacklistAccount) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRemoveBlacklistAccount.Merge(m, src)
+func (m *MsgRemoveBlacklistAccounts) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveBlacklistAccounts.Merge(m, src)
 }
-func (m *MsgRemoveBlacklistAccount) XXX_Size() int {
+func (m *MsgRemoveBlacklistAccounts) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRemoveBlacklistAccount) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRemoveBlacklistAccount.DiscardUnknown(m)
+func (m *MsgRemoveBlacklistAccounts) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveBlacklistAccounts.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRemoveBlacklistAccount proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveBlacklistAccounts proto.InternalMessageInfo
 
-func (m *MsgRemoveBlacklistAccount) GetAuthority() string {
+func (m *MsgRemoveBlacklistAccounts) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgRemoveBlacklistAccount) GetBlacklistAccount() string {
+func (m *MsgRemoveBlacklistAccounts) GetBlacklistAccounts() []string {
 	if m != nil {
-		return m.BlacklistAccount
+		return m.BlacklistAccounts
 	}
-	return ""
+	return nil
 }
 
-// MsgRemoveBlacklistAccountResponse defines the response type for removing an account from the blacklist.
-type MsgRemoveBlacklistAccountResponse struct {
+// MsgRemoveBlacklistAccountsResponse defines the response type for removing an account from the blacklist.
+type MsgRemoveBlacklistAccountsResponse struct {
 }
 
-func (m *MsgRemoveBlacklistAccountResponse) Reset()         { *m = MsgRemoveBlacklistAccountResponse{} }
-func (m *MsgRemoveBlacklistAccountResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRemoveBlacklistAccountResponse) ProtoMessage()    {}
-func (*MsgRemoveBlacklistAccountResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveBlacklistAccountsResponse) Reset()         { *m = MsgRemoveBlacklistAccountsResponse{} }
+func (m *MsgRemoveBlacklistAccountsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveBlacklistAccountsResponse) ProtoMessage()    {}
+func (*MsgRemoveBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_420bae018367226c, []int{3}
 }
-func (m *MsgRemoveBlacklistAccountResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveBlacklistAccountsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRemoveBlacklistAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveBlacklistAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRemoveBlacklistAccountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -197,52 +197,52 @@ func (m *MsgRemoveBlacklistAccountResponse) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgRemoveBlacklistAccountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRemoveBlacklistAccountResponse.Merge(m, src)
+func (m *MsgRemoveBlacklistAccountsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.Merge(m, src)
 }
-func (m *MsgRemoveBlacklistAccountResponse) XXX_Size() int {
+func (m *MsgRemoveBlacklistAccountsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRemoveBlacklistAccountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRemoveBlacklistAccountResponse.DiscardUnknown(m)
+func (m *MsgRemoveBlacklistAccountsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRemoveBlacklistAccountResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveBlacklistAccountsResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgAddBlacklistAccount)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccount")
-	proto.RegisterType((*MsgAddBlacklistAccountResponse)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccountResponse")
-	proto.RegisterType((*MsgRemoveBlacklistAccount)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccount")
-	proto.RegisterType((*MsgRemoveBlacklistAccountResponse)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccountResponse")
+	proto.RegisterType((*MsgAddBlacklistAccounts)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccounts")
+	proto.RegisterType((*MsgAddBlacklistAccountsResponse)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse")
+	proto.RegisterType((*MsgRemoveBlacklistAccounts)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts")
+	proto.RegisterType((*MsgRemoveBlacklistAccountsResponse)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse")
 }
 
 func init() { proto.RegisterFile("mantrachain/sanction/v1/tx.proto", fileDescriptor_420bae018367226c) }
 
 var fileDescriptor_420bae018367226c = []byte{
-	// 361 bytes of a gzipped FileDescriptorProto
+	// 365 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xc8, 0x4d, 0xcc, 0x2b,
 	0x29, 0x4a, 0x4c, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x2f, 0x4e, 0xcc, 0x4b, 0x2e, 0xc9, 0xcc, 0xcf,
 	0xd3, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x47, 0x52,
 	0xa1, 0x07, 0x53, 0xa1, 0x57, 0x66, 0x28, 0x25, 0x9e, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f, 0xac, 0x9f,
 	0x5b, 0x9c, 0x0e, 0xd2, 0x90, 0x5b, 0x9c, 0x0e, 0xd1, 0x21, 0x25, 0x09, 0x91, 0x88, 0x07, 0xf3,
-	0xf4, 0x21, 0x1c, 0x88, 0x94, 0xd2, 0x72, 0x46, 0x2e, 0x31, 0xdf, 0xe2, 0x74, 0xc7, 0x94, 0x14,
-	0xa7, 0x9c, 0xc4, 0xe4, 0xec, 0x9c, 0xcc, 0xe2, 0x12, 0xc7, 0xe4, 0xe4, 0xfc, 0xd2, 0xbc, 0x12,
-	0x21, 0x33, 0x2e, 0xce, 0xc4, 0xd2, 0x92, 0x8c, 0xfc, 0xa2, 0xcc, 0x92, 0x4a, 0x09, 0x46, 0x05,
-	0x46, 0x0d, 0x4e, 0x27, 0x89, 0x4b, 0x5b, 0x74, 0x45, 0xa0, 0xfa, 0x1d, 0x53, 0x52, 0x8a, 0x52,
-	0x8b, 0x8b, 0x83, 0x4b, 0x8a, 0x32, 0xf3, 0xd2, 0x83, 0x10, 0x4a, 0x85, 0x5c, 0xb9, 0x04, 0x93,
-	0x60, 0x66, 0xc5, 0x27, 0x42, 0x0c, 0x93, 0x60, 0x22, 0xa0, 0x5f, 0x20, 0x09, 0xcd, 0x7a, 0x2b,
-	0xbe, 0xa6, 0xe7, 0x1b, 0xb4, 0x10, 0xc6, 0x2a, 0x29, 0x70, 0xc9, 0x61, 0x77, 0x68, 0x50, 0x6a,
-	0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0xd2, 0x2a, 0x46, 0x2e, 0x49, 0xdf, 0xe2, 0xf4, 0xa0, 0xd4,
-	0xdc, 0xfc, 0xb2, 0xd4, 0xc1, 0xee, 0x1d, 0x65, 0x2e, 0x45, 0x9c, 0x6e, 0x85, 0xf9, 0xc8, 0x68,
-	0x06, 0x13, 0x17, 0xb3, 0x6f, 0x71, 0xba, 0x50, 0x3d, 0x97, 0x30, 0xb6, 0x18, 0xd2, 0xd7, 0xc3,
-	0x91, 0x14, 0xf4, 0xb0, 0x87, 0x94, 0x94, 0x39, 0x89, 0x1a, 0x60, 0x0e, 0x11, 0xea, 0x60, 0xe4,
-	0x12, 0xc3, 0x11, 0xae, 0x46, 0xf8, 0xcc, 0xc4, 0xae, 0x47, 0xca, 0x8a, 0x74, 0x3d, 0x30, 0xa7,
-	0x48, 0xb1, 0x36, 0x3c, 0xdf, 0xa0, 0xc5, 0xe8, 0xe4, 0x77, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47,
-	0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d,
-	0xc7, 0x72, 0x0c, 0x51, 0x26, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa,
-	0xbe, 0x8e, 0x7e, 0x21, 0x41, 0x8e, 0xba, 0xce, 0xe0, 0xdc, 0x84, 0x9c, 0xb3, 0x2a, 0x10, 0x79,
-	0xab, 0xa4, 0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d, 0x9c, 0x1f, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0xe6, 0xf3, 0x0d, 0xa9, 0x80, 0x03, 0x00, 0x00,
+	0xf4, 0x21, 0x1c, 0x88, 0x94, 0xd2, 0x2a, 0x46, 0x2e, 0x71, 0xdf, 0xe2, 0x74, 0xc7, 0x94, 0x14,
+	0xa7, 0x9c, 0xc4, 0xe4, 0xec, 0x9c, 0xcc, 0xe2, 0x12, 0xc7, 0xe4, 0xe4, 0xfc, 0xd2, 0xbc, 0x92,
+	0x62, 0x21, 0x33, 0x2e, 0xce, 0xc4, 0xd2, 0x92, 0x8c, 0xfc, 0xa2, 0xcc, 0x92, 0x4a, 0x09, 0x46,
+	0x05, 0x46, 0x0d, 0x4e, 0x27, 0x89, 0x4b, 0x5b, 0x74, 0x45, 0xa0, 0x06, 0x38, 0xa6, 0xa4, 0x14,
+	0xa5, 0x16, 0x17, 0x07, 0x97, 0x14, 0x65, 0xe6, 0xa5, 0x07, 0x21, 0x94, 0x0a, 0xb9, 0x73, 0x09,
+	0x25, 0xc1, 0x0c, 0x8b, 0x4f, 0x84, 0x9a, 0x26, 0xc1, 0xa4, 0xc0, 0x8c, 0xd7, 0x00, 0xc1, 0x24,
+	0x74, 0x07, 0x58, 0xf1, 0x35, 0x3d, 0xdf, 0xa0, 0x85, 0x30, 0x58, 0x49, 0x91, 0x4b, 0x1e, 0x87,
+	0x5b, 0x83, 0x52, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x95, 0xd6, 0x32, 0x72, 0x49, 0xf9, 0x16,
+	0xa7, 0x07, 0xa5, 0xe6, 0xe6, 0x97, 0xa5, 0x0e, 0x01, 0x2f, 0xa9, 0x70, 0x29, 0xe1, 0x76, 0x2e,
+	0xcc, 0x57, 0x46, 0xf3, 0x99, 0xb8, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x9a, 0x18, 0xb9, 0x44, 0xb0,
+	0x46, 0x95, 0x81, 0x1e, 0x8e, 0x44, 0xa1, 0x87, 0x23, 0xc0, 0xa4, 0x2c, 0x48, 0xd5, 0x01, 0x73,
+	0x8c, 0x50, 0x37, 0x23, 0x97, 0x38, 0xae, 0xf0, 0x35, 0xc6, 0x67, 0x2a, 0x0e, 0x4d, 0x52, 0xd6,
+	0x64, 0x68, 0x82, 0xb9, 0x46, 0x8a, 0xb5, 0xe1, 0xf9, 0x06, 0x2d, 0x46, 0x27, 0xbf, 0x13, 0x8f,
+	0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b,
+	0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x32, 0x49, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2,
+	0x4b, 0xce, 0xcf, 0xd5, 0xf7, 0x75, 0xf4, 0x0b, 0x09, 0x72, 0xd4, 0x75, 0x06, 0x67, 0x2e, 0xe4,
+	0x8c, 0x56, 0x81, 0xc8, 0x6a, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0xec, 0x61, 0x0c,
+	0x08, 0x00, 0x00, 0xff, 0xff, 0xd7, 0x43, 0x99, 0x1f, 0x8f, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -259,10 +259,10 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// AddBlacklistAccount defines a (governance) operation for adding an account
 	// to the blacklist.
-	AddBlacklistAccount(ctx context.Context, in *MsgAddBlacklistAccount, opts ...grpc.CallOption) (*MsgAddBlacklistAccountResponse, error)
+	AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error)
 	// RemoveBlacklistAccount defines a (governance) operation for removing an
 	// account from the blacklist.
-	RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBlacklistAccount, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountResponse, error)
+	RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error)
 }
 
 type msgClient struct {
@@ -273,18 +273,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) AddBlacklistAccount(ctx context.Context, in *MsgAddBlacklistAccount, opts ...grpc.CallOption) (*MsgAddBlacklistAccountResponse, error) {
-	out := new(MsgAddBlacklistAccountResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/AddBlacklistAccount", in, out, opts...)
+func (c *msgClient) AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error) {
+	out := new(MsgAddBlacklistAccountsResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/AddBlacklistAccounts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBlacklistAccount, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountResponse, error) {
-	out := new(MsgRemoveBlacklistAccountResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccount", in, out, opts...)
+func (c *msgClient) RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error) {
+	out := new(MsgRemoveBlacklistAccountsResponse)
+	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccounts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -295,59 +295,59 @@ func (c *msgClient) RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBla
 type MsgServer interface {
 	// AddBlacklistAccount defines a (governance) operation for adding an account
 	// to the blacklist.
-	AddBlacklistAccount(context.Context, *MsgAddBlacklistAccount) (*MsgAddBlacklistAccountResponse, error)
+	AddBlacklistAccounts(context.Context, *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error)
 	// RemoveBlacklistAccount defines a (governance) operation for removing an
 	// account from the blacklist.
-	RemoveBlacklistAccount(context.Context, *MsgRemoveBlacklistAccount) (*MsgRemoveBlacklistAccountResponse, error)
+	RemoveBlacklistAccounts(context.Context, *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) AddBlacklistAccount(ctx context.Context, req *MsgAddBlacklistAccount) (*MsgAddBlacklistAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddBlacklistAccount not implemented")
+func (*UnimplementedMsgServer) AddBlacklistAccounts(ctx context.Context, req *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBlacklistAccounts not implemented")
 }
-func (*UnimplementedMsgServer) RemoveBlacklistAccount(ctx context.Context, req *MsgRemoveBlacklistAccount) (*MsgRemoveBlacklistAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistAccount not implemented")
+func (*UnimplementedMsgServer) RemoveBlacklistAccounts(ctx context.Context, req *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistAccounts not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_AddBlacklistAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddBlacklistAccount)
+func _Msg_AddBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddBlacklistAccounts)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddBlacklistAccount(ctx, in)
+		return srv.(MsgServer).AddBlacklistAccounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.sanction.v1.Msg/AddBlacklistAccount",
+		FullMethod: "/mantrachain.sanction.v1.Msg/AddBlacklistAccounts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddBlacklistAccount(ctx, req.(*MsgAddBlacklistAccount))
+		return srv.(MsgServer).AddBlacklistAccounts(ctx, req.(*MsgAddBlacklistAccounts))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RemoveBlacklistAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveBlacklistAccount)
+func _Msg_RemoveBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveBlacklistAccounts)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RemoveBlacklistAccount(ctx, in)
+		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccount",
+		FullMethod: "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccounts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveBlacklistAccount(ctx, req.(*MsgRemoveBlacklistAccount))
+		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, req.(*MsgRemoveBlacklistAccounts))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -357,19 +357,19 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddBlacklistAccount",
-			Handler:    _Msg_AddBlacklistAccount_Handler,
+			MethodName: "AddBlacklistAccounts",
+			Handler:    _Msg_AddBlacklistAccounts_Handler,
 		},
 		{
-			MethodName: "RemoveBlacklistAccount",
-			Handler:    _Msg_RemoveBlacklistAccount_Handler,
+			MethodName: "RemoveBlacklistAccounts",
+			Handler:    _Msg_RemoveBlacklistAccounts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "mantrachain/sanction/v1/tx.proto",
 }
 
-func (m *MsgAddBlacklistAccount) Marshal() (dAtA []byte, err error) {
+func (m *MsgAddBlacklistAccounts) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -379,22 +379,24 @@ func (m *MsgAddBlacklistAccount) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddBlacklistAccount) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAddBlacklistAccounts) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddBlacklistAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAddBlacklistAccounts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.BlacklistAccount) > 0 {
-		i -= len(m.BlacklistAccount)
-		copy(dAtA[i:], m.BlacklistAccount)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.BlacklistAccount)))
-		i--
-		dAtA[i] = 0x12
+	if len(m.BlacklistAccounts) > 0 {
+		for iNdEx := len(m.BlacklistAccounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.BlacklistAccounts[iNdEx])
+			copy(dAtA[i:], m.BlacklistAccounts[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.BlacklistAccounts[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
 	}
 	if len(m.Authority) > 0 {
 		i -= len(m.Authority)
@@ -406,7 +408,7 @@ func (m *MsgAddBlacklistAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddBlacklistAccountResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAddBlacklistAccountsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -416,12 +418,12 @@ func (m *MsgAddBlacklistAccountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAddBlacklistAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAddBlacklistAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAddBlacklistAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAddBlacklistAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -429,7 +431,7 @@ func (m *MsgAddBlacklistAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRemoveBlacklistAccount) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveBlacklistAccounts) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -439,22 +441,24 @@ func (m *MsgRemoveBlacklistAccount) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRemoveBlacklistAccount) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveBlacklistAccounts) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRemoveBlacklistAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveBlacklistAccounts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.BlacklistAccount) > 0 {
-		i -= len(m.BlacklistAccount)
-		copy(dAtA[i:], m.BlacklistAccount)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.BlacklistAccount)))
-		i--
-		dAtA[i] = 0x12
+	if len(m.BlacklistAccounts) > 0 {
+		for iNdEx := len(m.BlacklistAccounts) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.BlacklistAccounts[iNdEx])
+			copy(dAtA[i:], m.BlacklistAccounts[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.BlacklistAccounts[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
 	}
 	if len(m.Authority) > 0 {
 		i -= len(m.Authority)
@@ -466,7 +470,7 @@ func (m *MsgRemoveBlacklistAccount) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRemoveBlacklistAccountResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveBlacklistAccountsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -476,12 +480,12 @@ func (m *MsgRemoveBlacklistAccountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRemoveBlacklistAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveBlacklistAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRemoveBlacklistAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveBlacklistAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -500,7 +504,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgAddBlacklistAccount) Size() (n int) {
+func (m *MsgAddBlacklistAccounts) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -510,14 +514,16 @@ func (m *MsgAddBlacklistAccount) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.BlacklistAccount)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
+	if len(m.BlacklistAccounts) > 0 {
+		for _, s := range m.BlacklistAccounts {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
 	}
 	return n
 }
 
-func (m *MsgAddBlacklistAccountResponse) Size() (n int) {
+func (m *MsgAddBlacklistAccountsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -526,7 +532,7 @@ func (m *MsgAddBlacklistAccountResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgRemoveBlacklistAccount) Size() (n int) {
+func (m *MsgRemoveBlacklistAccounts) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -536,14 +542,16 @@ func (m *MsgRemoveBlacklistAccount) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.BlacklistAccount)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
+	if len(m.BlacklistAccounts) > 0 {
+		for _, s := range m.BlacklistAccounts {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
 	}
 	return n
 }
 
-func (m *MsgRemoveBlacklistAccountResponse) Size() (n int) {
+func (m *MsgRemoveBlacklistAccountsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -558,7 +566,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgAddBlacklistAccount) Unmarshal(dAtA []byte) error {
+func (m *MsgAddBlacklistAccounts) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -581,10 +589,10 @@ func (m *MsgAddBlacklistAccount) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccount: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAddBlacklistAccounts: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAddBlacklistAccounts: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -621,7 +629,7 @@ func (m *MsgAddBlacklistAccount) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccounts", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -649,7 +657,7 @@ func (m *MsgAddBlacklistAccount) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BlacklistAccount = string(dAtA[iNdEx:postIndex])
+			m.BlacklistAccounts = append(m.BlacklistAccounts, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -672,7 +680,7 @@ func (m *MsgAddBlacklistAccount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddBlacklistAccountResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAddBlacklistAccountsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -695,10 +703,10 @@ func (m *MsgAddBlacklistAccountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -722,7 +730,7 @@ func (m *MsgAddBlacklistAccountResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRemoveBlacklistAccount) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveBlacklistAccounts) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -745,10 +753,10 @@ func (m *MsgRemoveBlacklistAccount) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccount: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveBlacklistAccounts: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveBlacklistAccounts: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -785,7 +793,7 @@ func (m *MsgRemoveBlacklistAccount) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BlacklistAccounts", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -813,7 +821,7 @@ func (m *MsgRemoveBlacklistAccount) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BlacklistAccount = string(dAtA[iNdEx:postIndex])
+			m.BlacklistAccounts = append(m.BlacklistAccounts, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -836,7 +844,7 @@ func (m *MsgRemoveBlacklistAccount) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRemoveBlacklistAccountResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveBlacklistAccountsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -859,10 +867,10 @@ func (m *MsgRemoveBlacklistAccountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

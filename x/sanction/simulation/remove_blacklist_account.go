@@ -10,17 +10,17 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 )
 
-func SimulateMsgRemoveBlacklistAccount(
+func SimulateMsgRemoveBlacklistAccounts(
 	k keeper.Keeper,
 ) simtypes.Operation {
 	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		msg := &types.MsgRemoveBlacklistAccount{
+		msg := &types.MsgRemoveBlacklistAccounts{
 			Authority: k.GetAuthority(),
 		}
 
-		// TODO: Handling the RemoveBlacklistAccount simulation
+		// TODO: Handling the RemoveBlacklistAccounts simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "RemoveBlacklistAccount simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, sdk.MsgTypeURL(msg), "RemoveBlacklistAccounts simulation not implemented"), nil, nil
 	}
 }

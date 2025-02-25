@@ -8,7 +8,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k msgServer) AddBlacklistAccount(ctx context.Context, msg *types.MsgAddBlacklistAccount) (*types.MsgAddBlacklistAccountResponse, error) {
+func (k msgServer) AddBlacklistAccounts(ctx context.Context, msg *types.MsgAddBlacklistAccounts) (*types.MsgAddBlacklistAccountsResponse, error) {
 	if err := msg.Validate(); err != nil {
 		return nil, err
 	}
@@ -18,22 +18,24 @@ func (k msgServer) AddBlacklistAccount(ctx context.Context, msg *types.MsgAddBla
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid authority; expected %s, got %s", authority, msg.Authority)
 	}
 
-	hasAccount, err := k.BlacklistAccounts.Has(ctx, msg.BlacklistAccount)
-	if err != nil {
-		return nil, err
-	}
-	if hasAccount {
-		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "account %s has already been blacklisted", msg.BlacklistAccount)
+	for _, account := range msg.BlacklistAccounts {
+		hasAccount, err := k.BlacklistAccounts.Has(ctx, account)
+		if err != nil {
+			return nil, err
+		}
+		if hasAccount {
+			return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "account %s has already been blacklisted", account)
+		}
+
+		if err := k.BlacklistAccounts.Set(ctx, account); err != nil {
+			return nil, err
+		}
 	}
 
-	if err := k.BlacklistAccounts.Set(ctx, msg.BlacklistAccount); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgAddBlacklistAccountResponse{}, nil
+	return &types.MsgAddBlacklistAccountsResponse{}, nil
 }
 
-func (k msgServer) RemoveBlacklistAccount(ctx context.Context, msg *types.MsgRemoveBlacklistAccount) (*types.MsgRemoveBlacklistAccountResponse, error) {
+func (k msgServer) RemoveBlacklistAccounts(ctx context.Context, msg *types.MsgRemoveBlacklistAccounts) (*types.MsgRemoveBlacklistAccountsResponse, error) {
 	if err := msg.Validate(); err != nil {
 		return nil, err
 	}
@@ -43,17 +45,19 @@ func (k msgServer) RemoveBlacklistAccount(ctx context.Context, msg *types.MsgRem
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid authority; expected %s, got %s", authority, msg.Authority)
 	}
 
-	hasAccount, err := k.BlacklistAccounts.Has(ctx, msg.BlacklistAccount)
-	if err != nil {
-		return nil, err
-	}
-	if !hasAccount {
-		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "blacklist account %s is not blacklisted", msg.BlacklistAccount)
+	for _, account := range msg.BlacklistAccounts {
+		hasAccount, err := k.BlacklistAccounts.Has(ctx, account)
+		if err != nil {
+			return nil, err
+		}
+		if !hasAccount {
+			return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "blacklist account %s is not blacklisted", account)
+		}
+
+		if err := k.BlacklistAccounts.Remove(ctx, account); err != nil {
+			return nil, err
+		}
 	}
 
-	if err := k.BlacklistAccounts.Remove(ctx, msg.BlacklistAccount); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgRemoveBlacklistAccountResponse{}, nil
+	return &types.MsgRemoveBlacklistAccountsResponse{}, nil
 }

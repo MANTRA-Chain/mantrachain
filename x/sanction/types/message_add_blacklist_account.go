@@ -7,23 +7,25 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewMsgAddBlacklistAccount(creator string, blacklistAccount string) *MsgAddBlacklistAccount {
-	return &MsgAddBlacklistAccount{
-		Authority:        creator,
-		BlacklistAccount: blacklistAccount,
+func NewMsgAddBlacklistAccounts(creator string, blacklistAccounts []string) *MsgAddBlacklistAccounts {
+	return &MsgAddBlacklistAccounts{
+		Authority:         creator,
+		BlacklistAccounts: blacklistAccounts,
 	}
 }
 
-func (m MsgAddBlacklistAccount) Validate() error {
+func (m MsgAddBlacklistAccounts) Validate() error {
 	if m.Authority == "" {
 		return errors.New("authority cannot be empty")
 	}
-	if m.BlacklistAccount == "" {
-		return errors.New("blacklistAccount cannot be empty")
+	if len(m.BlacklistAccounts) == 0 || m.BlacklistAccounts == nil {
+		return errors.New("blacklistAccounts cannot be empty")
 	}
-	_, err := sdk.AccAddressFromBech32(m.BlacklistAccount)
-	if err != nil {
-		return fmt.Errorf("invalid account %s", m.BlacklistAccount)
+	for _, account := range m.BlacklistAccounts {
+		_, err := sdk.AccAddressFromBech32(account)
+		if err != nil {
+			return fmt.Errorf("invalid account %s", account)
+		}
 	}
 	return nil
 }

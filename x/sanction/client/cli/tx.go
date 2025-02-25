@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -31,8 +32,8 @@ func GetTxCmd() *cobra.Command {
 // NewAddBlacklistAccountCmd broadcast MsgAddBlacklistAccount
 func NewAddBlacklistAccountCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-blacklist-account [blacklist-account] [flags]",
-		Short: "add an account to the blacklist",
+		Use:   "add-blacklist-account [blacklist-accounts-separated-by-comma] [flags]",
+		Short: "add accounts to the blacklist",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -45,9 +46,10 @@ func NewAddBlacklistAccountCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgAddBlacklistAccount(
+			accounts := strings.Split(args[0], ",")
+			msg := types.NewMsgAddBlacklistAccounts(
 				clientCtx.GetFromAddress().String(),
-				args[0],
+				accounts,
 			)
 
 			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf.WithTxConfig(clientCtx.TxConfig).WithAccountRetriever(clientCtx.AccountRetriever), msg)
@@ -61,7 +63,7 @@ func NewAddBlacklistAccountCmd() *cobra.Command {
 // NewRemoveBlacklistAccountCmd broadcast MsgRemoveBlacklistAccount
 func NewRemoveBlacklistAccountCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklist-account [blacklist-account] [flags]",
+		Use:   "remove-blacklist-account [blacklist-accounts-separated-by-comma] [flags]",
 		Short: "remove an account from the blacklist",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -75,9 +77,10 @@ func NewRemoveBlacklistAccountCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgRemoveBlacklistAccount(
+			accounts := strings.Split(args[0], ",")
+			msg := types.NewMsgRemoveBlacklistAccounts(
 				clientCtx.GetFromAddress().String(),
-				args[0],
+				accounts,
 			)
 
 			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf.WithTxConfig(clientCtx.TxConfig).WithAccountRetriever(clientCtx.AccountRetriever), msg)

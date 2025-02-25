@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_AddBlacklistAccount_FullMethodName    = "/mantrachain.sanction.v1.Msg/AddBlacklistAccount"
-	Msg_RemoveBlacklistAccount_FullMethodName = "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccount"
+	Msg_AddBlacklistAccounts_FullMethodName    = "/mantrachain.sanction.v1.Msg/AddBlacklistAccounts"
+	Msg_RemoveBlacklistAccounts_FullMethodName = "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccounts"
 )
 
 // MsgClient is the client API for Msg service.
@@ -31,10 +31,10 @@ const (
 type MsgClient interface {
 	// AddBlacklistAccount defines a (governance) operation for adding an account
 	// to the blacklist.
-	AddBlacklistAccount(ctx context.Context, in *MsgAddBlacklistAccount, opts ...grpc.CallOption) (*MsgAddBlacklistAccountResponse, error)
+	AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error)
 	// RemoveBlacklistAccount defines a (governance) operation for removing an
 	// account from the blacklist.
-	RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBlacklistAccount, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountResponse, error)
+	RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error)
 }
 
 type msgClient struct {
@@ -45,20 +45,20 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) AddBlacklistAccount(ctx context.Context, in *MsgAddBlacklistAccount, opts ...grpc.CallOption) (*MsgAddBlacklistAccountResponse, error) {
+func (c *msgClient) AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgAddBlacklistAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_AddBlacklistAccount_FullMethodName, in, out, cOpts...)
+	out := new(MsgAddBlacklistAccountsResponse)
+	err := c.cc.Invoke(ctx, Msg_AddBlacklistAccounts_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBlacklistAccount, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountResponse, error) {
+func (c *msgClient) RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgRemoveBlacklistAccountResponse)
-	err := c.cc.Invoke(ctx, Msg_RemoveBlacklistAccount_FullMethodName, in, out, cOpts...)
+	out := new(MsgRemoveBlacklistAccountsResponse)
+	err := c.cc.Invoke(ctx, Msg_RemoveBlacklistAccounts_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +73,10 @@ func (c *msgClient) RemoveBlacklistAccount(ctx context.Context, in *MsgRemoveBla
 type MsgServer interface {
 	// AddBlacklistAccount defines a (governance) operation for adding an account
 	// to the blacklist.
-	AddBlacklistAccount(context.Context, *MsgAddBlacklistAccount) (*MsgAddBlacklistAccountResponse, error)
+	AddBlacklistAccounts(context.Context, *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error)
 	// RemoveBlacklistAccount defines a (governance) operation for removing an
 	// account from the blacklist.
-	RemoveBlacklistAccount(context.Context, *MsgRemoveBlacklistAccount) (*MsgRemoveBlacklistAccountResponse, error)
+	RemoveBlacklistAccounts(context.Context, *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -87,11 +87,11 @@ type MsgServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMsgServer struct{}
 
-func (UnimplementedMsgServer) AddBlacklistAccount(context.Context, *MsgAddBlacklistAccount) (*MsgAddBlacklistAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddBlacklistAccount not implemented")
+func (UnimplementedMsgServer) AddBlacklistAccounts(context.Context, *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBlacklistAccounts not implemented")
 }
-func (UnimplementedMsgServer) RemoveBlacklistAccount(context.Context, *MsgRemoveBlacklistAccount) (*MsgRemoveBlacklistAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistAccount not implemented")
+func (UnimplementedMsgServer) RemoveBlacklistAccounts(context.Context, *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistAccounts not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -114,38 +114,38 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
 }
 
-func _Msg_AddBlacklistAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddBlacklistAccount)
+func _Msg_AddBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddBlacklistAccounts)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AddBlacklistAccount(ctx, in)
+		return srv.(MsgServer).AddBlacklistAccounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AddBlacklistAccount_FullMethodName,
+		FullMethod: Msg_AddBlacklistAccounts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddBlacklistAccount(ctx, req.(*MsgAddBlacklistAccount))
+		return srv.(MsgServer).AddBlacklistAccounts(ctx, req.(*MsgAddBlacklistAccounts))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RemoveBlacklistAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveBlacklistAccount)
+func _Msg_RemoveBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveBlacklistAccounts)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RemoveBlacklistAccount(ctx, in)
+		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_RemoveBlacklistAccount_FullMethodName,
+		FullMethod: Msg_RemoveBlacklistAccounts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveBlacklistAccount(ctx, req.(*MsgRemoveBlacklistAccount))
+		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, req.(*MsgRemoveBlacklistAccounts))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -158,12 +158,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddBlacklistAccount",
-			Handler:    _Msg_AddBlacklistAccount_Handler,
+			MethodName: "AddBlacklistAccounts",
+			Handler:    _Msg_AddBlacklistAccounts_Handler,
 		},
 		{
-			MethodName: "RemoveBlacklistAccount",
-			Handler:    _Msg_RemoveBlacklistAccount_Handler,
+			MethodName: "RemoveBlacklistAccounts",
+			Handler:    _Msg_RemoveBlacklistAccounts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

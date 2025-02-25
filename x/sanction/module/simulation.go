@@ -22,13 +22,13 @@ var (
 )
 
 const (
-	opWeightMsgAddBlacklistAccount = "op_weight_msg_add_blacklist_account"
+	opWeightMsgAddBlacklistAccounts = "op_weight_msg_add_blacklist_account"
 
-	defaultWeightMsgAddBlacklistAccount int = 5
+	defaultWeightMsgAddBlacklistAccounts int = 5
 
-	opWeightMsgRemoveBlacklistAccount = "op_weight_msg_remove_blacklist_account"
+	opWeightMsgRemoveBlacklistAccounts = "op_weight_msg_remove_blacklist_account"
 
-	defaultWeightMsgRemoveBlacklistAccount int = 5
+	defaultWeightMsgRemoveBlacklistAccounts int = 5
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -54,25 +54,25 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgAddBlacklistAccount int
-	simState.AppParams.GetOrGenerate(opWeightMsgAddBlacklistAccount, &weightMsgAddBlacklistAccount, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgAddBlacklistAccounts, &weightMsgAddBlacklistAccount, nil,
 		func(_ *rand.Rand) {
-			weightMsgAddBlacklistAccount = defaultWeightMsgAddBlacklistAccount
+			weightMsgAddBlacklistAccount = defaultWeightMsgAddBlacklistAccounts
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgAddBlacklistAccount,
-		sanctionsimulation.SimulateMsgAddBlacklistAccount(am.keeper),
+		sanctionsimulation.SimulateMsgAddBlacklistAccounts(am.keeper),
 	))
 
 	var weightMsgRemoveBlacklistAccount int
-	simState.AppParams.GetOrGenerate(opWeightMsgRemoveBlacklistAccount, &weightMsgRemoveBlacklistAccount, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgRemoveBlacklistAccounts, &weightMsgRemoveBlacklistAccount, nil,
 		func(_ *rand.Rand) {
-			weightMsgRemoveBlacklistAccount = defaultWeightMsgRemoveBlacklistAccount
+			weightMsgRemoveBlacklistAccount = defaultWeightMsgRemoveBlacklistAccounts
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgRemoveBlacklistAccount,
-		sanctionsimulation.SimulateMsgRemoveBlacklistAccount(am.keeper),
+		sanctionsimulation.SimulateMsgRemoveBlacklistAccounts(am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
@@ -84,18 +84,18 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgAddBlacklistAccount,
-			defaultWeightMsgAddBlacklistAccount,
+			opWeightMsgAddBlacklistAccounts,
+			defaultWeightMsgAddBlacklistAccounts,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				sanctionsimulation.SimulateMsgAddBlacklistAccount(am.keeper)
+				sanctionsimulation.SimulateMsgAddBlacklistAccounts(am.keeper)
 				return nil
 			},
 		),
 		simulation.NewWeightedProposalMsg(
-			opWeightMsgRemoveBlacklistAccount,
-			defaultWeightMsgRemoveBlacklistAccount,
+			opWeightMsgRemoveBlacklistAccounts,
+			defaultWeightMsgRemoveBlacklistAccounts,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				sanctionsimulation.SimulateMsgRemoveBlacklistAccount(am.keeper)
+				sanctionsimulation.SimulateMsgRemoveBlacklistAccounts(am.keeper)
 				return nil
 			},
 		),
