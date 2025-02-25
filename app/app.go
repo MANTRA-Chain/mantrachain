@@ -273,6 +273,14 @@ type App struct {
 	configurator module.Configurator
 }
 
+// overrideWasmVariables overrides the wasm variables to:
+//   - allow for larger wasm files
+func overrideWasmVariables() {
+	// Override Wasm size limitation from WASMD.
+	wasmtypes.MaxWasmSize = 3 * 1024 * 1024
+	wasmtypes.MaxProposalWasmSize = wasmtypes.MaxWasmSize
+}
+
 // New returns a reference to an initialized App.
 func New(
 	logger log.Logger,
@@ -283,6 +291,7 @@ func New(
 	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
+	overrideWasmVariables()
 	interfaceRegistry, err := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
 		ProtoFiles: proto.HybridResolver,
 		SigningOptions: signing.Options{
