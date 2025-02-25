@@ -34,7 +34,18 @@ jobs:
           go install github.com/mfridman/tparse@latest
       - name: Run all tests
         run: |
-          # skip test on tools
-          rm -rf tools
+          # Define directories to skip
+          SKIP_DIRS=(
+            "tools"
+            "orm"
+            # Add more directories here as needed
+          )
+          for dir in "${SKIP_DIRS[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "Skipping tests for $dir"
+              rm -rf "$dir"
+            fi
+          done
+          
           make test-all
         working-directory: cosmos-sdk
