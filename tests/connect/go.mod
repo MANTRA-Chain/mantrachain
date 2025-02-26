@@ -22,7 +22,7 @@ replace (
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/6787270c093b80e7822569ef3d1c33ba02671115
 	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1
+	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b
 	github.com/vedhavyas/go-subkey => github.com/strangelove-ventures/go-subkey v1.0.7
 )
 

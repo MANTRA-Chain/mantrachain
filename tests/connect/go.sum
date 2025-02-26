@@ -243,8 +243,8 @@ github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e/go.mod h1:kGUq
 github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec h1:1Qb69mGp/UtRPn422BH4/Y4Q3SLUrD9KHuDkm8iodFc=
 github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec/go.mod h1:CD8UlnlLDiqb36L110uqiP2iSflVjx9g/3U9hCI4q2U=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1 h1:CcqnQZsG8ZRzdVAhkVyIbVplRHul6g8Jxcgw83lqr3E=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
+github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b h1:hkwjORwb59R2aCO6TX9y+qsoDz+yqhvQU50DqeuuKBo=
+github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.11-v2-mantra-1 h1:8A13Xh6s+Eyl0kuFYGsWaDhji1OxVY+SnFHfml8t/jE=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.11-v2-mantra-1/go.mod h1:gt14Meok2IDCjbDtjwkbUcgVNEpUBDN/4hg9cCUtLgw=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
