@@ -68,13 +68,6 @@ proto-download-deps:
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
 
-	mkdir -p "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
-	git clone --depth 1 --branch $(shell grep -o 'feemarket v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/skip-mev/feemarket.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/feemarket_tmp"
-
 	mkdir -p "$(THIRD_PARTY_DIR)/connect_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/connect_tmp" && \
 	git clone --depth 1 https://github.com/skip-mev/connect.git . && \

@@ -48,7 +48,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -157,9 +156,6 @@ import (
 	oracle "github.com/skip-mev/connect/v2/x/oracle"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-	"github.com/skip-mev/feemarket/x/feemarket"
-	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"github.com/spf13/cast"
 )
 
@@ -203,9 +199,7 @@ var maccPerms = map[string][]string{
 	taxtypes.ModuleName:          nil,
 	sanctiontypes.ModuleName:     nil,
 
-	feemarkettypes.ModuleName:       {authtypes.Burner},
-	feemarkettypes.FeeCollectorName: {authtypes.Burner},
-	oracletypes.ModuleName:          nil,
+	oracletypes.ModuleName: nil,
 }
 
 var Upgrades = []upgrades.Upgrade{v4.Upgrade}
@@ -247,9 +241,6 @@ type App struct {
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
-
-	// FeeMarket
-	FeeMarketKeeper *feemarketkeeper.Keeper
 
 	// Connect
 	OracleKeeper    *oraclekeeper.Keeper
@@ -351,7 +342,7 @@ func New(
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
 		ibchookstypes.StoreKey, icacontrollertypes.StoreKey, icahosttypes.StoreKey,
-		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
+		oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -604,14 +595,6 @@ func New(
 		authtypes.FeeCollectorName,
 	)
 
-	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(
-		appCodec, keys[feemarkettypes.StoreKey],
-		app.AccountKeeper,
-		nil,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-	app.FeeMarketKeeper.SetDenomResolver(&xfeemarkettypes.DefaultFeemarketDenomResolver{})
-
 	app.MarketMapKeeper = marketmapkeeper.NewKeeper(
 		runtime.NewKVStoreService(keys[marketmaptypes.StoreKey]),
 		appCodec,
@@ -843,7 +826,6 @@ func New(
 		// mantrachain modules
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
 		tax.NewAppModule(appCodec, app.TaxKeeper),
-		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
 		sanction.NewAppModule(appCodec, app.SanctionKeeper),
 	)
 
@@ -875,7 +857,6 @@ func New(
 	// NOTE: capability module's beginblocker must come before any modules using capabilities (e.g. IBC)
 	app.ModuleManager.SetOrderBeginBlockers(
 		minttypes.ModuleName,
-		feemarkettypes.ModuleName,
 		// mca tax before distribution
 		taxtypes.ModuleName,
 		distrtypes.ModuleName,
@@ -903,7 +884,6 @@ func New(
 
 	app.ModuleManager.SetOrderEndBlockers(
 		crisistypes.ModuleName,
-		feemarkettypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		genutiltypes.ModuleName,
@@ -969,7 +949,6 @@ func New(
 		taxtypes.ModuleName,
 		sanctiontypes.ModuleName,
 
-		feemarkettypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
@@ -1045,7 +1024,7 @@ func New(
 	app.ScopedICAControllerKeeper = scopedICAControllerKeeper
 
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey])
-	app.setPostHandler()
+	// app.setPostHandler()
 
 	// oracle initialization
 	client, metrics, err := app.initializeOracle(appOpts)
@@ -1106,9 +1085,6 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 			WasmKeeper:            &app.WasmKeeper,
 			TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 			CircuitKeeper:         &app.CircuitKeeper,
-			FeeMarketKeeper:       app.FeeMarketKeeper,
-			AccountKeeper:         app.AccountKeeper,
-			BankKeeper:            app.BankKeeper,
 			SanctionKeeper:        &app.SanctionKeeper,
 		},
 	)
@@ -1121,16 +1097,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 }
 
 func (app *App) setPostHandler() {
-	postHandler := PostHandlerOptions{
-		BankKeeper:      app.BankKeeper,
-		FeeMarketKeeper: app.FeeMarketKeeper,
-	}
-	// Set the PostHandler for the app
-	sdkPostHandler, err := NewPostHandler(postHandler)
-	if err != nil {
-		panic(fmt.Errorf("failed to create PostHandler: %s", err))
-	}
-	app.SetPostHandler(sdkPostHandler)
+	// TODO: Implement post handler
 }
 
 // Name returns the name of the App
