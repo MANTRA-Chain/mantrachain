@@ -3,7 +3,6 @@ package chainsuite
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/strangelove-ventures/interchaintest/v8"
@@ -158,9 +157,6 @@ func DefaultGenesis() []cosmos.GenesisKV {
 		cosmos.NewGenesisKV("app_state.gov.params.min_deposit.0.amount", strconv.Itoa(GovMinDepositAmount)),
 		cosmos.NewGenesisKV("app_state.slashing.params.signed_blocks_window", strconv.Itoa(ProviderSlashingWindow)),
 		cosmos.NewGenesisKV("app_state.slashing.params.downtime_jail_duration", DowntimeJailDuration.String()),
-		cosmos.NewGenesisKV("app_state.feemarket.params.min_base_gas_price", strings.TrimSuffix(GasPrices, Uom)),
-		cosmos.NewGenesisKV("app_state.feemarket.state.base_gas_price", strings.TrimSuffix(GasPrices, Uom)),
-		cosmos.NewGenesisKV("app_state.feemarket.params.fee_denom", Uom),
 		cosmos.NewGenesisKV("app_state.wasm.params.code_upload_access.permission", "Nobody"),
 		cosmos.NewGenesisKV("app_state.wasm.params.instantiate_default_permission", "AnyOfAddresses"),
 	}
