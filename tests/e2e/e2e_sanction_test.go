@@ -117,7 +117,7 @@ func (s *IntegrationTestSuite) testRemoveFromBlacklist() {
 	valIdx := 0
 	alice, _ := s.chainA.genesisAccounts[1].keyInfo.GetAddress()
 	bob, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
-	// able to send tokens from alice to bob before blacklist
+	// unable to send tokens from alice to bob before remove from blacklist
 	s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), standardFees.String(), true)
 	s.T().Logf("Failed to send token from Alice to Bob as Alice is blacklisted")
 
