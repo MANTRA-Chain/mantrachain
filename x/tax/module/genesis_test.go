@@ -3,11 +3,11 @@ package tax_test
 import (
 	"testing"
 
-	_ "github.com/MANTRA-Chain/mantrachain/v2/app/params"
-	keepertest "github.com/MANTRA-Chain/mantrachain/v2/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/testutil/nullify"
-	tax "github.com/MANTRA-Chain/mantrachain/v2/x/tax/module"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v3/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/testutil/nullify"
+	tax "github.com/MANTRA-Chain/mantrachain/v3/x/tax/module"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
 	"github.com/stretchr/testify/require"
 )
 

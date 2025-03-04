@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package mantrachain.sanction.v1;
+
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/MANTRA-Chain/mantrachain/x/sanction/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // AddBlacklistAccount defines a (governance) operation for adding an account
+  // to the blacklist.
+  rpc AddBlacklistAccounts(MsgAddBlacklistAccounts)
+      returns (MsgAddBlacklistAccountsResponse);
+  // RemoveBlacklistAccount defines a (governance) operation for removing an
+  // account from the blacklist.
+  rpc RemoveBlacklistAccounts(MsgRemoveBlacklistAccounts)
+      returns (MsgRemoveBlacklistAccountsResponse);
+}
+
+// MsgAddBlacklistAccounts is the message type for adding an account to the blacklist.
+message MsgAddBlacklistAccounts {
+  option (cosmos.msg.v1.signer) = "authority";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated string blacklist_accounts = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgAddBlacklistAccountsResponse defines the response type for adding an account to the blacklist.
+message MsgAddBlacklistAccountsResponse {}
+
+// MsgRemoveBlacklistAccounts is the message type for removing an account from the blacklist.
+message MsgRemoveBlacklistAccounts {
+  option (cosmos.msg.v1.signer) = "authority";
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated string blacklist_accounts = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+// MsgRemoveBlacklistAccountsResponse defines the response type for removing an account from the blacklist.
+message MsgRemoveBlacklistAccountsResponse {}

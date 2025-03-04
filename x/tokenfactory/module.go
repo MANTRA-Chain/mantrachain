@@ -6,21 +6,15 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
-	"cosmossdk.io/core/store"
-	"cosmossdk.io/depinject"
-	"cosmossdk.io/log"
-	modulev1 "github.com/MANTRA-Chain/mantrachain/v2/api/osmosis/tokenfactory/module/v1"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/client/cli"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/client/cli"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
@@ -173,57 +167,4 @@ func (am AppModule) BeginBlock(_ sdk.Context) {}
 // returns no validator updates.
 func (am AppModule) EndBlock(_ sdk.Context) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
-}
-
-// ----------------------------------------------------------------------------
-// App Wiring Setup
-// ----------------------------------------------------------------------------
-
-func init() {
-	appmodule.Register(
-		&modulev1.Module{},
-		appmodule.Provide(ProvideModule),
-	)
-}
-
-type ModuleInputs struct {
-	depinject.In
-
-	Cdc          codec.Codec
-	StoreService store.KVStoreService
-	Config       *modulev1.Module
-	Logger       log.Logger
-
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-}
-
-type ModuleOutputs struct {
-	depinject.Out
-
-	TokenFactoryKeeper keeper.Keeper
-	Module             appmodule.AppModule
-}
-
-func ProvideModule(in ModuleInputs) ModuleOutputs {
-	// default to governance authority if not provided
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if in.Config.Authority != "" {
-		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
-	}
-	k := keeper.NewKeeper(
-		in.Cdc,
-		in.StoreService,
-		in.Config.KnownModules,
-		in.AccountKeeper,
-		in.BankKeeper,
-		nil,
-		authority.String(),
-	)
-	m := NewAppModule(
-		in.Cdc,
-		k,
-	)
-
-	return ModuleOutputs{TokenFactoryKeeper: k, Module: m}
 }

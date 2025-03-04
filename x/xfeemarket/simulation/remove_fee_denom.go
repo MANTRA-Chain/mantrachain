@@ -3,8 +3,8 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"

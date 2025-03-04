@@ -9,7 +9,8 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -371,6 +372,20 @@ func queryIBCEscrowAddress(endpoint, channelID string) (string, error) {
 	}
 
 	return resp.EscrowAddress, nil
+}
+
+func queryBlacklist(endpoint string) ([]string, error) {
+	body, err := httpGet(fmt.Sprintf("%s/MANTRA-Chain/mantrachain/sanction/v1/blacklist", endpoint))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var resp sanctiontypes.QueryBlacklistResponse
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+		return nil, err
+	}
+
+	return resp.BlacklistedAccounts, nil
 }
 
 // func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error) {

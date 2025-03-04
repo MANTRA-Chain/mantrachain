@@ -8,8 +8,9 @@ import (
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v2/app"
-	"github.com/MANTRA-Chain/mantrachain/v2/app/params"
+	"github.com/MANTRA-Chain/mantrachain/v3/app"
+	"github.com/MANTRA-Chain/mantrachain/v3/app/params"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -54,6 +55,7 @@ func init() {
 	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	ratelimittypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	sanctiontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig

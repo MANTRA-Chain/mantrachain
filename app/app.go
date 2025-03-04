@@ -34,18 +34,21 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	_ "github.com/MANTRA-Chain/mantrachain/v2/app/params"
-	queries "github.com/MANTRA-Chain/mantrachain/v2/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v2/app/upgrades"
-	v2 "github.com/MANTRA-Chain/mantrachain/v2/app/upgrades/v2"
-	_ "github.com/MANTRA-Chain/mantrachain/v2/client/docs/statik"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v2/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v2/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v2/x/tokenfactory/types"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v2/x/xfeemarket/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/v3/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
+	v3 "github.com/MANTRA-Chain/mantrachain/v3/app/upgrades/v3"
+	_ "github.com/MANTRA-Chain/mantrachain/v3/client/docs/statik"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v3/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -189,13 +192,14 @@ var maccPerms = map[string][]string{
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	taxtypes.ModuleName:          nil,
+	sanctiontypes.ModuleName:     nil,
 
 	feemarkettypes.ModuleName:       {authtypes.Burner},
 	feemarkettypes.FeeCollectorName: {authtypes.Burner},
 	oracletypes.ModuleName:          nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v2.Upgrade}
+var Upgrades = []upgrades.Upgrade{v3.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -261,6 +265,7 @@ type App struct {
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
 	TaxKeeper          taxkeeper.Keeper
+	SanctionKeeper     sanctionkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -332,7 +337,7 @@ func New(
 		capabilitytypes.StoreKey, ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
-		tokenfactorytypes.StoreKey, taxtypes.StoreKey,
+		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
 		ibchookstypes.StoreKey,
 		feemarkettypes.StoreKey, oracletypes.StoreKey, marketmaptypes.StoreKey,
 	)
@@ -528,6 +533,13 @@ func New(
 		app.AccountKeeper,
 		&app.BankKeeper,
 		&app.WasmKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	app.SanctionKeeper = sanctionkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
+		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -773,9 +785,12 @@ func New(
 
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), // always be last to make sure that it checks for all invariants and not only part of them,
+
+		// mantrachain modules
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
 		tax.NewAppModule(appCodec, app.TaxKeeper),
 		feemarket.NewAppModule(appCodec, *app.FeeMarketKeeper),
+		sanction.NewAppModule(appCodec, app.SanctionKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -828,6 +843,7 @@ func New(
 		tokenfactorytypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		sanctiontypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -850,6 +866,7 @@ func New(
 		taxtypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		sanctiontypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -893,6 +910,7 @@ func New(
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		taxtypes.ModuleName,
+		sanctiontypes.ModuleName,
 
 		feemarkettypes.ModuleName,
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
@@ -981,8 +999,8 @@ func New(
 	app.initializeABCIExtensions(client, metrics)
 
 	// Register any on-chain upgrades.
-	app.setupUpgradeHandlers()
 	app.setupUpgradeStoreLoaders()
+	app.setupUpgradeHandlers()
 
 	// At startup, after all modules have been registered, check that all proto
 	// annotations are correct.
@@ -1032,6 +1050,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 			FeeMarketKeeper:       app.FeeMarketKeeper,
 			AccountKeeper:         app.AccountKeeper,
 			BankKeeper:            app.BankKeeper,
+			SanctionKeeper:        &app.SanctionKeeper,
 		},
 	)
 	if err != nil {
@@ -1278,6 +1297,7 @@ func (app *App) setupUpgradeHandlers() {
 					ChannelKeeper:      &app.IBCKeeper.ChannelKeeper,
 					TransferKeeper:     app.TransferKeeper,
 					TokenFactoryKeeper: &app.TokenFactoryKeeper,
+					SanctionKeeper:     app.SanctionKeeper,
 				},
 			),
 		)

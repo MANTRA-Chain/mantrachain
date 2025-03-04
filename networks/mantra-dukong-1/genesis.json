@@ -1313,6 +1313,9 @@
         "epoch_start_height": "1"
       }
     },
+    "sanction": {
+      "blacklist_accounts": []
+    },
     "slashing": {
       "params": {
         "signed_blocks_window": "1000",

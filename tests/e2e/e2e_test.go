@@ -14,6 +14,7 @@ var (
 	runRestInterfacesTest         = true
 	runRateLimitTest              = true
 	runTokenfactoryTest           = true
+	runSanctionTest               = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -116,4 +117,12 @@ func (s *IntegrationTestSuite) TestTokenfactory() {
 	s.testTokenfactoryCreate()
 	s.testTokenfactoryMint()
 	s.testTokenfactoryBurn()
+}
+
+func (s *IntegrationTestSuite) TestSanction() {
+	if !runSanctionTest {
+		s.T().Skip()
+	}
+	s.testAddToBlacklist()
+	s.testRemoveFromBlacklist()
 }

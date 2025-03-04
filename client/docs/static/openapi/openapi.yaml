@@ -222,7 +222,8 @@ paths:
     get:
       summary: |-
         MarketMap returns the full market map stored in the x/marketmap
-        module.
+        module.  NOTE: the value returned by this query is not safe for on-chain
+        code.
       operationId: MarketMap
       responses:
         "200":
@@ -404,6 +405,166 @@ paths:
                           format: byte
       tags:
         - Query
+  /connect/marketmap/v2/markets:
+    get:
+      summary: |-
+        Market returns all stored in the x/marketmap
+        module as a sorted list.
+      operationId: Markets
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  markets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        ticker:
+                          description: >-
+                            Ticker represents a price feed for a given asset
+                            pair i.e. BTC/USD. The
+
+                            price feed is scaled to a number of decimal places and has a minimum number
+
+                            of providers required to consider the ticker valid.
+                          type: object
+                          properties:
+                            currency_pair:
+                              description: CurrencyPair is the currency pair for this ticker.
+                              type: object
+                              properties:
+                                Base:
+                                  type: string
+                                Quote:
+                                  type: string
+                              title: >-
+                                CurrencyPair is the standard representation of a
+                                pair of assets, where one
+
+                                (Base) is priced in terms of the other (Quote)
+                            decimals:
+                              type: string
+                              format: uint64
+                              description: >-
+                                Decimals is the number of decimal places for the
+                                ticker. The number of
+
+                                decimal places is used to convert the price to a human-readable format.
+                            min_provider_count:
+                              type: string
+                              format: uint64
+                              description: >-
+                                MinProviderCount is the minimum number of
+                                providers required to consider
+
+                                the ticker valid.
+                            enabled:
+                              type: boolean
+                              description: >-
+                                Enabled is the flag that denotes if the Ticker
+                                is enabled for price
+
+                                fetching by an oracle.
+                            metadata_JSON:
+                              type: string
+                              description: >-
+                                MetadataJSON is a string of JSON that encodes
+                                any extra configuration
+
+                                for the given ticker.
+                        provider_configs:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: >-
+                                  Name corresponds to the name of the provider
+                                  for which the configuration is
+
+                                  being set.
+                              off_chain_ticker:
+                                type: string
+                                description: >-
+                                  OffChainTicker is the off-chain representation
+                                  of the ticker i.e. BTC/USD.
+
+                                  The off-chain ticker is unique to a given provider and is used to fetch the
+
+                                  price of the ticker from the provider.
+                              normalize_by_pair:
+                                description: >-
+                                  NormalizeByPair is the currency pair for this
+                                  ticker to be normalized by.
+
+                                  For example, if the desired Ticker is BTC/USD, this market could be reached
+
+                                  using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This field is
+
+                                  optional and nullable.
+                                type: object
+                                properties:
+                                  Base:
+                                    type: string
+                                  Quote:
+                                    type: string
+                                title: >-
+                                  CurrencyPair is the standard representation of
+                                  a pair of assets, where one
+
+                                  (Base) is priced in terms of the other (Quote)
+                              invert:
+                                type: boolean
+                                title: >-
+                                  Invert is a boolean indicating if the BASE and
+                                  QUOTE of the market should
+
+                                  be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                              metadata_JSON:
+                                type: string
+                                description: >-
+                                  MetadataJSON is a string of JSON that encodes
+                                  any extra configuration
+
+                                  for the given provider config.
+                          description: ProviderConfigs is the list of provider-specific configs for this
+                            Market.
+                      description: Market encapsulates a Ticker and its provider-specific
+                        configuration.
+                    description: Markets is a sorted list of all markets in the module.
+                description: MarketsResponse is the query response for the Markets query.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
   /connect/marketmap/v2/params:
     get:
       summary: Params returns the current x/marketmap module parameters.
@@ -556,6 +717,79 @@ paths:
                     description: >-
                       currency_pair_mapping is a mapping of the id representing
                       the currency pair
+
+                      to the currency pair itself.
+                description: GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
+                  response type.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
+  /connect/oracle/v2/get_currency_pair_mapping_list:
+    get:
+      summary: >-
+        Get the mapping of currency pair ID <-> currency pair as a list. This is
+
+        useful for indexers that have access to the ID of a currency pair, but no
+
+        way to get the underlying currency pair from it.
+      operationId: GetCurrencyPairMappingList
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  mappings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uint64
+                          description: ID is the unique identifier for this currency pair string.
+                        currency_pair:
+                          type: object
+                          properties:
+                            Base:
+                              type: string
+                            Quote:
+                              type: string
+                          title: >-
+                            CurrencyPair is the standard representation of a
+                            pair of assets, where one
+
+                            (Base) is priced in terms of the other (Quote)
+                          description: CurrencyPair is the human-readable representation of the currency
+                            pair.
+                    description: >-
+                      mappings is a list of the id representing the currency
+                      pair
 
                       to the currency pair itself.
                 description: GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
@@ -1088,9 +1322,238 @@ paths:
             type: boolean
       tags:
         - Query
+  "/cosmwasm/wasm/v1/code-info/{code_id}":
+    get:
+      summary: CodeInfo gets the metadata for a single wasm code
+      operationId: CodeInfo
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  code_id:
+                    type: string
+                    format: uint64
+                  creator:
+                    type: string
+                  checksum:
+                    type: string
+                    format: byte
+                  instantiate_permission:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        enum:
+                          - ACCESS_TYPE_UNSPECIFIED
+                          - ACCESS_TYPE_NOBODY
+                          - ACCESS_TYPE_EVERYBODY
+                          - ACCESS_TYPE_ANY_OF_ADDRESSES
+                        default: ACCESS_TYPE_UNSPECIFIED
+                        description: >-
+                          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                          placeholder for empty value
+                           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                           - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
+                        title: AccessType permission types
+                      addresses:
+                        type: array
+                        items:
+                          type: string
+                    description: AccessConfig access control type.
+                title: QueryCodeInfoResponse is the response type for the Query/CodeInfo RPC
+                  method
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                          description: >-
+                            A URL/resource name that uniquely identifies the
+                            type of the serialized
+
+                            protocol buffer message. This string must contain at least
+
+                            one "/" character. The last segment of the URL's path must represent
+
+                            the fully qualified name of the type (as in
+
+                            `path/google.protobuf.Duration`). The name should be in a canonical form
+
+                            (e.g., leading "." is not accepted).
+
+
+                            In practice, teams usually precompile into the binary all types that they
+
+                            expect it to use in the context of Any. However, for URLs which use the
+
+                            scheme `http`, `https`, or no scheme, one can optionally set up a type
+
+                            server that maps type URLs to message definitions as follows:
+
+
+                            * If no scheme is provided, `https` is assumed.
+
+                            * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                              value in binary format, or produce an error.
+                            * Applications are allowed to cache lookup results based on the
+                              URL, or have them precompiled into a binary to avoid any
+                              lookup. Therefore, binary compatibility needs to be preserved
+                              on changes to types. (Use versioned type names to manage
+                              breaking changes.)
+
+                            Note: this functionality is not currently available in the official
+
+                            protobuf release, and it is not used for type URLs beginning with
+
+                            type.googleapis.com. As of May 2023, there are no widely used type server
+
+                            implementations and no plans to implement one.
+
+
+                            Schemes other than `http`, `https` (or the empty scheme) might be
+
+                            used with implementation specific semantics.
+                        value:
+                          type: string
+                          format: byte
+                          description: Must be a valid serialized protocol buffer of the above specified
+                            type.
+                      description: >-
+                        `Any` contains an arbitrary serialized protocol buffer
+                        message along with a
+
+                        URL that describes the type of the serialized message.
+
+
+                        Protobuf library provides support to pack/unpack Any values in the form
+
+                        of utility functions or additional generated methods of the Any type.
+
+
+                        Example 1: Pack and unpack a message in C++.
+
+                            Foo foo = ...;
+                            Any any;
+                            any.PackFrom(foo);
+                            ...
+                            if (any.UnpackTo(&foo)) {
+                              ...
+                            }
+
+                        Example 2: Pack and unpack a message in Java.
+
+                            Foo foo = ...;
+                            Any any = Any.pack(foo);
+                            ...
+                            if (any.is(Foo.class)) {
+                              foo = any.unpack(Foo.class);
+                            }
+                            // or ...
+                            if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+                              foo = any.unpack(Foo.getDefaultInstance());
+                            }
+
+                         Example 3: Pack and unpack a message in Python.
+
+                            foo = Foo(...)
+                            any = Any()
+                            any.Pack(foo)
+                            ...
+                            if any.Is(Foo.DESCRIPTOR):
+                              any.Unpack(foo)
+                              ...
+
+                         Example 4: Pack and unpack a message in Go
+
+                             foo := &pb.Foo{...}
+                             any, err := anypb.New(foo)
+                             if err != nil {
+                               ...
+                             }
+                             ...
+                             foo := &pb.Foo{}
+                             if err := any.UnmarshalTo(foo); err != nil {
+                               ...
+                             }
+
+                        The pack methods provided by protobuf library will by default use
+
+                        'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+                        methods only use the fully qualified type name after the last '/'
+
+                        in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+                        name "y.z".
+
+
+                        JSON
+
+                        ====
+
+                        The JSON representation of an `Any` value uses the regular
+
+                        representation of the deserialized, embedded message, with an
+
+                        additional field `@type` which contains the type URL. Example:
+
+                            package google.profile;
+                            message Person {
+                              string first_name = 1;
+                              string last_name = 2;
+                            }
+
+                            {
+                              "@type": "type.googleapis.com/google.profile.Person",
+                              "firstName": <string>,
+                              "lastName": <string>
+                            }
+
+                        If the embedded message type is well-known and has a custom JSON
+
+                        representation, that representation will be embedded adding a field
+
+                        `value` which holds the custom JSON in addition to the `@type`
+
+                        field. Example (for message [google.protobuf.Duration][]):
+
+                            {
+                              "@type": "type.googleapis.com/google.protobuf.Duration",
+                              "value": "1.212s"
+                            }
+      parameters:
+        - name: code_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uint64
+      tags:
+        - Query
   "/cosmwasm/wasm/v1/code/{code_id}":
     get:
-      summary: Code gets the binary code and metadata for a singe wasm code
+      summary: Code gets the binary code and metadata for a single wasm code
       operationId: Code
       responses:
         "200":
@@ -4058,6 +4521,207 @@ paths:
             type: boolean
       tags:
         - Query
+  /cosmwasm/wasm/v1/wasm-limits-config:
+    get:
+      summary: >-
+        WasmLimitsConfig gets the configured limits for static validation of
+        Wasm
+
+        files, encoded in JSON.
+      operationId: WasmLimitsConfig
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  config:
+                    type: string
+                description: >-
+                  QueryWasmLimitsConfigResponse is the response type for the
+
+                  Query/WasmLimitsConfig RPC method. It contains the JSON encoded limits for
+
+                  static validation of Wasm files.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                          description: >-
+                            A URL/resource name that uniquely identifies the
+                            type of the serialized
+
+                            protocol buffer message. This string must contain at least
+
+                            one "/" character. The last segment of the URL's path must represent
+
+                            the fully qualified name of the type (as in
+
+                            `path/google.protobuf.Duration`). The name should be in a canonical form
+
+                            (e.g., leading "." is not accepted).
+
+
+                            In practice, teams usually precompile into the binary all types that they
+
+                            expect it to use in the context of Any. However, for URLs which use the
+
+                            scheme `http`, `https`, or no scheme, one can optionally set up a type
+
+                            server that maps type URLs to message definitions as follows:
+
+
+                            * If no scheme is provided, `https` is assumed.
+
+                            * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                              value in binary format, or produce an error.
+                            * Applications are allowed to cache lookup results based on the
+                              URL, or have them precompiled into a binary to avoid any
+                              lookup. Therefore, binary compatibility needs to be preserved
+                              on changes to types. (Use versioned type names to manage
+                              breaking changes.)
+
+                            Note: this functionality is not currently available in the official
+
+                            protobuf release, and it is not used for type URLs beginning with
+
+                            type.googleapis.com. As of May 2023, there are no widely used type server
+
+                            implementations and no plans to implement one.
+
+
+                            Schemes other than `http`, `https` (or the empty scheme) might be
+
+                            used with implementation specific semantics.
+                        value:
+                          type: string
+                          format: byte
+                          description: Must be a valid serialized protocol buffer of the above specified
+                            type.
+                      description: >-
+                        `Any` contains an arbitrary serialized protocol buffer
+                        message along with a
+
+                        URL that describes the type of the serialized message.
+
+
+                        Protobuf library provides support to pack/unpack Any values in the form
+
+                        of utility functions or additional generated methods of the Any type.
+
+
+                        Example 1: Pack and unpack a message in C++.
+
+                            Foo foo = ...;
+                            Any any;
+                            any.PackFrom(foo);
+                            ...
+                            if (any.UnpackTo(&foo)) {
+                              ...
+                            }
+
+                        Example 2: Pack and unpack a message in Java.
+
+                            Foo foo = ...;
+                            Any any = Any.pack(foo);
+                            ...
+                            if (any.is(Foo.class)) {
+                              foo = any.unpack(Foo.class);
+                            }
+                            // or ...
+                            if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+                              foo = any.unpack(Foo.getDefaultInstance());
+                            }
+
+                         Example 3: Pack and unpack a message in Python.
+
+                            foo = Foo(...)
+                            any = Any()
+                            any.Pack(foo)
+                            ...
+                            if any.Is(Foo.DESCRIPTOR):
+                              any.Unpack(foo)
+                              ...
+
+                         Example 4: Pack and unpack a message in Go
+
+                             foo := &pb.Foo{...}
+                             any, err := anypb.New(foo)
+                             if err != nil {
+                               ...
+                             }
+                             ...
+                             foo := &pb.Foo{}
+                             if err := any.UnmarshalTo(foo); err != nil {
+                               ...
+                             }
+
+                        The pack methods provided by protobuf library will by default use
+
+                        'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+                        methods only use the fully qualified type name after the last '/'
+
+                        in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+                        name "y.z".
+
+
+                        JSON
+
+                        ====
+
+                        The JSON representation of an `Any` value uses the regular
+
+                        representation of the deserialized, embedded message, with an
+
+                        additional field `@type` which contains the type URL. Example:
+
+                            package google.profile;
+                            message Person {
+                              string first_name = 1;
+                              string last_name = 2;
+                            }
+
+                            {
+                              "@type": "type.googleapis.com/google.profile.Person",
+                              "firstName": <string>,
+                              "lastName": <string>
+                            }
+
+                        If the embedded message type is well-known and has a custom JSON
+
+                        representation, that representation will be embedded adding a field
+
+                        `value` which holds the custom JSON in addition to the `@type`
+
+                        field. Example (for message [google.protobuf.Duration][]):
+
+                            {
+                              "@type": "type.googleapis.com/google.protobuf.Duration",
+                              "value": "1.212s"
+                            }
+      tags:
+        - Query
   /Stride-Labs/ibc-rate-limiting/ratelimit/blacklisted_denoms:
     get:
       summary: Queries all blacklisted denoms
@@ -4641,6 +5305,94 @@ paths:
                         type: string
                       max_mca_tax:
                         type: string
+                description: QueryParamsResponse is response type for the Query/Params RPC
+                  method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
+  /MANTRA-Chain/mantrachain/sanction/v1/blacklist:
+    get:
+      summary: Blacklist queries the blacklisted accounts.
+      operationId: Blacklist
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  blacklisted_accounts:
+                    type: array
+                    items:
+                      type: string
+                    description: blacklisted_accounts defines the list of blacklisted accounts.
+                description: QueryBlacklistResponse is response type for the Query/Blacklist RPC
+                  method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
+  /MANTRA-Chain/mantrachain/sanction/v1/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SanctionParams
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  params:
+                    description: params holds all the parameters of this module.
+                    type: object
                 description: QueryParamsResponse is response type for the Query/Params RPC
                   method.
         default:
@@ -44956,6 +45708,129 @@ components:
               description: ProviderConfigs is the list of provider-specific configs for this
                 Market.
       description: MarketResponse is the query response for the Market query.
+    connect.marketmap.v2.MarketsResponse:
+      type: object
+      properties:
+        markets:
+          type: array
+          items:
+            type: object
+            properties:
+              ticker:
+                description: >-
+                  Ticker represents a price feed for a given asset pair i.e.
+                  BTC/USD. The
+
+                  price feed is scaled to a number of decimal places and has a minimum number
+
+                  of providers required to consider the ticker valid.
+                type: object
+                properties:
+                  currency_pair:
+                    description: CurrencyPair is the currency pair for this ticker.
+                    type: object
+                    properties:
+                      Base:
+                        type: string
+                      Quote:
+                        type: string
+                    title: >-
+                      CurrencyPair is the standard representation of a pair of
+                      assets, where one
+
+                      (Base) is priced in terms of the other (Quote)
+                  decimals:
+                    type: string
+                    format: uint64
+                    description: >-
+                      Decimals is the number of decimal places for the ticker.
+                      The number of
+
+                      decimal places is used to convert the price to a human-readable format.
+                  min_provider_count:
+                    type: string
+                    format: uint64
+                    description: >-
+                      MinProviderCount is the minimum number of providers
+                      required to consider
+
+                      the ticker valid.
+                  enabled:
+                    type: boolean
+                    description: >-
+                      Enabled is the flag that denotes if the Ticker is enabled
+                      for price
+
+                      fetching by an oracle.
+                  metadata_JSON:
+                    type: string
+                    description: >-
+                      MetadataJSON is a string of JSON that encodes any extra
+                      configuration
+
+                      for the given ticker.
+              provider_configs:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: >-
+                        Name corresponds to the name of the provider for which
+                        the configuration is
+
+                        being set.
+                    off_chain_ticker:
+                      type: string
+                      description: >-
+                        OffChainTicker is the off-chain representation of the
+                        ticker i.e. BTC/USD.
+
+                        The off-chain ticker is unique to a given provider and is used to fetch the
+
+                        price of the ticker from the provider.
+                    normalize_by_pair:
+                      description: >-
+                        NormalizeByPair is the currency pair for this ticker to
+                        be normalized by.
+
+                        For example, if the desired Ticker is BTC/USD, this market could be reached
+
+                        using: OffChainTicker = BTC/USDT NormalizeByPair = USDT/USD This field is
+
+                        optional and nullable.
+                      type: object
+                      properties:
+                        Base:
+                          type: string
+                        Quote:
+                          type: string
+                      title: >-
+                        CurrencyPair is the standard representation of a pair of
+                        assets, where one
+
+                        (Base) is priced in terms of the other (Quote)
+                    invert:
+                      type: boolean
+                      title: >-
+                        Invert is a boolean indicating if the BASE and QUOTE of
+                        the market should
+
+                        be inverted. i.e. BASE -> QUOTE, QUOTE -> BASE
+                    metadata_JSON:
+                      type: string
+                      description: >-
+                        MetadataJSON is a string of JSON that encodes any extra
+                        configuration
+
+                        for the given provider config.
+                description: ProviderConfigs is the list of provider-specific configs for this
+                  Market.
+            description: Market encapsulates a Ticker and its provider-specific
+              configuration.
+          description: Markets is a sorted list of all markets in the module.
+      description: MarketsResponse is the query response for the Markets query.
     connect.marketmap.v2.Params:
       type: object
       properties:
@@ -45445,6 +46320,27 @@ components:
                     "@type": "type.googleapis.com/google.protobuf.Duration",
                     "value": "1.212s"
                   }
+    connect.oracle.v2.CurrencyPairMapping:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uint64
+          description: ID is the unique identifier for this currency pair string.
+        currency_pair:
+          type: object
+          properties:
+            Base:
+              type: string
+            Quote:
+              type: string
+          title: >-
+            CurrencyPair is the standard representation of a pair of assets,
+            where one
+
+            (Base) is priced in terms of the other (Quote)
+          description: CurrencyPair is the human-readable representation of the currency
+            pair.
     connect.oracle.v2.GetAllCurrencyPairsResponse:
       type: object
       properties:
@@ -45465,6 +46361,37 @@ components:
       description: |-
         GetAllCurrencyPairsResponse returns all CurrencyPairs that the module is
         currently tracking.
+    connect.oracle.v2.GetCurrencyPairMappingListResponse:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uint64
+                description: ID is the unique identifier for this currency pair string.
+              currency_pair:
+                type: object
+                properties:
+                  Base:
+                    type: string
+                  Quote:
+                    type: string
+                title: >-
+                  CurrencyPair is the standard representation of a pair of
+                  assets, where one
+
+                  (Base) is priced in terms of the other (Quote)
+                description: CurrencyPair is the human-readable representation of the currency
+                  pair.
+          description: |-
+            mappings is a list of the id representing the currency pair
+            to the currency pair itself.
+      description: GetCurrencyPairMappingResponse is the GetCurrencyPairMapping
+        response type.
     connect.oracle.v2.GetCurrencyPairMappingResponse:
       type: object
       properties:
@@ -46145,6 +47072,42 @@ components:
         Query/BuildAddress RPC
 
         method.
+    cosmwasm.wasm.v1.QueryCodeInfoResponse:
+      type: object
+      properties:
+        code_id:
+          type: string
+          format: uint64
+        creator:
+          type: string
+        checksum:
+          type: string
+          format: byte
+        instantiate_permission:
+          type: object
+          properties:
+            permission:
+              type: string
+              enum:
+                - ACCESS_TYPE_UNSPECIFIED
+                - ACCESS_TYPE_NOBODY
+                - ACCESS_TYPE_EVERYBODY
+                - ACCESS_TYPE_ANY_OF_ADDRESSES
+              default: ACCESS_TYPE_UNSPECIFIED
+              description: >-
+                - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
+                empty value
+                 - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                 - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                 - ACCESS_TYPE_ANY_OF_ADDRESSES: AccessTypeAnyOfAddresses allow any of the addresses
+              title: AccessType permission types
+            addresses:
+              type: array
+              items:
+                type: string
+          description: AccessConfig access control type.
+      title: QueryCodeInfoResponse is the response type for the Query/CodeInfo RPC
+        method
     cosmwasm.wasm.v1.QueryCodeResponse:
       type: object
       properties:
@@ -46678,6 +47641,17 @@ components:
       title: |-
         QuerySmartContractStateResponse is the response type for the
         Query/SmartContractState RPC method
+    cosmwasm.wasm.v1.QueryWasmLimitsConfigResponse:
+      type: object
+      properties:
+        config:
+          type: string
+      description: >-
+        QueryWasmLimitsConfigResponse is the response type for the
+
+        Query/WasmLimitsConfig RPC method. It contains the JSON encoded limits for
+
+        static validation of Wasm files.
     ratelimit.v1.Flow:
       type: object
       properties:
@@ -47141,6 +48115,26 @@ components:
               type: string
             max_mca_tax:
               type: string
+      description: QueryParamsResponse is response type for the Query/Params RPC method.
+    mantrachain.sanction.v1.Params:
+      type: object
+      description: Params defines the parameters for the module.
+    mantrachain.sanction.v1.QueryBlacklistResponse:
+      type: object
+      properties:
+        blacklisted_accounts:
+          type: array
+          items:
+            type: string
+          description: blacklisted_accounts defines the list of blacklisted accounts.
+      description: QueryBlacklistResponse is response type for the Query/Blacklist RPC
+        method.
+    mantrachain.sanction.v1.QueryParamsResponse:
+      type: object
+      properties:
+        params:
+          description: params holds all the parameters of this module.
+          type: object
       description: QueryParamsResponse is response type for the Query/Params RPC method.
     cosmos.base.v1beta1.Coin:
       type: object

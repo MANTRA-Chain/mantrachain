@@ -1,0 +1,43 @@
+syntax = "proto3";
+package mantrachain.sanction.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "mantrachain/sanction/v1/params.proto";
+
+option go_package = "github.com/MANTRA-Chain/mantrachain/x/sanction/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get =
+        "/MANTRA-Chain/mantrachain/sanction/v1/params";
+  }
+  // Blacklist queries the blacklisted accounts.
+  rpc Blacklist(QueryBlacklistRequest) returns (QueryBlacklistResponse) {
+    option (google.api.http).get =
+        "/MANTRA-Chain/mantrachain/sanction/v1/blacklist";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryBlacklistRequest is request type for the Query/Blacklist RPC method.
+message QueryBlacklistRequest {}
+
+// QueryBlacklistResponse is response type for the Query/Blacklist RPC method.
+message QueryBlacklistResponse {
+  // blacklisted_accounts defines the list of blacklisted accounts.
+  repeated string blacklisted_accounts = 1;
+}
