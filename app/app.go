@@ -614,10 +614,10 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
-	// 	banktypes.NewMultiBankHooks(
-	// 		app.TokenFactoryKeeper.Hooks(),
-	// 	))
+	app.BankKeeper.BaseSendKeeper = app.BankKeeper.BaseSendKeeper.SetHooks(
+		banktypes.NewMultiBankHooks(
+			app.TokenFactoryKeeper.Hooks(),
+		))
 
 	// Register the proposal types
 	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
