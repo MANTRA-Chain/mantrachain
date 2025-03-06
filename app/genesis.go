@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	erc20types "github.com/evmos/evmos/v20/x/erc20/types"
+	evmtypes "github.com/evmos/evmos/v20/x/evm/types"
 	feemarkettypes "github.com/evmos/evmos/v20/x/feemarket/types"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
@@ -21,7 +23,7 @@ import (
 // object provided to it during init.
 type GenesisState map[string]json.RawMessage
 
-var FeeDenom = "uom"
+var FeeDenom = "aom"
 
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
@@ -57,9 +59,21 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 
 	var feeMarketState feemarkettypes.GenesisState
 	cdc.MustUnmarshalJSON(genesisState[feemarkettypes.ModuleName], &feeMarketState)
-	feeMarketState.Params.NoBaseFee = true
-	feeMarketState.Params.BaseFee = math.NewInt(0)
+	feeMarketState.Params.NoBaseFee = false
+	// 0.01uom = 10000000000aom
+	feeMarketState.Params.BaseFee = math.NewInt(10000000000)
+	feeMarketState.Params.MinGasPrice = math.LegacyNewDecFromInt(feeMarketState.Params.BaseFee)
 	genesisState[feemarkettypes.ModuleName] = cdc.MustMarshalJSON(&feeMarketState)
+
+	var evmState evmtypes.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[evmtypes.ModuleName], &evmState)
+	evmState.Params.EvmDenom = FeeDenom
+	genesisState[evmtypes.ModuleName] = cdc.MustMarshalJSON(&evmState)
+
+	var erc20State erc20types.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[erc20types.ModuleName], &erc20State)
+	erc20State.TokenPairs[0].Denom = FeeDenom
+	genesisState[erc20types.ModuleName] = cdc.MustMarshalJSON(&erc20State)
 
 	return genesisState
 }
