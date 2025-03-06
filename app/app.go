@@ -1365,7 +1365,6 @@ func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
 	}
 
 	staticServer := http.FileServer(statikFS)
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
 	rtr.PathPrefix("").Handler(staticServer)
 }
 

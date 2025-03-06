@@ -47,9 +47,16 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
+	mkdir -p "$(THIRD_PARTY_DIR)/evmos_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/evmos_tmp" && \
+	git clone --depth 1 --branch v20.0.0 https://github.com/evmos/evmos.git . && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/evmos_tmp"
+
 	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	git clone --depth 1 --branch $(shell grep -o 'wasmd v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/CosmWasm/wasmd.git . && \
+	git clone --depth 1 --branch v0.54.0 https://github.com/CosmWasm/wasmd.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
