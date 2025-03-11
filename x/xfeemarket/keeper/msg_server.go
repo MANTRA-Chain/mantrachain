@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/types"
 )
 
 type msgServer struct {

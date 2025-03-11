@@ -5,8 +5,8 @@ import (
 	"os"
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
-	"github.com/MANTRA-Chain/mantrachain/v3/app"
-	"github.com/MANTRA-Chain/mantrachain/v3/cmd/mantrachaind/cmd"
+	"github.com/MANTRA-Chain/mantrachain/v4/app"
+	"github.com/MANTRA-Chain/mantrachain/v4/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 

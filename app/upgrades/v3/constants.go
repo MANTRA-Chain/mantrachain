@@ -2,8 +2,8 @@ package v3
 
 import (
 	"cosmossdk.io/store/types"
-	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
 )
 
 const (

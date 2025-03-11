@@ -4,7 +4,7 @@ import (
 	"context"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
+	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 )

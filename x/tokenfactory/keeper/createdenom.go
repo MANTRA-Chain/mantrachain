@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
