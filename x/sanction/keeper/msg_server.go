@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
 )
 
 type msgServer struct {

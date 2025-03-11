@@ -34,21 +34,21 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	_ "github.com/MANTRA-Chain/mantrachain/v3/app/params"
-	queries "github.com/MANTRA-Chain/mantrachain/v3/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v3/app/upgrades"
-	v3 "github.com/MANTRA-Chain/mantrachain/v3/app/upgrades/v3"
-	_ "github.com/MANTRA-Chain/mantrachain/v3/client/docs/statik"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v3/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v3/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
-	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/types"
+	_ "github.com/MANTRA-Chain/mantrachain/v4/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/v4/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
+	v4 "github.com/MANTRA-Chain/mantrachain/v4/app/upgrades/v4"
+	_ "github.com/MANTRA-Chain/mantrachain/v4/client/docs/statik"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v4/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v4/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
+	xfeemarkettypes "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -199,7 +199,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName:          nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v3.Upgrade}
+var Upgrades = []upgrades.Upgrade{v4.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)

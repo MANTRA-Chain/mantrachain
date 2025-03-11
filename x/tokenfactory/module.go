@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/client/cli"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/client/cli"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"

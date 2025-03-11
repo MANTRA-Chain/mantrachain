@@ -2,7 +2,7 @@ package app
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	xfeemarketpost "github.com/MANTRA-Chain/mantrachain/v3/x/xfeemarket/post"
+	xfeemarketpost "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/post"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )

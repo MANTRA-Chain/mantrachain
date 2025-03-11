@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
-	"github.com/MANTRA-Chain/mantrachain/v3/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
