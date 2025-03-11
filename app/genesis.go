@@ -7,6 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	feemarkettypes "github.com/evmos/evmos/v20/x/feemarket/types"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 )
@@ -53,5 +54,12 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 		panic("cannot marshal distribution genesis state for tests")
 	}
 	genesisState[distributiontypes.ModuleName] = distributionGenesisStateBytes
+
+	var feeMarketState feemarkettypes.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[feemarkettypes.ModuleName], &feeMarketState)
+	feeMarketState.Params.NoBaseFee = true
+	feeMarketState.Params.BaseFee = math.NewInt(0)
+	genesisState[feemarkettypes.ModuleName] = cdc.MustMarshalJSON(&feeMarketState)
+
 	return genesisState
 }
