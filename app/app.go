@@ -34,6 +34,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/MANTRA-Chain/mantrachain/v4/app/ante"
 	_ "github.com/MANTRA-Chain/mantrachain/v4/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v4/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
