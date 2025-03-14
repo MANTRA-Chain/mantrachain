@@ -1360,9 +1360,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 // RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
-	// TODO: switch back to using fs.New() after solving import problem
-	// statikFS, err := fs.New()
-	statikFS, err := fs.NewWithNamespace("mantra")
+	statikFS, err := fs.New()
 	if err != nil {
 		panic(err)
 	}
