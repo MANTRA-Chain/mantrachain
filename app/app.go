@@ -39,7 +39,7 @@ import (
 	queries "github.com/MANTRA-Chain/mantrachain/v4/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
 	v4 "github.com/MANTRA-Chain/mantrachain/v4/app/upgrades/v4"
-	_ "github.com/MANTRA-Chain/mantrachain/v4/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v4/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/module"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
@@ -158,7 +158,6 @@ import (
 	feemarketkeeper "github.com/evmos/evmos/v20/x/feemarket/keeper"
 	feemarkettypes "github.com/evmos/evmos/v20/x/feemarket/types"
 	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
@@ -167,8 +166,6 @@ import (
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	"github.com/spf13/cast"
 
-	//nolint: gci
-	_ "github.com/MANTRA-Chain/mantrachain/v4/client/docs/statik"
 	// Overriders
 	"github.com/evmos/evmos/v20/x/ibc/transfer"
 	ibctransferkeeper "github.com/evmos/evmos/v20/x/ibc/transfer/keeper"
@@ -1360,12 +1357,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 // RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
-	statikFS, err := fs.New()
-	if err != nil {
-		panic(err)
-	}
-
-	staticServer := http.FileServer(statikFS)
+	staticServer := http.FileServer(swagger.FS)
 	rtr.PathPrefix("").Handler(staticServer)
 }
 
