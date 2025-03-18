@@ -9,7 +9,10 @@ replace (
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d
 	github.com/ChainSafe/go-schnorrkel/1 => github.com/ChainSafe/go-schnorrkel v1.0.0
 	github.com/btcsuite/btcd/btcec/v2 => github.com/btcsuite/btcd/btcec/v2 v2.3.2 // 2.3.4 breaks api
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v2-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.12, current branch: mantra/v0.50.12
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/45e39edd9fb2c1aa6845af47df057589629df6f7
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.12-v3-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v3-mantra-1
 	github.com/cosmos/iavl => github.com/cosmos/iavl v1.1.2
 	github.com/cosmos/interchain-security/v5 => github.com/cosmos/interchain-security/v5 v5.0.0-20240905162918-300530f18130
 	github.com/docker/distribution => github.com/docker/distribution v2.8.2+incompatible
