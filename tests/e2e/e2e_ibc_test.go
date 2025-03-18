@@ -140,6 +140,77 @@ func (s *IntegrationTestSuite) createChannel() {
 	s.T().Logf("IBC transfer channel created between chains %s and %s", s.chainA.id, s.chainB.id)
 }
 
+// This function will complete the channel handshake in cases when ChanOpenInit was initiated
+// by some transaction that was previously executed on the chain. For example,
+// ICA MsgRegisterInterchainAccount will perform ChanOpenInit during its execution.
+func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
+	srcChain, dstChain,
+	srcConnection, dstConnection,
+	srcPort, dstPort,
+	srcChannel, dstChannel string,
+) {
+	s.T().Logf("completing IBC channel handshake between: (%s, %s, %s, %s) and (%s, %s, %s, %s)",
+		srcChain, srcConnection, srcPort, srcChannel,
+		dstChain, dstConnection, dstPort, dstChannel)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+
+	hermesCmd := []string{
+		hermesBinary,
+		"--json",
+		"tx",
+		"chan-open-try",
+		"--dst-chain", dstChain,
+		"--src-chain", srcChain,
+		"--dst-connection", dstConnection,
+		"--dst-port", dstPort,
+		"--src-port", srcPort,
+		"--src-channel", srcChannel,
+	}
+
+	_, err := s.executeHermesCommand(ctx, hermesCmd)
+	s.Require().NoError(err, "failed to execute chan-open-try: %s", err)
+
+	hermesCmd = []string{
+		hermesBinary,
+		"--json",
+		"tx",
+		"chan-open-ack",
+		"--dst-chain", srcChain,
+		"--src-chain", dstChain,
+		"--dst-connection", srcConnection,
+		"--dst-port", srcPort,
+		"--src-port", dstPort,
+		"--dst-channel", srcChannel,
+		"--src-channel", dstChannel,
+	}
+
+	_, err = s.executeHermesCommand(ctx, hermesCmd)
+	s.Require().NoError(err, "failed to execute chan-open-ack: %s", err)
+
+	hermesCmd = []string{
+		hermesBinary,
+		"--json",
+		"tx",
+		"chan-open-confirm",
+		"--dst-chain", dstChain,
+		"--src-chain", srcChain,
+		"--dst-connection", dstConnection,
+		"--dst-port", dstPort,
+		"--src-port", srcPort,
+		"--dst-channel", dstChannel,
+		"--src-channel", srcChannel,
+	}
+
+	_, err = s.executeHermesCommand(ctx, hermesCmd)
+	s.Require().NoError(err, "failed to execute chan-open-confirm: %s", err)
+
+	s.T().Logf("IBC channel handshake completed between: (%s, %s, %s, %s) and (%s, %s, %s, %s)",
+		srcChain, srcConnection, srcPort, srcChannel,
+		dstChain, dstConnection, dstPort, dstChannel)
+}
+
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 	s.Run("send_uom_to_chainB", func() {
 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
