@@ -1,4 +1,4 @@
-module github.com/MANTRA-Chain/mantrachain/v4
+module github.com/MANTRA-Chain/mantrachain/v5
 
 go 1.23.1
 

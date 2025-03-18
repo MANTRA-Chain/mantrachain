@@ -1,4 +1,4 @@
-module github.com/MANTRA-Chain/mantrachain/v4/tests/interchain
+module github.com/MANTRA-Chain/mantrachain/v5/tests/interchain
 
 go 1.22.11
 
