@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 )
 
 // stargateResponsePools keeps a whitelist and its deterministic
@@ -28,6 +29,7 @@ func init() {
 	// Whitelist specific queries
 	setWhitelistedQuery("/osmosis.tokenfactory.v1beta1.Query/Params", &tokenfactorytypes.QueryParamsResponse{})
 	setWhitelistedQuery("/osmosis.tokenfactory.v1beta1.Query/DenomAuthorityMetadata", &tokenfactorytypes.QueryDenomAuthorityMetadataResponse{})
+	setWhitelistedQuery("/connect.oracle.v2.Query/GetPrice", &oracletypes.GetPriceResponse{})
 }
 
 // setWhitelistedQuery sets the whitelisted query at the provided path.
