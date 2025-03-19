@@ -3,29 +3,35 @@ package app
 import (
 	"fmt"
 
+	evidencekeeper "cosmossdk.io/x/evidence/keeper"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	bankprecompile "github.com/cosmos/evm/precompiles/bank"
+	"github.com/cosmos/evm/precompiles/bech32"
+	distprecompile "github.com/cosmos/evm/precompiles/distribution"
+	evidenceprecompile "github.com/cosmos/evm/precompiles/evidence"
+	govprecompile "github.com/cosmos/evm/precompiles/gov"
+	ics20precompile "github.com/cosmos/evm/precompiles/ics20"
+	"github.com/cosmos/evm/precompiles/p256"
+	slashingprecompile "github.com/cosmos/evm/precompiles/slashing"
+	stakingprecompile "github.com/cosmos/evm/precompiles/staking"
+	erc20Keeper "github.com/cosmos/evm/x/erc20/keeper"
+	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
+	"github.com/cosmos/evm/x/vm/core/vm"
+	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
 	"github.com/ethereum/go-ethereum/common"
-	bankprecompile "github.com/evmos/evmos/v20/precompiles/bank"
-	"github.com/evmos/evmos/v20/precompiles/bech32"
-	distprecompile "github.com/evmos/evmos/v20/precompiles/distribution"
-	govprecompile "github.com/evmos/evmos/v20/precompiles/gov"
-	ics20precompile "github.com/evmos/evmos/v20/precompiles/ics20"
-	"github.com/evmos/evmos/v20/precompiles/p256"
-	stakingprecompile "github.com/evmos/evmos/v20/precompiles/staking"
-	erc20Keeper "github.com/evmos/evmos/v20/x/erc20/keeper"
-	"github.com/evmos/evmos/v20/x/evm/core/vm"
-	transferkeeper "github.com/evmos/evmos/v20/x/ibc/transfer/keeper"
-	stakingkeeper "github.com/evmos/evmos/v20/x/staking/keeper"
 	"golang.org/x/exp/maps"
 )
 
 const bech32PrecompileBaseGas = 6_000
 
-// AvailableStaticPrecompiles returns the list of all available static precompiled contracts.
+// NewAvailableStaticPrecompiles returns the list of all available static precompiled contracts from Cosmos EVM.
+//
 // NOTE: this should only be used during initialization of the Keeper.
 func NewAvailableStaticPrecompiles(
 	stakingKeeper stakingkeeper.Keeper,
@@ -35,7 +41,10 @@ func NewAvailableStaticPrecompiles(
 	authzKeeper authzkeeper.Keeper,
 	transferKeeper transferkeeper.Keeper,
 	channelKeeper channelkeeper.Keeper,
+	evmKeeper *evmkeeper.Keeper,
 	govKeeper govkeeper.Keeper,
+	slashingKeeper slashingkeeper.Keeper,
+	evidenceKeeper evidencekeeper.Keeper,
 ) map[common.Address]vm.PrecompiledContract {
 	// Clone the mapping from the latest EVM fork.
 	precompiles := maps.Clone(vm.PrecompiledContractsBerlin)
@@ -57,6 +66,7 @@ func NewAvailableStaticPrecompiles(
 		distributionKeeper,
 		stakingKeeper,
 		authzKeeper,
+		evmKeeper,
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate distribution precompile: %w", err))
@@ -67,6 +77,7 @@ func NewAvailableStaticPrecompiles(
 		transferKeeper,
 		channelKeeper,
 		authzKeeper,
+		evmKeeper,
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to instantiate ICS20 precompile: %w", err))
@@ -82,6 +93,16 @@ func NewAvailableStaticPrecompiles(
 		panic(fmt.Errorf("failed to instantiate gov precompile: %w", err))
 	}
 
+	slashingPrecompile, err := slashingprecompile.NewPrecompile(slashingKeeper, authzKeeper)
+	if err != nil {
+		panic(fmt.Errorf("failed to instantiate slashing precompile: %w", err))
+	}
+
+	evidencePrecompile, err := evidenceprecompile.NewPrecompile(evidenceKeeper, authzKeeper)
+	if err != nil {
+		panic(fmt.Errorf("failed to instantiate evidence precompile: %w", err))
+	}
+
 	// Stateless precompiles
 	precompiles[bech32Precompile.Address()] = bech32Precompile
 	precompiles[p256Precompile.Address()] = p256Precompile
@@ -92,5 +113,8 @@ func NewAvailableStaticPrecompiles(
 	precompiles[ibcTransferPrecompile.Address()] = ibcTransferPrecompile
 	precompiles[bankPrecompile.Address()] = bankPrecompile
 	precompiles[govPrecompile.Address()] = govPrecompile
+	precompiles[slashingPrecompile.Address()] = slashingPrecompile
+	precompiles[evidencePrecompile.Address()] = evidencePrecompile
+
 	return precompiles
 }

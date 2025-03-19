@@ -16,7 +16,7 @@ import (
 func main() {
 	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
 	SetAddressPrefixes()
-	RegisterDenoms()
+	// RegisterDenoms()
 	rootCmd := cmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, clienthelpers.EnvPrefix, app.DefaultNodeHome); err != nil {
 		fmt.Fprintln(rootCmd.OutOrStderr(), err)

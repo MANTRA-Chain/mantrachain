@@ -28,10 +28,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	ethermintclient "github.com/evmos/evmos/v20/client"
-	ethermintserver "github.com/evmos/evmos/v20/server"
-	ethermintservercfg "github.com/evmos/evmos/v20/server/config"
-	ethermintserverflags "github.com/evmos/evmos/v20/server/flags"
+	ethermintclient "github.com/cosmos/evm/client"
+	ethermintserver "github.com/cosmos/evm/server"
+	ethermintservercfg "github.com/cosmos/evm/server/config"
+	ethermintserverflags "github.com/cosmos/evm/server/flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -63,7 +63,6 @@ func initRootCmd(
 		genutilcli.ValidateGenesisCmd(basicManager),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		cmtcli.NewCompletionCmd(rootCmd, true),
-		ethermintclient.NewTestnetCmd(basicManager, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
 		pruning.Cmd(newApp, app.DefaultNodeHome),
 		confixcmd.ConfigCommand(),
@@ -86,7 +85,7 @@ func initRootCmd(
 		genesisCommand(txConfig, basicManager),
 		queryCommand(),
 		txCommand(),
-		ethermintclient.KeyCommands(app.DefaultNodeHome),
+		ethermintclient.KeyCommands(app.DefaultNodeHome, true),
 	)
 
 	_, err := ethermintserverflags.AddTxFlags(rootCmd)
@@ -180,6 +179,7 @@ func newApp(
 		logger, db, traceStore, true,
 		appOpts,
 		wasmOpts,
+		app.EvmAppOptions,
 		baseappOptions...,
 	)
 }
@@ -220,6 +220,7 @@ func appExport(
 		height == -1,
 		appOpts,
 		emptyWasmOpts,
+		app.EvmAppOptions,
 	)
 
 	if height != -1 {
