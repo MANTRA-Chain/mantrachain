@@ -23,7 +23,7 @@ import (
 // object provided to it during init.
 type GenesisState map[string]json.RawMessage
 
-var FeeDenom = "aom"
+var FeeDenom = "uom"
 
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
@@ -60,8 +60,7 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 	var feeMarketState feemarkettypes.GenesisState
 	cdc.MustUnmarshalJSON(genesisState[feemarkettypes.ModuleName], &feeMarketState)
 	feeMarketState.Params.NoBaseFee = false
-	// 0.01uom = 10000000000aom
-	feeMarketState.Params.BaseFee = math.NewInt(10000000000)
+	feeMarketState.Params.BaseFee = math.NewInt(1)
 	feeMarketState.Params.MinGasPrice = math.LegacyNewDecFromInt(feeMarketState.Params.BaseFee)
 	genesisState[feemarkettypes.ModuleName] = cdc.MustMarshalJSON(&feeMarketState)
 

@@ -26,10 +26,8 @@ func main() {
 
 const (
 	HumanCoinUnit = "om"
-	MicroCoinUnit = "uom"
-	UomExponent   = 6
-	BaseCoinUnit  = "aom"
-	OmExponent    = 18
+	BaseCoinUnit  = "uom"
+	OmExponent    = 6
 
 	DefaultBondDenom = BaseCoinUnit
 )
@@ -61,10 +59,6 @@ func RegisterDenoms() {
 		panic(err)
 	}
 	err = sdk.RegisterDenom(BaseCoinUnit, math.LegacyNewDecWithPrec(1, OmExponent))
-	if err != nil {
-		panic(err)
-	}
-	err = sdk.RegisterDenom(MicroCoinUnit, math.LegacyNewDecWithPrec(1, UomExponent))
 	if err != nil {
 		panic(err)
 	}

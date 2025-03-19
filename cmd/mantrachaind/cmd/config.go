@@ -50,7 +50,7 @@ func initAppConfig() (string, interface{}) {
 	// srvCfg.MinGasPrices = "0stake"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
-	ethermintCustomAppTemplate, ethermintCustomAppConfig := ethermintservercfg.AppConfig("aom")
+	ethermintCustomAppTemplate, ethermintCustomAppConfig := ethermintservercfg.AppConfig("uom")
 
 	oracleCfg := oracleconfig.AppConfig{
 		Enabled:        false,
