@@ -35,9 +35,6 @@ replace (
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
 
-// TODO: remove this when not used
-replace github.com/cosmos/evm/example_chain => ../../cosmos/evm/example_chain
-
 require (
 	cosmossdk.io/api v0.7.6
 	cosmossdk.io/client/v2 v2.0.0-beta.7
@@ -61,8 +58,8 @@ require (
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cosmos/cosmos-db v1.1.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.50.11
-	github.com/cosmos/evm v0.0.0-20250318095025-e69e57ff2698
+	github.com/cosmos/cosmos-sdk v0.50.13
+	github.com/cosmos/evm v0.0.0-20250320012422-2395e5845ee9
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/ibc-hooks/v8 v8.0.0-20240904212233-8cb681e31589
