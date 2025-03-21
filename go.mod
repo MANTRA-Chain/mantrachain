@@ -3,10 +3,10 @@ module github.com/MANTRA-Chain/mantrachain/v3
 go 1.23.1
 
 replace (
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.12, current branch: mantra/v0.50.12
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/45e39edd9fb2c1aa6845af47df057589629df6f7
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.12-v3-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v3-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.13, current branch: mantra/v0.50.12
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2d67139e683b4505e1c17b05ad289b1605c907b6
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.13-v3-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
