@@ -8,10 +8,10 @@ const (
 	ExampleDisplayDenom = "om"
 
 	// EighteenDecimalsChainID is the chain ID for the 18 decimals chain.
-	EighteenDecimalsChainID = "omstead_9003"
+	EighteenDecimalsChainID = "omstead_5887-18"
 
 	// SixDecimalsChainID is the chain ID for the 6 decimals chain.
-	SixDecimalsChainID = "omstead_9002"
+	SixDecimalsChainID = "omstead_5887"
 
-	CosmosChainID = "omstead_9001"
+	CosmosChainID = "omstead_5887"
 )

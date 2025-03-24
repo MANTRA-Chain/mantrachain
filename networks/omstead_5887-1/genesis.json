@@ -1,7 +1,7 @@
 {
   "app_name": "mantrachaind",
   "app_version": "v4.0.0-evm-alpha.1",
-  "genesis_time": "2025-03-10T07:39:29.12985Z",
+  "genesis_time": "2025-03-24T01:12:09.049934Z",
   "chain_id": "omstead_5887-1",
   "initial_height": 1,
   "app_hash": null,
@@ -18,44 +18,37 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra1nqsu795e6d5j0p0468jtyxmnzgt4k9dlayfa98",
+          "address": "mantra1msmztlyzr8s4d0alkwshajrk9al8y6dqs3g462",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra1sxjqr0cp4kvjjcwe8weahsj0a357x6v8s2mkvr",
+          "address": "mantra1v9zy7n545lx9gyfn3jydpuv8qpvutrhaetpddk",
           "pub_key": null,
           "account_number": "1",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra19nj8hate4y2w0va698uygf2jj4y6xq42k8a7ed",
+          "address": "mantra1l5n52kprffr8qtdhngx35s5wkvtqt2q26ft94w",
           "pub_key": null,
           "account_number": "2",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra1587ulw8vg2dnnyw8xuntuvlrejy4rguz9hz530",
+          "address": "mantra1d29jwzjsw6ryc8qf6dt7j6h7tutren783tulk6",
           "pub_key": null,
           "account_number": "3",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra1257rvjnkcykg9v3vmtkzm7ljktt57enkxk9w2a",
+          "address": "mantra1am2l73ppv264ua8fth2s95wr3vnw0pqtk0apgk",
           "pub_key": null,
           "account_number": "4",
-          "sequence": "0"
-        },
-        {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "mantra1xcxzthg0w0gpr5p9s5gehz0du2a57vfcuhthhp",
-          "pub_key": null,
-          "account_number": "5",
           "sequence": "0"
         }
       ]
@@ -70,59 +63,55 @@
       },
       "balances": [
         {
-          "address": "mantra19nj8hate4y2w0va698uygf2jj4y6xq42k8a7ed",
+          "address": "mantra1v9zy7n545lx9gyfn3jydpuv8qpvutrhaetpddk",
           "coins": [
             {
-              "denom": "aom",
-              "amount": "8888888880000000000000000"
+              "denom": "uom",
+              "amount": "8888888880000"
             }
           ]
         },
         {
-          "address": "mantra1xcxzthg0w0gpr5p9s5gehz0du2a57vfcuhthhp",
-          "coins": []
-        },
-        {
-          "address": "mantra1257rvjnkcykg9v3vmtkzm7ljktt57enkxk9w2a",
+          "address": "mantra1d29jwzjsw6ryc8qf6dt7j6h7tutren783tulk6",
           "coins": [
             {
-              "denom": "aom",
-              "amount": "10000000000000000000000000"
+              "denom": "uom",
+              "amount": "10000000000000"
             }
           ]
         },
         {
-          "address": "mantra1sxjqr0cp4kvjjcwe8weahsj0a357x6v8s2mkvr",
+          "address": "mantra1msmztlyzr8s4d0alkwshajrk9al8y6dqs3g462",
           "coins": [
             {
-              "denom": "aom",
-              "amount": "300000000000000000000000"
+              "denom": "uom",
+              "amount": "300000000000"
             }
           ]
         },
         {
-          "address": "mantra1nqsu795e6d5j0p0468jtyxmnzgt4k9dlayfa98",
+          "address": "mantra1am2l73ppv264ua8fth2s95wr3vnw0pqtk0apgk",
           "coins": [
             {
-              "denom": "aom",
-              "amount": "300000000000000000000000"
+              "denom": "uom",
+              "amount": "10000"
             }
           ]
         },
         {
-          "address": "mantra1587ulw8vg2dnnyw8xuntuvlrejy4rguz9hz530",
+          "address": "mantra1l5n52kprffr8qtdhngx35s5wkvtqt2q26ft94w",
           "coins": [
             {
-              "denom": "aom",
-              "amount": "8888888880000000000000000"
+              "denom": "uom",
+              "amount": "8888888880000"
             }
           ]
         }
       ],
       "supply": [
         {
-          "denom": "aom",
-          "amount": "28377777760000000000000000"
+          "denom": "uom",
+          "amount": "28077777770000"
         }
       ],
       "denom_metadata": [
@@ -130,33 +119,19 @@
           "description": "The native staking token of the Mantrachain.",
           "denom_units": [
             {
-              "denom": "aom",
-              "exponent": 0,
-              "aliases": [
-                "attoom"
-              ]
-            },
-            {
               "denom": "uom",
-              "exponent": 12,
+              "exponent": 0,
               "aliases": [
                 "microom"
               ]
             },
             {
-              "denom": "mom",
-              "exponent": 15,
-              "aliases": [
-                "milliom"
-              ]
-            },
-            {
               "denom": "om",
-              "exponent": 18,
+              "exponent": 6,
               "aliases": []
             }
           ],
-          "base": "aom",
+          "base": "uom",
           "display": "om",
           "name": "om",
           "symbol": "OM",
@@ -177,7 +152,7 @@
     "consensus": null,
     "crisis": {
       "constant_fee": {
-        "denom": "aom",
+        "denom": "uom",
         "amount": "1000"
       }
     },
@@ -203,10 +178,19 @@
     "erc20": {
       "params": {
         "enable_erc20": true,
-        "native_precompiles": [],
-        "dynamic_precompiles": []
+        "native_precompiles": [
+          "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517"
+        ],
+        "dynamic_precompiles": null
       },
-      "token_pairs": []
+      "token_pairs": [
+        {
+          "erc20_address": "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517",
+          "denom": "uom",
+          "enabled": true,
+          "contract_owner": "OWNER_MODULE"
+        }
+      ]
     },
     "evidence": {
       "evidence": []
@@ -214,37 +198,36 @@
     "evm": {
       "accounts": [],
       "params": {
-        "evm_denom": "aom",
+        "evm_denom": "uom",
         "extra_eips": [
           "ethereum_3855"
         ],
         "chain_config": {
-          "homestead_block": "0",
-          "dao_fork_block": "0",
-          "dao_fork_support": true,
-          "eip150_block": "0",
-          "eip150_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "eip155_block": "0",
-          "eip158_block": "0",
-          "byzantium_block": "0",
-          "constantinople_block": "0",
-          "petersburg_block": "0",
-          "istanbul_block": "0",
-          "muir_glacier_block": "0",
-          "berlin_block": "0",
-          "london_block": "0",
-          "arrow_glacier_block": "0",
-          "gray_glacier_block": "0",
-          "merge_netsplit_block": "0",
-          "shanghai_block": "0",
-          "cancun_block": "0"
+          "homestead_block": null,
+          "dao_fork_block": null,
+          "dao_fork_support": false,
+          "eip150_block": null,
+          "eip150_hash": "",
+          "eip155_block": null,
+          "eip158_block": null,
+          "byzantium_block": null,
+          "constantinople_block": null,
+          "petersburg_block": null,
+          "istanbul_block": null,
+          "muir_glacier_block": null,
+          "berlin_block": null,
+          "london_block": null,
+          "arrow_glacier_block": null,
+          "gray_glacier_block": null,
+          "merge_netsplit_block": null,
+          "shanghai_block": null,
+          "cancun_block": null,
+          "chain_id": "0",
+          "denom": "",
+          "decimals": "0"
         },
         "allow_unprotected_txs": false,
-        "evm_channels": [
-          "channel-10",
-          "channel-31",
-          "channel-83"
-        ],
+        "evm_channels": [],
         "access_control": {
           "create": {
             "access_type": "ACCESS_TYPE_PERMISSIONLESS",
@@ -255,16 +238,7 @@
             "access_control_list": []
           }
         },
-        "active_static_precompiles": [
-          "0x0000000000000000000000000000000000000100",
-          "0x0000000000000000000000000000000000000400",
-          "0x0000000000000000000000000000000000000800",
-          "0x0000000000000000000000000000000000000801",
-          "0x0000000000000000000000000000000000000802",
-          "0x0000000000000000000000000000000000000803",
-          "0x0000000000000000000000000000000000000804",
-          "0x0000000000000000000000000000000000000805"
-        ]
+        "active_static_precompiles": []
       }
     },
     "feegrant": {
@@ -283,8 +257,8 @@
         "base_fee_change_denominator": 8,
         "elasticity_multiplier": 2,
         "enable_height": "0",
-        "base_fee": "1",
-        "min_gas_price": "1",
+        "base_fee": "0.01",
+        "min_gas_price": "0.01",
         "min_gas_multiplier": "0.500000000000000000"
       },
       "block_gas": "0"
@@ -310,18 +284,18 @@
                 },
                 "min_self_delegation": "1",
                 "delegator_address": "",
-                "validator_address": "mantravaloper1nqsu795e6d5j0p0468jtyxmnzgt4k9dlelgnfz",
+                "validator_address": "mantravaloper1msmztlyzr8s4d0alkwshajrk9al8y6dq52fmk0",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "Z23eAVXmnFJveFJAw4pLk5Sh3MsiRoDtvXbX1mUhBI4="
+                  "key": "HhEi6bGbUig0slHY2ikHZcFkQokf3Tf5ce9yGNYM0mw="
                 },
                 "value": {
-                  "denom": "aom",
-                  "amount": "100000000000000000000"
+                  "denom": "uom",
+                  "amount": "1000000"
                 }
               }
             ],
-            "memo": "2a75636862eaafc03f34ecffecbbea7d02faed01@192.168.50.211:26656",
+            "memo": "1cbada45e5a1e38bf817d352021137eb36339cd2@192.168.50.211:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -330,8 +304,8 @@
             "signer_infos": [
               {
                 "public_key": {
-                  "@type": "/ethermint.crypto.v1.ethsecp256k1.PubKey",
-                  "key": "AoUV5bwAZXNFVRI65pKKnJEEnw8xvpuE0YnsKyXWuWME"
+                  "@type": "/cosmos.evm.crypto.v1.ethsecp256k1.PubKey",
+                  "key": "A926qwqFJd+TUh3PewrbjDbRHsAgtpRTvp6xcyMSXSfs"
                 },
                 "mode_info": {
                   "single": {
@@ -350,69 +324,7 @@
             "tip": null
           },
           "signatures": [
-            "Ao4dZVcMJfpbwknzm+ZkAn7A904sn+J8IoMsczocjmUeofflqGmMOPSwQEY/8OH+irzTY2f5jWnMfiWzR0yLpQE="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "node1",
-                  "identity": "",
-                  "website": "",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "",
-                "validator_address": "mantravaloper1sxjqr0cp4kvjjcwe8weahsj0a357x6v8536cqx",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "dA2vOtwEPSD9uDWFAxrXAIZC7YKWhtcPSiC+pyvcnXE="
-                },
-                "value": {
-                  "denom": "aom",
-                  "amount": "100000000000000000000"
-                }
-              }
-            ],
-            "memo": "96076f6e9f6eff805f9782529c50bfcb6b06bcd7@192.168.50.211:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/ethermint.crypto.v1.ethsecp256k1.PubKey",
-                  "key": "A+2XzpSsaSle2uZh6vZ4GdIzXJTPzN5bSHPAUmix5zZN"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            },
-            "tip": null
-          },
-          "signatures": [
-            "uyf6DBs6s5pGr8Y3YPpYNFFngDWP3CuE6X0gToLl5ZloArj1wwgjbEBymyEQL39cFc3vMGFeHxi22WuMm0+5lQE="
+            "0xjGE4yuyH7GdjT3cHccomQDJuUc0zKFtMIu+WKfEDYnc2vQjxM3bliHa8AuhkAfYNCrysu9LE4CLzaI54pG0wE="
           ]
         }
       ]
@@ -429,7 +341,7 @@
         "min_deposit": [
           {
             "amount": "1000000000000000000000",
-            "denom": "aom"
+            "denom": "uom"
           }
         ],
         "max_deposit_period": "172800s",
@@ -445,7 +357,7 @@
         "expedited_min_deposit": [
           {
             "amount": "2000000000000000000000",
-            "denom": "aom"
+            "denom": "uom"
           }
         ],
         "burn_vote_quorum": false,
@@ -507,6 +419,27 @@
       }
     },
     "ibchooks": {},
+    "interchainaccounts": {
+      "controller_genesis_state": {
+        "active_channels": [],
+        "interchain_accounts": [],
+        "ports": [],
+        "params": {
+          "controller_enabled": true
+        }
+      },
+      "host_genesis_state": {
+        "active_channels": [],
+        "interchain_accounts": [],
+        "port": "icahost",
+        "params": {
+          "host_enabled": true,
+          "allow_messages": [
+            "*"
+          ]
+        }
+      }
+    },
     "marketmap": {
       "market_map": {
         "markets": {
@@ -765,7 +698,7 @@
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "aom",
+        "mint_denom": "uom",
         "inflation_rate_change": "0.010000000000000000",
         "inflation_max": "0.010000000000000000",
         "inflation_min": "0.010000000000000000",
@@ -882,7 +815,7 @@
         "max_validators": "100",
         "max_entries": 7,
         "historical_entries": 10000,
-        "bond_denom": "aom",
+        "bond_denom": "uom",
         "min_commission_rate": "0"
       },
       "last_total_power": "0",
@@ -905,7 +838,7 @@
         "denom_creation_fee": [
           {
             "amount": "88888888888000000000000",
-            "denom": "aom"
+            "denom": "uom"
           }
         ],
         "denom_creation_gas_consume": "0",

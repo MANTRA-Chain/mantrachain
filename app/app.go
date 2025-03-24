@@ -233,7 +233,7 @@ var (
 func init() {
 	// Replace evmos defaults
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
-	sdk.DefaultPowerReduction = cosmosevmtypes.AttoPowerReduction
+	sdk.DefaultPowerReduction = cosmosevmtypes.MicroPowerReduction
 	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
 }
 
