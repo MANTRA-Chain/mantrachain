@@ -126,6 +126,48 @@ func StargateQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(
 	}
 }
 
+// GrpcQuerier dispatches whitelisted stargate queries.
+func GrpcQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(ctx sdk.Context, request *wasmvmtypes.GrpcQuery) (proto.Message, error) {
+	return func(ctx sdk.Context, request *wasmvmtypes.GrpcQuery) (proto.Message, error) {
+		// Check if the query path is whitelisted.
+		if err := IsWhitelistedQuery(request.Path); err != nil {
+			return nil, err
+		}
+
+		protoResponseType, err := getWhitelistedQuery(request.Path)
+		if err != nil {
+			return nil, err
+		}
+		// Ensure the proto message is returned to the pool to prevent leaks.
+		defer returnStargateResponseToPool(request.Path, protoResponseType)
+
+		route := queryRouter.Route(request.Path)
+		if route == nil {
+			return nil, wasmvmtypes.UnsupportedRequest{Kind: fmt.Sprintf("no route to query '%s'", request.Path)}
+		}
+
+		res, err := route(ctx, &abci.RequestQuery{
+			Data: request.Data,
+			Path: request.Path,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		if res.Value == nil {
+			return nil, fmt.Errorf("response value is nil")
+		}
+
+		// Unmarshal the response.
+		err = cdc.Unmarshal(res.Value, protoResponseType)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal response for query path '%s': %w", request.Path, err)
+		}
+
+		return protoResponseType, nil
+	}
+}
+
 // RegisterCustomPlugins registers custom plugins for the wasm module.
 func RegisterCustomPlugins(
 	queryRouter baseapp.GRPCQueryRouter,
@@ -134,6 +176,7 @@ func RegisterCustomPlugins(
 	// Register the Stargate querier with the custom queries.
 	queryPluginOpt := wasmkeeper.WithQueryPlugins(&wasmkeeper.QueryPlugins{
 		Stargate: StargateQuerier(queryRouter, cdc),
+		Grpc:     GrpcQuerier(queryRouter, cdc),
 	})
 
 	return []wasmkeeper.Option{

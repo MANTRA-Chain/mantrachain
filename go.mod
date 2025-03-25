@@ -13,9 +13,10 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/230eb4f15f813ebf6addce723e7c35b68a6cf1eb
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250305015410-230eb4f15f81
 
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/feature/evmos-integration, current branch: feature/evmos-integration
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/8f4c97e852f37ff5cd17b973b36975e871153ab7
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.0.0-20250305021601-8f4c97e852f3
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.13, current branch: mantra/v0.50.12
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2d67139e683b4505e1c17b05ad289b1605c907b6
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.13-v3-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1
 
 	// use Evmos geth fork
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
