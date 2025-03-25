@@ -22,10 +22,10 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 			opts := txWithExtensions.GetExtensionOptions()
 			if len(opts) > 0 {
 				switch typeURL := opts[0].GetTypeUrl(); typeURL {
-				case "/ethermint.evm.v1.ExtensionOptionsEthereumTx":
+				case "/cosmos.evm.vm.v1.ExtensionOptionsEthereumTx":
 					// handle as *evmtypes.MsgEthereumTx
-					anteHandler = newMonoEVMAnteHandler(options.EvmosOptions)
-				case "/ethermint.types.v1.ExtensionOptionDynamicFeeTx":
+					anteHandler = newMonoEVMAnteHandler(options.EvmOptions)
+				case "/cosmos.evm.types.v1.ExtensionOptionDynamicFeeTx":
 					// cosmos-sdk tx with dynamic fee extension
 					anteHandler = newCosmosAnteHandler(options)
 				default:

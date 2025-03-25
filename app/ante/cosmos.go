@@ -12,18 +12,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	cosmosante "github.com/cosmos/evm/ante/cosmos"
+	evmante "github.com/cosmos/evm/ante/evm"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
 	"github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	evmosante "github.com/evmos/evmos/v20/app/ante"
-	evmoscosmosante "github.com/evmos/evmos/v20/app/ante/cosmos"
-	evmante "github.com/evmos/evmos/v20/app/ante/evm"
-	evmtypes "github.com/evmos/evmos/v20/x/evm/types"
 )
 
-// HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
+// HandlerOptions extend the SDK's AnteHandler options by r	equiring the IBC
 // channel keeper.
 type HandlerOptions struct {
-	EvmosOptions          evmosante.HandlerOptions
+	EvmOptions            EVMHandlerOptions
 	IBCKeeper             *keeper.Keeper
 	WasmConfig            *wasmTypes.NodeConfig
 	WasmKeeper            *wasmkeeper.Keeper
@@ -34,8 +33,8 @@ type HandlerOptions struct {
 
 // Validate checks if the keepers are defined
 func (options HandlerOptions) Validate() error {
-	if options.EvmosOptions.Validate() != nil {
-		return options.EvmosOptions.Validate()
+	if options.EvmOptions.Validate() != nil {
+		return options.EvmOptions.Validate()
 	}
 	if options.IBCKeeper == nil {
 		return errors.New("ibc keeper is required for ante builder")
@@ -61,8 +60,8 @@ func (options HandlerOptions) Validate() error {
 // newCosmosAnteHandler constructor
 func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	anteDecorators := []sdk.AnteDecorator{
-		evmoscosmosante.RejectMessagesDecorator{}, // reject MsgEthereumTxs
-		evmoscosmosante.NewAuthzLimiterDecorator( // disable the Msg types that cannot be included on an authz.MsgExec msgs field
+		cosmosante.NewRejectMessagesDecorator(), // reject MsgEthereumTxs
+		cosmosante.NewAuthzLimiterDecorator( // disable the Msg types that cannot be included on an authz.MsgExec msgs field
 			sdk.MsgTypeURL(&evmtypes.MsgEthereumTx{}),
 			sdk.MsgTypeURL(&vestingtypes.MsgCreateVestingAccount{}),
 		),
@@ -72,26 +71,26 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
 		circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
 		sanctionkeeper.NewBlacklistCheckDecorator(*options.SanctionKeeper),
-		ante.NewExtensionOptionsDecorator(options.EvmosOptions.ExtensionOptionChecker),
+		ante.NewExtensionOptionsDecorator(options.EvmOptions.ExtensionOptionChecker),
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
-		ante.NewValidateMemoDecorator(options.EvmosOptions.AccountKeeper),
-		evmoscosmosante.NewMinGasPriceDecorator(options.EvmosOptions.FeeMarketKeeper, options.EvmosOptions.EvmKeeper),
-		ante.NewConsumeGasForTxSizeDecorator(options.EvmosOptions.AccountKeeper),
+		ante.NewValidateMemoDecorator(options.EvmOptions.AccountKeeper),
+		cosmosante.NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
+		ante.NewConsumeGasForTxSizeDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewDeductFeeDecorator(
-			options.EvmosOptions.AccountKeeper,
-			options.EvmosOptions.BankKeeper,
-			options.EvmosOptions.FeegrantKeeper,
-			options.EvmosOptions.TxFeeChecker,
+			options.EvmOptions.AccountKeeper,
+			options.EvmOptions.BankKeeper,
+			options.EvmOptions.FeegrantKeeper,
+			options.EvmOptions.TxFeeChecker,
 		),
 		// SetPubKeyDecorator must be called before all signature verification decorators
-		ante.NewSetPubKeyDecorator(options.EvmosOptions.AccountKeeper),
-		ante.NewValidateSigCountDecorator(options.EvmosOptions.AccountKeeper),
-		ante.NewSigGasConsumeDecorator(options.EvmosOptions.AccountKeeper, options.EvmosOptions.SigGasConsumer),
-		ante.NewSigVerificationDecorator(options.EvmosOptions.AccountKeeper, options.EvmosOptions.SignModeHandler),
-		ante.NewIncrementSequenceDecorator(options.EvmosOptions.AccountKeeper),
+		ante.NewSetPubKeyDecorator(options.EvmOptions.AccountKeeper),
+		ante.NewValidateSigCountDecorator(options.EvmOptions.AccountKeeper),
+		ante.NewSigGasConsumeDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SigGasConsumer),
+		ante.NewSigVerificationDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SignModeHandler),
+		ante.NewIncrementSequenceDecorator(options.EvmOptions.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
-		evmante.NewGasWantedDecorator(options.EvmosOptions.EvmKeeper, options.EvmosOptions.FeeMarketKeeper),
+		evmante.NewGasWantedDecorator(options.EvmOptions.EvmKeeper, options.EvmOptions.FeeMarketKeeper),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...)

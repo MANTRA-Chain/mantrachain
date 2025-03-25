@@ -1,28 +1,10 @@
-package main
+package params
 
 import (
-	"fmt"
-	"os"
-
-	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/math"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/v4/app"
-	"github.com/MANTRA-Chain/mantrachain/v4/cmd/mantrachaind/cmd"
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-func main() {
-	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
-	SetAddressPrefixes()
-	// RegisterDenoms()
-	rootCmd := cmd.NewRootCmd()
-	if err := svrcmd.Execute(rootCmd, clienthelpers.EnvPrefix, app.DefaultNodeHome); err != nil {
-		fmt.Fprintln(rootCmd.OutOrStderr(), err)
-		os.Exit(1)
-	}
-}
 
 const (
 	HumanCoinUnit = "om"
@@ -45,6 +27,12 @@ var (
 	// Bech32PrefixConsPub defines the Bech32 prefix of a consensus node public key.
 	Bech32PrefixConsPub = Bech32Prefix + "valconspub"
 )
+
+func init() {
+	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
+	SetAddressPrefixes()
+	// RegisterDenoms()
+}
 
 // MantraCoinDenomRegex returns the mantra regex string
 // this is used to override the default sdk coin denom regex
@@ -71,5 +59,5 @@ func SetAddressPrefixes() {
 	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 	config.SetAddressVerifier(wasmtypes.VerifyAddressLen())
-	config.Seal()
+	// config.Seal()
 }

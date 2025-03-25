@@ -5,7 +5,9 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	cmtcfg "github.com/cometbft/cometbft/config"
-	ethermintservercfg "github.com/evmos/evmos/v20/server/config"
+	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
+	cosmosevmserverconfig "github.com/cosmos/evm/server/config"
+	ethermintservercfg "github.com/cosmos/evm/server/config"
 	oracleconfig "github.com/skip-mev/connect/v2/oracle/config"
 )
 
@@ -26,15 +28,41 @@ func initCometBFTConfig() *cmtcfg.Config {
 // return "", nil if no custom configuration is required for the application.
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
-	type CustomAppConfig struct {
+	type CustomAppConfig1 struct {
 		ethermintservercfg.Config `mapstructure:",squash"`
 		Wasm                      wasmtypes.NodeConfig   `mapstructure:"wasm"`
 		Oracle                    oracleconfig.AppConfig `mapstructure:"oracle" json:"oracle"`
 	}
 
+	type CustomAppConfig struct {
+		serverconfig.Config
+
+		EVM     cosmosevmserverconfig.EVMConfig
+		JSONRPC cosmosevmserverconfig.JSONRPCConfig
+		TLS     cosmosevmserverconfig.TLSConfig
+		Wasm    wasmtypes.NodeConfig   `mapstructure:"wasm"`
+		Oracle  oracleconfig.AppConfig `mapstructure:"oracle" json:"oracle"`
+	}
+
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
-	// srvCfg := serverconfig.DefaultConfig()
+	srvCfg := serverconfig.DefaultConfig()
+
+	oracleCfg := oracleconfig.AppConfig{
+		Enabled:        false,
+		OracleAddress:  "localhost:8080",
+		ClientTimeout:  time.Second * 2,
+		MetricsEnabled: false,
+	}
+
+	customAppConfig := CustomAppConfig{
+		Config:  *srvCfg,
+		EVM:     *cosmosevmserverconfig.DefaultEVMConfig(),
+		JSONRPC: *cosmosevmserverconfig.DefaultJSONRPCConfig(),
+		TLS:     *cosmosevmserverconfig.DefaultTLSConfig(),
+		Wasm:    wasmtypes.DefaultNodeConfig(),
+		Oracle:  oracleCfg,
+	}
 	// The SDK's default minimum gas price is set to "" (empty value) inside
 	// app.toml. If left empty by validators, the node will halt on startup.
 	// However, the chain developer can set a default app.toml value for their
@@ -46,27 +74,11 @@ func initAppConfig() (string, interface{}) {
 	// - if you set srvCfg.MinGasPrices non-empty, validators CAN tweak their
 	//   own app.toml to override, or use this default value.
 	//
-	// In tests, we set the min gas prices to 0.
-	// srvCfg.MinGasPrices = "0stake"
-	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
+	// In this example application, we set the min gas prices to 0.
+	srvCfg.MinGasPrices = "0uom"
 
-	ethermintCustomAppTemplate, ethermintCustomAppConfig := ethermintservercfg.AppConfig("aom")
-
-	oracleCfg := oracleconfig.AppConfig{
-		Enabled:        false,
-		OracleAddress:  "localhost:8080",
-		ClientTimeout:  time.Second * 2,
-		MetricsEnabled: false,
-	}
-
-	customAppConfig := CustomAppConfig{
-		Config: ethermintCustomAppConfig.(ethermintservercfg.Config),
-		Wasm:   wasmtypes.DefaultNodeConfig(),
-		Oracle: oracleCfg,
-	}
-
-	// limit query gas so that it is not possible to DOS the node
-	customAppTemplate := ethermintCustomAppTemplate +
+	customAppTemplate := serverconfig.DefaultConfigTemplate +
+		cosmosevmserverconfig.DefaultEVMConfigTemplate +
 		wasmtypes.DefaultConfigTemplate() +
 		oracleconfig.DefaultConfigTemplate
 
