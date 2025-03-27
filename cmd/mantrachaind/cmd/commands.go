@@ -30,7 +30,6 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	ethermintclient "github.com/cosmos/evm/client"
 	ethermintserver "github.com/cosmos/evm/server"
-	ethermintservercfg "github.com/cosmos/evm/server/config"
 	ethermintserverflags "github.com/cosmos/evm/server/flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
@@ -152,9 +151,6 @@ func txCommand() *cobra.Command {
 		authcmd.GetDecodeCommand(),
 		authcmd.GetSimulateCmd(),
 	)
-
-	// DefaultGasAdjustment value to use as default in gas-adjustment flag
-	flags.DefaultGasAdjustment = ethermintservercfg.DefaultGasAdjustment
 
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
