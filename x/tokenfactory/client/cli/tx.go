@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"

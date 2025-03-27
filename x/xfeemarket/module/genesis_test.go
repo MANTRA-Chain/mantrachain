@@ -3,10 +3,10 @@ package xfeemarket_test
 import (
 	"testing"
 
-	keepertest "github.com/MANTRA-Chain/mantrachain/v4/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v4/testutil/nullify"
-	xfeemarket "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/module"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/types"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v5/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v5/testutil/nullify"
+	xfeemarket "github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/module"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/types"
 	"github.com/stretchr/testify/require"
 )
 
