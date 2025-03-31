@@ -5,8 +5,8 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	txsigning "cosmossdk.io/x/tx/signing"
-	feemarketpost "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/post"
-	xfeemarketpostmocks "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/post/mocks"
+	feemarketpost "github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/post"
+	xfeemarketpostmocks "github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/post/mocks"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"

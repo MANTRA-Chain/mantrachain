@@ -9,8 +9,8 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
