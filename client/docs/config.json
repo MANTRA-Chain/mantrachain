@@ -7,7 +7,7 @@
   },
   "apis": [
     {
-      "url": "./tmp-swagger-gen/ethermint/evm/v1/query.swagger.json",
+      "url": "./tmp-swagger-gen/cosmos/evm/vm/v1/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "EvmParams",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/ethermint/feemarket/v1/query.swagger.json",
+      "url": "./tmp-swagger-gen/cosmos/evm/feemarket/v1/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "FeeMarketParams"
@@ -27,7 +27,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/evmos/erc20/v1/query.swagger.json",
+      "url": "./tmp-swagger-gen/cosmos/evm/erc20/v1/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "Erc20Params"

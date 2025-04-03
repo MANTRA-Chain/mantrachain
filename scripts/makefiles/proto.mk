@@ -47,12 +47,19 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
-	mkdir -p "$(THIRD_PARTY_DIR)/evmos_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/evmos_tmp" && \
-	git clone --depth 1 --branch v20.0.0 https://github.com/evmos/evmos.git . && \
+	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
+	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/evmos_tmp"
+	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/evm_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/evm_tmp" && \
+	git clone --depth 1 --branch v0.1.0 https://github.com/cosmos/evm.git . && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/cosmos/* ../cosmos
+	rm -rf "$(THIRD_PARTY_DIR)/evm_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
@@ -60,13 +67,6 @@ proto-download-deps:
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
-
-	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
-	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \

@@ -4,7 +4,7 @@ info:
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
-  /evmos/evm/v1/account/{address}:
+  /cosmos/evm/vm/v1/account/{address}:
     get:
       summary: Account queries an Ethereum account.
       operationId: EvmAccount
@@ -233,11 +233,11 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/evm/v1/balances/{address}:
+  /cosmos/evm/vm/v1/balances/{address}:
     get:
       summary: |-
         Balance queries the balance of a the EVM denomination for a single
-        EthAccount.
+        account.
       operationId: EvmBalance
       responses:
         '200':
@@ -457,13 +457,15 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/evm/v1/base_fee:
+  /cosmos/evm/vm/v1/base_fee:
     get:
       summary: >-
         BaseFee queries the base fee of the parent block of the current block,
 
         it's similar to feemarket module's method, but also checks london
-        hardfork status.
+        hardfork
+
+        status.
       operationId: EvmBaseFee
       responses:
         '200':
@@ -675,7 +677,7 @@ paths:
                         }
       tags:
         - Query
-  /evmos/evm/v1/codes/{address}:
+  /cosmos/evm/vm/v1/codes/{address}:
     get:
       summary: Code queries the balance of all coins for a single account.
       operationId: EvmCode
@@ -898,7 +900,351 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/evm/v1/cosmos_account/{address}:
+  /cosmos/evm/vm/v1/config:
+    get:
+      summary: Config queries the EVM configuration
+      operationId: Config
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              config:
+                title: config is the evm configuration
+                type: object
+                properties:
+                  homestead_block:
+                    type: string
+                    title: >-
+                      homestead_block switch (nil no fork, 0 = already
+                      homestead)
+                  dao_fork_block:
+                    type: string
+                    title: >-
+                      dao_fork_block corresponds to TheDAO hard-fork switch
+                      block (nil no fork)
+                  dao_fork_support:
+                    type: boolean
+                    title: >-
+                      dao_fork_support defines whether the nodes supports or
+                      opposes the DAO
+
+                      hard-fork
+                  eip150_block:
+                    type: string
+                    title: >-
+                      eip150_block: EIP150 implements the Gas price changes
+
+                      (https://github.com/ethereum/EIPs/issues/150) EIP150 HF
+                      block (nil no fork)
+                  eip150_hash:
+                    type: string
+                    title: >-
+                      eip150_hash: EIP150 HF hash (needed for header only
+                      clients as only gas
+
+                      pricing changed)
+                  eip155_block:
+                    type: string
+                    title: 'eip155_block: EIP155Block HF block'
+                  eip158_block:
+                    type: string
+                    title: 'eip158_block: EIP158 HF block'
+                  byzantium_block:
+                    type: string
+                    title: >-
+                      byzantium_block: Byzantium switch block (nil no fork, 0 =
+                      already on
+
+                      byzantium)
+                  constantinople_block:
+                    type: string
+                    title: >-
+                      constantinople_block: Constantinople switch block (nil no
+                      fork, 0 = already
+
+                      activated)
+                  petersburg_block:
+                    type: string
+                    title: >-
+                      petersburg_block: Petersburg switch block (nil same as
+                      Constantinople)
+                  istanbul_block:
+                    type: string
+                    title: >-
+                      istanbul_block: Istanbul switch block (nil no fork, 0 =
+                      already on
+
+                      istanbul)
+                  muir_glacier_block:
+                    type: string
+                    title: >-
+                      muir_glacier_block: Eip-2384 (bomb delay) switch block
+                      (nil no fork, 0 =
+
+                      already activated)
+                  berlin_block:
+                    type: string
+                    title: >-
+                      berlin_block: Berlin switch block (nil = no fork, 0 =
+                      already on berlin)
+                  london_block:
+                    type: string
+                    title: >-
+                      london_block: London switch block (nil = no fork, 0 =
+                      already on london)
+                  arrow_glacier_block:
+                    type: string
+                    title: >-
+                      arrow_glacier_block: Eip-4345 (bomb delay) switch block
+                      (nil = no fork, 0 =
+
+                      already activated)
+                  gray_glacier_block:
+                    type: string
+                    title: >-
+                      gray_glacier_block: EIP-5133 (bomb delay) switch block
+                      (nil = no fork, 0 =
+
+                      already activated)
+                  merge_netsplit_block:
+                    type: string
+                    title: >-
+                      merge_netsplit_block: Virtual fork after The Merge to use
+                      as a network
+
+                      splitter
+                  shanghai_block:
+                    type: string
+                    title: >-
+                      shanghai_block switch block (nil = no fork, 0 = already on
+                      shanghai)
+                  cancun_block:
+                    type: string
+                    title: >-
+                      cancun_block switch block (nil = no fork, 0 = already on
+                      cancun)
+                  chain_id:
+                    type: string
+                    format: uint64
+                    title: chain_id is the id of the chain (EIP-155)
+                  denom:
+                    type: string
+                    title: denom is the denomination used on the EVM
+                  decimals:
+                    type: string
+                    format: uint64
+                    title: >-
+                      decimals is the real decimal precision of the denomination
+                      used on the EVM
+                description: >-
+                  ChainConfig defines the Ethereum ChainConfig parameters using
+                  *sdk.Int values
+
+                  instead of *big.Int.
+            description: QueryConfigResponse returns the EVM config.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com. As of May 2023, there are no widely
+                        used type server
+
+                        implementations and no plans to implement one.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+                        // or ...
+                        if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+                          foo = any.unpack(Foo.getDefaultInstance());
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      tags:
+        - Query
+  /cosmos/evm/vm/v1/cosmos_account/{address}:
     get:
       summary: CosmosAccount queries an Ethereum account's Cosmos Address.
       operationId: CosmosAccount
@@ -1130,7 +1476,7 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/evm/v1/estimate_gas:
+  /cosmos/evm/vm/v1/estimate_gas:
     get:
       summary: EstimateGas implements the `eth_estimateGas` rpc api
       operationId: EstimateGas
@@ -1149,9 +1495,9 @@ paths:
                 format: byte
                 title: >-
                   ret is the returned data from evm function (result or data
-                  supplied with revert
+                  supplied with
 
-                  opcode)
+                  revert opcode)
               vm_error:
                 type: string
                 title: vm_error is the error returned by vm execution
@@ -1383,7 +1729,7 @@ paths:
           format: int64
       tags:
         - Query
-  /evmos/evm/v1/eth_call:
+  /cosmos/evm/vm/v1/eth_call:
     get:
       summary: EthCall implements the `eth_call` rpc api
       operationId: EthCall
@@ -1478,9 +1824,9 @@ paths:
                 format: byte
                 title: >-
                   ret is the returned data from evm function (result or data
-                  supplied with revert
+                  supplied with
 
-                  opcode)
+                  revert opcode)
               vm_error:
                 type: string
                 title: vm_error is the error returned by vm execution
@@ -1718,9 +2064,227 @@ paths:
           format: int64
       tags:
         - Query
-  /evmos/evm/v1/params:
+  /cosmos/evm/vm/v1/min_gas_price:
     get:
-      summary: Params queries the parameters of x/evm module.
+      summary: |-
+        GlobalMinGasPrice queries the MinGasPrice
+        it's similar to feemarket module's method,
+        but makes the conversion to 18 decimals
+        when the evm denom is represented with a different precision.
+      operationId: GlobalMinGasPrice
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              min_gas_price:
+                type: string
+                title: min_gas_price is the feemarket's min_gas_price
+            title: QueryGlobalMinGasPriceResponse returns the GlobalMinGasPrice
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com. As of May 2023, there are no widely
+                        used type server
+
+                        implementations and no plans to implement one.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+                        // or ...
+                        if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+                          foo = any.unpack(Foo.getDefaultInstance());
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      tags:
+        - Query
+  /cosmos/evm/vm/v1/params:
+    get:
+      summary: Params queries the parameters of x/vm module.
       operationId: EvmParams
       responses:
         '200':
@@ -1764,7 +2328,9 @@ paths:
                         type: boolean
                         title: >-
                           dao_fork_support defines whether the nodes supports or
-                          opposes the DAO hard-fork
+                          opposes the DAO
+
+                          hard-fork
                       eip150_block:
                         type: string
                         title: >-
@@ -1776,7 +2342,9 @@ paths:
                         type: string
                         title: >-
                           eip150_hash: EIP150 HF hash (needed for header only
-                          clients as only gas pricing changed)
+                          clients as only gas
+
+                          pricing changed)
                       eip155_block:
                         type: string
                         title: 'eip155_block: EIP155Block HF block'
@@ -1787,12 +2355,16 @@ paths:
                         type: string
                         title: >-
                           byzantium_block: Byzantium switch block (nil no fork,
-                          0 = already on byzantium)
+                          0 = already on
+
+                          byzantium)
                       constantinople_block:
                         type: string
                         title: >-
                           constantinople_block: Constantinople switch block (nil
-                          no fork, 0 = already activated)
+                          no fork, 0 = already
+
+                          activated)
                       petersburg_block:
                         type: string
                         title: >-
@@ -1802,12 +2374,16 @@ paths:
                         type: string
                         title: >-
                           istanbul_block: Istanbul switch block (nil no fork, 0
-                          = already on istanbul)
+                          = already on
+
+                          istanbul)
                       muir_glacier_block:
                         type: string
                         title: >-
                           muir_glacier_block: Eip-2384 (bomb delay) switch block
-                          (nil no fork, 0 = already activated)
+                          (nil no fork, 0 =
+
+                          already activated)
                       berlin_block:
                         type: string
                         title: >-
@@ -1822,17 +2398,23 @@ paths:
                         type: string
                         title: >-
                           arrow_glacier_block: Eip-4345 (bomb delay) switch
-                          block (nil = no fork, 0 = already activated)
+                          block (nil = no fork, 0 =
+
+                          already activated)
                       gray_glacier_block:
                         type: string
                         title: >-
                           gray_glacier_block: EIP-5133 (bomb delay) switch block
-                          (nil = no fork, 0 = already activated)
+                          (nil = no fork, 0 =
+
+                          already activated)
                       merge_netsplit_block:
                         type: string
                         title: >-
                           merge_netsplit_block: Virtual fork after The Merge to
-                          use as a network splitter
+                          use as a network
+
+                          splitter
                       shanghai_block:
                         type: string
                         title: >-
@@ -1843,6 +2425,19 @@ paths:
                         title: >-
                           cancun_block switch block (nil = no fork, 0 = already
                           on cancun)
+                      chain_id:
+                        type: string
+                        format: uint64
+                        title: chain_id is the id of the chain (EIP-155)
+                      denom:
+                        type: string
+                        title: denom is the denomination used on the EVM
+                      decimals:
+                        type: string
+                        format: uint64
+                        title: >-
+                          decimals is the real decimal precision of the
+                          denomination used on the EVM
                     description: >-
                       ChainConfig defines the Ethereum ChainConfig parameters
                       using *sdk.Int values
@@ -1894,15 +2489,21 @@ paths:
                               type: string
                             title: >-
                               access_control_list defines defines different
-                              things depending on the AccessType:
+                              things depending on the
+
+                              AccessType:
 
                               - ACCESS_TYPE_PERMISSIONLESS: list of addresses
-                              that are blocked from performing the operation
+                              that are blocked from
+
+                              performing the operation
 
                               - ACCESS_TYPE_RESTRICTED: ignored
 
                               - ACCESS_TYPE_PERMISSIONED: list of addresses that
-                              are allowed to perform the operation
+                              are allowed to perform
+
+                              the operation
                       call:
                         title: >-
                           call defines the permission policy for calling
@@ -1931,27 +2532,33 @@ paths:
                               type: string
                             title: >-
                               access_control_list defines defines different
-                              things depending on the AccessType:
+                              things depending on the
+
+                              AccessType:
 
                               - ACCESS_TYPE_PERMISSIONLESS: list of addresses
-                              that are blocked from performing the operation
+                              that are blocked from
+
+                              performing the operation
 
                               - ACCESS_TYPE_RESTRICTED: ignored
 
                               - ACCESS_TYPE_PERMISSIONED: list of addresses that
-                              are allowed to perform the operation
+                              are allowed to perform
+
+                              the operation
                   active_static_precompiles:
                     type: array
                     items:
                       type: string
                     title: >-
                       active_static_precompiles defines the slice of hex
-                      addresses of the precompiled
+                      addresses of the
 
-                      contracts that are active
+                      precompiled contracts that are active
                 title: Params defines the EVM module parameters
             description: >-
-              QueryParamsResponse defines the response type for querying x/evm
+              QueryParamsResponse defines the response type for querying x/vm
               parameters.
         default:
           description: An unexpected error response.
@@ -2153,7 +2760,7 @@ paths:
                         }
       tags:
         - Query
-  /evmos/evm/v1/storage/{address}/{key}:
+  /cosmos/evm/vm/v1/storage/{address}/{key}:
     get:
       summary: Storage queries the balance of all coins for a single account.
       operationId: Storage
@@ -2384,9 +2991,9 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/evm/v1/trace_block:
+  /cosmos/evm/vm/v1/trace_block:
     get:
-      summary: >-
+      summary: |-
         TraceBlock implements the `debug_traceBlockByNumber` and
         `debug_traceBlockByHash` rpc api
       operationId: TraceBlock
@@ -2608,9 +3215,9 @@ paths:
         - name: trace_config.timeout
           description: >-
             timeout overrides the default timeout of 5 seconds for
-            JavaScript-based tracing
+            JavaScript-based
 
-            calls.
+            tracing calls.
           in: query
           required: false
           type: string
@@ -2660,7 +3267,9 @@ paths:
         - name: trace_config.overrides.dao_fork_support
           description: >-
             dao_fork_support defines whether the nodes supports or opposes the
-            DAO hard-fork.
+            DAO
+
+            hard-fork.
           in: query
           required: false
           type: boolean
@@ -2676,7 +3285,9 @@ paths:
         - name: trace_config.overrides.eip150_hash
           description: >-
             eip150_hash: EIP150 HF hash (needed for header only clients as only
-            gas pricing changed).
+            gas
+
+            pricing changed).
           in: query
           required: false
           type: string
@@ -2691,7 +3302,7 @@ paths:
           required: false
           type: string
         - name: trace_config.overrides.byzantium_block
-          description: >-
+          description: |-
             byzantium_block: Byzantium switch block (nil no fork, 0 = already on
             byzantium).
           in: query
@@ -2700,7 +3311,9 @@ paths:
         - name: trace_config.overrides.constantinople_block
           description: >-
             constantinople_block: Constantinople switch block (nil no fork, 0 =
-            already activated).
+            already
+
+            activated).
           in: query
           required: false
           type: string
@@ -2712,7 +3325,7 @@ paths:
           required: false
           type: string
         - name: trace_config.overrides.istanbul_block
-          description: >-
+          description: |-
             istanbul_block: Istanbul switch block (nil no fork, 0 = already on
             istanbul).
           in: query
@@ -2721,7 +3334,9 @@ paths:
         - name: trace_config.overrides.muir_glacier_block
           description: >-
             muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no fork,
-            0 = already activated).
+            0 =
+
+            already activated).
           in: query
           required: false
           type: string
@@ -2742,21 +3357,27 @@ paths:
         - name: trace_config.overrides.arrow_glacier_block
           description: >-
             arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
-            fork, 0 = already activated).
+            fork, 0 =
+
+            already activated).
           in: query
           required: false
           type: string
         - name: trace_config.overrides.gray_glacier_block
           description: >-
             gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no
-            fork, 0 = already activated).
+            fork, 0 =
+
+            already activated).
           in: query
           required: false
           type: string
         - name: trace_config.overrides.merge_netsplit_block
           description: >-
             merge_netsplit_block: Virtual fork after The Merge to use as a
-            network splitter.
+            network
+
+            splitter.
           in: query
           required: false
           type: string
@@ -2772,6 +3393,25 @@ paths:
           in: query
           required: false
           type: string
+        - name: trace_config.overrides.chain_id
+          description: chain_id is the id of the chain (EIP-155).
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: trace_config.overrides.denom
+          description: denom is the denomination used on the EVM.
+          in: query
+          required: false
+          type: string
+        - name: trace_config.overrides.decimals
+          description: >-
+            decimals is the real decimal precision of the denomination used on
+            the EVM.
+          in: query
+          required: false
+          type: string
+          format: uint64
         - name: trace_config.enable_memory
           description: enable_memory switches memory capture.
           in: query
@@ -2826,7 +3466,7 @@ paths:
           format: int64
       tags:
         - Query
-  /evmos/evm/v1/trace_tx:
+  /cosmos/evm/vm/v1/trace_tx:
     get:
       summary: TraceTx implements the `debug_traceTransaction` rpc api
       operationId: TraceTx
@@ -3117,9 +3757,10 @@ paths:
         - name: msg.from
           description: >-
             from is the ethereum signer address in hex format. This address
-            value is checked
+            value is
 
-            against the address derived from the signature (V, R, S) using the
+            checked against the address derived from the signature (V, R, S)
+            using the
 
             secp256k1 elliptic curve.
           in: query
@@ -3133,9 +3774,9 @@ paths:
         - name: trace_config.timeout
           description: >-
             timeout overrides the default timeout of 5 seconds for
-            JavaScript-based tracing
+            JavaScript-based
 
-            calls.
+            tracing calls.
           in: query
           required: false
           type: string
@@ -3185,7 +3826,9 @@ paths:
         - name: trace_config.overrides.dao_fork_support
           description: >-
             dao_fork_support defines whether the nodes supports or opposes the
-            DAO hard-fork.
+            DAO
+
+            hard-fork.
           in: query
           required: false
           type: boolean
@@ -3201,7 +3844,9 @@ paths:
         - name: trace_config.overrides.eip150_hash
           description: >-
             eip150_hash: EIP150 HF hash (needed for header only clients as only
-            gas pricing changed).
+            gas
+
+            pricing changed).
           in: query
           required: false
           type: string
@@ -3216,7 +3861,7 @@ paths:
           required: false
           type: string
         - name: trace_config.overrides.byzantium_block
-          description: >-
+          description: |-
             byzantium_block: Byzantium switch block (nil no fork, 0 = already on
             byzantium).
           in: query
@@ -3225,7 +3870,9 @@ paths:
         - name: trace_config.overrides.constantinople_block
           description: >-
             constantinople_block: Constantinople switch block (nil no fork, 0 =
-            already activated).
+            already
+
+            activated).
           in: query
           required: false
           type: string
@@ -3237,7 +3884,7 @@ paths:
           required: false
           type: string
         - name: trace_config.overrides.istanbul_block
-          description: >-
+          description: |-
             istanbul_block: Istanbul switch block (nil no fork, 0 = already on
             istanbul).
           in: query
@@ -3246,7 +3893,9 @@ paths:
         - name: trace_config.overrides.muir_glacier_block
           description: >-
             muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no fork,
-            0 = already activated).
+            0 =
+
+            already activated).
           in: query
           required: false
           type: string
@@ -3267,21 +3916,27 @@ paths:
         - name: trace_config.overrides.arrow_glacier_block
           description: >-
             arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
-            fork, 0 = already activated).
+            fork, 0 =
+
+            already activated).
           in: query
           required: false
           type: string
         - name: trace_config.overrides.gray_glacier_block
           description: >-
             gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no
-            fork, 0 = already activated).
+            fork, 0 =
+
+            already activated).
           in: query
           required: false
           type: string
         - name: trace_config.overrides.merge_netsplit_block
           description: >-
             merge_netsplit_block: Virtual fork after The Merge to use as a
-            network splitter.
+            network
+
+            splitter.
           in: query
           required: false
           type: string
@@ -3297,6 +3952,25 @@ paths:
           in: query
           required: false
           type: string
+        - name: trace_config.overrides.chain_id
+          description: chain_id is the id of the chain (EIP-155).
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: trace_config.overrides.denom
+          description: denom is the denomination used on the EVM.
+          in: query
+          required: false
+          type: string
+        - name: trace_config.overrides.decimals
+          description: >-
+            decimals is the real decimal precision of the denomination used on
+            the EVM.
+          in: query
+          required: false
+          type: string
+          format: uint64
         - name: trace_config.enable_memory
           description: enable_memory switches memory capture.
           in: query
@@ -3351,7 +4025,7 @@ paths:
           format: int64
       tags:
         - Query
-  /evmos/evm/v1/validator_account/{cons_address}:
+  /cosmos/evm/vm/v1/validator_account/{cons_address}:
     get:
       summary: >-
         ValidatorAccount queries an Ethereum account's from a validator
@@ -3587,7 +4261,7 @@ paths:
           type: string
       tags:
         - Query
-  /evmos/feemarket/v1/base_fee:
+  /cosmos/evm/feemarket/v1/base_fee:
     get:
       summary: BaseFee queries the base fee of the parent block of the current block.
       operationId: BaseFee
@@ -3625,7 +4299,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /evmos/feemarket/v1/block_gas:
+  /cosmos/evm/feemarket/v1/block_gas:
     get:
       summary: BlockGas queries the gas used at a given block height
       operationId: BlockGas
@@ -3664,7 +4338,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /evmos/feemarket/v1/params:
+  /cosmos/evm/feemarket/v1/params:
     get:
       summary: Params queries the parameters of x/feemarket module.
       operationId: FeeMarketParams
@@ -3704,7 +4378,9 @@ paths:
                     format: int64
                     description: >-
                       enable_height defines at which block height the base fee
-                      calculation is enabled.
+                      calculation is
+
+                      enabled.
                   base_fee:
                     type: string
                     description: base_fee for EIP-1559 blocks.
@@ -3712,7 +4388,9 @@ paths:
                     type: string
                     title: >-
                       min_gas_price defines the minimum gas price value for
-                      cosmos and eth transactions
+                      cosmos and eth
+
+                      transactions
                   min_gas_multiplier:
                     type: string
                     title: >-
@@ -3722,7 +4400,7 @@ paths:
                       to senders based on gas limit
                 title: Params defines the EVM module parameters
             description: >-
-              QueryParamsResponse defines the response type for querying x/evm
+              QueryParamsResponse defines the response type for querying x/vm
               parameters.
         default:
           description: An unexpected error response.
@@ -3748,7 +4426,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /evmos/erc20/v1/params:
+  /cosmos/evm/erc20/v1/params:
     get:
       summary: Params retrieves the erc20 module params
       operationId: Erc20Params
@@ -3766,7 +4444,9 @@ paths:
                     type: boolean
                     description: >-
                       enable_erc20 is the parameter to enable the conversion of
-                      Cosmos coins <--> ERC20 tokens.
+                      Cosmos coins <-->
+
+                      ERC20 tokens.
                   native_precompiles:
                     type: array
                     items:
@@ -3776,7 +4456,9 @@ paths:
                       the
 
                       active precompiles that are used to interact with native
-                      staking coins as ERC20s
+                      staking coins as
+
+                      ERC20s
                   dynamic_precompiles:
                     type: array
                     items:
@@ -3814,7 +4496,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /evmos/erc20/v1/token_pairs:
+  /cosmos/evm/erc20/v1/token_pairs:
     get:
       summary: TokenPairs retrieves registered token pairs
       operationId: TokenPairs
@@ -3843,8 +4525,9 @@ paths:
                     contract_owner:
                       title: >-
                         contract_owner is the an ENUM specifying the type of
-                        ERC20 owner (0 invalid, 1 ModuleAccount, 2 external
-                        address)
+                        ERC20 owner (0
+
+                        invalid, 1 ModuleAccount, 2 external address)
                       type: string
                       enum:
                         - OWNER_UNSPECIFIED
@@ -3970,7 +4653,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /evmos/erc20/v1/token_pairs/{token}:
+  /cosmos/evm/erc20/v1/token_pairs/{token}:
     get:
       summary: TokenPair retrieves a registered token pair
       operationId: TokenPair
@@ -3995,7 +4678,9 @@ paths:
                   contract_owner:
                     title: >-
                       contract_owner is the an ENUM specifying the type of ERC20
-                      owner (0 invalid, 1 ModuleAccount, 2 external address)
+                      owner (0
+
+                      invalid, 1 ModuleAccount, 2 external address)
                     type: string
                     enum:
                       - OWNER_UNSPECIFIED
@@ -4015,7 +4700,9 @@ paths:
                   Cosmos Coin and an ERC20 token address.
                 title: >-
                   token_pairs returns the info about a registered token pair for
-                  the erc20 module
+                  the erc20
+
+                  module
             description: >-
               QueryTokenPairResponse is the response type for the
               Query/TokenPair RPC
@@ -52465,7 +53152,7 @@ paths:
       tags:
         - Query
 definitions:
-  ethermint.evm.v1.AccessControl:
+  cosmos.evm.vm.v1.AccessControl:
     type: object
     properties:
       create:
@@ -52493,15 +53180,21 @@ definitions:
               type: string
             title: >-
               access_control_list defines defines different things depending on
-              the AccessType:
+              the
+
+              AccessType:
 
               - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are blocked
-              from performing the operation
+              from
+
+              performing the operation
 
               - ACCESS_TYPE_RESTRICTED: ignored
 
               - ACCESS_TYPE_PERMISSIONED: list of addresses that are allowed to
-              perform the operation
+              perform
+
+              the operation
       call:
         title: call defines the permission policy for calling contracts
         type: object
@@ -52527,19 +53220,25 @@ definitions:
               type: string
             title: >-
               access_control_list defines defines different things depending on
-              the AccessType:
+              the
+
+              AccessType:
 
               - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are blocked
-              from performing the operation
+              from
+
+              performing the operation
 
               - ACCESS_TYPE_RESTRICTED: ignored
 
               - ACCESS_TYPE_PERMISSIONED: list of addresses that are allowed to
-              perform the operation
+              perform
+
+              the operation
     title: |-
       AccessControl defines the permission policy of the EVM
       for creating and calling contracts
-  ethermint.evm.v1.AccessControlType:
+  cosmos.evm.vm.v1.AccessControlType:
     type: object
     properties:
       access_type:
@@ -52563,17 +53262,21 @@ definitions:
           type: string
         title: >-
           access_control_list defines defines different things depending on the
+
           AccessType:
 
           - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are blocked from
+
           performing the operation
 
           - ACCESS_TYPE_RESTRICTED: ignored
 
           - ACCESS_TYPE_PERMISSIONED: list of addresses that are allowed to
-          perform the operation
+          perform
+
+          the operation
     title: AccessControlType defines the permission type for policies
-  ethermint.evm.v1.AccessType:
+  cosmos.evm.vm.v1.AccessType:
     type: string
     enum:
       - ACCESS_TYPE_PERMISSIONLESS
@@ -52586,7 +53289,7 @@ definitions:
        - ACCESS_TYPE_RESTRICTED: ACCESS_TYPE_RESTRICTED restrict the operation to anyone
        - ACCESS_TYPE_PERMISSIONED: ACCESS_TYPE_PERMISSIONED only allows the operation for specific addresses
     title: AccessType defines the types of permissions for the operations
-  ethermint.evm.v1.ChainConfig:
+  cosmos.evm.vm.v1.ChainConfig:
     type: object
     properties:
       homestead_block:
@@ -52599,7 +53302,7 @@ definitions:
           fork)
       dao_fork_support:
         type: boolean
-        title: >-
+        title: |-
           dao_fork_support defines whether the nodes supports or opposes the DAO
           hard-fork
       eip150_block:
@@ -52613,7 +53316,9 @@ definitions:
         type: string
         title: >-
           eip150_hash: EIP150 HF hash (needed for header only clients as only
-          gas pricing changed)
+          gas
+
+          pricing changed)
       eip155_block:
         type: string
         title: 'eip155_block: EIP155Block HF block'
@@ -52622,27 +53327,31 @@ definitions:
         title: 'eip158_block: EIP158 HF block'
       byzantium_block:
         type: string
-        title: >-
+        title: |-
           byzantium_block: Byzantium switch block (nil no fork, 0 = already on
           byzantium)
       constantinople_block:
         type: string
         title: >-
           constantinople_block: Constantinople switch block (nil no fork, 0 =
-          already activated)
+          already
+
+          activated)
       petersburg_block:
         type: string
         title: 'petersburg_block: Petersburg switch block (nil same as Constantinople)'
       istanbul_block:
         type: string
-        title: >-
+        title: |-
           istanbul_block: Istanbul switch block (nil no fork, 0 = already on
           istanbul)
       muir_glacier_block:
         type: string
         title: >-
           muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no fork, 0
-          = already activated)
+          =
+
+          already activated)
       berlin_block:
         type: string
         title: >-
@@ -52657,15 +53366,19 @@ definitions:
         type: string
         title: >-
           arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
-          fork, 0 = already activated)
+          fork, 0 =
+
+          already activated)
       gray_glacier_block:
         type: string
         title: >-
           gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no fork,
-          0 = already activated)
+          0 =
+
+          already activated)
       merge_netsplit_block:
         type: string
-        title: >-
+        title: |-
           merge_netsplit_block: Virtual fork after The Merge to use as a network
           splitter
       shanghai_block:
@@ -52674,12 +53387,25 @@ definitions:
       cancun_block:
         type: string
         title: cancun_block switch block (nil = no fork, 0 = already on cancun)
+      chain_id:
+        type: string
+        format: uint64
+        title: chain_id is the id of the chain (EIP-155)
+      denom:
+        type: string
+        title: denom is the denomination used on the EVM
+      decimals:
+        type: string
+        format: uint64
+        title: >-
+          decimals is the real decimal precision of the denomination used on the
+          EVM
     description: >-
       ChainConfig defines the Ethereum ChainConfig parameters using *sdk.Int
       values
 
       instead of *big.Int.
-  ethermint.evm.v1.EstimateGasResponse:
+  cosmos.evm.vm.v1.EstimateGasResponse:
     type: object
     properties:
       gas:
@@ -52691,14 +53417,14 @@ definitions:
         format: byte
         title: >-
           ret is the returned data from evm function (result or data supplied
-          with revert
+          with
 
-          opcode)
+          revert opcode)
       vm_error:
         type: string
         title: vm_error is the error returned by vm execution
     title: EstimateGasResponse defines EstimateGas response
-  ethermint.evm.v1.Log:
+  cosmos.evm.vm.v1.Log:
     type: object
     properties:
       address:
@@ -52753,7 +53479,7 @@ definitions:
       fields
 
       are derived, i.e. filled in by the nodes, but not secured by consensus.
-  ethermint.evm.v1.MsgEthereumTx:
+  cosmos.evm.vm.v1.MsgEthereumTx:
     type: object
     properties:
       data:
@@ -52936,13 +53662,14 @@ definitions:
         type: string
         title: >-
           from is the ethereum signer address in hex format. This address value
-          is checked
+          is
 
-          against the address derived from the signature (V, R, S) using the
+          checked against the address derived from the signature (V, R, S) using
+          the
 
           secp256k1 elliptic curve
     description: MsgEthereumTx encapsulates an Ethereum transaction as an SDK message.
-  ethermint.evm.v1.MsgEthereumTxResponse:
+  cosmos.evm.vm.v1.MsgEthereumTxResponse:
     type: object
     properties:
       hash:
@@ -53021,9 +53748,9 @@ definitions:
         format: byte
         title: >-
           ret is the returned data from evm function (result or data supplied
-          with revert
+          with
 
-          opcode)
+          revert opcode)
       vm_error:
         type: string
         title: vm_error is the error returned by vm execution
@@ -53032,7 +53759,7 @@ definitions:
         format: uint64
         title: gas_used specifies how much gas was consumed by the transaction
     description: MsgEthereumTxResponse defines the Msg/EthereumTx response type.
-  ethermint.evm.v1.Params:
+  cosmos.evm.vm.v1.Params:
     type: object
     properties:
       evm_denom:
@@ -53061,7 +53788,9 @@ definitions:
             type: boolean
             title: >-
               dao_fork_support defines whether the nodes supports or opposes the
-              DAO hard-fork
+              DAO
+
+              hard-fork
           eip150_block:
             type: string
             title: >-
@@ -53073,7 +53802,9 @@ definitions:
             type: string
             title: >-
               eip150_hash: EIP150 HF hash (needed for header only clients as
-              only gas pricing changed)
+              only gas
+
+              pricing changed)
           eip155_block:
             type: string
             title: 'eip155_block: EIP155Block HF block'
@@ -53084,12 +53815,16 @@ definitions:
             type: string
             title: >-
               byzantium_block: Byzantium switch block (nil no fork, 0 = already
-              on byzantium)
+              on
+
+              byzantium)
           constantinople_block:
             type: string
             title: >-
               constantinople_block: Constantinople switch block (nil no fork, 0
-              = already activated)
+              = already
+
+              activated)
           petersburg_block:
             type: string
             title: >-
@@ -53097,14 +53832,16 @@ definitions:
               Constantinople)
           istanbul_block:
             type: string
-            title: >-
+            title: |-
               istanbul_block: Istanbul switch block (nil no fork, 0 = already on
               istanbul)
           muir_glacier_block:
             type: string
             title: >-
               muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           berlin_block:
             type: string
             title: >-
@@ -53119,17 +53856,23 @@ definitions:
             type: string
             title: >-
               arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           gray_glacier_block:
             type: string
             title: >-
               gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           merge_netsplit_block:
             type: string
             title: >-
               merge_netsplit_block: Virtual fork after The Merge to use as a
-              network splitter
+              network
+
+              splitter
           shanghai_block:
             type: string
             title: >-
@@ -53138,6 +53881,19 @@ definitions:
           cancun_block:
             type: string
             title: cancun_block switch block (nil = no fork, 0 = already on cancun)
+          chain_id:
+            type: string
+            format: uint64
+            title: chain_id is the id of the chain (EIP-155)
+          denom:
+            type: string
+            title: denom is the denomination used on the EVM
+          decimals:
+            type: string
+            format: uint64
+            title: >-
+              decimals is the real decimal precision of the denomination used on
+              the EVM
         description: >-
           ChainConfig defines the Ethereum ChainConfig parameters using *sdk.Int
           values
@@ -53184,15 +53940,21 @@ definitions:
                   type: string
                 title: >-
                   access_control_list defines defines different things depending
-                  on the AccessType:
+                  on the
+
+                  AccessType:
 
                   - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are
-                  blocked from performing the operation
+                  blocked from
+
+                  performing the operation
 
                   - ACCESS_TYPE_RESTRICTED: ignored
 
                   - ACCESS_TYPE_PERMISSIONED: list of addresses that are allowed
-                  to perform the operation
+                  to perform
+
+                  the operation
           call:
             title: call defines the permission policy for calling contracts
             type: object
@@ -53218,26 +53980,30 @@ definitions:
                   type: string
                 title: >-
                   access_control_list defines defines different things depending
-                  on the AccessType:
+                  on the
+
+                  AccessType:
 
                   - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are
-                  blocked from performing the operation
+                  blocked from
+
+                  performing the operation
 
                   - ACCESS_TYPE_RESTRICTED: ignored
 
                   - ACCESS_TYPE_PERMISSIONED: list of addresses that are allowed
-                  to perform the operation
+                  to perform
+
+                  the operation
       active_static_precompiles:
         type: array
         items:
           type: string
-        title: >-
+        title: |-
           active_static_precompiles defines the slice of hex addresses of the
-          precompiled
-
-          contracts that are active
+          precompiled contracts that are active
     title: Params defines the EVM module parameters
-  ethermint.evm.v1.QueryAccountResponse:
+  cosmos.evm.vm.v1.QueryAccountResponse:
     type: object
     properties:
       balance:
@@ -53253,7 +54019,7 @@ definitions:
     description: >-
       QueryAccountResponse is the response type for the Query/Account RPC
       method.
-  ethermint.evm.v1.QueryBalanceResponse:
+  cosmos.evm.vm.v1.QueryBalanceResponse:
     type: object
     properties:
       balance:
@@ -53262,14 +54028,14 @@ definitions:
     description: >-
       QueryBalanceResponse is the response type for the Query/Balance RPC
       method.
-  ethermint.evm.v1.QueryBaseFeeResponse:
+  cosmos.evm.vm.v1.QueryBaseFeeResponse:
     type: object
     properties:
       base_fee:
         type: string
         title: base_fee is the EIP1559 base fee
     description: QueryBaseFeeResponse returns the EIP1559 base fee.
-  ethermint.evm.v1.QueryCodeResponse:
+  cosmos.evm.vm.v1.QueryCodeResponse:
     type: object
     properties:
       code:
@@ -53279,7 +54045,138 @@ definitions:
     description: |-
       QueryCodeResponse is the response type for the Query/Code RPC
       method.
-  ethermint.evm.v1.QueryCosmosAccountResponse:
+  cosmos.evm.vm.v1.QueryConfigResponse:
+    type: object
+    properties:
+      config:
+        title: config is the evm configuration
+        type: object
+        properties:
+          homestead_block:
+            type: string
+            title: homestead_block switch (nil no fork, 0 = already homestead)
+          dao_fork_block:
+            type: string
+            title: >-
+              dao_fork_block corresponds to TheDAO hard-fork switch block (nil
+              no fork)
+          dao_fork_support:
+            type: boolean
+            title: >-
+              dao_fork_support defines whether the nodes supports or opposes the
+              DAO
+
+              hard-fork
+          eip150_block:
+            type: string
+            title: >-
+              eip150_block: EIP150 implements the Gas price changes
+
+              (https://github.com/ethereum/EIPs/issues/150) EIP150 HF block (nil
+              no fork)
+          eip150_hash:
+            type: string
+            title: >-
+              eip150_hash: EIP150 HF hash (needed for header only clients as
+              only gas
+
+              pricing changed)
+          eip155_block:
+            type: string
+            title: 'eip155_block: EIP155Block HF block'
+          eip158_block:
+            type: string
+            title: 'eip158_block: EIP158 HF block'
+          byzantium_block:
+            type: string
+            title: >-
+              byzantium_block: Byzantium switch block (nil no fork, 0 = already
+              on
+
+              byzantium)
+          constantinople_block:
+            type: string
+            title: >-
+              constantinople_block: Constantinople switch block (nil no fork, 0
+              = already
+
+              activated)
+          petersburg_block:
+            type: string
+            title: >-
+              petersburg_block: Petersburg switch block (nil same as
+              Constantinople)
+          istanbul_block:
+            type: string
+            title: |-
+              istanbul_block: Istanbul switch block (nil no fork, 0 = already on
+              istanbul)
+          muir_glacier_block:
+            type: string
+            title: >-
+              muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no
+              fork, 0 =
+
+              already activated)
+          berlin_block:
+            type: string
+            title: >-
+              berlin_block: Berlin switch block (nil = no fork, 0 = already on
+              berlin)
+          london_block:
+            type: string
+            title: >-
+              london_block: London switch block (nil = no fork, 0 = already on
+              london)
+          arrow_glacier_block:
+            type: string
+            title: >-
+              arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
+              fork, 0 =
+
+              already activated)
+          gray_glacier_block:
+            type: string
+            title: >-
+              gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no
+              fork, 0 =
+
+              already activated)
+          merge_netsplit_block:
+            type: string
+            title: >-
+              merge_netsplit_block: Virtual fork after The Merge to use as a
+              network
+
+              splitter
+          shanghai_block:
+            type: string
+            title: >-
+              shanghai_block switch block (nil = no fork, 0 = already on
+              shanghai)
+          cancun_block:
+            type: string
+            title: cancun_block switch block (nil = no fork, 0 = already on cancun)
+          chain_id:
+            type: string
+            format: uint64
+            title: chain_id is the id of the chain (EIP-155)
+          denom:
+            type: string
+            title: denom is the denomination used on the EVM
+          decimals:
+            type: string
+            format: uint64
+            title: >-
+              decimals is the real decimal precision of the denomination used on
+              the EVM
+        description: >-
+          ChainConfig defines the Ethereum ChainConfig parameters using *sdk.Int
+          values
+
+          instead of *big.Int.
+    description: QueryConfigResponse returns the EVM config.
+  cosmos.evm.vm.v1.QueryCosmosAccountResponse:
     type: object
     properties:
       cosmos_address:
@@ -53298,7 +54195,14 @@ definitions:
       Query/CosmosAccount
 
       RPC method.
-  ethermint.evm.v1.QueryParamsResponse:
+  cosmos.evm.vm.v1.QueryGlobalMinGasPriceResponse:
+    type: object
+    properties:
+      min_gas_price:
+        type: string
+        title: min_gas_price is the feemarket's min_gas_price
+    title: QueryGlobalMinGasPriceResponse returns the GlobalMinGasPrice
+  cosmos.evm.vm.v1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -53333,7 +54237,9 @@ definitions:
                 type: boolean
                 title: >-
                   dao_fork_support defines whether the nodes supports or opposes
-                  the DAO hard-fork
+                  the DAO
+
+                  hard-fork
               eip150_block:
                 type: string
                 title: >-
@@ -53345,7 +54251,9 @@ definitions:
                 type: string
                 title: >-
                   eip150_hash: EIP150 HF hash (needed for header only clients as
-                  only gas pricing changed)
+                  only gas
+
+                  pricing changed)
               eip155_block:
                 type: string
                 title: 'eip155_block: EIP155Block HF block'
@@ -53356,12 +54264,16 @@ definitions:
                 type: string
                 title: >-
                   byzantium_block: Byzantium switch block (nil no fork, 0 =
-                  already on byzantium)
+                  already on
+
+                  byzantium)
               constantinople_block:
                 type: string
                 title: >-
                   constantinople_block: Constantinople switch block (nil no
-                  fork, 0 = already activated)
+                  fork, 0 = already
+
+                  activated)
               petersburg_block:
                 type: string
                 title: >-
@@ -53371,12 +54283,16 @@ definitions:
                 type: string
                 title: >-
                   istanbul_block: Istanbul switch block (nil no fork, 0 =
-                  already on istanbul)
+                  already on
+
+                  istanbul)
               muir_glacier_block:
                 type: string
                 title: >-
                   muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no
-                  fork, 0 = already activated)
+                  fork, 0 =
+
+                  already activated)
               berlin_block:
                 type: string
                 title: >-
@@ -53391,17 +54307,23 @@ definitions:
                 type: string
                 title: >-
                   arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil =
-                  no fork, 0 = already activated)
+                  no fork, 0 =
+
+                  already activated)
               gray_glacier_block:
                 type: string
                 title: >-
                   gray_glacier_block: EIP-5133 (bomb delay) switch block (nil =
-                  no fork, 0 = already activated)
+                  no fork, 0 =
+
+                  already activated)
               merge_netsplit_block:
                 type: string
                 title: >-
                   merge_netsplit_block: Virtual fork after The Merge to use as a
-                  network splitter
+                  network
+
+                  splitter
               shanghai_block:
                 type: string
                 title: >-
@@ -53412,6 +54334,19 @@ definitions:
                 title: >-
                   cancun_block switch block (nil = no fork, 0 = already on
                   cancun)
+              chain_id:
+                type: string
+                format: uint64
+                title: chain_id is the id of the chain (EIP-155)
+              denom:
+                type: string
+                title: denom is the denomination used on the EVM
+              decimals:
+                type: string
+                format: uint64
+                title: >-
+                  decimals is the real decimal precision of the denomination
+                  used on the EVM
             description: >-
               ChainConfig defines the Ethereum ChainConfig parameters using
               *sdk.Int values
@@ -53458,15 +54393,21 @@ definitions:
                       type: string
                     title: >-
                       access_control_list defines defines different things
-                      depending on the AccessType:
+                      depending on the
+
+                      AccessType:
 
                       - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are
-                      blocked from performing the operation
+                      blocked from
+
+                      performing the operation
 
                       - ACCESS_TYPE_RESTRICTED: ignored
 
                       - ACCESS_TYPE_PERMISSIONED: list of addresses that are
-                      allowed to perform the operation
+                      allowed to perform
+
+                      the operation
               call:
                 title: call defines the permission policy for calling contracts
                 type: object
@@ -53492,29 +54433,35 @@ definitions:
                       type: string
                     title: >-
                       access_control_list defines defines different things
-                      depending on the AccessType:
+                      depending on the
+
+                      AccessType:
 
                       - ACCESS_TYPE_PERMISSIONLESS: list of addresses that are
-                      blocked from performing the operation
+                      blocked from
+
+                      performing the operation
 
                       - ACCESS_TYPE_RESTRICTED: ignored
 
                       - ACCESS_TYPE_PERMISSIONED: list of addresses that are
-                      allowed to perform the operation
+                      allowed to perform
+
+                      the operation
           active_static_precompiles:
             type: array
             items:
               type: string
             title: >-
               active_static_precompiles defines the slice of hex addresses of
-              the precompiled
+              the
 
-              contracts that are active
+              precompiled contracts that are active
         title: Params defines the EVM module parameters
     description: >-
-      QueryParamsResponse defines the response type for querying x/evm
+      QueryParamsResponse defines the response type for querying x/vm
       parameters.
-  ethermint.evm.v1.QueryStorageResponse:
+  cosmos.evm.vm.v1.QueryStorageResponse:
     type: object
     properties:
       value:
@@ -53525,7 +54472,7 @@ definitions:
     description: |-
       QueryStorageResponse is the response type for the Query/Storage RPC
       method.
-  ethermint.evm.v1.QueryTraceBlockResponse:
+  cosmos.evm.vm.v1.QueryTraceBlockResponse:
     type: object
     properties:
       data:
@@ -53533,7 +54480,7 @@ definitions:
         format: byte
         title: data is the response serialized in bytes
     title: QueryTraceBlockResponse defines TraceBlock response
-  ethermint.evm.v1.QueryTraceTxResponse:
+  cosmos.evm.vm.v1.QueryTraceTxResponse:
     type: object
     properties:
       data:
@@ -53541,7 +54488,7 @@ definitions:
         format: byte
         title: data is the response serialized in bytes
     title: QueryTraceTxResponse defines TraceTx response
-  ethermint.evm.v1.QueryValidatorAccountResponse:
+  cosmos.evm.vm.v1.QueryValidatorAccountResponse:
     type: object
     properties:
       account_address:
@@ -53558,7 +54505,7 @@ definitions:
     description: |-
       QueryValidatorAccountResponse is the response type for the
       Query/ValidatorAccount RPC method.
-  ethermint.evm.v1.TraceConfig:
+  cosmos.evm.vm.v1.TraceConfig:
     type: object
     properties:
       tracer:
@@ -53568,9 +54515,9 @@ definitions:
         type: string
         title: >-
           timeout overrides the default timeout of 5 seconds for
-          JavaScript-based tracing
+          JavaScript-based
 
-          calls
+          tracing calls
       reexec:
         type: string
         format: uint64
@@ -53604,7 +54551,9 @@ definitions:
             type: boolean
             title: >-
               dao_fork_support defines whether the nodes supports or opposes the
-              DAO hard-fork
+              DAO
+
+              hard-fork
           eip150_block:
             type: string
             title: >-
@@ -53616,7 +54565,9 @@ definitions:
             type: string
             title: >-
               eip150_hash: EIP150 HF hash (needed for header only clients as
-              only gas pricing changed)
+              only gas
+
+              pricing changed)
           eip155_block:
             type: string
             title: 'eip155_block: EIP155Block HF block'
@@ -53627,12 +54578,16 @@ definitions:
             type: string
             title: >-
               byzantium_block: Byzantium switch block (nil no fork, 0 = already
-              on byzantium)
+              on
+
+              byzantium)
           constantinople_block:
             type: string
             title: >-
               constantinople_block: Constantinople switch block (nil no fork, 0
-              = already activated)
+              = already
+
+              activated)
           petersburg_block:
             type: string
             title: >-
@@ -53640,14 +54595,16 @@ definitions:
               Constantinople)
           istanbul_block:
             type: string
-            title: >-
+            title: |-
               istanbul_block: Istanbul switch block (nil no fork, 0 = already on
               istanbul)
           muir_glacier_block:
             type: string
             title: >-
               muir_glacier_block: Eip-2384 (bomb delay) switch block (nil no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           berlin_block:
             type: string
             title: >-
@@ -53662,17 +54619,23 @@ definitions:
             type: string
             title: >-
               arrow_glacier_block: Eip-4345 (bomb delay) switch block (nil = no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           gray_glacier_block:
             type: string
             title: >-
               gray_glacier_block: EIP-5133 (bomb delay) switch block (nil = no
-              fork, 0 = already activated)
+              fork, 0 =
+
+              already activated)
           merge_netsplit_block:
             type: string
             title: >-
               merge_netsplit_block: Virtual fork after The Merge to use as a
-              network splitter
+              network
+
+              splitter
           shanghai_block:
             type: string
             title: >-
@@ -53681,6 +54644,19 @@ definitions:
           cancun_block:
             type: string
             title: cancun_block switch block (nil = no fork, 0 = already on cancun)
+          chain_id:
+            type: string
+            format: uint64
+            title: chain_id is the id of the chain (EIP-155)
+          denom:
+            type: string
+            title: denom is the denomination used on the EVM
+          decimals:
+            type: string
+            format: uint64
+            title: >-
+              decimals is the real decimal precision of the denomination used on
+              the EVM
         description: >-
           ChainConfig defines the Ethereum ChainConfig parameters using *sdk.Int
           values
@@ -54043,7 +55019,7 @@ definitions:
                   "@type": "type.googleapis.com/google.protobuf.Duration",
                   "value": "1.212s"
                 }
-  ethermint.feemarket.v1.Params:
+  cosmos.evm.feemarket.v1.Params:
     type: object
     properties:
       no_base_fee:
@@ -54070,13 +55046,15 @@ definitions:
         format: int64
         description: >-
           enable_height defines at which block height the base fee calculation
-          is enabled.
+          is
+
+          enabled.
       base_fee:
         type: string
         description: base_fee for EIP-1559 blocks.
       min_gas_price:
         type: string
-        title: >-
+        title: |-
           min_gas_price defines the minimum gas price value for cosmos and eth
           transactions
       min_gas_multiplier:
@@ -54085,14 +55063,14 @@ definitions:
           min_gas_multiplier bounds the minimum gas used to be charged
           to senders based on gas limit
     title: Params defines the EVM module parameters
-  ethermint.feemarket.v1.QueryBaseFeeResponse:
+  cosmos.evm.feemarket.v1.QueryBaseFeeResponse:
     type: object
     properties:
       base_fee:
         type: string
         title: base_fee is the EIP1559 base fee
     description: QueryBaseFeeResponse returns the EIP1559 base fee.
-  ethermint.feemarket.v1.QueryBlockGasResponse:
+  cosmos.evm.feemarket.v1.QueryBlockGasResponse:
     type: object
     properties:
       gas:
@@ -54100,7 +55078,7 @@ definitions:
         format: int64
         title: gas is the returned block gas
     description: QueryBlockGasResponse returns block gas used for a given height.
-  ethermint.feemarket.v1.QueryParamsResponse:
+  cosmos.evm.feemarket.v1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -54133,7 +55111,9 @@ definitions:
             format: int64
             description: >-
               enable_height defines at which block height the base fee
-              calculation is enabled.
+              calculation is
+
+              enabled.
           base_fee:
             type: string
             description: base_fee for EIP-1559 blocks.
@@ -54141,7 +55121,9 @@ definitions:
             type: string
             title: >-
               min_gas_price defines the minimum gas price value for cosmos and
-              eth transactions
+              eth
+
+              transactions
           min_gas_multiplier:
             type: string
             title: |-
@@ -54149,7 +55131,7 @@ definitions:
               to senders based on gas limit
         title: Params defines the EVM module parameters
     description: >-
-      QueryParamsResponse defines the response type for querying x/evm
+      QueryParamsResponse defines the response type for querying x/vm
       parameters.
   cosmos.base.query.v1beta1.PageRequest:
     type: object
@@ -54228,7 +55210,7 @@ definitions:
                repeated Bar results = 1;
                PageResponse page = 2;
        }
-  evmos.erc20.v1.Owner:
+  cosmos.evm.erc20.v1.Owner:
     type: string
     enum:
       - OWNER_UNSPECIFIED
@@ -54241,14 +55223,16 @@ definitions:
        - OWNER_UNSPECIFIED: OWNER_UNSPECIFIED defines an invalid/undefined owner.
        - OWNER_MODULE: OWNER_MODULE - erc20 is owned by the erc20 module account.
        - OWNER_EXTERNAL: OWNER_EXTERNAL - erc20 is owned by an external account.
-  evmos.erc20.v1.Params:
+  cosmos.evm.erc20.v1.Params:
     type: object
     properties:
       enable_erc20:
         type: boolean
         description: >-
           enable_erc20 is the parameter to enable the conversion of Cosmos coins
-          <--> ERC20 tokens.
+          <-->
+
+          ERC20 tokens.
       native_precompiles:
         type: array
         items:
@@ -54257,7 +55241,9 @@ definitions:
           native_precompiles defines the slice of hex addresses of the
 
           active precompiles that are used to interact with native staking coins
-          as ERC20s
+          as
+
+          ERC20s
       dynamic_precompiles:
         type: array
         items:
@@ -54266,7 +55252,7 @@ definitions:
           dynamic_precompiles defines the slice of hex addresses of the
           active precompiles that are used to interact with Bank coins as ERC20s
     title: Params defines the erc20 module params
-  evmos.erc20.v1.QueryParamsResponse:
+  cosmos.evm.erc20.v1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -54277,7 +55263,9 @@ definitions:
             type: boolean
             description: >-
               enable_erc20 is the parameter to enable the conversion of Cosmos
-              coins <--> ERC20 tokens.
+              coins <-->
+
+              ERC20 tokens.
           native_precompiles:
             type: array
             items:
@@ -54286,7 +55274,9 @@ definitions:
               native_precompiles defines the slice of hex addresses of the
 
               active precompiles that are used to interact with native staking
-              coins as ERC20s
+              coins as
+
+              ERC20s
           dynamic_precompiles:
             type: array
             items:
@@ -54299,7 +55289,7 @@ definitions:
     description: |-
       QueryParamsResponse is the response type for the Query/Params RPC
       method.
-  evmos.erc20.v1.QueryTokenPairResponse:
+  cosmos.evm.erc20.v1.QueryTokenPairResponse:
     type: object
     properties:
       token_pair:
@@ -54317,7 +55307,9 @@ definitions:
           contract_owner:
             title: >-
               contract_owner is the an ENUM specifying the type of ERC20 owner
-              (0 invalid, 1 ModuleAccount, 2 external address)
+              (0
+
+              invalid, 1 ModuleAccount, 2 external address)
             type: string
             enum:
               - OWNER_UNSPECIFIED
@@ -54337,11 +55329,13 @@ definitions:
           Cosmos Coin and an ERC20 token address.
         title: >-
           token_pairs returns the info about a registered token pair for the
-          erc20 module
+          erc20
+
+          module
     description: |-
       QueryTokenPairResponse is the response type for the Query/TokenPair RPC
       method.
-  evmos.erc20.v1.QueryTokenPairsResponse:
+  cosmos.evm.erc20.v1.QueryTokenPairsResponse:
     type: object
     properties:
       token_pairs:
@@ -54361,7 +55355,9 @@ definitions:
             contract_owner:
               title: >-
                 contract_owner is the an ENUM specifying the type of ERC20 owner
-                (0 invalid, 1 ModuleAccount, 2 external address)
+                (0
+
+                invalid, 1 ModuleAccount, 2 external address)
               type: string
               enum:
                 - OWNER_UNSPECIFIED
@@ -54402,7 +55398,7 @@ definitions:
     description: |-
       QueryTokenPairsResponse is the response type for the Query/TokenPairs RPC
       method.
-  evmos.erc20.v1.TokenPair:
+  cosmos.evm.erc20.v1.TokenPair:
     type: object
     properties:
       erc20_address:
@@ -54415,7 +55411,7 @@ definitions:
         type: boolean
         title: enabled defines the token mapping enable status
       contract_owner:
-        title: >-
+        title: |-
           contract_owner is the an ENUM specifying the type of ERC20 owner (0
           invalid, 1 ModuleAccount, 2 external address)
         type: string

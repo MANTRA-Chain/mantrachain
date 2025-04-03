@@ -1388,7 +1388,9 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 // RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
 	staticServer := http.FileServer(swagger.FS)
-	rtr.PathPrefix("").Handler(staticServer)
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
+	rtr.PathPrefix("/swagger/").Handler(staticServer)
+	rtr.PathPrefix("/openapi/").Handler(staticServer)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
