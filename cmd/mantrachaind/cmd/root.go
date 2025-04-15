@@ -10,6 +10,7 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -18,6 +19,7 @@ import (
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/evm/crypto/hd"
+	evmkeyring "github.com/cosmos/evm/crypto/keyring"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +45,10 @@ func NewRootCmd() *cobra.Command {
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithHomeDir(app.DefaultNodeHome).
 		WithKeyringOptions(hd.EthSecp256k1Option()).
-		WithViper("MANTRA")
+		WithViper("MANTRA").
+		WithBroadcastMode(flags.FlagBroadcastMode).
+		WithKeyringOptions(evmkeyring.Option()).
+		WithLedgerHasProtobuf(true)
 
 	rootCmd := &cobra.Command{
 		Use:           version.AppName,

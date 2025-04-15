@@ -212,8 +212,8 @@ cosmossdk.io/client/v2 v2.0.0-beta.7 h1:O0PfZL5kC3Sp54wZASLNihQ612Gd6duMp11aM9wa
 cosmossdk.io/client/v2 v2.0.0-beta.7/go.mod h1:TzwwrzeK+AfSVSESVEIOYO/9xuCh1fPv0HgeocmfVnM=
 cosmossdk.io/collections v0.4.0 h1:PFmwj2W8szgpD5nOd8GWH6AbYNi1f2J6akWXJ7P5t9s=
 cosmossdk.io/collections v0.4.0/go.mod h1:oa5lUING2dP+gdDquow+QjlF45eL1t4TJDypgGd+tv0=
-cosmossdk.io/core v0.11.0 h1:vtIafqUi+1ZNAE/oxLOQQ7Oek2n4S48SWLG8h/+wdbo=
-cosmossdk.io/core v0.11.0/go.mod h1:LaTtayWBSoacF5xNzoF8tmLhehqlA9z1SWiPuNC6X1w=
+cosmossdk.io/core v0.11.1 h1:h9WfBey7NAiFfIcUhDVNS503I2P2HdZLebJlUIs8LPA=
+cosmossdk.io/core v0.11.1/go.mod h1:OJzxcdC+RPrgGF8NJZR2uoQr56tc7gfBKhiKeDO7hH0=
 cosmossdk.io/depinject v1.1.0 h1:wLan7LG35VM7Yo6ov0jId3RHWCGRhe8E8bsuARorl5E=
 cosmossdk.io/depinject v1.1.0/go.mod h1:kkI5H9jCGHeKeYWXTqYdruogYrEeWvBQCw1Pj4/eCFI=
 cosmossdk.io/errors v1.0.1 h1:bzu+Kcr0kS/1DuPBtUFdWjzLqyUuCiyHjyJB6srBV/0=
@@ -452,6 +452,8 @@ github.com/cosmos/cosmos-db v1.1.1 h1:FezFSU37AlBC8S98NlSagL76oqBRWq/prTPvFcEJNC
 github.com/cosmos/cosmos-db v1.1.1/go.mod h1:AghjcIPqdhSLP/2Z0yha5xPH3nLnskz81pBx3tcVSAw=
 github.com/cosmos/cosmos-proto v1.0.0-beta.5 h1:eNcayDLpip+zVLRLYafhzLvQlSmyab+RC5W7ZfmxJLA=
 github.com/cosmos/cosmos-proto v1.0.0-beta.5/go.mod h1:hQGLpiIUloJBMdQMMWb/4wRApmI9hjHH05nefC0Ojec=
+github.com/cosmos/cosmos-sdk/store v1.1.2-0.20250319183239-53dea340efc7 h1:7EBHeRE/Kmba2A9JlJ9/sOlHhmEHggyyWRD/uGccnC8=
+github.com/cosmos/cosmos-sdk/store v1.1.2-0.20250319183239-53dea340efc7/go.mod h1:8DwVTz83/2PSI366FERGbWSH7hL6sB7HbYp8bqksNwM=
 github.com/cosmos/evm v0.1.0 h1:BDUgHSydAA26WNmno1U7TXlxwFim//OBk/cA85X6ATg=
 github.com/cosmos/evm v0.1.0/go.mod h1:eN3d6tB/F6P6xj96fKaEXO4YezsBal2epBKGPsPQTuw=
 github.com/cosmos/evm/example_chain v0.0.0-20250318095025-e69e57ff2698 h1:o3ZyXWlhFzIW0EvuRY0PeHkiprlqa26USiVX/lTwvfE=
@@ -565,8 +567,6 @@ github.com/envoyproxy/go-control-plane v0.10.2-0.20220325020618-49ff273808a1/go.
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/envoyproxy/protoc-gen-validate v1.1.0 h1:tntQDh69XqOCOZsDz0lVJQez/2L6Uu2PdjCQwWCJ3bM=
 github.com/envoyproxy/protoc-gen-validate v1.1.0/go.mod h1:sXRDRVmzEbkM7CVcM06s9shE/m23dg3wzjl0UWqJ2q4=
-github.com/evmos/cosmos-sdk/store v0.0.0-20240718141609-414cbd051fbe h1:CKvjP3CcWckOiwffAARb9qe+t0+VWoVDiicYkQMvZfQ=
-github.com/evmos/cosmos-sdk/store v0.0.0-20240718141609-414cbd051fbe/go.mod h1:Bm6h8ZkYgVTytHK5vhHOMKw9OHyiumm3b1UbkYIJ/Ug=
 github.com/evmos/go-ethereum v1.10.26-evmos-rc4 h1:vwDVMScuB2KSu8ze5oWUuxm6v3bMUp6dL3PWvJNJY+I=
 github.com/evmos/go-ethereum v1.10.26-evmos-rc4/go.mod h1:/6CsT5Ceen2WPLI/oCA3xMcZ5sWMF/D46SjM/ayY0Oo=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=

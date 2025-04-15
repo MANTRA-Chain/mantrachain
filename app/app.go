@@ -119,7 +119,7 @@ import (
 	evmosencoding "github.com/cosmos/evm/encoding"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
-	cosmosevmutils "github.com/cosmos/evm/utils"
+	evmutils "github.com/cosmos/evm/utils"
 	"github.com/cosmos/evm/x/erc20"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	erc20types "github.com/cosmos/evm/x/erc20/types"
@@ -330,7 +330,7 @@ func New(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
-	EvmAppOptions EVMOptionsFn,
+	evmAppOptions EVMOptionsFn,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	overrideWasmVariables()
@@ -356,8 +356,6 @@ func New(
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
-	// txConfig := authtx.NewTxConfig(appCodec, authtx.DefaultSignModes)
-
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
@@ -365,7 +363,7 @@ func New(
 	bApp.SetTxEncoder(encodingConfig.TxConfig.TxEncoder())
 
 	// initialize the Cosmos EVM application configuration
-	if err := EvmAppOptions(bApp.ChainID()); err != nil {
+	if err := evmAppOptions(bApp.ChainID()); err != nil {
 		panic(err)
 	}
 
@@ -807,22 +805,22 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	// NOTE: we are adding all available Cosmos EVM EVM extensions.
-	// Not all of them need to be enabled, which can be configured on a per-chain basis.
+	// Configure EVM precompiles
+	corePrecompiles := NewAvailableStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		app.Erc20Keeper,
+		app.AuthzKeeper,
+		app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.EVMKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		app.EvidenceKeeper,
+	)
 	app.EVMKeeper.WithStaticPrecompiles(
-		NewAvailableStaticPrecompiles(
-			app.StakingKeeper,
-			app.DistrKeeper,
-			app.BankKeeper,
-			app.Erc20Keeper,
-			app.AuthzKeeper,
-			app.TransferKeeper,
-			app.IBCKeeper.ChannelKeeper,
-			app.EVMKeeper,
-			app.GovKeeper,
-			app.SlashingKeeper,
-			app.EvidenceKeeper,
-		),
+		corePrecompiles,
 	)
 
 	wasmConfig, err := wasm.ReadNodeConfig(appOpts)
@@ -1314,7 +1312,25 @@ func (app *App) AutoCliOpts() autocli.AppOptions {
 
 // DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
 func (app *App) DefaultGenesis() map[string]json.RawMessage {
-	return app.BasicModuleManager.DefaultGenesis(app.appCodec)
+	genesis := app.BasicModuleManager.DefaultGenesis(app.appCodec)
+
+	// Add mint denom configuration
+	mintGenState := minttypes.DefaultGenesisState()
+	mintGenState.Params.MintDenom = CoinInfo.Denom
+	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
+
+	// Add EVM genesis configuration
+	evmGenState := evmtypes.DefaultGenesisState()
+	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
+	genesis[evmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
+
+	// Add ERC20 genesis configuration
+	erc20GenState := erc20types.DefaultGenesisState()
+	erc20GenState.TokenPairs = ExampleTokenPairs
+	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTokenContractMainnet)
+	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
+
+	return genesis
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
@@ -1464,24 +1480,19 @@ func GetMaccPerms() map[string][]string {
 
 // BlockedAddresses returns all the app's blocked account addresses.
 func BlockedAddresses() map[string]bool {
-	modAccAddrs := make(map[string]bool)
-	for acc := range GetMaccPerms() {
-		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
-	}
+	blockedAddrs := make(map[string]bool)
 
-	// allow the following addresses to receive funds
-	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-
+	// Add after existing code:
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
 	for _, addr := range corevm.PrecompiledAddressesBerlin {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
 	}
 
 	for _, precompile := range blockedPrecompilesHex {
-		modAccAddrs[cosmosevmutils.EthHexToCosmosAddr(precompile).String()] = true
+		blockedAddrs[evmutils.EthHexToCosmosAddr(precompile).String()] = true
 	}
 
-	return modAccAddrs
+	return blockedAddrs
 }
 
 // initParamsKeeper init params keeper and its subspaces

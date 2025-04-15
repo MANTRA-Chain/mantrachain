@@ -6,8 +6,7 @@ toolchain go1.23.7
 
 replace (
 	// need this replace when importing cosmos/rosetta pkg
-	cosmossdk.io/core => cosmossdk.io/core v0.11.0
-	cosmossdk.io/store => github.com/evmos/cosmos-sdk/store v0.0.0-20240718141609-414cbd051fbe
+	cosmossdk.io/store => github.com/cosmos/cosmos-sdk/store v1.1.2-0.20250319183239-53dea340efc7
 
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/wasmd/tree/mantra/v0.54.0, current branch: mantra/v0.54.0
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/230eb4f15f813ebf6addce723e7c35b68a6cf1eb
@@ -40,7 +39,7 @@ require (
 	cosmossdk.io/api v0.7.6
 	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v0.4.0
-	cosmossdk.io/core v0.12.0
+	cosmossdk.io/core v0.11.1
 	cosmossdk.io/depinject v1.1.0
 	cosmossdk.io/errors v1.0.1
 	cosmossdk.io/log v1.5.0

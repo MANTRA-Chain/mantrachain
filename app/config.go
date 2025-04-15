@@ -35,6 +35,8 @@ var ChainsCoinInfo = map[string]evmtypes.EvmCoinInfo{
 	},
 }
 
+var CoinInfo = ChainsCoinInfo[CosmosChainID]
+
 // EvmAppOptions allows to setup the global configuration
 // for the Cosmos EVM chain.
 func EvmAppOptions(chainID string) error {
