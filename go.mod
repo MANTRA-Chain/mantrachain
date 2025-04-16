@@ -3,10 +3,10 @@ module github.com/MANTRA-Chain/mantrachain/v5
 go 1.23.1
 
 replace (
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.12, current branch: mantra/v0.50.12
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/45e39edd9fb2c1aa6845af47df057589629df6f7
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.12-v3-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v3-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.13, current branch: mantra/v0.50.12
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2d67139e683b4505e1c17b05ad289b1605c907b6
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.13-v3-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1
 
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
@@ -16,8 +16,8 @@ replace (
 
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/6787270c093b80e7822569ef3d1c33ba02671115
-	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b
+	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-v4-mantra-1
+	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1
 
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7

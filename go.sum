@@ -262,10 +262,10 @@ github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
 github.com/DataDog/zstd v1.5.5/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b h1:hkwjORwb59R2aCO6TX9y+qsoDz+yqhvQU50DqeuuKBo=
-github.com/MANTRA-Chain/connect/v2 v2.0.0-20250226063946-6787270c093b/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v3-mantra-1 h1:CoM1WEfSrogh+oAm6+E9rSq73KaE05Bf5hW0Mt/zYxg=
-github.com/MANTRA-Chain/cosmos-sdk v0.50.12-v3-mantra-1/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
+github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1 h1:Qb9qFue1IhJgG0AHPvPHNSpjrpCtmUZPeDT975ZP/dc=
+github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1 h1:qfTGz8hi4OcCLYk2c3IfKK1FhwIlHpAjO+nnClbCFGo=
+github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.7 h1:MP6R1spmjxTE4EU4J3YsrTxn8CjvN9qwjTKJXldFaRg=
