@@ -5049,12 +5049,12 @@ paths:
                       format: byte
       tags:
         - Query
-  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/{channel_id}/by_denom:
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/{channel_or_client_id}/by_denom:
     get:
       summary: |-
         Queries a specific rate limit by channel ID and denom
         Ex:
-         - /ratelimit/{channel_id}/by_denom?denom={denom}
+         - /ratelimit/{channel_or_client_id}/by_denom?denom={denom}
       operationId: RateLimit
       responses:
         '200':
@@ -5070,7 +5070,7 @@ paths:
                     properties:
                       denom:
                         type: string
-                      channel_id:
+                      channel_or_client_id:
                         type: string
                     title: >-
                       Path holds the denom and channelID that define the rate
@@ -5165,7 +5165,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: channel_id
+        - name: channel_or_client_id
           in: path
           required: true
           type: string
@@ -5195,7 +5195,7 @@ paths:
                       properties:
                         denom:
                           type: string
-                        channel_id:
+                        channel_or_client_id:
                           type: string
                       title: >-
                         Path holds the denom and channelID that define the rate
@@ -5311,7 +5311,7 @@ paths:
                       properties:
                         denom:
                           type: string
-                        channel_id:
+                        channel_or_client_id:
                           type: string
                       title: >-
                         Path holds the denom and channelID that define the rate
@@ -5412,10 +5412,10 @@ paths:
           type: string
       tags:
         - Query
-  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{channel_id}:
+  /Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/{channel_or_client_id}:
     get:
       summary: Queries all the rate limits for a given channel ID
-      operationId: RateLimitsByChannelId
+      operationId: RateLimitsByChannelOrClientId
       responses:
         '200':
           description: A successful response.
@@ -5432,7 +5432,7 @@ paths:
                       properties:
                         denom:
                           type: string
-                        channel_id:
+                        channel_or_client_id:
                           type: string
                       title: >-
                         Path holds the denom and channelID that define the rate
@@ -5527,7 +5527,7 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: channel_id
+        - name: channel_or_client_id
           in: path
           required: true
           type: string
@@ -17354,6 +17354,270 @@ paths:
           type: boolean
       tags:
         - Service
+  /cosmos/circuit/v1/accounts:
+    get:
+      summary: Account returns account permissions.
+      operationId: CircuitAccounts
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    permissions:
+                      type: object
+                      properties:
+                        level:
+                          description: >-
+                            level is the level of permissions granted to this
+                            account.
+                          type: string
+                          enum:
+                            - LEVEL_NONE_UNSPECIFIED
+                            - LEVEL_SOME_MSGS
+                            - LEVEL_ALL_MSGS
+                            - LEVEL_SUPER_ADMIN
+                          default: LEVEL_NONE_UNSPECIFIED
+                        limit_type_urls:
+                          type: array
+                          items:
+                            type: string
+                          description: >-
+                            limit_type_urls is used with LEVEL_SOME_MSGS to
+                            limit the lists of Msg type
+
+                            URLs that the account can trip. It is an error to
+                            use limit_type_urls with
+
+                            a level other than LEVEL_SOME_MSGS.
+                      description: >-
+                        Permissions are the permissions that an account has to
+                        trip
+
+                        or reset the circuit breaker.
+                  title: >-
+                    GenesisAccountPermissions is the account permissions for the
+                    circuit breaker in genesis
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            description: >-
+              AccountsResponse is the response type for the Query/Accounts RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /cosmos/circuit/v1/accounts/{address}:
+    get:
+      summary: Account returns account permissions.
+      operationId: CircuitAccount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              permission:
+                type: object
+                properties:
+                  level:
+                    description: level is the level of permissions granted to this account.
+                    type: string
+                    enum:
+                      - LEVEL_NONE_UNSPECIFIED
+                      - LEVEL_SOME_MSGS
+                      - LEVEL_ALL_MSGS
+                      - LEVEL_SUPER_ADMIN
+                    default: LEVEL_NONE_UNSPECIFIED
+                  limit_type_urls:
+                    type: array
+                    items:
+                      type: string
+                    description: >-
+                      limit_type_urls is used with LEVEL_SOME_MSGS to limit the
+                      lists of Msg type
+
+                      URLs that the account can trip. It is an error to use
+                      limit_type_urls with
+
+                      a level other than LEVEL_SOME_MSGS.
+                description: |-
+                  Permissions are the permissions that an account has to trip
+                  or reset the circuit breaker.
+            description: >-
+              AccountResponse is the response type for the Query/Account RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /cosmos/circuit/v1/disable_list:
+    get:
+      summary: DisabledList returns a list of disabled message urls
+      operationId: DisabledList
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              disabled_list:
+                type: array
+                items:
+                  type: string
+            description: >-
+              DisabledListResponse is the response type for the
+              Query/DisabledList RPC method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
   /cosmos/distribution/v1beta1/community_pool:
     get:
       summary: CommunityPool queries the community pool coins.
@@ -51315,7 +51579,7 @@ definitions:
     properties:
       denom:
         type: string
-      channel_id:
+      channel_or_client_id:
         type: string
     title: Path holds the denom and channelID that define the rate limited route
   ratelimit.v1.QueryAllBlacklistedDenomsResponse:
@@ -51338,7 +51602,7 @@ definitions:
               properties:
                 denom:
                   type: string
-                channel_id:
+                channel_or_client_id:
                   type: string
               title: >-
                 Path holds the denom and channelID that define the rate limited
@@ -51430,7 +51694,7 @@ definitions:
             properties:
               denom:
                 type: string
-              channel_id:
+              channel_or_client_id:
                 type: string
             title: >-
               Path holds the denom and channelID that define the rate limited
@@ -51508,7 +51772,7 @@ definitions:
               properties:
                 denom:
                   type: string
-                channel_id:
+                channel_or_client_id:
                   type: string
               title: >-
                 Path holds the denom and channelID that define the rate limited
@@ -51574,7 +51838,7 @@ definitions:
             RateLimit stores all the context about a given rate limit, including
             the relevant denom and channel, rate limit thresholds, and current
             progress towards the limits
-  ratelimit.v1.QueryRateLimitsByChannelIdResponse:
+  ratelimit.v1.QueryRateLimitsByChannelOrClientIdResponse:
     type: object
     properties:
       rate_limits:
@@ -51587,7 +51851,7 @@ definitions:
               properties:
                 denom:
                   type: string
-                channel_id:
+                channel_or_client_id:
                   type: string
               title: >-
                 Path holds the denom and channelID that define the rate limited
@@ -51681,7 +51945,7 @@ definitions:
         properties:
           denom:
             type: string
-          channel_id:
+          channel_or_client_id:
             type: string
         title: Path holds the denom and channelID that define the rate limited route
       quota:
@@ -61806,6 +62070,190 @@ definitions:
       application's
 
       state transition machine.
+  cosmos.circuit.v1.AccountResponse:
+    type: object
+    properties:
+      permission:
+        type: object
+        properties:
+          level:
+            description: level is the level of permissions granted to this account.
+            type: string
+            enum:
+              - LEVEL_NONE_UNSPECIFIED
+              - LEVEL_SOME_MSGS
+              - LEVEL_ALL_MSGS
+              - LEVEL_SUPER_ADMIN
+            default: LEVEL_NONE_UNSPECIFIED
+          limit_type_urls:
+            type: array
+            items:
+              type: string
+            description: >-
+              limit_type_urls is used with LEVEL_SOME_MSGS to limit the lists of
+              Msg type
+
+              URLs that the account can trip. It is an error to use
+              limit_type_urls with
+
+              a level other than LEVEL_SOME_MSGS.
+        description: |-
+          Permissions are the permissions that an account has to trip
+          or reset the circuit breaker.
+    description: AccountResponse is the response type for the Query/Account RPC method.
+  cosmos.circuit.v1.AccountsResponse:
+    type: object
+    properties:
+      accounts:
+        type: array
+        items:
+          type: object
+          properties:
+            address:
+              type: string
+            permissions:
+              type: object
+              properties:
+                level:
+                  description: level is the level of permissions granted to this account.
+                  type: string
+                  enum:
+                    - LEVEL_NONE_UNSPECIFIED
+                    - LEVEL_SOME_MSGS
+                    - LEVEL_ALL_MSGS
+                    - LEVEL_SUPER_ADMIN
+                  default: LEVEL_NONE_UNSPECIFIED
+                limit_type_urls:
+                  type: array
+                  items:
+                    type: string
+                  description: >-
+                    limit_type_urls is used with LEVEL_SOME_MSGS to limit the
+                    lists of Msg type
+
+                    URLs that the account can trip. It is an error to use
+                    limit_type_urls with
+
+                    a level other than LEVEL_SOME_MSGS.
+              description: |-
+                Permissions are the permissions that an account has to trip
+                or reset the circuit breaker.
+          title: >-
+            GenesisAccountPermissions is the account permissions for the circuit
+            breaker in genesis
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: AccountsResponse is the response type for the Query/Accounts RPC method.
+  cosmos.circuit.v1.DisabledListResponse:
+    type: object
+    properties:
+      disabled_list:
+        type: array
+        items:
+          type: string
+    description: >-
+      DisabledListResponse is the response type for the Query/DisabledList RPC
+      method.
+  cosmos.circuit.v1.GenesisAccountPermissions:
+    type: object
+    properties:
+      address:
+        type: string
+      permissions:
+        type: object
+        properties:
+          level:
+            description: level is the level of permissions granted to this account.
+            type: string
+            enum:
+              - LEVEL_NONE_UNSPECIFIED
+              - LEVEL_SOME_MSGS
+              - LEVEL_ALL_MSGS
+              - LEVEL_SUPER_ADMIN
+            default: LEVEL_NONE_UNSPECIFIED
+          limit_type_urls:
+            type: array
+            items:
+              type: string
+            description: >-
+              limit_type_urls is used with LEVEL_SOME_MSGS to limit the lists of
+              Msg type
+
+              URLs that the account can trip. It is an error to use
+              limit_type_urls with
+
+              a level other than LEVEL_SOME_MSGS.
+        description: |-
+          Permissions are the permissions that an account has to trip
+          or reset the circuit breaker.
+    title: >-
+      GenesisAccountPermissions is the account permissions for the circuit
+      breaker in genesis
+  cosmos.circuit.v1.Permissions:
+    type: object
+    properties:
+      level:
+        description: level is the level of permissions granted to this account.
+        type: string
+        enum:
+          - LEVEL_NONE_UNSPECIFIED
+          - LEVEL_SOME_MSGS
+          - LEVEL_ALL_MSGS
+          - LEVEL_SUPER_ADMIN
+        default: LEVEL_NONE_UNSPECIFIED
+      limit_type_urls:
+        type: array
+        items:
+          type: string
+        description: >-
+          limit_type_urls is used with LEVEL_SOME_MSGS to limit the lists of Msg
+          type
+
+          URLs that the account can trip. It is an error to use limit_type_urls
+          with
+
+          a level other than LEVEL_SOME_MSGS.
+    description: |-
+      Permissions are the permissions that an account has to trip
+      or reset the circuit breaker.
+  cosmos.circuit.v1.Permissions.Level:
+    type: string
+    enum:
+      - LEVEL_NONE_UNSPECIFIED
+      - LEVEL_SOME_MSGS
+      - LEVEL_ALL_MSGS
+      - LEVEL_SUPER_ADMIN
+    default: LEVEL_NONE_UNSPECIFIED
+    description: |-
+      Level is the permission level.
+
+       - LEVEL_NONE_UNSPECIFIED: LEVEL_NONE_UNSPECIFIED indicates that the account will have no circuit
+      breaker permissions.
+       - LEVEL_SOME_MSGS: LEVEL_SOME_MSGS indicates that the account will have permission to
+      trip or reset the circuit breaker for some Msg type URLs. If this level
+      is chosen, a non-empty list of Msg type URLs must be provided in
+      limit_type_urls.
+       - LEVEL_ALL_MSGS: LEVEL_ALL_MSGS indicates that the account can trip or reset the circuit
+      breaker for Msg's of all type URLs.
+       - LEVEL_SUPER_ADMIN: LEVEL_SUPER_ADMIN indicates that the account can take all circuit breaker
+      actions and can grant permissions to other accounts.
   cosmos.distribution.v1beta1.DelegationDelegatorReward:
     type: object
     properties:
