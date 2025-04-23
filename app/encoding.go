@@ -5,7 +5,7 @@ import (
 
 	"cosmossdk.io/log"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v4/app/params"
+	"github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	dbm "github.com/cosmos/cosmos-db"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 )

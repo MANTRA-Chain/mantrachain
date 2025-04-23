@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/post"
-	postsuite "github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/post/suite"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/post"
+	postsuite "github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/post/suite"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
