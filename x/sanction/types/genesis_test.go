@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 

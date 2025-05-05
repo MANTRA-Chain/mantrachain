@@ -1,4 +1,4 @@
-package v4
+package v5
 
 import (
 	"context"
@@ -23,7 +23,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v4 complete")
+		ctx.Logger().Info("Upgrade v5 complete")
 		return vm, nil
 	}
 }
