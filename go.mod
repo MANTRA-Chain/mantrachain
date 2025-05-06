@@ -15,9 +15,9 @@ replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
-	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/6787270c093b80e7822569ef3d1c33ba02671115
-	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-v4-mantra-1
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1
+	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/8ad89803888daa06cc93e546e120fe633aa53110
+	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.2
+	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.2
 
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
