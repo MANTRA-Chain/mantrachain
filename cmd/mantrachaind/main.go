@@ -11,11 +11,12 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v4/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	cmdcfg "github.com/cosmos/evm/cmd/config"
 )
 
 func main() {
 	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
-	SetAddressPrefixes()
+	setupConfig()
 	// RegisterDenoms()
 	rootCmd := cmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, clienthelpers.EnvPrefix, app.DefaultNodeHome); err != nil {
@@ -64,12 +65,18 @@ func RegisterDenoms() {
 	}
 }
 
-// SetAddressPrefixes builds the Config with Bech32 addressPrefix and publKeyPrefix for accounts, validators, and consensus nodes and verifies that addreeses have correct format.
-func SetAddressPrefixes() {
+func setupConfig() {
+	// set the address prefixes
 	config := sdk.GetConfig()
+	SetAddressPrefixes(config)
+	cmdcfg.SetBip44CoinType(config)
+	config.Seal()
+}
+
+// SetAddressPrefixes builds the Config with Bech32 addressPrefix and publKeyPrefix for accounts, validators, and consensus nodes and verifies that addreeses have correct format.
+func SetAddressPrefixes(config *sdk.Config) {
 	config.SetBech32PrefixForAccount(Bech32Prefix, Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 	config.SetAddressVerifier(wasmtypes.VerifyAddressLen())
-	config.Seal()
 }
