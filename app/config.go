@@ -44,7 +44,7 @@ func EvmAppOptions(chainID string) error {
 		return nil
 	}
 
-	coinInfo, _ := ChainsCoinInfo[CosmosChainID]
+	coinInfo := ChainsCoinInfo[CosmosChainID]
 
 	// set the denom info for the chain
 	if err := setBaseDenom(coinInfo); err != nil {
