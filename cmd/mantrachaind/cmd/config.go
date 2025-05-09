@@ -7,7 +7,6 @@ import (
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	cosmosevmserverconfig "github.com/cosmos/evm/server/config"
-	ethermintservercfg "github.com/cosmos/evm/server/config"
 	oracleconfig "github.com/skip-mev/connect/v2/oracle/config"
 )
 
@@ -28,12 +27,6 @@ func initCometBFTConfig() *cmtcfg.Config {
 // return "", nil if no custom configuration is required for the application.
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
-	type CustomAppConfig1 struct {
-		ethermintservercfg.Config `mapstructure:",squash"`
-		Wasm                      wasmtypes.NodeConfig   `mapstructure:"wasm"`
-		Oracle                    oracleconfig.AppConfig `mapstructure:"oracle" json:"oracle"`
-	}
-
 	type CustomAppConfig struct {
 		serverconfig.Config
 
