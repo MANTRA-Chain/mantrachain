@@ -1,3 +1,4 @@
+[![Unit Tests](https://github.com/MANTRA-Chain/mantrachain/actions/workflows/tests-unit.yml/badge.svg)](https://github.com/MANTRA-Chain/mantrachain/actions)
 [![License](https://img.shields.io/github/license/MANTRA-Chain/mantrachain)](https://github.com/MANTRA-Chain/mantrachain/blob/main/LICENSE)
 
 # Mantrachain
