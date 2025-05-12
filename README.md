@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/github/license/MANTRA-Chain/mantrachain)](https://github.com/MANTRA-Chain/mantrachain/blob/main/LICENSE)
+
 # Mantrachain
 
 Mantrachain is a global real-world assets platform built on blockchain technology. It leverages advanced blockchain features to facilitate the tokenization and trading of real-world assets.
