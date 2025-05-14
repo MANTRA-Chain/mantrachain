@@ -636,8 +636,8 @@ connectrpc.com/otelconnect v0.7.1 h1:scO5pOb0i4yUE66CnNrHeK1x51yq0bE0ehPg6WvzXJY
 connectrpc.com/otelconnect v0.7.1/go.mod h1:dh3bFgHBTb2bkqGCeVVOtHJreSns7uu9wwL2Tbz17ms=
 cosmossdk.io/api v0.9.2 h1:9i9ptOBdmoIEVEVWLtYYHjxZonlF/aOVODLFaxpmNtg=
 cosmossdk.io/api v0.9.2/go.mod h1:CWt31nVohvoPMTlPv+mMNCtC0a7BqRdESjCsstHcTkU=
-cosmossdk.io/client/v2 v2.0.0-beta.5 h1:0LVv3nEByn//hFDIrYLs2WvsEU3HodOelh4SDHnA/1I=
-cosmossdk.io/client/v2 v2.0.0-beta.5/go.mod h1:4p0P6o0ro+FizakJUYS9SeM94RNbv0thLmkHRw5o5as=
+cosmossdk.io/client/v2 v2.0.0-beta.7 h1:O0PfZL5kC3Sp54wZASLNihQ612Gd6duMp11aM9wawNg=
+cosmossdk.io/client/v2 v2.0.0-beta.7/go.mod h1:TzwwrzeK+AfSVSESVEIOYO/9xuCh1fPv0HgeocmfVnM=
 cosmossdk.io/collections v1.2.0 h1:IesfVG8G/+FYCMVMP01frS/Cw99Omk5vBh3cHbO01Gg=
 cosmossdk.io/collections v1.2.0/go.mod h1:4NkMoYw6qRA8fnSH/yn1D/MOutr8qyQnwsO50Mz9ItU=
 cosmossdk.io/core v0.11.3 h1:mei+MVDJOwIjIniaKelE3jPDqShCc/F4LkNNHh+4yfo=
@@ -704,8 +704,8 @@ github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapp
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.48.1/go.mod h1:viRWSEhtMZqz1rhwmOVKkWl6SwmVowfL9O2YR5gI2PE=
 github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c/go.mod h1:X0CRv0ky0k6m906ixxpzmDRLvX58TFUKS2eePweuyxk=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.2 h1:8B4tTx2PIrp6Lrxfy6EsrpJWoiF+H28rEVwMqTi6Zh8=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.2/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
+github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCxjgDeGFg6G4u2zXff26c=
+github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1 h1:qfTGz8hi4OcCLYk2c3IfKK1FhwIlHpAjO+nnClbCFGo=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -896,12 +896,10 @@ github.com/cosmos/ibc-go/modules/capability v1.0.1 h1:ibwhrpJ3SftEEZRxCRkH0fQZ9s
 github.com/cosmos/ibc-go/modules/capability v1.0.1/go.mod h1:rquyOV262nGJplkumH+/LeYs04P3eV8oB7ZM4Ygqk4E=
 github.com/cosmos/ibc-go/v10 v10.2.0 h1:wlk/zqz2O0WRyE6UConoR1ci2HSW02P9ywamZCh5/N4=
 github.com/cosmos/ibc-go/v10 v10.2.0/go.mod h1:ijeyJ1FDvXoc5w+rlhpMntjhZ558EF02SBFjroW1hPo=
-github.com/cosmos/ibc-go/v8 v8.5.1 h1:3JleEMKBjRKa3FeTKt4fjg22za/qygLBo7mDkoYTNBs=
-github.com/cosmos/ibc-go/v8 v8.5.1/go.mod h1:P5hkAvq0Qbg0h18uLxDVA9q1kOJ0l36htMsskiNwXbo=
 github.com/cosmos/ics23/go v0.11.0 h1:jk5skjT0TqX5e5QJbEnwXIS2yI2vnmLOgpQPeM5RtnU=
 github.com/cosmos/ics23/go v0.11.0/go.mod h1:A8OjxPE67hHST4Icw94hOxxFEJMBG031xIGF/JHNIY0=
-github.com/cosmos/interchain-security/v6 v6.3.0 h1:AIsfxLUDtUGVfaqJ1WPwnYIOT5AxoSO58469iw9vNH4=
-github.com/cosmos/interchain-security/v6 v6.3.0/go.mod h1:6DSiV2w+DuPkxP1KGFtaxpiwf8Xt2iusj8O53KCx96Q=
+github.com/cosmos/interchain-security/v7 v7.0.1 h1:jg2pMbchCBN5LRDDgd9l86fcvw1v8dezGAxazhI0gtQ=
+github.com/cosmos/interchain-security/v7 v7.0.1/go.mod h1:pcb0SYZVxy1LuY4UK9ceIdQ+kjnosa9tzE3tcCWdIZw=
 github.com/cosmos/ledger-cosmos-go v0.14.0 h1:WfCHricT3rPbkPSVKRH+L4fQGKYHuGOK9Edpel8TYpE=
 github.com/cosmos/ledger-cosmos-go v0.14.0/go.mod h1:E07xCWSBl3mTGofZ2QnL4cIUzMbbGVyik84QYKbX3RA=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsrgA7czyZG/E6dU=

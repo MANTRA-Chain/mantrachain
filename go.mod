@@ -19,7 +19,7 @@ replace (
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/8ad89803888daa06cc93e546e120fe633aa53110
 	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.2
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.2
+	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3
 
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
@@ -27,7 +27,7 @@ replace (
 
 require (
 	cosmossdk.io/api v0.9.2
-	cosmossdk.io/client/v2 v2.0.0-beta.5
+	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v1.2.0
 	cosmossdk.io/core v0.11.3
 	cosmossdk.io/depinject v1.2.0
@@ -144,10 +144,8 @@ require (
 	github.com/cosmos/btcutil v1.0.5 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.2.4 // indirect
-	github.com/cosmos/ibc-go/modules/capability v1.0.1 // indirect
-	github.com/cosmos/ibc-go/v8 v8.5.1 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
-	github.com/cosmos/interchain-security/v6 v6.3.0 // indirect
+	github.com/cosmos/interchain-security/v7 v7.0.1 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.14.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/creachadair/atomicfile v0.3.3 // indirect
