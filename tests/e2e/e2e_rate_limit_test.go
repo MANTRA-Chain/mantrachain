@@ -155,7 +155,7 @@ func (s *IntegrationTestSuite) testAddRateLimits() {
 			rateLimits, err := queryAllRateLimits(chainEndpoint)
 			s.Require().NoError(err)
 			s.Require().Len(rateLimits, 1)
-			s.Require().Equal(transferChannel, rateLimits[0].Path.ChannelId)
+			s.Require().Equal(transferChannel, rateLimits[0].Path.ChannelOrClientId)
 			s.Require().Equal(uomDenom, rateLimits[0].Path.Denom)
 			s.Require().Equal(uint64(24), rateLimits[0].Quota.DurationHours)
 			s.Require().Equal(sdkmath.NewInt(1), rateLimits[0].Quota.MaxPercentRecv)
