@@ -24,7 +24,7 @@ func (s *IntegrationTestSuite) writeAddRateLimitUomProposal(c *chain) {
 		  "@type": "/ratelimit.v1.MsgAddRateLimit",
 		  "authority": "%s",
 		  "denom": "%s",
-		  "channel_id": "%s",
+		  "channel_or_client_id": "%s",
 		  "max_percent_send": "%s",
 		  "max_percent_recv": "%s",
 		  "duration_hours": "%d"
@@ -56,7 +56,7 @@ func (s *IntegrationTestSuite) writeUpdateRateLimitUomProposal(c *chain) {
 		  "@type": "/ratelimit.v1.MsgUpdateRateLimit",
 		  "authority": "%s",
 		  "denom": "%s",
-		  "channel_id": "%s",
+		  "channel_or_client_id": "%s",
 		  "max_percent_send": "%s",
 		  "max_percent_recv": "%s",
 		  "duration_hours": "%d"
@@ -88,7 +88,7 @@ func (s *IntegrationTestSuite) writeResetRateLimitUomProposal(c *chain) {
 		  "@type": "/ratelimit.v1.MsgResetRateLimit",
 		  "authority": "%s",
 		  "denom": "%s",
-		  "channel_id": "%s"
+		  "channel_or_client_id": "%s"
 		 }
 		],
 		"metadata": "ipfs://CID",
@@ -114,7 +114,7 @@ func (s *IntegrationTestSuite) writeRemoveRateLimitUomProposal(c *chain) {
 		  "@type": "/ratelimit.v1.MsgRemoveRateLimit",
 		  "authority": "%s",
 		  "denom": "%s",
-		  "channel_id": "%s"
+		  "channel_or_client_id": "%s"
 		 }
 		],
 		"metadata": "ipfs://CID",
