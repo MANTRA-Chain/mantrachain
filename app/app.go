@@ -34,20 +34,23 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/v4/app/ante"
-	queries "github.com/MANTRA-Chain/mantrachain/v4/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
-	v4 "github.com/MANTRA-Chain/mantrachain/v4/app/upgrades/v4"
-	"github.com/MANTRA-Chain/mantrachain/v4/client/docs/swagger"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v4/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v4/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/types"
+	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
+	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
+	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
+	v5 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5"
+	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v5/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v5/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -130,7 +133,6 @@ import (
 	"github.com/cosmos/evm/x/ibc/transfer"
 	ibctransferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/vm"
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	_ "github.com/cosmos/evm/x/vm/core/tracers/js"
 	_ "github.com/cosmos/evm/x/vm/core/tracers/native"
 	corevm "github.com/cosmos/evm/x/vm/core/vm"
@@ -221,7 +223,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v4.Upgrade}
+var Upgrades = []upgrades.Upgrade{v5.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)

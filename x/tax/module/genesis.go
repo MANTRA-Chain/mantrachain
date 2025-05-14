@@ -1,8 +1,8 @@
 package tax
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v4/x/tax/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/tax/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/tax/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

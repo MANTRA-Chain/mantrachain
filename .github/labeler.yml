@@ -5,6 +5,10 @@
           - app/*.go
           - app/params/**
           - app/queries/**
+"C:x/sanction":
+  - changed-files:
+      - any-glob-to-any-file:
+          - x/sanction/**
 "C:x/tax":
   - changed-files:
       - any-glob-to-any-file:

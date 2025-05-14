@@ -2,8 +2,8 @@ package xfeemarket
 
 import (
 	"cosmossdk.io/math"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v4/x/xfeemarket/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/xfeemarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
