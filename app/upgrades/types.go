@@ -3,8 +3,8 @@ package upgrades
 import (
 	store "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v4/x/sanction/keeper"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v4/x/tokenfactory/keeper"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
