@@ -732,6 +732,7 @@ func New(
 		wasmtypes.VMConfig{},
 		AllCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		ibcRouterV2,
 		wasmOpts...,
 	)
 
