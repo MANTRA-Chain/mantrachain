@@ -34,11 +34,14 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
 	v5 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/module"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
@@ -126,15 +129,10 @@ import (
 	"github.com/cosmos/evm/x/feemarket"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
-
 	// Overriders
 	"github.com/cosmos/evm/x/ibc/transfer"
 	ibctransferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/vm"
-
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
-	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
-	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
 	_ "github.com/cosmos/evm/x/vm/core/tracers/js"
 	_ "github.com/cosmos/evm/x/vm/core/tracers/native"
 	corevm "github.com/cosmos/evm/x/vm/core/vm"
