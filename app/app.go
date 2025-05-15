@@ -138,6 +138,7 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	transferv2 "github.com/cosmos/ibc-go/v10/modules/apps/transfer/v2"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
+	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
 	ibcapi "github.com/cosmos/ibc-go/v10/modules/core/api"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
@@ -493,7 +494,7 @@ func New(
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibcexported.StoreKey]),
-		nil,
+		app.GetSubspace(ibcexported.ModuleName),
 		app.UpgradeKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -650,7 +651,7 @@ func New(
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
-		nil,
+		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
@@ -687,8 +688,7 @@ func New(
 	var transferStackv2 ibcapi.IBCModule
 	transferStackv2 = transferv2.NewIBCModule(app.TransferKeeper)
 	transferStackv2 = ratelimitv2.NewIBCMiddleware(app.RateLimitKeeper, transferStackv2)
-	// TODO: do we need to add tokenfactory IBC module to v2 stacks?
-	// v2 no longer have opening of channels to register ibc escrow address
+	transferStackv2 = tokenfactory.NewIBCV2Module(transferStackv2, app.TokenFactoryKeeper)
 
 	ibcRouterV2 := ibcapi.NewRouter()
 	ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
@@ -1326,9 +1326,12 @@ func BlockedAddresses() map[string]bool {
 // initParamsKeeper init params keeper and its subspaces
 func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
-	paramsKeeper.Subspace(ratelimittypes.ModuleName)
+	keyTable := ibcclienttypes.ParamKeyTable()
+	paramsKeeper.Subspace(ratelimittypes.ModuleName).WithKeyTable(ratelimittypes.ParamKeyTable())
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
+	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 
 	return paramsKeeper
 }
