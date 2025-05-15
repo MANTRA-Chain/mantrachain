@@ -604,6 +604,7 @@ func New(
 	)
 
 	// Create RateLimit keeper
+	clientKeeper := app.IBCKeeper.ClientKeeper
 	app.RateLimitKeeper = *ratelimitkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ratelimittypes.StoreKey]),
@@ -611,7 +612,7 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.BankKeeper,
 		app.IBCKeeper.ChannelKeeper,
-		nil, // TODO: add a proper IBC ratelimit client keeper
+		clientKeeper,
 		app.IBCKeeper.ChannelKeeper,
 	)
 
@@ -686,13 +687,13 @@ func New(
 	var transferStackv2 ibcapi.IBCModule
 	transferStackv2 = transferv2.NewIBCModule(app.TransferKeeper)
 	transferStackv2 = ratelimitv2.NewIBCMiddleware(app.RateLimitKeeper, transferStackv2)
-	// TODO: add tokenfactory IBC module to v2 stacks
+	// TODO: do we need to add tokenfactory IBC module to v2 stacks?
+	// v2 no longer have opening of channels to register ibc escrow address
 
 	ibcRouterV2 := ibcapi.NewRouter()
 	ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
 	app.IBCKeeper.SetRouterV2(ibcRouterV2)
 
-	clientKeeper := app.IBCKeeper.ClientKeeper
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
 	clientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
