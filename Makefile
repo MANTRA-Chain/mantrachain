@@ -165,12 +165,14 @@ endif
 ###                                Release                                  ###
 ###############################################################################
 ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
-GORELEASER_IMAGE := goreleaser/goreleaser:v2.3.1
+GORELEASER_IMAGE := goreleaser/goreleaser:v2.8.2
 else
-GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
+GORELEASER_CROSS := ghcr.io/goreleaser/goreleaser-cross
+GO_VERSION_FALLBACK := 1.24.1
+GORELEASER_IMAGE := $(shell docker manifest inspect $(GORELEASER_CROSS):v$(GO_VERSION) > /dev/null 2>&1 && echo $(GORELEASER_CROSS):v$(GO_VERSION) || echo $(GORELEASER_CROSS):v$(GO_VERSION_FALLBACK))
 endif
 GORELEASER_PLATFORM ?= linux/amd64
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v3 | sed 's/.* //')
 REPO_OWNER ?= MANTRA-Chain
 REPO_NAME ?= mantrachain
 
