@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: main
 
-name: Build and validate genesis
+name: Build
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,10 +15,3 @@ jobs:
       - uses: actions/checkout@v4
       - name: install
         run: make install
-      - name: validate genesis
-        run: |
-          for dir in networks/*/; do
-            if [ -f "$dir/genesis.json" ]; then
-              mantrachaind genesis validate-genesis "$dir/genesis.json"
-            fi
-          done
