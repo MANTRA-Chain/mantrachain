@@ -8,6 +8,7 @@ Mantrachain is a global real-world assets platform built on blockchain technolog
 
 - [Overview](#overview)
 - [Features](#features)
+- [Joining the Mainnet](#joining-the-mainnet)
 - [Getting Started](#getting-started)
 - [Development](#development)
 - [Architecture](#architecture)
@@ -25,6 +26,10 @@ Mantrachain is designed to bridge the gap between traditional assets and the blo
 - Multi-token support for transaction fees
 - Custom fee market implementation
 - Cosmos SDK-based architecture
+
+## Joining the Mainnet
+
+[Please visit the official instructions on how to join the Mainnet here.](https://docs.mantrachain.io/node-and-validator-operations/node-setup-and-deployment/running-a-node)
 
 ## Getting Started
 
