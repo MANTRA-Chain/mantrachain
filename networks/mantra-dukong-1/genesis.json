@@ -948,16 +948,7 @@
         "send_sequences": [],
         "recv_sequences": [],
         "ack_sequences": [],
-        "next_channel_sequence": "0",
-        "params": {
-          "upgrade_timeout": {
-            "height": {
-              "revision_number": "0",
-              "revision_height": "0"
-            },
-            "timestamp": "600000000000"
-          }
-        }
+        "next_channel_sequence": "0"
       }
     },
     "ibchooks": {},
@@ -1387,7 +1378,7 @@
     },
     "transfer": {
       "port_id": "transfer",
-      "denom_traces": [],
+      "denoms": [],
       "params": {
         "send_enabled": true,
         "receive_enabled": true
