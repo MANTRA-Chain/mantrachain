@@ -165,7 +165,7 @@ endif
 ###                                Release                                  ###
 ###############################################################################
 ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
-GORELEASER_IMAGE := goreleaser/goreleaser:v2.3.1
+GORELEASER_IMAGE := goreleaser/goreleaser:v2.8.2
 else
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 endif
