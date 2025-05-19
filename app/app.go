@@ -9,6 +9,13 @@ import (
 	"path/filepath"
 	"sort"
 
+	corevm "github.com/ethereum/go-ethereum/core/vm"
+	"github.com/spf13/cast"
+
+	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
+	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
+
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
@@ -34,6 +41,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
@@ -129,13 +137,14 @@ import (
 	"github.com/cosmos/evm/x/feemarket"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	"github.com/cosmos/evm/x/precisebank"
+	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
+	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
+
 	// Overriders
 	"github.com/cosmos/evm/x/ibc/transfer"
-	ibctransferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
+	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/vm"
-	_ "github.com/cosmos/evm/x/vm/core/tracers/js"
-	_ "github.com/cosmos/evm/x/vm/core/tracers/native"
-	corevm "github.com/cosmos/evm/x/vm/core/vm"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/cosmos/gogoproto/proto"
@@ -172,7 +181,6 @@ import (
 	oracle "github.com/skip-mev/connect/v2/x/oracle"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-	"github.com/spf13/cast"
 )
 
 const appName = "App"
@@ -216,9 +224,10 @@ var maccPerms = map[string][]string{
 	sanctiontypes.ModuleName:     nil,
 
 	// Cosmos EVM modules
-	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName: nil,
-	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
+	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName:   nil,
+	erc20types.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
 }
@@ -279,7 +288,7 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	ICAControllerKeeper icacontrollerkeeper.Keeper
 	IBCFeeKeeper        ibcfeekeeper.Keeper
-	TransferKeeper      ibctransferkeeper.Keeper
+	TransferKeeper      transferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
 
@@ -299,9 +308,10 @@ type App struct {
 	SanctionKeeper     sanctionkeeper.Keeper
 
 	// Cosmos EVM keepers
-	FeeMarketKeeper feemarketkeeper.Keeper
-	EVMKeeper       *evmkeeper.Keeper
-	Erc20Keeper     erc20keeper.Keeper
+	FeeMarketKeeper   feemarketkeeper.Keeper
+	EVMKeeper         *evmkeeper.Keeper
+	Erc20Keeper       erc20keeper.Keeper
+	PreciseBankKeeper precisebankkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -385,7 +395,7 @@ func New(
 		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
+		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey, precisebanktypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -726,13 +736,21 @@ func New(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	// Cosmos EVM keepers
-	feeMarketSs := app.GetSubspace(feemarkettypes.ModuleName)
 	app.FeeMarketKeeper = feemarketkeeper.NewKeeper(
 		appCodec,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		keys[feemarkettypes.StoreKey],
 		tkeys[feemarkettypes.TransientKey],
-		feeMarketSs,
+	)
+
+	// Set up PreciseBank keeper
+	//
+	// NOTE: PreciseBank is not needed if SDK use 18 decimals for gas coin. Use BankKeeper instead.
+	app.PreciseBankKeeper = precisebankkeeper.NewKeeper(
+		appCodec,
+		keys[precisebanktypes.StoreKey],
+		app.BankKeeper,
+		app.AccountKeeper,
 	)
 
 	// Set up EVM keeper
@@ -742,11 +760,11 @@ func New(
 		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		app.PreciseBankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
 		&app.Erc20Keeper,
-		tracer, app.GetSubspace(evmtypes.ModuleName),
+		tracer,
 	)
 
 	// ERC20 Keeper
@@ -758,12 +776,11 @@ func New(
 		app.BankKeeper,
 		app.EVMKeeper,
 		app.StakingKeeper,
-		app.AuthzKeeper,
 		&app.TransferKeeper,
 	)
 
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
+	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
 		keys[ibctransfertypes.StoreKey],
 		app.GetSubspace(ibctransfertypes.ModuleName),
@@ -772,7 +789,6 @@ func New(
 		app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
-		scopedTransferKeeper,
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -809,9 +825,8 @@ func New(
 	corePrecompiles := NewAvailableStaticPrecompiles(
 		app.StakingKeeper,
 		app.DistrKeeper,
-		app.BankKeeper,
+		app.PreciseBankKeeper,
 		app.Erc20Keeper,
-		app.AuthzKeeper,
 		app.TransferKeeper,
 		app.IBCKeeper.ChannelKeeper,
 		app.EVMKeeper,
@@ -927,9 +942,10 @@ func New(
 		sanction.NewAppModule(appCodec, app.SanctionKeeper),
 
 		// Cosmos EVM modules
-		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName)),
-		feemarket.NewAppModule(app.FeeMarketKeeper, app.GetSubspace(feemarkettypes.ModuleName)),
-		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper, app.GetSubspace(erc20types.ModuleName)),
+		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper),
+		feemarket.NewAppModule(app.FeeMarketKeeper),
+		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
+		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -988,6 +1004,7 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
+		precisebanktypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -1015,6 +1032,7 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
+		precisebanktypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1056,6 +1074,7 @@ func New(
 		evmtypes.ModuleName,
 		feemarkettypes.ModuleName,
 		erc20types.ModuleName,
+		precisebanktypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1501,10 +1520,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ratelimittypes.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
-	// Cosmos EVM modules
-	paramsKeeper.Subspace(evmtypes.ModuleName)
-	paramsKeeper.Subspace(feemarkettypes.ModuleName)
-	paramsKeeper.Subspace(erc20types.ModuleName)
 
 	return paramsKeeper
 }

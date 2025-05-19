@@ -111,5 +111,11 @@ func NewRootCmd() *cobra.Command {
 		panic(err)
 	}
 
+	if initClientCtx.ChainID != "" {
+		if err := app.EvmAppOptions(initClientCtx.ChainID); err != nil {
+			panic(err)
+		}
+	}
+
 	return rootCmd
 }
