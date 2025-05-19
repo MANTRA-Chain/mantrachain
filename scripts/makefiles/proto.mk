@@ -70,7 +70,7 @@ proto-download-deps:
 
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
-	git clone --depth 1 --branch release/v8.5.x https://github.com/cosmos/ibc-go.git . && \
+	git clone --depth 1 --branch release/v10.2.x https://github.com/cosmos/ibc-go.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
