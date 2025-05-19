@@ -118,6 +118,16 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/cosmos/circuit/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "CircuitParams",
+          "Accounts": "CircuitAccounts",
+          "Account": "CircuitAccount"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/cosmos/distribution/v1beta1/query.swagger.json",
       "operationIds": {
         "rename": {

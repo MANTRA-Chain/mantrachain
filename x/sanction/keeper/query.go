@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/MANTRA-Chain/mantrachain/v4/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 )
 
 var _ types.QueryServer = queryServer{}

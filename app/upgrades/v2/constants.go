@@ -1,7 +1,7 @@
 package v2
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v4/app/upgrades"
+	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
 )
 
 const (
