@@ -53,7 +53,7 @@ jobs:
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
           # TODO: change back to strangelove-ventures once it create the release
           heighliner-owner: ${{ github.repository_owner }}
-          heighliner-tag: v1.7.3
+          heighliner-tag: v1.7.5
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
           git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}
