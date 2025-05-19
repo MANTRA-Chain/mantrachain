@@ -51,8 +51,8 @@ jobs:
           chain: mantrachain
           chains-spec-file: chains.yaml
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
-          heighliner-owner: strangelove-ventures
-          heighliner-tag: v1.7.1
+          # heighliner-owner: ${{ github.repository_owner }}
+          heighliner-tag: v1.7.4
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
           git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}
