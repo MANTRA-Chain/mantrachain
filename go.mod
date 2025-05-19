@@ -43,7 +43,7 @@ require (
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
 	github.com/CosmWasm/wasmd v0.55.0-ibc2.0
-	github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.0
+	github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.1
 	github.com/bufbuild/buf v1.46.0
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cosmos/cosmos-db v1.1.1
