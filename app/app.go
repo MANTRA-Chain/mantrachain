@@ -142,6 +142,7 @@ import (
 	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 
 	// Overriders
+	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	transferv2 "github.com/cosmos/evm/x/ibc/transfer/v2"
@@ -178,6 +179,20 @@ import (
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 )
 
+func init() {
+	// Replace evmos defaults
+	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
+	sdk.DefaultPowerReduction = cosmosevmtypes.MicroPowerReduction
+	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
+
+	// DefaultNodeHome default home directories for mantrachaind
+	var err error
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(NodeDir)
+	if err != nil {
+		panic(err)
+	}
+}
+
 const appName = "App"
 
 const (
@@ -189,14 +204,8 @@ const (
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
 	NodeDir = ".mantrachain"
-)
-
-// These constants are derived from the above variables.
-// These are the ones we will want to use in the code, based on
-// any overrides above
-var (
-	// DefaultNodeHome default home directories for mantrachaind
-	DefaultNodeHome = os.ExpandEnv("$HOME/") + NodeDir
+	// DefaultNodeHome default home directories for the application daemon
+	DefaultNodeHome string
 )
 
 // module account permissions
@@ -232,13 +241,6 @@ var (
 	_ runtime.AppI            = (*App)(nil)
 	_ servertypes.Application = (*App)(nil)
 )
-
-func init() {
-	// Replace evmos defaults
-	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
-	sdk.DefaultPowerReduction = cosmosevmtypes.MicroPowerReduction
-	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
-}
 
 // App extended ABCI application
 type App struct {
