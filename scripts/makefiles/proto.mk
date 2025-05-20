@@ -56,14 +56,14 @@ proto-download-deps:
 
 	mkdir -p "$(THIRD_PARTY_DIR)/evm_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/evm_tmp" && \
-	git clone --depth 1 --branch v0.1.0 https://github.com/cosmos/evm.git . && \
+	git clone --depth 1 --branch v0.2.0 https://github.com/cosmos/evm.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/cosmos/* ../cosmos
 	rm -rf "$(THIRD_PARTY_DIR)/evm_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	git clone --depth 1 --branch v0.54.0 https://github.com/CosmWasm/wasmd.git . && \
+	git clone --depth 1 --branch v0.55.0-ibc2.0 https://github.com/CosmWasm/wasmd.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
