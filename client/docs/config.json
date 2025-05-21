@@ -27,6 +27,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/cosmos/evm/precisebank/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "PreciseBankParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/cosmos/evm/erc20/v1/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -204,14 +212,6 @@
       "operationIds": {
         "rename": {
           "Params": "UpgradeParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ibc/applications/fee/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IBCFeeParams"
         }
       }
     },

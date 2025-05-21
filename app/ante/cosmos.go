@@ -15,8 +15,8 @@ import (
 	cosmosante "github.com/cosmos/evm/ante/cosmos"
 	evmante "github.com/cosmos/evm/ante/evm"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
-	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
-	"github.com/cosmos/ibc-go/v8/modules/core/keeper"
+	ibcante "github.com/cosmos/ibc-go/v10/modules/core/ante"
+	"github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by r	equiring the IBC
@@ -75,7 +75,7 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.EvmOptions.AccountKeeper),
-		cosmosante.NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
+		NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewDeductFeeDecorator(
 			options.EvmOptions.AccountKeeper,

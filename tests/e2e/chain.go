@@ -25,7 +25,7 @@ import (
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v8/types"
+	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
 )
 
 const (
@@ -54,8 +54,8 @@ func init() {
 
 	upgradetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	distribtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	ratelimittypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	sanctiontypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	ratelimittypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig

@@ -29,8 +29,8 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	ethermintclient "github.com/cosmos/evm/client"
-	ethermintserver "github.com/cosmos/evm/server"
-	ethermintserverflags "github.com/cosmos/evm/server/flags"
+	cosmosevmserver "github.com/cosmos/evm/server"
+	cosmosevmserverflags "github.com/cosmos/evm/server/flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -69,9 +69,9 @@ func initRootCmd(
 	)
 
 	// add server commands
-	ethermintserver.AddCommands(
+	cosmosevmserver.AddCommands(
 		rootCmd,
-		ethermintserver.NewDefaultStartOptions(newApp, app.DefaultNodeHome),
+		cosmosevmserver.NewDefaultStartOptions(newApp, app.DefaultNodeHome),
 		appExport,
 		addModuleInitFlags,
 	)
@@ -87,7 +87,7 @@ func initRootCmd(
 		ethermintclient.KeyCommands(app.DefaultNodeHome, true),
 	)
 
-	_, err := ethermintserverflags.AddTxFlags(rootCmd)
+	_, err := cosmosevmserverflags.AddTxFlags(rootCmd)
 	if err != nil {
 		panic(err)
 	}

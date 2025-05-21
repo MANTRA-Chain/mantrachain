@@ -23,15 +23,11 @@ var sealed = false
 // that allows initializing the app with different coin info based on the
 // chain id
 var ChainsCoinInfo = map[string]evmtypes.EvmCoinInfo{
-	EighteenDecimalsChainID: {
-		Denom:        ExampleChainDenom,
-		DisplayDenom: ExampleDisplayDenom,
-		Decimals:     evmtypes.EighteenDecimals,
-	},
 	CosmosChainID: {
-		Denom:        "uom",
-		DisplayDenom: "om",
-		Decimals:     evmtypes.SixDecimals,
+		Denom:         "uom",
+		ExtendedDenom: "aom",
+		DisplayDenom:  "om",
+		Decimals:      evmtypes.SixDecimals,
 	},
 }
 
@@ -51,16 +47,12 @@ func EvmAppOptions(chainID string) error {
 		return err
 	}
 
-	baseDenom, err := sdk.GetBaseDenom()
-	if err != nil {
-		return err
-	}
-
 	ethCfg := evmtypes.DefaultChainConfig(chainID)
 
-	err = evmtypes.NewEVMConfigurator().
+	err := evmtypes.NewEVMConfigurator().
+		WithExtendedEips(cosmosEVMActivators).
 		WithChainConfig(ethCfg).
-		WithEVMCoinInfo(baseDenom, uint8(coinInfo.Decimals)).
+		WithEVMCoinInfo(coinInfo).
 		Configure()
 	if err != nil {
 		return err
