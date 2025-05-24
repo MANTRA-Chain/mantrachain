@@ -96,6 +96,7 @@ func (c *chain) createAndInitValidators(count int) error {
 		true,
 		app.EmptyAppOptions{},
 		emptyWasmOpts,
+		app.NoOpEVMOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {
@@ -139,6 +140,7 @@ func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []stri
 		true,
 		app.EmptyAppOptions{},
 		emptyWasmOpts,
+		app.NoOpEVMOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {
