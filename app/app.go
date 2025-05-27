@@ -12,7 +12,6 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
-
 	// Overriders
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/core/appmodule"
@@ -37,7 +36,6 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
@@ -155,7 +153,8 @@ import (
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
+	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
+	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
@@ -164,7 +163,6 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 	corevm "github.com/ethereum/go-ethereum/core/vm"
-
 	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
@@ -218,7 +216,7 @@ var maccPerms = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	nft.ModuleName:                 nil,
 	// non sdk modules
-	transfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+	ibctransfertypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
 	ratelimittypes.ModuleName:    nil,
 	wasmtypes.ModuleName:         {authtypes.Burner},
 	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
@@ -370,7 +368,7 @@ func New(
 		nftkeeper.StoreKey,
 		group.StoreKey,
 		// non sdk store keys
-		ibcexported.StoreKey, transfertypes.StoreKey,
+		ibcexported.StoreKey, ibctransfertypes.StoreKey,
 		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
@@ -730,8 +728,8 @@ func New(
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
 	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[transfertypes.StoreKey]),
-		app.GetSubspace(transfertypes.ModuleName),
+		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
+		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
@@ -762,7 +760,7 @@ func New(
 	ibcRouter := porttypes.NewRouter().
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
-		AddRoute(transfertypes.ModuleName, transferStack).
+		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -772,7 +770,7 @@ func New(
 	transferStackv2 = tokenfactory.NewIBCV2Module(transferStackv2, app.TokenFactoryKeeper)
 
 	ibcRouterV2 := ibcapi.NewRouter()
-	ibcRouterV2.AddRoute(transfertypes.ModuleName, transferStackv2)
+	ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
 	app.IBCKeeper.SetRouterV2(ibcRouterV2)
 
 	// Configure EVM precompiles
@@ -917,6 +915,7 @@ func New(
 					paramsclient.ProposalHandler,
 				},
 			),
+			ibctransfertypes.ModuleName: ibctransfer.AppModuleBasic{},
 		})
 	app.BasicModuleManager.RegisterLegacyAminoCodec(legacyAmino)
 	app.BasicModuleManager.RegisterInterfaces(interfaceRegistry)
@@ -947,7 +946,7 @@ func New(
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
 		// additional non simd modules
-		transfertypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -971,7 +970,7 @@ func New(
 		feegrant.ModuleName,
 		group.ModuleName,
 		// additional non simd modules
-		transfertypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -1023,7 +1022,7 @@ func New(
 		precisebanktypes.ModuleName,
 
 		// additional non simd modules
-		transfertypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		genutiltypes.ModuleName,
 		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
@@ -1459,7 +1458,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
-	paramsKeeper.Subspace(transfertypes.ModuleName).WithKeyTable(transfertypes.ParamKeyTable())
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 
 	return paramsKeeper
 }
