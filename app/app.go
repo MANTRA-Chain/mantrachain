@@ -260,9 +260,9 @@ type App struct {
 	MintKeeper            mintkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
 	GovKeeper             govkeeper.Keeper
-	CrisisKeeper          *crisiskeeper.Keeper
+	CrisisKeeper          *crisiskeeper.Keeper //nolint:staticcheck
 	UpgradeKeeper         *upgradekeeper.Keeper
-	ParamsKeeper          paramskeeper.Keeper
+	ParamsKeeper          paramskeeper.Keeper //nolint:staticcheck
 	AuthzKeeper           authzkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
@@ -321,6 +321,7 @@ func New(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
+	evmChainID uint64,
 	evmAppOptions EVMOptionsFn,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
@@ -342,7 +343,7 @@ func New(
 	// }
 	// appCodec := codec.NewProtoCodec(interfaceRegistry)
 	// legacyAmino := codec.NewLegacyAmino()
-	encodingConfig := evmosencoding.MakeConfig()
+	encodingConfig := evmosencoding.MakeConfig(evmChainID)
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -354,7 +355,7 @@ func New(
 	bApp.SetTxEncoder(encodingConfig.TxConfig.TxEncoder())
 
 	// initialize the Cosmos EVM application configuration
-	if err := evmAppOptions(bApp.ChainID()); err != nil {
+	if err := evmAppOptions(evmChainID); err != nil {
 		panic(err)
 	}
 
@@ -470,7 +471,7 @@ func New(
 	)
 
 	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
-	app.CrisisKeeper = crisiskeeper.NewKeeper(
+	app.CrisisKeeper = crisiskeeper.NewKeeper( //nolint:staticcheck
 		appCodec,
 		runtime.NewKVStoreService(keys[crisistypes.StoreKey]),
 		invCheckPeriod,
@@ -785,6 +786,7 @@ func New(
 		app.GovKeeper,
 		app.SlashingKeeper,
 		app.EvidenceKeeper,
+		appCodec,
 	)
 	app.EVMKeeper.WithStaticPrecompiles(
 		corePrecompiles,
@@ -834,7 +836,7 @@ func New(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants)) //nolint:staticcheck
 
 	// optional: enable sign mode textual by overwriting the default tx config (after setting the bank keeper)
 	txConfigOpts := authtx.ConfigOptions{
@@ -870,7 +872,7 @@ func New(
 		staking.NewAppModule(appCodec, &app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		params.NewAppModule(app.ParamsKeeper),
+		params.NewAppModule(app.ParamsKeeper), //nolint:staticcheck
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
@@ -888,7 +890,7 @@ func New(
 		oracleModule,
 
 		// sdk
-		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), // always be last to make sure that it checks for all invariants and not only part of them,
+		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), //nolint:staticcheck
 
 		// mantrachain modules
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
@@ -923,6 +925,7 @@ func New(
 	// NOTE: upgrade module is required to be prioritized
 	app.ModuleManager.SetOrderPreBlockers(
 		upgradetypes.ModuleName,
+		authtypes.ModuleName,
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -932,11 +935,14 @@ func New(
 		minttypes.ModuleName,
 		// mca tax before distribution
 		taxtypes.ModuleName,
+
+		// IBC modules
+		ibcexported.ModuleName, ibctransfertypes.ModuleName,
+
 		// Cosmos EVM BeginBlockers
-		erc20types.ModuleName,
-		feemarkettypes.ModuleName,
-		// NOTE: EVM BeginBlocker must come after FeeMarket BeginBlocker
-		evmtypes.ModuleName,
+		erc20types.ModuleName, feemarkettypes.ModuleName,
+		evmtypes.ModuleName, // NOTE: EVM BeginBlocker must come after FeeMarket BeginBlocker
+
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -946,8 +952,6 @@ func New(
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
 		// additional non simd modules
-		ibctransfertypes.ModuleName,
-		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
@@ -962,6 +966,8 @@ func New(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
+		authtypes.ModuleName,
+		banktypes.ModuleName,
 		genutiltypes.ModuleName,
 		// Cosmos EVM EndBlockers
 		evmtypes.ModuleName,
@@ -1043,7 +1049,7 @@ func New(
 	// Uncomment if you want to set a custom migration order here.
 	// app.ModuleManager.SetOrderMigrations(custom order)
 
-	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
+	app.ModuleManager.RegisterInvariants(app.CrisisKeeper) //nolint:staticcheck
 	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	err = app.ModuleManager.RegisterServices(app.configurator)
 	if err != nil {
@@ -1270,7 +1276,7 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 
 	// Add mint denom configuration
 	mintGenState := minttypes.DefaultGenesisState()
-	mintGenState.Params.MintDenom = CoinInfo.Denom
+	mintGenState.Params.MintDenom = sdk.DefaultBondDenom
 	genesis[minttypes.ModuleName] = app.appCodec.MustMarshalJSON(mintGenState)
 
 	// Add EVM genesis configuration
@@ -1451,8 +1457,8 @@ func BlockedAddresses() map[string]bool {
 }
 
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
+func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper { //nolint:staticcheck
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey) //nolint:staticcheck
 	keyTable := ibcclienttypes.ParamKeyTable()
 	paramsKeeper.Subspace(ratelimittypes.ModuleName).WithKeyTable(ratelimittypes.ParamKeyTable())
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
