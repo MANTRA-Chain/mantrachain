@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	bankKeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	cosmosante "github.com/cosmos/evm/ante/cosmos"
 	evmante "github.com/cosmos/evm/ante/evm"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
@@ -29,6 +30,7 @@ type HandlerOptions struct {
 	TXCounterStoreService corestoretypes.KVStoreService
 	CircuitKeeper         *circuitkeeper.Keeper
 	SanctionKeeper        *sanctionkeeper.Keeper
+	BankKeeper            bankKeeper.Keeper
 }
 
 // Validate checks if the keepers are defined
@@ -54,6 +56,9 @@ func (options HandlerOptions) Validate() error {
 	if options.SanctionKeeper == nil {
 		return errors.New("sanction keeper is required for ante builder")
 	}
+	if options.BankKeeper == nil {
+		return errors.New("bank keeper is required for ante builder")
+	}
 	return nil
 }
 
@@ -77,9 +82,9 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		ante.NewValidateMemoDecorator(options.EvmOptions.AccountKeeper),
 		NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.EvmOptions.AccountKeeper),
-		ante.NewDeductFeeDecorator(
+		NewDeductFeeDecorator(
 			options.EvmOptions.AccountKeeper,
-			options.EvmOptions.BankKeeper,
+			options.BankKeeper,
 			options.EvmOptions.FeegrantKeeper,
 			options.EvmOptions.TxFeeChecker,
 		),
