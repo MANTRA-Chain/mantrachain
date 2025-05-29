@@ -4,6 +4,7 @@ import (
 	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/app"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	cosmosevmserverconfig "github.com/cosmos/evm/server/config"
@@ -48,9 +49,12 @@ func initAppConfig() (string, interface{}) {
 		MetricsEnabled: false,
 	}
 
+	evmConfig := cosmosevmserverconfig.DefaultEVMConfig()
+	evmConfig.EVMChainID = app.MANTRAChainID
+
 	customAppConfig := CustomAppConfig{
 		Config:  *srvCfg,
-		EVM:     *cosmosevmserverconfig.DefaultEVMConfig(),
+		EVM:     *evmConfig,
 		JSONRPC: *cosmosevmserverconfig.DefaultJSONRPCConfig(),
 		TLS:     *cosmosevmserverconfig.DefaultTLSConfig(),
 		Wasm:    wasmtypes.DefaultNodeConfig(),

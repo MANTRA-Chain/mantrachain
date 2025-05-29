@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	anteinterfaces "github.com/cosmos/evm/ante/interfaces"
+	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
@@ -18,7 +19,7 @@ import (
 type EVMHandlerOptions struct {
 	Cdc                    codec.BinaryCodec
 	AccountKeeper          anteinterfaces.AccountKeeper
-	BankKeeper             anteinterfaces.BankKeeper
+	PreciseBankKeeper      *precisebankkeeper.Keeper
 	IBCKeeper              *ibckeeper.Keeper
 	FeeMarketKeeper        anteinterfaces.FeeMarketKeeper
 	EvmKeeper              anteinterfaces.EVMKeeper
@@ -33,31 +34,31 @@ type EVMHandlerOptions struct {
 // Validate checks if the keepers are defined
 func (options EVMHandlerOptions) Validate() error {
 	if options.Cdc == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "codec is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "codec is required for EVM AnteHandler")
 	}
 	if options.AccountKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "account keeper is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "account keeper is required for EVM AnteHandler")
 	}
-	if options.BankKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "bank keeper is required for AnteHandler")
+	if options.PreciseBankKeeper == nil {
+		return errorsmod.Wrap(errortypes.ErrLogic, "precise bank keeper is required for EVM AnteHandler")
 	}
 	if options.IBCKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "ibc keeper is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "ibc keeper is required for EVM AnteHandler")
 	}
 	if options.FeeMarketKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "fee market keeper is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "fee market keeper is required for EVM AnteHandler")
 	}
 	if options.EvmKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "evm keeper is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "evm keeper is required for EVM AnteHandler")
 	}
 	if options.SigGasConsumer == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "signature gas consumer is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "signature gas consumer is required for EVM AnteHandler")
 	}
 	if options.SignModeHandler == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "sign mode handler is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "sign mode handler is required for EVM AnteHandler")
 	}
 	if options.TxFeeChecker == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "tx fee checker is required for AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "tx fee checker is required for EVM AnteHandler")
 	}
 	return nil
 }

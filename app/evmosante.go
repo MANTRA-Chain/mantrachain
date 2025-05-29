@@ -23,7 +23,7 @@ func NewEVMAnteHandlerOptionsFromApp(app *App, txConfig client.TxConfig, maxGasW
 	return &ante.EVMHandlerOptions{
 		Cdc:                    app.appCodec,
 		AccountKeeper:          app.AccountKeeper,
-		BankKeeper:             app.BankKeeper,
+		PreciseBankKeeper:      &app.PreciseBankKeeper,
 		ExtensionOptionChecker: cosmosevmtypes.HasDynamicFeeExtensionOption,
 		EvmKeeper:              app.EVMKeeper,
 		FeegrantKeeper:         app.FeeGrantKeeper,
