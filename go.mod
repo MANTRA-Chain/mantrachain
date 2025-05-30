@@ -16,9 +16,9 @@ replace (
 	github.com/cockroachdb/pebble => github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
 
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.0, current branch: mantra/v0.53.0
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2d67139e683b4505e1c17b05ad289b1605c907b6
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.0-v5-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.0-v5-mantra-1
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/d8119175428e33c57f4c890867a93a16df51341d
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.0-v5-mantra-1-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.0-v5-mantra-1-1
 
 	// use Cosmos geth fork
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.15.11-cosmos-0
