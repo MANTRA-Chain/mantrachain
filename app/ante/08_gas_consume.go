@@ -126,7 +126,7 @@ func EVMDeductFees(bankKeeper wrappers.BankWrapper, ctx sdktypes.Context, acc sd
 		if coin.Denom == evmtypes.GetEVMCoinDenom() {
 			err := bankKeeper.BurnAmountFromAccount(ctx, acc.GetAddress(), coin.Amount.BigInt())
 			if err != nil {
-				return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error()) //nolint:govet
+				return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 			}
 		} else {
 			feesAfterBurn = feesAfterBurn.Add(coin)
@@ -136,7 +136,7 @@ func EVMDeductFees(bankKeeper wrappers.BankWrapper, ctx sdktypes.Context, acc sd
 	// send the remaining fees of other denoms to the fee collector
 	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), authtypes.FeeCollectorName, feesAfterBurn)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error()) //nolint:govet
+		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
 	return nil

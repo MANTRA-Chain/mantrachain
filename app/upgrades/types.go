@@ -7,6 +7,7 @@ import (
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
@@ -51,4 +52,5 @@ type UpgradeKeepers struct {
 	SanctionKeeper sanctionkeeper.Keeper
 	// v5
 	FeeMarketKeeper feemarketkeeper.Keeper
+	AccountKeeper   authkeeper.AccountKeeper
 }

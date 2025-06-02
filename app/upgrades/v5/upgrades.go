@@ -8,6 +8,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 )
 
@@ -58,9 +59,15 @@ func CreateUpgradeHandler(
 		feemarketKeeper := keepers.FeeMarketKeeper
 		params := feemarkettypes.DefaultParams()
 		params.MinGasPrice = sdkmath.LegacyMustNewDecFromStr("0.01")
+		params.BaseFee = params.MinGasPrice
 		if err := feemarketKeeper.SetParams(ctx, params); err != nil {
 			return vm, err
 		}
+
+		// add burner authority to the fee collector
+		macc := authtypes.NewEmptyModuleAccount(authtypes.FeeCollectorName, authtypes.Burner)
+		maccI := (keepers.AccountKeeper.NewAccount(ctx, macc)).(sdk.ModuleAccountI) // set the account number
+		keepers.AccountKeeper.SetModuleAccount(ctx, maccI)
 
 		ctx.Logger().Info("Upgrade v5 complete")
 		return vm, nil

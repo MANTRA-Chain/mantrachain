@@ -132,7 +132,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc sdk.AccountI,
 
 	err := bankKeeper.SendCoinsFromAccountToModule(ctx, acc.GetAddress(), types.FeeCollectorName, fees)
 	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error()) //nolint:govet
+		return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 	}
 
 	// burn the defaultBondDenom coin sent to the fee collector
@@ -140,7 +140,7 @@ func DeductFees(bankKeeper bankkeeper.Keeper, ctx sdk.Context, acc sdk.AccountI,
 		if coin.Denom == params.DefaultBondDenom {
 			err = bankKeeper.BurnCoins(ctx, types.FeeCollectorName, sdk.NewCoins(coin))
 			if err != nil {
-				return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error()) //nolint:govet
+				return errorsmod.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
 			}
 		}
 	}
