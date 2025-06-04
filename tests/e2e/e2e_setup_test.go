@@ -82,9 +82,9 @@ var (
 	mantraConfigPath  = filepath.Join(mantraHomePath, "config")
 	stakingAmount     = math.NewInt(100000000000)
 	stakingAmountCoin = sdk.NewCoin(uomDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000))
-	standardFees      = sdk.NewCoin(uomDenom, math.NewInt(330000))
-	depositAmount     = sdk.NewCoin(uomDenom, math.NewInt(330000000))
+	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) //3,300om
+	standardFees      = sdk.NewCoin(uomDenom, math.NewInt(100000))     // 0.1om
+	depositAmount     = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300uom
 	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
 	govModuleAddress  = authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	proposalCounter   = 0
@@ -631,7 +631,7 @@ func (s *IntegrationTestSuite) runIBCRelayer() {
 		&dockertest.RunOptions{
 			Name:       fmt.Sprintf("%s-%s-relayer", s.chainA.id, s.chainB.id),
 			Repository: "ghcr.io/informalsystems/hermes",
-			Tag:        "1.10.4",
+			Tag:        "1.13.1",
 			NetworkID:  s.dkrNet.Network.ID,
 			Mounts: []string{
 				fmt.Sprintf("%s/:/root/hermes", hermesCfgPath),
