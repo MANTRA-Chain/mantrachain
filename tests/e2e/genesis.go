@@ -90,16 +90,6 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 	}
 	appState[banktypes.ModuleName] = bankGenStateBz
 
-	feemarketState := feemarkettypes.DefaultGenesisState()
-	feemarketState.Params.EnableHeight = 1
-	feemarketState.Params.MinGasPrice = math.LegacyMustNewDecFromStr(basefee)
-	feemarketState.Params.BaseFee = math.LegacyMustNewDecFromStr(basefee)
-	feemarketStateBz, err := feemarketState.Marshal()
-	if err != nil {
-		return fmt.Errorf("failed to marshal feemarket genesis state: %w", err)
-	}
-	appState[feemarkettypes.ModuleName] = feemarketStateBz
-
 	stakingGenState := stakingtypes.GetGenesisStateFromAppState(cdc, appState)
 	stakingGenState.Params.BondDenom = denom
 	stakingGenStateBz, err := cdc.MarshalJSON(stakingGenState)
@@ -154,9 +144,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 	appState[tokenfactorytypes.ModuleName] = tokenfactoryGenStateBz
 
 	feemarketGenState := feemarkettypes.DefaultGenesisState()
-	feemarketGenState.Params.MinGasPrice = math.LegacyMustNewDecFromStr("0.01")
+	feemarketGenState.Params.MinGasPrice = math.LegacyMustNewDecFromStr(basefee)
 	feemarketGenState.Params.NoBaseFee = false
-	feemarketGenState.Params.BaseFee = math.LegacyOneDec()
+	feemarketGenState.Params.BaseFee = math.LegacyMustNewDecFromStr(basefee)
 
 	feemarketGenStateBz, err := cdc.MarshalJSON(feemarketGenState)
 	if err != nil {

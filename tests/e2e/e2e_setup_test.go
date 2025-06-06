@@ -82,7 +82,7 @@ var (
 	mantraConfigPath  = filepath.Join(mantraHomePath, "config")
 	stakingAmount     = math.NewInt(100000000000)
 	stakingAmountCoin = sdk.NewCoin(uomDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) //3,300om
+	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300om
 	standardFees      = sdk.NewCoin(uomDenom, math.NewInt(100000))     // 0.1om
 	depositAmount     = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300uom
 	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
