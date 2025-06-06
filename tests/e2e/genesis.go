@@ -144,9 +144,9 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 	appState[tokenfactorytypes.ModuleName] = tokenfactoryGenStateBz
 
 	feemarketGenState := feemarkettypes.DefaultGenesisState()
-	feemarketGenState.Params.MinGasPrice = math.LegacyMustNewDecFromStr("0.01")
+	feemarketGenState.Params.MinGasPrice = math.LegacyMustNewDecFromStr(basefee)
 	feemarketGenState.Params.NoBaseFee = false
-	feemarketGenState.Params.BaseFee = math.LegacyOneDec()
+	feemarketGenState.Params.BaseFee = math.LegacyMustNewDecFromStr(basefee)
 
 	feemarketGenStateBz, err := cdc.MarshalJSON(feemarketGenState)
 	if err != nil {
