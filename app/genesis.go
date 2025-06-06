@@ -7,9 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
+	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
 // GenesisState of the blockchain is represented here as a map of raw json
@@ -55,32 +57,22 @@ func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 	}
 	genesisState[distributiontypes.ModuleName] = distributionGenesisStateBytes
 
-	feemarketFeeGenesis := feemarkettypes.GenesisState{
-		Params: feemarkettypes.Params{
-			Alpha:               math.LegacyOneDec(),
-			Beta:                math.LegacyOneDec(),
-			Delta:               math.LegacyOneDec(),
-			MinBaseGasPrice:     math.LegacyMustNewDecFromStr("1"),
-			MinLearningRate:     math.LegacyMustNewDecFromStr("0.5"),
-			MaxLearningRate:     math.LegacyMustNewDecFromStr("1.5"),
-			MaxBlockUtilization: 75_000_000,
-			Window:              1,
-			FeeDenom:            FeeDenom,
-			Enabled:             false,
-			DistributeFees:      true,
-		},
-		State: feemarkettypes.State{
-			BaseGasPrice: math.LegacyMustNewDecFromStr("1"),
-			LearningRate: math.LegacyOneDec(),
-			Window:       []uint64{100},
-			Index:        0,
-		},
-	}
-	feemarketFeeGenesisStateBytes, err := json.Marshal(feemarketFeeGenesis)
-	if err != nil {
-		panic("cannot marshal feemarket genesis state for tests")
-	}
-	genesisState["feemarket"] = feemarketFeeGenesisStateBytes
+	var feeMarketState feemarkettypes.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[feemarkettypes.ModuleName], &feeMarketState)
+	feeMarketState.Params.NoBaseFee = false
+	feeMarketState.Params.BaseFee = math.LegacyMustNewDecFromStr("0.01")
+	feeMarketState.Params.MinGasPrice = feeMarketState.Params.BaseFee
+	genesisState[feemarkettypes.ModuleName] = cdc.MustMarshalJSON(&feeMarketState)
+
+	var evmState evmtypes.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[evmtypes.ModuleName], &evmState)
+	evmState.Params.EvmDenom = FeeDenom
+	genesisState[evmtypes.ModuleName] = cdc.MustMarshalJSON(&evmState)
+
+	var erc20State erc20types.GenesisState
+	cdc.MustUnmarshalJSON(genesisState[erc20types.ModuleName], &erc20State)
+	erc20State.TokenPairs[0].Denom = FeeDenom
+	genesisState[erc20types.ModuleName] = cdc.MustMarshalJSON(&erc20State)
 
 	return genesisState
 }

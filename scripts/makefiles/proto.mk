@@ -47,13 +47,6 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
-	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	git clone --depth 1 --branch $(shell grep -o 'wasmd v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/CosmWasm/wasmd.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
-
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
 	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
@@ -61,19 +54,26 @@ proto-download-deps:
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
 
+	mkdir -p "$(THIRD_PARTY_DIR)/evm_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/evm_tmp" && \
+	git clone --depth 1 --branch v0.2.0 https://github.com/cosmos/evm.git . && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/cosmos/* ../cosmos
+	rm -rf "$(THIRD_PARTY_DIR)/evm_tmp"
+
+	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
+	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
+	git clone --depth 1 --branch v0.55.0-ibc2.0 https://github.com/CosmWasm/wasmd.git . && \
+	rm -f ./proto/buf.* && \
+	mv ./proto/* ..
+	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
+
 	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
 	git clone --depth 1 --branch release/v10.2.x https://github.com/cosmos/ibc-go.git . && \
 	rm -f ./proto/buf.* && \
 	mv ./proto/* ..
 	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
-
-	mkdir -p "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/feemarket_tmp" && \
-	git clone --depth 1 --branch $(shell grep -o 'feemarket v[0-9]\+\.[0-9]\+\.[0-9]\+' go.mod | awk '{print $$2}') https://github.com/skip-mev/feemarket.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/feemarket_tmp"
 
 	mkdir -p "$(THIRD_PARTY_DIR)/connect_tmp" && \
 	cd "$(THIRD_PARTY_DIR)/connect_tmp" && \
