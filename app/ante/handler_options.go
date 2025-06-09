@@ -10,7 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	anteinterfaces "github.com/cosmos/evm/ante/interfaces"
-	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
@@ -19,7 +18,7 @@ import (
 type EVMHandlerOptions struct {
 	Cdc                    codec.BinaryCodec
 	AccountKeeper          anteinterfaces.AccountKeeper
-	PreciseBankKeeper      *precisebankkeeper.Keeper
+	BankKeeper             anteinterfaces.BankKeeper
 	IBCKeeper              *ibckeeper.Keeper
 	FeeMarketKeeper        anteinterfaces.FeeMarketKeeper
 	EvmKeeper              anteinterfaces.EVMKeeper
@@ -39,8 +38,8 @@ func (options EVMHandlerOptions) Validate() error {
 	if options.AccountKeeper == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "account keeper is required for EVM AnteHandler")
 	}
-	if options.PreciseBankKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "precise bank keeper is required for EVM AnteHandler")
+	if options.BankKeeper == nil {
+		return errorsmod.Wrap(errortypes.ErrLogic, "bank keeper is required for EVM AnteHandler")
 	}
 	if options.IBCKeeper == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "ibc keeper is required for EVM AnteHandler")
