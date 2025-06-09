@@ -975,6 +975,8 @@ func New(
 		feemarkettypes.ModuleName,
 		feegrant.ModuleName,
 		group.ModuleName,
+		// burn fees from fee collector
+		taxtypes.ModuleName,
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
@@ -982,7 +984,6 @@ func New(
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		taxtypes.ModuleName,
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
