@@ -18,10 +18,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govlegacytypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
+	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 )
 
 func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, basefee string, denom string) error {
+	_ = basefee
 	serverCtx := server.NewDefaultContext()
 	config := serverCtx.Config
 	config.SetRoot(path)
@@ -89,17 +90,6 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 	}
 	appState[banktypes.ModuleName] = bankGenStateBz
 
-	feemarketState := feemarkettypes.GetGenesisStateFromAppState(cdc, appState)
-	feemarketState.Params.MinBaseGasPrice = math.LegacyMustNewDecFromStr(basefee)
-	feemarketState.Params.FeeDenom = denom
-	feemarketState.Params.DistributeFees = true
-	feemarketState.State.BaseGasPrice = math.LegacyMustNewDecFromStr(basefee)
-	feemarketStateBz, err := cdc.MarshalJSON(&feemarketState)
-	if err != nil {
-		return fmt.Errorf("failed to marshal feemarket genesis state: %w", err)
-	}
-	appState[feemarkettypes.ModuleName] = feemarketStateBz
-
 	stakingGenState := stakingtypes.GetGenesisStateFromAppState(cdc, appState)
 	stakingGenState.Params.BondDenom = denom
 	stakingGenStateBz, err := cdc.MarshalJSON(stakingGenState)
@@ -152,6 +142,17 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 		return fmt.Errorf("failed to marshal tokenfactory genesis state: %w", err)
 	}
 	appState[tokenfactorytypes.ModuleName] = tokenfactoryGenStateBz
+
+	feemarketGenState := feemarkettypes.DefaultGenesisState()
+	feemarketGenState.Params.MinGasPrice = math.LegacyMustNewDecFromStr(basefee)
+	feemarketGenState.Params.NoBaseFee = false
+	feemarketGenState.Params.BaseFee = math.LegacyMustNewDecFromStr(basefee)
+
+	feemarketGenStateBz, err := cdc.MarshalJSON(feemarketGenState)
+	if err != nil {
+		return fmt.Errorf("failed to marshal tokenfactory genesis state: %w", err)
+	}
+	appState[feemarkettypes.ModuleName] = feemarketGenStateBz
 
 	appStateJSON, err := json.Marshal(appState)
 	if err != nil {

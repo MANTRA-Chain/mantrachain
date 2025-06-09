@@ -12,6 +12,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 )
 
 type (
@@ -88,6 +89,31 @@ func (k Keeper) AllocateMcaTax(ctx context.Context, mcaTax math.LegacyDec, mcaAd
 			types.EventTypeMcaTaxAmount,
 			sdk.NewAttribute(sdk.AttributeKeyAmount, mcaTaxAllocation.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, mcaAddress.String()),
+		),
+	)
+	return nil
+}
+
+func (k Keeper) EmptyFeeCollector(ctx context.Context) error {
+	feeCollector := k.authKeeper.GetModuleAccount(ctx, k.feeCollectorName)
+	feeToBurn := k.bankKeeper.GetBalance(ctx, feeCollector.GetAddress(), evmtypes.GetEVMCoinDenom())
+
+	if feeToBurn.IsZero() {
+		// nothing to burn, return early
+		return nil
+	}
+
+	// burn the default denom fees
+	err := k.bankKeeper.BurnCoins(ctx, k.feeCollectorName, sdk.NewCoins(feeToBurn))
+	if err != nil {
+		return err
+	}
+	// emit event
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	sdkCtx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeBurnFees,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, feeToBurn.String()),
 		),
 	)
 	return nil

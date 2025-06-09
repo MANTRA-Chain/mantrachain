@@ -7,6 +7,42 @@
   },
   "apis": [
     {
+      "url": "./tmp-swagger-gen/cosmos/evm/vm/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "EvmParams",
+          "BaseFee": "EvmBaseFee",
+          "Code": "EvmCode",
+          "Account": "EvmAccount",
+          "Balance": "EvmBalance"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cosmos/evm/feemarket/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "FeeMarketParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cosmos/evm/precisebank/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "PreciseBankParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/cosmos/evm/erc20/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "Erc20Params"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/connect/marketmap/v2/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -54,14 +90,6 @@
       "operationIds": {
         "rename": {
           "Params": "TokenfactoryParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/feemarket/feemarket/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "FeemarketParams"
         }
       }
     },
