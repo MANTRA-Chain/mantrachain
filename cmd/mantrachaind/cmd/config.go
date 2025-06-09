@@ -50,7 +50,7 @@ func initAppConfig() (string, interface{}) {
 	}
 
 	evmConfig := cosmosevmserverconfig.DefaultEVMConfig()
-	evmConfig.EVMChainID = app.MANTRAChainID
+	evmConfig.EVMChainID = app.GetMANTRAEVMChainId()
 
 	customAppConfig := CustomAppConfig{
 		Config:  *srvCfg,

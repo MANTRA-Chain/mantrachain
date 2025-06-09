@@ -2,11 +2,27 @@ package app
 
 import (
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 )
+
+// MANTRAChainID is this chain's EVM Chain ID, to be overridden in makefile
+var MANTRAChainID string
+
+// GetMANTRAEVMChainId gets the EVM Chain ID for MANTRA chain
+func GetMANTRAEVMChainId() uint64 {
+	parsedChainId, err := strconv.ParseUint(MANTRAChainID, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	if parsedChainId == 0 {
+		panic("Invalid chain ID")
+	}
+	return parsedChainId
+}
 
 // EVMOptionsFn defines a function type for setting app options specifically for
 // the Cosmos EVM app. The function should receive the chainID and return an error if
@@ -23,7 +39,7 @@ func NoOpEvmAppOptions(_ uint64) error {
 // that allows initializing the app with different coin info based on the
 // chain id
 var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
-	MANTRAChainID: {
+	GetMANTRAEVMChainId(): {
 		Denom:         "uom",
 		ExtendedDenom: "aom",
 		DisplayDenom:  "om",

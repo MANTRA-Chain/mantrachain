@@ -91,6 +91,17 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain \
 	-X github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep) \
 	-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(CMT_VERSION)
 
+# set the evm chain ID based on the environment variable MANTRA_ENV
+ifeq (canary,$(findstring canary,$(MANTRACHAIN_BUILD_OPTIONS)))
+	ldflags += -X '${GO_MODULE}/app.MANTRAChainID=262144'
+else ifeq (dukong,$(findstring dukong,$(MANTRACHAIN_BUILD_OPTIONS)))
+	ldflags += -X '${GO_MODULE}/app.MANTRAChainID=5887'
+else ifeq (mainnet,$(findstring mainnet,$(MANTRACHAIN_BUILD_OPTIONS)))
+	ldflags += -X '${GO_MODULE}/app.MANTRAChainID=5888'
+else
+	ldflags += -X '${GO_MODULE}/app.MANTRAChainID=9001'
+endif
+
 ifeq (cleveldb,$(findstring cleveldb,$(MANTRACHAIN_BUILD_OPTIONS)))
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
 else ifeq (rocksdb,$(findstring rocksdb,$(MANTRACHAIN_BUILD_OPTIONS)))

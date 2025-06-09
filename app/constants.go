@@ -6,6 +6,4 @@ const (
 
 	// ExampleDisplayDenom is the display denomination of the Cosmos EVM example chain's base coin.
 	ExampleDisplayDenom = "om"
-
-	MANTRAChainID = 5887
 )

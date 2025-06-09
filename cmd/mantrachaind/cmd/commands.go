@@ -173,7 +173,7 @@ func newApp(
 		logger, db, traceStore, true,
 		appOpts,
 		wasmOpts,
-		app.MANTRAChainID,
+		app.GetMANTRAEVMChainId(),
 		app.EvmAppOptions,
 		baseappOptions...,
 	)
@@ -215,7 +215,7 @@ func appExport(
 		height == -1,
 		appOpts,
 		emptyWasmOpts,
-		app.MANTRAChainID,
+		app.GetMANTRAEVMChainId(),
 		app.EvmAppOptions,
 	)
 
