@@ -861,6 +861,25 @@ docs = ["sphinx (>=6.0.0)", "sphinx-rtd-theme (>=1.0.0)", "towncrier (>=21,<22)"
 test = ["coverage", "hypothesis (>=4.18.0,<5)", "pytest (>=7.0.0)", "pytest-xdist (>=2.4.0)"]
 
 [[package]]
+name = "eth-bloom"
+version = "3.1.0"
+description = "A python implementation of the bloom filter used by Ethereum"
+optional = false
+python-versions = "<4,>=3.8"
+files = [
+    {file = "eth_bloom-3.1.0-py3-none-any.whl", hash = "sha256:c96b2dd6cafa407373bca1a9d74b650378ba672d5b17f2771bf7d3c3aaa7651c"},
+    {file = "eth_bloom-3.1.0.tar.gz", hash = "sha256:4bc918f6fde44334e92b23cfb345db961e2e3af620535cbc872444f7a143cb88"},
+]
+
+[package.dependencies]
+eth-hash = {version = ">=0.4.0", extras = ["pycryptodome"]}
+
+[package.extras]
+dev = ["build (>=0.9.0)", "bump_my_version (>=0.19.0)", "hypothesis (>=3.31.2)", "ipython", "mypy (==1.10.0)", "pre-commit (>=3.4.0)", "pytest (>=7.0.0)", "pytest-xdist (>=2.4.0)", "towncrier (>=24,<25)", "tox (>=4.0.0)", "twine", "wheel"]
+docs = ["towncrier (>=24,<25)"]
+test = ["hypothesis (>=3.31.2)", "pytest (>=7.0.0)", "pytest-xdist (>=2.4.0)"]
+
+[[package]]
 name = "eth-hash"
 version = "0.7.1"
 description = "eth-hash: The Ethereum hashing function, keccak256, sometimes (erroneously) called sha3"
@@ -2649,4 +2668,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "ebf667d190d051b7385f161a7d902b09e640788ece77e598dd520b47fd05a521"
+content-hash = "940e30204963a14c182306ee35b845598857bcba9292fe8fac45ef49927df93f"

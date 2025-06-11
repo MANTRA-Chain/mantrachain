@@ -1,6 +1,18 @@
 from itertools import takewhile
 
-from .utils import ADDRS, DEFAULT_DENOM, find_log_event_attrs
+from eth_bloom import BloomFilter
+from eth_utils import abi, big_endian_to_int
+from hexbytes import HexBytes
+
+from .utils import (
+    ADDRS,
+    CONTRACTS,
+    DEFAULT_DENOM,
+    KEYS,
+    deploy_contract,
+    find_log_event_attrs,
+    send_transaction,
+)
 
 
 def test_simple(mantra):
@@ -52,3 +64,42 @@ def test_send_transaction(mantra):
     receipt = w3.eth.wait_for_transaction_receipt(txhash)
     assert receipt.status == 1
     assert receipt.gasUsed == 21000
+
+
+def test_events(mantra):
+    w3 = mantra.w3
+    erc20 = deploy_contract(
+        w3,
+        CONTRACTS["TestERC20A"],
+        key=KEYS["validator"],
+        exp_gas_used=619754,
+    )
+    tx = erc20.functions.transfer(ADDRS["community"], 10).build_transaction(
+        {"from": ADDRS["validator"]}
+    )
+    txreceipt = send_transaction(w3, tx, KEYS["validator"])
+    assert len(txreceipt.logs) == 1
+    data = "0x000000000000000000000000000000000000000000000000000000000000000a"
+    expect_log = {
+        "address": erc20.address,
+        "topics": [
+            HexBytes(
+                abi.event_signature_to_log_topic("Transfer(address,address,uint256)")
+            ),
+            HexBytes(b"\x00" * 12 + HexBytes(ADDRS["validator"])),
+            HexBytes(b"\x00" * 12 + HexBytes(ADDRS["community"])),
+        ],
+        "data": HexBytes(data),
+        "transactionIndex": 0,
+        "logIndex": 0,
+        "removed": False,
+    }
+    assert expect_log.items() <= txreceipt.logs[0].items()
+
+    # check block bloom
+    bloom = BloomFilter(
+        big_endian_to_int(w3.eth.get_block(txreceipt.blockNumber).logsBloom)
+    )
+    assert HexBytes(erc20.address) in bloom
+    for topic in expect_log["topics"]:
+        assert topic in bloom

@@ -1,3 +1,4 @@
+import json
 import os
 import socket
 import subprocess
@@ -7,6 +8,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from eth_account import Account
+from web3._utils.transactions import fill_nonce, fill_transaction_defaults
 
 load_dotenv(Path(__file__).parent.parent / "scripts/.env")
 load_dotenv(Path(__file__).parent.parent / "scripts/.env")
@@ -24,6 +26,26 @@ ADDRS = {name: account.address for name, account in ACCOUNTS.items()}
 DEFAULT_DENOM = "uom"
 # the default initial base fee used by integration tests
 DEFAULT_GAS_PRICE = f"100000000000{DEFAULT_DENOM}"
+
+TEST_CONTRACTS = {
+    "TestERC20A": "TestERC20A.sol",
+}
+
+
+def contract_path(name, filename):
+    return (
+        Path(__file__).parent
+        / "contracts/artifacts/contracts"
+        / filename
+        / (name + ".json")
+    )
+
+
+CONTRACTS = {
+    **{
+        name: contract_path(name, filename) for name, filename in TEST_CONTRACTS.items()
+    },
+}
 
 
 def wait_for_fn(name, fn, *, timeout=240, interval=1):
@@ -85,3 +107,41 @@ def find_log_event_attrs(events, ev_type, cond=None):
             if cond is None or cond(attrs):
                 return attrs
     return None
+
+
+def sign_transaction(w3, tx, key=KEYS["validator"]):
+    "fill default fields and sign"
+    acct = Account.from_key(key)
+    tx["from"] = acct.address
+    tx = fill_transaction_defaults(w3, tx)
+    tx = fill_nonce(w3, tx)
+    return acct.sign_transaction(tx)
+
+
+def send_transaction(w3, tx, key=KEYS["validator"]):
+    signed = sign_transaction(w3, tx, key)
+    txhash = w3.eth.send_raw_transaction(signed.rawTransaction)
+    return w3.eth.wait_for_transaction_receipt(txhash)
+
+
+def deploy_contract(w3, jsonfile, args=(), key=KEYS["validator"], exp_gas_used=None):
+    """
+    deploy contract and return the deployed contract instance
+    """
+    acct = Account.from_key(key)
+    info = json.loads(jsonfile.read_text())
+    bytecode = ""
+    if "bytecode" in info:
+        bytecode = info["bytecode"]
+    if "byte" in info:
+        bytecode = info["byte"]
+    contract = w3.eth.contract(abi=info["abi"], bytecode=bytecode)
+    tx = contract.constructor(*args).build_transaction({"from": acct.address})
+    txreceipt = send_transaction(w3, tx, key)
+    assert txreceipt.status == 1
+    if exp_gas_used is not None:
+        assert (
+            exp_gas_used == txreceipt.gasUsed
+        ), f"exp {exp_gas_used}, got {txreceipt.gasUsed}"
+    address = txreceipt.contractAddress
+    return w3.eth.contract(address=address, abi=info["abi"])

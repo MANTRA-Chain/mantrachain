@@ -15,6 +15,7 @@ flake8-isort = "^6.1.2"
 pyunormalize = "^16.0.0"
 cprotobuf = { git = "https://github.com/yihuang/cprotobuf.git", branch = "master" }
 web3 = "^6.15"
+eth-bloom = "^3.0"
 
 [tool.poetry.dev-dependencies]
 attrs = "24.2.0"

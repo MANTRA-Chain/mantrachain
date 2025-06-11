@@ -5,6 +5,7 @@
 pkgs.mkShell {
   buildInputs = [
     (pkgs.callPackage ../. { }) # mantrachaind
+    pkgs.nodejs
     pkgs.test-env
     pkgs.poetry
   ];
