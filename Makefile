@@ -248,3 +248,14 @@ build-and-run-single-node: build
 	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0uom
 
 .PHONY: build-and-run-single-node
+
+###############################################################################
+###                             e2e Test                                    ###
+###############################################################################
+
+TESTS_TO_RUN ?= all
+
+run-integration-tests:
+	@nix-shell ./integration_tests/shell.nix --run ./scripts/run-integration-tests.sh
+
+.PHONY: run-integration-tests
