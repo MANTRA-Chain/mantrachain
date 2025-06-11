@@ -8,6 +8,21 @@
         version: 'v1',
       },
     },
+    'app-config': {
+      chain_id: 'mantra_5887-1',
+      'minimum-gas-prices': '0uom',
+      'index-events': ['ethereum_tx.ethereumTxHash'],
+      'iavl-lazy-loading': true,
+      'json-rpc': {
+        enable: true,
+        address: '127.0.0.1:{EVMRPC_PORT}',
+        'ws-address': '127.0.0.1:{EVMRPC_PORT_WS}',
+        api: 'eth,net,web3,debug',
+        'feehistory-cap': 100,
+        'block-range-cap': 10000,
+        'logs-cap': 10000,
+      },
+    },
     validators: [{
       coins: '1000000000000000000stake,10000000000000000000000uom',
       staked: '1000000000000000000stake',

@@ -4,6 +4,7 @@ import signal
 import subprocess
 from pathlib import Path
 
+import web3
 from pystarport import cluster, ports
 
 from .cosmoscli import CosmosCLI
@@ -12,12 +13,34 @@ from .utils import supervisorctl, wait_for_block, wait_for_port
 
 class Mantra:
     def __init__(self, base_dir, chain_binary="mantrachaind"):
+        self._w3 = None
         self.base_dir = base_dir
         self.config = json.loads((base_dir / "config.json").read_text())
         self.chain_binary = chain_binary
+        self._use_websockets = False
 
     def copy(self):
         return Mantra(self.base_dir)
+
+    def w3_http_endpoint(self, i=0):
+        port = ports.evmrpc_port(self.base_port(i))
+        return f"http://localhost:{port}"
+
+    def w3_ws_endpoint(self, i=0):
+        port = ports.evmrpc_ws_port(self.base_port(i))
+        return f"ws://localhost:{port}"
+
+    @property
+    def w3(self):
+        if self._w3 is None:
+            self._w3 = self.node_w3(0)
+        return self._w3
+
+    def node_w3(self, i=0):
+        if self._use_websockets:
+            return web3.Web3(web3.providers.WebsocketProvider(self.w3_ws_endpoint(i)))
+        else:
+            return web3.Web3(web3.providers.HTTPProvider(self.w3_http_endpoint(i)))
 
     def base_port(self, i):
         return self.config["validators"][i]["base_port"]
@@ -30,6 +53,10 @@ class Mantra:
 
     def node_home(self, i=0):
         return self.base_dir / f"node{i}"
+
+    def use_websocket(self, use=True):
+        self._w3 = None
+        self._use_websockets = use
 
     def supervisorctl(self, *args):
         return supervisorctl(self.base_dir / "../tasks.ini", *args)

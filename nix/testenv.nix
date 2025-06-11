@@ -6,7 +6,6 @@
 poetry2nix.mkPoetryEnv {
   projectDir = ../integration_tests;
   python = python311;
-  preferWheels = true;
   overrides = poetry2nix.overrides.withDefaults (
     self: super:
     let
@@ -18,6 +17,14 @@ poetry2nix.mkPoetryEnv {
         ];
         durations = [ "setuptools" ];
         multitail2 = [ "setuptools" ];
+        docker = [
+          "hatchling"
+          "hatch-vcs"
+        ];
+        flake8-black = [ "setuptools" ];
+        flake8-isort = [ "hatchling" ];
+        pytest-github-actions-annotate-failures = [ "setuptools" ];
+        pyunormalize = [ "setuptools" ];
       };
     in
     lib.mapAttrs (

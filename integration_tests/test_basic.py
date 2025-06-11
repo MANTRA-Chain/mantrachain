@@ -34,3 +34,7 @@ def test_transfer(mantra):
     fee = int("".join(takewhile(lambda s: s.isdigit() or s == ".", res["fee"])))
     assert cli.balance(addr_a) == balance_a - amt - fee
     assert cli.balance(addr_b) == balance_b + amt
+
+
+def test_basic(mantra):
+    assert mantra.w3.eth.chain_id == 5887
