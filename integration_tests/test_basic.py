@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from eth_bloom import BloomFilter
 from eth_utils import abi, big_endian_to_int
 from hexbytes import HexBytes
+import web3
 import pytest
 
 from .utils import (
@@ -281,3 +282,22 @@ def assert_receipt_transaction_and_block(w3, futures):
         assert transaction["hash"] == receipts[i]["transactionHash"]
         assert transaction["hash"] in block["transactions"]
         assert transaction["blockNumber"] == block["number"]
+
+
+def test_exception(mantra):
+    w3 = mantra.w3
+    contract = deploy_contract(
+        w3,
+        CONTRACTS["TestRevert"],
+    )
+    with pytest.raises(web3.exceptions.ContractLogicError):
+        send_transaction(
+            w3, contract.functions.transfer(5 * (10**18) - 1).build_transaction()
+        )
+    assert 0 == contract.caller.query()
+
+    receipt = send_transaction(
+        w3, contract.functions.transfer(5 * (10**18)).build_transaction()
+    )
+    assert receipt.status == 1, "should be successfully"
+    assert 5 * (10**18) == contract.caller.query()
