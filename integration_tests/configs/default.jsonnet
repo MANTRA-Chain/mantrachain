@@ -64,6 +64,19 @@
           },
         },
       },
+      app_state: {
+        evm: {
+          params: {
+            evm_denom: 'uom',
+          },
+        },
+        feemarket: {
+          params: {
+            base_fee: '100000000000',
+            min_gas_multiplier: '0',
+          },
+        },
+      },
     },
   },
 }

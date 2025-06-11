@@ -1,6 +1,6 @@
 from itertools import takewhile
 
-from .utils import DEFAULT_DENOM, find_log_event_attrs
+from .utils import ADDRS, DEFAULT_DENOM, find_log_event_attrs
 
 
 def test_simple(mantra):
@@ -38,3 +38,17 @@ def test_transfer(mantra):
 
 def test_basic(mantra):
     assert mantra.w3.eth.chain_id == 5887
+
+
+def test_send_transaction(mantra):
+    w3 = mantra.w3
+    txhash = w3.eth.send_transaction(
+        {
+            "from": ADDRS["validator"],
+            "to": ADDRS["community"],
+            "value": 1000,
+        }
+    )
+    receipt = w3.eth.wait_for_transaction_receipt(txhash)
+    assert receipt.status == 1
+    assert receipt.gasUsed == 21000
