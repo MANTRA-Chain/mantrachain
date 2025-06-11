@@ -346,3 +346,19 @@ def test_log0(mantra):
     assert log.topics == []
     data = "0x68656c6c6f20776f726c64000000000000000000000000000000000000000000"
     assert log.data == HexBytes(data)
+
+
+def test_contract(mantra):
+    "test Greeter contract"
+    w3 = mantra.w3
+    contract = deploy_contract(w3, CONTRACTS["Greeter"])
+    assert "Hello" == contract.caller.greet()
+
+    # change
+    tx = contract.functions.setGreeting("world").build_transaction()
+    receipt = send_transaction(w3, tx)
+    assert receipt.status == 1
+
+    # call contract
+    greeter_call_result = contract.caller.greet()
+    assert "world" == greeter_call_result
