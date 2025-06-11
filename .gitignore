@@ -14,3 +14,9 @@ client/docs/node_modules
 build
 exclusive.lock
 coverage.txt
+__pycache__
+/.envrc
+/.direnv
+/result
+/mantrachaind
+/data
