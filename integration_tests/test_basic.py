@@ -5,6 +5,7 @@ from eth_utils import abi, big_endian_to_int
 from hexbytes import HexBytes
 import web3
 import pytest
+import time
 
 from .utils import (
     ADDRS,
@@ -301,3 +302,29 @@ def test_exception(mantra):
     )
     assert receipt.status == 1, "should be successfully"
     assert 5 * (10**18) == contract.caller.query()
+
+
+def test_message_call(mantra):
+    "stress test the evm by doing message calls as much as possible"
+    w3 = mantra.w3
+    contract = deploy_contract(
+        w3,
+        CONTRACTS["TestMessageCall"],
+    )
+    iterations = 13000
+    addr = ADDRS["validator"]
+    tx = contract.functions.test(iterations).build_transaction({
+        "from": addr,
+        "nonce": w3.eth.get_transaction_count(addr),
+    })
+
+    begin = time.time()
+    tx["gas"] = w3.eth.estimate_gas(tx)
+    elapsed = time.time() - begin
+    print("elapsed:", elapsed)
+    assert elapsed < 5  # should finish in reasonable time
+
+    receipt = send_transaction(w3, tx)
+    assert 25368338 == receipt.cumulativeGasUsed
+    assert receipt.status == 1, "shouldn't fail"
+    assert len(receipt.logs) == iterations
