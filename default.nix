@@ -8,10 +8,12 @@
   rev ? "dirty",
   static ? stdenv.hostPlatform.isStatic,
   nativeByteOrder ? true, # nativeByteOrder mode will panic on big endian machines
+  wget,
 }:
 let
   version = "v5.0.0";
   pname = "mantrachaind";
+  wasmvmVersion = "v3.0.0-ibc2.1";
   tags = [
     "ledger"
     "netgo"
@@ -24,6 +26,7 @@ let
     "-X github.com/cosmos/cosmos-sdk/version.BuildTags=${lib.concatStringsSep "," tags}"
     "-X github.com/cosmos/cosmos-sdk/version.Commit=${rev}"
   ];
+  buildInputs = [ wget ];
 in
 buildGo123Module rec {
   inherit
@@ -54,6 +57,12 @@ buildGo123Module rec {
   pwd = src; # needed to support replace
   subPackages = [ "cmd/mantrachaind" ];
   CGO_ENABLED = "1";
+
+  postFixup = lib.optionalString (stdenv.isDarwin) ''
+    mkdir -p $out/lib
+    ${wget}/bin/wget --no-check-certificate https://github.com/CosmWasm/wasmvm/releases/download/${wasmvmVersion}/libwasmvm.dylib -O $out/lib/libwasmvm.dylib
+    ${stdenv.cc.bintools.targetPrefix}install_name_tool -change "@rpath/libwasmvm.dylib" "$out/lib/libwasmvm.dylib" $out/bin/mantrachaind
+  '';
 
   doCheck = false;
   meta = with lib; {
