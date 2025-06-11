@@ -328,3 +328,21 @@ def test_message_call(mantra):
     assert 25368338 == receipt.cumulativeGasUsed
     assert receipt.status == 1, "shouldn't fail"
     assert len(receipt.logs) == iterations
+
+
+def test_log0(mantra):
+    """
+    test compliance of empty topics behavior
+    """
+    w3 = mantra.w3
+    contract = deploy_contract(
+        w3,
+        CONTRACTS["TestERC20A"],
+    )
+    tx = contract.functions.test_log0().build_transaction({"from": ADDRS["validator"]})
+    receipt = send_transaction(w3, tx, KEYS["validator"])
+    assert len(receipt.logs) == 1
+    log = receipt.logs[0]
+    assert log.topics == []
+    data = "0x68656c6c6f20776f726c64000000000000000000000000000000000000000000"
+    assert log.data == HexBytes(data)
