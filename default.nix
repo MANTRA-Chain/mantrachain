@@ -9,10 +9,12 @@
   rev ? "dirty",
   static ? stdenv.hostPlatform.isStatic,
   nativeByteOrder ? true, # nativeByteOrder mode will panic on big endian machines
+  wget,
 }:
 let
   version = "v4.0.1";
   pname = "mantrachaind";
+  wasmvmVersion = "v3.0.0-ibc2.0";
   tags = [
     "ledger"
     "netgo"
@@ -27,7 +29,7 @@ let
     "-X github.com/cosmos/cosmos-sdk/version.BuildTags=${lib.concatStringsSep "," tags}"
     "-X github.com/cosmos/cosmos-sdk/version.Commit=${rev}"
   ];
-  buildInputs = [ rocksdb ];
+  buildInputs = [ rocksdb wget ];
 in
 buildGo123Module rec {
   inherit
@@ -69,6 +71,9 @@ buildGo123Module rec {
 
   postFixup = lib.optionalString (stdenv.isDarwin && rocksdb != null) ''
     ${stdenv.cc.bintools.targetPrefix}install_name_tool -change "@rpath/librocksdb.9.dylib" "${rocksdb}/lib/librocksdb.dylib" $out/bin/mantrachaind
+    mkdir -p $out/lib
+    ${wget}/bin/wget --no-check-certificate https://github.com/CosmWasm/wasmvm/releases/download/${wasmvmVersion}/libwasmvm.dylib -O $out/lib/libwasmvm.dylib
+    ${stdenv.cc.bintools.targetPrefix}install_name_tool -change "@rpath/libwasmvm.dylib" "$out/lib/libwasmvm.dylib" $out/bin/mantrachaind
   '';
 
   doCheck = false;
