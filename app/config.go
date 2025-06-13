@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
@@ -22,13 +20,11 @@ func NoOpEvmAppOptions(_ uint64) error {
 // ChainsCoinInfo is a map of the chain id and its corresponding EvmCoinInfo
 // that allows initializing the app with different coin info based on the
 // chain id
-var ChainsCoinInfo = map[uint64]evmtypes.EvmCoinInfo{
-	MANTRAChainID: {
-		Denom:         "uom",
-		ExtendedDenom: "aom",
-		DisplayDenom:  "om",
-		Decimals:      evmtypes.SixDecimals,
-	},
+var ChainCoinInfo = evmtypes.EvmCoinInfo{
+	Denom:         "uom",
+	ExtendedDenom: "aom",
+	DisplayDenom:  "om",
+	Decimals:      evmtypes.SixDecimals,
 }
 
 // EvmAppOptions allows to setup the global configuration
@@ -38,13 +34,8 @@ func EvmAppOptions(chainID uint64) error {
 		return nil
 	}
 
-	coinInfo, found := ChainsCoinInfo[chainID]
-	if !found {
-		return fmt.Errorf("unknown chain id: %d", chainID)
-	}
-
 	// set the denom info for the chain
-	if err := setBaseDenom(coinInfo); err != nil {
+	if err := setBaseDenom(ChainCoinInfo); err != nil {
 		return err
 	}
 
@@ -53,7 +44,7 @@ func EvmAppOptions(chainID uint64) error {
 	err := evmtypes.NewEVMConfigurator().
 		WithExtendedEips(cosmosEVMActivators).
 		WithChainConfig(ethCfg).
-		WithEVMCoinInfo(coinInfo).
+		WithEVMCoinInfo(ChainCoinInfo).
 		Configure()
 	if err != nil {
 		return err
