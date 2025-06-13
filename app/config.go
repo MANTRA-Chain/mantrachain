@@ -94,12 +94,12 @@ func init() {
 
 	// check if the genesis file exists and read the chain ID from it
 	genesisFilePath := filepath.Join(nodeHome, "config", "genesis.json")
-	if _, err := os.Stat(genesisFilePath); err == nil {
+	if _, err = os.Stat(genesisFilePath); err == nil {
 		// File exists, read the genesis file to get the chain ID
 		v := viper.New()
 		v.SetConfigFile(genesisFilePath)
 		v.SetConfigType("json")
-		if err := v.ReadInConfig(); err == nil {
+		if err = v.ReadInConfig(); err == nil {
 			chainIDKey := "chain_id"
 			if v.IsSet(chainIDKey) {
 				chainID := v.GetString(chainIDKey)
@@ -111,22 +111,28 @@ func init() {
 			}
 		}
 	}
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
 
 	// If genesis file does not exist or chain ID is not found, check app.toml
 	// to get the EVM chain ID
 	appTomlPath := filepath.Join(nodeHome, "config", "app.toml")
-	if _, err := os.Stat(appTomlPath); err == nil {
+	if _, err = os.Stat(appTomlPath); err == nil {
 		// File exists
 		v := viper.New()
 		v.SetConfigFile(appTomlPath)
 		v.SetConfigType("toml")
 
-		if err := v.ReadInConfig(); err == nil {
+		if err = v.ReadInConfig(); err == nil {
 			evmChainIDKey := "evm.evm-chain-id"
 			if v.IsSet(evmChainIDKey) {
 				evmChainID := v.GetUint64(evmChainIDKey)
 				MANTRAChainID = evmChainID
 			}
 		}
+	}
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
 	}
 }
