@@ -102,7 +102,7 @@ def setup_custom_mantra(
     try:
         if wait_port:
             wait_for_port(ports.rpc_port(base_port))
-        c = Mantra(path / "mantra_5887-1", chain_binary=chain_binary or "mantrachaind")
+        c = Mantra(path / "mantra-test-1", chain_binary=chain_binary or "mantrachaind")
         wait_for_block(c.cosmos_cli(), 1)
         yield c
     finally:
