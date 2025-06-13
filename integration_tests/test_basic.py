@@ -1,11 +1,12 @@
-from itertools import takewhile
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from itertools import takewhile
+
+import pytest
+import web3
 from eth_bloom import BloomFilter
 from eth_utils import abi, big_endian_to_int
 from hexbytes import HexBytes
-import web3
-import pytest
-import time
 
 from .utils import (
     ADDRS,
@@ -14,6 +15,7 @@ from .utils import (
     KEYS,
     Greeter,
     RevertTestContract,
+    assert_contract,
     deploy_contract,
     find_log_event_attrs,
     send_transaction,
@@ -31,7 +33,7 @@ def test_simple(mantra):
     account = cli.account(addr)["account"]
     assert account["type"] == "/cosmos.vesting.v1beta1.DelayedVestingAccount"
     assert account["value"]["base_vesting_account"]["original_vesting"] == [
-        {"denom": DEFAULT_DENOM, "amount": "10000000000000000000000"}
+        {"denom": DEFAULT_DENOM, "amount": "100000000000"}
     ]
 
 
@@ -51,10 +53,6 @@ def test_transfer(mantra):
     fee = int("".join(takewhile(lambda s: s.isdigit() or s == ".", res["fee"])))
     assert cli.balance(addr_a) == balance_a - amt - fee
     assert cli.balance(addr_b) == balance_b + amt
-
-
-def test_basic(mantra):
-    assert mantra.w3.eth.chain_id == 5887
 
 
 def test_send_transaction(mantra):
@@ -351,16 +349,4 @@ def test_log0(mantra):
 
 
 def test_contract(mantra):
-    "test Greeter contract"
-    w3 = mantra.w3
-    contract = deploy_contract(w3, CONTRACTS["Greeter"])
-    assert "Hello" == contract.caller.greet()
-
-    # change
-    tx = contract.functions.setGreeting("world").build_transaction()
-    receipt = send_transaction(w3, tx)
-    assert receipt.status == 1
-
-    # call contract
-    greeter_call_result = contract.caller.greet()
-    assert "world" == greeter_call_result
+    assert_contract(mantra.cosmos_cli(), mantra.w3)

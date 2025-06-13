@@ -6,8 +6,11 @@ import sys
 import time
 from pathlib import Path
 
+import bech32
 from dotenv import load_dotenv
 from eth_account import Account
+from eth_utils import to_checksum_address
+from hexbytes import HexBytes
 from web3._utils.transactions import fill_nonce, fill_transaction_defaults
 
 load_dotenv(Path(__file__).parent.parent / "scripts/.env")
@@ -24,8 +27,15 @@ KEYS = {name: account.key for name, account in ACCOUNTS.items()}
 ADDRS = {name: account.address for name, account in ACCOUNTS.items()}
 
 DEFAULT_DENOM = "uom"
+CHAIN_ID = "mantra_5887-1"
 # the default initial base fee used by integration tests
-DEFAULT_GAS_PRICE = f"100000000000{DEFAULT_DENOM}"
+DEFAULT_GAS_AMT = 0.01
+DEFAULT_GAS_PRICE = f"{DEFAULT_GAS_AMT}{DEFAULT_DENOM}"
+DEFAULT_GAS = 200000
+DEFAULT_FEE = int(DEFAULT_GAS_AMT * DEFAULT_GAS)
+WEI_PER_ETH = 10**18  # 10^18 wei == 1 ether
+UOM_PER_OM = 10**6  # 10^6 uom == 1 om
+WEI_PER_UOM = 10**12  # 10^12 wei == 1 uom
 
 TEST_CONTRACTS = {
     "TestERC20A": "TestERC20A.sol",
@@ -148,6 +158,46 @@ def deploy_contract(w3, jsonfile, args=(), key=KEYS["validator"], exp_gas_used=N
         ), f"exp {exp_gas_used}, got {txreceipt.gasUsed}"
     address = txreceipt.contractAddress
     return w3.eth.contract(address=address, abi=info["abi"])
+
+
+def eth_to_bech32(addr, prefix="mantra"):
+    bz = bech32.convertbits(HexBytes(addr), 8, 5)
+    return bech32.bech32_encode(prefix, bz)
+
+
+def decode_bech32(addr):
+    _, bz = bech32.bech32_decode(addr)
+    return HexBytes(bytes(bech32.convertbits(bz, 5, 8)))
+
+
+def bech32_to_eth(addr):
+    return decode_bech32(addr).hex()
+
+
+def assert_balance(cli, w3, name):
+    try:
+        addr = cli.address(name)
+    except Exception as e:
+        if "key not found" not in str(e):
+            raise
+        addr = name
+    uom = cli.balance(addr)
+    wei = w3.eth.get_balance(to_checksum_address(bech32_to_eth(addr)))
+    assert uom == wei // WEI_PER_UOM
+    return uom
+
+
+def assert_contract(cli, w3):
+    "test Greeter contract"
+    name = "community"
+    key = KEYS[name]
+    contract = deploy_contract(w3, CONTRACTS["Greeter"], key=key)
+    assert "Hello" == contract.caller.greet()
+    # change
+    tx = contract.functions.setGreeting("world").build_transaction()
+    receipt = send_transaction(w3, tx, key=key)
+    assert receipt.status == 1
+    assert_balance(cli, w3, eth_to_bech32(ADDRS[name]))
 
 
 class Contract:
