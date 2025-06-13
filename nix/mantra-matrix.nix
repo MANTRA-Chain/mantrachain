@@ -26,10 +26,6 @@ let
       '';
   bundle-win-exe = drv: callPackage ./bundle-win-exe.nix { mantrachaind = drv; };
   matrix = lib.cartesianProduct {
-    network = [
-      "mainnet"
-      "testnet"
-    ];
     pkgtype = [
       "nix" # normal nix package
       "bundle" # relocatable bundled package
@@ -39,16 +35,15 @@ let
 in
 builtins.listToAttrs (
   builtins.map (
-    { network, pkgtype }:
+    { pkgtype }:
     {
       name = builtins.concatStringsSep "-" (
         [ "mantrachaind" ]
-        ++ lib.optional (network != "mainnet") network
         ++ lib.optional (pkgtype != "nix") pkgtype
       );
       value =
         let
-          mantrachaind = callPackage ../. { inherit rev network; };
+          mantrachaind = callPackage ../. { inherit rev; };
           bundle = if stdenv.hostPlatform.isWindows then bundle-win-exe mantrachaind else bundle-exe mantrachaind;
         in
         if pkgtype == "bundle" then

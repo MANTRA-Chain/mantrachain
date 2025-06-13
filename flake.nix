@@ -48,7 +48,6 @@
         };
         apps = {
           mantrachaind = mkApp packages.mantrachaind;
-          mantrachaind-testnet = mkApp packages.mantrachaind-testnet;
         };
         defaultPackage = packages.mantrachaind;
         defaultApp = apps.mantrachaind;

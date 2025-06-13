@@ -150,6 +150,9 @@ test-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
 test-connect: ARGS=-v -race
 test-connect: DIR=$(CURDIR)/tests/connect
 test-connect: build-image
+test-e2e-nix:
+	TESTS_TO_RUN=all
+	@nix-shell ./integration_tests/shell.nix --run ./scripts/run-integration-tests.sh
 $(TEST_TARGETS): run-tests
 
 run-tests:
@@ -248,14 +251,3 @@ build-and-run-single-node: build
 	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0uom
 
 .PHONY: build-and-run-single-node
-
-###############################################################################
-###                             e2e Test                                    ###
-###############################################################################
-
-TESTS_TO_RUN ?= all
-
-run-integration-tests:
-	@nix-shell ./integration_tests/shell.nix --run ./scripts/run-integration-tests.sh
-
-.PHONY: run-integration-tests
