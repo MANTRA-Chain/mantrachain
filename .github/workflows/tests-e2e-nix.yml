@@ -1,0 +1,111 @@
+name: E2E Nix Tests
+on:
+  push: 
+    branches:
+      - main
+      - main-evm
+  pull_request:
+    branches:
+      - main
+      - main-evm
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration_tests:
+    runs-on: ubuntu-latest-x64-xlarge
+    timeout-minutes: 240
+    strategy:
+      matrix:
+        tests: [all]
+    env:
+      TESTS_TO_RUN: ${{ matrix.tests }}
+    steps:
+      - name: Create more disk space
+        run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        with:
+          files: |
+            docs
+            *.md
+            **/*.md
+      - uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011 # v23
+        with:
+          nix_path: nixpkgs=channel:nixos-22.11
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+        if: steps.changed-files.outputs.only_changed == 'false'
+        with:
+          name: mantrachain
+          extraPullNames: dapp
+          # github don't pass secrets for pull request from fork repos,
+          # in that case the push is disabled naturally.
+          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
+      - name: Run integration tests
+        if: steps.changed-files.outputs.only_changed == 'false'
+        run: make test-e2e-nix
+      - name: 'Tar debug files'
+        if: failure()
+        run: tar cfz debug_files.tar.gz -C "${TMPDIR-/tmp}/pytest-of-runner" .
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: debug-files
+          path: debug_files.tar.gz
+          if-no-files-found: ignore
+      # - name: Convert coverage data
+      #   if: steps.changed-files.outputs.only_changed == 'false'
+      #   run: |
+      #     nix profile install ./nix#go_1_23
+      #     go tool covdata textfmt -i=coverage -o profile.txt
+      # - name: Upload coverage report
+      #   if: steps.changed-files.outputs.only_changed == 'false'
+      #   uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     file: ./profile.txt
+      #     flags: integration_tests
+
+  upload-cache:
+    if: github.event_name == 'push'
+    needs: ["integration_tests"]
+    strategy:
+      matrix:
+        os: [macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        with:
+          files: |
+            docs
+            *.md
+            **/*.md
+      - uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011 # v23
+        with:
+          nix_path: nixpkgs=channel:nixos-22.11
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+        if: steps.changed-files.outputs.only_changed == 'false'
+        with:
+          name: mantrachain
+          extraPullNames: dapp
+          # github don't pass secrets for pull request from fork repos,
+          # in that case the push is disabled naturally.
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: 'instantiate integration test env'
+        if: steps.changed-files.outputs.only_changed == 'false'
+        run: nix-store -r $(nix-instantiate integration_tests/shell.nix)
