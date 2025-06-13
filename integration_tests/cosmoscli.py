@@ -1,9 +1,10 @@
 import json
 import subprocess
+import tempfile
 
 from pystarport.utils import build_cli_args_safe, interact
 
-from .utils import DEFAULT_GAS_PRICE
+from .utils import DEFAULT_GAS, DEFAULT_GAS_PRICE
 
 
 class ChainCommand:
@@ -26,10 +27,13 @@ class CosmosCLI:
         cmd,
     ):
         self.data_dir = data_dir
-        self._genesis = json.loads(
-            (self.data_dir / "config" / "genesis.json").read_text()
-        )
-        self.chain_id = self._genesis["chain_id"]
+        genesis_path = self.data_dir / "config" / "genesis.json"
+        if genesis_path.exists():
+            self._genesis = json.loads(genesis_path.read_text())
+            self.chain_id = self._genesis["chain_id"]
+        else:
+            self._genesis = {}
+            self.chain_id = None
         self.node_rpc = node_rpc
         self.raw = ChainCommand(cmd)
         self.output = None
@@ -107,6 +111,7 @@ class CosmosCLI:
         **kwargs,
     ):
         kwargs.setdefault("gas_prices", DEFAULT_GAS_PRICE)
+        kwargs.setdefault("gas", DEFAULT_GAS)
         rsp = json.loads(
             self.raw(
                 "tx",
@@ -122,17 +127,21 @@ class CosmosCLI:
                 **kwargs,
             )
         )
-        if rsp["code"] == 0 and event_query_tx:
+        if rsp.get("code") == 0 and event_query_tx:
             rsp = self.event_query_tx_for(rsp["txhash"])
         return rsp
 
-    def event_query_tx_for(self, hash):
+    def event_query_tx_for(self, hash, **kwargs):
+        default_kwargs = {
+            "home": self.data_dir,
+            "node": self.node_rpc,
+        }
         return json.loads(
             self.raw(
                 "query",
                 "event-query-tx-for",
                 hash,
-                home=self.data_dir,
+                **(default_kwargs | kwargs),
             )
         )
 
@@ -146,3 +155,74 @@ class CosmosCLI:
             node=self.node_rpc,
         )
         return json.loads(txs)
+
+    def broadcast_tx(self, tx_file, **kwargs):
+        kwargs.setdefault("broadcast_mode", "sync")
+        kwargs.setdefault("output", "json")
+        rsp = json.loads(
+            self.raw("tx", "broadcast", tx_file, node=self.node_rpc, **kwargs)
+        )
+        if rsp["code"] == 0:
+            rsp = self.event_query_tx_for(rsp["txhash"], **kwargs)
+        return rsp
+
+    def broadcast_tx_json(self, tx, **kwargs):
+        with tempfile.NamedTemporaryFile("w") as fp:
+            json.dump(tx, fp)
+            fp.flush()
+            return self.broadcast_tx(fp.name)
+
+    def sign_tx(self, tx_file, signer, **kwargs):
+        default_kwargs = {
+            "home": self.data_dir,
+            "keyring_backend": "test",
+            "chain_id": self.chain_id,
+            "node": self.node_rpc,
+        }
+        return json.loads(
+            self.raw(
+                "tx",
+                "sign",
+                tx_file,
+                from_=signer,
+                **(default_kwargs | kwargs),
+            )
+        )
+
+    def sign_tx_json(self, tx, signer, max_priority_price=None, **kwargs):
+        if max_priority_price is not None:
+            tx["body"]["extension_options"].append(
+                {
+                    "@type": "/cosmos.evm.types.v1.ExtensionOptionDynamicFeeTx",
+                    "max_priority_price": str(max_priority_price),
+                }
+            )
+        with tempfile.NamedTemporaryFile("w") as fp:
+            json.dump(tx, fp)
+            fp.flush()
+            return self.sign_tx(fp.name, signer, **kwargs)
+
+    def create_account(self, name, mnemonic=None, **kwargs):
+        "create new keypair in node's keyring"
+        default_kwargs = {
+            "home": self.data_dir,
+            "output": "json",
+            "keyring_backend": "test",
+        }
+        if mnemonic is None:
+            output = self.raw(
+                "keys",
+                "add",
+                name,
+                **(default_kwargs | kwargs),
+            )
+        else:
+            output = self.raw(
+                "keys",
+                "add",
+                name,
+                "--recover",
+                stdin=mnemonic.encode() + b"\n",
+                **(default_kwargs | kwargs),
+            )
+        return json.loads(output)
