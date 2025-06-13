@@ -1,6 +1,9 @@
 package app
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -81,6 +84,44 @@ var (
 	MANTRAChainID uint64 = 262144 // default Chain ID
 )
 
+func parseChainIDFromGenesis(r io.Reader, chainIDFieldName string) (string, error) {
+	dec := json.NewDecoder(r)
+
+	t, err := dec.Token()
+	if err != nil {
+		return "", err
+	}
+	if t != json.Delim('{') {
+		return "", fmt.Errorf("expected {, got %s", t)
+	}
+
+	for dec.More() {
+		t, err = dec.Token()
+		if err != nil {
+			return "", err
+		}
+		key, ok := t.(string)
+		if !ok {
+			return "", fmt.Errorf("expected string for the key type, got %s", t)
+		}
+
+		if key == chainIDFieldName {
+			var chainID string
+			if err := dec.Decode(&chainID); err != nil {
+				return "", err
+			}
+			return chainID, nil
+		}
+
+		// skip the value
+		var value json.RawMessage
+		if err := dec.Decode(&value); err != nil {
+			return "", err
+		}
+	}
+	return "", nil
+}
+
 // init initializes the MANTRAChainID variable by reading the chain ID from the
 // genesis file or app.toml file in the node's home directory.
 // If the genesis file exists, it reads the Cosmos chain ID from there and finds the EVM Chain ID
@@ -96,19 +137,18 @@ func init() {
 	genesisFilePath := filepath.Join(nodeHome, "config", "genesis.json")
 	if _, err = os.Stat(genesisFilePath); err == nil {
 		// File exists, read the genesis file to get the chain ID
-		v := viper.New()
-		v.SetConfigFile(genesisFilePath)
-		v.SetConfigType("json")
-		if err = v.ReadInConfig(); err == nil {
+		reader, err := os.Open(genesisFilePath)
+		if err == nil {
 			chainIDKey := "chain_id"
-			if v.IsSet(chainIDKey) {
-				chainID := v.GetString(chainIDKey)
+			chainID, err := parseChainIDFromGenesis(reader, chainIDKey)
+			if err == nil && chainID != "" {
 				evmChainID, found := EVMChainIDMap[chainID]
 				if found {
 					MANTRAChainID = evmChainID
 					return
 				}
 			}
+			defer reader.Close()
 		}
 	}
 	if err != nil && !os.IsNotExist(err) {
