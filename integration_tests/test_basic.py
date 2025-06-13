@@ -313,10 +313,12 @@ def test_message_call(mantra):
     )
     iterations = 13000
     addr = ADDRS["validator"]
-    tx = contract.functions.test(iterations).build_transaction({
-        "from": addr,
-        "nonce": w3.eth.get_transaction_count(addr),
-    })
+    tx = contract.functions.test(iterations).build_transaction(
+        {
+            "from": addr,
+            "nonce": w3.eth.get_transaction_count(addr),
+        }
+    )
 
     begin = time.time()
     tx["gas"] = w3.eth.estimate_gas(tx)

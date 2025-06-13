@@ -180,6 +180,7 @@ class Contract:
         else:
             return receipt
 
+
 class Greeter(Contract):
     "Greeter contract."
 
@@ -194,6 +195,7 @@ class Greeter(Contract):
         receipt = send_transaction(self.w3, transaction, self.private_key)
         assert string == self.contract.functions.greet().call()
         return receipt
+
 
 class RevertTestContract(Contract):
     "RevertTestContract contract."
