@@ -133,7 +133,6 @@ import (
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
-	transferv2 "github.com/cosmos/evm/x/ibc/transfer/v2"
 	"github.com/cosmos/evm/x/precisebank"
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
@@ -144,7 +143,6 @@ import (
 	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v10"
 	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/keeper"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
-	ratelimitv2 "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/v2"
 	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
 	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
@@ -158,7 +156,6 @@ import (
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcapi "github.com/cosmos/ibc-go/v10/modules/core/api"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
@@ -749,32 +746,33 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	var transferStackv2 ibcapi.IBCModule
-	transferStackv2 = transferv2.NewIBCModule(app.TransferKeeper)
-	transferStackv2 = ratelimitv2.NewIBCMiddleware(app.RateLimitKeeper, transferStackv2)
-	transferStackv2 = tokenfactory.NewIBCV2Module(transferStackv2, app.TokenFactoryKeeper)
+	// TODO: add IBC v2 (Eureka) support in future
+	// var transferStackv2 ibcapi.IBCModule
+	// transferStackv2 = transferv2.NewIBCModule(app.TransferKeeper)
+	// transferStackv2 = ratelimitv2.NewIBCMiddleware(app.RateLimitKeeper, transferStackv2)
+	// transferStackv2 = tokenfactory.NewIBCV2Module(transferStackv2, app.TokenFactoryKeeper)
 
-	ibcRouterV2 := ibcapi.NewRouter()
-	ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
-	app.IBCKeeper.SetRouterV2(ibcRouterV2)
+	// ibcRouterV2 := ibcapi.NewRouter()
+	// ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
+	// app.IBCKeeper.SetRouterV2(ibcRouterV2)
 
-	// Configure EVM precompiles
-	corePrecompiles := NewAvailableStaticPrecompiles(
-		app.StakingKeeper,
-		app.DistrKeeper,
-		app.PreciseBankKeeper,
-		app.Erc20Keeper,
-		app.TransferKeeper,
-		app.IBCKeeper.ChannelKeeper,
-		app.EVMKeeper,
-		app.GovKeeper,
-		app.SlashingKeeper,
-		app.EvidenceKeeper,
-		appCodec,
-	)
-	app.EVMKeeper.WithStaticPrecompiles(
-		corePrecompiles,
-	)
+	// TODO: Configure EVM precompiles when needed
+	// corePrecompiles := NewAvailableStaticPrecompiles(
+	// 	app.StakingKeeper,
+	// 	app.DistrKeeper,
+	// 	app.PreciseBankKeeper,
+	// 	app.Erc20Keeper,
+	// 	app.TransferKeeper,
+	// 	app.IBCKeeper.ChannelKeeper,
+	// 	app.EVMKeeper,
+	// 	app.GovKeeper,
+	// 	app.SlashingKeeper,
+	// 	app.EvidenceKeeper,
+	// 	appCodec,
+	// )
+	// app.EVMKeeper.WithStaticPrecompiles(
+	// 	corePrecompiles,
+	// )
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
@@ -814,7 +812,7 @@ func New(
 		wasmtypes.VMConfig{},
 		AllCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		ibcRouterV2,
+		nil, // TODO: add ibc v2 wasm keeper when available
 		wasmOpts...,
 	)
 
