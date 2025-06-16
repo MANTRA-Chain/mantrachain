@@ -5,6 +5,8 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+import eth_utils
+import rlp
 
 import bech32
 from dotenv import load_dotenv
@@ -199,6 +201,56 @@ def assert_contract(cli, w3):
     assert receipt.status == 1
     assert_balance(cli, w3, eth_to_bech32(ADDRS[name]))
 
+
+class ContractAddress(rlp.Serializable):
+    fields = [
+        ("from", rlp.sedes.Binary()),
+        ("nonce", rlp.sedes.big_endian_int),
+    ]
+
+def contract_address(addr, nonce):
+    return eth_utils.to_checksum_address(
+        eth_utils.to_hex(
+            eth_utils.keccak(
+                rlp.encode(ContractAddress(eth_utils.to_bytes(hexstr=addr), nonce))
+            )[12:]
+        )
+    )
+
+
+def build_batch_tx(w3, cli, txs, key=KEYS["validator"]):
+    "return cosmos batch tx and eth tx hashes"
+    signed_txs = [sign_transaction(w3, tx, key) for tx in txs]
+    tmp_txs = [cli.build_evm_tx(s.rawTransaction.hex()) for s in signed_txs]
+
+    msgs = [tx["body"]["messages"][0] for tx in tmp_txs]
+    fee = sum(int(tx["auth_info"]["fee"]["amount"][0]["amount"]) for tx in tmp_txs)
+    gas_limit = sum(int(tx["auth_info"]["fee"]["gas_limit"]) for tx in tmp_txs)
+
+    tx_hashes = [signed.hash for signed in signed_txs]
+
+    # build batch cosmos tx
+    return {
+        "body": {
+            "messages": msgs,
+            "memo": "",
+            "timeout_height": "0",
+            "extension_options": [
+                {"@type": "/cosmos.evm.vm.v1.ExtensionOptionsEthereumTx"}
+            ],
+            "non_critical_extension_options": [],
+        },
+        "auth_info": {
+            "signer_infos": [],
+            "fee": {
+                "amount": [{"denom": "aom", "amount": str(fee)}],
+                "gas_limit": str(gas_limit),
+                "payer": "",
+                "granter": "",
+            },
+        },
+        "signatures": [],
+    }, tx_hashes
 
 class Contract:
     def __init__(self, contract_path, private_key=KEYS["validator"], chain_id=5887):
