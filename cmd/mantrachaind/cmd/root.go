@@ -119,10 +119,8 @@ func NewRootCmd() *cobra.Command {
 		panic(err)
 	}
 
-	if initClientCtx.ChainID != "" {
-		if err := app.EvmAppOptions(app.MANTRAChainID); err != nil {
-			panic(err)
-		}
+	if err := app.EvmAppOptions(app.MANTRAChainID); err != nil {
+		panic(err)
 	}
 
 	return rootCmd

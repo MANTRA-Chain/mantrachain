@@ -1,15 +1,13 @@
 package app
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/spf13/viper"
 )
@@ -84,44 +82,6 @@ var (
 	MANTRAChainID uint64 = 262144 // default Chain ID
 )
 
-func parseChainIDFromGenesis(r io.Reader, chainIDFieldName string) (string, error) {
-	dec := json.NewDecoder(r)
-
-	t, err := dec.Token()
-	if err != nil {
-		return "", err
-	}
-	if t != json.Delim('{') {
-		return "", fmt.Errorf("expected {, got %s", t)
-	}
-
-	for dec.More() {
-		t, err = dec.Token()
-		if err != nil {
-			return "", err
-		}
-		key, ok := t.(string)
-		if !ok {
-			return "", fmt.Errorf("expected string for the key type, got %s", t)
-		}
-
-		if key == chainIDFieldName {
-			var chainID string
-			if err := dec.Decode(&chainID); err != nil {
-				return "", err
-			}
-			return chainID, nil
-		}
-
-		// skip the value
-		var value json.RawMessage
-		if err := dec.Decode(&value); err != nil {
-			return "", err
-		}
-	}
-	return "", nil
-}
-
 // init initializes the MANTRAChainID variable by reading the chain ID from the
 // genesis file or app.toml file in the node's home directory.
 // If the genesis file exists, it reads the Cosmos chain ID from there and finds the EVM Chain ID
@@ -139,8 +99,7 @@ func init() {
 		// File exists, read the genesis file to get the chain ID
 		reader, err := os.Open(genesisFilePath)
 		if err == nil {
-			chainIDKey := "chain_id"
-			chainID, err := parseChainIDFromGenesis(reader, chainIDKey)
+			chainID, err := genutiltypes.ParseChainIDFromGenesis(reader)
 			if err == nil && chainID != "" {
 				evmChainID, found := EVMChainIDMap[chainID]
 				if found {
