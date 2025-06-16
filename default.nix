@@ -45,9 +45,11 @@ let
   tags = [
     "ledger"
     "netgo"
+    "osusergo"
+    "pebbledb"
   ] ++ lib.optionals nativeByteOrder [ "nativebyteorder" ]
     ++ lib.optionals buildStdenv.isDarwin [ "static_wasm" ]
-    ++ lib.optionals buildStdenv.isLinux [ "muslc" "osusergo" ];
+    ++ lib.optionals buildStdenv.isLinux [ "muslc" ];
 
   ldflags = [
     "-X github.com/cosmos/cosmos-sdk/version.Name=mantrachain"
