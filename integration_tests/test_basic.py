@@ -456,3 +456,58 @@ def test_refund_unused_gas_when_contract_tx_reverted(mantra):
     assert (
         balance_bef - balance_aft == receipt["gasUsed"] * receipt["effectiveGasPrice"]
     )
+
+
+def test_failed_transfer_tx(mantra):
+    """
+    It's possible to include a failed transfer transaction in batch tx
+    """
+    w3 = mantra.w3
+    cli = mantra.cosmos_cli()
+    sender = ADDRS["community"]
+    recipient = ADDRS["validator"]
+    nonce = w3.eth.get_transaction_count(sender)
+    half_balance = w3.eth.get_balance(sender) // 3 + 1
+
+    # build batch tx, the third tx will fail, but will be included in block
+    # because of the batch tx.
+    transfer1 = {"from": sender, "nonce": nonce, "to": recipient, "value": half_balance}
+    transfer2 = {
+        "from": sender,
+        "nonce": nonce + 1,
+        "to": recipient,
+        "value": half_balance,
+    }
+    transfer3 = {
+        "from": sender,
+        "nonce": nonce + 2,
+        "to": recipient,
+        "value": half_balance,
+    }
+    cosmos_tx, tx_hashes = build_batch_tx(
+        w3, cli, [transfer1, transfer2, transfer3], KEYS["community"]
+    )
+    rsp = cli.broadcast_tx_json(cosmos_tx)
+    assert rsp["code"] == 0, rsp["raw_log"]
+
+    receipts = [w3.eth.wait_for_transaction_receipt(h) for h in tx_hashes]
+    assert receipts[0].status == receipts[1].status == 1
+    assert receipts[2].status == 0
+
+    # check traceTransaction
+    rsps = [
+        w3.provider.make_request("debug_traceTransaction", [h.hex()]) for h in tx_hashes
+    ]
+    for rsp, receipt in zip(rsps, receipts):
+        if receipt.status == 1:
+            result = rsp["result"]
+            assert not result["failed"]
+            assert receipt.gasUsed == result["gas"]
+        else:
+            assert rsp["result"] == {
+                "failed": True,
+                "gas": 0,
+                # "gas": 21000, TODO: mmsqe
+                "returnValue": "0x",
+                "structLogs": [],
+            }
