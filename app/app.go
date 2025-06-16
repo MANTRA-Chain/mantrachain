@@ -327,22 +327,6 @@ func New(
 ) *App {
 	overrideWasmVariables()
 
-	// interfaceRegistry, err := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
-	// 	ProtoFiles: proto.HybridResolver,
-	// 	SigningOptions: signing.Options{
-	// 		AddressCodec: address.Bech32Codec{
-	// 			Bech32Prefix: sdk.GetConfig().GetBech32AccountAddrPrefix(),
-	// 		},
-	// 		ValidatorAddressCodec: address.Bech32Codec{
-	// 			Bech32Prefix: sdk.GetConfig().GetBech32ValidatorAddrPrefix(),
-	// 		},
-	// 	},
-	// })
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// appCodec := codec.NewProtoCodec(interfaceRegistry)
-	// legacyAmino := codec.NewLegacyAmino()
 	encodingConfig := evmosencoding.MakeConfig(evmChainID)
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
