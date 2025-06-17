@@ -5,8 +5,9 @@ import (
 	evmante "github.com/cosmos/evm/ante/evm"
 )
 
-func newMonoEVMAnteHandler(options EVMHandlerOptions) sdk.AnteHandler {
+func newEVMAnteHandler(options EVMHandlerOptions) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
+		EVMMsgCheckDecorator{},
 		evmante.NewEVMMonoDecorator(
 			options.AccountKeeper,
 			options.FeeMarketKeeper,
