@@ -1,13 +1,14 @@
 package upgrades
 
 import (
-	store "cosmossdk.io/store/types"
+	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
@@ -22,10 +23,10 @@ type Upgrade struct {
 	UpgradeName string
 
 	// CreateUpgradeHandler defines the function that creates an upgrade handler
-	CreateUpgradeHandler func(*module.Manager, module.Configurator, *UpgradeKeepers) upgradetypes.UpgradeHandler
+	CreateUpgradeHandler func(*module.Manager, module.Configurator, *UpgradeKeepers, map[string]*storetypes.KVStoreKey) upgradetypes.UpgradeHandler
 
 	// Store upgrades, should be used for any new modules introduced, new modules deleted, or store names renamed.
-	StoreUpgrades store.StoreUpgrades
+	StoreUpgrades storetypes.StoreUpgrades
 }
 
 // Fork defines a struct containing the requisite fields for a non-software upgrade proposal
@@ -53,4 +54,5 @@ type UpgradeKeepers struct {
 	// v5
 	FeeMarketKeeper feemarketkeeper.Keeper
 	AccountKeeper   authkeeper.AccountKeeper
+	BankKeeper      bankkeeper.BaseKeeper
 }
