@@ -3,12 +3,9 @@ on:
   push: 
     branches:
       - main
-      - main-evm
   pull_request:
     branches:
       - main
-      - main-evm
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
