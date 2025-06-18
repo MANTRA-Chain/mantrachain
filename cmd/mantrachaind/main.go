@@ -5,7 +5,6 @@ import (
 	"os"
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
-	"cosmossdk.io/math"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/MANTRA-Chain/mantrachain/v5/app"
 	"github.com/MANTRA-Chain/mantrachain/v5/cmd/mantrachaind/cmd"
@@ -17,7 +16,6 @@ import (
 func main() {
 	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
 	setupConfig()
-	// RegisterDenoms()
 	rootCmd := cmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, clienthelpers.EnvPrefix, app.DefaultNodeHome); err != nil {
 		fmt.Fprintln(rootCmd.OutOrStderr(), err)
@@ -51,18 +49,6 @@ var (
 // this is used to override the default sdk coin denom regex
 func MantraCoinDenomRegex() string {
 	return `[a-zA-Z][a-zA-Z0-9/:._-]{1,127}`
-}
-
-// RegisterDenoms registers token denoms.
-func RegisterDenoms() {
-	err := sdk.RegisterDenom(HumanCoinUnit, math.LegacyOneDec())
-	if err != nil {
-		panic(err)
-	}
-	err = sdk.RegisterDenom(BaseCoinUnit, math.LegacyNewDecWithPrec(1, OmExponent))
-	if err != nil {
-		panic(err)
-	}
 }
 
 func setupConfig() {
