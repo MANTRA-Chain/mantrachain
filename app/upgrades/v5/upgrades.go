@@ -41,7 +41,6 @@ func CreateUpgradeHandler(
 		ctx := sdk.UnwrapSDKContext(c)
 		ctx.Logger().Info("Starting module migrations...")
 
-		// TODO: Do we need to delete the old feemarket state first? Code below is not working
 		// delete skip-mev feemarket state
 		feemarketstore := runtime.NewKVStoreService(storekeys[feemarkettypes.StoreKey]).OpenKVStore(c)
 		if err := feemarketstore.Delete(skipKeyParams); err != nil {
