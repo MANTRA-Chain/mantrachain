@@ -804,7 +804,8 @@ func New(
 		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper
 		app.IBCKeeper.ChannelKeeper,
-		app.TransferKeeper,
+		nil,                // channelv2
+		app.TransferKeeper, // portsource
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
 		wasmDir,
@@ -812,7 +813,6 @@ func New(
 		wasmtypes.VMConfig{},
 		AllCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		nil, // TODO: add ibc v2 wasm keeper when available
 		wasmOpts...,
 	)
 
