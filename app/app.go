@@ -804,7 +804,6 @@ func New(
 		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper
 		app.IBCKeeper.ChannelKeeper,
-		nil,                // channelv2
 		app.TransferKeeper, // portsource
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),

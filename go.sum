@@ -683,8 +683,8 @@ github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.1 h1:fsYUiMlHpykFCyCwNjLl72LiKdtZahAVvD9pFQVIkN0=
-github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.1/go.mod h1:oknpb1bFERvvKcY7vHRp1F/Y/z66xVrsl7n9uWkOAlM=
+github.com/CosmWasm/wasmvm/v2 v2.2.4 h1:V3UwXJMA8TNOuQETppDQkaXAevF7gOWLYpKvrThPv7o=
+github.com/CosmWasm/wasmvm/v2 v2.2.4/go.mod h1:Aj/rB2KMRM8nAdbWxkO23rnQYb5KsoPuH9ZizSi0sVg=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/datadog-go v4.8.3+incompatible h1:fNGaYSuObuQb5nzeTQqowRAd9bpDIRRV4/gUtIBjh8Q=
 github.com/DataDog/datadog-go v4.8.3+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
@@ -704,8 +704,8 @@ github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCx
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.0-v5-mantra-1-1 h1:Axp/ys/cL+CS4C90uQzjw2z/Lu2tjggY/Igl2hOU2ts=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.0-v5-mantra-1-1/go.mod h1:UPcRyFwOUy2PfSFBWxBceO/HTjZOuBVqY583WyazIGs=
-github.com/MANTRA-Chain/wasmd v0.0.0-20250618140621-0bd6390d78cd h1:HsghjqoATmNZdqwUa226UoMCd2gEhiaCN/K96Poy+cg=
-github.com/MANTRA-Chain/wasmd v0.0.0-20250618140621-0bd6390d78cd/go.mod h1:4E1Z6SJLuEICksY0GNY/ISYEjAVmrDg4f3zFUuaAR8g=
+github.com/MANTRA-Chain/wasmd v0.0.0-20250618151003-81792e3bfaea h1:Fc2/B0sSGJ8HuAoYI8XX3lfxlbuvmC9vBLwS5z91rPY=
+github.com/MANTRA-Chain/wasmd v0.0.0-20250618151003-81792e3bfaea/go.mod h1:NS/KnAtvyy0m+r8/ERZuuEVSeAgVZGUPoCQqQBK5Uhk=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.7 h1:MP6R1spmjxTE4EU4J3YsrTxn8CjvN9qwjTKJXldFaRg=

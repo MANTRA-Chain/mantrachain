@@ -9,8 +9,8 @@ replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/wasmd/tree/mantra/v0.60.1, current branch: mantra/v0.60.1
-	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/0bd6390d78cdeaafa3ac39f6302a85a11385ec14
-	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250618140621-0bd6390d78cd
+	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/81792e3bfaeadf2ada089b3b58095a7634db953e
+	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250618151003-81792e3bfaea
 
 	// Pin this pebble version to avoid breaking compilation of geth
 	github.com/cockroachdb/pebble => github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
@@ -56,7 +56,7 @@ require (
 	cosmossdk.io/x/tx v0.14.0
 	cosmossdk.io/x/upgrade v0.2.0
 	github.com/CosmWasm/wasmd v0.60.1
-	github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.1
+	github.com/CosmWasm/wasmvm/v2 v2.2.4
 	github.com/bufbuild/buf v1.46.0
 	github.com/cometbft/cometbft v0.38.17
 	github.com/cosmos/cosmos-db v1.1.1
