@@ -1405,7 +1405,9 @@ func (app *App) setupUpgradeHandlers() {
 					SanctionKeeper:     app.SanctionKeeper,
 					FeeMarketKeeper:    app.FeeMarketKeeper,
 					AccountKeeper:      app.AccountKeeper,
+					BankKeeper:         app.BankKeeper,
 				},
+				app.keys,
 			),
 		)
 	}
