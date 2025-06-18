@@ -31,7 +31,7 @@ var (
 func init() {
 	sdk.SetCoinDenomRegex(MantraCoinDenomRegex)
 	SetAddressPrefixes()
-	RegisterDenoms()
+	// RegisterDenoms()
 }
 
 // MantraCoinDenomRegex returns the mantra regex string
@@ -59,5 +59,5 @@ func SetAddressPrefixes() {
 	config.SetBech32PrefixForValidator(Bech32PrefixValAddr, Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 	config.SetAddressVerifier(wasmtypes.VerifyAddressLen())
-	config.Seal()
+	// config.Seal()
 }
