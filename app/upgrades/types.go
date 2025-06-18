@@ -11,6 +11,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
+	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
 )
 
@@ -55,4 +56,5 @@ type UpgradeKeepers struct {
 	FeeMarketKeeper feemarketkeeper.Keeper
 	AccountKeeper   authkeeper.AccountKeeper
 	BankKeeper      bankkeeper.BaseKeeper
+	EVMKeeper       evmkeeper.Keeper
 }

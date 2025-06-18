@@ -104,6 +104,13 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		// set the evm/vm params
+		evmParams := evmtypes.DefaultParams()
+		evmParams.EvmDenom = evmtypes.GetEVMCoinDenom()
+		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
+			return vm, err
+		}
+
 		// add burner authority to the fee collector
 		macc := authtypes.NewEmptyModuleAccount(authtypes.FeeCollectorName, authtypes.Burner)
 		maccI := (keepers.AccountKeeper.NewAccount(ctx, macc)).(sdk.ModuleAccountI) // set the account number
