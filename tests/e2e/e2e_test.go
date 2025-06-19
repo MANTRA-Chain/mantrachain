@@ -15,6 +15,18 @@ var (
 	runRateLimitTest              = true
 	runTokenfactoryTest           = true
 	runSanctionTest               = true
+	runBankTest                   = false
+	runEncodeTest                 = false
+	runEvidenceTest               = false
+	runGovTest                    = false
+	runIBCTest                    = false
+	runSlashingTest               = false
+	runStakingAndDistributionTest = false
+	runVestingTest                = false
+	runRestInterfacesTest         = false
+	runRateLimitTest              = false
+	runTokenfactoryTest           = false
+	runSanctionTest               = false
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {

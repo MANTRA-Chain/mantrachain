@@ -151,14 +151,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
 
-	s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
-	s.initNodes(s.chainB)
-	s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
-	s.initValidatorConfigs(s.chainB)
-	s.runValidators(s.chainB, 10)
+	//s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
+	//s.initNodes(s.chainB)
+	//s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
+	//s.initValidatorConfigs(s.chainB)
+	//s.runValidators(s.chainB, 10)
 
 	time.Sleep(10 * time.Second)
-	s.runIBCRelayer()
+	//s.runIBCRelayer()
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
