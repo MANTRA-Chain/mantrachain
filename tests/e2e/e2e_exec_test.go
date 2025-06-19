@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -637,6 +638,41 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 
 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
+}
+
+func (s *IntegrationTestSuite) execWasmStoreCode(
+	c *chain,
+	valIdx int,
+	sender,
+	wasmPath string,
+	homePath string,
+) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	s.T().Logf("storing wasm code from %s on chain %s", wasmPath, c.id)
+
+	mantraCommand := []string{
+		mantrachaindBinary,
+		txCommand,
+		wasmTypes.ModuleName,
+		"store",
+		wasmPath,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--instantiate-anyof-addresses=%s", sender),
+		fmt.Sprintf("--chain-id=%s", c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--broadcast-mode=%s", "sync"),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
+		"--keyring-backend=test",
+		"--output=json",
+		"-y",
+	}
+
+	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.T().Log("successfully stored wasm code")
 }
 
 func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, mantraCommand []string, valIdx int, validation func([]byte, []byte) bool) {
