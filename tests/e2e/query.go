@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
@@ -401,6 +403,34 @@ func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error
 	}
 
 	return icaAccountResp.Address, nil
+}
+
+func queryWasmParams(endpoint string) (wasmTypes.Params, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/codes/params", endpoint))
+	if err != nil {
+		return wasmTypes.Params{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var codesResp wasmTypes.QueryParamsResponse
+	if err := cdc.UnmarshalJSON(body, &codesResp); err != nil {
+		return wasmTypes.Params{}, err
+	}
+
+	return codesResp.Params, nil
+}
+
+func queryWasmCodes(endpoint string) (wasmTypes.QueryCodesResponse, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/code", endpoint))
+	if err != nil {
+		return wasmTypes.QueryCodesResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var codesResp wasmTypes.QueryCodesResponse
+	if err := cdc.UnmarshalJSON(body, &codesResp); err != nil {
+		return wasmTypes.QueryCodesResponse{}, err
+	}
+
+	return codesResp, nil
 }
 
 // TODO: Uncomment this function when CCV module is added

@@ -3,18 +3,6 @@ package e2e
 import "fmt"
 
 var (
-	runBankTest                   = true
-	runEncodeTest                 = true
-	runEvidenceTest               = true
-	runGovTest                    = true
-	runIBCTest                    = true
-	runSlashingTest               = true
-	runStakingAndDistributionTest = true
-	runVestingTest                = true
-	runRestInterfacesTest         = true
-	runRateLimitTest              = true
-	runTokenfactoryTest           = true
-	runSanctionTest               = true
 	runBankTest                   = false
 	runEncodeTest                 = false
 	runEvidenceTest               = false
@@ -27,6 +15,7 @@ var (
 	runRateLimitTest              = false
 	runTokenfactoryTest           = false
 	runSanctionTest               = false
+	runWasmTest                   = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -138,4 +127,12 @@ func (s *IntegrationTestSuite) TestSanction() {
 	}
 	s.testAddToBlacklist()
 	s.testRemoveFromBlacklist()
+}
+
+func (s *IntegrationTestSuite) TestWasm() {
+	if !runWasmTest {
+		s.T().Skip()
+	}
+	s.testQueryWasmParams()
+	s.testStoreCode()
 }
