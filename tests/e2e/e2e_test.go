@@ -130,10 +130,12 @@ func (s *IntegrationTestSuite) TestSanction() {
 }
 
 func (s *IntegrationTestSuite) TestWasm() {
-	if !runWasmTest {
+	// The wasm contract will call the tokenfactory module, so we need to run both tests together.
+	if !runWasmTest || !runTokenfactoryTest {
 		s.T().Skip()
 	}
 	s.testQueryWasmParams()
 	s.testStoreCode()
 	s.testInstantiateContract()
+	s.testExecuteContractWithSimplyMessage()
 }
