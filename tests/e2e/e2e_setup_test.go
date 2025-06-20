@@ -114,6 +114,9 @@ func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
+// Modify this constant to run the tests on a single node or multiple nodes.
+const testOnSingleNode = false
+
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
@@ -151,14 +154,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
 
-	//s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
-	//s.initNodes(s.chainB)
-	//s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
-	//s.initValidatorConfigs(s.chainB)
-	//s.runValidators(s.chainB, 10)
+	if !testOnSingleNode {
+		s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
+		s.initNodes(s.chainB)
+		s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
+		s.initValidatorConfigs(s.chainB)
+		s.runValidators(s.chainB, 10)
 
-	time.Sleep(10 * time.Second)
-	//s.runIBCRelayer()
+		time.Sleep(10 * time.Second)
+		s.runIBCRelayer()
+	} else {
+		time.Sleep(10 * time.Second)
+	}
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
@@ -173,7 +180,9 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 	s.T().Log("tearing down e2e integration test suite...")
 
-	//s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
+	if !testOnSingleNode {
+		s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
+	}
 
 	for _, vr := range s.valResources {
 		for _, r := range vr {
