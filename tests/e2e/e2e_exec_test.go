@@ -736,6 +736,40 @@ func (s *IntegrationTestSuite) execWasmInstantiate(
 	return txHash
 }
 
+func (s *IntegrationTestSuite) execWasmExecute(
+	c *chain,
+	valIdx int,
+	sender,
+	contractAddress,
+	executeMessage,
+	homePath string,
+) string {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	s.T().Logf("executing wasm contract at %s on chain %s", contractAddress, c.id)
+	mantraCommand := []string{
+		mantrachaindBinary,
+		txCommand,
+		wasmTypes.ModuleName,
+		"execute",
+		contractAddress,
+		executeMessage,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--chain-id=%s", c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--broadcast-mode=%s", "sync"),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
+		"--keyring-backend=test",
+		"--output=json",
+		"-y",
+	}
+
+	txHash := s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.T().Logf("successfully executed wasm contract at %s with tx hash %s", contractAddress, txHash)
+	return txHash
+}
+
 func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, mantraCommand []string, valIdx int, validation func([]byte, []byte) bool) string {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0)
