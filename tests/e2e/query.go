@@ -51,6 +51,41 @@ func queryTx(endpoint, txHash string) error {
 	return nil
 }
 
+func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
+	}
+
+	var result map[string]interface{}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	txResp := result["tx_response"].(map[string]interface{})
+	events := txResp["events"].([]interface{})
+
+	eventMap := make(map[string][]string)
+	for _, event := range events {
+		eventData := event.(map[string]interface{})
+		eventType := eventData["type"].(string)
+		var attributes []string
+		for _, attr := range eventData["attributes"].([]interface{}) {
+			attrData := attr.(map[string]interface{})
+			attributes = append(attributes, fmt.Sprintf("%s=%s", attrData["key"], attrData["value"]))
+		}
+		eventMap[eventType] = attributes
+	}
+
+	return eventMap, nil
+}
+
 // if coin is zero, return empty coin.
 func getSpecificBalance(endpoint, addr, denom string) (amt sdk.Coin, err error) {
 	balances, err := queryAllBalances(endpoint, addr)
@@ -431,6 +466,20 @@ func queryWasmCodes(endpoint string) (wasmTypes.QueryCodesResponse, error) {
 	}
 
 	return codesResp, nil
+}
+
+func queryWasmContractInfo(endpoint, contractAddr string) (wasmTypes.QueryContractInfoResponse, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s", endpoint, contractAddr))
+	if err != nil {
+		return wasmTypes.QueryContractInfoResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var contractInfoResp wasmTypes.QueryContractInfoResponse
+	if err := cdc.UnmarshalJSON(body, &contractInfoResp); err != nil {
+		return wasmTypes.QueryContractInfoResponse{}, err
+	}
+
+	return contractInfoResp, nil
 }
 
 // TODO: Uncomment this function when CCV module is added
