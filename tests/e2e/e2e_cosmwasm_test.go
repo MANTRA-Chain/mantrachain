@@ -89,10 +89,10 @@ func (s *IntegrationTestSuite) testStoreCode() {
 		codeID, err := findCodeIdFromEvents(event)
 		s.Require().NoError(err)
 		s.Require().Greater(codeID, uint64(0))
-		s.T().Logf("Successfully stored wasm code with ID: %d", codeID)
 
 		// Store the code ID for potential use in other tests
 		deployedWasmCodeId = codeID
+		s.T().Logf("Successfully stored wasm code with ID: %d", codeID)
 	})
 }
 
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) testInstantiateContract() {
 	s.Run("instantiate_wasm_contract", func() {
 		// Skip if no code has been deployed
 		if deployedWasmCodeId == 0 {
-			s.T().Skip("No wasm code deployed, skipping instantiate test")
+			s.T().Skip("No wasm code uploaded, skipping instantiate test")
 		}
 
 		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
@@ -111,7 +111,7 @@ func (s *IntegrationTestSuite) testInstantiateContract() {
 
 		// Simple init message for most contracts
 		initMsg := `{}`
-		label := "test-contract-instance"
+		label := "rwa_oracle"
 		var contractAddr string
 		var txHash string
 
@@ -132,56 +132,63 @@ func (s *IntegrationTestSuite) testInstantiateContract() {
 				deployedWasmCodeId,
 				initMsg,
 				label,
-				senderAddr, // admin
-				"",         // no funds
+				senderAddr,
+				"",
 				mantraHomePath,
 			)
+			s.Require().NotEmpty(txHash)
+			s.T().Logf("Instantiation transaction submitted with hash: %s", txHash)
 
-			if txHash != "" {
-				s.T().Logf("Instantiation transaction submitted with hash: %s", txHash)
-
-				// Query transaction events to get contract address
-				events, err := queryTxEvents(chainEndpoint, txHash)
-				if err == nil {
-					addr, err := findContractAddressFromEvents(events)
-					if err == nil && addr != "" {
-						contractAddr = addr
-						s.T().Logf("Successfully instantiated contract at address: %s with init message: %s", contractAddr, initMsg)
-					} else {
-						s.T().Logf("Could not extract contract address from events: %v", err)
-					}
-				} else {
-					s.T().Logf("Could not query transaction events: %v", err)
-				}
-			}
+			// Query transaction events to get contract address
+			events, err := queryTxEvents(chainEndpoint, txHash)
+			s.Require().NoError(err)
+			addr, err := findContractAddressFromEvents(events)
+			s.Require().NoError(err)
+			s.NotEmpty(addr)
+			s.T().Logf("Successfully instantiated contract at address: %s with init message: %s", contractAddr, initMsg)
 		}()
 
 		// Update the global variable regardless of success
-		if contractAddr != "" {
-			deployedContractAddress = contractAddr
-			s.T().Logf("Contract instantiation successful. Address: %s", deployedContractAddress)
+		s.Require().NotEmpty(contractAddr)
+		deployedContractAddress = contractAddr
+		s.T().Logf("Contract instantiation successful. Address: %s", deployedContractAddress)
 
-			// Try to verify the contract was instantiated by querying its info (best effort)
-			func() {
-				defer func() {
-					if r := recover(); r != nil {
-						s.T().Logf("Contract verification failed: %v", r)
-					}
-				}()
+		contractInfo, err := queryWasmContractInfo(chainEndpoint, contractAddr)
+		s.Require().NoError(err)
+		s.Require().Equal(contractInfo.CodeID, deployedWasmCodeId)
 
-				contractInfo, err := queryWasmContractInfo(chainEndpoint, contractAddr)
-				if err == nil && contractInfo.CodeID == deployedWasmCodeId && contractInfo.Creator == senderAddr {
-					s.T().Logf("✅ Contract verification successful!")
-				} else {
-					s.T().Logf("⚠️  Contract verification failed: %v", err)
-				}
-			}()
-		} else {
-			s.T().Log("Contract instantiation was not successful - this may be due to contract-specific requirements or chain configuration")
+		s.T().Log("Instantiation test completed")
+	})
+}
+
+func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
+	s.Run("execute_wasm_contract_with_simple_message", func() {
+		// Skip if no contract has been instantiated
+		if deployedContractAddress == "" {
+			s.T().Skip("No contract deployed, skipping execute test")
 		}
 
-		// Always pass the test since instantiation is considered optional
-		s.T().Log("Instantiation test completed (this test focuses on demonstrating the capability)")
+		//chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+
+		// Get validator address for sending transaction
+		valAddr, _ := s.chainA.validators[0].keyInfo.GetAddress()
+		senderAddr := valAddr.String()
+
+		// Simple message to execute on the contract
+		execMsg := `{ "add_publishers": { "publishers": [ "mantra1hze5xhd5d5mwysddrutmdt7f89lztrx2xm3nk8" ] } }`
+
+		txHash := s.execWasmExecute(
+			s.chainA,
+			0,
+			senderAddr,
+			deployedContractAddress,
+			execMsg,
+			mantraHomePath,
+		)
+
+		s.T().Logf("Execution transaction submitted with hash: %s", txHash)
+
+		s.Require().NotEmpty(txHash)
 	})
 }
 
