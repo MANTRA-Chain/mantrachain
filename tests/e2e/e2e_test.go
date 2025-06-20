@@ -13,7 +13,7 @@ var (
 	runVestingTest                = false
 	runRestInterfacesTest         = false
 	runRateLimitTest              = false
-	runTokenfactoryTest           = false
+	runTokenfactoryTest           = true
 	runSanctionTest               = false
 	runWasmTest                   = true
 )
@@ -135,4 +135,5 @@ func (s *IntegrationTestSuite) TestWasm() {
 	}
 	s.testQueryWasmParams()
 	s.testStoreCode()
+	s.testInstantiateContract()
 }
