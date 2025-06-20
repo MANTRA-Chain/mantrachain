@@ -705,6 +705,7 @@ func (s *IntegrationTestSuite) execWasmInstantiate(
 		fmt.Sprintf("--chain-id=%s", c.id),
 		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--broadcast-mode=%s", "sync"),
 		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
 		"--keyring-backend=test",
@@ -724,8 +725,7 @@ func (s *IntegrationTestSuite) execWasmInstantiate(
 		mantraCommand = append(mantraCommand, fmt.Sprintf("--amount=%s", funds))
 	}
 
-	// Execute the command and handle errors gracefully without failing the test
-	txHash := s.executeTxCommandWithGracefulHandling(ctx, c, mantraCommand, valIdx)
+	txHash := s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
 
 	if txHash != "" {
 		s.T().Log("successfully instantiated wasm contract")
@@ -758,6 +758,7 @@ func (s *IntegrationTestSuite) execWasmExecute(
 		fmt.Sprintf("--chain-id=%s", c.id),
 		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--broadcast-mode=%s", "sync"),
 		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
 		"--keyring-backend=test",
@@ -805,7 +806,9 @@ func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, m
 
 	// Extract transaction hash from response
 	var txResp sdk.TxResponse
+
 	if err := cdc.UnmarshalJSON(stdOut, &txResp); err == nil {
+		s.T().Logf("Got transaction response with hash: %s, code: %d", txResp.TxHash, txResp.Code)
 		return txResp.TxHash
 	}
 	return ""
@@ -1095,58 +1098,4 @@ func (s *IntegrationTestSuite) broadcastTxFile(chain *chain, valIdx int, from st
 		return nil, fmt.Errorf("failed to sign tx: %s", string(erroutput))
 	}
 	return output, nil
-}
-
-func (s *IntegrationTestSuite) executeTxCommandWithGracefulHandling(ctx context.Context, c *chain, mantraCommand []string, valIdx int) string {
-	var (
-		outBuf bytes.Buffer
-		errBuf bytes.Buffer
-	)
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.valResources[c.id][valIdx].Container.ID,
-		User:         "nonroot",
-		Cmd:          mantraCommand,
-	})
-	if err != nil {
-		s.T().Logf("Failed to create exec: %v", err)
-		return ""
-	}
-
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &outBuf,
-		ErrorStream:  &errBuf,
-	})
-	if err != nil {
-		s.T().Logf("Failed to start exec: %v", err)
-		return ""
-	}
-
-	stdOut := outBuf.Bytes()
-	stdErr := errBuf.Bytes()
-
-	// Log output for debugging
-	s.T().Logf("Command output - stdout: %s", string(stdOut))
-	s.T().Logf("Command output - stderr: %s", string(stdErr))
-
-	// Check if stderr contains panic or fatal errors
-	stderrStr := string(stdErr)
-	if strings.Contains(stderrStr, "panic") || strings.Contains(stderrStr, "nil pointer dereference") {
-		s.T().Logf("Command failed due to panic/error: %s", stderrStr)
-		return ""
-	}
-
-	// Try to parse the response to extract transaction hash
-	var txResp sdk.TxResponse
-	if err := cdc.UnmarshalJSON(stdOut, &txResp); err != nil {
-		s.T().Logf("Failed to parse transaction response: %v", err)
-		return ""
-	}
-
-	s.T().Logf("Got transaction response with hash: %s, code: %d", txResp.TxHash, txResp.Code)
-	return txResp.TxHash
 }

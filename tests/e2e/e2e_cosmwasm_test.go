@@ -145,6 +145,7 @@ func (s *IntegrationTestSuite) testInstantiateContract() {
 			addr, err := findContractAddressFromEvents(events)
 			s.Require().NoError(err)
 			s.NotEmpty(addr)
+			contractAddr = addr
 			s.T().Logf("Successfully instantiated contract at address: %s with init message: %s", contractAddr, initMsg)
 		}()
 
