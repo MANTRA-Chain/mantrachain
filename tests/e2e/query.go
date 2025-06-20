@@ -43,9 +43,18 @@ func queryTx(endpoint, txHash string) error {
 		return fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	txResp := result["tx_response"].(map[string]interface{})
-	if v := txResp["code"]; v.(float64) != 0 {
-		return fmt.Errorf("tx %s failed with status code %v", txHash, v)
+	txResp, ok := result["tx_response"].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("tx_response field is not a map")
+	}
+
+	code, ok := txResp["code"].(float64)
+	if !ok {
+		return fmt.Errorf("code field is not a number")
+	}
+
+	if code != 0 {
+		return fmt.Errorf("tx %s failed with status code %v", txHash, code)
 	}
 
 	return nil
@@ -68,17 +77,51 @@ func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	txResp := result["tx_response"].(map[string]interface{})
-	events := txResp["events"].([]interface{})
+	txResp, ok := result["tx_response"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("tx_response field is not a map")
+	}
+
+	events, ok := txResp["events"].([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("events field is not an array")
+	}
 
 	eventMap := make(map[string][]string)
 	for _, event := range events {
-		eventData := event.(map[string]interface{})
-		eventType := eventData["type"].(string)
+		eventData, ok := event.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("event is not a map")
+		}
+
+		eventType, ok := eventData["type"].(string)
+		if !ok {
+			return nil, fmt.Errorf("event type is not a string")
+		}
+
 		var attributes []string
-		for _, attr := range eventData["attributes"].([]interface{}) {
-			attrData := attr.(map[string]interface{})
-			attributes = append(attributes, fmt.Sprintf("%s=%s", attrData["key"], attrData["value"]))
+		attributesRaw, ok := eventData["attributes"].([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("event attributes is not an array")
+		}
+
+		for _, attr := range attributesRaw {
+			attrData, ok := attr.(map[string]interface{})
+			if !ok {
+				return nil, fmt.Errorf("attribute is not a map")
+			}
+
+			key, ok := attrData["key"].(string)
+			if !ok {
+				return nil, fmt.Errorf("attribute key is not a string")
+			}
+
+			value, ok := attrData["value"].(string)
+			if !ok {
+				return nil, fmt.Errorf("attribute value is not a string")
+			}
+
+			attributes = append(attributes, fmt.Sprintf("%s=%s", key, value))
 		}
 		eventMap[eventType] = attributes
 	}
