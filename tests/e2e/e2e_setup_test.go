@@ -116,7 +116,7 @@ func TestIntegrationTestSuite(t *testing.T) {
 
 // Modify this constant to run the tests on a single node in local machine.
 // Before merge to main, make sure it's always false.
-const testOnSingleNode = false
+const testOnSingleNode = true
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
