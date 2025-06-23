@@ -15,7 +15,7 @@ var (
 	runRateLimitTest              = false
 	runSanctionTest               = false
 	runTokenfactoryTest           = true
-	runSanctionTest               = true
+	runWasmTest                   = true
 )
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
@@ -127,4 +127,15 @@ func (s *IntegrationTestSuite) TestSanction() {
 	}
 	s.testAddToBlacklist()
 	s.testRemoveFromBlacklist()
+}
+
+func (s *IntegrationTestSuite) TestWasm() {
+	// The wasm contract will call the tokenfactory module, so we need to run both tests together.
+	if !runWasmTest || !runTokenfactoryTest {
+		s.T().Skip()
+	}
+	s.testQueryWasmParams()
+	s.testStoreCode()
+	s.testInstantiateContract()
+	s.testExecuteContractWithSimplyMessage()
 }
