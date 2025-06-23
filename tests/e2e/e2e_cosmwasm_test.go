@@ -1,9 +1,11 @@
 package e2e
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -169,14 +171,16 @@ func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
 			s.T().Skip("No contract deployed, skipping execute test")
 		}
 
-		//chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
 		// Get validator address for sending transaction
 		valAddr, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		senderAddr := valAddr.String()
 
+		var newPublisher = "mantra1hze5xhd5d5mwysddrutmdt7f89lztrx2xm3nk8"
+
 		// Simple message to execute on the contract
-		execMsg := `{ "add_publishers": { "publishers": [ "mantra1hze5xhd5d5mwysddrutmdt7f89lztrx2xm3nk8" ] } }`
+		execMsg := fmt.Sprintf(`{ "add_publishers": { "publishers": [ "%s" ] } }`, newPublisher)
 
 		txHash := s.execWasmExecute(
 			s.chainA,
@@ -190,6 +194,23 @@ func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
 		s.T().Logf("Execution transaction submitted with hash: %s", txHash)
 
 		s.Require().NotEmpty(txHash)
+
+		publishersJson, err := queryWasmContractSmart(chainEndpoint, deployedContractAddress, `{"get_publishers": {}}`)
+
+		s.Require().NoError(err)
+
+		s.T().Log("Publishers after execution: ", string(publishersJson.Data))
+
+		// Parse the JSON response to get the actual publishers list
+		var actualPublishers []string
+		err = json.Unmarshal(publishersJson.Data, &actualPublishers)
+		s.Require().NoError(err)
+
+		var expectedPublishers = []string{newPublisher, senderAddr}
+		// Make sure the expected publishers are sorted for comparison
+		sort.Strings(actualPublishers)
+		sort.Strings(expectedPublishers)
+		s.Require().Equal(expectedPublishers, actualPublishers)
 	})
 }
 
