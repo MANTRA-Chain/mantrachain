@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -523,6 +524,24 @@ func queryWasmContractInfo(endpoint, contractAddr string) (wasmTypes.QueryContra
 	}
 
 	return contractInfoResp, nil
+}
+
+func queryWasmContractSmart(endpoint, contractAddr, message string) (wasmTypes.QuerySmartContractStateResponse, error) {
+	// Base64 encode the message
+	encodedMessage := base64.StdEncoding.EncodeToString([]byte(message))
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s/smart/%s", endpoint, contractAddr, encodedMessage))
+
+	fmt.Println(string(body))
+	if err != nil {
+		return wasmTypes.QuerySmartContractStateResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var contractResp wasmTypes.QuerySmartContractStateResponse
+	if err := cdc.UnmarshalJSON(body, &contractResp); err != nil {
+		return wasmTypes.QuerySmartContractStateResponse{}, err
+	}
+
+	return contractResp, nil
 }
 
 // TODO: Uncomment this function when CCV module is added
