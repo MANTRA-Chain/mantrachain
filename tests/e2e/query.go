@@ -65,12 +65,7 @@ func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			_ = fmt.Errorf("failed to close response body: %v\n", err)
-		}
-	}(resp.Body)
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
