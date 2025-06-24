@@ -406,11 +406,11 @@ func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdeno
 	}
 }
 
-// Reference: https://www.mintscan.io/mantra-testnet/tx/4F40CC08AADB5CA005A4138353C707B1398858C577186458D5CE2A70BD3A67C8?sector=json
 func (s *IntegrationTestSuite) setDenomMetadata(c *chain, valIdx int, sender, metadataFile, fees string, expErr bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	// Sample tx: https://mantrascan.io/dukong/tx/4f40cc08aadb5ca005a4138353c707b1398858c577186458d5ce2a70bd3a67c8
 	cmd := []string{
 		mantrachaindBinary,
 		txCommand,
