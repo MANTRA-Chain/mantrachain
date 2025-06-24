@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		)
 
 		// define one sender and two recipient accounts
-		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		alice := s.getAlice()
 
 		var beforeAliceUomBalance,
 			afterAliceUomBalance sdk.Coin
@@ -43,7 +43,7 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
 				s.Require().NoError(err)
 
 				return beforeAliceUomBalance.IsValid()
@@ -52,17 +52,17 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 			5*time.Second,
 		)
 
-		s.createDenom(c, valIdx, alice.String(), subdenom, standardFees.String(), false)
+		s.createDenom(c, valIdx, alice, subdenom, standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees).IsEqual(afterAliceUomBalance)
+				beforeAlice := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees)
 
-				return decremented
+				return beforeAlice.Equal(afterAliceUomBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -187,7 +187,7 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 		)
 
 		// define one admin and one recipient
-		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		alice := s.getAlice()
 		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 
 		var beforeAliceCustomTokenBalance,
@@ -195,12 +195,12 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 			beforeBobCustomTokenBalance,
 			afterBobCustomTokenBalance sdk.Coin
 
-		customDenom := fmt.Sprintf("factory/%s/%s", alice.String(), subdenom)
+		customDenom := buildDenom(alice, subdenom)
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
 				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
@@ -213,23 +213,23 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 		)
 
 		toMint := sdk.NewCoin(customDenom, math.NewInt(mintAmt))
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), "", standardFees.String(), false)
+		s.mintDenom(c, valIdx, alice, toMint.String(), "", standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
-				incremented := beforeAliceCustomTokenBalance.Add(toMint).IsEqual(afterAliceCustomTokenBalance)
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toMint)
 
-				return incremented
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
 		)
 
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), bob.String(), standardFees.String(), false)
+		s.mintDenom(c, valIdx, alice, toMint.String(), bob.String(), standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
@@ -237,9 +237,9 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
 				s.Require().NoError(err)
 
-				incremented := beforeBobCustomTokenBalance.Add(toMint).IsEqual(afterBobCustomTokenBalance)
+				incrementedBob := beforeBobCustomTokenBalance.Add(toMint)
 
-				return incremented
+				return incrementedBob.Equal(afterBobCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -264,7 +264,7 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 		)
 
 		// define one admin and one recipient
-		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		alice := s.getAlice()
 		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 
 		var beforeAliceCustomTokenBalance,
@@ -272,12 +272,12 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 			beforeBobCustomTokenBalance,
 			afterBobCustomTokenBalance sdk.Coin
 
-		customDenom := fmt.Sprintf("factory/%s/%s", alice.String(), subdenom)
+		customDenom := buildDenom(alice, subdenom)
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
 				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
@@ -290,23 +290,23 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 		)
 
 		toBurn := sdk.NewCoin(customDenom, math.NewInt(burnAmt))
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), "", standardFees.String(), false)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), "", standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceCustomTokenBalance.Sub(toBurn).IsEqual(afterAliceCustomTokenBalance)
+				beforeAlice := beforeAliceCustomTokenBalance.Sub(toBurn)
 
-				return decremented
+				return beforeAlice.Equal(afterAliceCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
 		)
 
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), bob.String(), standardFees.String(), false)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), bob.String(), standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
@@ -314,9 +314,9 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeBobCustomTokenBalance.Sub(toBurn).IsEqual(afterBobCustomTokenBalance)
+				beforeBob := beforeBobCustomTokenBalance.Sub(toBurn)
 
-				return decremented
+				return beforeBob.Equal(afterBobCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -395,8 +395,8 @@ func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdeno
 		"--output=json",
 		"-y",
 	}
-	denom := fmt.Sprintf("factory/%s/%s", sender, subdenom)
-	s.T().Logf("creating tokenfactory denom %s", denom)
+	denom := buildDenom(sender, subdenom)
+	s.T().Logf("%s is creating tokenfactory denom %s", sender, denom)
 	if expErr {
 		s.executeTxCommand(ctx, c, ibcCmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
 		s.T().Log("create tokenfactory denom unsuccessful")
