@@ -2,17 +2,17 @@ package e2e
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"path/filepath"
 	"time"
 
 	"cosmossdk.io/math"
+	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 const (
