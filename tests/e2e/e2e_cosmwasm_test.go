@@ -100,10 +100,7 @@ func (s *IntegrationTestSuite) testStoreCode() {
 
 func (s *IntegrationTestSuite) testInstantiateContract() {
 	s.Run("instantiate_wasm_contract", func() {
-		// Skip if no code has been deployed
-		if deployedWasmCodeId == 0 {
-			s.T().Skip("No wasm code uploaded, skipping instantiate test")
-		}
+		s.Require().Greater(deployedWasmCodeId, uint64(0), "No wasm code uploaded")
 
 		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
@@ -166,10 +163,7 @@ func (s *IntegrationTestSuite) testInstantiateContract() {
 
 func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
 	s.Run("execute_wasm_contract_with_simple_message", func() {
-		// Skip if no contract has been instantiated
-		if deployedContractAddress == "" {
-			s.T().Skip("No contract deployed, skipping execute test")
-		}
+		s.Require().NotEmpty(deployedContractAddress, "No contract deployed")
 
 		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
