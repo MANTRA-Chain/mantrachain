@@ -8,10 +8,9 @@ import (
 	"net/http"
 	"strings"
 
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -66,7 +65,12 @@ func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("failed to close response body: %v\n", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
@@ -124,7 +128,7 @@ func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
 
 			attributes = append(attributes, fmt.Sprintf("%s=%s", key, value))
 		}
-		eventMap[eventType] = attributes
+		eventMap[eventType] = append(eventMap[eventType], attributes...)
 	}
 
 	return eventMap, nil
@@ -458,7 +462,6 @@ func queryTokenfactoryDenomMetadata(endpoint, denom string) (banktypes.Metadata,
 
 func queryTokenfactoryDenomAuthorityMetadata(endpoint, creator, denom string) (tokenfactorytypes.DenomAuthorityMetadata, error) {
 	body, err := httpGet(fmt.Sprintf("%s/osmosis/tokenfactory/v1beta1/denoms/factory/%s/%s/authority_metadata", endpoint, creator, denom))
-
 	if err != nil {
 		return tokenfactorytypes.DenomAuthorityMetadata{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -559,8 +562,6 @@ func queryWasmContractSmart(endpoint, contractAddr, message string) (wasmTypes.Q
 	// Base64 encode the message
 	encodedMessage := base64.StdEncoding.EncodeToString([]byte(message))
 	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s/smart/%s", endpoint, contractAddr, encodedMessage))
-
-	fmt.Println(string(body))
 	if err != nil {
 		return wasmTypes.QuerySmartContractStateResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}

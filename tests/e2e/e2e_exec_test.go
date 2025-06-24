@@ -11,9 +11,8 @@ import (
 	"strings"
 	"time"
 
-	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-
 	"cosmossdk.io/x/feegrant"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"

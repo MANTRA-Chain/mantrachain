@@ -171,7 +171,7 @@ func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
 		valAddr, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		senderAddr := valAddr.String()
 
-		var newPublisher = "mantra1hze5xhd5d5mwysddrutmdt7f89lztrx2xm3nk8"
+		newPublisher := "mantra1hze5xhd5d5mwysddrutmdt7f89lztrx2xm3nk8"
 
 		// Simple message to execute on the contract
 		execMsg := fmt.Sprintf(`{ "add_publishers": { "publishers": [ "%s" ] } }`, newPublisher)
@@ -199,7 +199,7 @@ func (s *IntegrationTestSuite) testExecuteContractWithSimplyMessage() {
 		err = json.Unmarshal(publishersJson.Data, &actualPublishers)
 		s.Require().NoError(err)
 
-		var expectedPublishers = []string{newPublisher, senderAddr}
+		expectedPublishers := []string{newPublisher, senderAddr}
 		// Make sure the expected publishers are sorted for comparison
 		sort.Strings(actualPublishers)
 		sort.Strings(expectedPublishers)

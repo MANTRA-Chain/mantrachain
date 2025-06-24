@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"path/filepath"
 	"time"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -360,10 +361,10 @@ func (s *IntegrationTestSuite) getAlice() string {
 }
 
 func (s *IntegrationTestSuite) BuildTokenMetadata() banktypes.Metadata {
-	var factoryDenom = buildDenom(s.getAlice(), subdenom)
+	factoryDenom := buildDenom(s.getAlice(), subdenom)
 
-	var symbol = cases.Upper(language.English).String(subdenom)
-	var name = cases.Title(language.English).String(subdenom)
+	symbol := cases.Upper(language.English).String(subdenom)
+	name := cases.Title(language.English).String(subdenom)
 	metadata := banktypes.Metadata{
 		Description: fmt.Sprintf("%s token for tokenfactory e2e tests", name),
 		DenomUnits: []*banktypes.DenomUnit{
