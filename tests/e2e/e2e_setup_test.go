@@ -142,7 +142,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// Modify this constant to run the tests on a single node in local machine.
 	// PR reviewers must make sure it's always false.
-	s.testOnSingleNode = true
+	s.testOnSingleNode = false
 
 	// The bootstrapping phase is as follows:
 	//

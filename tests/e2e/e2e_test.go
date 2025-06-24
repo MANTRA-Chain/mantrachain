@@ -2,18 +2,19 @@ package e2e
 
 import "fmt"
 
+// PR reviewers must make sure all the following value are true
 var (
-	runBankTest                   = false
-	runEncodeTest                 = false
-	runEvidenceTest               = false
-	runGovTest                    = false
-	runIBCTest                    = false
-	runSlashingTest               = false
-	runStakingAndDistributionTest = false
-	runVestingTest                = false
-	runRestInterfacesTest         = false
-	runRateLimitTest              = false
-	runSanctionTest               = false
+	runBankTest                   = true
+	runEncodeTest                 = true
+	runEvidenceTest               = true
+	runGovTest                    = true
+	runIBCTest                    = true
+	runSlashingTest               = true
+	runStakingAndDistributionTest = true
+	runVestingTest                = true
+	runRestInterfacesTest         = true
+	runRateLimitTest              = true
+	runSanctionTest               = true
 	runTokenfactoryTest           = true
 	runWasmTest                   = true
 )
