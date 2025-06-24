@@ -70,6 +70,24 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 	})
 }
 
+func (s *IntegrationTestSuite) testTokenfactoryAdmin() {
+	s.Run("default_denom_admin_should_be_the_creator", func() {
+		var (
+			err    error
+			valIdx = 0
+			c      = s.chainA
+		)
+
+		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+
+		result, err := queryTokenfactoryDenomAuthorityMetadata(chainEndpoint, s.getAlice(), subdenom)
+
+		s.Require().NoError(err)
+
+		s.Require().Equal(result.Admin, s.getAlice(), "By default, the denom admin should be the creator")
+	})
+}
+
 func (s *IntegrationTestSuite) testTokenfactorySetMetadata() {
 	s.Run("set_denom_metadata_tokenfactory", func() {
 		var (

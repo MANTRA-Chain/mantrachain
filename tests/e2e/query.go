@@ -456,6 +456,21 @@ func queryTokenfactoryDenomMetadata(endpoint, denom string) (banktypes.Metadata,
 	return metadataResp.Metadata, nil
 }
 
+func queryTokenfactoryDenomAuthorityMetadata(endpoint, creator, denom string) (tokenfactorytypes.DenomAuthorityMetadata, error) {
+	body, err := httpGet(fmt.Sprintf("%s/osmosis/tokenfactory/v1beta1/denoms/factory/%s/%s/authority_metadata", endpoint, creator, denom))
+
+	if err != nil {
+		return tokenfactorytypes.DenomAuthorityMetadata{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var metadataResp tokenfactorytypes.QueryDenomAuthorityMetadataResponse
+	if err := cdc.UnmarshalJSON(body, &metadataResp); err != nil {
+		return tokenfactorytypes.DenomAuthorityMetadata{}, err
+	}
+
+	return metadataResp.AuthorityMetadata, nil
+}
+
 func queryIBCEscrowAddress(endpoint, channelID string) (string, error) {
 	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/transfer/v1/channels/%s/ports/transfer/escrow_address", endpoint, channelID))
 	if err != nil {
