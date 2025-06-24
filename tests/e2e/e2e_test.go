@@ -140,4 +140,5 @@ func (s *IntegrationTestSuite) TestWasm() {
 	s.testStoreCode()
 	s.testInstantiateContract()
 	s.testExecuteContractWithSimplyMessage()
+	s.testExecuteContractThatInteractsWithTokenFactory()
 }
