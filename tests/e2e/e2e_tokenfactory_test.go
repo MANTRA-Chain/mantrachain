@@ -245,9 +245,12 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 			5*time.Second,
 		)
 
-		escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
-		s.Require().NoError(err)
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), escrowAddress, standardFees.String(), true)
+		if !s.testOnSingleNode {
+			// No need to test with IBC on single-node setup
+			escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
+			s.Require().NoError(err)
+			s.mintDenom(c, valIdx, alice, toMint.String(), escrowAddress, standardFees.String(), true)
+		}
 	})
 }
 
@@ -319,9 +322,12 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 			5*time.Second,
 		)
 
-		escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
-		s.Require().NoError(err)
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), escrowAddress, standardFees.String(), true)
+		if !s.testOnSingleNode {
+			// No need to test with IBC on single-node setup
+			escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
+			s.Require().NoError(err)
+			s.burnDenom(c, valIdx, alice, toBurn.String(), escrowAddress, standardFees.String(), true)
+		}
 	})
 }
 

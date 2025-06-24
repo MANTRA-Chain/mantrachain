@@ -101,6 +101,8 @@ type IntegrationTestSuite struct {
 	hermesResource *dockertest.Resource
 
 	valResources map[string][]*dockertest.Resource
+
+	testOnSingleNode bool
 }
 
 type AddressResponse struct {
@@ -113,10 +115,6 @@ type AddressResponse struct {
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
-
-// Modify this constant to run the tests on a single node in local machine.
-// Before merge to main, make sure it's always false.
-const testOnSingleNode = true
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
@@ -142,6 +140,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	jailedValMnemonic, err := createMnemonic()
 	s.Require().NoError(err)
 
+	// Modify this constant to run the tests on a single node in local machine.
+	// PR reviewers must make sure it's always false.
+	s.testOnSingleNode = true
+
 	// The bootstrapping phase is as follows:
 	//
 	// 1. Initialize mantra validator nodes.
@@ -155,7 +157,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.initValidatorConfigs(s.chainA)
 	s.runValidators(s.chainA, 0)
 
-	if !testOnSingleNode {
+	if !s.testOnSingleNode {
 		s.T().Logf("starting e2e infrastructure for chain B; chain-id: %s; datadir: %s", s.chainB.id, s.chainB.dataDir)
 		s.initNodes(s.chainB)
 		s.initGenesis(s.chainB, vestingMnemonic, jailedValMnemonic)
@@ -164,8 +166,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 		time.Sleep(10 * time.Second)
 		s.runIBCRelayer()
-	} else {
-		time.Sleep(10 * time.Second)
 	}
 }
 
@@ -181,7 +181,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 	s.T().Log("tearing down e2e integration test suite...")
 
-	if !testOnSingleNode {
+	if !s.testOnSingleNode {
 		s.Require().NoError(s.dkrPool.Purge(s.hermesResource))
 	}
 
