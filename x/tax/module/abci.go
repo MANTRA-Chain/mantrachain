@@ -34,3 +34,18 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) error {
 
 	return nil
 }
+
+// BeginBlocker sets the proposer for determining distribution during endblock
+// and distribute rewards for the previous block.
+func EndBlocker(ctx sdk.Context, k keeper.Keeper) error {
+	defer telemetry.ModuleMeasureSince(types.ModuleName, telemetry.Now(), telemetry.MetricKeyEndBlocker)
+
+	// only empty fee collector if the block height is greater than 1
+	if ctx.BlockHeight() > 1 {
+		if err := k.EmptyFeeCollector(ctx); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

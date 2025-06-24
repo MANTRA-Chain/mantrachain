@@ -55,12 +55,9 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
 				s.Require().NoError(err)
 
-				gasFeesBurntMax := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1000)))
-				gasFeesBurntMin := standardFees.Sub(sdk.NewCoin(uomDenom, math.NewInt(1500)))
-				maxDecremented := beforeAliceUomBalance.Sub(denomCreationFee).Sub(gasFeesBurntMin).IsGTE(afterAliceUomBalance)
-				minDecremented := beforeAliceUomBalance.Sub(denomCreationFee).Sub(gasFeesBurntMax).IsLTE(afterAliceUomBalance)
+				decremented := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees).IsEqual(afterAliceUomBalance)
 
-				return minDecremented && maxDecremented
+				return decremented
 			},
 			10*time.Second,
 			5*time.Second,
@@ -260,6 +257,7 @@ func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin,
 			fmt.Sprintf("--from=%s", sender),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
 			fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+			fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 			fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 			"--keyring-backend=test",
 			"--broadcast-mode=sync",
@@ -277,6 +275,7 @@ func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin,
 			fmt.Sprintf("--from=%s", sender),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
 			fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+			fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 			fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 			"--keyring-backend=test",
 			"--broadcast-mode=sync",
@@ -310,6 +309,7 @@ func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin,
 			fmt.Sprintf("--from=%s", sender),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
 			fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+			fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 			fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 			"--keyring-backend=test",
 			"--broadcast-mode=sync",
@@ -327,6 +327,7 @@ func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin,
 			fmt.Sprintf("--from=%s", sender),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
 			fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+			fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 			fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 			"--keyring-backend=test",
 			"--broadcast-mode=sync",
