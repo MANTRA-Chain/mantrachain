@@ -117,6 +117,7 @@ func (s *IntegrationTestSuite) TestTokenfactory() {
 		s.T().Skip()
 	}
 	s.testTokenfactoryCreate()
+	s.testTokenfactorySetMetadata()
 	s.testTokenfactoryMint()
 	s.testTokenfactoryBurn()
 }

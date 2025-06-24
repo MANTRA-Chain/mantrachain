@@ -442,6 +442,20 @@ func queryTokenfactoryParams(endpoint string) (tokenfactorytypes.QueryParamsResp
 	return params, nil
 }
 
+func queryTokenfactoryDenomMetadata(endpoint, denom string) (banktypes.Metadata, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata_by_query_string?denom=%s", endpoint, denom))
+	if err != nil {
+		return banktypes.Metadata{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var metadataResp banktypes.QueryDenomMetadataResponse
+	if err := cdc.UnmarshalJSON(body, &metadataResp); err != nil {
+		return banktypes.Metadata{}, err
+	}
+
+	return metadataResp.Metadata, nil
+}
+
 func queryIBCEscrowAddress(endpoint, channelID string) (string, error) {
 	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/transfer/v1/channels/%s/ports/transfer/escrow_address", endpoint, channelID))
 	if err != nil {
