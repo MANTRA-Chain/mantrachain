@@ -3,7 +3,7 @@ package e2e
 import "fmt"
 
 // PR reviewers must make sure all the following value are true
-var (
+const (
 	runBankTest                   = true
 	runEncodeTest                 = true
 	runEvidenceTest               = true
@@ -14,10 +14,14 @@ var (
 	runVestingTest                = true
 	runRestInterfacesTest         = true
 	runRateLimitTest              = true
-	runSanctionTest               = true
 	runTokenfactoryTest           = true
+	runSanctionTest               = true
 	runWasmTest                   = true
 )
+
+func (s *IntegrationTestSuite) CanTestOnSingleNode() bool {
+	return !runIBCTest && !runTokenfactoryTest && !runRateLimitTest
+}
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
 	if !runRestInterfacesTest {

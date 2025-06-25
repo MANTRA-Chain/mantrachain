@@ -140,9 +140,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	jailedValMnemonic, err := createMnemonic()
 	s.Require().NoError(err)
 
-	// Modify this constant to run the tests on a single node in local machine.
-	// PR reviewers must make sure it's always false.
-	s.testOnSingleNode = false
+	// Some tests require two nodes, some only require one.
+	s.testOnSingleNode = s.CanTestOnSingleNode()
+
+	if s.testOnSingleNode {
+		s.T().Log("running tests on a single node setup...")
+	} else {
+		s.T().Log("running tests on a multi nodes setup...")
+	}
 
 	// The bootstrapping phase is as follows:
 	//
