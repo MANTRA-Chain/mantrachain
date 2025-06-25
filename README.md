@@ -58,13 +58,35 @@ To get started with Mantrachain, you'll need to set up your development environm
 
 ### Testing
 
-To run unit tests:
-
+#### To run unit tests:
 ```bash
 make test-unit
 ```
 
+#### To run e2e tests:
 
+For the first time, run the following command to build image and run e2e tests:
+```shell
+make test-e2e
+````
+
+If you already have the image built, you can run the e2e tests directly:
+```shell
+cd test/e2e && go test -v -timeout 30m
+```
+
+### Linter
+> Use same golangci-lint version as used in CI/CD pipeline to ensure consistency.
+
+#### Lint check
+```shell
+docker run -t --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.64.8 golangci-lint run
+```
+
+#### Lint fix
+```shell
+docker run -t --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.64.8 golangci-lint run --fix
+```
 
 ## Architecture
 
