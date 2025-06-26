@@ -22,6 +22,8 @@ type BankKeeper interface {
 
 	SendCoins(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
 	HasBalance(ctx context.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+
+	IsSendEnabledDenom(ctx context.Context, denom string) bool
 }
 
 type AccountKeeper interface {
