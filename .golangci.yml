@@ -1,76 +1,88 @@
+version: "2"
 run:
   tests: true
-  timeout: 10m
   allow-parallel-runners: true
-
 linters:
-  disable-all: true
-  # Enable specific linter
-  # https://golangci-lint.run/usage/linters/#enabled-by-default-linters
+  default: none
   enable:
     - asciicheck
     - bidichk
     - bodyclose
     - canonicalheader
+    - copyloopvar
     - durationcheck
     - errcheck
     - errname
-    - copyloopvar
     - fatcontext
-    - gci
-    - goconst
     - gochecksumtype
+    - goconst
     - gocritic
-    - gofumpt
     - goheader
     - gomodguard
     - goprintffuncname
-    - gosimple
     - govet
     - importas
     - ineffassign
-    #   - maintidx (this would be nice to re-enable at some point, to help keep complexity at bay)
     - makezero
     - misspell
     - nakedret
     - nilnil
     - nolintlint
     - promlinter
+    - revive
     - staticcheck
-    - stylecheck
-    - usetesting
     - testableexamples
     - testifylint
     - thelper
     - tparallel
-    - typecheck
     - unconvert
-    - unused
-    - whitespace
     - unparam
-    - revive
+    - unused
     - usestdlibvars
+    - usetesting
+    - whitespace
     - zerologlint
-
-linters-settings:
-  revive:
+  settings:
+    revive:
+      rules:
+        - name: function-result-limit
+          arguments:
+            - 5
+          severity: warning
+          disabled: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
     rules:
-      - name: function-result-limit
-        severity: warning
-        disabled: false
-        # limits the number of returns to 5
-        arguments: [5]
-
+      - linters:
+          - staticcheck
+        text: 'ST1003:'
+      - linters:
+          - staticcheck
+        text: 'ST1005:'
+      - linters:
+          - staticcheck
+        text: 'QF1008:'
+    paths:
+      - .*\.pb\.gw\.go$
+      - third_party$
+      - builtin$
+      - examples$
 issues:
-  # Exclude all *.pb.gw.go files
-  exclude-files:
-    - ".*\\.pb\\.gw\\.go$"
-  exclude-rules:
-    - linters:
-        - stylecheck
-      text: "ST1003:" # requires identifiers with "id" to be "ID".
-    - linters:
-        - stylecheck
-      text: "ST1005:" # punctuation in error messages
   max-issues-per-linter: 10000
   max-same-issues: 10000
+formatters:
+  enable:
+    - goimports
+    - gofumpt
+  exclusions:
+    generated: lax
+    paths:
+      - .*\.pb\.gw\.go$
+      - third_party$
+      - builtin$
+      - examples$
