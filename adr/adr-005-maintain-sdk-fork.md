@@ -4,7 +4,7 @@
 
 Neutron and Osmosis both support so-called before send hooks via changes to x/bank.  Our initial plan was to have no fork at all, but the BeforeSend features proved very attractive for RWAs, and a fork was created at:
 
-* https://github.com/MANTRA-Chain/cosmos-sdk
+* <https://github.com/MANTRA-Chain/cosmos-sdk>
 
 ## Decision
 
