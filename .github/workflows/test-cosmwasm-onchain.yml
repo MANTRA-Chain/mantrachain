@@ -30,8 +30,9 @@ jobs:
     - name: Checkout wasm-testing
       uses: actions/checkout@v4
       with:
-        repository: https://github.com/MANTRA-Chain/wasm-testing
+        repository: MANTRA-Chain/wasm-testing
         path: wasm-testing
+        branch: main
         token: ${{ secrets.GITHUB_TOKEN }}
 
     # Set up Rust environment
@@ -103,7 +104,7 @@ jobs:
 
     # Upload test artifacts
     - name: Upload test artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results-${{ github.run_number }}
@@ -114,7 +115,7 @@ jobs:
 
     # Upload logs on failure
     - name: Upload logs on failure
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: failure-logs-${{ github.run_number }}
