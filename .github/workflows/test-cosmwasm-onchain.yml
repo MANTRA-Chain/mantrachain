@@ -2,10 +2,15 @@ name: Test CosmWasm on chain
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:  # Allow manual trigger
+    branches: [main]
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
 
 env:
   # Network configuration
@@ -15,111 +20,111 @@ env:
   BINARY_NAME: "mantrachaind"
 
 jobs:
-  test-contracts:
+  test-cosmwasm-on-chain:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
-    # Checkout mantrachaind repository
-    - name: Checkout mantrachaind
-      uses: actions/checkout@v4
-      with:
-        path: mantrachaind
+      # Checkout mantrachaind repository
+      - name: Checkout mantrachaind
+        uses: actions/checkout@v4
+        with:
+          path: mantrachaind
 
-    # Checkout wasm-testing repository
-    - name: Checkout wasm-testing
-      uses: actions/checkout@v4
-      with:
-        repository: MANTRA-Chain/wasm-testing
-        path: wasm-testing
-        branch: main
-        token: ${{ secrets.GITHUB_TOKEN }}
+      # Checkout wasm-testing repository
+      - name: Checkout wasm-testing
+        uses: actions/checkout@v4
+        with:
+          repository: MANTRA-Chain/wasm-testing
+          path: wasm-testing
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    # Set up Rust environment
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
-        components: rustfmt, clippy
+      # Set up Rust environment
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
 
-    - name: Install wasm32 target
-      run: rustup target add wasm32-unknown-unknown
+      - name: Install wasm32 target
+        run: rustup target add wasm32-unknown-unknown
 
-    # Cache dependencies for faster builds
-    - name: Cache cargo registry
-      uses: actions/cache@v3
-      with:
-        path: ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-registry-
+      # Cache dependencies for faster builds
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
 
-    - name: Cache cargo index
-      uses: actions/cache@v3
-      with:
-        path: ~/.cargo/git
-        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-index-
+      - name: Cache cargo index
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-index-
 
-    # Install build tools
-    - name: Install just
-      run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+      # Install build tools
+      - name: Install just
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 
-    - name: Install cargo-make (for wasm optimization)
-      run: cargo install cargo-make
+      - name: Install cargo-make (for wasm optimization)
+        run: cargo install cargo-make
 
-    # Build mantrachaind binary
-    - name: Build mantrachaind
-      run: |
-        cd mantrachaind
-        make build
-        sudo cp build/mantrachaind /usr/local/bin/
-        chmod +x /usr/local/bin/mantrachaind
-        # Verify binary works
-        mantrachaind version
+      # Build mantrachaind binary
+      - name: Build mantrachaind
+        run: |
+          cd mantrachaind
+          make build
+          sudo cp build/mantrachaind /usr/local/bin/
+          chmod +x /usr/local/bin/mantrachaind
+          # Verify binary works
+          mantrachaind version
 
-    # Set up test environment
-    - name: Prepare test environment
-      run: |
-        cd wasm-testing
-        # Make scripts executable
-        chmod +x scripts/test_ci.sh
-        chmod +x scripts/set_txflag.sh
+      # Set up test environment
+      - name: Prepare test environment
+        run: |
+          cd wasm-testing
+          # Make scripts executable
+          chmod +x scripts/test_ci.sh
+          chmod +x scripts/set_txflag.sh
 
-    # Run contract tests
-    - name: Run contract tests
-      env:
-        SEED_PHRASE: ${{ secrets.SEED_PHRASE_COSMWASM_TESTS }}
-        DEBUG: 1  # Enable debug logging
-      run: |
-        cd wasm-testing
-        ./scripts/test_ci.sh \
-          -r "${{ env.RPC_ENDPOINT }}" \
-          -c "${{ env.CHAIN_ID }}" \
-          -d "${{ env.DENOM }}" \
-          -b "${{ env.BINARY_NAME }}"
+      # Run contract tests
+      - name: Run contract tests
+        env:
+          SEED_PHRASE: ${{ secrets.SEED_PHRASE_COSMWASM_TESTS }}
+          DEBUG: 1 # Enable debug logging
+        run: |
+          cd wasm-testing
+          ./scripts/test_ci.sh \
+            -r "${{ env.RPC_ENDPOINT }}" \
+            -c "${{ env.CHAIN_ID }}" \
+            -d "${{ env.DENOM }}" \
+            -b "${{ env.BINARY_NAME }}"
 
-    # Upload test artifacts
-    - name: Upload test artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results-${{ github.run_number }}
-        path: |
-          wasm-testing/artifacts/
-          wasm-testing/*.log
-        retention-days: 7
+      # Upload test artifacts
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.run_number }}
+          path: |
+            wasm-testing/artifacts/
+            wasm-testing/*.log
+          retention-days: 7
 
-    # Upload logs on failure
-    - name: Upload logs on failure
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: failure-logs-${{ github.run_number }}
-        path: |
-          wasm-testing/artifacts/
-          ~/.cache/
-        retention-days: 14
+      # Upload logs on failure
+      - name: Upload logs on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-logs-${{ github.run_number }}
+          path: |
+            wasm-testing/artifacts/
+            ~/.cache/
+          retention-days: 14
