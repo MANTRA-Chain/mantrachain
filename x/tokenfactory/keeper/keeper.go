@@ -21,6 +21,7 @@ type (
 		accountKeeper  types.AccountKeeper
 		bankKeeper     types.BankKeeper
 		contractKeeper types.WasmKeeper
+		erc20Keeper    types.ERC20Keeper
 		authority      string
 	}
 )
@@ -33,6 +34,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	contractKeeper types.WasmKeeper,
+	erc20Keeper types.ERC20Keeper,
 	authority string,
 ) Keeper {
 	return Keeper{
@@ -42,6 +44,7 @@ func NewKeeper(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		contractKeeper: contractKeeper,
+		erc20Keeper:    erc20Keeper,
 		authority:      authority,
 	}
 }

@@ -6,6 +6,7 @@ const (
 	AttributeCreator               = "creator"
 	AttributeSubdenom              = "subdenom"
 	AttributeNewTokenDenom         = "new_token_denom" //nolint:gosec // token name, not a credential
+	AttributeNewTokenEthAddr       = "new_token_eth_addr"
 	AttributeMintToAddress         = "mint_to_address"
 	AttributeBurnFromAddress       = "burn_from_address"
 	AttributeTransferFromAddress   = "transfer_from_address"
