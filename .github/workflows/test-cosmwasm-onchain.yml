@@ -13,16 +13,15 @@ permissions:
   packages: read
 
 env:
-  # Network configuration
-  RPC_ENDPOINT: "https://rpc.dukong.mantrachain.io:443"
-  CHAIN_ID: "mantra-dukong-1"
+  # Local network configuration
+  CHAIN_ID: "mantra-testnet-1"
   DENOM: "uom"
   BINARY_NAME: "mantrachaind"
 
 jobs:
   test-cosmwasm-on-chain:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       # Checkout mantrachaind repository
@@ -30,6 +29,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: mantrachaind
+
+      # Set up Go environment
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+
+      # Install build tools
+      - name: Install just
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
+      # Build mantrachaind binary from current PR/branch
+      - name: Build mantrachaind
+        run: |
+          cd mantrachaind
+          make install
+          # Verify binary works
+          mantrachaind version
 
       # Checkout wasm-testing repository
       - name: Checkout wasm-testing
@@ -68,23 +85,119 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-index-
 
-      # Install build tools
-      - name: Install just
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-
-      - name: Install cargo-make (for wasm optimization)
-        run: cargo install cargo-make
-
-      # Build mantrachaind binary
-      - name: Build mantrachaind
+      # Initialize local testnet
+      - name: Initialize local testnet
         run: |
           cd mantrachaind
-          make build
-          sudo cp build/mantrachaind /usr/local/bin/
-          chmod +x /usr/local/bin/mantrachaind
-          # Verify binary works
-          mantrachaind version
+
+          # Clean any existing data
+          rm -rf $HOME/.mantrachaind
+
+          # Initialize chain
+          mantrachaind init test-node --chain-id ${{ env.CHAIN_ID }} --home $HOME/.mantrachaind
+
+          # Create a test key
+          echo "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about" | mantrachaind keys add test-key --recover --keyring-backend test --home $HOME/.mantrachaind
+
+          # Add genesis account
+          mantrachaind genesis add-genesis-account test-key 1000000000000${{ env.DENOM }} --keyring-backend test --home $HOME/.mantrachaind
+
+          # Update staking denomination in genesis before creating gentx
+          sed -i 's/"bond_denom": "stake"/"bond_denom": "uom"/g' $HOME/.mantrachaind/config/genesis.json
+          sed -i 's/"mint_denom": "stake"/"mint_denom": "uom"/g' $HOME/.mantrachaind/config/genesis.json
+
+          # Create genesis transaction
+          mantrachaind genesis gentx test-key 1000000${{ env.DENOM }} --chain-id ${{ env.CHAIN_ID }} --keyring-backend test --home $HOME/.mantrachaind
+
+          # Collect genesis transactions
+          mantrachaind genesis collect-gentxs --home $HOME/.mantrachaind
+
+          # Update genesis.json for testing
+          sed -i 's/"voting_period": "172800s"/"voting_period": "20s"/g' $HOME/.mantrachaind/config/genesis.json
+          sed -i 's/"expedited_voting_period": "86400s"/"expedited_voting_period": "10s"/g' $HOME/.mantrachaind/config/genesis.json
+          
+          # Set fast unbonding time for testing (20 seconds)
+          sed -i 's/"unbonding_time": "[^"]*"/"unbonding_time": "20s"/g' $HOME/.mantrachaind/config/genesis.json
+
+          # Update app.toml for testing - match Dukong testnet settings
+          sed -i 's/minimum-gas-prices = ""/minimum-gas-prices = "0.01uom"/g' $HOME/.mantrachaind/config/app.toml
+
+          # Enable API and set cors
+          sed -i 's/enable = false/enable = true/g' $HOME/.mantrachaind/config/app.toml
+          sed -i 's/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g' $HOME/.mantrachaind/config/app.toml
+
+          # Update config.toml for faster block times and better transaction processing
+          sed -i 's/timeout_commit = "5s"/timeout_commit = "1s"/g' $HOME/.mantrachaind/config/config.toml
+          sed -i 's/timeout_propose = "3s"/timeout_propose = "1s"/g' $HOME/.mantrachaind/config/config.toml
+          sed -i 's/create_empty_blocks = true/create_empty_blocks = false/g' $HOME/.mantrachaind/config/config.toml
+          sed -i 's/create_empty_blocks_interval = "0s"/create_empty_blocks_interval = "10s"/g' $HOME/.mantrachaind/config/config.toml
+
+          # Update genesis to match Dukong consensus params
+          sed -i 's/"max_gas": "-1"/"max_gas": "75000000"/g' $HOME/.mantrachaind/config/genesis.json
+          
+          # Set block size limit to match Dukong (1MB)
+          sed -i 's/"max_bytes": "[^"]*"/"max_bytes": "1000000"/g' $HOME/.mantrachaind/config/genesis.json
+
+          # Add wasm parameters to genesis
+          jq '.app_state.wasm.params.code_upload_access.permission = "Everybody"' $HOME/.mantrachaind/config/genesis.json > $HOME/.mantrachaind/config/genesis_tmp.json && mv $HOME/.mantrachaind/config/genesis_tmp.json $HOME/.mantrachaind/config/genesis.json
+          jq '.app_state.wasm.params.instantiate_default_permission = "Everybody"' $HOME/.mantrachaind/config/genesis.json > $HOME/.mantrachaind/config/genesis_tmp.json && mv $HOME/.mantrachaind/config/genesis_tmp.json $HOME/.mantrachaind/config/genesis.json
+          
+          # Set fee market parameters to match Dukong testnet
+          jq '.app_state.feemarket.params.base_fee = "0.01"' $HOME/.mantrachaind/config/genesis.json > $HOME/.mantrachaind/config/genesis_tmp.json && mv $HOME/.mantrachaind/config/genesis_tmp.json $HOME/.mantrachaind/config/genesis.json || echo "Fee market not available"
+          
+          # Ensure proper staking parameters
+          jq '.app_state.staking.params.bond_denom = "uom"' $HOME/.mantrachaind/config/genesis.json > $HOME/.mantrachaind/config/genesis_tmp.json && mv $HOME/.mantrachaind/config/genesis_tmp.json $HOME/.mantrachaind/config/genesis.json
+
+          # Debug genesis configuration
+          echo "=== Genesis Configuration Debug ==="
+          echo "Consensus params:"
+          jq '.consensus_params' $HOME/.mantrachaind/config/genesis.json
+          echo "Staking params:"
+          jq '.app_state.staking.params' $HOME/.mantrachaind/config/genesis.json
+          echo "Wasm params:"
+          jq '.app_state.wasm.params' $HOME/.mantrachaind/config/genesis.json
+          echo "Bank params:"
+          jq '.app_state.bank.params' $HOME/.mantrachaind/config/genesis.json
+          echo "=== End Genesis Debug ==="
+
+      # Start local node in background
+      - name: Start local node
+        run: |
+          cd mantrachaind
+
+          # Start node with log output to file and debug logging
+          mantrachaind start --home $HOME/.mantrachaind --log_level debug > $HOME/mantrachaind.log 2>&1 &
+          MANTRACHAIND_PID=$!
+          echo "MANTRACHAIND_PID=$MANTRACHAIND_PID" >> $GITHUB_ENV
+          echo "Started mantrachaind with PID: $MANTRACHAIND_PID"
+
+          # Wait for node to start with better error handling
+          echo "Waiting for node to start..."
+          for i in {1..60}; do
+            if curl -s http://localhost:26657/status > /dev/null 2>&1; then
+              echo "Node is running!"
+              echo "Node status:"
+              curl -s http://localhost:26657/status | jq '.result.sync_info'
+              break
+            fi
+
+            # Check if process is still running
+            if ! kill -0 $MANTRACHAIND_PID 2>/dev/null; then
+              echo "Node process died! Checking logs..."
+              tail -50 $HOME/mantrachaind.log
+              exit 1
+            fi
+
+            echo "Attempt $i: Node not ready yet, waiting..."
+            sleep 3
+          done
+
+          # Final verification
+          if ! curl -s http://localhost:26657/status > /dev/null 2>&1; then
+            echo "Node failed to start after 3 minutes. Logs:"
+            cat $HOME/mantrachaind.log
+            exit 1
+          fi
 
       # Set up test environment
       - name: Prepare test environment
@@ -94,18 +207,99 @@ jobs:
           chmod +x scripts/test_ci.sh
           chmod +x scripts/set_txflag.sh
 
-      # Run contract tests
+          # Add debugging before running the test
+          echo "=== Checking node status before running tests ==="
+          curl -s http://localhost:26657/status | jq '.result.sync_info'
+          echo "=== Checking node mempool ==="
+          curl -s http://localhost:26657/num_unconfirmed_txs || echo "Mempool query failed"
+
+          # Test a simple transaction first
+          echo "=== Testing basic transaction processing ==="
+          mantrachaind tx bank send \
+            $(mantrachaind keys show test-key --keyring-backend test -a --home $HOME/.mantrachaind) \
+            $(mantrachaind keys show test-key --keyring-backend test -a --home $HOME/.mantrachaind) \
+            1uom \
+            --chain-id mantra-testnet-1 \
+            --node http://localhost:26657 \
+            --gas-prices "1uom" \
+            --gas auto \
+            --gas-adjustment 1.4 \
+            --keyring-backend test \
+            --from test-key \
+            --home $HOME/.mantrachaind \
+            --broadcast-mode sync \
+            --output json \
+            -y || echo "Test transaction failed"
+
+          sleep 3
+          echo "=== Node status after test transaction ==="
+          curl -s http://localhost:26657/status | jq '.result.sync_info'
+
+      # Run contract tests against local node
       - name: Run contract tests
         env:
-          SEED_PHRASE: ${{ secrets.SEED_PHRASE_COSMWASM_TESTS }}
+          SEED_PHRASE: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
           DEBUG: 1 # Enable debug logging
         run: |
           cd wasm-testing
+          export DEBUG=1  # Explicitly export DEBUG
+          set -x  # Enable bash debug mode to see all commands
+
+          # Debug node status before running tests
+          echo "=== NODE STATUS DEBUG ==="
+          curl -s http://localhost:26657/status | jq '.result.sync_info' || echo "Status check failed"
+          echo "=== MEMPOOL STATUS ==="
+          curl -s http://localhost:26657/num_unconfirmed_txs || echo "Mempool check failed"
+
+          # Test basic transaction processing
+          echo "=== TESTING BASIC TRANSACTION ==="
+          WALLET_ADDR=$(mantrachaind keys show test-key --keyring-backend test -a --home $HOME/.mantrachaind)
+          echo "Testing with wallet: $WALLET_ADDR"
+
+          mantrachaind tx bank send \
+            $WALLET_ADDR \
+            $WALLET_ADDR \
+            1uom \
+            --chain-id "${{ env.CHAIN_ID }}" \
+            --node "http://localhost:26657" \
+            --gas-prices "1uom" \
+            --gas auto \
+            --gas-adjustment 1.4 \
+            --keyring-backend test \
+            --from test-key \
+            --home $HOME/.mantrachaind \
+            --broadcast-mode sync \
+            --output json \
+            -y 2>&1 | tee test_tx.json || echo "Test transaction failed"
+
+          # Check if test transaction worked
+          TEST_TX_HASH=$(cat test_tx.json | jq -r '.txhash // empty' 2>/dev/null || echo "")
+          if [ -n "$TEST_TX_HASH" ]; then
+            echo "Test transaction hash: $TEST_TX_HASH"
+            sleep 3
+            echo "Checking test transaction status..."
+            mantrachaind q tx --type=hash $TEST_TX_HASH --node "http://localhost:26657" -o json 2>&1 || echo "Test transaction not found"
+          fi
+
+          sleep 3
+          echo "=== NODE STATUS AFTER TEST ==="
+          curl -s http://localhost:26657/status | jq '.result.sync_info' || echo "Status check failed"
+
           ./scripts/test_ci.sh \
-            -r "${{ env.RPC_ENDPOINT }}" \
+            -r "http://localhost:26657" \
             -c "${{ env.CHAIN_ID }}" \
             -d "${{ env.DENOM }}" \
             -b "${{ env.BINARY_NAME }}"
+
+      # Stop the node
+      - name: Stop local node
+        if: always()
+        run: |
+          if [ ! -z "$MANTRACHAIND_PID" ]; then
+            kill $MANTRACHAIND_PID || true
+          fi
+          # Also kill any remaining mantrachaind processes
+          pkill mantrachaind || true
 
       # Upload test artifacts
       - name: Upload test artifacts
@@ -116,6 +310,7 @@ jobs:
           path: |
             wasm-testing/artifacts/
             wasm-testing/*.log
+            ${{ runner.home }}/mantrachaind.log
           retention-days: 7
 
       # Upload logs on failure
@@ -127,4 +322,17 @@ jobs:
           path: |
             wasm-testing/artifacts/
             ~/.cache/
+            ${{ runner.home }}/mantrachaind.log
+            ${{ runner.home }}/.mantrachaind/config/
           retention-days: 14
+
+      # Upload node logs
+      - name: Upload node logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: node-logs-${{ github.run_number }}
+          path: |
+            ${{ runner.home }}/.mantrachaind/config/
+            ${{ runner.home }}/mantrachaind.log
+          retention-days: 7
