@@ -2,11 +2,13 @@ package keeper
 
 import (
 	"context"
+	"crypto/sha256"
 
 	"cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 type msgServer struct {
@@ -33,11 +35,15 @@ func (server msgServer) CreateDenom(goCtx context.Context, msg *types.MsgCreateD
 		return nil, err
 	}
 
+	denomHash := sha256.Sum256([]byte(denom))
+	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.TypeMsgCreateDenom,
 			sdk.NewAttribute(types.AttributeCreator, msg.Sender),
 			sdk.NewAttribute(types.AttributeNewTokenDenom, denom),
+			sdk.NewAttribute(types.AttributeNewTokenEthAddr, ethContractAddr.Hex()),
 		),
 	})
 

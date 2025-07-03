@@ -6,6 +6,8 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 type BankKeeper interface {
@@ -38,4 +40,9 @@ type BankHooks interface {
 type WasmKeeper interface {
 	Sudo(ctx context.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
 	GetContractInfo(ctx context.Context, contractAddress sdk.AccAddress) *wasmtypes.ContractInfo
+}
+
+type ERC20Keeper interface {
+	SetToken(ctx sdk.Context, pair erc20types.TokenPair)
+	EnableDynamicPrecompiles(ctx sdk.Context, addresses ...ethcommon.Address) error
 }

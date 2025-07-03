@@ -536,6 +536,7 @@ func New(
 		app.AccountKeeper,
 		&app.BankKeeper,
 		&app.WasmKeeper,
+		&app.Erc20Keeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
