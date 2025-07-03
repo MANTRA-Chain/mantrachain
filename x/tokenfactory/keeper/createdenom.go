@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"cosmossdk.io/errors"
@@ -53,7 +54,8 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 	}
 
 	// create erc20 contractAddr and set token pair
-	ethContractAddr := ethcommon.BytesToAddress([]byte(denom))
+	denomHash := sha256.Sum256([]byte(denom))
+	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
 	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
 	k.erc20Keeper.SetToken(ctx, pair)
 
