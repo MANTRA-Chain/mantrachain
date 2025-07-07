@@ -6,4 +6,4 @@ All.  We are currently supporting all versions of mantrachain with security upda
 
 ## Reporting a Vulnerability
 
-Please send an e-mail to security@mantrachain.io
+Please send an e-mail to <security@mantrachain.io>
