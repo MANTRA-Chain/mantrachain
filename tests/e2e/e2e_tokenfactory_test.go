@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"cosmossdk.io/math"
@@ -20,6 +21,67 @@ const (
 	mintAmt  = 1000
 	burnAmt  = 800
 )
+
+const (
+	proposalDisableDenomSendFilename = "proposal_disable_denom_send.json"
+	proposalEnableDenomSendFilename  = "proposal_enable_denom_send.json"
+)
+
+func (s *IntegrationTestSuite) writeDisableDenomSendProposal(c *chain, denom string) {
+	template := `
+	{
+		"messages": [
+			{
+				"@type": "/cosmos.bank.v1beta1.MsgSetSendEnabled",
+				"authority": "%s",
+				"send_enabled": [
+					{
+						"denom": "%s"
+					}
+				],
+				"use_default_for": []
+        	}
+		],
+		"metadata": "ipfs://CID",
+		"deposit": "100uom",
+		"title": "Disable %s for sending",
+		"summary": "e2e-test disable token send"
+	   }`
+	propMsgBody := fmt.Sprintf(template,
+		govAuthority,
+		denom,
+		denom,
+	)
+
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalDisableDenomSendFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) writeEnableDenomSendProposal(c *chain, denom string) {
+	template := `
+	{
+		"messages": [
+			{
+				"@type": "/cosmos.bank.v1beta1.MsgSetSendEnabled",
+				"authority": "%s",
+				"send_enabled": [],
+				"use_default_for": ["%s"]
+        	}
+		],
+		"metadata": "ipfs://CID",
+		"deposit": "100uom",
+		"title": "Reenable %s for sending",
+		"summary": "e2e-test reenable token send"
+	   }`
+	propMsgBody := fmt.Sprintf(template,
+		govAuthority,
+		denom,
+		denom,
+	)
+
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalEnableDenomSendFilename), []byte(propMsgBody))
+	s.Require().NoError(err)
+}
 
 func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 	s.Run("create_denom_tokenfactory", func() {
@@ -263,6 +325,37 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 			5*time.Second,
 		)
 
+		// disable token send for tokenfactory token should prevent further minting
+		s.writeDisableDenomSendProposal(s.chainA, customDenom)
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalDisableDenomSendFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+
+		validatorA := s.chainA.validators[0]
+		validatorAddr, _ := validatorA.keyInfo.GetAddress()
+
+		s.T().Logf("Proposal number: %d", proposalCounter)
+		s.T().Logf("Submitting, deposit and vote Gov Proposal: Disable %s for sending", customDenom)
+		s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "banktypes.MsgSetSendEnabled", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+
+		s.Require().Eventually(
+			func() bool {
+				s.T().Logf("After MsgSetSendEnabled proposal to disable denom %s", customDenom)
+
+				sendEnabled, err := querySendEnabled(chainEndpoint)
+				s.Require().NoError(err)
+				s.Require().Len(sendEnabled, 1)
+				s.Require().Equal(customDenom, sendEnabled[0].Denom)
+
+				return true
+			},
+			15*time.Second,
+			5*time.Second,
+		)
+
+		s.mintDenom(c, valIdx, alice, toMint.String(), bob.String(), standardFees.String(), true)
+
 		escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
 		s.Require().NoError(err)
 		s.mintDenom(c, valIdx, alice, toMint.String(), escrowAddress, standardFees.String(), true)
@@ -305,6 +398,36 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 		)
 
 		toBurn := sdk.NewCoin(customDenom, math.NewInt(burnAmt))
+
+		s.T().Logf("Reenable token send %s", customDenom)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), "", standardFees.String(), true)
+
+		s.writeEnableDenomSendProposal(s.chainA, customDenom)
+
+		proposalCounter++
+		submitGovFlags := []string{configFile(proposalEnableDenomSendFilename)}
+		depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
+		voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
+
+		validatorA := s.chainA.validators[0]
+		validatorAddr, _ := validatorA.keyInfo.GetAddress()
+
+		s.T().Logf("Proposal number: %d", proposalCounter)
+		s.T().Logf("Submitting, deposit and vote Gov Proposal: Reenable %s for sending", customDenom)
+		s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "banktypes.MsgSetSendEnabled", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+
+		s.Require().Eventually(
+			func() bool {
+				s.T().Logf("After MsgSetSendEnabled proposal to reenable denom %s", customDenom)
+				sendEnabled, err := querySendEnabled(chainEndpoint)
+				s.Require().NoError(err)
+				s.Require().Len(sendEnabled, 0)
+				return true
+			},
+			15*time.Second,
+			5*time.Second,
+		)
+
 		s.burnDenom(c, valIdx, alice, toBurn.String(), "", standardFees.String(), false)
 
 		// check that the creation was successful
@@ -401,6 +524,8 @@ func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdeno
 		subdenom,
 		fmt.Sprintf("--from=%s", sender),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		"--keyring-backend=test",
 		"--broadcast-mode=sync",
@@ -450,7 +575,7 @@ func (s *IntegrationTestSuite) setDenomMetadata(c *chain, valIdx int, sender, me
 	}
 }
 
-func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin, mintTo, fees string, expErr bool) {
+func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin, mintTo, fees string, expErr bool) { //nolint:unparam
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -472,6 +597,7 @@ func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin,
 			"--output=json",
 			"-y",
 		}
+		mintTo = sender
 	} else {
 		ibcCmd = []string{
 			mantrachaindBinary,
@@ -502,7 +628,7 @@ func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin,
 	}
 }
 
-func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin, burnFrom, fees string, expErr bool) {
+func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin, burnFrom, fees string, expErr bool) { //nolint:unparam
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
@@ -524,6 +650,7 @@ func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin,
 			"--output=json",
 			"-y",
 		}
+		burnFrom = sender
 	} else {
 		ibcCmd = []string{
 			mantrachaindBinary,

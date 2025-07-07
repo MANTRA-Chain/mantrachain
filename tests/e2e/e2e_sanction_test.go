@@ -43,7 +43,7 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 	chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 
 	validatorA := s.chainA.validators[0]
-	validatorAAddr, _ := validatorA.keyInfo.GetAddress()
+	validatorAddr, _ := validatorA.keyInfo.GetAddress()
 
 	valIdx := 0
 	alice, _ := s.chainA.genesisAccounts[1].keyInfo.GetAddress()
@@ -59,7 +59,7 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting, deposit and vote Gov Proposal: Add %s to blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "sanctiontypes.MsgAddBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgAddBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {

@@ -98,7 +98,7 @@ For more information on the architecture and design decisions, please refer to t
 
 Mantrachain includes several custom modules:
 
-- `x/xfeemarket`: Extends the fee market functionality to support multiple fee tokens.
+- `x/sanction`: Blacklisting of addresses to prevent transactions from sanctioned entities.
 - `x/tokenfactory`: Allows for the creation and management of new tokens (based on Neutron's implementation).
 - `x/tax`: Handles tax-related operations within the chain.
 
