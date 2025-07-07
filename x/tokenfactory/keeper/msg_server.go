@@ -59,6 +59,10 @@ func (server msgServer) Mint(goCtx context.Context, msg *types.MsgMint) (*types.
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if !server.bankKeeper.IsSendEnabledDenom(ctx, msg.Amount.Denom) {
+		return nil, types.ErrInvalidDenom.Wrapf("%s has been disabled", msg.Amount.Denom)
+	}
+
 	// pay some extra gas cost to give a better error here.
 	_, denomExists := server.bankKeeper.GetDenomMetaData(ctx, msg.Amount.Denom)
 	if !denomExists {
@@ -100,6 +104,10 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !server.bankKeeper.IsSendEnabledDenom(ctx, msg.Amount.Denom) {
+		return nil, types.ErrInvalidDenom.Wrapf("%s has been disabled", msg.Amount.Denom)
+	}
 
 	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
 	if err != nil {

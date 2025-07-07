@@ -173,6 +173,20 @@ func querySupplyOf(endpoint, denom string) (sdk.Coin, error) {
 	return supplyOfResp.Amount, nil
 }
 
+func querySendEnabled(endpoint string) ([]*banktypes.SendEnabled, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/send_enabled", endpoint))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var sendEnabledResp banktypes.QuerySendEnabledResponse
+	if err := cdc.UnmarshalJSON(body, &sendEnabledResp); err != nil {
+		return nil, err
+	}
+
+	return sendEnabledResp.SendEnabled, nil
+}
+
 // func queryStakingParams(endpoint string) (stakingtypes.QueryParamsResponse, error) {
 // 	body, err := httpGet(fmt.Sprintf("%s/cosmos/staking/v1beta1/params", endpoint))
 // 	if err != nil {
