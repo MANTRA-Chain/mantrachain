@@ -35,7 +35,7 @@ func NewRootCmd() *cobra.Command {
 		simtestutil.NewAppOptionsWithFlagHome(tempDir()),
 		[]wasmkeeper.Option{},
 		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
+		app.EvmAppOptions,
 	)
 
 	encodingConfig := params.EncodingConfig{

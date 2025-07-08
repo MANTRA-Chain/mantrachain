@@ -39,7 +39,7 @@ var (
 
 	oracleImage = ibc.DockerImage{
 		Repository: "ghcr.io/skip-mev/connect-sidecar",
-		Version:    "v2.0.1",
+		Version:    "v2.2.1",
 		UidGid:     "1000:1000",
 	}
 	encodingConfig = testutil.MakeTestEncodingConfig(
@@ -68,10 +68,19 @@ var (
 			Key:   "consensus.params.block.max_gas",
 			Value: "1000000000",
 		},
+		{
+			Key:   "app_state.feemarket.params.base_fee",
+			Value: "0",
+		},
+		{
+			Key:   "app_state.feemarket.params.min_gas_price",
+			Value: "0",
+		},
 	}
 
-	denom = "uom"
-	spec  = &interchaintest.ChainSpec{
+	denom        = "uom"
+	coinDecimals = int64(6)
+	spec         = &interchaintest.ChainSpec{
 		ChainName:     "slinky",
 		Name:          "slinky",
 		NumValidators: &numValidators,
@@ -95,6 +104,7 @@ var (
 			TrustingPeriod: "48h",
 			NoHostMount:    noHostMount,
 			ModifyGenesis:  ModifyGenesis(defaultGenesisKV),
+			CoinDecimals:   &coinDecimals,
 		},
 	}
 )
