@@ -14,10 +14,10 @@ require (
 replace (
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d
 	github.com/ChainSafe/go-schnorrkel/1 => github.com/ChainSafe/go-schnorrkel v1.0.0
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.13, current branch: mantra/v0.50.12
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2d67139e683b4505e1c17b05ad289b1605c907b6
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.13-v3-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.13-v3-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.14, current branch: mantra/v0.50.14
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/e405996ad615a33662fddd9203067df96dd4213a
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.14-v4-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.14-v4-mantra-1
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/6787270c093b80e7822569ef3d1c33ba02671115
