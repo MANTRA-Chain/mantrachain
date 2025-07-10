@@ -640,6 +640,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
+//nolint:unparam
 func (s *IntegrationTestSuite) execWasmStoreCode(
 	c *chain,
 	valIdx int,
@@ -676,6 +677,7 @@ func (s *IntegrationTestSuite) execWasmStoreCode(
 	return txHash
 }
 
+//nolint:unparam
 func (s *IntegrationTestSuite) execWasmInstantiate(
 	c *chain,
 	valIdx int,

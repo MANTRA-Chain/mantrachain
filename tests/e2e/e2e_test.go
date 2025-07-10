@@ -126,6 +126,7 @@ func (s *IntegrationTestSuite) TestTokenfactory() {
 	s.testTokenfactorySetMetadata()
 	s.testTokenfactoryMint()
 	s.testTokenfactoryBurn()
+	s.testTokenfactoryHooks()
 }
 
 func (s *IntegrationTestSuite) TestSanction() {
