@@ -1,12 +1,15 @@
 package keeper
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 // ConvertToBaseToken converts a fee amount in a whitelisted fee token to the base fee token amount
@@ -36,6 +39,7 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 				Exponent: 0,
 			}},
 			Base: denom,
+			Name: denom,
 		}
 
 		k.bankKeeper.SetDenomMetaData(ctx, denomMetaData)
@@ -45,6 +49,17 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 		Admin: creatorAddr,
 	}
 	err = k.setAuthorityMetadata(ctx, denom, authorityMetadata)
+	if err != nil {
+		return err
+	}
+
+	// create erc20 contractAddr and set token pair
+	denomHash := sha256.Sum256([]byte(denom))
+	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
+	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
+	k.erc20Keeper.SetToken(ctx, pair)
+
+	err = k.erc20Keeper.EnableDynamicPrecompiles(ctx, pair.GetERC20Contract())
 	if err != nil {
 		return err
 	}
