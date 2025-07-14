@@ -43,7 +43,7 @@ import (
 	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
-	v5 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5"
+	v5rc1 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc1"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
@@ -232,7 +232,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v5.Upgrade}
+var Upgrades = []upgrades.Upgrade{v5rc1.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
