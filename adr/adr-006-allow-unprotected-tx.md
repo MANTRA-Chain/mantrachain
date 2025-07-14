@@ -10,19 +10,20 @@ EIP-155 introduced chain-id as part of transaction signatures to prevent transac
 
 1. **Deterministic contract deployment**
 
-   Maintaining a same contract across multiple chains greatly simplify the integrations and applications.
+   Maintaining the same contract address across multiple chains greatly simplifies integrations and applications.
 
    To deploy a contract to the same address across multiple chains in a permissionless way, the author publishes the pre-signed deploy transaction and the signer address, so on a new chain, anyone can deposit some gas tokens to the signer address, and execute the deploy transaction, without getting permission from the author.
 
-   Tools like like  [create2 factory](https://github.com/Arachnid/deterministic-deployment-proxy) and [createx factory](https://github.com/pcaversaccio/createx) rely on this pattern.
+   Tools like [create2 factory](https://github.com/Arachnid/deterministic-deployment-proxy) and [createx factory](https://github.com/pcaversaccio/createx) rely on this pattern.
 
 2. **Contract factories**
 
    Contract factories are invented to simplify the deterministic contract deployment process. But the factories themselves need to be deployed at same address using the above method.
+   Contract factories are invented to simplify the deterministic contract deployment process. But the factories themselves need to be deployed at the same address using the above method.
 
-   For example, only with the same createx factory address, one can deploy  [Uniswap Permit2](https://github.com/Uniswap/permit2) to the same address using the same nonce on a new chain.
+   For example, only with the same CreateX factory address can one deploy [Uniswap Permit2](https://github.com/Uniswap/permit2) to the same address using the same nonce on a new chain.
 
-This practice is supported in most EVM compatible chains, but not supported in cosmos evm with default parameters.
+This practice is supported in most EVM-compatible chains but not supported in Cosmos EVM with default parameters.
 
 ## Decision
 
@@ -37,7 +38,7 @@ Non-EIP-155 transactions have the following characteristics:
 
 ### Security Considerations
 
-The wallets for end users still signs eip-155 transactions by default, only developers who knows what they are doing will use this feature.
+Wallets for end users still sign EIP-155 transactions by default, and only developers who know what they are doing will use this feature.
 
 ## Consequences
 
@@ -52,7 +53,7 @@ The wallets for end users still signs eip-155 transactions by default, only deve
 
 ## Implementation
 
-1. Set `AllowUnprotectedTxs=true` in network parameter through govenance process.
+1. Set `AllowUnprotectedTxs=true` in network parameters through governance process.
 2. Set `allow-unprotected-txs=true` in json-rpc configuration.
 
 ## References
