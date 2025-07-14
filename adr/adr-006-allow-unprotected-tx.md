@@ -19,7 +19,6 @@ EIP-155 introduced chain-id as part of transaction signatures to prevent transac
 2. **Contract factories**
 
    Contract factories are invented to simplify the deterministic contract deployment process. But the factories themselves need to be deployed at same address using the above method.
-   Contract factories are invented to simplify the deterministic contract deployment process. But the factories themselves need to be deployed at the same address using the above method.
 
    For example, only with the same CreateX factory address can one deploy [Uniswap Permit2](https://github.com/Uniswap/permit2) to the same address using the same nonce on a new chain.
 
