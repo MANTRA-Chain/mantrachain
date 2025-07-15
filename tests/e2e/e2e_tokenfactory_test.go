@@ -27,9 +27,9 @@ const (
 	proposalDisableDenomSendFilename = "proposal_disable_denom_send.json"
 	proposalEnableDenomSendFilename  = "proposal_enable_denom_send.json"
 
-	transferCapContractFilename      = "transfer_cap.wasm"
-	percentageCapContractFilename    = "percentage_cap.wasm"
-	transferCapTrackContractFilename = "transfer_cap_track.wasm"
+	transferCapContractFilename   = "transfer_cap.wasm"
+	percentageCapContractFilename = "percentage_cap.wasm"
+	taxStakeDenomContractFilename = "tax_stake_denom.wasm"
 )
 
 func (s *IntegrationTestSuite) writeDisableDenomSendProposal(c *chain, denom string) {
@@ -99,9 +99,9 @@ func (s *IntegrationTestSuite) writeWasmContracts(c *chain) {
 	err = writeFile(filepath.Join(c.validators[0].configDir(), percentageCapContractFilename), contractWasm)
 	s.Require().NoError(err)
 
-	contractWasm, err = os.ReadFile(fmt.Sprint("test_data/", transferCapTrackContractFilename))
+	contractWasm, err = os.ReadFile(fmt.Sprint("test_data/", taxStakeDenomContractFilename))
 	s.Require().NoError(err)
-	err = writeFile(filepath.Join(c.validators[0].configDir(), transferCapTrackContractFilename), contractWasm)
+	err = writeFile(filepath.Join(c.validators[0].configDir(), taxStakeDenomContractFilename), contractWasm)
 	s.Require().NoError(err)
 }
 
@@ -512,11 +512,11 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 
 	var transferCapContractCode,
 		percentageCapContractCode,
-		transferCapTrackContractCode int
+		taxStakeDenomContractCode int
 
 	var transferCapContractAddr,
 		percentageCapContractAddr,
-		transferCapTrackContractAddr string
+		taxStakeDenomContractAddr string
 
 	customDenom := buildDenom(charlie.String(), subdenom)
 	toMint := sdk.NewCoin(customDenom, math.NewInt(testHooksMintAmount))
@@ -571,7 +571,7 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 		initialCodeCount = percentageCapContractCode
 
 		s.execWasmStoreCode(s.chainA, 0, charlie.String(),
-			filepath.Join(mantraHomePath, transferCapTrackContractFilename), mantraHomePath,
+			filepath.Join(mantraHomePath, taxStakeDenomContractFilename), mantraHomePath,
 		)
 
 		// Verify the code was stored by checking the count increased
@@ -579,7 +579,7 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 			func() bool {
 				updatedCodes, err := queryWasmCodes(chainEndpoint)
 				s.Require().NoError(err)
-				transferCapTrackContractCode = len(updatedCodes.CodeInfos)
+				taxStakeDenomContractCode = len(updatedCodes.CodeInfos)
 				return len(updatedCodes.CodeInfos) == initialCodeCount+1
 			},
 			30*time.Second,
@@ -639,7 +639,7 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 			s.chainA,
 			0,
 			charlie.String(),
-			uint64(transferCapTrackContractCode),
+			uint64(taxStakeDenomContractCode),
 			initMsg,
 			label,
 			charlie.String(),
@@ -655,8 +655,8 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 		addr, err = findContractAddressFromEvents(events)
 		s.Require().NoError(err)
 		s.NotEmpty(addr)
-		transferCapTrackContractAddr = addr
-		s.T().Logf("Successfully instantiated contract at address: %s", transferCapTrackContractAddr)
+		taxStakeDenomContractAddr = addr
+		s.T().Logf("Successfully instantiated contract at address: %s", taxStakeDenomContractAddr)
 	})
 
 	s.Run("transfer_cap_hook_test", func() {
@@ -746,45 +746,59 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 		s.T().Log("Succeed send below percentage cap")
 	})
 
-	// s.Run("transfer_cap_hook_track_test", func() {
-	// 	s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, transferCapTrackContractAddr, standardFees.String(), false)
+	DEPOSIT_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
+	TAX_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
+	var beforeCharlieUomBalance,
+		afterCharlieUomBalance sdk.Coin
+	s.Run("tax_stake_denom_hook_test", func() {
+		s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, taxStakeDenomContractAddr, standardFees.String(), false)
+		s.depositTaxStakeDenomContract(c, valIdx, bob.String(), taxStakeDenomContractAddr, DEPOSIT_AMOUNT.String(), standardFees.String(), false)
+		// get balances of sender and recipient accounts
+		s.Require().Eventually(
+			func() bool {
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
 
-	// 	// get balances of sender and recipient accounts
-	// 	s.Require().Eventually(
-	// 		func() bool {
-	// 			beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
-	// 			s.Require().NoError(err)
+				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
 
-	// 			beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
-	// 			s.Require().NoError(err)
+				beforeCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				s.Require().NoError(err)
 
-	// 			return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid()
-	// 		},
-	// 		10*time.Second,
-	// 		5*time.Second,
-	// 	)
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid() && beforeCharlieUomBalance.IsValid()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
 
-	// 	toSend := sdk.NewCoin(customDenom, math.NewInt(TRANSFER_CAP+1))
-	// 	s.execBankSend(c, valIdx, bob.String(), alice.String(), toSend.String(), standardFees.String(), false)
-	// 	s.T().Log("Succeed to send although over transfer cap")
+		toSend := sdk.NewCoin(customDenom, math.OneInt())
+		s.T().Log("Succeed to send as enough deposit for tax")
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSend.String(), standardFees.String(), false)
 
-	// 	s.Require().Eventually(
-	// 		func() bool {
-	// 			afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
-	// 			s.Require().NoError(err)
-	// 			afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
-	// 			s.Require().NoError(err)
+		s.Require().Eventually(
+			func() bool {
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
 
-	// 			incrementedAlice := beforeAliceCustomTokenBalance.Add(toSend)
-	// 			decrementedBob := beforeBobCustomTokenBalance.Sub(toSend)
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toSend)
+				decrementedBob := beforeBobCustomTokenBalance.Sub(toSend)
 
-	// 			return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance)
-	// 		},
-	// 		10*time.Second,
-	// 		5*time.Second,
-	// 	)
-	// 	s.T().Log("Succeed send above transfer cap as it is only TrackBeforeSend")
-	// })
+				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				s.Require().NoError(err)
+
+				incrementedCharlie := beforeCharlieUomBalance.Add(TAX_AMOUNT)
+
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance) && incrementedCharlie.Equal(afterCharlieUomBalance)
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+
+		s.T().Log("Fail to send as insufficient deposit for tax")
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSend.String(), standardFees.String(), true)
+	})
 }
 
 func buildDenom(sender, subDenom string) string {
@@ -926,6 +940,39 @@ func (s *IntegrationTestSuite) setBeforeSendHook(c *chain, valIdx int, sender, c
 	} else {
 		s.executeTxCommand(ctx, c, cmd, valIdx, s.defaultExecValidation(c, valIdx))
 		s.T().Log("successfully set before-send-hook")
+	}
+}
+
+func (s *IntegrationTestSuite) depositTaxStakeDenomContract(c *chain, valIdx int, sender, contractAddr, depositAmount, fees string, expErr bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	cmd := []string{
+		mantrachaindBinary,
+		txCommand,
+		"wasm",
+		"execute",
+		contractAddr,
+		`{"deposit": {}}`,
+		fmt.Sprintf("--amount=%s", depositAmount),
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		"--keyring-backend=test",
+		"--broadcast-mode=sync",
+		"--output=json",
+		"-y",
+	}
+
+	s.T().Logf("Address %s is depositing %s to contract address %s", sender, depositAmount, contractAddr)
+	if expErr {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
+		s.T().Log("deposit to tax_stake_denom contract unsuccessful")
+	} else {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.defaultExecValidation(c, valIdx))
+		s.T().Log("deposit to tax_stake_denom contract successful")
 	}
 }
 
