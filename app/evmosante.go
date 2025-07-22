@@ -32,6 +32,7 @@ func NewEVMAnteHandlerOptionsFromApp(app *App, txConfig client.TxConfig, maxGasW
 		SigGasConsumer:         SigVerificationGasConsumer,
 		MaxTxGasWanted:         maxGasWanted,
 		TxFeeChecker:           cosmosevmante.NewDynamicFeeChecker(app.FeeMarketKeeper),
+		PendingTxListener:      app.onPendingTx,
 	}
 }
 
