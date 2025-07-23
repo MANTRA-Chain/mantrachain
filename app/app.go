@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -762,6 +763,7 @@ func New(
 	// app.IBCKeeper.SetRouterV2(ibcRouterV2)
 
 	// TODO: Configure EVM precompiles when needed
+	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
 	// corePrecompiles := NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
@@ -775,9 +777,9 @@ func New(
 	// 	app.EvidenceKeeper,
 	// 	appCodec,
 	// )
-	// app.EVMKeeper.WithStaticPrecompiles(
-	// 	corePrecompiles,
-	// )
+	app.EVMKeeper.WithStaticPrecompiles(
+		corePrecompiles,
+	)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
