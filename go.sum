@@ -1851,10 +1851,10 @@ github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415/go.mod h1:
 github.com/xeipuuv/gojsonschema v1.2.0 h1:LhYJRs+L4fBtjZUfuSZIKGeVu0QRy8e5Xi7D17UxZ74=
 github.com/xeipuuv/gojsonschema v1.2.0/go.mod h1:anYRn/JVcOK2ZgGU+IjEV4nwlhoK5sQluxsYJ78Id3Y=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
-github.com/yihuang/evm v1.0.0-rc2.0.20250721095841-854625629962 h1:edfLZEqL5r4ySJITcNKfOD3flkE+hp4DfdRAnzMfx/8=
-github.com/yihuang/evm v1.0.0-rc2.0.20250721095841-854625629962/go.mod h1:B3o6PXp816HCvNTnU+86pnbtprH7MUEensaXhIpXgZo=
-github.com/yihuang/evm/evmd v0.0.0-20250721095841-854625629962 h1:8xo0MbydNQDcfPF8UPdxzWdkEz9fv2yPKUYw0A0n0S8=
-github.com/yihuang/evm/evmd v0.0.0-20250721095841-854625629962/go.mod h1:DyYcGTZWzLH5aoaLKr4fLzG38Ci2El/wTONNj8ZR8cI=
+github.com/yihuang/evm v1.0.0-rc2.0.20250723114318-bfc1f1961946 h1:31Z8H0nQIkV+HJ+4Aby/fSGL4HX7WTHFU4s7dzt9Dmk=
+github.com/yihuang/evm v1.0.0-rc2.0.20250723114318-bfc1f1961946/go.mod h1:B3o6PXp816HCvNTnU+86pnbtprH7MUEensaXhIpXgZo=
+github.com/yihuang/evm/evmd v0.0.0-20250723114318-bfc1f1961946 h1:icuMyTCrdRM+paRekJoPprtVv+Afyupqi1WC9uwHmPQ=
+github.com/yihuang/evm/evmd v0.0.0-20250723114318-bfc1f1961946/go.mod h1:i1QOkX+m/28z8/rMoA01xT+YzE2u9IJYY6TTV/u4yq4=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
