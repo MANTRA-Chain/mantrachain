@@ -60,7 +60,7 @@ jobs:
         with:
           repository: MANTRA-Chain/mantrachain-e2e
           path: mantrachain-e2e
-          ref: main
+          ref: release/v5
 
       - name: Run integration tests
         if: steps.changed-files.outputs.only_changed == 'false'
