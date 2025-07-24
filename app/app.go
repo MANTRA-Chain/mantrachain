@@ -125,6 +125,8 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	evmosencoding "github.com/cosmos/evm/encoding"
+
+	// "github.com/cosmos/evm/evmd"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -764,7 +766,7 @@ func New(
 
 	// TODO: Configure EVM precompiles when needed
 	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
-	// corePrecompiles := NewAvailableStaticPrecompiles(
+	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
 	// 	app.PreciseBankKeeper,
@@ -774,8 +776,7 @@ func New(
 	// 	app.EVMKeeper,
 	// 	app.GovKeeper,
 	// 	app.SlashingKeeper,
-	// 	app.EvidenceKeeper,
-	// 	appCodec,
+	// 	app.AppCodec(),
 	// )
 	app.EVMKeeper.WithStaticPrecompiles(
 		corePrecompiles,
