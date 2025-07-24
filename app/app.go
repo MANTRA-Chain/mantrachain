@@ -742,7 +742,7 @@ func New(
 	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(app.ICAControllerKeeper)
 
 	// Create fee enabled wasm ibc Stack
-	wasmStack := wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
+	wasmStack := wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.TransferKeeper, app.IBCKeeper.ChannelKeeper)
 
 	// Create static IBC router, add app routes, then set and seal it
 	ibcRouter := porttypes.NewRouter().
@@ -811,6 +811,7 @@ func New(
 		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper
 		app.IBCKeeper.ChannelKeeper,
+		nil,                // channelkeeperv2
 		app.TransferKeeper, // portsource
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
