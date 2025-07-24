@@ -20,8 +20,8 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.0-v5-mantra-1-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.0-v5-mantra-1-1
 
-	github.com/cosmos/evm => github.com/yihuang/evm v1.0.0-rc2.0.20250723114318-bfc1f1961946
-	github.com/cosmos/evm/evmd => github.com/yihuang/evm/evmd v0.0.0-20250723114318-bfc1f1961946
+	github.com/cosmos/evm => github.com/yihuang/evm v1.0.0-rc2.0.20250724034222-f5cfdab535bc
+	github.com/cosmos/evm/evmd => github.com/yihuang/evm/evmd v0.0.0-20250724034222-f5cfdab535bc
 
 	// use Cosmos geth fork
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.15.11-cosmos-0
