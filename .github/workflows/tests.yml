@@ -129,13 +129,39 @@ jobs:
           # in that case the push is disabled naturally.
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
+      - name: Determine mantrachain-e2e branch
+        if: steps.changed-files.outputs.only_changed == 'false'
+        id: e2e-branch
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TARGET_BRANCH="${{ github.base_ref }}"
+          else
+            TARGET_BRANCH="${{ github.ref_name }}"
+          fi
+          
+          case "$TARGET_BRANCH" in
+            release/*)
+              E2E_BRANCH="release/v5"
+              ;;
+            main)
+              E2E_BRANCH="main"
+              ;;
+            *)
+              E2E_BRANCH="main"  # default to main for other branches
+              ;;
+          esac
+          
+          echo "Target branch: $TARGET_BRANCH"
+          echo "E2E branch: $E2E_BRANCH"
+          echo "branch=$E2E_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Checkout mantrachain-e2e
         if: steps.changed-files.outputs.only_changed == 'false'
         uses: actions/checkout@v4
         with:
           repository: MANTRA-Chain/mantrachain-e2e
           path: mantrachain-e2e
-          ref: main
+          ref: ${{ steps.e2e-branch.outputs.branch }}
 
       - name: Run integration tests
         if: steps.changed-files.outputs.only_changed == 'false'
