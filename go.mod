@@ -59,8 +59,8 @@ require (
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.3
-	github.com/cosmos/evm v1.0.0-rc2.0.20250723160120-cffad658f847
-	github.com/cosmos/evm/evmd v0.0.0-20250723160120-cffad658f847
+	github.com/cosmos/evm v1.0.0-rc2.0.20250725153303-2934281442b2
+	github.com/cosmos/evm/evmd v0.0.0-20250725153303-2934281442b2
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
