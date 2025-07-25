@@ -1,0 +1,235 @@
+on: 
+  push: 
+    branches: 
+      - main
+      - 'release/*'
+  pull_request:
+    branches: 
+      - main
+      - 'release/*'
+name: Tests
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - uses: actions/checkout@v4
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
+      - run: make test-unit
+
+  test-sdk:
+    name: SDK Tests
+    runs-on: ubuntu-latest-x64-xlarge
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - uses: actions/checkout@v4
+      - name: Extract Tag or Commit
+        run: |
+          FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
+          if [[ $FULL_VERSION == *"-0."* ]]; then
+            # This is a pseudo-version (commit-based)
+            SDK_VERSION=${FULL_VERSION##*-}
+          else
+            # This is a regular version tag
+            SDK_VERSION=$FULL_VERSION
+          fi
+          echo "SDK_VERSION=${SDK_VERSION}" | tee -a $GITHUB_ENV
+      - name: Checkout MANTRA-Chain/cosmos-sdk
+        uses: actions/checkout@v4
+        with:
+          repository: MANTRA-Chain/cosmos-sdk
+          path: cosmos-sdk
+          ref: ${{ env.SDK_VERSION }}
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
+      - name: Run all tests
+        run: |
+          # Define directories to skip
+          SKIP_DIRS=(
+            "tools"
+            "orm"
+            # Add more directories here as needed
+          )
+          for dir in "${SKIP_DIRS[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "Skipping tests for $dir"
+              rm -rf "$dir"
+            fi
+          done
+          
+          make test-all
+        working-directory: cosmos-sdk
+
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest-x64-xlarge
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - uses: actions/checkout@v4
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
+      - run: make test-e2e
+
+  test-e2e-nix:
+    name: E2E Nix Tests
+    runs-on: ubuntu-latest-x64-xlarge
+    timeout-minutes: 240
+    strategy:
+      matrix:
+        tests: [all]
+    env:
+      TESTS_TO_RUN: ${{ matrix.tests }}
+    steps:
+      - name: Create more disk space
+        run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        with:
+          files: |
+            docs
+            *.md
+            **/*.md
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - name: install
+        run: make install
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011 # v23
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+        if: steps.changed-files.outputs.only_changed == 'false'
+        with:
+          name: mantrachain-e2e
+          extraPullNames: dapp
+          # github don't pass secrets for pull request from fork repos,
+          # in that case the push is disabled naturally.
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Determine mantrachain-e2e branch
+        if: steps.changed-files.outputs.only_changed == 'false'
+        id: e2e-branch
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TARGET_BRANCH="${{ github.base_ref }}"
+          else
+            TARGET_BRANCH="${{ github.ref_name }}"
+          fi
+          
+          case "$TARGET_BRANCH" in
+            release/*)
+              E2E_BRANCH="release/v5"
+              ;;
+            main)
+              E2E_BRANCH="main"
+              ;;
+            *)
+              E2E_BRANCH="main"  # default to main for other branches
+              ;;
+          esac
+          
+          echo "Target branch: $TARGET_BRANCH"
+          echo "E2E branch: $E2E_BRANCH"
+          echo "branch=$E2E_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Checkout mantrachain-e2e
+        if: steps.changed-files.outputs.only_changed == 'false'
+        uses: actions/checkout@v4
+        with:
+          repository: MANTRA-Chain/mantrachain-e2e
+          path: mantrachain-e2e
+          ref: ${{ steps.e2e-branch.outputs.branch }}
+
+      - name: Run integration tests
+        if: steps.changed-files.outputs.only_changed == 'false'
+        working-directory: mantrachain-e2e
+        run: |
+          make test-e2e-nix-skip-mantrachaind-build
+      - name: 'Tar debug files'
+        if: failure()
+        working-directory: mantrachain-e2e
+        run: |
+          tar cfz debug_files.tar.gz -C "${TMPDIR-/tmp}/pytest-of-runner" .
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: debug-files
+          path: mantrachain-e2e/debug_files.tar.gz
+          if-no-files-found: ignore
+
+  test-e2e-cosmwasm:
+    name: E2E CosmWasm Tests
+    runs-on: ubuntu-latest-x64-xlarge
+    timeout-minutes: 240
+    steps:
+      - name: Create more disk space
+        run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
+        with:
+          files: |
+            docs
+            *.md
+            **/*.md
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - name: install
+        run: make install
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011 # v23
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+        if: steps.changed-files.outputs.only_changed == 'false'
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+        if: steps.changed-files.outputs.only_changed == 'false'
+        with:
+          name: mantrachain-e2e
+          extraPullNames: dapp
+          # github don't pass secrets for pull request from fork repos,
+          # in that case the push is disabled naturally.
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: Install just
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+      # Checkout wasm-testing repository
+      - name: Checkout wasm-testing
+        uses: actions/checkout@v4
+        with:
+          repository: MANTRA-Chain/wasm-testing
+          path: wasm-testing
+          ref: ci/wasm-pystarport
+      - name: Run integration tests
+        if: steps.changed-files.outputs.only_changed == 'false'
+        working-directory: wasm-testing
+        run: |
+          just test-ci
