@@ -78,6 +78,7 @@ func GetBlacklist() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "blacklist")
 
 	return cmd
 }
