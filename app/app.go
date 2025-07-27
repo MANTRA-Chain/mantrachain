@@ -1437,7 +1437,18 @@ func GetMaccPerms() map[string][]string {
 func BlockedAddresses() map[string]bool {
 	blockedAddrs := make(map[string]bool)
 
-	// Add after existing code:
+	maps.Clone(maccPerms)
+	maccPerms := GetMaccPerms()
+	accs := make([]string, 0, len(maccPerms))
+	for acc := range maccPerms {
+		accs = append(accs, acc)
+	}
+	sort.Strings(accs)
+
+	for _, acc := range accs {
+		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
+	}
+
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
 	for _, addr := range corevm.PrecompiledAddressesBerlin {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
