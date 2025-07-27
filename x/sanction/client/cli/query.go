@@ -77,5 +77,7 @@ func GetBlacklist() *cobra.Command {
 		},
 	}
 
+	flags.AddQueryFlagsToCmd(cmd)
+
 	return cmd
 }
