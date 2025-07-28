@@ -50,6 +50,9 @@ func (options EVMHandlerOptions) Validate() error {
 	if options.EvmKeeper == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "evm keeper is required for EVM AnteHandler")
 	}
+	if options.FeegrantKeeper == nil {
+		return errorsmod.Wrap(errortypes.ErrLogic, "feegrant keeper is required for EVM AnteHandler")
+	}
 	if options.SigGasConsumer == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "signature gas consumer is required for EVM AnteHandler")
 	}

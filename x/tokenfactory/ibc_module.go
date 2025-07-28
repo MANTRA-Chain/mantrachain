@@ -89,6 +89,8 @@ func (im IBCModule) OnChanCloseConfirm(
 	portID,
 	channelID string,
 ) error {
+	escrowAddress := transfertypes.GetEscrowAddress(portID, channelID)
+	im.tokenfactoryKeeper.RemoveEscrowAddress(ctx, escrowAddress.Bytes())
 	return im.app.OnChanCloseConfirm(ctx, portID, channelID)
 }
 
