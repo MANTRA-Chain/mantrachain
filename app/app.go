@@ -43,9 +43,9 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/mempool"
+	"github.com/cosmos/evm/evmd"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
-	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc2"
@@ -345,7 +345,7 @@ func New(
 			// Setup Mempool and Proposal Handlers
 			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
 				TxPriority:      mempool.NewDefaultTxPriority(),
-				SignerExtractor: NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
+				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
 				MaxTx:           maxTxs,
 			})
 		} else {

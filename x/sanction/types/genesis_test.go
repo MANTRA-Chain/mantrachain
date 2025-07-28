@@ -3,11 +3,13 @@ package types_test
 import (
 	"testing"
 
+	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
+	appparams.SetAddressPrefixes()
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
