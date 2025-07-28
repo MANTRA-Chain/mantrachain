@@ -72,6 +72,23 @@ jobs:
           make test-all
         working-directory: cosmos-sdk
 
+  test-connect:
+    name: Skip Connect Integration Test
+    strategy:
+      matrix:
+        go-version: [1.23.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/checkout@v4
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
+      - run: make test-connect
+
   test-e2e:
     name: E2E Tests
     runs-on: ubuntu-latest-x64-xlarge

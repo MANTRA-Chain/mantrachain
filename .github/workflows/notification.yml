@@ -1,7 +1,7 @@
 name: Check for main or tag CI failure
 on:
   workflow_run:
-    workflows: [Build, Check Broken Links, CodeQL Advanced, Create release, DevSkim, Docker Build and Push, OSV-Scanner, Run Gosec, Test, Test and coverage, golangci-lint ]
+    workflows: [Build, Check Broken Links, CodeQL Advanced, Create release, DevSkim, Docker Build and Push, Run Gosec, Tests, Test and coverage, golangci-lint ]
     types: [completed]
     branches: [main,release/**]
 
