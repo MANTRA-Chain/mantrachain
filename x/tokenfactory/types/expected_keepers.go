@@ -45,7 +45,7 @@ type WasmKeeper interface {
 }
 
 type ERC20Keeper interface {
-	SetToken(ctx sdk.Context, pair erc20types.TokenPair)
-	EnableDynamicPrecompiles(ctx sdk.Context, addresses ...ethcommon.Address) error
+	SetToken(ctx sdk.Context, pair erc20types.TokenPair) error
+	EnableDynamicPrecompile(ctx sdk.Context, address ethcommon.Address) error
 	IsERC20Registered(ctx sdk.Context, erc20 ethcommon.Address) bool
 }

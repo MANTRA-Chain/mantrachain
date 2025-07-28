@@ -4,12 +4,9 @@ import (
 	"fmt"
 	"maps"
 
-	evidencekeeper "cosmossdk.io/x/evidence/keeper"
-	"github.com/cosmos/cosmos-sdk/codec"
-	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/vm"
+
 	bankprecompile "github.com/cosmos/evm/precompiles/bank"
 	"github.com/cosmos/evm/precompiles/bech32"
 	cmn "github.com/cosmos/evm/precompiles/common"
@@ -24,8 +21,14 @@ import (
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/vm"
+
+	evidencekeeper "cosmossdk.io/x/evidence/keeper"
+
+	"github.com/cosmos/cosmos-sdk/codec"
+	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 )
 
 const bech32PrecompileBaseGas = 6_000
@@ -72,7 +75,6 @@ func NewAvailableStaticPrecompiles(
 	}
 
 	ibcTransferPrecompile, err := ics20precompile.NewPrecompile(
-		bankKeeper,
 		stakingKeeper,
 		transferKeeper,
 		channelKeeper,

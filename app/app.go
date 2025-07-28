@@ -134,7 +134,6 @@ import (
 	"github.com/cosmos/evm/x/feemarket"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
-	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/precisebank"
@@ -155,7 +154,6 @@ import (
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
-	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -285,7 +283,6 @@ type App struct {
 	TransferKeeper      transferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
-	CallbackKeeper      ibccallbackskeeper.ContractKeeper
 
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
@@ -700,6 +697,7 @@ func New(
 		app.PreciseBankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
+		app.ConsensusParamsKeeper,
 		&app.Erc20Keeper,
 		tracer,
 	)
@@ -736,7 +734,6 @@ func New(
 		transfer stack contains (from bottom to top):
 			- IBC ratelimit
 			- TokenFactory Middleware
-			- IBC Callbacks Middleware (with EVM ContractKeeper)
 			- ERC-20 Middleware
 			- IBC Transfer
 
@@ -744,21 +741,14 @@ func New(
 			transferKeeper.SendPacket -> erc20.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> tokenfactory.OnRecvPacket -> ratelimit.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
-	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
-		app.AccountKeeper,
-		app.EVMKeeper,
-		app.Erc20Keeper,
-	)
-	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
@@ -1295,7 +1285,7 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 	// Add ERC20 genesis configuration
 	erc20GenState := erc20types.DefaultGenesisState()
 	erc20GenState.TokenPairs = ExampleTokenPairs
-	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTokenContractMainnet)
+	erc20GenState.NativePrecompiles = []string{WTokenContractMainnet}
 	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
