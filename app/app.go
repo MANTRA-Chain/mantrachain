@@ -1437,7 +1437,6 @@ func GetMaccPerms() map[string][]string {
 func BlockedAddresses() map[string]bool {
 	blockedAddrs := make(map[string]bool)
 
-	maps.Clone(maccPerms)
 	maccPerms := GetMaccPerms()
 	accs := make([]string, 0, len(maccPerms))
 	for acc := range maccPerms {
