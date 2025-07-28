@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -71,15 +70,14 @@ func GetCmdDenomAuthorityMetadata() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			denom := strings.Split(args[0], "/")
-
-			if len(denom) != 3 {
-				return fmt.Errorf("invalid denom format, expected format: factory/[creator]/[subdenom]")
+			creator, subdenom, err := types.DeconstructDenom(args[0])
+			if err != nil {
+				return err
 			}
 
 			res, err := queryClient.DenomAuthorityMetadata(cmd.Context(), &types.QueryDenomAuthorityMetadataRequest{
-				Creator:  denom[1],
-				Subdenom: denom[2],
+				Creator:  creator,
+				Subdenom: subdenom,
 			})
 			if err != nil {
 				return err

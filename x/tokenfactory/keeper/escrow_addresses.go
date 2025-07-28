@@ -21,3 +21,10 @@ func (k Keeper) IsEscrowAddress(ctx sdk.Context, address sdk.AccAddress) bool {
 
 	return len(bz) != 0
 }
+
+// StoreEscrowAddress sets the total set of params.
+func (k Keeper) RemoveEscrowAddress(ctx sdk.Context, address sdk.AccAddress) {
+	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	prefixStore := prefix.NewStore(store, types.EscrowAddressKey)
+	prefixStore.Delete(address.Bytes())
+}

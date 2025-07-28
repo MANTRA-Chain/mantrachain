@@ -34,10 +34,15 @@ message QueryParamsResponse {
 }
 
 // QueryBlacklistRequest is request type for the Query/Blacklist RPC method.
-message QueryBlacklistRequest {}
+message QueryBlacklistRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
 // QueryBlacklistResponse is response type for the Query/Blacklist RPC method.
 message QueryBlacklistResponse {
   // blacklisted_accounts defines the list of blacklisted accounts.
   repeated string blacklisted_accounts = 1;
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
