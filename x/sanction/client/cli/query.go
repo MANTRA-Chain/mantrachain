@@ -67,8 +67,13 @@ func GetBlacklist() *cobra.Command {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.Blacklist(cmd.Context(), &types.QueryBlacklistRequest{})
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+			res, err := queryClient.Blacklist(cmd.Context(), &types.QueryBlacklistRequest{
+				Pagination: pageReq,
+			})
 			if err != nil {
 				return err
 			}
