@@ -805,7 +805,7 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// TODO: Configure EVM precompiles when needed
-	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
+	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
 	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
