@@ -257,7 +257,7 @@ func (v *validator) signMsg(msgs ...sdk.Msg) (*sdktx.Tx, error) {
 	}
 
 	txBuilder.SetMemo(fmt.Sprintf("%s@%s:26656", v.nodeKey.ID(), v.instanceName()))
-	txBuilder.SetFeeAmount(sdk.NewCoins())
+	txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewCoin("uom", math.NewInt(2000))))
 	txBuilder.SetGasLimit(200000)
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on

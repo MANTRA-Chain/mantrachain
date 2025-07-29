@@ -24,7 +24,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 				switch typeURL := opts[0].GetTypeUrl(); typeURL {
 				case "/cosmos.evm.vm.v1.ExtensionOptionsEthereumTx":
 					// handle as *evmtypes.MsgEthereumTx
-					anteHandler = newEVMAnteHandler(options.EvmOptions)
+					anteHandler = newMonoEVMAnteHandler(options.EvmOptions)
 				case "/cosmos.evm.types.v1.ExtensionOptionDynamicFeeTx":
 					// cosmos-sdk tx with dynamic fee extension
 					anteHandler = newCosmosAnteHandler(options)

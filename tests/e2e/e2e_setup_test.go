@@ -16,6 +16,7 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
+	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -85,9 +86,9 @@ var (
 	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300om
 	standardFees      = sdk.NewCoin(uomDenom, math.NewInt(100000))     // 0.1om
 	depositAmount     = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300uom
-	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
-	govModuleAddress  = authtypes.NewModuleAddress(govtypes.ModuleName).String()
 	proposalCounter   = 0
+
+	distModuleAddress, govModuleAddress string
 )
 
 type IntegrationTestSuite struct {
@@ -113,6 +114,11 @@ type AddressResponse struct {
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
+	appparams.SetAddressPrefixes()
+	// initiate the module addresses after setting address prefixes to avoid caching invalid prefixed address
+	distModuleAddress = authtypes.NewModuleAddress(distrtypes.ModuleName).String()
+	govModuleAddress = authtypes.NewModuleAddress(govtypes.ModuleName).String()
+
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
