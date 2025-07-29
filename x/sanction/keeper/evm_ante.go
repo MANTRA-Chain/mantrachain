@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"encoding/hex"
-
 	errorsmod "cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,7 +31,7 @@ func (ebcd EVMBlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, si
 			return ctx, err
 		}
 		if has {
-			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", hex.EncodeToString(ethMsg.GetFrom().Bytes()))
+			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", ethMsg.GetFrom().String())
 		}
 	}
 
