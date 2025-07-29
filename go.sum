@@ -924,6 +924,8 @@ github.com/cosmos/cosmos-proto v1.0.0-beta.5 h1:eNcayDLpip+zVLRLYafhzLvQlSmyab+R
 github.com/cosmos/cosmos-proto v1.0.0-beta.5/go.mod h1:hQGLpiIUloJBMdQMMWb/4wRApmI9hjHH05nefC0Ojec=
 github.com/cosmos/evm v1.0.0-rc2.0.20250725153303-2934281442b2 h1:k5o1Qr8Fg2gfgM7cL4A75zRlBvFQz7H85mDqMSWmEZM=
 github.com/cosmos/evm v1.0.0-rc2.0.20250725153303-2934281442b2/go.mod h1:B3o6PXp816HCvNTnU+86pnbtprH7MUEensaXhIpXgZo=
+github.com/cosmos/evm v1.0.0-rc2.0.20250728233944-0f22f9f84110 h1:Zqj2ATKq7G7+Dd7KxJb3ETElgZ/I/dtIKaX+pMYf0b0=
+github.com/cosmos/evm v1.0.0-rc2.0.20250728233944-0f22f9f84110/go.mod h1:B3o6PXp816HCvNTnU+86pnbtprH7MUEensaXhIpXgZo=
 github.com/cosmos/evm/evmd v0.0.0-20250725153303-2934281442b2 h1:aRTBZz8QE2/Crot+yenwBdrddVimEs1QqIG4RHl5Ens=
 github.com/cosmos/evm/evmd v0.0.0-20250725153303-2934281442b2/go.mod h1:DyYcGTZWzLH5aoaLKr4fLzG38Ci2El/wTONNj8ZR8cI=
 github.com/cosmos/go-bip39 v1.0.0 h1:pcomnQdrdH22njcAatO0yWojsUnCO3y2tNoV1cb6hHY=
