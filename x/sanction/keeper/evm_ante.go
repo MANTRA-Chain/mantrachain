@@ -5,6 +5,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 // EVMMsgCheckDecorator is a decorator that checks if the transaction contains
@@ -26,12 +27,10 @@ func (ebcd EVMBlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, si
 			return ctx, err
 		}
 
-		has, err := ebcd.sanctionKeeper.BlacklistAccounts.Has(ctx, ethMsg.GetFrom().String())
-		if err != nil {
+		if has, err := ebcd.sanctionKeeper.BlacklistAccounts.Has(ctx, ethMsg.GetFrom().String()); err != nil {
 			return ctx, err
-		}
-		if has {
-			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", ethMsg.GetFrom().String())
+		} else if has {
+			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", ethcommon.BytesToAddress(ethMsg.GetFrom()))
 		}
 	}
 

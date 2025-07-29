@@ -8,7 +8,7 @@ import (
 
 func newEVMAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
-		sanctionkeeper.NewBlacklistCheckDecorator(*options.SanctionKeeper),
+		sanctionkeeper.NewEVMBlacklistCheckDecorator(*options.SanctionKeeper),
 		evmante.NewEVMMonoDecorator(
 			options.EvmOptions.AccountKeeper,
 			options.EvmOptions.FeeMarketKeeper,
