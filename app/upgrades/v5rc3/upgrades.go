@@ -25,6 +25,15 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		iter := keepers.TokenFactoryKeeper.GetAllDenomsIterator(ctx)
+		defer iter.Close()
+		for ; iter.Valid(); iter.Next() {
+			denom := string(iter.Value())
+			if err := keepers.TokenFactoryKeeper.UpdateDenomWithERC20(ctx, denom); err != nil {
+				return vm, err
+			}
+		}
+
 		ctx.Logger().Info("Upgrade v5.0.0-rc3 complete")
 		return vm, nil
 	}
