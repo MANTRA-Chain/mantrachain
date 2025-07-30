@@ -101,7 +101,7 @@ func (k Keeper) UpdateDenomWithERC20(ctx sdk.Context, denom string) (err error) 
 	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
 	if k.erc20Keeper.IsERC20Registered(ctx, ethContractAddr) {
 		// skip registering if hash address already registered
-		k.Logger(ctx).Error("denom results in already registered ethContractAddr: %v", ethContractAddr.Hex())
+		k.Logger(ctx).Error("denom results in already registered ethContractAddr: %s", ethContractAddr.Hex())
 		return nil
 	}
 	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
