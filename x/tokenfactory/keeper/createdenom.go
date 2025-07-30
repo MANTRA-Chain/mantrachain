@@ -87,6 +87,12 @@ func (k Keeper) UpdateDenomWithERC20(ctx sdk.Context, denom string) (err error) 
 	if denomMetaData.Display == "" {
 		denomMetaData.Display = denom
 	}
+	if len(denomMetaData.DenomUnits) == 0 {
+		denomMetaData.DenomUnits = []*banktypes.DenomUnit{{
+			Denom:    denom,
+			Exponent: 0,
+		}}
+	}
 
 	k.bankKeeper.SetDenomMetaData(ctx, denomMetaData)
 
