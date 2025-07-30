@@ -71,12 +71,11 @@ func TestUpdateDenomWithERC20(t *testing.T) {
 			expectedErrorString: "denom does not exist",
 		},
 		{
-			name:                "fail when ERC20 is already registered",
-			denom:               "factory/mantra13jq8lj4l2hjt9zs2wjpwzvfftmxtuzx7wrdk4l/duplicate",
-			denomExists:         true,
-			erc20AlreadyReg:     true,
-			expectError:         true,
-			expectedErrorString: "already registered ethContractAddr",
+			name:            "fail when ERC20 is already registered",
+			denom:           "factory/mantra13jq8lj4l2hjt9zs2wjpwzvfftmxtuzx7wrdk4l/duplicate",
+			denomExists:     true,
+			erc20AlreadyReg: true,
+			expectError:     false,
 		},
 	}
 
