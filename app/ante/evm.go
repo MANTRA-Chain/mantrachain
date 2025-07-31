@@ -8,6 +8,7 @@ import (
 
 func newEVMAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
+		EVMMsgCheckDecorator{},
 		evmante.NewEVMMonoDecorator(
 			options.EvmOptions.AccountKeeper,
 			options.EvmOptions.FeeMarketKeeper,
