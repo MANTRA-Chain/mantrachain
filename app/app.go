@@ -10,11 +10,15 @@ import (
 	"path/filepath"
 	"sort"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
-	"cosmossdk.io/client/v2/autocli"
+	corevm "github.com/ethereum/go-ethereum/core/vm"
+	"github.com/spf13/cast"
 
-	// Overriders
+	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
+	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/log"
@@ -38,13 +42,12 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/cosmos/cosmos-sdk/types/mempool"
 
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
-	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc2"
+	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc3"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
@@ -56,7 +59,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
-	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -125,6 +127,10 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	evmosencoding "github.com/cosmos/evm/encoding"
+
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	"cosmossdk.io/client/v2/autocli"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -162,11 +168,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
-	corevm "github.com/ethereum/go-ethereum/core/vm"
 
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
-	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
-	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 	"github.com/gorilla/mux"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
@@ -174,7 +176,6 @@ import (
 	oracle "github.com/skip-mev/connect/v2/x/oracle"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-	"github.com/spf13/cast"
 )
 
 func init() {
@@ -233,7 +234,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v5rc2.Upgrade}
+var Upgrades = []upgrades.Upgrade{v5rc3.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -332,6 +333,29 @@ func New(
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	var prepareProposalHandler sdk.PrepareProposalHandler
+	var processProposalHandler sdk.ProcessProposalHandler
+	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
+		var mpool mempool.Mempool
+		// if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
+		// 	// Setup Mempool and Proposal Handlers
+		// 	mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
+		// 		TxPriority:      mempool.NewDefaultTxPriority(),
+		// 		SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
+		// 		MaxTx:           maxTxs,
+		// 	})
+		// } else {
+		// 	mpool = mempool.NoOpMempool{}
+		// }
+		mpool = mempool.NoOpMempool{}
+		app.SetMempool(mpool)
+		handler := baseapp.NewDefaultProposalHandler(mpool, app)
+
+		prepareProposalHandler = handler.PrepareProposalHandler()
+		processProposalHandler = handler.ProcessProposalHandler()
+		app.SetPrepareProposal(prepareProposalHandler)
+		app.SetProcessProposal(processProposalHandler)
+	})
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -772,7 +796,7 @@ func New(
 
 	// TODO: Configure EVM precompiles when needed
 	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
-	// corePrecompiles := NewAvailableStaticPrecompiles(
+	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
 	// 	app.PreciseBankKeeper,
@@ -782,8 +806,7 @@ func New(
 	// 	app.EVMKeeper,
 	// 	app.GovKeeper,
 	// 	app.SlashingKeeper,
-	// 	app.EvidenceKeeper,
-	// 	appCodec,
+	// 	app.AppCodec(),
 	// )
 	app.EVMKeeper.WithStaticPrecompiles(
 		corePrecompiles,
@@ -1117,7 +1140,7 @@ func New(
 
 	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
 
-	app.initializeABCIExtensions(client, metrics)
+	app.initializeABCIExtensions(client, metrics, prepareProposalHandler, processProposalHandler)
 
 	// Register any on-chain upgrades.
 	app.setupUpgradeStoreLoaders()

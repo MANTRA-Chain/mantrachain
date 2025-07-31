@@ -3,7 +3,7 @@ package tax_test
 import (
 	"testing"
 
-	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
+	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	keepertest "github.com/MANTRA-Chain/mantrachain/v5/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v5/testutil/nullify"
 	tax "github.com/MANTRA-Chain/mantrachain/v5/x/tax/module"
@@ -28,6 +28,7 @@ func TestGenesis(t *testing.T) {
 }
 
 func TestGenesisState_Validate(t *testing.T) {
+	appparams.SetAddressPrefixes()
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState

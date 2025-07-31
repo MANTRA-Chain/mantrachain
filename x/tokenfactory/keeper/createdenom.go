@@ -77,6 +77,47 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 	return nil
 }
 
+// UpdateDenomWithERC20 registers erc20 precompile address for existing tokenfactory token
+// to be used for migration in upgradehandler v5.0.0-rc3
+func (k Keeper) UpdateDenomWithERC20(ctx sdk.Context, denom string) (err error) {
+	denomMetaData, exists := k.bankKeeper.GetDenomMetaData(ctx, denom)
+	if !exists {
+		return types.ErrInvalidDenom.Wrapf("denom does not exist: %v", denom)
+	}
+	if denomMetaData.Symbol == "" {
+		denomMetaData.Symbol = denom
+	}
+	if denomMetaData.Display == "" {
+		denomMetaData.Display = denom
+	}
+	if len(denomMetaData.DenomUnits) == 0 {
+		denomMetaData.DenomUnits = []*banktypes.DenomUnit{{
+			Denom:    denom,
+			Exponent: 0,
+		}}
+	}
+
+	k.bankKeeper.SetDenomMetaData(ctx, denomMetaData)
+
+	// create erc20 contractAddr and set token pair
+	denomHash := sha256.Sum256([]byte(denom))
+	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
+	if k.erc20Keeper.IsERC20Registered(ctx, ethContractAddr) {
+		// skip registering if hash address already registered
+		k.Logger(ctx).Error("denom results in already registered ethContractAddr: %s", ethContractAddr.Hex())
+		return nil
+	}
+	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
+	k.erc20Keeper.SetToken(ctx, pair)
+
+	err = k.erc20Keeper.EnableDynamicPrecompile(ctx, pair.GetERC20Contract())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) validateCreateDenom(ctx sdk.Context, creatorAddr, subdenom string) (newTokenDenom string, err error) {
 	// Temporary check until IBC bug is sorted out
 	if k.bankKeeper.HasSupply(ctx, subdenom) {

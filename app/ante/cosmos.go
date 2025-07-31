@@ -75,7 +75,7 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.EvmOptions.AccountKeeper),
-		NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
+		cosmosante.NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewDeductFeeDecorator(
 			options.EvmOptions.AccountKeeper,
