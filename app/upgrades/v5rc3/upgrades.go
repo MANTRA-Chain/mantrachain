@@ -37,7 +37,9 @@ func CreateUpgradeHandler(
 		// enable AllowUnprotectedTxs see adr-006
 		params := keepers.EVMKeeper.GetParams(ctx)
 		params.AllowUnprotectedTxs = true
-		keepers.EVMKeeper.SetParams(ctx, params)
+		if err := keepers.EVMKeeper.SetParams(ctx, params); err != nil {
+			return vm, err
+		}
 
 		ctx.Logger().Info("Upgrade v5.0.0-rc3 complete")
 		return vm, nil
