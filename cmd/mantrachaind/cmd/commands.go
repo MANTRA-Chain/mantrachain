@@ -15,7 +15,6 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
@@ -30,6 +29,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	evmdebug "github.com/cosmos/evm/client/debug"
 	cosmosevmserver "github.com/cosmos/evm/server"
 	cosmosevmserverflags "github.com/cosmos/evm/server/flags"
 	"github.com/prometheus/client_golang/prometheus"
@@ -63,7 +63,7 @@ func initRootCmd(
 		genutilcli.ValidateGenesisCmd(basicManager),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		cmtcli.NewCompletionCmd(rootCmd, true),
-		debug.Cmd(),
+		evmdebug.Cmd(),
 		pruning.Cmd(newApp, app.DefaultNodeHome),
 		confixcmd.ConfigCommand(),
 		snapshot.Cmd(newApp),
