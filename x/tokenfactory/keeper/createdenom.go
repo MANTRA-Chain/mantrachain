@@ -60,7 +60,7 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 	ethContractAddr := ethcommon.BytesToAddress(denomHash[:])
 	if k.erc20Keeper.IsERC20Registered(ctx, ethContractAddr) {
 		return types.ErrInvalidDenom.Wrapf(
-			"denom results in already registered ethContractAddr: %v, use a different subdenom and try again", ethContractAddr.Hex())
+			"denom results in already registered ethContractAddr: %s, use a different subdenom and try again", ethContractAddr.Hex())
 	}
 	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
 	k.erc20Keeper.SetToken(ctx, pair)
