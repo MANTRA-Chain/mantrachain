@@ -21,6 +21,7 @@ import (
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
 	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
@@ -582,6 +583,73 @@ func queryWasmContractSmart(endpoint, contractAddr, message string) (wasmTypes.Q
 
 	return contractResp, nil
 }
+
+func getSpecificTokenPair(endpoint, denom string) (*erc20types.TokenPair, error) {
+	tokenPairs, err := queryAllTokenPairs(endpoint)
+	if err != nil {
+		return nil, err
+	}
+	for _, tokenPair := range tokenPairs {
+		if strings.EqualFold(tokenPair.Denom, denom) {
+			return &tokenPair, nil
+		}
+	}
+	return nil, fmt.Errorf("token pair with denom %s not found", denom)
+}
+
+func queryAllTokenPairs(endpoint string) ([]erc20types.TokenPair, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/evm/erc20/v1/token_pairs", endpoint))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var tokenPairsResp erc20types.QueryTokenPairsResponse
+	if err := cdc.UnmarshalJSON(body, &tokenPairsResp); err != nil {
+		return nil, err
+	}
+
+	return tokenPairsResp.TokenPairs, nil
+}
+
+// TODO: fix this
+// func queryERC20Balance(endpoint, contractAddr, userAddr string) (int64, error) {
+// 	input, err := contracts.ERC20MinterBurnerDecimalsContract.ABI.Pack(
+// 		"balanceOf",
+// 		common.HexToAddress(userAddr),
+// 	)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// 	erc20Address := common.HexToAddress(contractAddr)
+
+// 	callData, err := json.Marshal(evmtypes.TransactionArgs{
+// 		To:    &erc20Address,
+// 		Input: (*hexutil.Bytes)(&input),
+// 	})
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// 	body, err := httpGet(fmt.Sprintf("%s/cosmos/evm/vm/v1/eth_call?args=%s", endpoint, string(callData)))
+// 	if err != nil {
+// 		return 0, fmt.Errorf("failed to execute HTTP request: %w", err)
+// 	}
+
+// 	var resp evmtypes.MsgEthereumTxResponse
+// 	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+// 		panic(fmt.Sprintf(string(callData), string(body), hexutil.Encode(body)))
+// 		return 0, err
+// 	}
+
+// 	var balance *big.Int
+// 	err = contracts.ERC20MinterBurnerDecimalsContract.ABI.UnpackIntoInterface(&balance, "balanceOf", resp.Ret)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// 	return balance.Int64(), nil
+// }
 
 // TODO: Uncomment this function when CCV module is added
 // func queryBlocksPerEpoch(endpoint string) (int64, error) {
