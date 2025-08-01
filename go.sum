@@ -1525,8 +1525,8 @@ github.com/mitchellh/mapstructure v0.0.0-20160808181253-ca63d7c062ee/go.mod h1:F
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/mmsqe/evm v0.0.0-20250801082212-a13d86869a0c h1:0pYAbyWm+hUeLeJyNz6lX1sGWKEg+Z7JG061akUtqjA=
-github.com/mmsqe/evm v0.0.0-20250801082212-a13d86869a0c/go.mod h1:/SCKYmrd3vdYnN+worcVH95EQRfPa2gGUTzLUDu3SSE=
+github.com/mmsqe/evm v0.0.0-20250801095005-2bd627524c7c h1:ZVNsN4kzm560c1aAtvdYda6XnqX0VUnXgiYHmO+PutI=
+github.com/mmsqe/evm v0.0.0-20250801095005-2bd627524c7c/go.mod h1:/SCKYmrd3vdYnN+worcVH95EQRfPa2gGUTzLUDu3SSE=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/moby/locker v1.0.1 h1:fOXqR41zeveg4fFODix+1Ch4mj/gT0NE1XJbp/epuBg=
