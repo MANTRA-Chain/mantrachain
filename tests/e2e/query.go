@@ -584,6 +584,7 @@ func queryWasmContractSmart(endpoint, contractAddr, message string) (wasmTypes.Q
 	return contractResp, nil
 }
 
+//nolint:unused
 func getSpecificTokenPair(endpoint, denom string) (*erc20types.TokenPair, error) {
 	tokenPairs, err := queryAllTokenPairs(endpoint)
 	if err != nil {
