@@ -8,8 +8,8 @@ import (
 	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
-// EVMMsgCheckDecorator is a decorator that checks if the transaction contains
-// exactly one EVM message. If it contains more than one, it returns an error.
+// EVMBlacklistCheckDecorator is a decorator that checks if EVM transaction senders
+// are blacklisted. If a sender is found in the blacklist, it returns an error.
 type EVMBlacklistCheckDecorator struct {
 	sanctionKeeper Keeper
 }
