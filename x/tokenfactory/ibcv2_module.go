@@ -33,7 +33,7 @@ func (im IBCV2Module) OnSendPacket(
 	// IBC v2 does not have channel opening handshake, so we need to store the escrow address
 	// on every send packet
 	escrowAddress := transfertypes.GetEscrowAddress(transfertypes.PortID, sourceClient)
-	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress.Bytes())
+	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress)
 	return im.app.OnSendPacket(ctx, sourceClient, destinationClient, sequence, payload, signer)
 }
 

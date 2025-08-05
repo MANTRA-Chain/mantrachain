@@ -59,7 +59,7 @@ func (im IBCModule) OnChanOpenAck(
 	counterpartyVersion string,
 ) error {
 	escrowAddress := transfertypes.GetEscrowAddress(portID, channelID)
-	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress.Bytes())
+	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress)
 	return im.app.OnChanOpenAck(ctx, portID, channelID, counterpartyChannelID, counterpartyVersion)
 }
 
@@ -70,7 +70,7 @@ func (im IBCModule) OnChanOpenConfirm(
 	channelID string,
 ) error {
 	escrowAddress := transfertypes.GetEscrowAddress(portID, channelID)
-	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress.Bytes())
+	im.tokenfactoryKeeper.StoreEscrowAddress(ctx, escrowAddress)
 	return im.app.OnChanOpenConfirm(ctx, portID, channelID)
 }
 
