@@ -43,7 +43,6 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/mempool"
-	"github.com/cosmos/evm/evmd"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
@@ -141,7 +140,6 @@ import (
 	"github.com/cosmos/evm/x/feemarket"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
-	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/precisebank"
@@ -162,7 +160,6 @@ import (
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
-	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -287,7 +284,6 @@ type App struct {
 	TransferKeeper      transferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
-	CallbackKeeper      ibccallbackskeeper.ContractKeeper
 
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
@@ -341,16 +337,17 @@ func New(
 	var processProposalHandler sdk.ProcessProposalHandler
 	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
 		var mpool mempool.Mempool
-		if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
-			// Setup Mempool and Proposal Handlers
-			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
-				TxPriority:      mempool.NewDefaultTxPriority(),
-				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
-				MaxTx:           maxTxs,
-			})
-		} else {
-			mpool = mempool.NoOpMempool{}
-		}
+		// if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
+		// 	// Setup Mempool and Proposal Handlers
+		// 	mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
+		// 		TxPriority:      mempool.NewDefaultTxPriority(),
+		// 		SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
+		// 		MaxTx:           maxTxs,
+		// 	})
+		// } else {
+		// 	mpool = mempool.NoOpMempool{}
+		// }
+		mpool = mempool.NoOpMempool{}
 		app.SetMempool(mpool)
 		handler := baseapp.NewDefaultProposalHandler(mpool, app)
 
@@ -724,6 +721,7 @@ func New(
 		app.PreciseBankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
+		app.ConsensusParamsKeeper,
 		&app.Erc20Keeper,
 		tracer,
 	)
@@ -760,7 +758,6 @@ func New(
 		transfer stack contains (from bottom to top):
 			- IBC ratelimit
 			- TokenFactory Middleware
-			- IBC Callbacks Middleware (with EVM ContractKeeper)
 			- ERC-20 Middleware
 			- IBC Transfer
 
@@ -768,21 +765,14 @@ func New(
 			transferKeeper.SendPacket -> erc20.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> tokenfactory.OnRecvPacket -> ratelimit.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
-	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
-		app.AccountKeeper,
-		app.EVMKeeper,
-		app.Erc20Keeper,
-	)
-	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
@@ -805,7 +795,7 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// TODO: Configure EVM precompiles when needed
-	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
+	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
 	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
@@ -1318,7 +1308,7 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 	// Add ERC20 genesis configuration
 	erc20GenState := erc20types.DefaultGenesisState()
 	erc20GenState.TokenPairs = ExampleTokenPairs
-	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTokenContractMainnet)
+	erc20GenState.NativePrecompiles = []string{WTokenContractMainnet}
 	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
@@ -1490,7 +1480,7 @@ func BlockedAddresses() map[string]bool {
 	}
 
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesBerlin {
+	for _, addr := range corevm.PrecompiledAddressesPrague {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
 	}
 

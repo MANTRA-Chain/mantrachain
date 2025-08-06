@@ -8,12 +8,13 @@ import (
 
 func newEVMAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
-		sanctionkeeper.NewEVMBlacklistCheckDecorator(*options.SanctionKeeper),
+		EVMMsgCheckDecorator{},
 		evmante.NewEVMMonoDecorator(
 			options.EvmOptions.AccountKeeper,
 			options.EvmOptions.FeeMarketKeeper,
 			options.EvmOptions.EvmKeeper,
 			options.EvmOptions.MaxTxGasWanted,
 		),
+		sanctionkeeper.NewEVMBlacklistCheckDecorator(*options.SanctionKeeper),
 	)
 }
