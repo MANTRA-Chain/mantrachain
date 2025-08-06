@@ -1209,7 +1209,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 	app.SetAnteHandler(ante.NewAnteHandler(handlerOpts))
 }
 
-// TODO: Implement post handler
+// no post handler currently
 // func (app *App) setPostHandler() {
 // }
 
