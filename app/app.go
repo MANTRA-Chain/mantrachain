@@ -724,6 +724,7 @@ func New(
 		app.PreciseBankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
+		&app.ConsensusParamsKeeper,
 		&app.Erc20Keeper,
 		tracer,
 	)
@@ -805,7 +806,7 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// TODO: Configure EVM precompiles when needed
-	corePrecompiles := maps.Clone(corevm.PrecompiledContractsBerlin)
+	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
 	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
@@ -1318,7 +1319,7 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 	// Add ERC20 genesis configuration
 	erc20GenState := erc20types.DefaultGenesisState()
 	erc20GenState.TokenPairs = ExampleTokenPairs
-	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTokenContractMainnet)
+	erc20GenState.NativePrecompiles = append(erc20GenState.NativePrecompiles, WTokenContractMainnet)
 	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
@@ -1490,7 +1491,7 @@ func BlockedAddresses() map[string]bool {
 	}
 
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesBerlin {
+	for _, addr := range corevm.PrecompiledAddressesPrague {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
 	}
 

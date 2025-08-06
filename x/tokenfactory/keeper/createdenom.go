@@ -63,9 +63,12 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 			"denom results in already registered ethContractAddr: %v, use a different subdenom and try again", ethContractAddr.Hex())
 	}
 	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
-	k.erc20Keeper.SetToken(ctx, pair)
+	err = k.erc20Keeper.SetToken(ctx, pair)
+	if err != nil {
+		return err
+	}
 
-	err = k.erc20Keeper.EnableDynamicPrecompiles(ctx, pair.GetERC20Contract())
+	err = k.erc20Keeper.EnableDynamicPrecompile(ctx, pair.GetERC20Contract())
 	if err != nil {
 		return err
 	}
@@ -105,9 +108,11 @@ func (k Keeper) UpdateDenomWithERC20(ctx sdk.Context, denom string) (err error) 
 		return nil
 	}
 	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
-	k.erc20Keeper.SetToken(ctx, pair)
-
-	err = k.erc20Keeper.EnableDynamicPrecompiles(ctx, pair.GetERC20Contract())
+	err = k.erc20Keeper.SetToken(ctx, pair)
+	if err != nil {
+		return err
+	}
+	err = k.erc20Keeper.EnableDynamicPrecompile(ctx, pair.GetERC20Contract())
 	if err != nil {
 		return err
 	}
