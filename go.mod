@@ -17,12 +17,11 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
 
-	github.com/cosmos/evm => github.com/mmsqe/evm v0.0.0-20250806013041-647ba906f76c
-	github.com/cosmos/evm/evmd => github.com/mmsqe/evm/evmd v0.0.0-20250806013041-647ba906f76c
+	github.com/cosmos/evm => github.com/mmsqe/evm v0.0.0-20250807075947-0d0454496fed
+	github.com/cosmos/evm/evmd => github.com/mmsqe/evm/evmd v0.0.0-20250807075947-0d0454496fed
 
-	// branch: cosmos-1-16
-	// github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.15.11-cosmos-0
-	github.com/ethereum/go-ethereum => github.com/yihuang/go-ethereum v1.10.21-0.20250721081216-98795aa589d5
+	// branch: release/1.16
+	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v0.0.0-20250806193535-2fc7571efa91
 
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
@@ -202,7 +201,7 @@ require (
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/fgprof v0.9.5 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/ferranbt/fastssz v0.1.2 // indirect
+	github.com/ferranbt/fastssz v0.1.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/getsentry/sentry-go v0.32.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
