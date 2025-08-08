@@ -688,7 +688,7 @@ func New(
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
 	app.EVMKeeper = evmkeeper.NewKeeper(
-		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey],
+		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey], keys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
 		app.PreciseBankKeeper,

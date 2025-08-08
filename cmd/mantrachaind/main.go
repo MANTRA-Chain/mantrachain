@@ -10,7 +10,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmdcfg "github.com/cosmos/evm/cmd/evmd/config"
+	evmdcfg "github.com/cosmos/evm/evmd/cmd/evmd/config"
 )
 
 func main() {
