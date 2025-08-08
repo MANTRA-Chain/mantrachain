@@ -29,7 +29,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: true,
 		},
 		{
-			desc: "valid genesis state",
+			desc: "invalid genesis state with non-bech32 account",
 			genState: &types.GenesisState{
 				// this line is used by starport scaffolding # types/genesis/validField
 				BlacklistAccounts: []string{"not-a-valid-bech32"},
