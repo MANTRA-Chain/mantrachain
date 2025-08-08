@@ -953,6 +953,9 @@ func New(
 	app.BasicModuleManager.RegisterLegacyAminoCodec(legacyAmino)
 	app.BasicModuleManager.RegisterInterfaces(interfaceRegistry)
 
+	RegisterLegacyCodec(encodingConfig.Amino)
+	RegisterLegacyInterfaces(encodingConfig.InterfaceRegistry)
+
 	// NOTE: upgrade module is required to be prioritized
 	app.ModuleManager.SetOrderPreBlockers(
 		upgradetypes.ModuleName,
