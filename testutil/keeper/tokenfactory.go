@@ -72,10 +72,11 @@ type MockERC20Keeper struct {
 	IsRegistered   bool
 }
 
-func (m MockERC20Keeper) SetToken(ctx sdk.Context, pair erc20types.TokenPair) {
+func (m MockERC20Keeper) SetToken(ctx sdk.Context, pair erc20types.TokenPair) error {
+	return nil
 }
 
-func (m MockERC20Keeper) EnableDynamicPrecompiles(ctx sdk.Context, addresses ...ethcommon.Address) error {
+func (m MockERC20Keeper) EnableDynamicPrecompile(ctx sdk.Context, address ethcommon.Address) error {
 	return m.PrecompilesErr
 }
 
