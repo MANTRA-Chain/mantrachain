@@ -702,8 +702,8 @@ github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c/go.mod h1:X0
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCxjgDeGFg6G4u2zXff26c=
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
-github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1 h1:WqmQ6SxaYGbWKSdGieDiCHo4IruicYy8H1ehfZ7gnUM=
-github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
+github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1.0.20250809012538-1cedd7ed2c64 h1:N/iLvgQD8DufJIprCVrK0KW4NB2S+A8/zxkmTTNEYp0=
+github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1.0.20250809012538-1cedd7ed2c64/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
 github.com/MANTRA-Chain/evm v0.0.0-20250808024246-0088642e4659 h1:aUoCLfc9L1VYlYseU1182Hd+/Z1jCmm571G4mRLaU2s=
 github.com/MANTRA-Chain/evm v0.0.0-20250808024246-0088642e4659/go.mod h1:9nB6jKSnW1ICuSlxdvTaUME+RabQ8QV/eAHCgXo2Al4=
 github.com/MANTRA-Chain/evm/evmd v0.0.0-20250808024246-0088642e4659 h1:7wg2aqqS8SMVapJ6EFBmACqkUUFKRN9WPj2wjEat6aQ=

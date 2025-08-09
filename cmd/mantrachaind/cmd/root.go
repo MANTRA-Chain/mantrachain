@@ -47,8 +47,8 @@ func NewRootCmd() *cobra.Command {
 		Amino:             tempApp.LegacyAmino(),
 	}
 	// for decoding legacy transactions whose messages are removed
-	// app.RegisterLegacyCodec(encodingConfig.Amino)
-	// app.RegisterLegacyInterfaces(encodingConfig.InterfaceRegistry)
+	app.RegisterLegacyCodec(encodingConfig.Amino)
+	app.RegisterLegacyInterfaces(encodingConfig.InterfaceRegistry)
 
 	initClientCtx := client.Context{}.
 		WithCodec(encodingConfig.Codec).

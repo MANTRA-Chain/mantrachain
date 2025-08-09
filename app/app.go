@@ -594,6 +594,13 @@ func New(
 		Example of setting gov params:
 		govConfig.MaxMetadataLen = 10000
 	*/
+
+	legacyEncodingConfig := evmosencoding.MakeConfig(evmChainID)
+	RegisterLegacyInterfaces(legacyEncodingConfig.InterfaceRegistry)
+	opts := []govkeeper.InitOption{
+		govkeeper.WithLegacyCodec(legacyEncodingConfig.Codec),
+	}
+
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[govtypes.StoreKey]),
@@ -604,6 +611,7 @@ func New(
 		app.MsgServiceRouter(),
 		govConfig,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		opts...,
 	)
 
 	// Set legacy router for backwards compatibility with gov v1beta1
@@ -952,9 +960,6 @@ func New(
 		})
 	app.BasicModuleManager.RegisterLegacyAminoCodec(legacyAmino)
 	app.BasicModuleManager.RegisterInterfaces(interfaceRegistry)
-
-	RegisterLegacyCodec(encodingConfig.Amino)
-	RegisterLegacyInterfaces(encodingConfig.InterfaceRegistry)
 
 	// NOTE: upgrade module is required to be prioritized
 	app.ModuleManager.SetOrderPreBlockers(
