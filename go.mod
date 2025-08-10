@@ -59,7 +59,7 @@ require (
 	github.com/CosmWasm/wasmvm/v3 v3.0.0-ibc2.1
 	github.com/bufbuild/buf v1.46.0
 	github.com/cometbft/cometbft v0.38.17
-	github.com/cosmos/cosmos-db v1.1.1
+	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.0
 	github.com/cosmos/evm v1.0.0-rc0.0.20250602235914-3eb2135b9103
