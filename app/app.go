@@ -179,6 +179,8 @@ import (
 	oracle "github.com/skip-mev/connect/v2/x/oracle"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
+
+	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
 func init() {
@@ -337,6 +339,9 @@ func New(
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	// register legacy feemarket types for legacy proposals
+	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
+
 	var prepareProposalHandler sdk.PrepareProposalHandler
 	var processProposalHandler sdk.ProcessProposalHandler
 	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
