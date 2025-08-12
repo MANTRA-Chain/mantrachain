@@ -1,4 +1,4 @@
-package v5
+package v5rc0
 
 import (
 	"cosmossdk.io/store/types"
