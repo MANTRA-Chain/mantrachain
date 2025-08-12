@@ -3,7 +3,6 @@ package v5rc5_test
 import (
 	"testing"
 
-	"cosmossdk.io/store/types"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/MANTRA-Chain/mantrachain/v5/app"
@@ -19,7 +18,7 @@ import (
 )
 
 func TestCreateUpgradeHandler(t *testing.T) {
-	storeKey := types.NewKVStoreKey(erc20types.StoreKey)
+	storeKey := storetypes.NewKVStoreKey(erc20types.StoreKey)
 	codec := app.MakeEncodingConfig(t).Codec
 	a := app.MakeTestApp(t)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
@@ -32,7 +31,7 @@ func TestCreateUpgradeHandler(t *testing.T) {
 	store.Set([]byte("NativePrecompiles"), []byte(nativePrecompile))
 	configurator := module.NewConfigurator(nil, nil, nil)
 	keepers := &upgrades.UpgradeKeepers{Erc20Keeper: erc20Keeper}
-	storekeys := map[string]*types.KVStoreKey{
+	storekeys := map[string]*storetypes.KVStoreKey{
 		erc20types.StoreKey: storeKey,
 	}
 	handler := v5rc5.CreateUpgradeHandler(&module.Manager{}, configurator, keepers, storekeys)
@@ -40,8 +39,8 @@ func TestCreateUpgradeHandler(t *testing.T) {
 	require.NoError(t, err)
 	dynamicPrecompiles := erc20Keeper.GetDynamicPrecompiles(ctx)
 	nativePrecompiles := erc20Keeper.GetNativePrecompiles(ctx)
-	require.Equal(t, 1, len(dynamicPrecompiles))
-	require.Equal(t, 1, len(nativePrecompiles))
+	require.Len(t, dynamicPrecompiles, 1)
+	require.Len(t, nativePrecompiles, 1)
 	require.Equal(t, dynamicPrecompile, dynamicPrecompiles[0])
 	require.Equal(t, nativePrecompile, nativePrecompiles[0])
 }
