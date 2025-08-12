@@ -79,6 +79,7 @@ require (
 	github.com/prometheus/client_golang v1.22.0
 	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
+	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.9.2
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
