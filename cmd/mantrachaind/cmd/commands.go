@@ -29,6 +29,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	ethermintclient "github.com/cosmos/evm/client"
 	evmdebug "github.com/cosmos/evm/client/debug"
 	cosmosevmserver "github.com/cosmos/evm/server"
 	cosmosevmserverflags "github.com/cosmos/evm/server/flags"
@@ -85,7 +86,7 @@ func initRootCmd(
 		genesisCommand(txConfig, basicManager),
 		queryCommand(),
 		txCommand(),
-		KeyCommands(app.DefaultNodeHome, false),
+		ethermintclient.KeyCommands(app.DefaultNodeHome, false),
 	)
 
 	_, err := cosmosevmserverflags.AddTxFlags(rootCmd)

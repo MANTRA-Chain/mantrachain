@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	anteinterfaces "github.com/cosmos/evm/ante/interfaces"
+	chainante "github.com/cosmos/evm/evmd/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
@@ -28,6 +29,7 @@ type EVMHandlerOptions struct {
 	SigGasConsumer         func(meter storetypes.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 	MaxTxGasWanted         uint64
 	TxFeeChecker           ante.TxFeeChecker
+	PendingTxListener      chainante.PendingTxListener
 }
 
 // Validate checks if the keepers are defined
@@ -61,6 +63,9 @@ func (options EVMHandlerOptions) Validate() error {
 	}
 	if options.TxFeeChecker == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "tx fee checker is required for EVM AnteHandler")
+	}
+	if options.PendingTxListener == nil {
+		return errorsmod.Wrap(errortypes.ErrLogic, "pending tx listener is required for EVM AnteHandler")
 	}
 	return nil
 }
