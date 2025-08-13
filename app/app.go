@@ -42,8 +42,8 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/cosmos/cosmos-sdk/types/mempool"
-	"github.com/cosmos/evm/evmd"
+	sdkmempool "github.com/cosmos/cosmos-sdk/types/mempool"
+	evmmempool "github.com/cosmos/evm/mempool"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
@@ -255,6 +255,7 @@ type App struct {
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
+	clientCtx         client.Context
 
 	pendingTxListeners []chainante.PendingTxListener
 
@@ -305,6 +306,7 @@ type App struct {
 	EVMKeeper         *evmkeeper.Keeper
 	Erc20Keeper       erc20keeper.Keeper
 	PreciseBankKeeper precisebankkeeper.Keeper
+	EVMMempool        *evmmempool.ExperimentalEVMMempool
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -348,26 +350,6 @@ func New(
 
 	var prepareProposalHandler sdk.PrepareProposalHandler
 	var processProposalHandler sdk.ProcessProposalHandler
-	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
-		var mpool mempool.Mempool
-		if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
-			// Setup Mempool and Proposal Handlers
-			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
-				TxPriority:      mempool.NewDefaultTxPriority(),
-				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
-				MaxTx:           maxTxs,
-			})
-		} else {
-			mpool = mempool.NoOpMempool{}
-		}
-		app.SetMempool(mpool)
-		handler := baseapp.NewDefaultProposalHandler(mpool, app)
-
-		prepareProposalHandler = handler.PrepareProposalHandler()
-		processProposalHandler = handler.ProcessProposalHandler()
-		app.SetPrepareProposal(prepareProposalHandler)
-		app.SetProcessProposal(processProposalHandler)
-	})
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -1152,6 +1134,31 @@ func New(
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey], maxGasWanted)
 	// app.setPostHandler()
 
+	// set the EVM priority nonce mempool
+	// If you wish to use the noop mempool, remove this codeblock
+	if evmtypes.GetChainConfig() != nil {
+		// Get the actual block gas limit from consensus parameters
+		mempoolConfig := &evmmempool.EVMMempoolConfig{
+			AnteHandler:   app.AnteHandler(),
+			BlockGasLimit: 100_000_000,
+		}
+
+		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig)
+		app.EVMMempool = evmMempool
+
+		// Set the global mempool for RPC access
+		if err := evmmempool.SetGlobalEVMMempool(evmMempool); err != nil {
+			panic(err)
+		}
+		app.SetMempool(evmMempool)
+		checkTxHandler := evmmempool.NewCheckTxHandler(evmMempool)
+		app.SetCheckTxHandler(checkTxHandler)
+
+		abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
+		abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
+		app.SetPrepareProposal(abciProposalHandler.PrepareProposalHandler())
+	}
+
 	// oracle initialization
 	client, metrics, err := app.initializeOracle(appOpts)
 	if err != nil {
@@ -1299,6 +1306,10 @@ func (app *App) InterfaceRegistry() types.InterfaceRegistry {
 // TxConfig returns App's TxConfig
 func (app *App) TxConfig() client.TxConfig {
 	return app.txConfig
+}
+
+func (app *App) SetClientCtx(clientCtx client.Context) {
+	app.clientCtx = clientCtx
 }
 
 // AutoCliOpts returns the autocli options for the app.
