@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: "stable"
+          go-version: 1.23
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
