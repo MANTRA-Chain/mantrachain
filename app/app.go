@@ -1156,7 +1156,9 @@ func New(
 
 		abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
 		abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
-		app.SetPrepareProposal(abciProposalHandler.PrepareProposalHandler())
+		prepareProposalHandler = abciProposalHandler.PrepareProposalHandler()
+		processProposalHandler = abciProposalHandler.ProcessProposalHandler()
+		app.SetPrepareProposal(prepareProposalHandler)
 	}
 
 	// oracle initialization
