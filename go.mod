@@ -17,9 +17,9 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
 
-	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250808024246-0088642e4659
-	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20250808024246-0088642e4659
+	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250814022355-d7ef57b65371
+	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20250814022355-d7ef57b65371
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v0.0.0-20250806193535-2fc7571efa91
@@ -59,10 +59,10 @@ require (
 	github.com/CosmWasm/wasmd v0.61.1
 	github.com/CosmWasm/wasmvm/v3 v3.0.0
 	github.com/bufbuild/buf v1.46.0
-	github.com/cometbft/cometbft v0.38.17
+	github.com/cometbft/cometbft v0.38.18
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.53.3
+	github.com/cosmos/cosmos-sdk v0.53.4
 	github.com/cosmos/evm v1.0.0-rc2.0.20250728233944-0f22f9f84110
 	github.com/cosmos/evm/evmd v0.0.0-20250725153303-2934281442b2
 	github.com/cosmos/go-bip39 v1.0.0
@@ -82,15 +82,15 @@ require (
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.9.2
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/pflag v1.0.7
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/text v0.27.0
-	golang.org/x/tools v0.34.0
+	golang.org/x/text v0.28.0
+	golang.org/x/tools v0.35.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250528174236-200df99c418a
-	google.golang.org/grpc v1.74.0
+	google.golang.org/grpc v1.74.2
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
-	google.golang.org/protobuf v1.36.6
+	google.golang.org/protobuf v1.36.7
 )
 
 require (
@@ -380,14 +380,14 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	golang.org/x/arch v0.15.0 // indirect
-	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
-	golang.org/x/mod v0.25.0 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/mod v0.26.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/term v0.33.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/term v0.34.0 // indirect
 	golang.org/x/time v0.10.0 // indirect
 	google.golang.org/api v0.222.0 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
@@ -399,5 +399,5 @@ require (
 	pgregory.net/rapid v1.2.0 // indirect
 	pluginrpc.com/pluginrpc v0.5.0 // indirect
 	rsc.io/qr v0.2.0 // indirect
-	sigs.k8s.io/yaml v1.5.0 // indirect
+	sigs.k8s.io/yaml v1.6.0 // indirect
 )

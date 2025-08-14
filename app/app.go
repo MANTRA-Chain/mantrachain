@@ -128,10 +128,12 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	evmosencoding "github.com/cosmos/evm/encoding"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
+	chainante "github.com/cosmos/evm/evmd/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -253,6 +255,8 @@ type App struct {
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
+
+	pendingTxListeners []chainante.PendingTxListener
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -1213,6 +1217,17 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 
 	// Set the AnteHandler for the app
 	app.SetAnteHandler(ante.NewAnteHandler(handlerOpts))
+}
+
+// RegisterPendingTxListener is used by json-rpc server to listen to pending transactions callback.
+func (app *App) RegisterPendingTxListener(listener func(ethcommon.Hash)) {
+	app.pendingTxListeners = append(app.pendingTxListeners, listener)
+}
+
+func (app *App) onPendingTx(hash ethcommon.Hash) {
+	for _, listener := range app.pendingTxListeners {
+		listener(hash)
+	}
 }
 
 // no post handler currently
