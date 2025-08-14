@@ -58,7 +58,7 @@ func GetParams() *cobra.Command {
 // GetBlacklist returns the list of blacklisted accounts
 func GetBlacklist() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist",
+		Use:   "blacklist [flags]",
 		Short: "Get the list of blacklisted accounts",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
