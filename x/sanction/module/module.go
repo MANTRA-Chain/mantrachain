@@ -87,12 +87,12 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 	}
 }
 
-// GetTxCmd returns the tokenfactory module's root tx command.
+// GetTxCmd returns the sanction module's root tx command.
 func (a AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.GetTxCmd()
 }
 
-// GetQueryCmd returns the tokenfactory module's root query command.
+// GetQueryCmd returns the sanction module's root query command.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
