@@ -43,7 +43,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/mempool"
-	"github.com/cosmos/evm/evmd"
+	evmmempool "github.com/cosmos/evm/mempool"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
@@ -133,7 +133,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
-	chainante "github.com/cosmos/evm/evmd/ante"
+	evmante "github.com/cosmos/evm/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -255,8 +255,9 @@ type App struct {
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
+	clientCtx         client.Context
 
-	pendingTxListeners []chainante.PendingTxListener
+	pendingTxListeners []evmante.PendingTxListener
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -354,7 +355,7 @@ func New(
 			// Setup Mempool and Proposal Handlers
 			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
 				TxPriority:      mempool.NewDefaultTxPriority(),
-				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
+				SignerExtractor: evmmempool.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
 				MaxTx:           maxTxs,
 			})
 		} else {
@@ -1299,6 +1300,10 @@ func (app *App) InterfaceRegistry() types.InterfaceRegistry {
 // TxConfig returns App's TxConfig
 func (app *App) TxConfig() client.TxConfig {
 	return app.txConfig
+}
+
+func (app *App) SetClientCtx(clientCtx client.Context) {
+	app.clientCtx = clientCtx
 }
 
 // AutoCliOpts returns the autocli options for the app.
