@@ -704,10 +704,10 @@ github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCx
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1 h1:WqmQ6SxaYGbWKSdGieDiCHo4IruicYy8H1ehfZ7gnUM=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
-github.com/MANTRA-Chain/evm v0.0.0-20250819080734-91ef3b75770f h1:B/jAwtucacEEHRJoRxchDMaB4veP2TDJP5OEQ1LHfS4=
-github.com/MANTRA-Chain/evm v0.0.0-20250819080734-91ef3b75770f/go.mod h1:rbJfehzhOi8X4BDIF+ayEKNBZ4NF+Cz6FyTb9fFOFVo=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250819080734-91ef3b75770f h1:xw1Q11vgsyLOCzemt10yu6/yz87kcszUWdKOO0iYI/U=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250819080734-91ef3b75770f/go.mod h1:dsWDCgG6ZAwElkBDYs5m83ZDM8paq2HpSIr08sB/jW8=
+github.com/MANTRA-Chain/evm v0.0.0-20250820051844-dd50630e41fb h1:TJO9AITrvF+2WzMp+VfSQU0swAAB60Zl+CrW7I0sgw0=
+github.com/MANTRA-Chain/evm v0.0.0-20250820051844-dd50630e41fb/go.mod h1:XTqkHG9iglOe8c/tVD8f8bBHPk50M4yGVnAED6OtDEw=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20250820051844-dd50630e41fb h1:tLCyVe+dpU5JVTsIIpqfyc5ZjhZto6Dx1miM7s3DNQM=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20250820051844-dd50630e41fb/go.mod h1:zpAQGIS9LYdsU05NM0Z5UGR8AxdRiAnTKbq8xX/JfG0=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -926,8 +926,6 @@ github.com/cosmos/cosmos-proto v1.0.0-beta.5 h1:eNcayDLpip+zVLRLYafhzLvQlSmyab+R
 github.com/cosmos/cosmos-proto v1.0.0-beta.5/go.mod h1:hQGLpiIUloJBMdQMMWb/4wRApmI9hjHH05nefC0Ojec=
 github.com/cosmos/go-bip39 v1.0.0 h1:pcomnQdrdH22njcAatO0yWojsUnCO3y2tNoV1cb6hHY=
 github.com/cosmos/go-bip39 v1.0.0/go.mod h1:RNJv0H/pOIVgxw6KS7QeX2a0Uo0aKUlfhZ4xuwvCdJw=
-github.com/cosmos/go-ethereum v0.0.0-20250806193535-2fc7571efa91 h1:kgu2NkKzSeJJlVsKeS+KbdzfUeaFqrqmmhwixd/PNH4=
-github.com/cosmos/go-ethereum v0.0.0-20250806193535-2fc7571efa91/go.mod h1:X5CIOyo8SuK1Q5GnaEizQVLHT/DfsiGWuNeVdQcEMNA=
 github.com/cosmos/gogogateway v1.2.0 h1:Ae/OivNhp8DqBi/sh2A8a1D0y638GpL3tkmLQAiKxTE=
 github.com/cosmos/gogogateway v1.2.0/go.mod h1:iQpLkGWxYcnCdz5iAdLcRBSw3h7NXeOkZ4GUkT+tbFI=
 github.com/cosmos/gogoproto v1.4.2/go.mod h1:cLxOsn1ljAHSV527CHOtaIP91kK6cCrZETRBrkzItWU=
@@ -1896,6 +1894,8 @@ github.com/xeipuuv/gojsonschema v1.2.0/go.mod h1:anYRn/JVcOK2ZgGU+IjEV4nwlhoK5sQ
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 h1:gEOO8jv9F4OT7lGCjxCBTO/36wtF6j2nSip77qHd4x4=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1/go.mod h1:Ohn+xnUBiLI6FVj/9LpzZWtj1/D6lUovWYBkxHVV3aM=
+github.com/yihuang/go-ethereum v1.10.21-0.20250820050041-210d5222d7fd h1:8sHKrxoQLNtWxQoTIcKlMifcJ6UNz+clBS2YWgcD/Ag=
+github.com/yihuang/go-ethereum v1.10.21-0.20250820050041-210d5222d7fd/go.mod h1:X5CIOyo8SuK1Q5GnaEizQVLHT/DfsiGWuNeVdQcEMNA=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
