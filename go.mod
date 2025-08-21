@@ -18,11 +18,11 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250820051844-dd50630e41fb
-	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20250820051844-dd50630e41fb
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a
+	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a
 
 	// branch: release/1.16
-	github.com/ethereum/go-ethereum => github.com/yihuang/go-ethereum v1.10.21-0.20250820050041-210d5222d7fd
+	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
 
 	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
