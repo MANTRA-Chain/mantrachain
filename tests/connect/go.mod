@@ -8,8 +8,8 @@ require (
 	github.com/cosmos/cosmos-sdk v0.53.0
 	github.com/icza/dyno v0.0.0-20230330125955-09f820a8d9c0
 	github.com/skip-mev/connect/tests/integration/v2 v2.0.0-20240918152634-04c8ba59dddc
-	github.com/skip-mev/connect/v2 v2.0.1
-	github.com/strangelove-ventures/interchaintest/v8 v8.8.0
+	github.com/skip-mev/connect/v2 v2.0.0
+	github.com/strangelove-ventures/interchaintest/v8 v8.7.1
 	github.com/stretchr/testify v1.10.0
 )
 
@@ -21,7 +21,7 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/skip-mev/connect/tests/integration/v2 => github.com/MANTRA-Chain/connect/tests/integration/v2 v2.0.0-20250821052947-7dd41e211128
+	github.com/skip-mev/connect/tests/integration/v2 => github.com/MANTRA-Chain/connect/tests/integration/v2 v2.0.0-20250821085522-f868431bcff5
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/8ad89803888daa06cc93e546e120fe633aa53110
 	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.3
@@ -201,6 +201,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/mmcloughlin/addchain v0.4.0 // indirect
+	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
