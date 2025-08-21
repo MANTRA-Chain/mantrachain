@@ -98,7 +98,7 @@ var (
 			ChainID:        "chain-id-0",
 			Bin:            "mantrachaind",
 			Bech32Prefix:   "mantra",
-			CoinType:       "118",
+			CoinType:       "60",
 			GasAdjustment:  gasAdjustment,
 			GasPrices:      fmt.Sprintf("0%s", denom),
 			TrustingPeriod: "48h",
