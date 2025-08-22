@@ -1,0 +1,106 @@
+# This workflow creates a release using goreleaser
+name: Create release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "The desired tag for the release (e.g. v0.1.0)."
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build - ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.runner || 'chain-runner' }}
+    strategy:
+      matrix:
+        platform:
+          - name: Linux x86_64
+            ids: mantrachaind-linux-amd64
+            runner: ubuntu-latest-x64-xlarge
+            cross: false
+          - name: Linux aarch64
+            ids: mantrachaind-linux-arm64
+            runner: ubuntu-latest-arm64-xlarge
+            docker-platform: linux/arm64
+            cross: false
+          - name: MacOS x86_64 and aarch64
+            ids: mantrachaind-darwin-amd64,mantrachaind-darwin-arm64
+            runner: ubuntu-latest-x64-xlarge
+            cross: true
+
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - name: Checkout Git repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.release_tag || github.ref }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Make goreleaser build
+        run: |
+          make goreleaser-build-local
+        env:
+          GORELEASER_IDS: ${{ matrix.platform.ids }}
+          GORELEASER_CROSS_DISABLE: ${{ !matrix.platform.cross }}
+          GORELEASER_PLATFORM: ${{ matrix.platform.docker-platform || 'linux/amd64' }}
+          GORELEASER_SNAPSHOT: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}-${{ matrix.platform.name }}
+          path: dist/*/
+          retention-days: 1
+
+  release:
+    if: github.event_name != 'pull_request'
+    name: Create release
+    needs: [build]
+    runs-on: chain-runner
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.release_tag || github.ref }}
+
+      # Download all artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist-merged
+          pattern: release-${{ github.sha }}-*
+          merge-multiple: true
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Make release
+        run: |
+          make release
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_SKIP: validate
+          GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
