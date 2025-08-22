@@ -876,7 +876,7 @@ func New(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants)) //nolint:staticcheck
 
 	// optional: enable sign mode textual by overwriting the default tx config (after setting the bank keeper)
 	txConfigOpts := authtx.ConfigOptions{
@@ -930,7 +930,7 @@ func New(
 		oracleModule,
 
 		// sdk
-		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil),
+		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), //nolint:staticcheck
 
 		// mantrachain modules
 		tokenfactory.NewAppModule(appCodec, app.TokenFactoryKeeper),
