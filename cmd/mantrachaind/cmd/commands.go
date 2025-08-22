@@ -86,7 +86,7 @@ func initRootCmd(
 		genesisCommand(txConfig, basicManager),
 		queryCommand(),
 		txCommand(),
-		ethermintclient.KeyCommands(app.DefaultNodeHome, false),
+		ethermintclient.KeyCommands(app.DefaultNodeHome, true),
 	)
 
 	_, err := cosmosevmserverflags.AddTxFlags(rootCmd)
