@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -18,6 +19,7 @@ import (
 	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+	cmttypes "github.com/cometbft/cometbft/types"
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/core/appmodule"
@@ -133,7 +135,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
-	chainante "github.com/cosmos/evm/evmd/ante"
+	evmante "github.com/cosmos/evm/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -257,7 +259,7 @@ type App struct {
 	interfaceRegistry types.InterfaceRegistry
 	clientCtx         client.Context
 
-	pendingTxListeners []chainante.PendingTxListener
+	pendingTxListeners []evmante.PendingTxListener
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -317,6 +319,8 @@ type App struct {
 
 	// module configurator
 	configurator module.Configurator
+
+	eventBus *cmttypes.EventBus
 }
 
 // overrideWasmVariables overrides the wasm variables to:
@@ -1145,18 +1149,15 @@ func New(
 
 		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig)
 		app.EVMMempool = evmMempool
-
-		// Set the global mempool for RPC access
-		if err := evmmempool.SetGlobalEVMMempool(evmMempool); err != nil {
-			panic(err)
-		}
 		app.SetMempool(evmMempool)
 		checkTxHandler := evmmempool.NewCheckTxHandler(evmMempool)
 		app.SetCheckTxHandler(checkTxHandler)
 
 		abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
 		abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
-		app.SetPrepareProposal(abciProposalHandler.PrepareProposalHandler())
+		prepareProposalHandler = abciProposalHandler.PrepareProposalHandler()
+		processProposalHandler = abciProposalHandler.ProcessProposalHandler()
+		app.SetPrepareProposal(prepareProposalHandler)
 	}
 
 	// oracle initialization
@@ -1310,6 +1311,25 @@ func (app *App) TxConfig() client.TxConfig {
 
 func (app *App) SetClientCtx(clientCtx client.Context) {
 	app.clientCtx = clientCtx
+}
+
+func (app *App) GetMempool() sdkmempool.ExtMempool {
+	return app.EVMMempool
+}
+
+func (app *App) Close() error {
+	var err error
+	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok {
+		err = m.Close()
+	}
+	err = errors.Join(err, app.BaseApp.Close())
+	msg := "Application gracefully shutdown"
+	if err == nil {
+		app.Logger().Info(msg)
+	} else {
+		app.Logger().Error(msg, "error", err)
+	}
+	return err
 }
 
 // AutoCliOpts returns the autocli options for the app.
