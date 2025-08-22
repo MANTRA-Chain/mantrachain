@@ -10,6 +10,7 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
+	// v5 upgrade is for testnet v5rc0
 	UpgradeName = "v5"
 )
 

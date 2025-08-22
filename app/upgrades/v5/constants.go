@@ -10,9 +10,8 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	// Both this upgrade and v5rc0 have the same name but this is meant for mainnet
-	// while v5rc0 is meant to be the rc0 upgrade for testnet
-	UpgradeName = "v5"
+	// v5.0 upgrade is meant for the mainnet from v4
+	UpgradeName = "v5.0"
 )
 
 var Upgrade = upgrades.Upgrade{
