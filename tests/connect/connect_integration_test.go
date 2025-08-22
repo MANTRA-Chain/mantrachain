@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -42,7 +41,7 @@ var (
 		Version:    "v2.2.1",
 		UidGid:     "1000:1000",
 	}
-	encodingConfig = testutil.MakeTestEncodingConfig(
+	encodingConfig = MakeTestEncodingConfig(
 		bank.AppModuleBasic{},
 		oracle.AppModuleBasic{},
 		gov.AppModuleBasic{},
