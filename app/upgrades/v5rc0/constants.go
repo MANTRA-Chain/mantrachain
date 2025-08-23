@@ -1,4 +1,4 @@
-package v5
+package v5rc0
 
 import (
 	"cosmossdk.io/store/types"
@@ -10,8 +10,8 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	// v5.0 upgrade is meant for the mainnet from v4
-	UpgradeName = "v5.0"
+	// v5 upgrade is for testnet v5rc0
+	UpgradeName = "v5"
 )
 
 var Upgrade = upgrades.Upgrade{
