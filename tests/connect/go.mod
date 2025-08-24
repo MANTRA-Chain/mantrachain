@@ -20,18 +20,15 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/ad28aabb7f56ac7b1aae2a3f12f6a55b0f9979dd
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
-	// github.com/cosmos/cosmos-sdk => /Users/lancelan/mantra/MANTRA-Chain/cosmos-sdk
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
 	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a
-	// github.com/cosmos/evm => /Users/lancelan/mantra/MANTRA-Chain/evm
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
 
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/skip-mev/connect/tests/integration/v2 => github.com/MANTRA-Chain/connect/tests/integration/v2 v2.0.0-20250821085522-f868431bcff5
-	// github.com/skip-mev/connect/tests/integration/v2 => /Users/lancelan/mantra/MANTRA-Chain/connect/tests/integration
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
 	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/8ad89803888daa06cc93e546e120fe633aa53110
 	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.3
