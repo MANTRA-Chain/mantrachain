@@ -1547,10 +1547,10 @@ github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyua
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/pointerstructure v1.2.0 h1:O+i9nHnXS3l/9Wu7r4NrEdwA2VFTicjUEN1uBnDo34A=
 github.com/mitchellh/pointerstructure v1.2.0/go.mod h1:BRAsLI5zgXmw97Lf6s25bs8ohIXc3tViBH44KcwB2g4=
-github.com/mmsqe/evm v0.0.0-20250822011745-8c7a7bc32724 h1:tK6iln6FRzLPhtPiWSYiEcE9VvzDSVmwfY9uvDDtTlY=
-github.com/mmsqe/evm v0.0.0-20250822011745-8c7a7bc32724/go.mod h1:0MieO7SusZtzF1rwdVzcel0UAWI+JBN98bNLteRDK2E=
-github.com/mmsqe/evm/evmd v0.0.0-20250822011745-8c7a7bc32724 h1:/EY7aiGcWjO1luTldg9PoOv7/uWEhM+8Hd7YbfcLnlc=
-github.com/mmsqe/evm/evmd v0.0.0-20250822011745-8c7a7bc32724/go.mod h1:afe8FBtwa3BqBa7nfnxl43XN8NTFx8e0mQ1wcbD5vec=
+github.com/mmsqe/evm v0.0.0-20250825013941-a37a414d9762 h1:/S45ndiBSxJgLfOREpUH7j3GSnsK3B6JPVpX3vf1BzI=
+github.com/mmsqe/evm v0.0.0-20250825013941-a37a414d9762/go.mod h1:0MieO7SusZtzF1rwdVzcel0UAWI+JBN98bNLteRDK2E=
+github.com/mmsqe/evm/evmd v0.0.0-20250825013941-a37a414d9762 h1:4eaXSICVSdbjLHC5rlSpsiO6yYpiT7A5hqZtoVWz5eg=
+github.com/mmsqe/evm/evmd v0.0.0-20250825013941-a37a414d9762/go.mod h1:afe8FBtwa3BqBa7nfnxl43XN8NTFx8e0mQ1wcbD5vec=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/moby/locker v1.0.1 h1:fOXqR41zeveg4fFODix+1Ch4mj/gT0NE1XJbp/epuBg=

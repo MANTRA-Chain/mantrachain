@@ -108,7 +108,7 @@ func CreateUpgradeHandler(
 		evmParams := evmtypes.DefaultParams()
 		evmParams.EvmDenom = evmtypes.GetEVMCoinDenom()
 		// enable AllowUnprotectedTxs see adr-006
-		evmParams.AllowUnprotectedTxs = true
+		// evmParams.AllowUnprotectedTxs = true
 		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
