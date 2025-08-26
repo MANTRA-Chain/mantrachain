@@ -150,6 +150,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: MANTRA-Chain/mantrachain-e2e
+          submodules: recursive
+          fetch-depth: 1
           path: mantrachain-e2e
           ref: release/v5
 
