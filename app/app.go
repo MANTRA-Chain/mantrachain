@@ -763,6 +763,7 @@ func New(
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.TransferKeeper.SetAddressCodec(app.AccountKeeper.AddressCodec())
 
 	/*
 		Create Transfer Stack
