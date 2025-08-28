@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -763,7 +764,7 @@ func New(
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	app.TransferKeeper.SetAddressCodec(app.AccountKeeper.AddressCodec())
+	app.TransferKeeper.SetAddressCodec(AddressCodec{})
 
 	/*
 		Create Transfer Stack
@@ -1535,4 +1536,24 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 
 	return paramsKeeper
+}
+
+type AddressCodec struct{}
+
+func (t AddressCodec) StringToBytes(text string) ([]byte, error) {
+	hexBytes, err := sdk.AccAddressFromHexUnsafe(text)
+	if err == nil {
+		return hexBytes, nil
+	}
+
+	bech32Bytes, err := sdk.AccAddressFromBech32(text)
+	if err == nil {
+		return bech32Bytes, nil
+	}
+
+	return nil, errors.New("invalid address format")
+}
+
+func (t AddressCodec) BytesToString(bz []byte) (string, error) {
+	return sdk.AccAddress(bz).String(), nil
 }
