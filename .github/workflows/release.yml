@@ -22,7 +22,7 @@ permissions:
 jobs:
   build:
     name: Build - ${{ matrix.platform.name }}
-    runs-on: ${{ matrix.platform.runner || 'chain-runner' }}
+    runs-on: sandbox-asia-east2
     strategy:
       matrix:
         platform:
@@ -75,7 +75,7 @@ jobs:
     if: github.event_name != 'pull_request'
     name: Create release
     needs: [build]
-    runs-on: chain-runner
+    runs-on: sandbox-asia-east2
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4

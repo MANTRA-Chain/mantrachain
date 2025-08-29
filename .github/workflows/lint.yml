@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   golangci:
-    runs-on: ubuntu-latest
+    runs-on: sandbox-asia-east2
     name: lint
     steps:
       - uses: actions/checkout@v4

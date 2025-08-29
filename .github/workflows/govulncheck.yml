@@ -7,7 +7,7 @@ on:
 name: Run govulncheck
 jobs:
   govulncheck_job:
-    runs-on: ubuntu-latest
+    runs-on: sandbox-asia-east2
     steps:
       - id: govulncheck
         uses: golang/govulncheck-action@v1

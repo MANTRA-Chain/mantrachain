@@ -11,7 +11,7 @@ jobs:
       matrix:
         go-version: [1.23.x]
         os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: sandbox-asia-east2
     steps:
       - uses: actions/setup-go@v5
         with:

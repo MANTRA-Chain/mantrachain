@@ -11,7 +11,7 @@ on:
 jobs:
   delete-tagged-images:
     name: Delete Specific Tagged Images
-    runs-on: ubuntu-latest
+    runs-on: sandbox-asia-east2
     permissions:
       packages: write
     steps:

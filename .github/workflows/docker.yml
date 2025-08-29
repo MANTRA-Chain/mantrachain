@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   heighliner-docker:
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: sandbox-asia-east2
     steps:
       - uses: actions/checkout@v4
         with:

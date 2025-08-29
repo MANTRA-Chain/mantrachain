@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   integration_tests:
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: sandbox-asia-east2
     timeout-minutes: 240
     strategy:
       matrix:

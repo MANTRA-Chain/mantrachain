@@ -7,7 +7,7 @@ on:
 name: Build
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: sandbox-asia-east2
     steps:
       - uses: actions/setup-go@v5
         with:
