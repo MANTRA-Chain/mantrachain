@@ -174,6 +174,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 
 	"github.com/gorilla/mux"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
@@ -1544,7 +1545,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 type AddressCodec struct{}
 
 func (t AddressCodec) StringToBytes(text string) ([]byte, error) {
-	hexBytes, err := sdk.AccAddressFromHexUnsafe(text)
+	hexBytes, err := hexutil.Decode(text)
 	if err == nil {
 		return hexBytes, nil
 	}
