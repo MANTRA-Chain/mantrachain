@@ -739,6 +739,7 @@ func New(
 		tracer,
 	)
 
+	ac := AddressCodec{}
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(
 		keys[erc20types.StoreKey],
@@ -749,6 +750,7 @@ func New(
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
+		ac,
 	)
 
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
@@ -764,7 +766,7 @@ func New(
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	app.TransferKeeper.SetAddressCodec(AddressCodec{})
+	app.TransferKeeper.SetAddressCodec(ac)
 
 	/*
 		Create Transfer Stack
@@ -793,6 +795,7 @@ func New(
 		app.AccountKeeper,
 		app.EVMKeeper,
 		app.Erc20Keeper,
+		ac,
 	)
 	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
 	// register escrow address for tokenfactory when channel opens

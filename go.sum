@@ -704,10 +704,6 @@ github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCx
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1 h1:WqmQ6SxaYGbWKSdGieDiCHo4IruicYy8H1ehfZ7gnUM=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a h1:WW0R4UTzSZgKm+F69uXGKoBChezUtY90gqso3XI+MwY=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a h1:OY98diOpPbqx6yY9KctYYEP43RwNqlL2ekmr2okVxcQ=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -1549,8 +1545,10 @@ github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyua
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/pointerstructure v1.2.0 h1:O+i9nHnXS3l/9Wu7r4NrEdwA2VFTicjUEN1uBnDo34A=
 github.com/mitchellh/pointerstructure v1.2.0/go.mod h1:BRAsLI5zgXmw97Lf6s25bs8ohIXc3tViBH44KcwB2g4=
-github.com/mmsqe/ibc-go/v10 v10.0.0-20250827103939-657f56591a13 h1:UvYCjmbvQbNIamG2JNzwDFHgFu2szqXZsonjSRzwUZI=
-github.com/mmsqe/ibc-go/v10 v10.0.0-20250827103939-657f56591a13/go.mod h1:CthaR7n4d23PJJ7wZHegmNgbVcLXCQql7EwHrAXnMtw=
+github.com/mmsqe/evm v0.0.0-20250829024238-370715c7ea23 h1:HDemAJdcr0QeD5zfVAROnnV1Z1F0l0iVsIBlgUSxa6w=
+github.com/mmsqe/evm v0.0.0-20250829024238-370715c7ea23/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
+github.com/mmsqe/evm/evmd v0.0.0-20250829024238-370715c7ea23 h1:RZuU89f2jfvyas9gsCJPbFNkQwk+ac7/xlH2eKxx5ug=
+github.com/mmsqe/evm/evmd v0.0.0-20250829024238-370715c7ea23/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/moby/locker v1.0.1 h1:fOXqR41zeveg4fFODix+1Ch4mj/gT0NE1XJbp/epuBg=
@@ -1896,6 +1894,8 @@ github.com/xeipuuv/gojsonschema v1.2.0/go.mod h1:anYRn/JVcOK2ZgGU+IjEV4nwlhoK5sQ
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 h1:gEOO8jv9F4OT7lGCjxCBTO/36wtF6j2nSip77qHd4x4=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1/go.mod h1:Ohn+xnUBiLI6FVj/9LpzZWtj1/D6lUovWYBkxHVV3aM=
+github.com/yihuang/ibc-go/v10 v10.0.0-20250829014007-f2f842450169 h1:8pUaV16tulYeh+W2GPOgyiUPGN2YMHBHybqYosAV2+g=
+github.com/yihuang/ibc-go/v10 v10.0.0-20250829014007-f2f842450169/go.mod h1:CthaR7n4d23PJJ7wZHegmNgbVcLXCQql7EwHrAXnMtw=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
