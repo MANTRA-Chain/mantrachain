@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -45,6 +44,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdkmempool "github.com/cosmos/cosmos-sdk/types/mempool"
+	"github.com/cosmos/evm/evmd"
 	evmmempool "github.com/cosmos/evm/mempool"
 
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
@@ -801,19 +801,19 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// TODO: Configure EVM precompiles when needed
-	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
-	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
-	// 	app.StakingKeeper,
-	// 	app.DistrKeeper,
-	// 	app.PreciseBankKeeper,
-	// 	app.Erc20Keeper,
-	// 	app.TransferKeeper,
-	// 	app.IBCKeeper.ChannelKeeper,
-	// 	app.EVMKeeper,
-	// 	app.GovKeeper,
-	// 	app.SlashingKeeper,
-	// 	app.AppCodec(),
-	// )
+	corePrecompiles := evmd.NewAvailableStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		app.PreciseBankKeeper,
+		app.Erc20Keeper,
+		app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.EVMKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		app.AppCodec(),
+	)
 	app.EVMKeeper.WithStaticPrecompiles(
 		corePrecompiles,
 	)
