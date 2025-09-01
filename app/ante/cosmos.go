@@ -87,7 +87,7 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		ante.NewSetPubKeyDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewValidateSigCountDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SigGasConsumer),
-		ante.NewSigVerificationDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SignModeHandler),
+		NewMultiChainIDDecorator(ante.NewSigVerificationDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SignModeHandler)),
 		ante.NewIncrementSequenceDecorator(options.EvmOptions.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 		evmante.NewGasWantedDecorator(options.EvmOptions.EvmKeeper, options.EvmOptions.FeeMarketKeeper),

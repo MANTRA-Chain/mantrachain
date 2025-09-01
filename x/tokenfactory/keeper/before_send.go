@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	errorsmod "cosmossdk.io/errors"
-	types2 "cosmossdk.io/store/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/v3/types"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -125,17 +124,11 @@ func (k Keeper) callBeforeSendListener(ctx context.Context, from, to sdk.AccAddr
 			if err != nil {
 				return err
 			}
-			em := sdk.NewEventManager()
-
-			newGasLimit := min(types.BeforeSendHookGasLimit, c.GasMeter().GasRemaining())
-			childCtx := c.WithGasMeter(types2.NewGasMeter(newGasLimit))
-			_, err = k.contractKeeper.Sudo(childCtx.WithEventManager(em), cwAddr, msgBz)
+			childCtx := c.WithGasMeter(types.NewProxyGasMeter(c.GasMeter(), types.BeforeSendHookGasLimit))
+			_, err = k.contractKeeper.Sudo(childCtx, cwAddr, msgBz)
 			if err != nil {
 				return errorsmod.Wrapf(err, "failed to call before send hook for denom %s", coin.Denom)
 			}
-
-			// consume gas used for calling contract to the parent ctx
-			c.GasMeter().ConsumeGas(childCtx.GasMeter().GasConsumed(), "track before send gas")
 		}
 	}
 	return nil
