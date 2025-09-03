@@ -22,7 +22,8 @@ func TestCreateUpgradeHandler(t *testing.T) {
 	codec := app.MakeEncodingConfig(t).Codec
 	a := app.MakeTestApp(t)
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	erc20Keeper := erc20keeper.NewKeeper(storeKey, codec, authority, a.AccountKeeper, a.BankKeeper, a.EVMKeeper, a.StakingKeeper, &a.TransferKeeper)
+	ac := app.AddressCodec{}
+	erc20Keeper := erc20keeper.NewKeeper(storeKey, codec, authority, a.AccountKeeper, a.BankKeeper, a.EVMKeeper, a.StakingKeeper, &a.TransferKeeper, ac)
 	ctx := testutil.DefaultContext(storeKey, storetypes.NewTransientStoreKey("transient"))
 	store := ctx.KVStore(storeKey)
 	dynamicPrecompile := "0x6eC942095eCD4948d9C094337ABd59Dc3c521005"
