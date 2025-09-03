@@ -18,9 +18,10 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
-	github.com/cosmos/evm => github.com/mmsqe/evm v0.0.0-20250901064528-3edf0d47ef81
-	github.com/cosmos/evm/evmd => github.com/mmsqe/evm/evmd v0.0.0-20250901064528-3edf0d47ef81
-	github.com/cosmos/ibc-go/v10 => github.com/yihuang/ibc-go/v10 v10.0.0-20250829014007-f2f842450169
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250903072828-01cafbce3c95
+	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20250903072828-01cafbce3c95
+
+	github.com/cosmos/ibc-go/v10 => github.com/cosmos/ibc-go/v10 v10.3.1-0.20250901175658-8c66bc6ffd8f
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
@@ -69,7 +70,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
-	github.com/cosmos/ibc-go/v10 v10.3.0
+	github.com/cosmos/ibc-go/v10 v10.3.1-0.20250901175658-8c66bc6ffd8f
 	github.com/ethereum/go-ethereum v1.15.11
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.4
