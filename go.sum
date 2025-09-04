@@ -704,10 +704,10 @@ github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCx
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1 h1:WqmQ6SxaYGbWKSdGieDiCHo4IruicYy8H1ehfZ7gnUM=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a h1:WW0R4UTzSZgKm+F69uXGKoBChezUtY90gqso3XI+MwY=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a h1:OY98diOpPbqx6yY9KctYYEP43RwNqlL2ekmr2okVxcQ=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
+github.com/MANTRA-Chain/evm v0.0.0-20250903072828-01cafbce3c95 h1:qANFKkDlc0j7q+zhT4UHPh/Nk2dfgfGfeNBdFIg4H5M=
+github.com/MANTRA-Chain/evm v0.0.0-20250903072828-01cafbce3c95/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20250903072828-01cafbce3c95 h1:jfES7mTmgftJXiyShC9vh5Gg/KS9MzIPhKWwnomRJSA=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20250903072828-01cafbce3c95/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -939,8 +939,8 @@ github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0 h1:Wpa3gDW2tNxxdcUz
 github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0/go.mod h1:0NWhkh5Ok8t/qHWOn8LUZsG5rTxhwQWyrsI3xu1/PO0=
 github.com/cosmos/ibc-go/modules/capability v1.0.1 h1:ibwhrpJ3SftEEZRxCRkH0fQZ9svjthrX2+oXdZvzgGI=
 github.com/cosmos/ibc-go/modules/capability v1.0.1/go.mod h1:rquyOV262nGJplkumH+/LeYs04P3eV8oB7ZM4Ygqk4E=
-github.com/cosmos/ibc-go/v10 v10.3.0 h1:w5DkHih8qn15deAeFoTk778WJU+xC1krJ5kDnicfUBc=
-github.com/cosmos/ibc-go/v10 v10.3.0/go.mod h1:CthaR7n4d23PJJ7wZHegmNgbVcLXCQql7EwHrAXnMtw=
+github.com/cosmos/ibc-go/v10 v10.3.1-0.20250901175658-8c66bc6ffd8f h1:aTONhN4P3e5vnBKHalSqLttt6VCp4j20+LilVQlKI/0=
+github.com/cosmos/ibc-go/v10 v10.3.1-0.20250901175658-8c66bc6ffd8f/go.mod h1:CthaR7n4d23PJJ7wZHegmNgbVcLXCQql7EwHrAXnMtw=
 github.com/cosmos/ics23/go v0.11.0 h1:jk5skjT0TqX5e5QJbEnwXIS2yI2vnmLOgpQPeM5RtnU=
 github.com/cosmos/ics23/go v0.11.0/go.mod h1:A8OjxPE67hHST4Icw94hOxxFEJMBG031xIGF/JHNIY0=
 github.com/cosmos/interchain-security/v7 v7.0.1 h1:jg2pMbchCBN5LRDDgd9l86fcvw1v8dezGAxazhI0gtQ=

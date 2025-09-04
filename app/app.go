@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -174,6 +175,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 
 	"github.com/gorilla/mux"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
@@ -739,6 +741,7 @@ func New(
 		tracer,
 	)
 
+	ac := AddressCodec{}
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(
 		keys[erc20types.StoreKey],
@@ -749,6 +752,7 @@ func New(
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
+		ac,
 	)
 
 	// instantiate IBC transfer keeper AFTER the ERC-20 keeper to use it in the instantiation
@@ -764,6 +768,7 @@ func New(
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.TransferKeeper.SetAddressCodec(ac)
 
 	/*
 		Create Transfer Stack
@@ -792,6 +797,7 @@ func New(
 		app.AccountKeeper,
 		app.EVMKeeper,
 		app.Erc20Keeper,
+		ac,
 	)
 	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
 	// register escrow address for tokenfactory when channel opens
@@ -1535,4 +1541,24 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 
 	return paramsKeeper
+}
+
+type AddressCodec struct{}
+
+func (t AddressCodec) StringToBytes(text string) ([]byte, error) {
+	hexBytes, err := hexutil.Decode(text)
+	if err == nil {
+		return hexBytes, nil
+	}
+
+	bech32Bytes, err := sdk.AccAddressFromBech32(text)
+	if err == nil {
+		return bech32Bytes, nil
+	}
+
+	return nil, errors.New("invalid address format")
+}
+
+func (t AddressCodec) BytesToString(bz []byte) (string, error) {
+	return sdk.AccAddress(bz).String(), nil
 }
