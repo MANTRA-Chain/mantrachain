@@ -27,7 +27,9 @@ import (
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
 )
 
@@ -62,6 +64,8 @@ func init() {
 	feemarkettypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	wasmTypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	tokenfactorytypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	erc20types.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	evmtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	cdc = encodingConfig.Codec
 	txConfig = encodingConfig.TxConfig
@@ -103,7 +107,7 @@ func (c *chain) createAndInitValidators(count int) error {
 		app.EmptyAppOptions{},
 		emptyWasmOpts,
 		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
+		app.EvmAppOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {

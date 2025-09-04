@@ -9,6 +9,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
 )
 
 type ForwardMetadata struct {
@@ -224,8 +225,8 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 		sender := address.String()
 
-		address, _ = s.chainB.validators[0].keyInfo.GetAddress()
-		recipient := address.String()
+		addressChainB, _ := s.chainB.validators[0].keyInfo.GetAddress()
+		recipient := addressChainB.String()
 
 		chainBAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainB.id][0].GetHostPort("1317/tcp"))
 
@@ -245,6 +246,9 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			}
 		}
 
+		var afterIBCTokenPairs []erc20types.TokenPair
+		beforeIBCTokenPairs, err := queryAllTokenPairs(chainBAPIEndpoint)
+
 		tokenAmt := 3300000000
 		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), "", false)
 
@@ -255,7 +259,8 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 			func() bool {
 				balances, err = queryAllBalances(chainBAPIEndpoint, recipient)
 				s.Require().NoError(err)
-				return balances.Len() != 0
+				afterIBCTokenPairs, err = queryAllTokenPairs(chainBAPIEndpoint)
+				return balances.Len() != 0 && len(afterIBCTokenPairs) == len(beforeIBCTokenPairs)+1
 			},
 			time.Minute,
 			5*time.Second,
