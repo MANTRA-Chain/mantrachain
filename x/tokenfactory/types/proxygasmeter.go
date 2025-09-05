@@ -1,8 +1,8 @@
 package types
 
 import (
-	fmt "fmt"
-	math "math"
+	"fmt"
+	"math"
 
 	storetypes "cosmossdk.io/store/types"
 )
