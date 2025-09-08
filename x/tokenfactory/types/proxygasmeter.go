@@ -34,9 +34,14 @@ func NewProxyGasMeter(gasMeter storetypes.GasMeter, limit storetypes.Gas) storet
 	}
 }
 
+func (pgm ProxyGasMeter) RefundGas(amount storetypes.Gas, descriptor string) {
+	pgm.GasMeter.RefundGas(amount, descriptor)
+	pgm.parent.RefundGas(amount, descriptor)
+}
+
 func (pgm ProxyGasMeter) ConsumeGas(amount storetypes.Gas, descriptor string) {
-	pgm.GasMeter.ConsumeGas(amount, descriptor)
 	pgm.parent.ConsumeGas(amount, descriptor)
+	pgm.GasMeter.ConsumeGas(amount, descriptor)
 }
 
 func (pgm ProxyGasMeter) String() string {
