@@ -40,5 +40,5 @@ func (pgm ProxyGasMeter) ConsumeGas(amount storetypes.Gas, descriptor string) {
 }
 
 func (pgm ProxyGasMeter) String() string {
-	return fmt.Sprintf("ProxyGasMeter{consumed: %d, limit: %d}", pgm.GasConsumed(), pgm.Limit)
+	return fmt.Sprintf("ProxyGasMeter{consumed: %d, limit: %d}", pgm.GasConsumed(), pgm.Limit())
 }
