@@ -23,11 +23,6 @@ type ProxyGasMeter struct {
 func NewProxyGasMeter(gasMeter storetypes.GasMeter, limit storetypes.Gas) storetypes.GasMeter {
 	gasLimit := min(limit, gasMeter.GasRemaining())
 	base := storetypes.NewGasMeter(gasLimit)
-
-	if limit >= gasMeter.GasRemaining() {
-		return gasMeter
-	}
-
 	return &ProxyGasMeter{
 		GasMeter: base,
 		parent:   gasMeter,
