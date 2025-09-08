@@ -20,9 +20,14 @@ type ProxyGasMeter struct {
 // NewProxyGasMeter returns a new ProxyGasMeter which is like a basic gas meter with minimum of new limit and remaining gas
 // of the parent gas meter, it also delegate the gas consumption to parent gas meter in real time, so it won't risk
 // losing gas accounting in face of panics or other unexpected errors.
+//
+// If limit is greater than or equal to the remaining gas, no wrapping is needed and the original gas meter is returned.
 func NewProxyGasMeter(gasMeter storetypes.GasMeter, limit storetypes.Gas) storetypes.GasMeter {
-	gasLimit := min(limit, gasMeter.GasRemaining())
-	base := storetypes.NewGasMeter(gasLimit)
+	if limit >= gasMeter.GasRemaining() {
+		return gasMeter
+	}
+
+	base := storetypes.NewGasMeter(limit)
 	return &ProxyGasMeter{
 		GasMeter: base,
 		parent:   gasMeter,
