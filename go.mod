@@ -1,6 +1,6 @@
 module github.com/MANTRA-Chain/mantrachain/v4
 
-go 1.23.1
+go 1.23.8
 
 replace (
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.50.14, current branch: mantra/v0.50.14

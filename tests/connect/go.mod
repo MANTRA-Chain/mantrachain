@@ -1,6 +1,6 @@
 module github.com/MANTRA-Chain/mantrachain/v3/tests/connect
 
-go 1.23.1
+go 1.23.8
 
 require (
 	github.com/cosmos/cosmos-sdk v0.50.12
