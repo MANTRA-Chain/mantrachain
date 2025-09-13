@@ -3,7 +3,9 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/collections"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 var _ types.QueryServer = queryServer{}
@@ -22,14 +24,22 @@ func (q queryServer) Blacklist(
 	ctx context.Context,
 	req *types.QueryBlacklistRequest,
 ) (*types.QueryBlacklistResponse, error) {
-	iter, err := q.k.BlacklistAccounts.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	blacklist, err := iter.Keys()
+	blacklist := []string{}
+	_, pageRes, err := query.CollectionPaginate(
+		ctx,
+		q.k.BlacklistAccounts,
+		req.Pagination,
+		func(key string, _ collections.NoValue) (bool, error) {
+			blacklist = append(blacklist, key)
+			return true, nil
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryBlacklistResponse{BlacklistedAccounts: blacklist}, nil
+	return &types.QueryBlacklistResponse{
+		BlacklistedAccounts: blacklist,
+		Pagination:          pageRes,
+	}, nil
 }

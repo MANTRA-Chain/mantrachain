@@ -2,7 +2,9 @@ package e2e
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -10,6 +12,9 @@ import (
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -21,6 +26,10 @@ const (
 const (
 	proposalDisableDenomSendFilename = "proposal_disable_denom_send.json"
 	proposalEnableDenomSendFilename  = "proposal_enable_denom_send.json"
+
+	transferCapContractFilename   = "transfer_cap.wasm"
+	percentageCapContractFilename = "percentage_cap.wasm"
+	taxStakeDenomContractFilename = "tax_stake_denom.wasm"
 )
 
 func (s *IntegrationTestSuite) writeDisableDenomSendProposal(c *chain, denom string) {
@@ -79,6 +88,23 @@ func (s *IntegrationTestSuite) writeEnableDenomSendProposal(c *chain, denom stri
 	s.Require().NoError(err)
 }
 
+func (s *IntegrationTestSuite) writeWasmContracts(c *chain) {
+	contractWasm, err := os.ReadFile(fmt.Sprint("test_data/", transferCapContractFilename))
+	s.Require().NoError(err)
+	err = writeFile(filepath.Join(c.validators[0].configDir(), transferCapContractFilename), contractWasm)
+	s.Require().NoError(err)
+
+	contractWasm, err = os.ReadFile(fmt.Sprint("test_data/", percentageCapContractFilename))
+	s.Require().NoError(err)
+	err = writeFile(filepath.Join(c.validators[0].configDir(), percentageCapContractFilename), contractWasm)
+	s.Require().NoError(err)
+
+	contractWasm, err = os.ReadFile(fmt.Sprint("test_data/", taxStakeDenomContractFilename))
+	s.Require().NoError(err)
+	err = writeFile(filepath.Join(c.validators[0].configDir(), taxStakeDenomContractFilename), contractWasm)
+	s.Require().NoError(err)
+}
+
 func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 	s.Run("create_denom_tokenfactory", func() {
 		var (
@@ -89,7 +115,7 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		)
 
 		// define one sender and two recipient accounts
-		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		alice := s.getAlice()
 
 		var beforeAliceUomBalance,
 			afterAliceUomBalance sdk.Coin
@@ -101,7 +127,7 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
 				s.Require().NoError(err)
 
 				return beforeAliceUomBalance.IsValid()
@@ -110,20 +136,145 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 			5*time.Second,
 		)
 
-		s.createDenom(c, valIdx, alice.String(), subdenom, standardFees.String(), false)
+		s.createDenom(c, valIdx, alice, subdenom, standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees).IsEqual(afterAliceUomBalance)
+				beforeAlice := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees)
 
-				return decremented
+				return beforeAlice.Equal(afterAliceUomBalance)
 			},
 			10*time.Second,
 			5*time.Second,
+		)
+	})
+}
+
+func (s *IntegrationTestSuite) testTokenfactoryAdmin() {
+	s.Run("default_denom_admin_should_be_the_creator", func() {
+		var (
+			err    error
+			valIdx = 0
+			c      = s.chainA
+		)
+
+		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+
+		result, err := queryTokenfactoryDenomAuthorityMetadata(chainEndpoint, s.getAlice(), subdenom)
+
+		s.Require().NoError(err)
+
+		s.Require().Equal(result.Admin, s.getAlice(), "By default, the denom admin should be the creator")
+	})
+}
+
+func (s *IntegrationTestSuite) testTokenfactorySetMetadata() {
+	s.Run("set_denom_metadata_tokenfactory", func() {
+		var (
+			err    error
+			valIdx = 0
+			c      = s.chainA
+		)
+
+		// Create metadata JSON content using the global helper function
+		metadataContent := s.BuildTokenMetadata()
+		customDenom := metadataContent.Base
+		metadataString := MetadataToString(metadataContent)
+
+		// Write metadata to file in the validator's config directory
+		metadataFileName := "metadata.json"
+		metadataFile := filepath.Join(c.validators[valIdx].configDir(), metadataFileName)
+		err = writeFile(metadataFile, []byte(metadataString))
+		s.Require().NoError(err)
+		s.T().Logf("Start setting metadata for denom %s", customDenom)
+
+		// Set the metadata using the CLI command
+		s.setDenomMetadata(c, valIdx, s.getAlice(), filepath.Join(mantraHomePath, metadataFileName), standardFees.String(), false)
+
+		s.T().Logf("Successfully set metadata for denom %s", customDenom)
+
+		// Query and verify the metadata was set correctly
+		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+
+		s.Require().Eventually(
+			func() bool {
+				queriedMetadata, err := queryTokenfactoryDenomMetadata(chainEndpoint, customDenom)
+				if err != nil {
+					s.T().Logf("Error querying metadata: %v", err)
+					return false
+				}
+
+				// Verify metadata fields
+				if queriedMetadata.Description != metadataContent.Description {
+					s.T().Logf("Description mismatch: expected %s, got %s", metadataContent.Description, queriedMetadata.Description)
+					return false
+				}
+
+				if queriedMetadata.Base != metadataContent.Base {
+					s.T().Logf("Base mismatch: expected %s, got %s", metadataContent.Base, queriedMetadata.Base)
+					return false
+				}
+
+				if queriedMetadata.Display != metadataContent.Display {
+					s.T().Logf("Display mismatch: expected %s, got %s", metadataContent.Display, queriedMetadata.Display)
+					return false
+				}
+
+				if queriedMetadata.Name != metadataContent.Name {
+					s.T().Logf("Name mismatch: expected %s, got %s", metadataContent.Name, queriedMetadata.Name)
+					return false
+				}
+
+				if queriedMetadata.Symbol != metadataContent.Symbol {
+					s.T().Logf("Symbol mismatch: expected %s, got %s", metadataContent.Symbol, queriedMetadata.Symbol)
+					return false
+				}
+
+				if len(queriedMetadata.DenomUnits) != len(metadataContent.DenomUnits) {
+					s.T().Logf("DenomUnits length mismatch: expected %d, got %d", len(metadataContent.DenomUnits), len(queriedMetadata.DenomUnits))
+					return false
+				}
+
+				// Verify denom units
+				for i, expectedUnit := range metadataContent.DenomUnits {
+					if i >= len(queriedMetadata.DenomUnits) {
+						s.T().Logf("Missing denom unit at index %d", i)
+						return false
+					}
+
+					queriedUnit := queriedMetadata.DenomUnits[i]
+					if queriedUnit.Denom != expectedUnit.Denom {
+						s.T().Logf("DenomUnit[%d] Denom mismatch: expected %s, got %s", i, expectedUnit.Denom, queriedUnit.Denom)
+						return false
+					}
+
+					if queriedUnit.Exponent != expectedUnit.Exponent {
+						s.T().Logf("DenomUnit[%d] Exponent mismatch: expected %d, got %d", i, expectedUnit.Exponent, queriedUnit.Exponent)
+						return false
+					}
+
+					if len(queriedUnit.Aliases) != len(expectedUnit.Aliases) {
+						s.T().Logf("DenomUnit[%d] Aliases length mismatch: expected %d, got %d", i, len(expectedUnit.Aliases), len(queriedUnit.Aliases))
+						return false
+					}
+
+					for j, expectedAlias := range expectedUnit.Aliases {
+						if j >= len(queriedUnit.Aliases) || queriedUnit.Aliases[j] != expectedAlias {
+							s.T().Logf("DenomUnit[%d] Alias[%d] mismatch: expected %s, got %s", i, j, expectedAlias, queriedUnit.Aliases[j])
+							return false
+						}
+					}
+				}
+
+				s.T().Logf("Successfully verified metadata for denom %s", customDenom)
+				return true
+			},
+			30*time.Second,
+			2*time.Second,
 		)
 	})
 }
@@ -138,7 +289,7 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 		)
 
 		// define one admin and one recipient
-		alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+		alice := s.getAlice()
 		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 
 		var beforeAliceCustomTokenBalance,
@@ -146,12 +297,12 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 			beforeBobCustomTokenBalance,
 			afterBobCustomTokenBalance sdk.Coin
 
-		customDenom := fmt.Sprintf("factory/%s/%s", alice.String(), subdenom)
+		customDenom := buildDenom(alice, subdenom)
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
 				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
@@ -164,23 +315,23 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 		)
 
 		toMint := sdk.NewCoin(customDenom, math.NewInt(mintAmt))
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), "", standardFees.String(), false)
+		s.mintDenom(c, valIdx, alice, toMint.String(), "", standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
-				incremented := beforeAliceCustomTokenBalance.Add(toMint).IsEqual(afterAliceCustomTokenBalance)
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toMint)
 
-				return incremented
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
 		)
 
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), bob.String(), standardFees.String(), false)
+		s.mintDenom(c, valIdx, alice, toMint.String(), bob.String(), standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
@@ -188,9 +339,9 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
 				s.Require().NoError(err)
 
-				incremented := beforeBobCustomTokenBalance.Add(toMint).IsEqual(afterBobCustomTokenBalance)
+				incrementedBob := beforeBobCustomTokenBalance.Add(toMint)
 
-				return incremented
+				return incrementedBob.Equal(afterBobCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -225,51 +376,53 @@ func (s *IntegrationTestSuite) testTokenfactoryMint() {
 			5*time.Second,
 		)
 
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), bob.String(), standardFees.String(), true)
+		s.mintDenom(c, valIdx, alice, toMint.String(), bob.String(), standardFees.String(), true)
 
 		escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
 		s.Require().NoError(err)
-		s.mintDenom(c, valIdx, alice.String(), toMint.String(), escrowAddress, standardFees.String(), true)
+		s.mintDenom(c, valIdx, alice, toMint.String(), escrowAddress, standardFees.String(), true)
 	})
 }
 
 func (s *IntegrationTestSuite) testTokenfactoryBurn() {
-	var (
-		err           error
-		valIdx        = 0
-		c             = s.chainA
-		chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
-	)
-	// define one admin and one recipient
-	alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
-	bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
+	s.Run("burn_tokens_tokenfactory", func() {
+		var (
+			err           error
+			valIdx        = 0
+			c             = s.chainA
+			chainEndpoint = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+		)
 
-	var beforeAliceCustomTokenBalance,
-		afterAliceCustomTokenBalance,
-		beforeBobCustomTokenBalance,
-		afterBobCustomTokenBalance sdk.Coin
+		// define one admin and one recipient
+		alice := s.getAlice()
+		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 
-	customDenom := fmt.Sprintf("factory/%s/%s", alice.String(), subdenom)
+		var beforeAliceCustomTokenBalance,
+			afterAliceCustomTokenBalance,
+			beforeBobCustomTokenBalance,
+			afterBobCustomTokenBalance sdk.Coin
 
-	// get balances of sender and recipient accounts
-	s.Require().Eventually(
-		func() bool {
-			beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
-			s.Require().NoError(err)
+		customDenom := buildDenom(alice, subdenom)
 
-			beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
-			s.Require().NoError(err)
+		// get balances of sender and recipient accounts
+		s.Require().Eventually(
+			func() bool {
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
+				s.Require().NoError(err)
 
-			return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid()
-		},
-		10*time.Second,
-		5*time.Second,
-	)
+				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
 
-	toBurn := sdk.NewCoin(customDenom, math.NewInt(burnAmt))
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
 
-	s.Run("reenable_token_send", func() {
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), "", standardFees.String(), true)
+		toBurn := sdk.NewCoin(customDenom, math.NewInt(burnAmt))
+
+		s.T().Logf("Reenable token send %s", customDenom)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), "", standardFees.String(), true)
 
 		s.writeEnableDenomSendProposal(s.chainA, customDenom)
 
@@ -296,26 +449,24 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 			15*time.Second,
 			5*time.Second,
 		)
-	})
 
-	s.Run("burn_tokens_tokenfactory", func() {
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), "", standardFees.String(), false)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), "", standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice, customDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceCustomTokenBalance.Sub(toBurn).IsEqual(afterAliceCustomTokenBalance)
+				beforeAlice := beforeAliceCustomTokenBalance.Sub(toBurn)
 
-				return decremented
+				return beforeAlice.Equal(afterAliceCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
 		)
 
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), bob.String(), standardFees.String(), false)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), bob.String(), standardFees.String(), false)
 
 		// check that the creation was successful
 		s.Require().Eventually(
@@ -323,9 +474,9 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeBobCustomTokenBalance.Sub(toBurn).IsEqual(afterBobCustomTokenBalance)
+				beforeBob := beforeBobCustomTokenBalance.Sub(toBurn)
 
-				return decremented
+				return beforeBob.Equal(afterBobCustomTokenBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -333,8 +484,367 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 
 		escrowAddress, err := queryIBCEscrowAddress(chainEndpoint, "channel-0")
 		s.Require().NoError(err)
-		s.burnDenom(c, valIdx, alice.String(), toBurn.String(), escrowAddress, standardFees.String(), true)
+		s.burnDenom(c, valIdx, alice, toBurn.String(), escrowAddress, standardFees.String(), true)
 	})
+}
+
+func (s *IntegrationTestSuite) testTokenfactoryHooks() {
+	const (
+		TRANSFER_CAP = int64(1000000)
+	)
+	var (
+		err                 error
+		valIdx              = 0
+		c                   = s.chainA
+		chainEndpoint       = fmt.Sprintf("http://%s", s.valResources[c.id][valIdx].GetHostPort("1317/tcp"))
+		testHooksMintAmount = int64(10000000)
+	)
+
+	// define one admin and one recipient
+	alice, _ := c.genesisAccounts[1].keyInfo.GetAddress()
+	bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
+	charlie, _ := c.genesisAccounts[3].keyInfo.GetAddress()
+
+	var beforeAliceCustomTokenBalance,
+		afterAliceCustomTokenBalance,
+		beforeBobCustomTokenBalance,
+		afterBobCustomTokenBalance sdk.Coin
+
+	var transferCapContractCode,
+		percentageCapContractCode,
+		taxStakeDenomContractCode int
+
+	var transferCapContractAddr,
+		percentageCapContractAddr,
+		taxStakeDenomContractAddr string
+
+	customDenom := buildDenom(charlie.String(), subdenom)
+	toMint := sdk.NewCoin(customDenom, math.NewInt(testHooksMintAmount))
+
+	s.writeWasmContracts(c)
+
+	s.Run("setup_hooks_denom", func() {
+		s.createDenom(c, valIdx, charlie.String(), subdenom, standardFees.String(), false)
+
+		s.mintDenom(c, valIdx, charlie.String(), toMint.String(), bob.String(), standardFees.String(), false)
+	})
+
+	s.Run("store_and_instantiate_hook_contracts", func() {
+		initialCodes, err := queryWasmCodes(chainEndpoint)
+		s.Require().NoError(err)
+		initialCodeCount := len(initialCodes.CodeInfos)
+
+		s.execWasmStoreCode(s.chainA, 0, charlie.String(),
+			filepath.Join(mantraHomePath, transferCapContractFilename), mantraHomePath,
+		)
+
+		// Verify the code was stored by checking the count increased
+		s.Require().Eventually(
+			func() bool {
+				updatedCodes, err := queryWasmCodes(chainEndpoint)
+				s.Require().NoError(err)
+				transferCapContractCode = len(updatedCodes.CodeInfos)
+				return len(updatedCodes.CodeInfos) == initialCodeCount+1
+			},
+			30*time.Second,
+			2*time.Second,
+		)
+
+		initialCodeCount = transferCapContractCode
+
+		s.execWasmStoreCode(s.chainA, 0, charlie.String(),
+			filepath.Join(mantraHomePath, percentageCapContractFilename), mantraHomePath,
+		)
+
+		// Verify the code was stored by checking the count increased
+		s.Require().Eventually(
+			func() bool {
+				updatedCodes, err := queryWasmCodes(chainEndpoint)
+				s.Require().NoError(err)
+				percentageCapContractCode = len(updatedCodes.CodeInfos)
+				return len(updatedCodes.CodeInfos) == initialCodeCount+1
+			},
+			30*time.Second,
+			2*time.Second,
+		)
+
+		initialCodeCount = percentageCapContractCode
+
+		s.execWasmStoreCode(s.chainA, 0, charlie.String(),
+			filepath.Join(mantraHomePath, taxStakeDenomContractFilename), mantraHomePath,
+		)
+
+		// Verify the code was stored by checking the count increased
+		s.Require().Eventually(
+			func() bool {
+				updatedCodes, err := queryWasmCodes(chainEndpoint)
+				s.Require().NoError(err)
+				taxStakeDenomContractCode = len(updatedCodes.CodeInfos)
+				return len(updatedCodes.CodeInfos) == initialCodeCount+1
+			},
+			30*time.Second,
+			2*time.Second,
+		)
+
+		initMsg := "{}"
+		label := "test"
+
+		txHash := s.execWasmInstantiate(
+			s.chainA,
+			0,
+			charlie.String(),
+			uint64(transferCapContractCode),
+			initMsg,
+			label,
+			charlie.String(),
+			"",
+			mantraHomePath,
+		)
+		s.Require().NotEmpty(txHash)
+		s.T().Logf("Instantiation transaction submitted with hash: %s", txHash)
+
+		// Query transaction events to get contract address
+		events, err := queryTxEvents(chainEndpoint, txHash)
+		s.Require().NoError(err)
+		addr, err := findContractAddressFromEvents(events)
+		s.Require().NoError(err)
+		s.NotEmpty(addr)
+		transferCapContractAddr = addr
+		s.T().Logf("Successfully instantiated contract at address: %s", transferCapContractAddr)
+
+		txHash = s.execWasmInstantiate(
+			s.chainA,
+			0,
+			charlie.String(),
+			uint64(percentageCapContractCode),
+			initMsg,
+			label,
+			charlie.String(),
+			"",
+			mantraHomePath,
+		)
+		s.Require().NotEmpty(txHash)
+		s.T().Logf("Instantiation transaction submitted with hash: %s", txHash)
+
+		// Query transaction events to get contract address
+		events, err = queryTxEvents(chainEndpoint, txHash)
+		s.Require().NoError(err)
+		addr, err = findContractAddressFromEvents(events)
+		s.Require().NoError(err)
+		s.NotEmpty(addr)
+		percentageCapContractAddr = addr
+		s.T().Logf("Successfully instantiated contract at address: %s", percentageCapContractAddr)
+
+		txHash = s.execWasmInstantiate(
+			s.chainA,
+			0,
+			charlie.String(),
+			uint64(taxStakeDenomContractCode),
+			initMsg,
+			label,
+			charlie.String(),
+			"",
+			mantraHomePath,
+		)
+		s.Require().NotEmpty(txHash)
+		s.T().Logf("Instantiation transaction submitted with hash: %s", txHash)
+
+		// Query transaction events to get contract address
+		events, err = queryTxEvents(chainEndpoint, txHash)
+		s.Require().NoError(err)
+		addr, err = findContractAddressFromEvents(events)
+		s.Require().NoError(err)
+		s.NotEmpty(addr)
+		taxStakeDenomContractAddr = addr
+		s.T().Logf("Successfully instantiated contract at address: %s", taxStakeDenomContractAddr)
+	})
+
+	s.Run("transfer_cap_hook_test", func() {
+		s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, transferCapContractAddr, standardFees.String(), false)
+
+		toSendFail := sdk.NewCoin(customDenom, math.NewInt(TRANSFER_CAP+1))
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSendFail.String(), standardFees.String(), true)
+		s.T().Log("Fail to send over transfer cap")
+
+		// get balances of sender and recipient accounts
+		s.Require().Eventually(
+			func() bool {
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+
+				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+
+		toSendSucceed := sdk.NewCoin(customDenom, math.NewInt(TRANSFER_CAP))
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSendSucceed.String(), standardFees.String(), false)
+
+		s.Require().Eventually(
+			func() bool {
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toSendSucceed)
+				decrementedBob := beforeBobCustomTokenBalance.Sub(toSendSucceed)
+
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance)
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+		s.T().Log("Succeed send below transfer cap")
+	})
+
+	s.Run("percentage_cap_hook_test", func() {
+		s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, percentageCapContractAddr, standardFees.String(), false)
+
+		percentage_cap := toMint.Amount.Quo(math.NewInt(2))
+		toSendFail := sdk.NewCoin(customDenom, percentage_cap.Add(math.OneInt()))
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSendFail.String(), standardFees.String(), true)
+		s.T().Log("Fail to send over percentage cap")
+
+		// get balances of sender and recipient accounts
+		s.Require().Eventually(
+			func() bool {
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+
+				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+
+		toSendSucceed := sdk.NewCoin(customDenom, percentage_cap)
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSendSucceed.String(), standardFees.String(), false)
+
+		s.Require().Eventually(
+			func() bool {
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toSendSucceed)
+				decrementedBob := beforeBobCustomTokenBalance.Sub(toSendSucceed)
+
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance)
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+		s.T().Log("Succeed send below percentage cap")
+	})
+
+	DEPOSIT_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
+	TAX_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
+	var beforeCharlieUomBalance,
+		afterCharlieUomBalance sdk.Coin
+	s.Run("tax_stake_denom_hook_test", func() {
+		s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, taxStakeDenomContractAddr, standardFees.String(), false)
+		s.depositTaxStakeDenomContract(c, valIdx, bob.String(), taxStakeDenomContractAddr, DEPOSIT_AMOUNT.String(), standardFees.String(), false)
+		// get balances of sender and recipient accounts
+		s.Require().Eventually(
+			func() bool {
+				beforeAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+
+				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				beforeCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				s.Require().NoError(err)
+
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid() && beforeCharlieUomBalance.IsValid()
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+
+		toSend := sdk.NewCoin(customDenom, math.OneInt())
+		s.T().Log("Succeed to send as enough deposit for tax")
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSend.String(), standardFees.String(), false)
+
+		s.Require().Eventually(
+			func() bool {
+				afterAliceCustomTokenBalance, err = getSpecificBalance(chainEndpoint, alice.String(), customDenom)
+				s.Require().NoError(err)
+				afterBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
+				s.Require().NoError(err)
+
+				incrementedAlice := beforeAliceCustomTokenBalance.Add(toSend)
+				decrementedBob := beforeBobCustomTokenBalance.Sub(toSend)
+
+				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				s.Require().NoError(err)
+
+				incrementedCharlie := beforeCharlieUomBalance.Add(TAX_AMOUNT)
+
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance) && incrementedCharlie.Equal(afterCharlieUomBalance)
+			},
+			10*time.Second,
+			5*time.Second,
+		)
+
+		s.T().Log("Fail to send as insufficient deposit for tax")
+		s.execBankSend(c, valIdx, bob.String(), alice.String(), toSend.String(), standardFees.String(), true)
+	})
+}
+
+func buildDenom(sender, subDenom string) string {
+	return fmt.Sprintf("factory/%s/%s", sender, subDenom)
+}
+
+func (s *IntegrationTestSuite) getAlice() string {
+	alice, err := s.chainA.genesisAccounts[1].keyInfo.GetAddress()
+	s.Require().NoError(err)
+	return alice.String()
+}
+
+func (s *IntegrationTestSuite) BuildTokenMetadata() banktypes.Metadata {
+	factoryDenom := buildDenom(s.getAlice(), subdenom)
+
+	symbol := cases.Upper(language.English).String(subdenom)
+	name := cases.Title(language.English).String(subdenom)
+	metadata := banktypes.Metadata{
+		Description: fmt.Sprintf("%s token for tokenfactory e2e tests", name),
+		DenomUnits: []*banktypes.DenomUnit{
+			{
+				Denom:    factoryDenom,
+				Exponent: 0,
+				Aliases:  []string{"test_alias"},
+			},
+			{
+				Denom:    symbol,
+				Exponent: 6,
+				Aliases:  []string{},
+			},
+		},
+		Base:    factoryDenom,
+		Display: symbol,
+		Name:    fmt.Sprintf("%s Token", name),
+		Symbol:  symbol,
+	}
+
+	return metadata
+}
+
+func MetadataToString(metadata banktypes.Metadata) string {
+	metadataBytes, err := json.MarshalIndent(metadata, "", "\t")
+	if err != nil {
+		panic(fmt.Sprintf("Failed to marshal metadata: %v", err))
+	}
+	return string(metadataBytes)
 }
 
 func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdenom, fees string, expErr bool) {
@@ -349,14 +859,16 @@ func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdeno
 		subdenom,
 		fmt.Sprintf("--from=%s", sender),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
 		"--keyring-backend=test",
 		"--broadcast-mode=sync",
 		"--output=json",
 		"-y",
 	}
-	denom := fmt.Sprintf("factory/%s/%s", sender, subdenom)
-	s.T().Logf("creating tokenfactory denom %s", denom)
+	denom := buildDenom(sender, subdenom)
+	s.T().Logf("%s is creating tokenfactory denom %s", sender, denom)
 	if expErr {
 		s.executeTxCommand(ctx, c, ibcCmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
 		s.T().Log("create tokenfactory denom unsuccessful")
@@ -366,7 +878,104 @@ func (s *IntegrationTestSuite) createDenom(c *chain, valIdx int, sender, subdeno
 	}
 }
 
-//nolint:unparam
+func (s *IntegrationTestSuite) setDenomMetadata(c *chain, valIdx int, sender, metadataFile, fees string, expErr bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	// Sample tx: https://mantrascan.io/dukong/tx/4f40cc08aadb5ca005a4138353c707b1398858c577186458d5ce2a70bd3a67c8
+	cmd := []string{
+		mantrachaindBinary,
+		txCommand,
+		"tokenfactory",
+		"set-denom-metadata",
+		metadataFile,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		"--keyring-backend=test",
+		"--broadcast-mode=sync",
+		"--output=json",
+		"-y",
+	}
+
+	s.T().Logf("Address %s is setting denom metadata from file %s", sender, metadataFile)
+	if expErr {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
+		s.T().Log("set denom metadata unsuccessful")
+	} else {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.defaultExecValidation(c, valIdx))
+		s.T().Log("successfully set denom metadata")
+	}
+}
+
+func (s *IntegrationTestSuite) setBeforeSendHook(c *chain, valIdx int, sender, customDenom, contractAddr, fees string, expErr bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	// Sample tx: https://mantrascan.io/dukong/tx/4f40cc08aadb5ca005a4138353c707b1398858c577186458d5ce2a70bd3a67c8
+	cmd := []string{
+		mantrachaindBinary,
+		txCommand,
+		"tokenfactory",
+		"set-before-send-hook",
+		customDenom,
+		contractAddr,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		"--keyring-backend=test",
+		"--broadcast-mode=sync",
+		"--output=json",
+		"-y",
+	}
+
+	s.T().Logf("Address %s is setting before send hook for denom %s to contract address %s", sender, customDenom, contractAddr)
+	if expErr {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
+		s.T().Log("set before-send-hook unsuccessful")
+	} else {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.defaultExecValidation(c, valIdx))
+		s.T().Log("successfully set before-send-hook")
+	}
+}
+
+func (s *IntegrationTestSuite) depositTaxStakeDenomContract(c *chain, valIdx int, sender, contractAddr, depositAmount, fees string, expErr bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	cmd := []string{
+		mantrachaindBinary,
+		txCommand,
+		"wasm",
+		"execute",
+		contractAddr,
+		`{"deposit": {}}`,
+		fmt.Sprintf("--amount=%s", depositAmount),
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, fees),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
+		"--keyring-backend=test",
+		"--broadcast-mode=sync",
+		"--output=json",
+		"-y",
+	}
+
+	s.T().Logf("Address %s is depositing %s to contract address %s", sender, depositAmount, contractAddr)
+	if expErr {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.expectErrExecValidation(c, valIdx, true))
+		s.T().Log("deposit to tax_stake_denom contract unsuccessful")
+	} else {
+		s.executeTxCommand(ctx, c, cmd, valIdx, s.defaultExecValidation(c, valIdx))
+		s.T().Log("deposit to tax_stake_denom contract successful")
+	}
+}
+
 func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin, mintTo, fees string, expErr bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
@@ -420,7 +1029,7 @@ func (s *IntegrationTestSuite) mintDenom(c *chain, valIdx int, sender, mintCoin,
 	}
 }
 
-func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin, burnFrom, fees string, expErr bool) {
+func (s *IntegrationTestSuite) burnDenom(c *chain, valIdx int, sender, burnCoin, burnFrom, fees string, expErr bool) { //nolint:unparam
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 

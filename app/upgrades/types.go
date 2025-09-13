@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
@@ -57,4 +58,5 @@ type UpgradeKeepers struct {
 	AccountKeeper   authkeeper.AccountKeeper
 	BankKeeper      bankkeeper.BaseKeeper
 	EVMKeeper       evmkeeper.Keeper
+	Erc20Keeper     erc20keeper.Keeper
 }

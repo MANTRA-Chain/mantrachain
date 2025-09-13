@@ -27,15 +27,17 @@ import (
 func NewRootCmd() *cobra.Command {
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
 	// note, this is not necessary when using app wiring, as depinject can be directly used (see root_v2.go)
+	temp := tempDir()
+	defer os.RemoveAll(temp)
 	tempApp := app.New(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
 		nil,
 		false,
-		simtestutil.NewAppOptionsWithFlagHome(tempDir()),
+		simtestutil.NewAppOptionsWithFlagHome(temp),
 		[]wasmkeeper.Option{},
 		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
+		app.EvmAppOptions,
 	)
 
 	encodingConfig := params.EncodingConfig{
@@ -52,7 +54,7 @@ func NewRootCmd() *cobra.Command {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithInput(os.Stdin).
 		WithAccountRetriever(authtypes.AccountRetriever{}).
-		WithBroadcastMode(flags.FlagBroadcastMode).
+		WithBroadcastMode(flags.BroadcastSync).
 		WithHomeDir(app.DefaultNodeHome).
 		WithViper("MANTRA").
 		WithKeyringOptions(hd.EthSecp256k1Option()).

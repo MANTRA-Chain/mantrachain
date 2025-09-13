@@ -10,7 +10,8 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	UpgradeName = "v5"
+	// v5.0 upgrade is meant for the mainnet from v4
+	UpgradeName = "v5.0"
 )
 
 var Upgrade = upgrades.Upgrade{

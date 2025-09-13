@@ -10,13 +10,17 @@ import (
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 )
 
-// MakeEncodingConfig creates a new EncodingConfig with all modules registered. For testing only
-func MakeEncodingConfig(tb testing.TB) params.EncodingConfig {
+func MakeTestApp(tb testing.TB) *App {
 	tb.Helper()
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
 	// note, this is not necessary when using app wiring, as depinject can be directly used (see root_v2.go)
-	tempApp := New(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(tb.TempDir()), []wasmkeeper.Option{}, MANTRAChainID, NoOpEvmAppOptions)
-	return makeEncodingConfig(tempApp)
+	return New(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(tb.TempDir()), []wasmkeeper.Option{}, MANTRAChainID, NoOpEvmAppOptions)
+}
+
+// MakeEncodingConfig creates a new EncodingConfig with all modules registered. For testing only
+func MakeEncodingConfig(tb testing.TB) params.EncodingConfig {
+	tb.Helper()
+	return makeEncodingConfig(MakeTestApp(tb))
 }
 
 func makeEncodingConfig(tempApp *App) params.EncodingConfig {

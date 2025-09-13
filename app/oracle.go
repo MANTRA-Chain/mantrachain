@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	oraclepreblock "github.com/skip-mev/connect/v2/abci/preblock/oracle"
 	"github.com/skip-mev/connect/v2/abci/proposals"
 	"github.com/skip-mev/connect/v2/abci/strategies/aggregator"
@@ -56,13 +56,18 @@ func (app *App) initializeOracle(appOpts types.AppOptions) (oracleclient.OracleC
 	return oracleClient, oracleMetrics, nil
 }
 
-func (app *App) initializeABCIExtensions(oracleClient oracleclient.OracleClient, oracleMetrics servicemetrics.Metrics) {
+func (app *App) initializeABCIExtensions(
+	oracleClient oracleclient.OracleClient,
+	oracleMetrics servicemetrics.Metrics,
+	prepareProposalHandler sdk.PrepareProposalHandler,
+	processProposalHandler sdk.ProcessProposalHandler,
+) {
 	// Create the proposal handler that will be used to fill proposals with
 	// transactions and oracle data.
 	proposalHandler := proposals.NewProposalHandler(
 		app.Logger(),
-		baseapp.NoOpPrepareProposal(),
-		baseapp.NoOpProcessProposal(),
+		prepareProposalHandler,
+		processProposalHandler,
 		ve.NewDefaultValidateVoteExtensionsFn(app.StakingKeeper),
 		compression.NewCompressionVoteExtensionCodec(
 			compression.NewDefaultVoteExtensionCodec(),

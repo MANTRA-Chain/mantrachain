@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types/module/testutil"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -39,10 +38,10 @@ var (
 
 	oracleImage = ibc.DockerImage{
 		Repository: "ghcr.io/skip-mev/connect-sidecar",
-		Version:    "v2.0.1",
+		Version:    "v2.2.1",
 		UidGid:     "1000:1000",
 	}
-	encodingConfig = testutil.MakeTestEncodingConfig(
+	encodingConfig = MakeTestEncodingConfig(
 		bank.AppModuleBasic{},
 		oracle.AppModuleBasic{},
 		gov.AppModuleBasic{},
@@ -68,10 +67,19 @@ var (
 			Key:   "consensus.params.block.max_gas",
 			Value: "1000000000",
 		},
+		{
+			Key:   "app_state.feemarket.params.base_fee",
+			Value: "0",
+		},
+		{
+			Key:   "app_state.feemarket.params.min_gas_price",
+			Value: "0",
+		},
 	}
 
-	denom = "uom"
-	spec  = &interchaintest.ChainSpec{
+	denom        = "uom"
+	coinDecimals = int64(6)
+	spec         = &interchaintest.ChainSpec{
 		ChainName:     "slinky",
 		Name:          "slinky",
 		NumValidators: &numValidators,
@@ -89,12 +97,13 @@ var (
 			ChainID:        "chain-id-0",
 			Bin:            "mantrachaind",
 			Bech32Prefix:   "mantra",
-			CoinType:       "118",
+			CoinType:       "60",
 			GasAdjustment:  gasAdjustment,
 			GasPrices:      fmt.Sprintf("0%s", denom),
 			TrustingPeriod: "48h",
 			NoHostMount:    noHostMount,
 			ModifyGenesis:  ModifyGenesis(defaultGenesisKV),
+			CoinDecimals:   &coinDecimals,
 		},
 	}
 )

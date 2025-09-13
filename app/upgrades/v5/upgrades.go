@@ -107,6 +107,8 @@ func CreateUpgradeHandler(
 		// set the evm/vm params
 		evmParams := evmtypes.DefaultParams()
 		evmParams.EvmDenom = evmtypes.GetEVMCoinDenom()
+		// enable AllowUnprotectedTxs see adr-006
+		evmParams.AllowUnprotectedTxs = true
 		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
@@ -115,6 +117,16 @@ func CreateUpgradeHandler(
 		macc := authtypes.NewEmptyModuleAccount(authtypes.FeeCollectorName, authtypes.Burner)
 		maccI := (keepers.AccountKeeper.NewAccount(ctx, macc)).(sdk.ModuleAccountI) // set the account number
 		keepers.AccountKeeper.SetModuleAccount(ctx, maccI)
+
+		// add erc20 address for all existing tokenfactory tokens
+		iter := keepers.TokenFactoryKeeper.GetAllDenomsIterator(ctx)
+		defer iter.Close()
+		for ; iter.Valid(); iter.Next() {
+			denom := string(iter.Value())
+			if err := keepers.TokenFactoryKeeper.UpdateDenomWithERC20(ctx, denom); err != nil {
+				return vm, err
+			}
+		}
 
 		ctx.Logger().Info("Upgrade v5 complete")
 		return vm, nil

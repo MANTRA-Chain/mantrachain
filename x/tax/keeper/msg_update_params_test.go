@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	keepertest "github.com/MANTRA-Chain/mantrachain/v5/testutil/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tax/types"
@@ -10,6 +11,7 @@ import (
 )
 
 func TestMsgUpdateParams(t *testing.T) {
+	appparams.SetAddressPrefixes()
 	k, ctx, _ := keepertest.TaxKeeper(t)
 	ms := keeper.NewMsgServerImpl(k)
 

@@ -2,7 +2,8 @@ package e2e
 
 import "fmt"
 
-var (
+// PR reviewers must make sure all the following value are true
+const (
 	runBankTest                   = true
 	runEncodeTest                 = true
 	runEvidenceTest               = true
@@ -15,7 +16,12 @@ var (
 	runRateLimitTest              = true
 	runTokenfactoryTest           = true
 	runSanctionTest               = true
+	runWasmTest                   = true
 )
+
+func (s *IntegrationTestSuite) CanTestOnSingleNode() bool {
+	return !runIBCTest && !runTokenfactoryTest && !runRateLimitTest
+}
 
 func (s *IntegrationTestSuite) TestRestInterfaces() {
 	if !runRestInterfacesTest {
@@ -116,8 +122,11 @@ func (s *IntegrationTestSuite) TestTokenfactory() {
 		s.T().Skip()
 	}
 	s.testTokenfactoryCreate()
+	s.testTokenfactoryAdmin()
+	s.testTokenfactorySetMetadata()
 	s.testTokenfactoryMint()
 	s.testTokenfactoryBurn()
+	s.testTokenfactoryHooks()
 }
 
 func (s *IntegrationTestSuite) TestSanction() {
@@ -126,4 +135,16 @@ func (s *IntegrationTestSuite) TestSanction() {
 	}
 	s.testAddToBlacklist()
 	s.testRemoveFromBlacklist()
+}
+
+func (s *IntegrationTestSuite) TestWasm() {
+	// The wasm contract will call the tokenfactory module, so we need to run both tests together.
+	if !runWasmTest || !runTokenfactoryTest {
+		s.T().Skip()
+	}
+	s.testQueryWasmParams()
+	s.testStoreCode()
+	s.testInstantiateContract()
+	s.testExecuteContractWithSimplyMessage()
+	s.testExecuteContractThatInteractsWithTokenFactory()
 }

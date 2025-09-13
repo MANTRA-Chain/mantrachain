@@ -4,16 +4,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
-	"cosmossdk.io/client/v2/autocli"
+	corevm "github.com/ethereum/go-ethereum/core/vm"
+	"github.com/spf13/cast"
 
-	// Overriders
+	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
+	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
+	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/log"
@@ -37,13 +42,14 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/cosmos/cosmos-sdk/types/mempool"
+	"github.com/cosmos/evm/evmd"
 
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
 	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
-	_ "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
 	v5 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5"
+	v5rc9 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc9"
 	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
@@ -55,7 +61,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
-	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -124,6 +129,12 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	evmosencoding "github.com/cosmos/evm/encoding"
+	ethcommon "github.com/ethereum/go-ethereum/common"
+
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	"cosmossdk.io/client/v2/autocli"
+	chainante "github.com/cosmos/evm/evmd/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -133,6 +144,7 @@ import (
 	"github.com/cosmos/evm/x/feemarket"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
+	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/precisebank"
@@ -153,6 +165,7 @@ import (
 	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
+	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -161,11 +174,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
-	corevm "github.com/ethereum/go-ethereum/core/vm"
 
-	// Force-load the tracer engines to trigger registration due to Go-Ethereum v1.10.15 changes
-	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
-	_ "github.com/ethereum/go-ethereum/eth/tracers/native"
 	"github.com/gorilla/mux"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
 	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
@@ -173,7 +182,8 @@ import (
 	oracle "github.com/skip-mev/connect/v2/x/oracle"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-	"github.com/spf13/cast"
+
+	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
 func init() {
@@ -232,7 +242,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v5.Upgrade}
+var Upgrades = []upgrades.Upgrade{v5rc9.Upgrade, v5.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -246,6 +256,8 @@ type App struct {
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
+
+	pendingTxListeners []chainante.PendingTxListener
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -282,6 +294,7 @@ type App struct {
 	TransferKeeper      transferkeeper.Keeper
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
+	CallbackKeeper      ibccallbackskeeper.ContractKeeper
 
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
@@ -331,6 +344,31 @@ func New(
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	// register legacy feemarket types for legacy proposals
+	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
+
+	var prepareProposalHandler sdk.PrepareProposalHandler
+	var processProposalHandler sdk.ProcessProposalHandler
+	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
+		var mpool mempool.Mempool
+		if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
+			// Setup Mempool and Proposal Handlers
+			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
+				TxPriority:      mempool.NewDefaultTxPriority(),
+				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
+				MaxTx:           maxTxs,
+			})
+		} else {
+			mpool = mempool.NoOpMempool{}
+		}
+		app.SetMempool(mpool)
+		handler := baseapp.NewDefaultProposalHandler(mpool, app)
+
+		prepareProposalHandler = handler.PrepareProposalHandler()
+		processProposalHandler = handler.ProcessProposalHandler()
+		app.SetPrepareProposal(prepareProposalHandler)
+		app.SetProcessProposal(processProposalHandler)
+	})
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -539,6 +577,7 @@ func New(
 		app.AccountKeeper,
 		&app.BankKeeper,
 		&app.WasmKeeper,
+		&app.Erc20Keeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -689,11 +728,13 @@ func New(
 
 	app.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey],
+		keys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
 		app.PreciseBankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
+		&app.ConsensusParamsKeeper,
 		&app.Erc20Keeper,
 		tracer,
 	)
@@ -704,7 +745,7 @@ func New(
 		appCodec,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		app.PreciseBankKeeper,
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
@@ -724,13 +765,38 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create IBC modules with ratelimit middleware
-	// channel.RecvPacket -> ratelimit.OnRecvPacket -> transfer.OnRecvPacket
+	/*
+		Create Transfer Stack
+
+		transfer stack contains (from bottom to top):
+			- IBC ratelimit
+			- TokenFactory Middleware
+			- IBC Callbacks Middleware (with EVM ContractKeeper)
+			- ERC-20 Middleware
+			- IBC Transfer
+
+		SendPacket, since it is originating from the application to core IBC:
+			transferKeeper.SendPacket -> erc20.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
+
+		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
+			channel.RecvPacket -> tokenfactory.OnRecvPacket -> ratelimit.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+	*/
+
+	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
+
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
+	maxCallbackGas := uint64(1_000_000)
+	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
+	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
+		app.AccountKeeper,
+		app.EVMKeeper,
+		app.Erc20Keeper,
+	)
+	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
+	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
@@ -739,7 +805,7 @@ func New(
 	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(app.ICAControllerKeeper)
 
 	// Create fee enabled wasm ibc Stack
-	wasmStack := wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
+	wasmStack := wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.TransferKeeper, app.IBCKeeper.ChannelKeeper)
 
 	// Create static IBC router, add app routes, then set and seal it
 	ibcRouter := porttypes.NewRouter().
@@ -749,18 +815,9 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	// TODO: add IBC v2 (Eureka) support in future
-	// var transferStackv2 ibcapi.IBCModule
-	// transferStackv2 = transferv2.NewIBCModule(app.TransferKeeper)
-	// transferStackv2 = ratelimitv2.NewIBCMiddleware(app.RateLimitKeeper, transferStackv2)
-	// transferStackv2 = tokenfactory.NewIBCV2Module(transferStackv2, app.TokenFactoryKeeper)
-
-	// ibcRouterV2 := ibcapi.NewRouter()
-	// ibcRouterV2.AddRoute(ibctransfertypes.ModuleName, transferStackv2)
-	// app.IBCKeeper.SetRouterV2(ibcRouterV2)
-
 	// TODO: Configure EVM precompiles when needed
-	// corePrecompiles := NewAvailableStaticPrecompiles(
+	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
+	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
 	// 	app.PreciseBankKeeper,
@@ -770,12 +827,11 @@ func New(
 	// 	app.EVMKeeper,
 	// 	app.GovKeeper,
 	// 	app.SlashingKeeper,
-	// 	app.EvidenceKeeper,
-	// 	appCodec,
+	// 	app.AppCodec(),
 	// )
-	// app.EVMKeeper.WithStaticPrecompiles(
-	// 	corePrecompiles,
-	// )
+	app.EVMKeeper.WithStaticPrecompiles(
+		corePrecompiles,
+	)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
@@ -807,7 +863,8 @@ func New(
 		distrkeeper.NewQuerier(app.DistrKeeper),
 		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper
 		app.IBCKeeper.ChannelKeeper,
-		app.TransferKeeper,
+		nil,                // channelkeeperv2
+		app.TransferKeeper, // portsource
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
 		wasmDir,
@@ -815,7 +872,6 @@ func New(
 		wasmtypes.VMConfig{},
 		AllCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		nil, // TODO: add ibc v2 wasm keeper when available
 		wasmOpts...,
 	)
 
@@ -1105,7 +1161,7 @@ func New(
 
 	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
 
-	app.initializeABCIExtensions(client, metrics)
+	app.initializeABCIExtensions(client, metrics, prepareProposalHandler, processProposalHandler)
 
 	// Register any on-chain upgrades.
 	app.setupUpgradeStoreLoaders()
@@ -1164,7 +1220,18 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 	app.SetAnteHandler(ante.NewAnteHandler(handlerOpts))
 }
 
-// TODO: Implement post handler
+// RegisterPendingTxListener is used by json-rpc server to listen to pending transactions callback.
+func (app *App) RegisterPendingTxListener(listener func(ethcommon.Hash)) {
+	app.pendingTxListeners = append(app.pendingTxListeners, listener)
+}
+
+func (app *App) onPendingTx(hash ethcommon.Hash) {
+	for _, listener := range app.pendingTxListeners {
+		listener(hash)
+	}
+}
+
+// no post handler currently
 // func (app *App) setPostHandler() {
 // }
 
@@ -1273,7 +1340,7 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 	// Add ERC20 genesis configuration
 	erc20GenState := erc20types.DefaultGenesisState()
 	erc20GenState.TokenPairs = ExampleTokenPairs
-	erc20GenState.Params.NativePrecompiles = append(erc20GenState.Params.NativePrecompiles, WTokenContractMainnet)
+	erc20GenState.NativePrecompiles = append(erc20GenState.NativePrecompiles, WTokenContractMainnet)
 	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
 	return genesis
@@ -1410,6 +1477,7 @@ func (app *App) setupUpgradeHandlers() {
 					AccountKeeper:      app.AccountKeeper,
 					BankKeeper:         app.BankKeeper,
 					EVMKeeper:          *app.EVMKeeper,
+					Erc20Keeper:        app.Erc20Keeper,
 				},
 				app.keys,
 			),
@@ -1433,9 +1501,19 @@ func GetMaccPerms() map[string][]string {
 func BlockedAddresses() map[string]bool {
 	blockedAddrs := make(map[string]bool)
 
-	// Add after existing code:
+	maccPerms := GetMaccPerms()
+	accs := make([]string, 0, len(maccPerms))
+	for acc := range maccPerms {
+		accs = append(accs, acc)
+	}
+	sort.Strings(accs)
+
+	for _, acc := range accs {
+		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
+	}
+
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesBerlin {
+	for _, addr := range corevm.PrecompiledAddressesPrague {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
 	}
 

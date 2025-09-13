@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"cosmossdk.io/x/feegrant"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -639,7 +640,139 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 	s.T().Logf("Successfully withdrew distribution rewards for delegator %s from validator %s", delegatorAddress, validatorAddress)
 }
 
-func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, mantraCommand []string, valIdx int, validation func([]byte, []byte) bool) {
+//nolint:unparam
+func (s *IntegrationTestSuite) execWasmStoreCode(
+	c *chain,
+	valIdx int,
+	sender,
+	wasmPath string,
+	homePath string,
+) string {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	s.T().Logf("storing wasm code from %s on chain %s", wasmPath, c.id)
+
+	mantraCommand := []string{
+		mantrachaindBinary,
+		txCommand,
+		wasmTypes.ModuleName,
+		"store",
+		wasmPath,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--instantiate-anyof-addresses=%s", sender),
+		fmt.Sprintf("--chain-id=%s", c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--broadcast-mode=%s", "sync"),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
+		"--keyring-backend=test",
+		"--output=json",
+		"-y",
+	}
+
+	txHash := s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.T().Log("successfully stored wasm code")
+	return txHash
+}
+
+//nolint:unparam
+func (s *IntegrationTestSuite) execWasmInstantiate(
+	c *chain,
+	valIdx int,
+	sender string,
+	codeId uint64,
+	initMsg string,
+	label string,
+	admin string,
+	funds string,
+	homePath string,
+) string {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	s.T().Logf("instantiating wasm contract with code ID %d on chain %s", codeId, c.id)
+
+	mantraCommand := []string{
+		mantrachaindBinary,
+		txCommand,
+		wasmTypes.ModuleName,
+		"instantiate",
+		fmt.Sprintf("%d", codeId),
+		initMsg,
+		fmt.Sprintf("--label=%s", label),
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--chain-id=%s", c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--broadcast-mode=%s", "sync"),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
+		"--keyring-backend=test",
+		"--output=json",
+		"-y",
+	}
+
+	// Add admin if specified
+	if admin != "" {
+		mantraCommand = append(mantraCommand, fmt.Sprintf("--admin=%s", admin))
+	} else {
+		mantraCommand = append(mantraCommand, "--no-admin")
+	}
+
+	// Add funds if specified
+	if funds != "" {
+		mantraCommand = append(mantraCommand, fmt.Sprintf("--amount=%s", funds))
+	}
+
+	txHash := s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+
+	if txHash != "" {
+		s.T().Log("successfully instantiated wasm contract")
+	} else {
+		s.T().Log("wasm contract instantiation did not return a transaction hash")
+	}
+
+	return txHash
+}
+
+func (s *IntegrationTestSuite) execWasmExecute(
+	c *chain,
+	valIdx int,
+	sender,
+	contractAddress,
+	executeMessage,
+	homePath string,
+) string {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+	s.T().Logf("executing wasm contract at %s on chain %s", contractAddress, c.id)
+	mantraCommand := []string{
+		mantrachaindBinary,
+		txCommand,
+		wasmTypes.ModuleName,
+		"execute",
+		contractAddress,
+		executeMessage,
+		fmt.Sprintf("--from=%s", sender),
+		fmt.Sprintf("--chain-id=%s", c.id),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
+		fmt.Sprintf("--broadcast-mode=%s", "sync"),
+		fmt.Sprintf("--%s=%s", flags.FlagHome, homePath),
+		"--keyring-backend=test",
+		"--output=json",
+		"-y",
+	}
+
+	txHash := s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
+	s.T().Logf("successfully executed wasm contract at %s with tx hash %s", contractAddress, txHash)
+	return txHash
+}
+
+func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, mantraCommand []string, valIdx int, validation func([]byte, []byte) bool) string {
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0)
 	}
@@ -671,6 +804,15 @@ func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, m
 		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
 			string(stdOut), string(stdErr))
 	}
+
+	// Extract transaction hash from response
+	var txResp sdk.TxResponse
+
+	if err := cdc.UnmarshalJSON(stdOut, &txResp); err == nil {
+		s.T().Logf("Got transaction response with hash: %s, code: %d", txResp.TxHash, txResp.Code)
+		return txResp.TxHash
+	}
+	return ""
 }
 
 func (s *IntegrationTestSuite) executeHermesCommand(ctx context.Context, hermesCmd []string) ([]byte, error) { //nolint:unparam

@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
+	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -41,12 +43,90 @@ func queryTx(endpoint, txHash string) error {
 		return fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	txResp := result["tx_response"].(map[string]interface{})
-	if v := txResp["code"]; v.(float64) != 0 {
-		return fmt.Errorf("tx %s failed with status code %v", txHash, v)
+	txResp, ok := result["tx_response"].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("tx_response field is not a map")
+	}
+
+	code, ok := txResp["code"].(float64)
+	if !ok {
+		return fmt.Errorf("code field is not a number")
+	}
+
+	if code != 0 {
+		return fmt.Errorf("tx %s failed with status code %v", txHash, code)
 	}
 
 	return nil
+}
+
+func queryTxEvents(endpoint, txHash string) (map[string][]string, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, txHash))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("tx query returned non-200 status: %d", resp.StatusCode)
+	}
+
+	var result map[string]interface{}
+
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	txResp, ok := result["tx_response"].(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("tx_response field is not a map")
+	}
+
+	events, ok := txResp["events"].([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("events field is not an array")
+	}
+
+	eventMap := make(map[string][]string)
+	for _, event := range events {
+		eventData, ok := event.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("event is not a map")
+		}
+
+		eventType, ok := eventData["type"].(string)
+		if !ok {
+			return nil, fmt.Errorf("event type is not a string")
+		}
+
+		var attributes []string
+		attributesRaw, ok := eventData["attributes"].([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("event attributes is not an array")
+		}
+
+		for _, attr := range attributesRaw {
+			attrData, ok := attr.(map[string]interface{})
+			if !ok {
+				return nil, fmt.Errorf("attribute is not a map")
+			}
+
+			key, ok := attrData["key"].(string)
+			if !ok {
+				return nil, fmt.Errorf("attribute key is not a string")
+			}
+
+			value, ok := attrData["value"].(string)
+			if !ok {
+				return nil, fmt.Errorf("attribute value is not a string")
+			}
+
+			attributes = append(attributes, fmt.Sprintf("%s=%s", key, value))
+		}
+		eventMap[eventType] = append(eventMap[eventType], attributes...)
+	}
+
+	return eventMap, nil
 }
 
 // if coin is zero, return empty coin.
@@ -375,6 +455,34 @@ func queryTokenfactoryParams(endpoint string) (tokenfactorytypes.QueryParamsResp
 	return params, nil
 }
 
+func queryTokenfactoryDenomMetadata(endpoint, denom string) (banktypes.Metadata, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata_by_query_string?denom=%s", endpoint, denom))
+	if err != nil {
+		return banktypes.Metadata{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var metadataResp banktypes.QueryDenomMetadataResponse
+	if err := cdc.UnmarshalJSON(body, &metadataResp); err != nil {
+		return banktypes.Metadata{}, err
+	}
+
+	return metadataResp.Metadata, nil
+}
+
+func queryTokenfactoryDenomAuthorityMetadata(endpoint, creator, denom string) (tokenfactorytypes.DenomAuthorityMetadata, error) {
+	body, err := httpGet(fmt.Sprintf("%s/osmosis/tokenfactory/v1beta1/denoms/factory/%s/%s/authority_metadata", endpoint, creator, denom))
+	if err != nil {
+		return tokenfactorytypes.DenomAuthorityMetadata{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var metadataResp tokenfactorytypes.QueryDenomAuthorityMetadataResponse
+	if err := cdc.UnmarshalJSON(body, &metadataResp); err != nil {
+		return tokenfactorytypes.DenomAuthorityMetadata{}, err
+	}
+
+	return metadataResp.AuthorityMetadata, nil
+}
+
 func queryIBCEscrowAddress(endpoint, channelID string) (string, error) {
 	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/transfer/v1/channels/%s/ports/transfer/escrow_address", endpoint, channelID))
 	if err != nil {
@@ -415,6 +523,64 @@ func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error
 	}
 
 	return icaAccountResp.Address, nil
+}
+
+func queryWasmParams(endpoint string) (wasmTypes.Params, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/codes/params", endpoint))
+	if err != nil {
+		return wasmTypes.Params{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var codesResp wasmTypes.QueryParamsResponse
+	if err := cdc.UnmarshalJSON(body, &codesResp); err != nil {
+		return wasmTypes.Params{}, err
+	}
+
+	return codesResp.Params, nil
+}
+
+func queryWasmCodes(endpoint string) (wasmTypes.QueryCodesResponse, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/code", endpoint))
+	if err != nil {
+		return wasmTypes.QueryCodesResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var codesResp wasmTypes.QueryCodesResponse
+	if err := cdc.UnmarshalJSON(body, &codesResp); err != nil {
+		return wasmTypes.QueryCodesResponse{}, err
+	}
+
+	return codesResp, nil
+}
+
+func queryWasmContractInfo(endpoint, contractAddr string) (wasmTypes.QueryContractInfoResponse, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s", endpoint, contractAddr))
+	if err != nil {
+		return wasmTypes.QueryContractInfoResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var contractInfoResp wasmTypes.QueryContractInfoResponse
+	if err := cdc.UnmarshalJSON(body, &contractInfoResp); err != nil {
+		return wasmTypes.QueryContractInfoResponse{}, err
+	}
+
+	return contractInfoResp, nil
+}
+
+func queryWasmContractSmart(endpoint, contractAddr, message string) (wasmTypes.QuerySmartContractStateResponse, error) {
+	// Base64 encode the message
+	encodedMessage := base64.StdEncoding.EncodeToString([]byte(message))
+	body, err := httpGet(fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s/smart/%s", endpoint, contractAddr, encodedMessage))
+	if err != nil {
+		return wasmTypes.QuerySmartContractStateResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var contractResp wasmTypes.QuerySmartContractStateResponse
+	if err := cdc.UnmarshalJSON(body, &contractResp); err != nil {
+		return wasmTypes.QuerySmartContractStateResponse{}, err
+	}
+
+	return contractResp, nil
 }
 
 // TODO: Uncomment this function when CCV module is added

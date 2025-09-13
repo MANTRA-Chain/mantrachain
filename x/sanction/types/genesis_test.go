@@ -3,11 +3,13 @@ package types_test
 import (
 	"testing"
 
+	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	"github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
+	appparams.SetAddressPrefixes()
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
@@ -27,7 +29,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: true,
 		},
 		{
-			desc: "valid genesis state",
+			desc: "invalid genesis state with non-bech32 account",
 			genState: &types.GenesisState{
 				// this line is used by starport scaffolding # types/genesis/validField
 				BlacklistAccounts: []string{"not-a-valid-bech32"},

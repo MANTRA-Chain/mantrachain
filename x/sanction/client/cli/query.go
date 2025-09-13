@@ -58,7 +58,7 @@ func GetParams() *cobra.Command {
 // GetBlacklist returns the list of blacklisted accounts
 func GetBlacklist() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist",
+		Use:   "blacklist [flags]",
 		Short: "Get the list of blacklisted accounts",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -67,8 +67,13 @@ func GetBlacklist() *cobra.Command {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.Blacklist(cmd.Context(), &types.QueryBlacklistRequest{})
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+			res, err := queryClient.Blacklist(cmd.Context(), &types.QueryBlacklistRequest{
+				Pagination: pageReq,
+			})
 			if err != nil {
 				return err
 			}
@@ -76,6 +81,9 @@ func GetBlacklist() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "blacklist")
 
 	return cmd
 }

@@ -30,9 +30,9 @@ aforementioned state:
 
 ## Messages
 
-### MsgAddBlacklistAccount
+### MsgAddBlacklistAccounts
 
-Add a blacklist account.
+Add a list of blacklist accounts.
 
 ```protobuf reference
 https://github.com/MANTRA-Chain/mantrachain/tree/main/proto/mantrachain/sanction/v1/tx.proto#L24-L30
@@ -41,11 +41,11 @@ https://github.com/MANTRA-Chain/mantrachain/tree/main/proto/mantrachain/sanction
 The message handling can fail if:
 
 * signer is not the authority module address, usually it is the gov module account address.
-* blacklist account is not an account in Bech32 string.
+* one or more of the blacklist accounts is not an account in Bech32 string.
 
-### MsgRemoveBlacklistAccount
+### MsgRemoveBlacklistAccounts
 
-Remove a blacklist account.
+Remove a list of blacklist accounts.
 
 ```protobuf reference
 https://github.com/MANTRA-Chain/mantrachain/tree/main/proto/mantrachain/sanction/v1/tx.proto#L35-L41
@@ -54,4 +54,4 @@ https://github.com/MANTRA-Chain/mantrachain/tree/main/proto/mantrachain/sanction
 The message handling can fail if:
 
 * signer is not the authority module address, usually it is the gov module account address.
-* blacklist account is not an account in Bech32 string.
+* one or more of the blacklist accounts is not an account in Bech32 string.

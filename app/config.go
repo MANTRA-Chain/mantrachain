@@ -1,8 +1,12 @@
 package app
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/math"
@@ -76,7 +80,7 @@ var (
 	EVMChainIDMap = map[string]uint64{
 		"mantra-1":            5888, // mainnet Chain ID
 		"mantra-dukong-1":     5887, // testnet Chain ID
-		"mantra-canary-net-1": 5887, // devnet Chain ID
+		"mantra-canary-net-1": 7888, // devnet Chain ID
 	}
 
 	MANTRAChainID uint64 = 262144 // default Chain ID
@@ -103,6 +107,12 @@ func init() {
 			if err == nil && chainID != "" {
 				evmChainID, found := EVMChainIDMap[chainID]
 				if found {
+					MANTRAChainID = evmChainID
+					return
+				}
+				// If chain ID not found in map, try parsing it
+				evmChainID, err := ParseChainID(chainID)
+				if err == nil {
 					MANTRAChainID = evmChainID
 					return
 				}
@@ -134,4 +144,40 @@ func init() {
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
+}
+
+var (
+	regexChainID         = `[a-z]{1,}`
+	regexEIP155Separator = `_{1}`
+	regexEIP155          = `[1-9][0-9]*`
+	regexEpochSeparator  = `-{1}`
+	regexEpoch           = `[1-9][0-9]*`
+	evmosChainID         = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)%s(%s)$`,
+		regexChainID,
+		regexEIP155Separator,
+		regexEIP155,
+		regexEpochSeparator,
+		regexEpoch))
+)
+
+// ParseChainID parses a string chain identifier's epoch to an Ethereum-compatible
+// chain-id in *big.Int format. The function returns an error if the chain-id has an invalid format
+func ParseChainID(chainID string) (uint64, error) {
+	chainID = strings.TrimSpace(chainID)
+	if len(chainID) > 48 {
+		return 0, fmt.Errorf("chain-id '%s' cannot exceed 48 chars", chainID)
+	}
+
+	matches := evmosChainID.FindStringSubmatch(chainID)
+	if matches == nil || len(matches) != 4 || matches[1] == "" {
+		return 0, fmt.Errorf("%s: %v", chainID, matches)
+	}
+
+	// verify that the chain-id entered is a base 10 integer
+	chainIDInt, err := strconv.Atoi(matches[2])
+	if err != nil {
+		return 0, fmt.Errorf("epoch %s must be base-10 integer format", matches[2])
+	}
+
+	return uint64(chainIDInt), nil
 }
