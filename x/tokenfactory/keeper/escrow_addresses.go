@@ -24,5 +24,5 @@ func (k Keeper) IsEscrowAddress(ctx sdk.Context, address sdk.AccAddress) bool {
 func (k Keeper) RemoveEscrowAddress(ctx sdk.Context, address sdk.AccAddress) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	prefixStore := prefix.NewStore(store, types.EscrowAddressKey)
-	prefixStore.Delete(address.Bytes())
+	prefixStore.Delete(address)
 }

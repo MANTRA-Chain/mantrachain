@@ -776,10 +776,10 @@ func New(
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
-			transferKeeper.SendPacket -> erc20.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
+			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> tokenfactory.OnRecvPacket -> ratelimit.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
