@@ -78,10 +78,9 @@ func setBaseDenom(ci evmtypes.EvmCoinInfo) error {
 
 var (
 	EVMChainIDMap = map[string]uint64{
-		"mantra-1":            5888,   // mainnet Chain ID
-		"mantra-dukong-1":     5887,   // testnet Chain ID
-		"mantra-canary-net-1": 7888,   // devnet Chain ID
-		"mantra-dryrun-1":     262144, // dryrun Chain ID
+		"mantra-1":            5888, // mainnet Chain ID
+		"mantra-dukong-1":     5887, // testnet Chain ID
+		"mantra-canary-net-1": 7888, // devnet Chain ID
 	}
 
 	MANTRAChainID uint64 = 262144 // default Chain ID
@@ -95,6 +94,28 @@ var (
 func init() {
 	nodeHome, err := clienthelpers.GetNodeHomeDirectory(NodeDir)
 	if err != nil {
+		panic(err)
+	}
+
+	// If genesis file does not exist or chain ID is not found, check app.toml
+	// to get the EVM chain ID
+	appTomlPath := filepath.Join(nodeHome, "config", "app.toml")
+	if _, err = os.Stat(appTomlPath); err == nil {
+		// File exists
+		v := viper.New()
+		v.SetConfigFile(appTomlPath)
+		v.SetConfigType("toml")
+
+		if err = v.ReadInConfig(); err == nil {
+			evmChainIDKey := "evm.evm-chain-id"
+			if v.IsSet(evmChainIDKey) {
+				evmChainID := v.GetUint64(evmChainIDKey)
+				MANTRAChainID = evmChainID
+				return
+			}
+		}
+	}
+	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
 
@@ -121,27 +142,6 @@ func init() {
 				}
 			}
 			defer reader.Close()
-		}
-	}
-	if err != nil && !os.IsNotExist(err) {
-		panic(err)
-	}
-
-	// If genesis file does not exist or chain ID is not found, check app.toml
-	// to get the EVM chain ID
-	appTomlPath := filepath.Join(nodeHome, "config", "app.toml")
-	if _, err = os.Stat(appTomlPath); err == nil {
-		// File exists
-		v := viper.New()
-		v.SetConfigFile(appTomlPath)
-		v.SetConfigType("toml")
-
-		if err = v.ReadInConfig(); err == nil {
-			evmChainIDKey := "evm.evm-chain-id"
-			if v.IsSet(evmChainIDKey) {
-				evmChainID := v.GetUint64(evmChainIDKey)
-				MANTRAChainID = evmChainID
-			}
 		}
 	}
 	if err != nil && !os.IsNotExist(err) {
