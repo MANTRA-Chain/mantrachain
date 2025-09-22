@@ -94,7 +94,7 @@ var (
 			Type:           "cosmos",
 			Name:           "slinky",
 			Denom:          denom,
-			ChainID:        "mantra-canary-net-1",
+			ChainID:        "mantra-1",
 			Bin:            "mantrachaind",
 			Bech32Prefix:   "mantra",
 			CoinType:       "60",
