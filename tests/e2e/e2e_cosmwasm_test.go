@@ -23,8 +23,8 @@ func (s *IntegrationTestSuite) testQueryWasmParams() {
 
 		params, err := queryWasmParams(chainEndpoint)
 		s.Require().NoError(err)
-		s.Require().Equal(params.CodeUploadAccess.Permission, wasmTypes.AccessTypeEverybody)
-		s.Require().Equal(params.InstantiateDefaultPermission, wasmTypes.AccessTypeEverybody)
+		s.Require().Equal(wasmTypes.AccessTypeEverybody, params.CodeUploadAccess.Permission)
+		s.Require().Equal(wasmTypes.AccessTypeEverybody, params.InstantiateDefaultPermission)
 	})
 }
 
@@ -83,14 +83,14 @@ func (s *IntegrationTestSuite) testStoreCode() {
 
 		s.Require().NotNil(newestCode, "Should have found the newly stored code")
 		s.Require().Equal(senderAddr, newestCode.Creator)
-		s.Require().Greater(newestCode.CodeID, uint64(0))
+		s.Require().Positive(newestCode.CodeID)
 
 		event, err := queryTxEvents(chainEndpoint, txHash)
 		s.Require().NoError(err)
 
 		codeID, err := findCodeIdFromEvents(event)
 		s.Require().NoError(err)
-		s.Require().Greater(codeID, uint64(0))
+		s.Require().Positive(codeID)
 
 		// Store the code ID for potential use in other tests
 		deployedWasmCodeId = codeID
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) testStoreCode() {
 
 func (s *IntegrationTestSuite) testInstantiateContract() {
 	s.Run("instantiate_wasm_contract", func() {
-		s.Require().Greater(deployedWasmCodeId, uint64(0), "No wasm code uploaded")
+		s.Require().Positive(deployedWasmCodeId, "No wasm code uploaded")
 
 		chainEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 

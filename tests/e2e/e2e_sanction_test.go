@@ -137,7 +137,7 @@ func (s *IntegrationTestSuite) testRemoveFromBlacklist() {
 
 			blacklist, err := queryBlacklist(chainEndpoint)
 			s.Require().NoError(err)
-			s.Require().Len(blacklist, 0)
+			s.Require().Empty(blacklist)
 
 			return true
 		},

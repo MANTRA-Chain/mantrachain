@@ -79,12 +79,12 @@ func (s *IntegrationTestSuite) testRestInterfaces() {
 
 		for _, endpoint := range testEndpoints {
 			resp, err := http.Get(fmt.Sprintf("%s%s", endpointURL, endpoint.Path))
-			s.NoError(err, fmt.Sprintf("failed to get endpoint: %s%s", endpointURL, endpoint.Path))
+			s.Require().NoError(err, "failed to get endpoint: "+endpointURL+endpoint.Path)
 
 			_, err = readJSON(resp)
-			s.NoError(err, fmt.Sprintf("failed to read body of endpoint: %s%s", endpointURL, endpoint.Path))
+			s.Require().NoError(err, "failed to read body of endpoint: "+endpointURL+endpoint.Path)
 
-			s.EqualValues(resp.StatusCode, endpoint.ExpectedStatus, fmt.Sprintf("invalid status from endpoint: : %s%s", endpointURL, endpoint.Path))
+			s.Equal(resp.StatusCode, endpoint.ExpectedStatus, "invalid status from endpoint: : "+endpointURL+endpoint.Path)
 		}
 	})
 }

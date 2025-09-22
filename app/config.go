@@ -101,9 +101,11 @@ func init() {
 	genesisFilePath := filepath.Join(nodeHome, "config", "genesis.json")
 	if _, err = os.Stat(genesisFilePath); err == nil {
 		// File exists, read the genesis file to get the chain ID
-		reader, err := os.Open(genesisFilePath)
+		var reader *os.File
+		reader, err = os.Open(genesisFilePath)
 		if err == nil {
-			chainID, err := genutiltypes.ParseChainIDFromGenesis(reader)
+			var chainID string
+			chainID, err = genutiltypes.ParseChainIDFromGenesis(reader)
 			if err == nil && chainID != "" {
 				evmChainID, found := EVMChainIDMap[chainID]
 				if found {
@@ -111,7 +113,7 @@ func init() {
 					return
 				}
 				// If chain ID not found in map, try parsing it
-				evmChainID, err := ParseChainID(chainID)
+				evmChainID, err = ParseChainID(chainID)
 				if err == nil {
 					MANTRAChainID = evmChainID
 					return
