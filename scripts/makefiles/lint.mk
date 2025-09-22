@@ -17,7 +17,7 @@ lint-help:
 	@echo "  typo                  Run codespell to check typos"
 lint: lint-help
 
-golangci_version=v2.1.6
+golangci_version=latest
 
 #? lint-install: Install golangci-lint
 lint-install:

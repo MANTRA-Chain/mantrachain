@@ -13,7 +13,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v5/app/params"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
-	tmrand "github.com/cometbft/cometbft/libs/rand"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -77,14 +76,14 @@ type chain struct {
 	genesisVestingAccounts map[string]sdk.AccAddress
 }
 
-func newChain() (*chain, error) {
+func newChain(id string) (*chain, error) {
 	tmpDir, err := os.MkdirTemp("", "app-e2e-testnet-")
 	if err != nil {
 		return nil, err
 	}
 
 	return &chain{
-		id:      "chain-" + tmrand.Str(6),
+		id:      id,
 		dataDir: tmpDir,
 	}, nil
 }
