@@ -1,6 +1,7 @@
 package ante
 
 import (
+	"fmt"
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
@@ -29,15 +30,15 @@ func (mcd MultiChainIDDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	noOpNext := func(c sdk.Context, t sdk.Tx, s bool) (sdk.Context, error) { return c, nil }
 
 	// Try to verify with the default chain ID from the context.
-	_, err = mcd.svd.AnteHandle(ctx, tx, simulate, noOpNext)
-	if err == nil {
+	_, err1 := mcd.svd.AnteHandle(ctx, tx, simulate, noOpNext)
+	if err1 == nil {
 		// If it succeeded, then we call the real `next` handler.
 		return next(ctx, tx, simulate)
 	}
 
 	// If the error is not an unauthorized error, return the error.
-	if !errorsmod.IsOf(err, errortypes.ErrUnauthorized) {
-		return ctx, err
+	if !errorsmod.IsOf(err1, errortypes.ErrUnauthorized) {
+		return ctx, err1
 	}
 
 	// If signature verification failed with ErrUnauthorized, try again with the derived EVM chain ID.
@@ -53,5 +54,12 @@ func (mcd MultiChainIDDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	version := chainID[lastHyphen+1:]
 	evmCosmosChainId := name + "-evm-" + version
 	extraCtx := ctx.WithChainID(evmCosmosChainId)
-	return mcd.svd.AnteHandle(extraCtx, tx, simulate, next)
+
+	// verify with the "-evm-" chain ID.
+	_, err = mcd.svd.AnteHandle(extraCtx, tx, simulate, noOpNext)
+	if err != nil {
+		return ctx, fmt.Errorf("%s, %s", err1, err)
+	}
+	// If it succeeded, then we call the real `next` handler with the default chain ID.
+	return next(ctx, tx, simulate)
 }
