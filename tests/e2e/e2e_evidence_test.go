@@ -20,7 +20,7 @@ func (s *IntegrationTestSuite) testEvidence() {
 		)
 		res, err := queryAllEvidence(chainAPI)
 		s.Require().NoError(err)
-		s.Require().Equal(numberOfEvidences, len(res.Evidence))
+		s.Require().Len(res.Evidence, numberOfEvidences)
 		for _, evidence := range res.Evidence {
 			var exportedEvidence exported.Evidence
 			err := cdc.UnpackAny(evidence, &exportedEvidence)
