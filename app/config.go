@@ -97,6 +97,29 @@ func init() {
 		panic(err)
 	}
 
+	// check if the genesis file exists and read the chain ID from it
+	genesisFilePath := filepath.Join(nodeHome, "config", "genesis.json")
+	var chainID string
+	if _, err = os.Stat(genesisFilePath); err == nil {
+		// File exists, read the genesis file to get the chain ID
+		var reader *os.File
+		reader, err = os.Open(genesisFilePath)
+		if err == nil {
+			chainID, err = genutiltypes.ParseChainIDFromGenesis(reader)
+			if err == nil && chainID != "" {
+				evmChainID, found := EVMChainIDMap[chainID]
+				if found {
+					MANTRAChainID = evmChainID
+					return
+				}
+			}
+			defer reader.Close()
+		}
+	}
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
+
 	// If genesis file does not exist or chain ID is not found, check app.toml
 	// to get the EVM chain ID
 	appTomlPath := filepath.Join(nodeHome, "config", "app.toml")
@@ -115,35 +138,17 @@ func init() {
 			}
 		}
 	}
-	if err != nil && !os.IsNotExist(err) {
-		panic(err)
+
+	if chainID != "" {
+		// If chain ID not found in map, try parsing it
+		evmChainID, err := ParseChainID(chainID)
+		if err != nil {
+			panic(err)
+		}
+		MANTRAChainID = evmChainID
+		return
 	}
 
-	// check if the genesis file exists and read the chain ID from it
-	genesisFilePath := filepath.Join(nodeHome, "config", "genesis.json")
-	if _, err = os.Stat(genesisFilePath); err == nil {
-		// File exists, read the genesis file to get the chain ID
-		var reader *os.File
-		reader, err = os.Open(genesisFilePath)
-		if err == nil {
-			var chainID string
-			chainID, err = genutiltypes.ParseChainIDFromGenesis(reader)
-			if err == nil && chainID != "" {
-				evmChainID, found := EVMChainIDMap[chainID]
-				if found {
-					MANTRAChainID = evmChainID
-					return
-				}
-				// If chain ID not found in map, try parsing it
-				evmChainID, err = ParseChainID(chainID)
-				if err == nil {
-					MANTRAChainID = evmChainID
-					return
-				}
-			}
-			defer reader.Close()
-		}
-	}
 	if err != nil && !os.IsNotExist(err) {
 		panic(err)
 	}
