@@ -125,7 +125,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	evmosencoding "github.com/cosmos/evm/encoding"
@@ -174,6 +173,12 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
+
+	no_valupdates_genutil "github.com/cosmos/interchain-security/v7/x/ccv/no_valupdates_genutil"
+	no_valupdates_staking "github.com/cosmos/interchain-security/v7/x/ccv/no_valupdates_staking"
+	icsprovider "github.com/cosmos/interchain-security/v7/x/ccv/provider"
+	icsproviderkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
+	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 
 	"github.com/gorilla/mux"
 	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
@@ -226,12 +231,13 @@ var maccPerms = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	nft.ModuleName:                 nil,
 	// non sdk modules
-	ibctransfertypes.ModuleName:  {authtypes.Minter, authtypes.Burner},
-	ratelimittypes.ModuleName:    nil,
-	wasmtypes.ModuleName:         {authtypes.Burner},
-	tokenfactorytypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-	taxtypes.ModuleName:          nil,
-	sanctiontypes.ModuleName:     nil,
+	ibctransfertypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	providertypes.ConsumerRewardsPool: nil,
+	ratelimittypes.ModuleName:         nil,
+	wasmtypes.ModuleName:              {authtypes.Burner},
+	tokenfactorytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+	taxtypes.ModuleName:               nil,
+	sanctiontypes.ModuleName:          nil,
 
 	// Cosmos EVM modules
 	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
@@ -267,11 +273,11 @@ type App struct {
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
 	BankKeeper            bankkeeper.BaseKeeper
-	StakingKeeper         stakingkeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
-	GovKeeper             govkeeper.Keeper
+	GovKeeper             *govkeeper.Keeper    // Gov Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	CrisisKeeper          *crisiskeeper.Keeper //nolint:staticcheck
 	UpgradeKeeper         *upgradekeeper.Keeper
 	ParamsKeeper          paramskeeper.Keeper //nolint:staticcheck
@@ -295,6 +301,9 @@ type App struct {
 	WasmKeeper          wasmkeeper.Keeper
 	RateLimitKeeper     ratelimitkeeper.Keeper
 	CallbackKeeper      ibccallbackskeeper.ContractKeeper
+
+	// ICS
+	ProviderKeeper icsproviderkeeper.Keeper
 
 	// MANTRAChain keepers
 	TokenFactoryKeeper tokenfactorykeeper.Keeper
@@ -395,7 +404,7 @@ func New(
 		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
-		icacontrollertypes.StoreKey, icahosttypes.StoreKey,
+		icacontrollertypes.StoreKey, icahosttypes.StoreKey, providertypes.StoreKey,
 		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
@@ -445,6 +454,7 @@ func New(
 		sdk.GetConfig().GetBech32AccountAddrPrefix(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[banktypes.StoreKey]),
@@ -454,24 +464,14 @@ func New(
 		logger,
 	)
 
-	app.StakingKeeper = *stakingkeeper.NewKeeper(
+	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[stakingtypes.StoreKey]),
 		app.AccountKeeper,
-		&app.BankKeeper,
+		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
-	)
-
-	app.MintKeeper = mintkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(keys[minttypes.StoreKey]),
-		app.StakingKeeper,
-		app.AccountKeeper,
-		&app.BankKeeper,
-		authtypes.FeeCollectorName,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.DistrKeeper = distrkeeper.NewKeeper(
@@ -488,7 +488,7 @@ func New(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(keys[slashingtypes.StoreKey]),
-		&app.StakingKeeper,
+		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -508,7 +508,11 @@ func New(
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
+		stakingtypes.NewMultiStakingHooks(
+			app.DistrKeeper.Hooks(),
+			app.SlashingKeeper.Hooks(),
+			app.ProviderKeeper.Hooks(),
+		),
 	)
 
 	app.CircuitKeeper = circuitkeeper.NewKeeper(
@@ -564,6 +568,25 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	app.ProviderKeeper = icsproviderkeeper.NewKeeper(
+		appCodec,
+		app.keys[providertypes.StoreKey],
+		app.GetSubspace(providertypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.ConnectionKeeper,
+		app.IBCKeeper.ClientKeeper,
+		app.StakingKeeper,
+		app.SlashingKeeper,
+		app.AccountKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		govkeeper.Keeper{}, // cyclic dependency between provider and governance, will be set later
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		authtypes.FeeCollectorName,
+	)
+
 	sortedKnownModules := make([]string, 0, len(maccPerms))
 	for moduleName := range maccPerms {
 		sortedKnownModules = append(sortedKnownModules, moduleName)
@@ -593,36 +616,52 @@ func New(
 			app.TokenFactoryKeeper.Hooks(),
 		))
 
-	// Register the proposal types
-	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
-	// by granting the governance module the right to execute the message.
-	// See: https://docs.cosmos.network/main/modules/gov#proposal-messages
-	govRouter := govv1beta1.NewRouter()
-	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler)
 	govConfig := govtypes.DefaultConfig()
 	/*
 		Example of setting gov params:
 		govConfig.MaxMetadataLen = 10000
 	*/
-	govKeeper := govkeeper.NewKeeper(
+	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[govtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper,
+		// use the ProviderKeeper as StakingKeeper for gov
+		// because governance should be based on the consensus-active validators
+		app.ProviderKeeper,
 		app.DistrKeeper,
 		app.MsgServiceRouter(),
 		govConfig,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Set legacy router for backwards compatibility with gov v1beta1
-	govKeeper.SetLegacyRouter(govRouter)
+	app.ProviderKeeper.SetGovKeeper(*app.GovKeeper)
 
-	app.GovKeeper = *govKeeper.SetHooks(
-		govtypes.NewMultiGovHooks(
-		// register the governance hooks
-		),
+	app.MintKeeper = mintkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[minttypes.StoreKey]),
+		&app.ProviderKeeper,
+		app.AccountKeeper,
+		&app.BankKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// gov router must be set after the provider keeper is created
+	// otherwise the provider keeper will not be able to handle proposals (will be nil)
+	govRouter := govv1beta1.NewRouter()
+	govRouter.AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler)
+	// Set legacy router for backwards compatibility with gov v1beta1
+	app.GovKeeper.SetLegacyRouter(govRouter)
+
+	app.GovKeeper = app.GovKeeper.SetHooks(
+		govtypes.NewMultiGovHooks(app.ProviderKeeper.Hooks()),
+	)
+
+	providerModule := icsprovider.NewAppModule(
+		&app.ProviderKeeper,
+		app.GetSubspace(providertypes.ModuleName),
+		app.keys[providertypes.StoreKey],
 	)
 
 	app.TaxKeeper = taxkeeper.NewKeeper(
@@ -697,7 +736,7 @@ func New(
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[evidencetypes.StoreKey]),
-		&app.StakingKeeper,
+		app.StakingKeeper,
 		app.SlashingKeeper,
 		app.AccountKeeper.AddressCodec(),
 		runtime.ProvideCometInfoService(),
@@ -779,7 +818,8 @@ func New(
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> icsprovider.OnRecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket
+			-> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
@@ -797,6 +837,7 @@ func New(
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
+	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
@@ -812,6 +853,7 @@ func New(
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
+		AddRoute(providertypes.ModuleName, providerModule).
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -896,7 +938,7 @@ func New(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.ModuleManager = module.NewManager(
-		genutil.NewAppModule(
+		no_valupdates_genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
 			app,
@@ -906,11 +948,11 @@ func New(
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, nil),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, nil),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, nil),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil, app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil),
-		staking.NewAppModule(appCodec, &app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
+		no_valupdates_staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper), //nolint:staticcheck
@@ -929,6 +971,9 @@ func New(
 		// connect
 		marketmapModule,
 		oracleModule,
+
+		// ics
+		providerModule,
 
 		// sdk
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, nil), //nolint:staticcheck
@@ -1001,6 +1046,7 @@ func New(
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
 		precisebanktypes.ModuleName,
+		providertypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -1029,6 +1075,7 @@ func New(
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
 		precisebanktypes.ModuleName,
+		providertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1047,7 +1094,6 @@ func New(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
-		crisistypes.ModuleName,
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
@@ -1084,6 +1130,10 @@ func New(
 		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
+		providertypes.ModuleName,
+
+		// crisis needs to be last so that the genesis state is consistent when it checks invariants
+		crisistypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1512,6 +1562,12 @@ func BlockedAddresses() map[string]bool {
 		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
+	// We remove the ConsumerRewardsPool from the group of blocked recipient addresses in bank.
+	// This is required for the provider chain to be able to receive tokens from
+	// the consumer chain
+	delete(blockedAddrs, authtypes.NewModuleAddress(
+		providertypes.ConsumerRewardsPool).String())
+
 	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
 	for _, addr := range corevm.PrecompiledAddressesPrague {
 		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
@@ -1533,6 +1589,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
+	paramsKeeper.Subspace(providertypes.ModuleName).WithKeyTable(providertypes.ParamKeyTable())
 
 	return paramsKeeper
 }
