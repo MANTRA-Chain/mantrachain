@@ -23,6 +23,10 @@ type ProxyGasMeter struct {
 //
 // If limit is greater than or equal to the remaining gas, no wrapping is needed and the original gas meter is returned.
 func NewProxyGasMeter(gasMeter storetypes.GasMeter, limit storetypes.Gas) storetypes.GasMeter {
+	if gasMeter == nil {
+		panic("cannot create ProxyGasMeter with nil parent gas meter")
+	}
+
 	if limit >= gasMeter.GasRemaining() {
 		return gasMeter
 	}
