@@ -18,6 +18,8 @@ env:
 
 permissions:
   contents: write
+  attestations: write       # added (to publish provenance)
+  id-token: write           # (required for OIDC token used by attest-build-provenance)
 
 jobs:
   build:
@@ -104,3 +106,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_SKIP: validate
           GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
+      - name: Generate SLSA provenance
+        if: github.event_name != 'pull_request'
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            dist/*/mantrachaind*
+            dist/*.tar.gz
+            dist/sha256sum.txt
