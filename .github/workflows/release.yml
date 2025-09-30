@@ -107,7 +107,6 @@ jobs:
           GORELEASER_SKIP: validate
           GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
       - name: Generate SLSA provenance
-        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@v3
         with:
           subject-path: |
