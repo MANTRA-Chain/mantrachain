@@ -25,7 +25,7 @@ func CreateUpgradeHandler(
 		// update contract owner for all existing tokenfactory token_pairs
 		pairs := keepers.Erc20Keeper.GetTokenPairs(ctx)
 		for _, pair := range pairs {
-			if strings.Index(pair.Denom, "factory/") == 0 {
+			if strings.HasPrefix(pair.Denom, "factory/") {
 				pair.ContractOwner = erc20types.OWNER_MODULE
 				keepers.Erc20Keeper.SetTokenPair(ctx, pair)
 			}
