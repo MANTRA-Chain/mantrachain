@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	evmante "github.com/cosmos/evm/ante"
 	anteinterfaces "github.com/cosmos/evm/ante/interfaces"
-	chainante "github.com/cosmos/evm/evmd/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
@@ -29,7 +29,7 @@ type EVMHandlerOptions struct {
 	SigGasConsumer         func(meter storetypes.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 	MaxTxGasWanted         uint64
 	TxFeeChecker           ante.TxFeeChecker
-	PendingTxListener      chainante.PendingTxListener
+	PendingTxListener      evmante.PendingTxListener
 }
 
 // Validate checks if the keepers are defined
