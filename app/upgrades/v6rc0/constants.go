@@ -1,0 +1,18 @@
+package v6rc0
+
+import (
+	"cosmossdk.io/store/types"
+	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
+)
+
+const (
+	// UpgradeName defines the on-chain upgrade name.
+	// v6 upgrade is for testnet v6rc0
+	UpgradeName = "v6"
+)
+
+var Upgrade = upgrades.Upgrade{
+	UpgradeName:          UpgradeName,
+	CreateUpgradeHandler: CreateUpgradeHandler,
+	StoreUpgrades:        types.StoreUpgrades{},
+}
