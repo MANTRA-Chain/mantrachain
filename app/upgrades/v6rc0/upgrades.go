@@ -1,11 +1,11 @@
-package v5rc3
+package v6rc0
 
 import (
 	"context"
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
+	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
@@ -25,23 +25,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		iter := keepers.TokenFactoryKeeper.GetAllDenomsIterator(ctx)
-		defer iter.Close()
-		for ; iter.Valid(); iter.Next() {
-			denom := string(iter.Value())
-			if err := keepers.TokenFactoryKeeper.UpdateDenomWithERC20(ctx, denom); err != nil {
-				return vm, err
-			}
-		}
-
-		// enable AllowUnprotectedTxs see adr-006
-		params := keepers.EVMKeeper.GetParams(ctx)
-		params.AllowUnprotectedTxs = true
-		if err := keepers.EVMKeeper.SetParams(ctx, params); err != nil {
-			return vm, err
-		}
-
-		ctx.Logger().Info("Upgrade v5.0.0-rc3 complete")
+		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
 		return vm, nil
 	}
 }
