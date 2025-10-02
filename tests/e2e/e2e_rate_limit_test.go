@@ -268,7 +268,7 @@ func (s *IntegrationTestSuite) testRemoveRateLimit() {
 
 			rateLimits, err := queryAllRateLimits(chainEndpoint)
 			s.Require().NoError(err)
-			s.Require().Len(rateLimits, 0)
+			s.Require().Empty(rateLimits)
 
 			res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
 			s.Require().NoError(err)
