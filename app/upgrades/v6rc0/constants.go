@@ -7,8 +7,7 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	// v6 upgrade is for testnet v6rc0
-	UpgradeName = "v6"
+	UpgradeName = "v6.0.0-rc0"
 )
 
 var Upgrade = upgrades.Upgrade{
