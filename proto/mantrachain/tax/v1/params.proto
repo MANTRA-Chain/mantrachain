@@ -5,7 +5,7 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/MANTRA-Chain/mantrachain/x/tax/types";
+option go_package = "github.com/MANTRA-Chain/mantrachain/v6/x/tax/types";
 
 // Params defines the parameters for the module.
 message Params {

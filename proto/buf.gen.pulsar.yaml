@@ -7,7 +7,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/MANTRA-Chain/mantrachain/api
+    default: github.com/MANTRA-Chain/mantrachain/v6/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto
