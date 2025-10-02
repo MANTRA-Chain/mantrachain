@@ -13,5 +13,5 @@ const (
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
-	StoreUpgrades:        types.StoreUpgrades{},
+	StoreUpgrades:        types.StoreUpgrades{Deleted: []string{"group"}},
 }
