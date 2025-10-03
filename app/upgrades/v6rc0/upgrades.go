@@ -6,7 +6,7 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
+	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	erc20types "github.com/cosmos/evm/x/erc20/types"

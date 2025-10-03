@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
-	keepertest "github.com/MANTRA-Chain/mantrachain/v5/testutil/keeper"
+	appparams "github.com/MANTRA-Chain/mantrachain/v6/app/params"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v6/testutil/keeper"
 	"github.com/stretchr/testify/require"
 )
 
