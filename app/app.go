@@ -820,6 +820,12 @@ func New(
 		app.AppCodec(),
 	)...)
 
+	// Create a new MsgServiceRouter for the wasm module. This allows us to
+	// have a additional blacklist for messages dispatched by wasm contracts.
+	wasmMsgServiceRouter := baseapp.NewMsgServiceRouter()
+	wasmGRPCQueryRouter := baseapp.NewGRPCQueryRouter()
+	wasmMsgServiceRouter.SetInterfaceRegistry(interfaceRegistry)
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	app.WasmKeeper = wasmkeeper.NewKeeper(
@@ -833,8 +839,8 @@ func New(
 		app.IBCKeeper.ChannelKeeper,
 		nil,                // channelkeeperv2
 		app.TransferKeeper, // portsource
-		app.MsgServiceRouter(),
-		app.GRPCQueryRouter(),
+		wasmMsgServiceRouter,
+		nil,
 		wasmDir,
 		wasmConfig,
 		wasmtypes.VMConfig{},
@@ -1059,6 +1065,13 @@ func New(
 	if err != nil {
 		panic(err)
 	}
+
+	wasmConfigurator := module.NewConfigurator(app.appCodec, wasmMsgServiceRouter, wasmGRPCQueryRouter)
+	if err := app.ModuleManager.RegisterServices(wasmConfigurator); err != nil {
+		panic(err)
+	}
+	// set the wasm msg service router's circuit breaker to have additional blacklist
+	wasmMsgServiceRouter.SetCircuit(wasmCircuitBreaker{circuitKeeper: app.CircuitKeeper})
 
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
