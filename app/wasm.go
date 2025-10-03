@@ -4,8 +4,6 @@ import (
 	"context"
 
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	erc20types "github.com/cosmos/evm/x/erc20/types"
 )
 
 // AllCapabilities returns all capabilities available with the current wasmvm
@@ -27,23 +25,22 @@ func AllCapabilities() []string {
 	}
 }
 
-// wasmBlacklistedMsgs contains the list of messages that are not allowed to be executed by wasm contracts.
-// This is a static blacklist that prevents contracts from executing potentially dangerous messages.
-var wasmBlacklistedMsgs = map[string]struct{}{
-	sdk.MsgTypeURL(&erc20types.MsgRegisterERC20{}): {},
-}
-
-// wasmCircuitBreaker is a custom circuit breaker for wasm contracts.
-// It enforces a static blacklist of messages and also respects the dynamic
-// list from the main circuit breaker keeper.
+// wasmCircuitBreaker implements the circuit breaker for messages dispatched by wasm contracts.
+// It checks the main circuit breaker first, and then appends 'wasm' to typeUrl for additional check.
 type wasmCircuitBreaker struct {
 	circuitKeeper circuitkeeper.Keeper
 }
 
 func (wcb wasmCircuitBreaker) IsAllowed(ctx context.Context, typeURL string) (bool, error) {
-	if _, isBlacklisted := wasmBlacklistedMsgs[typeURL]; isBlacklisted {
-		return false, nil // Deny if on the static blacklist
+	isAllowed, err := wcb.circuitKeeper.IsAllowed(ctx, typeURL)
+	if err != nil {
+		return false, err
 	}
-	// Otherwise, defer to the main circuit breaker's list
-	return wcb.circuitKeeper.IsAllowed(ctx, typeURL)
+	if !isAllowed {
+		return false, nil // Deny if the main circuit breaker says so
+	}
+
+	// check additional static blacklist for wasm
+	wasmTypeUrl := "wasm" + typeURL
+	return wcb.circuitKeeper.IsAllowed(ctx, wasmTypeUrl)
 }
