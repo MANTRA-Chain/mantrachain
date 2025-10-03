@@ -12,10 +12,8 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/ad28aabb7f56ac7b1aae2a3f12f6a55b0f9979dd
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/cc407ad0532dd4c72ab3757d9b3769a03077c2d1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.0.0-20251003040616-cc407ad0532d
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
 	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a
