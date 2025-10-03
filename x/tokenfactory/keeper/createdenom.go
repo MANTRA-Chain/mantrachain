@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/errors"
-	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	erc20types "github.com/cosmos/evm/x/erc20/types"
@@ -62,7 +62,7 @@ func (k Keeper) createDenomAfterValidation(ctx sdk.Context, creatorAddr, denom s
 		return types.ErrInvalidDenom.Wrapf(
 			"denom results in already registered ethContractAddr: %v, use a different subdenom and try again", ethContractAddr.Hex())
 	}
-	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
+	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_MODULE)
 	err = k.erc20Keeper.SetToken(ctx, pair)
 	if err != nil {
 		return err
@@ -107,7 +107,7 @@ func (k Keeper) UpdateDenomWithERC20(ctx sdk.Context, denom string) (err error) 
 		k.Logger(ctx).Error("denom results in already registered ethContractAddr: %s", ethContractAddr.Hex())
 		return nil
 	}
-	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_EXTERNAL)
+	pair := erc20types.NewTokenPair(ethContractAddr, denom, erc20types.OWNER_MODULE)
 	err = k.erc20Keeper.SetToken(ctx, pair)
 	if err != nil {
 		return err

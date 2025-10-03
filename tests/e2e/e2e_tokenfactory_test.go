@@ -122,7 +122,7 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 
 		denomCreationFee, err := queryTokenfactoryDenomCreationFee(chainEndpoint)
 		s.Require().NoError(err)
-		s.Require().Equal(denomCreationFee.Denom, uomDenom)
+		s.Require().Equal(uomDenom, denomCreationFee.Denom)
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
@@ -443,7 +443,7 @@ func (s *IntegrationTestSuite) testTokenfactoryBurn() {
 				s.T().Logf("After MsgSetSendEnabled proposal to reenable denom %s", customDenom)
 				sendEnabled, err := querySendEnabled(chainEndpoint)
 				s.Require().NoError(err)
-				s.Require().Len(sendEnabled, 0)
+				s.Require().Empty(sendEnabled)
 				return true
 			},
 			15*time.Second,

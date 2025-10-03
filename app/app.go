@@ -45,22 +45,21 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/mempool"
 	"github.com/cosmos/evm/evmd"
 
-	"github.com/MANTRA-Chain/mantrachain/v5/app/ante"
-	queries "github.com/MANTRA-Chain/mantrachain/v5/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v5/app/upgrades"
-	v5 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5"
-	v5rc9 "github.com/MANTRA-Chain/mantrachain/v5/app/upgrades/v5rc9"
-	_ "github.com/MANTRA-Chain/mantrachain/v5/client/docs/statik"
-	"github.com/MANTRA-Chain/mantrachain/v5/client/docs/swagger"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v5/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v5/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v5/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
+	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
+	v6rc0 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6rc0"
+	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v6/client/docs/swagger"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v6/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v6/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -112,9 +111,6 @@ import (
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/cosmos/cosmos-sdk/x/group"
-	groupkeeper "github.com/cosmos/cosmos-sdk/x/group/keeper"
-	groupmodule "github.com/cosmos/cosmos-sdk/x/group/module"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -242,7 +238,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v5rc9.Upgrade, v5.Upgrade}
+var Upgrades = []upgrades.Upgrade{v6rc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -278,7 +274,6 @@ type App struct {
 	AuthzKeeper           authzkeeper.Keeper
 	EvidenceKeeper        evidencekeeper.Keeper
 	FeeGrantKeeper        feegrantkeeper.Keeper
-	GroupKeeper           groupkeeper.Keeper
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
@@ -389,7 +384,6 @@ func New(
 		circuittypes.StoreKey,
 		authzkeeper.StoreKey,
 		nftkeeper.StoreKey,
-		group.StoreKey,
 		// non sdk store keys
 		ibcexported.StoreKey, ibctransfertypes.StoreKey,
 		wasmtypes.StoreKey,
@@ -524,20 +518,6 @@ func New(
 		appCodec,
 		app.MsgServiceRouter(),
 		app.AccountKeeper,
-	)
-
-	groupConfig := group.DefaultConfig()
-	/*
-		Example of setting group params:
-		groupConfig.MaxMetadataLen = 1000
-	*/
-	app.GroupKeeper = groupkeeper.NewKeeper(
-		keys[group.StoreKey],
-		// runtime.NewKVStoreService(keys[group.StoreKey]),
-		appCodec,
-		app.MsgServiceRouter(),
-		app.AccountKeeper,
-		groupConfig,
 	)
 
 	// get skipUpgradeHeights from the app options
@@ -776,10 +756,10 @@ func New(
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
-			transferKeeper.SendPacket -> erc20.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
+			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> tokenfactory.OnRecvPacket -> ratelimit.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
@@ -915,7 +895,6 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper), //nolint:staticcheck
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(appCodec, app.CircuitKeeper),
@@ -1015,7 +994,6 @@ func New(
 		erc20types.ModuleName,
 		feemarkettypes.ModuleName,
 		feegrant.ModuleName,
-		group.ModuleName,
 		// burn fees from fee collector
 		taxtypes.ModuleName,
 		// additional non simd modules
@@ -1052,7 +1030,6 @@ func New(
 		authz.ModuleName,
 		feegrant.ModuleName,
 		nft.ModuleName,
-		group.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,

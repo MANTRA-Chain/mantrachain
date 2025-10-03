@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/store/prefix"
-	"github.com/MANTRA-Chain/mantrachain/v5/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -24,5 +24,5 @@ func (k Keeper) IsEscrowAddress(ctx sdk.Context, address sdk.AccAddress) bool {
 func (k Keeper) RemoveEscrowAddress(ctx sdk.Context, address sdk.AccAddress) {
 	store := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	prefixStore := prefix.NewStore(store, types.EscrowAddressKey)
-	prefixStore.Delete(address.Bytes())
+	prefixStore.Delete(address)
 }

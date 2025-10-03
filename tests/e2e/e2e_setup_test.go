@@ -16,7 +16,7 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
-	appparams "github.com/MANTRA-Chain/mantrachain/v5/app/params"
+	appparams "github.com/MANTRA-Chain/mantrachain/v6/app/params"
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"
@@ -126,10 +126,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
-	s.chainA, err = newChain()
+	s.chainA, err = newChain("mantra-canary-net-1")
 	s.Require().NoError(err)
 
-	s.chainB, err = newChain()
+	s.chainB, err = newChain("mantra-1")
 	s.Require().NoError(err)
 
 	s.dkrPool, err = dockertest.NewPool("")
