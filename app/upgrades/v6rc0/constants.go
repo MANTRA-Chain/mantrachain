@@ -15,6 +15,6 @@ var Upgrade = upgrades.Upgrade{
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: types.StoreUpgrades{
 		Added:   []string{},
-		Deleted: []string{"group"},
+		Deleted: []string{"authz", "group"},
 	},
 }
