@@ -47,7 +47,7 @@ jobs:
         with:
           go-version: 1.23
       - name: Checkout Git repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
@@ -80,7 +80,7 @@ jobs:
     runs-on: chain-runner
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}

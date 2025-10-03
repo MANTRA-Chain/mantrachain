@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 1.23
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install tparse
         run: |
           go install github.com/mfridman/tparse@latest
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 1.23
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Extract Tag or Commit
         run: |
           FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
@@ -46,7 +46,7 @@ jobs:
           fi
           echo "SDK_VERSION=${SDK_VERSION}" | tee -a $GITHUB_ENV
       - name: Checkout MANTRA-Chain/cosmos-sdk
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: MANTRA-Chain/cosmos-sdk
           path: cosmos-sdk
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install tparse
         run: |
           go install github.com/mfridman/tparse@latest
@@ -96,7 +96,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 1.23
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install tparse
         run: |
           go install github.com/mfridman/tparse@latest
@@ -114,7 +114,7 @@ jobs:
     steps:
       - name: Create more disk space
         run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - id: changed-files
@@ -147,7 +147,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Checkout mantrachain-e2e
         if: steps.changed-files.outputs.only_changed == 'false'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: MANTRA-Chain/mantrachain-e2e
           submodules: recursive
@@ -179,7 +179,7 @@ jobs:
     steps:
       - name: Create more disk space
         run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - id: changed-files
@@ -215,7 +215,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
       # Checkout wasm-testing repository
       - name: Checkout wasm-testing
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: MANTRA-Chain/wasm-testing
           path: wasm-testing
