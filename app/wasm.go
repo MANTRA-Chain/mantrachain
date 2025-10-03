@@ -27,13 +27,11 @@ func AllCapabilities() []string {
 	}
 }
 
-var (
-	// wasmBlacklistedMsgs contains the list of messages that are not allowed to be executed by wasm contracts.
-	// This is a static blacklist that prevents contracts from executing potentially dangerous messages.
-	wasmBlacklistedMsgs = map[string]struct{}{
-		sdk.MsgTypeURL(&erc20types.MsgRegisterERC20{}): {},
-	}
-)
+// wasmBlacklistedMsgs contains the list of messages that are not allowed to be executed by wasm contracts.
+// This is a static blacklist that prevents contracts from executing potentially dangerous messages.
+var wasmBlacklistedMsgs = map[string]struct{}{
+	sdk.MsgTypeURL(&erc20types.MsgRegisterERC20{}): {},
+}
 
 // wasmCircuitBreaker is a custom circuit breaker for wasm contracts.
 // It enforces a static blacklist of messages and also respects the dynamic
