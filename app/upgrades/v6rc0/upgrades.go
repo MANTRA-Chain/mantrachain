@@ -31,6 +31,15 @@ func CreateUpgradeHandler(
 			}
 		}
 
+		disableList := []string{
+			"wasm/cosmos.evm.erc20.v1.MsgRegisterERC20",
+			"wasm/cosmos.authz.v1beta1.MsgExec",
+		}
+		for _, msg := range disableList {
+			if err := keepers.CircuitKeeper.DisableList.Set(ctx, msg); err != nil {
+				return vm, err
+			}
+		}
 		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
 		return vm, nil
 	}
