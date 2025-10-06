@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -784,19 +783,19 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// TODO: Configure EVM precompiles when needed
-	corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
-	// corePrecompiles := evmd.NewAvailableStaticPrecompiles(
-	// 	app.StakingKeeper,
-	// 	app.DistrKeeper,
-	// 	app.PreciseBankKeeper,
-	// 	app.Erc20Keeper,
-	// 	app.TransferKeeper,
-	// 	app.IBCKeeper.ChannelKeeper,
-	// 	app.EVMKeeper,
-	// 	app.GovKeeper,
-	// 	app.SlashingKeeper,
-	// 	app.AppCodec(),
-	// )
+	// corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
+	corePrecompiles := evmd.NewAvailableStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.PreciseBankKeeper,
+		app.Erc20Keeper,
+		app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.EVMKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		app.AppCodec(),
+	)
 	app.EVMKeeper.WithStaticPrecompiles(
 		corePrecompiles,
 	)

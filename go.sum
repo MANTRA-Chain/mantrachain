@@ -704,10 +704,10 @@ github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCx
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1 h1:WqmQ6SxaYGbWKSdGieDiCHo4IruicYy8H1ehfZ7gnUM=
 github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1/go.mod h1:90S054hIbadFB1MlXVZVC5w0QbKfd1P4b79zT+vvJxw=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a h1:WW0R4UTzSZgKm+F69uXGKoBChezUtY90gqso3XI+MwY=
-github.com/MANTRA-Chain/evm v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a h1:OY98diOpPbqx6yY9KctYYEP43RwNqlL2ekmr2okVxcQ=
-github.com/MANTRA-Chain/evm/evmd v0.0.0-20250821011959-cdd966c0f14a/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
+github.com/MANTRA-Chain/evm v0.0.0-20251006011224-d351dd18dbbc h1:J2j5o+GqrxDXTfRwonEfz8QS/wHKAhun47CQDcZmYrg=
+github.com/MANTRA-Chain/evm v0.0.0-20251006011224-d351dd18dbbc/go.mod h1:qGQKXU9zuuiNsJ9qybv/DeGV1BwpPacXuupTE9OiSnA=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20251006011224-d351dd18dbbc h1:6kDBtKLU+wywy6/1h+cS5dpvEp9/rdZPEOrwdDWg+HI=
+github.com/MANTRA-Chain/evm/evmd v0.0.0-20251006011224-d351dd18dbbc/go.mod h1:tMPfFP9xQ0DGZkrJYCFeSPtOPmEjSMcSzRMbq9Hx/7Y=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
