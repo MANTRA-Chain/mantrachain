@@ -839,14 +839,14 @@ func New(
 	// TODO: Configure EVM precompiles when needed
 	// corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
 	corePrecompiles := evmd.NewAvailableStaticPrecompiles(
-		app.StakingKeeper,
+		*app.StakingKeeper,
 		app.DistrKeeper,
 		app.PreciseBankKeeper,
 		app.Erc20Keeper,
 		app.TransferKeeper,
 		app.IBCKeeper.ChannelKeeper,
 		app.EVMKeeper,
-		app.GovKeeper,
+		*app.GovKeeper,
 		app.SlashingKeeper,
 		app.AppCodec(),
 	)
