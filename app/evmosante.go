@@ -4,7 +4,6 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
 	"github.com/cosmos/cosmos-sdk/client"
 	evmante "github.com/cosmos/evm/ante"
-	cosmosevmante "github.com/cosmos/evm/ante/evm"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 )
 
@@ -21,7 +20,7 @@ func NewEVMAnteHandlerOptionsFromApp(app *App, txConfig client.TxConfig, maxGasW
 		SignModeHandler:        txConfig.SignModeHandler(),
 		SigGasConsumer:         evmante.SigVerificationGasConsumer,
 		MaxTxGasWanted:         maxGasWanted,
-		TxFeeChecker:           cosmosevmante.NewDynamicFeeChecker(app.FeeMarketKeeper),
+		DynamicFeeChecker:      true,
 		PendingTxListener:      app.onPendingTx,
 	}
 }

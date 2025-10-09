@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -43,6 +44,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdkmempool "github.com/cosmos/cosmos-sdk/types/mempool"
 	evmmempool "github.com/cosmos/evm/mempool"
+	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
 	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
@@ -129,7 +131,7 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
-	chainante "github.com/cosmos/evm/evmd/ante"
+	chainante "github.com/cosmos/evm/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
 	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
@@ -716,7 +718,6 @@ func New(
 	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
-		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
@@ -776,22 +777,18 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	// TODO: Configure EVM precompiles when needed
-	// corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
-	corePrecompiles := evmd.NewAvailableStaticPrecompiles(
-		app.StakingKeeper,
-		app.DistrKeeper,
-		app.PreciseBankKeeper,
-		app.Erc20Keeper,
-		app.TransferKeeper,
-		app.IBCKeeper.ChannelKeeper,
-		app.EVMKeeper,
-		app.GovKeeper,
-		app.SlashingKeeper,
-		app.AppCodec(),
-	)
 	app.EVMKeeper.WithStaticPrecompiles(
-		corePrecompiles,
+		precompiletypes.DefaultStaticPrecompiles(
+			app.StakingKeeper,
+			app.DistrKeeper,
+			app.PreciseBankKeeper,
+			&app.Erc20Keeper,
+			&app.TransferKeeper,
+			app.IBCKeeper.ChannelKeeper,
+			app.GovKeeper,
+			app.SlashingKeeper,
+			appCodec,
+		),
 	)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
@@ -1135,18 +1132,16 @@ func New(
 
 		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig)
 		app.EVMMempool = evmMempool
-
-		// Set the global mempool for RPC access
-		if err := evmmempool.SetGlobalEVMMempool(evmMempool); err != nil {
-			panic(err)
-		}
 		app.SetMempool(evmMempool)
 		checkTxHandler := evmmempool.NewCheckTxHandler(evmMempool)
 		app.SetCheckTxHandler(checkTxHandler)
 
 		abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
 		abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
-		app.SetPrepareProposal(abciProposalHandler.PrepareProposalHandler())
+
+		prepareProposalHandler = abciProposalHandler.PrepareProposalHandler()
+		processProposalHandler = abciProposalHandler.ProcessProposalHandler()
+		app.SetPrepareProposal(prepareProposalHandler)
 	}
 
 	// oracle initialization
@@ -1300,6 +1295,25 @@ func (app *App) TxConfig() client.TxConfig {
 
 func (app *App) SetClientCtx(clientCtx client.Context) {
 	app.clientCtx = clientCtx
+}
+
+func (app *App) GetMempool() sdkmempool.ExtMempool {
+	return app.EVMMempool
+}
+
+func (app *App) Close() error {
+	var err error
+	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok {
+		err = m.Close()
+	}
+	err = errors.Join(err, app.BaseApp.Close())
+	msg := "Application gracefully shutdown"
+	if err == nil {
+		app.Logger().Info(msg)
+	} else {
+		app.Logger().Error(msg, "error", err)
+	}
+	return err
 }
 
 // AutoCliOpts returns the autocli options for the app.

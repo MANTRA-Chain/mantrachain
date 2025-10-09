@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	chainante "github.com/cosmos/evm/ante"
 	anteinterfaces "github.com/cosmos/evm/ante/interfaces"
-	chainante "github.com/cosmos/evm/evmd/ante"
 	ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
 )
 
@@ -28,44 +28,39 @@ type EVMHandlerOptions struct {
 	SignModeHandler        *txsigning.HandlerMap
 	SigGasConsumer         func(meter storetypes.GasMeter, sig signing.SignatureV2, params authtypes.Params) error
 	MaxTxGasWanted         uint64
-	TxFeeChecker           ante.TxFeeChecker
-	PendingTxListener      chainante.PendingTxListener
+	// use dynamic fee checker or the cosmos-sdk default one for native transactions
+	DynamicFeeChecker bool
+	PendingTxListener chainante.PendingTxListener
 }
 
 // Validate checks if the keepers are defined
 func (options EVMHandlerOptions) Validate() error {
 	if options.Cdc == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "codec is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "codec is required for AnteHandler")
 	}
 	if options.AccountKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "account keeper is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "account keeper is required for AnteHandler")
 	}
 	if options.BankKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "bank keeper is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "bank keeper is required for AnteHandler")
 	}
 	if options.IBCKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "ibc keeper is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "ibc keeper is required for AnteHandler")
 	}
 	if options.FeeMarketKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "fee market keeper is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "fee market keeper is required for AnteHandler")
 	}
 	if options.EvmKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "evm keeper is required for EVM AnteHandler")
-	}
-	if options.FeegrantKeeper == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "feegrant keeper is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "evm keeper is required for AnteHandler")
 	}
 	if options.SigGasConsumer == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "signature gas consumer is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "signature gas consumer is required for AnteHandler")
 	}
 	if options.SignModeHandler == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "sign mode handler is required for EVM AnteHandler")
-	}
-	if options.TxFeeChecker == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "tx fee checker is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "sign mode handler is required for AnteHandler")
 	}
 	if options.PendingTxListener == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "pending tx listener is required for EVM AnteHandler")
+		return errorsmod.Wrap(errortypes.ErrLogic, "pending tx listener is required for AnteHandler")
 	}
 	return nil
 }
