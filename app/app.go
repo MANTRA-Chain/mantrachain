@@ -125,6 +125,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	evmconfig "github.com/cosmos/evm/config"
 	evmosencoding "github.com/cosmos/evm/encoding"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 
@@ -1124,10 +1125,14 @@ func New(
 	// set the EVM priority nonce mempool
 	// If you wish to use the noop mempool, remove this codeblock
 	if evmtypes.GetChainConfig() != nil {
-		// Get the actual block gas limit from consensus parameters
+		// Get the block gas limit from genesis file
+		blockGasLimit := evmconfig.GetBlockGasLimit(appOpts, logger)
+		// Get GetMinTip from app.toml or cli flag configuration
+		mipTip := evmconfig.GetMinTip(appOpts, logger)
 		mempoolConfig := &evmmempool.EVMMempoolConfig{
 			AnteHandler:   app.AnteHandler(),
-			BlockGasLimit: 100_000_000,
+			BlockGasLimit: blockGasLimit,
+			MinTip:        mipTip,
 		}
 
 		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig)
@@ -1303,7 +1308,7 @@ func (app *App) GetMempool() sdkmempool.ExtMempool {
 
 func (app *App) Close() error {
 	var err error
-	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok {
+	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok && m != nil {
 		err = m.Close()
 	}
 	err = errors.Join(err, app.BaseApp.Close())
