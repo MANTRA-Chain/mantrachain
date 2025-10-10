@@ -1,4 +1,4 @@
-package v6rc0
+package v6providerrc0
 
 import (
 	"context"
