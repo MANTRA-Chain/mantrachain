@@ -3,6 +3,7 @@ package v6rc0
 import (
 	"cosmossdk.io/store/types"
 	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
+	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 )
 
 const (
@@ -14,7 +15,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: types.StoreUpgrades{
-		Added:   []string{},
+		Added:   []string{providertypes.ModuleName},
 		Deleted: []string{"group"},
 	},
 }
