@@ -19,14 +19,6 @@ import (
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 )
 
-// Constants for the new parameters in the v6 upgrade.
-const (
-	// NewMaxValidators will be set to 50,
-	// to allow the some inactive validators
-	// to participate on consumer chains.
-	NewMaxValidators = 50
-)
-
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,
@@ -49,6 +41,8 @@ func CreateUpgradeHandler(
 		// init genesis for provider module
 		providerGenesis := providertypes.DefaultGenesisState()
 		providerGenesis.Params.ConsumerRewardDenomRegistrationFee = sdk.NewCoin("uom", math.NewInt(1000000))
+		providerGenesis.Params.BlocksPerEpoch = 10
+		providerGenesis.Params.NumberOfEpochsToStartReceivingRewards = 2
 		keepers.ProviderKeeper.InitGenesis(ctx, providerGenesis)
 
 		ctx.Logger().Info("Initializing ConsensusParam Version...")
@@ -66,7 +60,7 @@ func CreateUpgradeHandler(
 		InitializeMaxProviderConsensusParam(ctx, keepers.ProviderKeeper, int64(maxProviderValidators))
 
 		ctx.Logger().Info("Setting MaxValidators parameter...")
-		err = SetMaxValidators(ctx, *keepers.StakingKeeper)
+		err = SetMaxValidators(ctx, *keepers.StakingKeeper, maxProviderValidators)
 		if err != nil {
 			return vm, errorsmod.Wrapf(err, "setting MaxValidators during migration")
 		}
@@ -125,18 +119,14 @@ func InitializeMaxProviderConsensusParam(ctx sdk.Context, providerKeeper provide
 	providerKeeper.SetParams(ctx, params)
 }
 
-// SetMaxValidators sets the MaxValidators parameter in the staking module to 50,
-// This is done in concert with the introduction of the inactive-validators feature
-// in Interchain Security, after which the number of validators
-// participating in consensus on the MANTRA Chain will be governed by the
-// MaxProviderConsensusValidators parameter in the provider module.
-func SetMaxValidators(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper) error {
+// SetMaxValidators sets the MaxValidators parameter in the staking module to the same as MaxProviderConsensusParam
+func SetMaxValidators(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, maxProviderValidators uint32) error {
 	params, err := stakingKeeper.GetParams(ctx)
 	if err != nil {
 		return err
 	}
 
-	params.MaxValidators = NewMaxValidators
+	params.MaxValidators = maxProviderValidators
 
 	return stakingKeeper.SetParams(ctx, params)
 }
