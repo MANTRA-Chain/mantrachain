@@ -1382,6 +1382,11 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 	erc20GenState.NativePrecompiles = append(erc20GenState.NativePrecompiles, WTokenContractMainnet)
 	genesis[erc20types.ModuleName] = app.appCodec.MustMarshalJSON(erc20GenState)
 
+	// Zero gasprice by default in the feemarket module for testing
+	feemarketGenState := feemarkettypes.DefaultGenesisState()
+	feemarketGenState.Params.NoBaseFee = true
+	genesis[feemarkettypes.ModuleName] = app.appCodec.MustMarshalJSON(feemarketGenState)
+
 	return genesis
 }
 

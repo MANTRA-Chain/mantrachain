@@ -10,14 +10,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
 	icsproviderkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 )
 
 // Upgrade defines a struct containing necessary fields that a SoftwareUpgradeProposal
@@ -64,8 +64,8 @@ type UpgradeKeepers struct {
 	EVMKeeper       evmkeeper.Keeper
 	Erc20Keeper     erc20keeper.Keeper
 	CircuitKeeper   circuitkeeper.Keeper
-	//v6
-	ProviderKeeper icsproviderkeeper.Keeper
-	StakingKeeper  *stakingkeeper.Keeper
+	// v6
+	ProviderKeeper        icsproviderkeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 }
