@@ -15,11 +15,14 @@ replace (
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/ad28aabb7f56ac7b1aae2a3f12f6a55b0f9979dd
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1.0.20251009083342-3fb27559d5ba
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251006011224-d351dd18dbbc
-	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20251006011224-d351dd18dbbc
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251010000919-948e96c650c7
+	github.com/cosmos/evm/evmd => github.com/MANTRA-Chain/evm/evmd v0.0.0-20251010000919-948e96c650c7
+
+	// ledger_zemu
+	github.com/cosmos/ledger-cosmos-go => github.com/mmsqe/ledger-cosmos-go v0.0.0-20251010033953-465898c7cafa
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
@@ -42,7 +45,7 @@ replace (
 require (
 	cosmossdk.io/api v0.9.2
 	cosmossdk.io/client/v2 v2.0.0-beta.7
-	cosmossdk.io/collections v1.2.1
+	cosmossdk.io/collections v1.3.1
 	cosmossdk.io/core v0.11.3
 	cosmossdk.io/depinject v1.2.1
 	cosmossdk.io/errors v1.0.2
@@ -80,13 +83,13 @@ require (
 	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
 	github.com/skip-mev/feemarket v1.1.1
-	github.com/spf13/cast v1.9.2
+	github.com/spf13/cast v1.10.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.7
 	github.com/spf13/viper v1.20.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/text v0.28.0
-	golang.org/x/tools v0.35.0
+	golang.org/x/tools v0.36.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250707201910-8d1bb00bc6a7
 	google.golang.org/grpc v1.75.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
@@ -374,7 +377,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.37.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
-	go.uber.org/mock v0.5.2 // indirect
+	go.uber.org/mock v0.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	go.uber.org/zap/exp v0.3.0 // indirect
@@ -382,7 +385,7 @@ require (
 	golang.org/x/arch v0.17.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
-	golang.org/x/mod v0.26.0 // indirect
+	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
