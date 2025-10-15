@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
-// MakeConfig creates a new EncodingConfig and returns it
+// MakeTestEncodingConfig creates a new EncodingConfig and returns it
 func MakeTestEncodingConfig(modules ...module.AppModuleBasic) sdktestutil.TestEncodingConfig {
 	cdc := amino.NewLegacyAmino()
 	interfaceRegistry := testutil.CodecOptions{}.NewInterfaceRegistry()
