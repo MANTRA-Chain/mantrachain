@@ -73,11 +73,30 @@ checksum:
   name_template: "sha256sum.txt"
   algorithm: sha256
 
+signs:
+  - artifacts: checksum
+    cmd: gpg
+    stdin: "{{ .Env.GPG_PASSWORD }}"
+    args:
+      - "--batch"
+      - "--yes"
+      - "--pinentry-mode"
+      - "loopback"
+      - "--passphrase-fd"
+      - "0"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
+
 # Docs: https://goreleaser.com/customization/changelog/
 changelog:
   disable: true
 
 # Docs: https://goreleaser.com/customization/release/
+# Note: it will includes the .sig of the checksum file by default
 release:
   github:
     owner: "{{ .Env.REPO_OWNER }}"
