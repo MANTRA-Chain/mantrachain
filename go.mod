@@ -19,7 +19,7 @@ replace (
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
 	// release/v0.5.x
-	github.com/cosmos/evm => github.com/cosmos/evm v0.5.0-rc.1
+	github.com/cosmos/evm => github.com/yihuang/evm v1.0.0-rc2.0.20251016143444-c0776459b6cf
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
