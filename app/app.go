@@ -1118,7 +1118,8 @@ func New(
 
 	// set the EVM priority nonce mempool
 	// If you wish to use the noop mempool, remove this codeblock
-	if evmtypes.GetChainConfig() != nil {
+	cosmosPoolMaxTx := evmconfig.GetCosmosPoolMaxTx(appOpts, logger)
+	if evmtypes.GetChainConfig() != nil && cosmosPoolMaxTx >= 0 {
 		// Get the block gas limit from genesis file
 		blockGasLimit := evmconfig.GetBlockGasLimit(appOpts, logger)
 		// Get GetMinTip from app.toml or cli flag configuration
@@ -1128,7 +1129,6 @@ func New(
 			BlockGasLimit: blockGasLimit,
 			MinTip:        mipTip,
 		}
-		cosmosPoolMaxTx := evmconfig.GetCosmosPoolMaxTx(appOpts, logger)
 
 		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig, cosmosPoolMaxTx)
 		app.EVMMempool = evmMempool
