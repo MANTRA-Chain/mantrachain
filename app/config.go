@@ -34,7 +34,7 @@ var ChainCoinInfo = evmtypes.EvmCoinInfo{
 	Denom:         "uom",
 	ExtendedDenom: "aom",
 	DisplayDenom:  "om",
-	Decimals:      evmtypes.SixDecimals,
+	Decimals:      evmtypes.SixDecimals.Uint32(),
 }
 
 // EvmAppOptions allows to setup the global configuration
@@ -49,11 +49,8 @@ func EvmAppOptions(chainID uint64) error {
 		return err
 	}
 
-	ethCfg := evmtypes.DefaultChainConfig(chainID)
-
 	err := evmtypes.NewEVMConfigurator().
 		WithExtendedEips(cosmosEVMActivators).
-		WithChainConfig(ethCfg).
 		WithEVMCoinInfo(ChainCoinInfo).
 		Configure()
 	if err != nil {
