@@ -10,19 +10,8 @@ import (
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/spf13/viper"
 )
-
-// ChainsCoinInfo is a map of the chain id and its corresponding EvmCoinInfo
-// that allows initializing the app with different coin info based on the
-// chain id
-var ChainCoinInfo = evmtypes.EvmCoinInfo{
-	Denom:         "uom",
-	ExtendedDenom: "aom",
-	DisplayDenom:  "om",
-	Decimals:      evmtypes.SixDecimals.Uint32(),
-}
 
 var (
 	EVMChainIDMap = map[string]uint64{
