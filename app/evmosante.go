@@ -4,7 +4,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
 	"github.com/cosmos/cosmos-sdk/client"
 	evmante "github.com/cosmos/evm/ante"
-	cosmosevmtypes "github.com/cosmos/evm/types"
+	cosmosevmtypes "github.com/cosmos/evm/ante/types"
 )
 
 func NewEVMAnteHandlerOptionsFromApp(app *App, txConfig client.TxConfig, maxGasWanted uint64) *ante.EVMHandlerOptions {

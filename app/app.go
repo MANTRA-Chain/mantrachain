@@ -134,7 +134,6 @@ import (
 	"cosmossdk.io/client/v2/autocli"
 	chainante "github.com/cosmos/evm/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
-	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
 	"github.com/cosmos/evm/x/erc20"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"

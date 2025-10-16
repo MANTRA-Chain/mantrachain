@@ -18,8 +18,9 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1.0.20250813063539-2660a4c41abd
 
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
-	github.com/cosmos/evm => github.com/cosmos/evm v1.0.0-rc2.0.20251008213306-cb4212353c77
-	github.com/cosmos/evm/evmd => github.com/cosmos/evm/evmd v0.0.0-20251008213306-cb4212353c77
+	// release/v0.5.x
+	github.com/cosmos/evm => github.com/cosmos/evm v0.5.0-rc.1
+	github.com/cosmos/evm/evmd => github.com/cosmos/evm/evmd v0.5.0-rc.1
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
@@ -67,7 +68,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
-	github.com/cosmos/ibc-go/v10 v10.3.0
+	github.com/cosmos/ibc-go/v10 v10.3.1-0.20250909102629-ed3b125c7b6f
 	github.com/ethereum/go-ethereum v1.15.11
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.4
@@ -80,10 +81,10 @@ require (
 	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.9.2
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.7
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.9
 	github.com/spf13/viper v1.20.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/text v0.28.0
 	golang.org/x/tools v0.35.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250707201910-8d1bb00bc6a7
