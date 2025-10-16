@@ -123,11 +123,12 @@ func queryCommand() *cobra.Command {
 
 	cmd.AddCommand(
 		rpc.QueryEventForTxCmd(),
+		rpc.ValidatorCommand(),
 		server.QueryBlockCmd(),
-		authcmd.QueryTxsByEventsCmd(),
 		server.QueryBlocksCmd(),
-		authcmd.QueryTxCmd(),
 		server.QueryBlockResultsCmd(),
+		authcmd.QueryTxsByEventsCmd(),
+		authcmd.QueryTxCmd(),
 	)
 
 	return cmd

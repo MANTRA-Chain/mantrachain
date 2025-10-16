@@ -20,7 +20,6 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
 	// release/v0.5.x
 	github.com/cosmos/evm => github.com/cosmos/evm v0.5.0-rc.1
-	github.com/cosmos/evm/evmd => github.com/cosmos/evm/evmd v0.5.0-rc.1
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
@@ -60,7 +59,7 @@ require (
 	github.com/CosmWasm/wasmd v0.61.1
 	github.com/CosmWasm/wasmvm/v3 v3.0.0
 	github.com/bufbuild/buf v1.46.0
-	github.com/cometbft/cometbft v0.38.18
+	github.com/cometbft/cometbft v0.38.19
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.4
