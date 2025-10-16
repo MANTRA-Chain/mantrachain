@@ -178,8 +178,6 @@ func newApp(
 		logger, db, traceStore, true,
 		appOpts,
 		wasmOpts,
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 		baseappOptions...,
 	)
 }
@@ -220,8 +218,6 @@ func appExport(
 		height == -1,
 		appOpts,
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 	)
 
 	if height != -1 {
