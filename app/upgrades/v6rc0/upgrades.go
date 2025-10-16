@@ -51,6 +51,12 @@ func CreateUpgradeHandler(
 			Symbol:  "OM",
 		})
 
+		if err := keepers.EVMKeeper.SetParams(ctx, evmtypes.Params{
+			ExtendedDenomOptions: &evmtypes.ExtendedDenomOptions{ExtendedDenom: ChainCoinInfo.ExtendedDenom},
+		}); err != nil {
+			return vm, err
+		}
+
 		// update contract owner for all existing tokenfactory token_pairs
 		pairs := keepers.Erc20Keeper.GetTokenPairs(ctx)
 		for _, pair := range pairs {
