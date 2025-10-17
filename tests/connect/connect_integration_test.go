@@ -76,6 +76,10 @@ var (
 			Value: "0",
 		},
 		{
+			Key:   "app_state.evm.params.evm_denom",
+			Value: "uom",
+		},
+		{
 			Key:   "app_state.evm.params.extended_denom_options.extended_denom",
 			Value: "aom",
 		},

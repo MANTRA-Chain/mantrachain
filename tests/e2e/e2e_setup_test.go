@@ -485,6 +485,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	var evmGenState evmtypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
+	evmGenState.Params.EvmDenom = ChainCoinInfo.Denom
 	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
 		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
 	}
