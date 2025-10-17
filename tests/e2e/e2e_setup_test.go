@@ -483,6 +483,14 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	appGenState[genutiltypes.ModuleName], err = cdc.MarshalJSON(&genUtilGenState)
 	s.Require().NoError(err)
 
+	var evmGenState evmtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
+	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
+		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
+	}
+	appGenState[evmtypes.ModuleName], err = cdc.MarshalJSON(&evmGenState)
+	s.Require().NoError(err)
+
 	genDoc.AppState, err = json.MarshalIndent(appGenState, "", "  ")
 	s.Require().NoError(err)
 
@@ -493,14 +501,6 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	s.Require().NoError(err)
 
 	rawTx, _, err := buildRawTx()
-	s.Require().NoError(err)
-
-	var evmGenState evmtypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
-	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
-		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
-	}
-	appGenState[evmtypes.ModuleName], err = cdc.MarshalJSON(&evmGenState)
 	s.Require().NoError(err)
 
 	// write the updated genesis file to each validator.
