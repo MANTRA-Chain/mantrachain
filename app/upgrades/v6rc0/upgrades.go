@@ -75,6 +75,11 @@ func CreateUpgradeHandler(
 				return vm, err
 			}
 		}
+
+		if err := keepers.EVMKeeper.InitEvmCoinInfo(ctx); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
 		return vm, nil
 	}
