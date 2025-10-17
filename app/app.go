@@ -125,7 +125,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	evmconfig "github.com/cosmos/evm/config"
 	evmosencoding "github.com/cosmos/evm/encoding"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 
@@ -342,9 +341,6 @@ func New(
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	// register legacy feemarket types for legacy proposals
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
-
-	var prepareProposalHandler sdk.PrepareProposalHandler
-	var processProposalHandler sdk.ProcessProposalHandler
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -1116,33 +1112,8 @@ func New(
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey], maxGasWanted)
 	// app.setPostHandler()
 
-	// set the EVM priority nonce mempool
-	// If you wish to use the noop mempool, remove this codeblock
-	if evmtypes.GetChainConfig() != nil {
-		// Get the block gas limit from genesis file
-		blockGasLimit := evmconfig.GetBlockGasLimit(appOpts, logger)
-		// Get GetMinTip from app.toml or cli flag configuration
-		mipTip := evmconfig.GetMinTip(appOpts, logger)
-		mempoolConfig := &evmmempool.EVMMempoolConfig{
-			AnteHandler:   app.AnteHandler(),
-			BlockGasLimit: blockGasLimit,
-			MinTip:        mipTip,
-		}
-		cosmosPoolMaxTx := evmconfig.GetCosmosPoolMaxTx(appOpts, logger)
-
-		evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig, cosmosPoolMaxTx)
-		app.EVMMempool = evmMempool
-		app.SetMempool(evmMempool)
-		checkTxHandler := evmmempool.NewCheckTxHandler(evmMempool)
-		app.SetCheckTxHandler(checkTxHandler)
-
-		abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
-		abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
-
-		prepareProposalHandler = abciProposalHandler.PrepareProposalHandler()
-		processProposalHandler = abciProposalHandler.ProcessProposalHandler()
-		app.SetPrepareProposal(prepareProposalHandler)
-	}
+	// configure mempool
+	prepareProposalHandler, processProposalHandler := app.configureEVMMempool(appOpts, logger)
 
 	// oracle initialization
 	client, metrics, err := app.initializeOracle(appOpts)
