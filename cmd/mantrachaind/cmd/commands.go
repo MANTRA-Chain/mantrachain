@@ -44,6 +44,9 @@ func initRootCmd(
 ) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
+	sdkAppCreator := func(l log.Logger, d dbm.DB, w io.Writer, ao servertypes.AppOptions) servertypes.Application {
+		return newApp(l, d, w, ao)
+	}
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(basicManager, app.DefaultNodeHome),
@@ -63,9 +66,9 @@ func initRootCmd(
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		cmtcli.NewCompletionCmd(rootCmd, true),
 		evmdebug.Cmd(),
-		pruning.Cmd(newApp, app.DefaultNodeHome),
+		pruning.Cmd(sdkAppCreator, app.DefaultNodeHome),
 		confixcmd.ConfigCommand(),
-		snapshot.Cmd(newApp),
+		snapshot.Cmd(sdkAppCreator),
 	)
 
 	// add server commands
@@ -164,19 +167,23 @@ func newApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	appOpts servertypes.AppOptions,
-) servertypes.Application {
+) cosmosevmserver.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 	var wasmOpts []wasmkeeper.Option
 	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
 		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
 	}
 
+	viperAppOpts, ok := appOpts.(*viper.Viper)
+	if !ok {
+		panic("appOpts is not viper.Viper")
+	}
+	viperAppOpts.Set(cosmosevmserverflags.EVMChainID, app.MANTRAChainID)
+
 	return app.New(
 		logger, db, traceStore, true,
 		appOpts,
 		wasmOpts,
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 		baseappOptions...,
 	)
 }
@@ -217,8 +224,6 @@ func appExport(
 		height == -1,
 		appOpts,
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 	)
 
 	if height != -1 {

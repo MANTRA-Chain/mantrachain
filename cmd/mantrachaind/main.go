@@ -10,7 +10,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v6/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmdcfg "github.com/cosmos/evm/evmd/cmd/evmd/config"
+	evmcfg "github.com/cosmos/evm/config"
 )
 
 func main() {
@@ -55,7 +55,7 @@ func setupConfig() {
 	// set the address prefixes
 	config := sdk.GetConfig()
 	SetAddressPrefixes(config)
-	evmdcfg.SetBip44CoinType(config)
+	evmcfg.SetBip44CoinType(config)
 	config.Seal()
 }
 

@@ -9,8 +9,20 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	erc20types "github.com/cosmos/evm/x/erc20/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 )
+
+// ChainCoinInfo is a map of the chain id and its corresponding EvmCoinInfo
+// that allows initializing the app with different coin info based on the
+// chain id
+var ChainCoinInfo = evmtypes.EvmCoinInfo{
+	Denom:         "uom",
+	ExtendedDenom: "aom",
+	DisplayDenom:  "om",
+	Decimals:      evmtypes.SixDecimals.Uint32(),
+}
 
 func CreateUpgradeHandler(
 	mm *module.Manager,
@@ -21,6 +33,29 @@ func CreateUpgradeHandler(
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
 		ctx.Logger().Info("Starting module migrations...")
+
+		keepers.BankKeeper.SetDenomMetaData(ctx, banktypes.Metadata{
+			DenomUnits: []*banktypes.DenomUnit{
+				{
+					Denom:    ChainCoinInfo.Denom,
+					Exponent: 0,
+				},
+				{
+					Denom:    ChainCoinInfo.DisplayDenom,
+					Exponent: ChainCoinInfo.Decimals,
+				},
+			},
+			Base:    ChainCoinInfo.Denom,
+			Display: ChainCoinInfo.DisplayDenom,
+			Name:    ChainCoinInfo.DisplayDenom,
+			Symbol:  "OM",
+		})
+
+		evmParams := keepers.EVMKeeper.GetParams(ctx)
+		evmParams.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{ExtendedDenom: ChainCoinInfo.ExtendedDenom}
+		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
+			return vm, err
+		}
 
 		// update contract owner for all existing tokenfactory token_pairs
 		pairs := keepers.Erc20Keeper.GetTokenPairs(ctx)
@@ -40,6 +75,11 @@ func CreateUpgradeHandler(
 				return vm, err
 			}
 		}
+
+		if err := keepers.EVMKeeper.InitEvmCoinInfo(ctx); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
 		return vm, nil
 	}

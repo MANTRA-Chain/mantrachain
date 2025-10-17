@@ -34,6 +34,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/spf13/viper"
@@ -89,6 +90,13 @@ var (
 	proposalCounter   = 0
 
 	distModuleAddress, govModuleAddress string
+
+	ChainCoinInfo = evmtypes.EvmCoinInfo{
+		Denom:         "uom",
+		ExtendedDenom: "aom",
+		DisplayDenom:  "om",
+		Decimals:      evmtypes.SixDecimals.Uint32(),
+	}
 )
 
 type IntegrationTestSuite struct {
@@ -126,7 +134,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
-	s.chainA, err = newChain("mantra-canary-net-1")
+	s.chainA, err = newChain("mantra-dukong-1")
 	s.Require().NoError(err)
 
 	s.chainB, err = newChain("mantra-1")
@@ -388,22 +396,22 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 		stakingModuleBalances,
 	)
 	bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
-
-	// update the denom metadata for the bank module
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
-		Description: "An example stable token",
-		Display:     uomDenom,
-		Base:        uomDenom,
-		Symbol:      uomDenom,
-		Name:        uomDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    uomDenom,
+				Denom:    ChainCoinInfo.Denom,
 				Exponent: 0,
 			},
+			{
+				Denom:    ChainCoinInfo.DisplayDenom,
+				Exponent: ChainCoinInfo.Decimals,
+			},
 		},
+		Base:    ChainCoinInfo.Denom,
+		Display: ChainCoinInfo.DisplayDenom,
+		Name:    ChainCoinInfo.DisplayDenom,
+		Symbol:  "OM",
 	})
-
 	// update bank module state
 	appGenState[banktypes.ModuleName], err = cdc.MarshalJSON(bankGenState)
 	s.Require().NoError(err)
@@ -473,6 +481,14 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	genUtilGenState.GenTxs = genTxs
 
 	appGenState[genutiltypes.ModuleName], err = cdc.MarshalJSON(&genUtilGenState)
+	s.Require().NoError(err)
+
+	var evmGenState evmtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
+	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
+		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
+	}
+	appGenState[evmtypes.ModuleName], err = cdc.MarshalJSON(&evmGenState)
 	s.Require().NoError(err)
 
 	genDoc.AppState, err = json.MarshalIndent(appGenState, "", "  ")

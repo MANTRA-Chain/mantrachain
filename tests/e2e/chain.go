@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -99,10 +100,8 @@ func (c *chain) createAndInitValidators(count int) error {
 		dbm.NewMemDB(),
 		nil,
 		true,
-		app.EmptyAppOptions{},
+		simtestutil.EmptyAppOptions{},
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {
@@ -144,10 +143,8 @@ func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []stri
 		dbm.NewMemDB(),
 		nil,
 		true,
-		app.EmptyAppOptions{},
+		simtestutil.EmptyAppOptions{},
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {

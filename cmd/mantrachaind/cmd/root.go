@@ -36,8 +36,6 @@ func NewRootCmd() *cobra.Command {
 		false,
 		simtestutil.NewAppOptionsWithFlagHome(temp),
 		[]wasmkeeper.Option{},
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 	)
 
 	encodingConfig := params.EncodingConfig{
@@ -118,10 +116,6 @@ func NewRootCmd() *cobra.Command {
 	autoCliOpts.ClientCtx = initClientCtx
 
 	if err := autoCliOpts.EnhanceRootCommand(rootCmd); err != nil {
-		panic(err)
-	}
-
-	if err := app.EvmAppOptions(app.MANTRAChainID); err != nil {
 		panic(err)
 	}
 
