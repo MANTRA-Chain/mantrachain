@@ -134,10 +134,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
-	s.chainA, err = newChain("mantra-1")
+	s.chainA, err = newChain()
 	s.Require().NoError(err)
 
-	s.chainB, err = newChain("mantra-2")
+	s.chainB, err = newChain()
 	s.Require().NoError(err)
 
 	s.dkrPool, err = dockertest.NewPool("")
