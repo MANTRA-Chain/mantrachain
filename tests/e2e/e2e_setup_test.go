@@ -34,6 +34,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/spf13/viper"
@@ -89,6 +90,13 @@ var (
 	proposalCounter   = 0
 
 	distModuleAddress, govModuleAddress string
+
+	ChainCoinInfo = evmtypes.EvmCoinInfo{
+		Denom:         "uom",
+		ExtendedDenom: "aom",
+		DisplayDenom:  "om",
+		Decimals:      evmtypes.SixDecimals.Uint32(),
+	}
 )
 
 type IntegrationTestSuite struct {
@@ -485,6 +493,35 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	s.Require().NoError(err)
 
 	rawTx, _, err := buildRawTx()
+	s.Require().NoError(err)
+
+	var bankGenState banktypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[banktypes.ModuleName], &bankGenState))
+	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
+		DenomUnits: []*banktypes.DenomUnit{
+			{
+				Denom:    ChainCoinInfo.Denom,
+				Exponent: 0,
+			},
+			{
+				Denom:    ChainCoinInfo.DisplayDenom,
+				Exponent: ChainCoinInfo.Decimals,
+			},
+		},
+		Base:    ChainCoinInfo.Denom,
+		Display: ChainCoinInfo.DisplayDenom,
+		Name:    ChainCoinInfo.DisplayDenom,
+		Symbol:  "OM",
+	})
+	appGenState[banktypes.ModuleName], err = cdc.MarshalJSON(&bankGenState)
+	s.Require().NoError(err)
+
+	var evmGenState evmtypes.GenesisState
+	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
+	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
+		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
+	}
+	appGenState[evmtypes.ModuleName], err = cdc.MarshalJSON(&evmGenState)
 	s.Require().NoError(err)
 
 	// write the updated genesis file to each validator.
