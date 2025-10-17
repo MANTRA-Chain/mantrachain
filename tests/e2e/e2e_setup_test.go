@@ -134,10 +134,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
-	s.chainA, err = newChain()
+	s.chainA, err = newChain("mantra-dukong-1")
 	s.Require().NoError(err)
 
-	s.chainB, err = newChain()
+	s.chainB, err = newChain("mantra-1")
 	s.Require().NoError(err)
 
 	s.dkrPool, err = dockertest.NewPool("")
@@ -396,22 +396,22 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 		stakingModuleBalances,
 	)
 	bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
-
-	// update the denom metadata for the bank module
 	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
-		Description: "An example stable token",
-		Display:     uomDenom,
-		Base:        uomDenom,
-		Symbol:      uomDenom,
-		Name:        uomDenom,
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    uomDenom,
+				Denom:    ChainCoinInfo.Denom,
 				Exponent: 0,
 			},
+			{
+				Denom:    ChainCoinInfo.DisplayDenom,
+				Exponent: ChainCoinInfo.Decimals,
+			},
 		},
+		Base:    ChainCoinInfo.Denom,
+		Display: ChainCoinInfo.DisplayDenom,
+		Name:    ChainCoinInfo.DisplayDenom,
+		Symbol:  "OM",
 	})
-
 	// update bank module state
 	appGenState[banktypes.ModuleName], err = cdc.MarshalJSON(bankGenState)
 	s.Require().NoError(err)
@@ -493,27 +493,6 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 	s.Require().NoError(err)
 
 	rawTx, _, err := buildRawTx()
-	s.Require().NoError(err)
-
-	var bankGenState banktypes.GenesisState
-	s.Require().NoError(cdc.UnmarshalJSON(appGenState[banktypes.ModuleName], &bankGenState))
-	bankGenState.DenomMetadata = append(bankGenState.DenomMetadata, banktypes.Metadata{
-		DenomUnits: []*banktypes.DenomUnit{
-			{
-				Denom:    ChainCoinInfo.Denom,
-				Exponent: 0,
-			},
-			{
-				Denom:    ChainCoinInfo.DisplayDenom,
-				Exponent: ChainCoinInfo.Decimals,
-			},
-		},
-		Base:    ChainCoinInfo.Denom,
-		Display: ChainCoinInfo.DisplayDenom,
-		Name:    ChainCoinInfo.DisplayDenom,
-		Symbol:  "OM",
-	})
-	appGenState[banktypes.ModuleName], err = cdc.MarshalJSON(&bankGenState)
 	s.Require().NoError(err)
 
 	var evmGenState evmtypes.GenesisState
