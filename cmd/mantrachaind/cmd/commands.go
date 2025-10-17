@@ -174,6 +174,12 @@ func newApp(
 		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
 	}
 
+	viperAppOpts, ok := appOpts.(*viper.Viper)
+	if !ok {
+		panic("appOpts is not viper.Viper")
+	}
+	viperAppOpts.Set(cosmosevmserverflags.EVMChainID, app.MANTRAChainID)
+
 	return app.New(
 		logger, db, traceStore, true,
 		appOpts,
