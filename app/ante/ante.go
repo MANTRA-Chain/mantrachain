@@ -25,7 +25,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 				case "/cosmos.evm.vm.v1.ExtensionOptionsEthereumTx":
 					// handle as *evmtypes.MsgEthereumTx
 					anteHandler = newEVMAnteHandler(ctx, options)
-				case "/cosmos.evm.types.v1.ExtensionOptionDynamicFeeTx":
+				case "/cosmos.evm.ante.v1.ExtensionOptionDynamicFeeTx":
 					// cosmos-sdk tx with dynamic fee extension
 					anteHandler = newCosmosAnteHandler(ctx, options)
 				default:
