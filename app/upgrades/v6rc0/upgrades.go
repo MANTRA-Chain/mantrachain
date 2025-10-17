@@ -51,9 +51,9 @@ func CreateUpgradeHandler(
 			Symbol:  "OM",
 		})
 
-		if err := keepers.EVMKeeper.SetParams(ctx, evmtypes.Params{
-			ExtendedDenomOptions: &evmtypes.ExtendedDenomOptions{ExtendedDenom: ChainCoinInfo.ExtendedDenom},
-		}); err != nil {
+		evmParams := keepers.EVMKeeper.GetParams(ctx)
+		evmParams.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{ExtendedDenom: ChainCoinInfo.ExtendedDenom}
+		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
 
