@@ -776,42 +776,65 @@ func (s *IntegrationTestSuite) executeTxCommand(ctx context.Context, c *chain, m
 	if validation == nil {
 		validation = s.defaultExecValidation(s.chainA, 0)
 	}
-	var (
-		outBuf bytes.Buffer
-		errBuf bytes.Buffer
-	)
-	exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
-		Context:      ctx,
-		AttachStdout: true,
-		AttachStderr: true,
-		Container:    s.valResources[c.id][valIdx].Container.ID,
-		User:         "nonroot",
-		Cmd:          mantraCommand,
-	})
-	s.Require().NoError(err)
 
-	err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
-		Context:      ctx,
-		Detach:       false,
-		OutputStream: &outBuf,
-		ErrorStream:  &errBuf,
-	})
-	s.Require().NoError(err)
+	maxAttempts := 3
+	var lastStdOut, lastStdErr []byte
+	var lastTxResp sdk.TxResponse
 
-	stdOut := outBuf.Bytes()
-	stdErr := errBuf.Bytes()
-	if !validation(stdOut, stdErr) {
-		s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
-			string(stdOut), string(stdErr))
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		s.T().Logf("Attempt %d of %d", attempt, maxAttempts)
+
+		var (
+			outBuf bytes.Buffer
+			errBuf bytes.Buffer
+		)
+		exec, err := s.dkrPool.Client.CreateExec(docker.CreateExecOptions{
+			Context:      ctx,
+			AttachStdout: true,
+			AttachStderr: true,
+			Container:    s.valResources[c.id][valIdx].Container.ID,
+			User:         "nonroot",
+			Cmd:          mantraCommand,
+		})
+		s.Require().NoError(err)
+
+		err = s.dkrPool.Client.StartExec(exec.ID, docker.StartExecOptions{
+			Context:      ctx,
+			Detach:       false,
+			OutputStream: &outBuf,
+			ErrorStream:  &errBuf,
+		})
+		s.Require().NoError(err)
+
+		stdOut := outBuf.Bytes()
+		stdErr := errBuf.Bytes()
+		lastStdOut, lastStdErr = stdOut, stdErr
+
+		mismatch := false
+		if err := cdc.UnmarshalJSON(stdOut, &lastTxResp); err == nil {
+			mismatch = lastTxResp.Code == 32 && strings.Contains(lastTxResp.RawLog, "account sequence mismatch")
+		}
+
+		if mismatch && attempt < maxAttempts {
+			s.T().Logf("Attempt %d: sequence mismatch detected, will retry: %s", attempt, lastTxResp.RawLog)
+			time.Sleep(time.Second)
+			continue
+		}
+
+		if validation(stdOut, stdErr) {
+			if err := cdc.UnmarshalJSON(stdOut, &lastTxResp); err == nil {
+				s.T().Logf("Got transaction response with hash: %s, code: %d", lastTxResp.TxHash, lastTxResp.Code)
+				return lastTxResp.TxHash
+			}
+			return ""
+		}
+
+		s.T().Logf("Attempt %d: validation failed", attempt)
+		break
 	}
 
-	// Extract transaction hash from response
-	var txResp sdk.TxResponse
-
-	if err := cdc.UnmarshalJSON(stdOut, &txResp); err == nil {
-		s.T().Logf("Got transaction response with hash: %s, code: %d", txResp.TxHash, txResp.Code)
-		return txResp.TxHash
-	}
+	s.Require().FailNowf("Exec validation failed", "stdout: %s, stderr: %s",
+		string(lastStdOut), string(lastStdErr))
 	return ""
 }
 

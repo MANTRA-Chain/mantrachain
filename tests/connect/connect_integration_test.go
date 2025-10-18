@@ -76,44 +76,34 @@ var (
 			Value: "0",
 		},
 		{
+			Key:   "app_state.evm.params.evm_denom",
+			Value: "uom",
+		},
+		{
 			Key:   "app_state.evm.params.extended_denom_options.extended_denom",
 			Value: "aom",
 		},
 		{
-			Key:   "app_state.bank.denom_metadata.0.base",
-			Value: "uom",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.display",
-			Value: "om",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.name",
-			Value: "om",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.symbol",
-			Value: "OM",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.description",
-			Value: "The native staking token of the Mantra network",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.denom_units.0.denom",
-			Value: "uom",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.denom_units.0.exponent",
-			Value: "0",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.denom_units.1.denom",
-			Value: "om",
-		},
-		{
-			Key:   "app_state.bank.denom_metadata.0.denom_units.1.exponent",
-			Value: "6",
+			Key: "app_state.bank.denom_metadata",
+			Value: []map[string]interface{}{
+				{
+					"base":        "uom",
+					"display":     "om",
+					"name":        "om",
+					"symbol":      "OM",
+					"description": "The native staking token of the Mantra network",
+					"denom_units": []map[string]interface{}{
+						{
+							"denom":    "uom",
+							"exponent": 0,
+						},
+						{
+							"denom":    "om",
+							"exponent": 6,
+						},
+					},
+				},
+			},
 		},
 	}
 
