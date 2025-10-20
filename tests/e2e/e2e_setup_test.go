@@ -134,7 +134,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up e2e integration test suite...")
 
 	var err error
-	s.chainA, err = newChain("mantra-dukong-1")
+	s.chainA, err = newChain("mantra-canary-net-1")
 	s.Require().NoError(err)
 
 	s.chainB, err = newChain("mantra-1")
@@ -485,6 +485,7 @@ func (s *IntegrationTestSuite) initGenesis(c *chain, vestingMnemonic, jailedValM
 
 	var evmGenState evmtypes.GenesisState
 	s.Require().NoError(cdc.UnmarshalJSON(appGenState[evmtypes.ModuleName], &evmGenState))
+	evmGenState.Params.EvmDenom = ChainCoinInfo.Denom
 	evmGenState.Params.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{
 		ExtendedDenom: ChainCoinInfo.ExtendedDenom,
 	}
