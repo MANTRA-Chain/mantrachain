@@ -6,7 +6,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/MANTRA-Chain/mantrachain/v6/tests/interchain/chainsuite"
+	"github.com/MANTRA-Chain/mantrachain/v7/tests/interchain/chainsuite"
 	"github.com/strangelove-ventures/interchaintest/v8"
 	"github.com/stretchr/testify/suite"
 )
