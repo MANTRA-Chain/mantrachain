@@ -1,4 +1,4 @@
-module github.com/MANTRA-Chain/mantrachain/v6/tests/connect
+module github.com/MANTRA-Chain/mantrachain/v7/tests/connect
 
 go 1.23.8
 

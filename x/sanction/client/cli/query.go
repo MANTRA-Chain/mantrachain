@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"

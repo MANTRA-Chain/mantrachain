@@ -66,3 +66,11 @@ pull_request_rules:
       backport:
         branches:
           - release/v6.0.x-provider
+  - name: backport patches to release/v6.0.x branch
+    conditions:
+      - base=main
+      - label=A:backport/v6.0.x
+    actions:
+      backport:
+        branches:
+          - release/v6.0.x
