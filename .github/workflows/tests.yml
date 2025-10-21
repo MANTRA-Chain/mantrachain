@@ -37,7 +37,7 @@ jobs:
       - name: Extract Tag or Commit
         run: |
           FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
-          if [[ $FULL_VERSION == *"-0."* ]]; then
+          if [[ $FULL_VERSION =~ -[0-9a-fA-F]{12,40}$ ]]; then
             # This is a pseudo-version (commit-based)
             SDK_VERSION=${FULL_VERSION##*-}
           else
