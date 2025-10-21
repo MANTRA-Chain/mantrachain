@@ -1,4 +1,4 @@
-package v6rc0
+package v7rc0
 
 import (
 	"cosmossdk.io/store/types"
