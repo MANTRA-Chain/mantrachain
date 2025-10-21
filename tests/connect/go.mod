@@ -17,9 +17,10 @@ require (
 replace (
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d
 	github.com/ChainSafe/go-schnorrkel/1 => github.com/ChainSafe/go-schnorrkel v1.0.0
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/ad28aabb7f56ac7b1aae2a3f12f6a55b0f9979dd
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.3-v5-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/5a0fcfa3fe1c02e7e015b1c7b736f23f1c320425
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
 	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
 	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251017085427-6d38644a9b70
