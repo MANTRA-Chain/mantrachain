@@ -37,9 +37,10 @@ jobs:
       - name: Extract Tag or Commit
         run: |
           FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
-          if [[ $FULL_VERSION == *"-0."* ]]; then
+          if [[ $FULL_VERSION =~ -[0-9a-fA-F]{12,40}$ ]]; then
             # This is a pseudo-version (commit-based)
-            SDK_VERSION=${FULL_VERSION##*-}
+            SDK_REPO_URL="https://github.com/MANTRA-Chain/cosmos-sdk.git"
+            SDK_VERSION=$(git ls-remote "$SDK_REPO_URL" | awk -v sha="${FULL_VERSION##*-}" '$1 ~ "^" sha { print $1; exit }')
           else
             # This is a regular version tag
             SDK_VERSION=$FULL_VERSION
