@@ -5,7 +5,7 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "mantrachain/tax/v1/params.proto";
 
-option go_package = "github.com/MANTRA-Chain/mantrachain/v6/x/tax/types";
+option go_package = "github.com/MANTRA-Chain/mantrachain/v7/x/tax/types";
 
 // GenesisState defines the tax module's genesis state.
 message GenesisState {

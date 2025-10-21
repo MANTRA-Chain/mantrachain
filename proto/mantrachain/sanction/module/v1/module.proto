@@ -6,7 +6,7 @@ import "cosmos/app/v1alpha1/module.proto";
 // Module is the config object for the module.
 message Module {
   option (cosmos.app.v1alpha1.module) = {
-    go_import : "github.com/MANTRA-Chain/mantrachain/v6/x/sanction"
+    go_import : "github.com/MANTRA-Chain/mantrachain/v7/x/sanction"
   };
 
   // authority defines the custom module authority. If not set, defaults to the

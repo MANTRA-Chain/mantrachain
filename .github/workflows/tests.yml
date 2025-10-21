@@ -154,7 +154,7 @@ jobs:
           submodules: recursive
           fetch-depth: 1
           path: mantrachain-e2e
-          ref: release/v5
+          ref: develop
 
       - name: Run integration tests
         if: steps.changed-files.outputs.only_changed == 'false'

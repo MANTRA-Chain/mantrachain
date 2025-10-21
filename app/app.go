@@ -47,21 +47,21 @@ import (
 	evmmempool "github.com/cosmos/evm/mempool"
 	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
-	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
-	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
-	v6rc0 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6rc0"
-	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik"
-	"github.com/MANTRA-Chain/mantrachain/v6/client/docs/swagger"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v6/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v6/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
+	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
+	v7rc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
+	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v7/client/docs/swagger"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v7/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -238,7 +238,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v6rc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7rc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)

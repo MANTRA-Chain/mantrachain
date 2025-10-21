@@ -1,7 +1,7 @@
 package swagger
 
 import (
-	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik" // Import MANTRA Chain statik
+	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik" // Import MANTRA Chain statik
 	"github.com/rakyll/statik/fs"
 )
 

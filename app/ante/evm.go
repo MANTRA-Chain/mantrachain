@@ -1,7 +1,7 @@
 package ante
 
 import (
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	chainante "github.com/cosmos/evm/ante"
 	evmante "github.com/cosmos/evm/ante/evm"
