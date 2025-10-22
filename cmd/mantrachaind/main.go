@@ -24,9 +24,9 @@ func main() {
 }
 
 const (
-	HumanCoinUnit = "om"
-	BaseCoinUnit  = "amantra"
-	OmExponent    = 6
+	HumanCoinUnit  = "mantra"
+	BaseCoinUnit   = "amantra"
+	MantraExponent = 18
 
 	DefaultBondDenom = BaseCoinUnit
 )

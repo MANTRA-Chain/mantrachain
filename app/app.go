@@ -1474,7 +1474,7 @@ func (app *App) setupUpgradeHandlers() {
 					GovKeeper:          app.GovKeeper,
 					DistrKeeper:        app.DistrKeeper,
 					MintKeeper:         app.MintKeeper,
-					CrisisKeeper:       *app.CrisisKeeper, //nolint:staticcheck
+					CrisisKeeper:       *app.CrisisKeeper,
 					FeeGrantKeeper:     app.FeeGrantKeeper,
 					AuthzKeeper:        app.AuthzKeeper,
 				},
