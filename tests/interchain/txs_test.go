@@ -24,23 +24,23 @@ type TxSuite struct {
 	*chainsuite.Suite
 }
 
-func txAmountUom() string {
-	return fmt.Sprintf("%d%s", txAmount, chainsuite.Uom)
+func txAmountAmantra() string {
+	return fmt.Sprintf("%d%s", txAmount, chainsuite.Amantra)
 }
 
 func (s *TxSuite) TestBankSend() {
-	balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[1].Address, chainsuite.Uom)
+	balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[1].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 
 	_, err = s.Chain.Validators[0].ExecTx(
 		s.GetContext(),
 		s.Chain.ValidatorWallets[0].Moniker,
 		"bank", "send",
-		s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[1].Address, txAmountUom(),
+		s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[1].Address, txAmountAmantra(),
 	)
 	s.Require().NoError(err)
 
-	balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[1].Address, chainsuite.Uom)
+	balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[1].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 	s.Require().Equal(balanceBefore.Add(sdkmath.NewInt(txAmount)), balanceAfter)
 }
@@ -50,11 +50,11 @@ func (s TxSuite) TestDelegateWithdrawUnbond() {
 	_, err := s.Chain.Validators[0].ExecTx(
 		s.GetContext(),
 		s.Chain.ValidatorWallets[0].Moniker,
-		"staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountUom(),
+		"staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountAmantra(),
 	)
 	s.Require().NoError(err)
 
-	startingBalance, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[0].Address, chainsuite.Uom)
+	startingBalance, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[0].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 	time.Sleep(20 * time.Second)
 	// Withdraw rewards
@@ -64,7 +64,7 @@ func (s TxSuite) TestDelegateWithdrawUnbond() {
 		"distribution", "withdraw-rewards", s.Chain.ValidatorWallets[0].ValoperAddress,
 	)
 	s.Require().NoError(err)
-	endingBalance, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[0].Address, chainsuite.Uom)
+	endingBalance, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[0].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 	s.Require().Truef(endingBalance.GT(startingBalance), "endingBalance: %s, startingBalance: %s", endingBalance, startingBalance)
 
@@ -72,32 +72,32 @@ func (s TxSuite) TestDelegateWithdrawUnbond() {
 	_, err = s.Chain.Validators[0].ExecTx(
 		s.GetContext(),
 		s.Chain.ValidatorWallets[0].Moniker,
-		"staking", "unbond", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountUom(),
+		"staking", "unbond", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountAmantra(),
 	)
 	s.Require().NoError(err)
 }
 
 func (s TxSuite) TestAuthz() {
 	s.Run("send", func() {
-		balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[2].Address, chainsuite.Uom)
+		balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[2].Address, chainsuite.Amantra)
 		s.Require().NoError(err)
 		_, err = s.Chain.Validators[0].ExecTx(
 			s.GetContext(),
 			s.Chain.ValidatorWallets[0].Moniker,
 			"authz", "grant", s.Chain.ValidatorWallets[1].Address, "send",
-			"--spend-limit", fmt.Sprintf("%d%s", txAmount*2, chainsuite.Uom),
+			"--spend-limit", fmt.Sprintf("%d%s", txAmount*2, chainsuite.Amantra),
 			"--allow-list", s.Chain.ValidatorWallets[2].Address,
 		)
 		s.Require().NoError(err)
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[3].Address, txAmountUom()))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[3].Address, txAmountAmantra()))
 
-		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, txAmountUom()))
-		balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[2].Address, chainsuite.Uom)
+		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, txAmountAmantra()))
+		balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[2].Address, chainsuite.Amantra)
 		s.Require().NoError(err)
 		s.Require().Equal(balanceBefore.Add(sdkmath.NewInt(int64(txAmount))), balanceAfter)
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, fmt.Sprintf("%d%s", txAmount+200, chainsuite.Uom)))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, fmt.Sprintf("%d%s", txAmount+200, chainsuite.Amantra)))
 
 		_, err = s.Chain.Validators[0].ExecTx(
 			s.GetContext(),
@@ -106,7 +106,7 @@ func (s TxSuite) TestAuthz() {
 		)
 		s.Require().NoError(err)
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, txAmountUom()))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "bank", "send", s.Chain.ValidatorWallets[0].Address, s.Chain.ValidatorWallets[2].Address, txAmountAmantra()))
 	})
 
 	s.Run("delegate", func() {
@@ -118,9 +118,9 @@ func (s TxSuite) TestAuthz() {
 		)
 		s.Require().NoError(err)
 
-		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 
 		_, err = s.Chain.Validators[0].ExecTx(
 			s.GetContext(),
@@ -128,7 +128,7 @@ func (s TxSuite) TestAuthz() {
 			"authz", "revoke", s.Chain.ValidatorWallets[1].Address, "/cosmos.staking.v1beta1.MsgDelegate",
 		)
 		s.Require().NoError(err)
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 	})
 
 	s.Run("unbond", func() {
@@ -139,7 +139,7 @@ func (s TxSuite) TestAuthz() {
 		_, err = s.Chain.Validators[0].ExecTx(
 			s.GetContext(),
 			s.Chain.ValidatorWallets[0].Moniker,
-			"staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(),
+			"staking", "delegate", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(),
 		)
 		s.Require().NoError(err)
 		s.Require().EventuallyWithT(func(c *assert.CollectT) {
@@ -157,8 +157,8 @@ func (s TxSuite) TestAuthz() {
 		)
 		s.Require().NoError(err)
 
-		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 
 		s.Require().EventuallyWithT(func(c *assert.CollectT) {
 			powerAfter, err := s.Chain.GetValidatorPower(s.GetContext(), valHex)
@@ -173,7 +173,7 @@ func (s TxSuite) TestAuthz() {
 			"authz", "revoke", s.Chain.ValidatorWallets[1].Address, "/cosmos.staking.v1beta1.MsgUndelegate",
 		)
 		s.Require().NoError(err)
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "unbond", s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 	})
 
 	s.Run("redelegate", func() {
@@ -186,7 +186,7 @@ func (s TxSuite) TestAuthz() {
 		_, err = s.Chain.Validators[0].ExecTx(
 			s.GetContext(),
 			s.Chain.ValidatorWallets[0].Moniker,
-			"staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountUom(),
+			"staking", "delegate", s.Chain.ValidatorWallets[0].ValoperAddress, txAmountAmantra(),
 		)
 		s.Require().NoError(err)
 		s.Require().EventuallyWithT(func(c *assert.CollectT) {
@@ -204,11 +204,11 @@ func (s TxSuite) TestAuthz() {
 		)
 		s.Require().NoError(err)
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[1].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[1].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 
 		val2PowerBefore, err := s.Chain.GetValidatorPower(s.GetContext(), val2Hex)
 		s.Require().NoError(err)
-		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().NoError(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 		s.Require().EventuallyWithT(func(c *assert.CollectT) {
 			val2PowerAfter, err := s.Chain.GetValidatorPower(s.GetContext(), val2Hex)
 			s.Require().NoError(err)
@@ -222,7 +222,7 @@ func (s TxSuite) TestAuthz() {
 		)
 		s.Require().NoError(err)
 
-		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[2].ValoperAddress, txAmountUom(), "--from", s.Chain.ValidatorWallets[0].Address))
+		s.Require().Error(s.authzGenExec(s.GetContext(), s.Chain.ValidatorWallets[1], "staking", "redelegate", s.Chain.ValidatorWallets[0].ValoperAddress, s.Chain.ValidatorWallets[2].ValoperAddress, txAmountAmantra(), "--from", s.Chain.ValidatorWallets[0].Address))
 	})
 
 	s.Run("generic", func() {
@@ -286,20 +286,20 @@ func (s TxSuite) TestFeegrant() {
 			)
 			s.Require().NoError(err)
 
-			granterBalanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[granter].Address, chainsuite.Uom)
+			granterBalanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[granter].Address, chainsuite.Amantra)
 			s.Require().NoError(err)
-			granteeBalanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[grantee].Address, chainsuite.Uom)
+			granteeBalanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[grantee].Address, chainsuite.Amantra)
 			s.Require().NoError(err)
 
 			_, err = s.Chain.Validators[grantee].ExecTx(s.GetContext(), s.Chain.ValidatorWallets[grantee].Moniker,
-				"bank", "send", s.Chain.ValidatorWallets[grantee].Address, s.Chain.ValidatorWallets[fundsReceiver].Address, txAmountUom(),
+				"bank", "send", s.Chain.ValidatorWallets[grantee].Address, s.Chain.ValidatorWallets[fundsReceiver].Address, txAmountAmantra(),
 				"--fee-granter", s.Chain.ValidatorWallets[granter].Address,
 			)
 			s.Require().NoError(err)
 
-			granteeBalanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[grantee].Address, chainsuite.Uom)
+			granteeBalanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[grantee].Address, chainsuite.Amantra)
 			s.Require().NoError(err)
-			granterBalanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[granter].Address, chainsuite.Uom)
+			granterBalanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[granter].Address, chainsuite.Amantra)
 			s.Require().NoError(err)
 
 			s.Require().True(granterBalanceAfter.LT(granterBalanceBefore), "granterBalanceBefore: %s, granterBalanceAfter: %s", granterBalanceBefore, granterBalanceAfter)
@@ -308,7 +308,7 @@ func (s TxSuite) TestFeegrant() {
 			tt.revoke(expire)
 
 			_, err = s.Chain.Validators[1].ExecTx(s.GetContext(), s.Chain.ValidatorWallets[grantee].Moniker,
-				"bank", "send", s.Chain.ValidatorWallets[1].Address, s.Chain.ValidatorWallets[fundsReceiver].Address, txAmountUom(),
+				"bank", "send", s.Chain.ValidatorWallets[1].Address, s.Chain.ValidatorWallets[fundsReceiver].Address, txAmountAmantra(),
 				"--fee-granter", s.Chain.ValidatorWallets[0].Address,
 			)
 			s.Require().Error(err)
@@ -361,17 +361,17 @@ func (s *TxSuite) TestMultisig() {
 	s.Require().NoError(err)
 
 	err = s.Chain.SendFunds(s.GetContext(), interchaintest.FaucetAccountKeyName, ibc.WalletAmount{
-		Denom:   chainsuite.Uom,
+		Denom:   chainsuite.Amantra,
 		Amount:  sdkmath.NewInt(chainsuite.ValidatorFunds),
 		Address: multisigAddr,
 	})
 	s.Require().NoError(err)
 
-	balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[3].Address, chainsuite.Uom)
+	balanceBefore, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[3].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 
 	txjson, err := s.Chain.GenerateTx(
-		s.GetContext(), 0, "bank", "send", multisigName, s.Chain.ValidatorWallets[3].Address, txAmountUom(),
+		s.GetContext(), 0, "bank", "send", multisigName, s.Chain.ValidatorWallets[3].Address, txAmountAmantra(),
 		"--gas", "auto", "--gas-adjustment", fmt.Sprint(s.Chain.Config().GasAdjustment), "--gas-prices", s.Chain.Config().GasPrices,
 	)
 	s.Require().NoError(err)
@@ -435,7 +435,7 @@ func (s *TxSuite) TestMultisig() {
 
 	_, err = s.Chain.Validators[0].ExecTx(s.GetContext(), multisigName, "broadcast", path.Join(s.Chain.Validators[0].HomeDir(), "multisign.json"))
 	s.Require().NoError(err)
-	balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[3].Address, chainsuite.Uom)
+	balanceAfter, err := s.Chain.GetBalance(s.GetContext(), s.Chain.ValidatorWallets[3].Address, chainsuite.Amantra)
 	s.Require().NoError(err)
 	s.Require().Equal(balanceBefore.Add(sdkmath.NewInt(txAmount)), balanceAfter)
 }

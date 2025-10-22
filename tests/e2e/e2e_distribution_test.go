@@ -20,10 +20,10 @@ func (s *IntegrationTestSuite) testDistribution() {
 
 	newWithdrawalAddress, _ := s.chainA.genesisAccounts[3].keyInfo.GetAddress()
 
-	beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uomDenom)
+	beforeBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), amantraDenom)
 	s.Require().NoError(err)
 	if beforeBalance.IsNil() {
-		beforeBalance = sdk.NewCoin(uomDenom, math.NewInt(0))
+		beforeBalance = sdk.NewCoin(amantraDenom, math.NewInt(0))
 	}
 
 	s.execSetWithdrawAddress(s.chainA, 0, standardFees.String(), delegatorAddress.String(), newWithdrawalAddress.String(), mantraHomePath)
@@ -43,7 +43,7 @@ func (s *IntegrationTestSuite) testDistribution() {
 	s.execWithdrawReward(s.chainA, 0, delegatorAddress.String(), valOperAddressA, mantraHomePath)
 	s.Require().Eventually(
 		func() bool {
-			afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), uomDenom)
+			afterBalance, err := getSpecificBalance(chainEndpoint, newWithdrawalAddress.String(), amantraDenom)
 			s.Require().NoError(err)
 
 			return afterBalance.IsGTE(beforeBalance)
@@ -64,21 +64,21 @@ func (s *IntegrationTestSuite) fundCommunityPool() {
 	chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
 	sender, _ := s.chainA.validators[0].keyInfo.GetAddress()
 
-	beforeDistUomBalance, _ := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-	if beforeDistUomBalance.IsNil() {
+	beforeDistAmantraBalance, _ := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+	if beforeDistAmantraBalance.IsNil() {
 		// Set balance to 0 if previous balance does not exist
-		beforeDistUomBalance = sdk.NewInt64Coin(uomDenom, 0)
+		beforeDistAmantraBalance = sdk.NewInt64Coin(amantraDenom, 0)
 	}
 
 	s.execDistributionFundCommunityPool(s.chainA, 0, sender.String(), tokenAmount.String(), standardFees.String())
 
 	s.Require().Eventually(
 		func() bool {
-			afterDistUomBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
-			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistUomBalance)
+			afterDistAmantraBalance, err := getSpecificBalance(chainAAPIEndpoint, distModuleAddress, tokenAmount.Denom)
+			s.Require().NoErrorf(err, "Error getting balance: %s", afterDistAmantraBalance)
 
 			// check if the balance is increased by the tokenAmount
-			return beforeDistUomBalance.Add(tokenAmount).IsEqual(afterDistUomBalance)
+			return beforeDistAmantraBalance.Add(tokenAmount).IsEqual(afterDistAmantraBalance)
 		},
 		15*time.Second,
 		5*time.Second,

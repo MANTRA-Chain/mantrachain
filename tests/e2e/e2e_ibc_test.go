@@ -212,7 +212,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 }
 
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
-	s.Run("send_uom_to_chainB", func() {
+	s.Run("send_amantra_to_chainB", func() {
 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
 		var (
 			balances      sdk.Coins
@@ -246,7 +246,7 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		}
 
 		tokenAmt := 3300000000
-		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), "", false)
+		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), "", false)
 
 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
 		s.Require().True(pass)
@@ -287,7 +287,7 @@ Steps:
 // func (s *IntegrationTestSuite) testMultihopIBCTokenTransfer() {
 // 	time.Sleep(30 * time.Second)
 
-// 	s.Run("send_successful_multihop_uom_to_chainA_from_chainA", func() {
+// 	s.Run("send_successful_multihop_amantra_to_chainA_from_chainA", func() {
 // 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
 // 		var (
 // 			err error
@@ -316,10 +316,10 @@ Steps:
 
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
 // 				s.Require().NoError(err)
 
-// 				beforeRecipientUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+// 				beforeRecipientUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, recipient, amantraDenom)
 // 				s.Require().NoError(err)
 
 // 				return beforeSenderUOmBalance.IsValid() && beforeRecipientUOmBalance.IsValid()
@@ -339,17 +339,17 @@ Steps:
 // 		memo, err := json.Marshal(firstHopMetadata)
 // 		s.Require().NoError(err)
 
-// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
+// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), string(memo), false)
 
 // 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
 // 		s.Require().True(pass)
 
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
 // 				s.Require().NoError(err)
 
-// 				afterRecipientUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+// 				afterRecipientUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, amantraDenom)
 // 				s.Require().NoError(err)
 
 // 				decremented := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
@@ -370,7 +370,7 @@ Middleware will send the tokens back to the original account after failing.
 // func (s *IntegrationTestSuite) testFailedMultihopIBCTokenTransfer() {
 // 	time.Sleep(30 * time.Second)
 
-// 	s.Run("send_failed_multihop_uom_to_chainA_from_chainA", func() {
+// 	s.Run("send_failed_multihop_amantra_to_chainA_from_chainA", func() {
 // 		address, _ := s.chainA.validators[0].keyInfo.GetAddress()
 // 		sender := address.String()
 
@@ -394,7 +394,7 @@ Middleware will send the tokens back to the original account after failing.
 
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				beforeSenderUOmBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
 // 				s.Require().NoError(err)
 
 // 				return beforeSenderUOmBalance.IsValid()
@@ -414,12 +414,12 @@ Middleware will send the tokens back to the original account after failing.
 // 		memo, err := json.Marshal(firstHopMetadata)
 // 		s.Require().NoError(err)
 
-// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+uomDenom, standardFees.String(), string(memo), false)
+// 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), string(memo), false)
 
 // 		// Sender account should be initially decremented the full amount
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
 // 				s.Require().NoError(err)
 
 // 				returned := beforeSenderUOmBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterSenderUOmBalance)
@@ -436,7 +436,7 @@ Middleware will send the tokens back to the original account after failing.
 // 				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
 // 				s.Require().True(pass)
 
-// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, uomDenom)
+// 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
 // 				s.Require().NoError(err)
 // 				returned := beforeSenderUOmBalance.Sub(standardFees).IsEqual(afterSenderUOmBalance)
 // 				return returned

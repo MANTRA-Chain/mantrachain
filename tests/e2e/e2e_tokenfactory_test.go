@@ -48,7 +48,7 @@ func (s *IntegrationTestSuite) writeDisableDenomSendProposal(c *chain, denom str
         	}
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"title": "Disable %s for sending",
 		"summary": "e2e-test disable token send"
 	   }`
@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) writeEnableDenomSendProposal(c *chain, denom stri
         	}
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"title": "Reenable %s for sending",
 		"summary": "e2e-test reenable token send"
 	   }`
@@ -117,20 +117,20 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		// define one sender and two recipient accounts
 		alice := s.getAlice()
 
-		var beforeAliceUomBalance,
-			afterAliceUomBalance sdk.Coin
+		var beforeAliceAmantraBalance,
+			afterAliceAmantraBalance sdk.Coin
 
 		denomCreationFee, err := queryTokenfactoryDenomCreationFee(chainEndpoint)
 		s.Require().NoError(err)
-		s.Require().Equal(uomDenom, denomCreationFee.Denom)
+		s.Require().Equal(amantraDenom, denomCreationFee.Denom)
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
+				beforeAliceAmantraBalance, err = getSpecificBalance(chainEndpoint, alice, amantraDenom)
 				s.Require().NoError(err)
 
-				return beforeAliceUomBalance.IsValid()
+				return beforeAliceAmantraBalance.IsValid()
 			},
 			10*time.Second,
 			5*time.Second,
@@ -141,12 +141,12 @@ func (s *IntegrationTestSuite) testTokenfactoryCreate() {
 		// check that the creation was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice, uomDenom)
+				afterAliceAmantraBalance, err = getSpecificBalance(chainEndpoint, alice, amantraDenom)
 				s.Require().NoError(err)
 
-				beforeAlice := beforeAliceUomBalance.Sub(denomCreationFee).Sub(standardFees)
+				beforeAlice := beforeAliceAmantraBalance.Sub(denomCreationFee).Sub(standardFees)
 
-				return beforeAlice.Equal(afterAliceUomBalance)
+				return beforeAlice.Equal(afterAliceAmantraBalance)
 			},
 			10*time.Second,
 			5*time.Second,
@@ -746,10 +746,10 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 		s.T().Log("Succeed send below percentage cap")
 	})
 
-	DEPOSIT_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
-	TAX_AMOUNT := sdk.NewCoin(uomDenom, math.NewInt(1000000))
-	var beforeCharlieUomBalance,
-		afterCharlieUomBalance sdk.Coin
+	DEPOSIT_AMOUNT := sdk.NewCoin(amantraDenom, math.NewInt(1000000))
+	TAX_AMOUNT := sdk.NewCoin(amantraDenom, math.NewInt(1000000))
+	var beforeCharlieAmantraBalance,
+		afterCharlieAmantraBalance sdk.Coin
 	s.Run("tax_stake_denom_hook_test", func() {
 		s.setBeforeSendHook(c, valIdx, charlie.String(), customDenom, taxStakeDenomContractAddr, standardFees.String(), false)
 		s.depositTaxStakeDenomContract(c, valIdx, bob.String(), taxStakeDenomContractAddr, DEPOSIT_AMOUNT.String(), standardFees.String(), false)
@@ -762,10 +762,10 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 				beforeBobCustomTokenBalance, err = getSpecificBalance(chainEndpoint, bob.String(), customDenom)
 				s.Require().NoError(err)
 
-				beforeCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				beforeCharlieAmantraBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid() && beforeCharlieUomBalance.IsValid()
+				return beforeAliceCustomTokenBalance.IsValid() && beforeBobCustomTokenBalance.IsValid() && beforeCharlieAmantraBalance.IsValid()
 			},
 			10*time.Second,
 			5*time.Second,
@@ -785,12 +785,12 @@ func (s *IntegrationTestSuite) testTokenfactoryHooks() {
 				incrementedAlice := beforeAliceCustomTokenBalance.Add(toSend)
 				decrementedBob := beforeBobCustomTokenBalance.Sub(toSend)
 
-				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				afterCharlieAmantraBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				incrementedCharlie := beforeCharlieUomBalance.Add(TAX_AMOUNT)
+				incrementedCharlie := beforeCharlieAmantraBalance.Add(TAX_AMOUNT)
 
-				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance) && incrementedCharlie.Equal(afterCharlieUomBalance)
+				return incrementedAlice.Equal(afterAliceCustomTokenBalance) && decrementedBob.Equal(afterBobCustomTokenBalance) && incrementedCharlie.Equal(afterCharlieAmantraBalance)
 			},
 			10*time.Second,
 			5*time.Second,

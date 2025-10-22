@@ -238,13 +238,13 @@ build-and-run-single-node: build
 	@echo "Building and running a single node for testing..."
 	@mkdir -p .mantrasinglenodetest
 	@if [ ! -f .mantrasinglenodetest/config/config.toml ]; then \
-		./build/mantrachaind init single-node-test --chain-id test-chain --home .mantrasinglenodetest --default-denom uom; \
+		./build/mantrachaind init single-node-test --chain-id test-chain --home .mantrasinglenodetest --default-denom amantra; \
 		./build/mantrachaind keys add validator --keyring-backend test --home .mantrasinglenodetest; \
-		./build/mantrachaind genesis add-genesis-account $$(./build/mantrachaind keys show validator -a --keyring-backend test --home .mantrasinglenodetest) 100000000000000uom --home .mantrasinglenodetest; \
-		./build/mantrachaind genesis gentx validator 100000000uom --chain-id test-chain --keyring-backend test --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis add-genesis-account $$(./build/mantrachaind keys show validator -a --keyring-backend test --home .mantrasinglenodetest) 100000000000000000000000000amantra --home .mantrasinglenodetest; \
+		./build/mantrachaind genesis gentx validator 100000000000000000000amantra --chain-id test-chain --keyring-backend test --home .mantrasinglenodetest; \
 		./build/mantrachaind genesis collect-gentxs --home .mantrasinglenodetest; \
-		sed -i'' -e 's/"fee_denom": "stake"/"fee_denom": "uom"/' .mantrasinglenodetest/config/genesis.json; \
+		sed -i'' -e 's/"fee_denom": "stake"/"fee_denom": "amantra"/' .mantrasinglenodetest/config/genesis.json; \
 	fi
-	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0uom
+	./build/mantrachaind start --home .mantrasinglenodetest --minimum-gas-prices 0amantra
 
 .PHONY: build-and-run-single-node

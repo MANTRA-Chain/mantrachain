@@ -25,7 +25,7 @@ func main() {
 
 const (
 	HumanCoinUnit = "om"
-	BaseCoinUnit  = "uom"
+	BaseCoinUnit  = "amantra"
 	OmExponent    = 6
 
 	DefaultBondDenom = BaseCoinUnit

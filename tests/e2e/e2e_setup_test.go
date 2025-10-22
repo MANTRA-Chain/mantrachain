@@ -47,12 +47,12 @@ const (
 	queryCommand       = "query"
 	keysCommand        = "keys"
 	mantraHomePath     = "/home/nonroot/.mantrachain"
-	uomDenom           = "uom"
-	initBalanceStr     = "100000000000000000uom"
-	minGasPrice        = "0.01"
+	amantraDenom       = "amantra"
+	initBalanceStr     = "100000000000000000000000000000amantra"
+	minGasPrice        = "10000000000"
 	// the test basefee in genesis is the same as minGasPrice
 	// global fee lower/higher than min_gas_price
-	initialBaseFeeAmt               = "0.01"
+	initialBaseFeeAmt               = "10000000000"
 	gas                             = 200000
 	govProposalBlockBuffer          = 35
 	relayerAccountIndexHermes       = 0
@@ -81,21 +81,24 @@ const (
 )
 
 var (
-	mantraConfigPath  = filepath.Join(mantraHomePath, "config")
-	stakingAmount     = math.NewInt(100000000000)
-	stakingAmountCoin = sdk.NewCoin(uomDenom, stakingAmount)
-	tokenAmount       = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300om
-	standardFees      = sdk.NewCoin(uomDenom, math.NewInt(100000))     // 0.1om
-	depositAmount     = sdk.NewCoin(uomDenom, math.NewInt(3300000000)) // 3,300uom
-	proposalCounter   = 0
+	mantraConfigPath    = filepath.Join(mantraHomePath, "config")
+	stakingAmount, _    = math.NewIntFromString("100000000000000000000000")
+	stakingAmountCoin   = sdk.NewCoin(amantraDenom, stakingAmount)
+	tokenAmountVal, _   = math.NewIntFromString("3300000000000000000000") // 3,300mantra
+	tokenAmount         = sdk.NewCoin(amantraDenom, tokenAmountVal)
+	standardFeesVal, _  = math.NewIntFromString("100000000000000000") // 0.1mantra
+	standardFees        = sdk.NewCoin(amantraDenom, standardFeesVal)
+	depositAmountVal, _ = math.NewIntFromString("3300000000000000000000") // 3,300mantra
+	depositAmount       = sdk.NewCoin(amantraDenom, depositAmountVal)
+	proposalCounter     = 0
 
 	distModuleAddress, govModuleAddress string
 
 	ChainCoinInfo = evmtypes.EvmCoinInfo{
-		Denom:         "uom",
-		ExtendedDenom: "aom",
-		DisplayDenom:  "om",
-		Decimals:      evmtypes.SixDecimals.Uint32(),
+		Denom:         "amantra",
+		ExtendedDenom: "amantra",
+		DisplayDenom:  "mantra",
+		Decimals:      evmtypes.EighteenDecimals.Uint32(),
 	}
 )
 
@@ -245,7 +248,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	}
 
 	s.Require().NoError(
-		modifyGenesis(val0ConfigDir, "", initBalanceStr, addrAll, initialBaseFeeAmt, uomDenom),
+		modifyGenesis(val0ConfigDir, "", initBalanceStr, addrAll, initialBaseFeeAmt, amantraDenom),
 	)
 	// copy the genesis file to the remaining validators
 	for _, val := range c.validators[1:] {
@@ -386,7 +389,7 @@ func (s *IntegrationTestSuite) addGenesisVestingAndJailedAccounts(
 	}
 	stakingModuleBalances := banktypes.Balance{
 		Address: authtypes.NewModuleAddress(stakingtypes.NotBondedPoolName).String(),
-		Coins:   sdk.NewCoins(sdk.NewCoin(uomDenom, math.NewInt(slashingShares))),
+		Coins:   sdk.NewCoins(sdk.NewCoin(amantraDenom, math.NewInt(slashingShares))),
 	}
 	bankGenState.Balances = append(
 		bankGenState.Balances,
@@ -559,7 +562,7 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		appConfig := srvconfig.DefaultConfig()
 		appConfig.API.Enable = true
 		appConfig.API.Address = "tcp://0.0.0.0:1317"
-		appConfig.MinGasPrices = fmt.Sprintf("%s%s", minGasPrice, uomDenom)
+		appConfig.MinGasPrices = fmt.Sprintf("%s%s", minGasPrice, amantraDenom)
 		appConfig.GRPC.Address = "0.0.0.0:9090"
 
 		srvconfig.SetConfigTemplate(srvconfig.DefaultConfigTemplate)
@@ -723,7 +726,7 @@ func (s *IntegrationTestSuite) writeGovCommunitySpendProposal(c *chain, amount s
 			}]
 		  }
 		],
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"proposer": "Proposing validator address",
 		"metadata": "Community Pool Spend",
 		"title": "Fund Team!",
@@ -751,7 +754,7 @@ func (s *IntegrationTestSuite) writeSoftwareUpgradeProposal(c *chain, height int
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"title": "title",
 		"summary": "test"
 	   }`
@@ -771,7 +774,7 @@ func (s *IntegrationTestSuite) writeCancelSoftwareUpgradeProposal(c *chain) {
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"title": "title",
 		"summary": "test"
 	   }`
@@ -802,7 +805,7 @@ func (s *IntegrationTestSuite) writeLiquidStakingParamsUpdateProposal(c *chain, 
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"title": "Update LSM Params",
 		"summary": "e2e-test updating LSM staking params",
 		"expedited": false
@@ -838,7 +841,7 @@ func (s *IntegrationTestSuite) writeGovParamChangeProposalBlocksPerEpoch(c *chai
 			"params": %s
 		  }
 		],
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"proposer": "sample proposer",
 		"metadata": "sample metadata",
 		"title": "blocks per epoch title",
@@ -878,7 +881,7 @@ func (s *IntegrationTestSuite) writeFailingExpeditedProposal(c *chain, blocksPer
 			}
 		  }
 		],
-		"deposit": "100uom",
+		"deposit": "100000000000000amantra",
 		"proposer": "sample proposer",
 		"metadata": "sample metadata",
 		"title": "blocks per epoch title",
@@ -911,7 +914,7 @@ func (s *IntegrationTestSuite) writeExpeditedSoftwareUpgradeProp(c *chain) {
   }
  ],
  "metadata": "ipfs://CID",
- "deposit": "100uom",
+ "deposit": "100000000000000amantra",
  "title": "title",
  "summary": "test",
  "expedited": true
