@@ -23,7 +23,7 @@ func (s *IntegrationTestSuite) testStaking() {
 
 	delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-	fees := sdk.NewCoin(amantraDenom, math.NewInt(1))
+	fees := sdk.NewCoin(amantraDenom, math.NewInt(1000000000000))
 
 	existingDelegation := math.LegacyZeroDec()
 	res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())

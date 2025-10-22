@@ -32,12 +32,15 @@ type (
 )
 
 var (
-	genesisVestingKeys      = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
-	vestingAmountVested     = sdk.NewCoin(amantraDenom, math.NewInt(99900000000))
-	vestingAmount           = sdk.NewCoin(amantraDenom, math.NewInt(350000))
-	vestingBalance          = sdk.NewCoins(vestingAmountVested).Add(vestingAmount)
-	vestingDelegationAmount = sdk.NewCoin(amantraDenom, math.NewInt(500000000))
-	vestingDelegationFees   = sdk.NewCoin(amantraDenom, math.NewInt(1))
+	genesisVestingKeys            = []string{continuousVestingKey, delayedVestingKey, lockedVestingKey, periodicVestingKey}
+	vestingAmountVestedVal, _     = math.NewIntFromString("99900000000000000000000")
+	vestingAmountVested           = sdk.NewCoin(amantraDenom, vestingAmountVestedVal)
+	vestingAmount                 = sdk.NewCoin(amantraDenom, math.NewInt(350000000000000000))
+	vestingBalance                = sdk.NewCoins(vestingAmountVested).Add(vestingAmount)
+	vestingDelegationAmountVal, _ = math.NewIntFromString("500000000000000000000")
+	vestingDelegationAmount       = sdk.NewCoin(amantraDenom, vestingDelegationAmountVal)
+	vestingDelegationFeesVal, _   = math.NewIntFromString("1000000000000")
+	vestingDelegationFees         = sdk.NewCoin(amantraDenom, vestingDelegationFeesVal)
 )
 
 func (s *IntegrationTestSuite) testDelayedVestingAccount(api string) {
@@ -323,11 +326,11 @@ func generateVestingPeriod() ([]byte, error) {
 		StartTime: time.Now().Add(time.Duration(rand.Intn(20)+95) * time.Second).Unix(),
 		Periods: []period{
 			{
-				Coins:  "850000000" + amantraDenom,
+				Coins:  "850000000000000000000" + amantraDenom,
 				Length: 35,
 			},
 			{
-				Coins:  "2000000000" + amantraDenom,
+				Coins:  "2000000000000000000000" + amantraDenom,
 				Length: 35,
 			},
 		},

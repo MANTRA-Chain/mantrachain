@@ -99,7 +99,7 @@ func modifyGenesis(path, moniker, amountStr string, addrAll []sdk.AccAddress, ba
 	appState[stakingtypes.ModuleName] = stakingGenStateBz
 
 	// Refactor to separate method
-	amnt := math.NewInt(10000)
+	amnt := math.NewInt(10000000000000000)
 	quorum, _ := math.LegacyNewDecFromStr("0.000000000000000001")
 	threshold, _ := math.LegacyNewDecFromStr("0.000000000000000001")
 

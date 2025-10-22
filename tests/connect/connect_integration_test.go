@@ -81,16 +81,16 @@ var (
 		},
 		{
 			Key:   "app_state.evm.params.extended_denom_options.extended_denom",
-			Value: "aom",
+			Value: "amantra",
 		},
 		{
 			Key: "app_state.bank.denom_metadata",
 			Value: []map[string]interface{}{
 				{
 					"base":        "amantra",
-					"display":     "om",
-					"name":        "om",
-					"symbol":      "OM",
+					"display":     "mantra",
+					"name":        "mantra",
+					"symbol":      "MANTRA",
 					"description": "The native staking token of the Mantra network",
 					"denom_units": []map[string]interface{}{
 						{
@@ -98,7 +98,7 @@ var (
 							"exponent": 0,
 						},
 						{
-							"denom":    "om",
+							"denom":    "mantra",
 							"exponent": 6,
 						},
 					},
