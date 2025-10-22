@@ -50,7 +50,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
-	v7rc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
 	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v7/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
@@ -236,6 +236,9 @@ var maccPerms = map[string][]string{
 	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
+
+	// v7 token migration
+	v7rc0.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
 var Upgrades = []upgrades.Upgrade{v7rc0.Upgrade}

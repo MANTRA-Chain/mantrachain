@@ -1,0 +1,48 @@
+package v7rc0
+
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+)
+
+func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper) error {
+	// migrate community pool
+	feePool, err := distrKeeper.FeePool.Get(ctx)
+	if err != nil {
+		return err
+	}
+
+	newCommunityPool := convertDecCoinsToNewDenom(feePool.CommunityPool)
+	feePool.CommunityPool = newCommunityPool
+
+	if err := distrKeeper.FeePool.Set(ctx, feePool); err != nil {
+		return err
+	}
+
+	// migrate validator outstanding rewards
+	distrKeeper.IterateValidatorOutstandingRewards(ctx, func(valAddr sdk.ValAddress, rewards distrtypes.ValidatorOutstandingRewards) (stop bool) {
+		rewards.Rewards = convertDecCoinsToNewDenom(rewards.Rewards)
+		if err = distrKeeper.SetValidatorOutstandingRewards(ctx, valAddr, rewards); err != nil {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
+	// migrate validator historical rewards
+	distrKeeper.IterateValidatorHistoricalRewards(ctx, func(valAddr sdk.ValAddress, period uint64, rewards distrtypes.ValidatorHistoricalRewards) (stop bool) {
+		rewards.CumulativeRewardRatio = convertDecCoinsToNewDenom(rewards.CumulativeRewardRatio)
+		if err = distrKeeper.SetValidatorHistoricalRewards(ctx, valAddr, period, rewards); err != nil {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
