@@ -53,13 +53,13 @@ func CreateUpgradeHandler(
 
 		evmParams := keepers.EVMKeeper.GetParams(ctx)
 		evmParams.ExtendedDenomOptions = &evmtypes.ExtendedDenomOptions{ExtendedDenom: ChainCoinInfo.ExtendedDenom}
-		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
-			return vm, err
-		}
 		evmParams.ActiveStaticPrecompiles = []string{
 			"0x0000000000000000000000000000000000000800",
 			"0x0000000000000000000000000000000000000801",
 			"0x0000000000000000000000000000000000000805",
+		}
+		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
+			return vm, err
 		}
 
 		// update contract owner for all existing tokenfactory token_pairs
