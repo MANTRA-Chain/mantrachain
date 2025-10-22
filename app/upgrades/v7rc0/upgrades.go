@@ -73,6 +73,7 @@ func CreateUpgradeHandler(
 		ctx.Logger().Info("Migrating x/evm state...")
 		evmParams := keepers.EVMKeeper.GetParams(ctx)
 		evmParams.EvmDenom = AMANTRA
+		evmParams.ExtendedDenomOptions.ExtendedDenom = AMANTRA
 		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
