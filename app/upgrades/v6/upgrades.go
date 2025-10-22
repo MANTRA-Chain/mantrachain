@@ -1,4 +1,4 @@
-package v6rc0
+package v6
 
 import (
 	"context"
@@ -56,6 +56,11 @@ func CreateUpgradeHandler(
 		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
+		evmParams.ActiveStaticPrecompiles = []string{
+			"0x0000000000000000000000000000000000000800",
+			"0x0000000000000000000000000000000000000801",
+			"0x0000000000000000000000000000000000000805",
+		}
 
 		// update contract owner for all existing tokenfactory token_pairs
 		pairs := keepers.Erc20Keeper.GetTokenPairs(ctx)
@@ -80,7 +85,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
+		ctx.Logger().Info("Upgrade v6.0.0 complete")
 		return vm, nil
 	}
 }
