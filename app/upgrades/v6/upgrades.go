@@ -85,7 +85,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
+		ctx.Logger().Info("Upgrade v6.0.0 complete")
 		return vm, nil
 	}
 }
