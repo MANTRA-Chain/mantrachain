@@ -185,7 +185,7 @@ import (
 func init() {
 	// Replace evmos defaults
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
-	sdk.DefaultPowerReduction = cosmosevmutils.MicroPowerReduction
+	sdk.DefaultPowerReduction = cosmosevmutils.AttoPowerReduction
 	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
 
 	// DefaultNodeHome default home directories for mantrachaind
