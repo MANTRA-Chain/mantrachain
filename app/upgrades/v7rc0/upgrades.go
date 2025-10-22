@@ -77,6 +77,9 @@ func CreateUpgradeHandler(
 		if err := keepers.EVMKeeper.SetParams(ctx, evmParams); err != nil {
 			return vm, err
 		}
+		if err := keepers.EVMKeeper.InitEvmCoinInfo(ctx); err != nil {
+			return vm, err
+		}
 
 		ctx.Logger().Info("Migrating x/feegrant state...")
 		migrateFeeGrant(ctx, keepers.FeeGrantKeeper)
