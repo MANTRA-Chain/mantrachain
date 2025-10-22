@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 
 	corevm "github.com/ethereum/go-ethereum/core/vm"
@@ -1468,6 +1469,14 @@ func (app *App) setupUpgradeHandlers() {
 					EVMKeeper:          *app.EVMKeeper,
 					Erc20Keeper:        app.Erc20Keeper,
 					CircuitKeeper:      app.CircuitKeeper,
+					PreciseBankKeeper:  app.PreciseBankKeeper,
+					StakingKeeper:      app.StakingKeeper,
+					GovKeeper:          app.GovKeeper,
+					DistrKeeper:        app.DistrKeeper,
+					MintKeeper:         app.MintKeeper,
+					CrisisKeeper:       *app.CrisisKeeper, //nolint:staticcheck
+					FeeGrantKeeper:     app.FeeGrantKeeper,
+					AuthzKeeper:        app.AuthzKeeper,
 				},
 				app.keys,
 			),
@@ -1491,9 +1500,15 @@ func GetMaccPerms() map[string][]string {
 func BlockedAddresses() map[string]bool {
 	blockedAddrs := make(map[string]bool)
 
+	// upgrade v7 module accounts to unblock
+	v7UpgradeUnblock := []string{v7rc0.UpgradeName, stakingtypes.BondedPoolName, stakingtypes.NotBondedPoolName, distrtypes.ModuleName}
+
 	maccPerms := GetMaccPerms()
 	accs := make([]string, 0, len(maccPerms))
 	for acc := range maccPerms {
+		if slices.Contains(v7UpgradeUnblock, acc) {
+			continue
+		}
 		accs = append(accs, acc)
 	}
 	sort.Strings(accs)
