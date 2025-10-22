@@ -12,10 +12,10 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/commit/2660a4c41abd1e2b72c0ee3e8b77701559141d71
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.3-v5-mantra-1.0.20250813063539-2660a4c41abd
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/5a0fcfa3fe1c02e7e015b1c7b736f23f1c320425
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
