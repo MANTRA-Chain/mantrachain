@@ -49,6 +49,7 @@ import (
 	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
 	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
@@ -736,13 +737,15 @@ func New(
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket
+			-> erc20.OnRecvPacket -> transfer.OnRecvPacket -> ibc_middleware.NewMigrateUomIBCModule
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper)
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
 	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
