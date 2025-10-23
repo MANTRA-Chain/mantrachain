@@ -12,9 +12,12 @@ import (
 )
 
 const (
-	UOM          = "uom"
-	AMANTRA      = "amantra"
-	SCALE_FACTOR = 4_000_000_000_000 // 4 * 10^12
+	UOM                  = "uom"
+	AMANTRA              = "amantra"
+	SCALE_FACTOR         = 4_000_000_000_000 // 4 * 10^12
+	EventTypeMigrate     = "migrate_denom"
+	AttributeKeyFromCoin = "from_coin"
+	AttributeKeyToCoin   = "to_coin"
 )
 
 var _ porttypes.IBCModule = MigrateUomIBCModule{}
@@ -162,6 +165,14 @@ func (im MigrateUomIBCModule) OnRecvPacket(
 	if err := im.bankkeeper.SendCoinsFromModuleToAccount(ctx, transfertypes.ModuleName, recipient, sdk.NewCoins(amantraCoin)); err != nil {
 		return channeltypes.NewErrorAcknowledgement(errorsmod.Wrap(err, "failed to send amantra from migration module to recipient"))
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			EventTypeMigrate,
+			sdk.NewAttribute(AttributeKeyFromCoin, uomCoin.String()),
+			sdk.NewAttribute(AttributeKeyToCoin, amantraCoin.String()),
+		),
+	)
 
 	return ack
 }
