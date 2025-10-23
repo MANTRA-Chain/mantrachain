@@ -81,6 +81,14 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		ctx.Logger().Info("Migrating x/feemarket state...")
+		feemarketParams := keepers.FeeMarketKeeper.GetParams(ctx)
+		feemarketParams.BaseFee = feemarketParams.BaseFee.Mul(ScalingFactor.ToLegacyDec())
+		feemarketParams.MinGasPrice = feemarketParams.MinGasPrice.Mul(ScalingFactor.ToLegacyDec())
+		if err := keepers.FeeMarketKeeper.SetParams(ctx, feemarketParams); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Migrating x/feegrant state...")
 		migrateFeeGrant(ctx, keepers.FeeGrantKeeper)
 
