@@ -9,6 +9,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
+	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 )
 
 func migrateBank(ctx sdk.Context, bankKeeper bankkeeper.Keeper, tokenFactoryKeeper tokenfactorykeeper.Keeper, accountKeeper authkeeper.AccountKeeper) error {
@@ -86,7 +87,19 @@ func migrateBank(ctx sdk.Context, bankKeeper bankkeeper.Keeper, tokenFactoryKeep
 	return nil
 }
 
-func migratePreciseBank(ctx sdk.Context, preciseBankKeeper precisebankkeeper.Keeper, bankKeeper bankkeeper.Keeper) (err error) {
+func migratePreciseBank(ctx sdk.Context, preciseBankKeeper precisebankkeeper.Keeper, bankKeeper bankkeeper.Keeper, accountKeeper authkeeper.AccountKeeper) (err error) {
+	preciseBankBalance := bankKeeper.GetAllBalances(ctx, accountKeeper.GetModuleAddress(precisebanktypes.ModuleName))
+	for _, coin := range preciseBankBalance {
+		if coin.Denom != UOM {
+			return errorsmod.Wrapf(banktypes.ErrInputOutputMismatch, "precise bank module has non-uom balance: %s", coin.String())
+		}
+	}
+	if err = bankKeeper.SendCoinsFromModuleToModule(ctx, precisebanktypes.ModuleName, UpgradeName, preciseBankBalance); err != nil {
+		return err
+	}
+	if err = bankKeeper.BurnCoins(ctx, UpgradeName, preciseBankBalance); err != nil {
+		return err
+	}
 	preciseBankKeeper.IterateFractionalBalances(ctx, func(addr sdk.AccAddress, fractionalAmount math.Int) (stop bool) {
 		// get current integer balance
 		integerCoin := sdk.NewCoin(AMANTRA, fractionalAmount.Mul(math.NewInt(4)))

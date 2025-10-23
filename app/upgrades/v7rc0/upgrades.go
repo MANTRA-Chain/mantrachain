@@ -25,13 +25,13 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Migrating x/bank state...")
-		if err = migrateBank(ctx, keepers.BankKeeper, *keepers.TokenFactoryKeeper, keepers.AccountKeeper); err != nil {
+		ctx.Logger().Info("Migrating x/precisebank state...")
+		if err = migratePreciseBank(ctx, keepers.PreciseBankKeeper, keepers.BankKeeper, keepers.AccountKeeper); err != nil {
 			return vm, err
 		}
 
-		ctx.Logger().Info("Migrating x/precisebank state...")
-		if err = migratePreciseBank(ctx, keepers.PreciseBankKeeper, keepers.BankKeeper); err != nil {
+		ctx.Logger().Info("Migrating x/bank state...")
+		if err = migrateBank(ctx, keepers.BankKeeper, *keepers.TokenFactoryKeeper, keepers.AccountKeeper); err != nil {
 			return vm, err
 		}
 
