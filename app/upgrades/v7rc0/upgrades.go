@@ -95,6 +95,11 @@ func CreateUpgradeHandler(
 		ctx.Logger().Info("Migrating x/authz state...")
 		migrateAuthz(ctx, keepers.AuthzKeeper)
 
+		ctx.Logger().Info("Migrating wom contract state...")
+		if err := migrateWOMs(ctx, keepers.EVMKeeper); err != nil {
+			return vm, err
+		}
+
 		// --- Post-Migration ---
 		ctx.Logger().Info("Finished v7.0.0-rc0 state migrations.")
 		ctx.Logger().Info("Assert Invariants...")
