@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"slices"
 	"sort"
 
 	corevm "github.com/ethereum/go-ethereum/core/vm"
@@ -1503,15 +1502,9 @@ func GetMaccPerms() map[string][]string {
 func BlockedAddresses() map[string]bool {
 	blockedAddrs := make(map[string]bool)
 
-	// upgrade v7 module accounts to unblock
-	v7UpgradeUnblock := []string{v7rc0.UpgradeName, stakingtypes.BondedPoolName, stakingtypes.NotBondedPoolName, distrtypes.ModuleName}
-
 	maccPerms := GetMaccPerms()
 	accs := make([]string, 0, len(maccPerms))
 	for acc := range maccPerms {
-		if slices.Contains(v7UpgradeUnblock, acc) {
-			continue
-		}
 		accs = append(accs, acc)
 	}
 	sort.Strings(accs)
