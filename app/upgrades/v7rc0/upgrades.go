@@ -29,6 +29,11 @@ func CreateUpgradeHandler(
 		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
 
+		ctx.Logger().Info("Migrating x/auth state...")
+		if err = migrateAuth(ctx, keepers.AccountKeeper); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Migrating x/precisebank state...")
 		if err = migratePreciseBank(ctx, keepers.PreciseBankKeeper, keepers.BankKeeper, keepers.AccountKeeper); err != nil {
 			return vm, err
