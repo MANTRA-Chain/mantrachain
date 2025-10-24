@@ -25,8 +25,8 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		// upgrade v7 module accounts to unblock
-		blockedAddrs := keepers.BankKeeper.GetBlockedAddresses()
+		// Unblock all module accounts for the duration of the migration.
+		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
 
 		ctx.Logger().Info("Migrating x/precisebank state...")
@@ -105,7 +105,6 @@ func CreateUpgradeHandler(
 		}
 
 		// --- Post-Migration ---
-		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(blockedAddrs)
 		ctx.Logger().Info("Finished v7.0.0-rc0 state migrations.")
 		ctx.Logger().Info("Assert Invariants...")
 		keepers.CrisisKeeper.AssertInvariants(ctx)
