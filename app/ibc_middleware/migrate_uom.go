@@ -21,11 +21,24 @@ const (
 )
 
 var _ porttypes.IBCModule = MigrateUomIBCModule{}
+var _ porttypes.PacketDataUnmarshaler = MigrateUomIBCModule{}
 
 type MigrateUomIBCModule struct {
 	// Since this is the last middleware in the stack, `app` is the core `transfer` IBC module.
 	app        porttypes.IBCModule
 	bankkeeper bankkeeper.Keeper
+}
+
+// UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface
+func (im MigrateUomIBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
+	if unmarshaler, ok := im.app.(porttypes.PacketDataUnmarshaler); ok {
+		return unmarshaler.UnmarshalPacketData(ctx, portID, channelID, bz)
+	}
+	var data transfertypes.FungibleTokenPacketData
+	if err := transfertypes.ModuleCdc.UnmarshalJSON(bz, &data); err != nil {
+		return nil, "", err
+	}
+	return data, transfertypes.V1, nil
 }
 
 func NewMigrateUomIBCModule(app porttypes.IBCModule, bankkeeper bankkeeper.Keeper) MigrateUomIBCModule {
@@ -137,6 +150,8 @@ func (im MigrateUomIBCModule) OnRecvPacket(
 			return channeltypes.NewErrorAcknowledgement(errorsmod.Wrapf(transfertypes.ErrInvalidAmount, "unable to parse transfer amount: %s", token.Amount))
 		}
 		uomCoin = sdk.NewCoin(UOM, transferAmount)
+	} else {
+		return ack
 	}
 
 	// Get the recipient's address.
