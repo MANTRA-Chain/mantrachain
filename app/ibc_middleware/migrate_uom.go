@@ -20,8 +20,10 @@ const (
 	AttributeKeyToCoin   = "to_coin"
 )
 
-var _ porttypes.IBCModule = MigrateUomIBCModule{}
-var _ porttypes.PacketDataUnmarshaler = MigrateUomIBCModule{}
+var (
+	_ porttypes.IBCModule             = MigrateUomIBCModule{}
+	_ porttypes.PacketDataUnmarshaler = MigrateUomIBCModule{}
+)
 
 type MigrateUomIBCModule struct {
 	// Since this is the last middleware in the stack, `app` is the core `transfer` IBC module.

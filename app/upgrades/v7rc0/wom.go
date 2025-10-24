@@ -11,13 +11,11 @@ import (
 	"github.com/holiman/uint256"
 )
 
-var (
-	WOMContractAddress = map[string][]common.Address{
-		"mantra-1":            {common.HexToAddress("0xE3047710EF6cB36Bcf1E58145529778eA7Cb5598")},
-		"mantra-dukong-1":     {common.HexToAddress("0x10d26F0491fA11c5853ED7C1f9817b098317DC46")},
-		"mantra-canary-net-1": {},
-	}
-)
+var WOMContractAddress = map[string][]common.Address{
+	"mantra-1":            {common.HexToAddress("0xE3047710EF6cB36Bcf1E58145529778eA7Cb5598")},
+	"mantra-dukong-1":     {common.HexToAddress("0x10d26F0491fA11c5853ED7C1f9817b098317DC46")},
+	"mantra-canary-net-1": {},
+}
 
 func migrateWOMs(ctx sdk.Context, evmKeeper evmkeeper.Keeper) error {
 	addresses := WOMContractAddress[ctx.ChainID()]
