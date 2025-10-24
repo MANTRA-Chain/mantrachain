@@ -44,5 +44,29 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper) error {
 		return err
 	}
 
+	// migrate validator current rewards
+	distrKeeper.IterateValidatorCurrentRewards(ctx, func(valAddr sdk.ValAddress, rewards distrtypes.ValidatorCurrentRewards) (stop bool) {
+		rewards.Rewards = convertDecCoinsToNewDenom(rewards.Rewards)
+		if err = distrKeeper.SetValidatorCurrentRewards(ctx, valAddr, rewards); err != nil {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
+	// migrate validator accumulated commission
+	distrKeeper.IterateValidatorAccumulatedCommissions(ctx, func(valAddr sdk.ValAddress, commission distrtypes.ValidatorAccumulatedCommission) (stop bool) {
+		commission.Commission = convertDecCoinsToNewDenom(commission.Commission)
+		if err = distrKeeper.SetValidatorAccumulatedCommission(ctx, valAddr, commission); err != nil {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
