@@ -17,6 +17,8 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra
 
+	github.com/cosmos/evm => github.com/yihuang/evm v1.0.0-rc2.0.20251027104129-f516257e3abe
+
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
 
