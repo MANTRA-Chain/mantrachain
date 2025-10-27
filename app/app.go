@@ -51,7 +51,6 @@ import (
 	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
 	v61 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v61"
-	v6rc0 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6rc0"
 	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v6/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
@@ -241,7 +240,6 @@ var maccPerms = map[string][]string{
 
 var Upgrades = []upgrades.Upgrade{
 	v61.Upgrade,
-	v6rc0.Upgrade,
 }
 
 var (
