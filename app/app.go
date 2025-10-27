@@ -50,8 +50,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
 	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
-	v6 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6"
-	v6rc0 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6rc0"
+	v61 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v61"
 	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik"
 	"github.com/MANTRA-Chain/mantrachain/v6/client/docs/swagger"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
@@ -240,8 +239,7 @@ var maccPerms = map[string][]string{
 }
 
 var Upgrades = []upgrades.Upgrade{
-	v6.Upgrade,
-	v6rc0.Upgrade,
+	v61.Upgrade,
 }
 
 var (
