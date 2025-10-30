@@ -187,10 +187,13 @@ release:
 		--rm \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
+		-e GPG_PASSWORD=$(GPG_PASSWORD) \
+		-e GPG_FINGERPRINT=$(GPG_FINGERPRINT) \
 		-e CMT_VERSION=$(CMT_VERSION) \
 		-e REPO_OWNER=$(REPO_OWNER) \
 		-e REPO_NAME=$(REPO_NAME) \
 		-v `pwd`:/go/src/mantrachaind \
+		-v $(HOME)/.gnupg:/root/.gnupg:rw \
 		-w /go/src/mantrachaind \
 		--platform=$(GORELEASER_PLATFORM) \
 		$(GORELEASER_IMAGE) \
