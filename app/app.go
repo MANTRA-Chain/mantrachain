@@ -182,6 +182,13 @@ import (
 	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
+var EVMCoinInfo = evmtypes.EvmCoinInfo{
+	Denom:         "uom",
+	ExtendedDenom: "aom",
+	DisplayDenom:  "om",
+	Decimals:      evmtypes.SixDecimals.Uint32(),
+}
+
 func init() {
 	// Replace evmos defaults
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
@@ -690,7 +697,7 @@ func New(
 		&app.Erc20Keeper,
 		evmChainID,
 		tracer,
-	)
+	).WithDefaultEvmCoinInfo(EVMCoinInfo)
 
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(
