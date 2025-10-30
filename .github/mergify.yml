@@ -66,8 +66,6 @@ pull_request_rules:
       backport:
         branches:
           - release/v6.0.x-provider
-<<<<<<< HEAD
-=======
   - name: backport patches to release/v6.0.x branch
     conditions:
       - base=main
@@ -84,4 +82,3 @@ pull_request_rules:
       backport:
         branches:
           - release/v6.1.x
->>>>>>> bfe097e (ci(release): add gpg signing on the binaries checksum (#457))
