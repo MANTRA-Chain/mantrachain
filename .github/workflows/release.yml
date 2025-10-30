@@ -97,6 +97,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.MANTRACHAIN_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format=long
       - name: Make release
         run: |
           make release
@@ -106,6 +110,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_SKIP: validate
           GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
+          GPG_PASSWORD: ${{ secrets.MANTRACHAIN_GPG_PASSPHRASE }}
+          GPG_FINGERPRINT: ${{ vars.MANTRACHAIN_GPG_FINGERPRINT }}
       - name: Generate SLSA provenance
         uses: actions/attest-build-provenance@v3
         with:
@@ -113,3 +119,4 @@ jobs:
             dist/*/mantrachaind*
             dist/*.tar.gz
             dist/sha256sum.txt
+            dist/sha256sum.txt.sig
