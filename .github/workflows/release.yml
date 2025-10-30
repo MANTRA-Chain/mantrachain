@@ -99,7 +99,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Import GPG key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "${{ secrets.MANTRACHAIN_GPG_PRIVATE_KEY }}" | gpg --batch --import
           gpg --list-secret-keys --keyid-format=long
       - name: Make release
         run: |
@@ -110,8 +110,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_SKIP: validate
           GORELEASER_CONFIG: ./scripts/ci-goreleaser/.goreleaser.yaml
-          GPG_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
-          GPG_FINGERPRINT: ${{ vars.GPG_FINGERPRINT }}
+          GPG_PASSWORD: ${{ secrets.MANTRACHAIN_GPG_PASSPHRASE }}
+          GPG_FINGERPRINT: ${{ vars.MANTRACHAIN_GPG_FINGERPRINT }}
       - name: Generate SLSA provenance
         uses: actions/attest-build-provenance@v3
         with:
