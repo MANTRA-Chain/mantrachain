@@ -11,6 +11,11 @@ import (
 	"github.com/holiman/uint256"
 )
 
+const (
+	NameSlot   = 0
+	SymbolSlot = 1
+)
+
 var WOMContractAddress = map[string][]common.Address{
 	"mantra-1":            {common.HexToAddress("0xE3047710EF6cB36Bcf1E58145529778eA7Cb5598")},
 	"mantra-dukong-1":     {common.HexToAddress("0x10d26F0491fA11c5853ED7C1f9817b098317DC46")},
@@ -32,7 +37,7 @@ func migrateWOM(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Add
 	excluded := make(map[common.Hash]struct{})
 
 	// assume 0 and 1 are slots for name and symbol strings.
-	for _, slot := range []int{0, 1} {
+	for _, slot := range []int{NameSlot, SymbolSlot} {
 		slots, err := stringSlots(ctx, evmKeeper, contract, slot)
 		if err != nil {
 			return err
@@ -42,6 +47,9 @@ func migrateWOM(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Add
 			excluded[s] = struct{}{}
 		}
 	}
+
+	setStringField(ctx, evmKeeper, contract, NameSlot, "WMANTRA Token")
+	setStringField(ctx, evmKeeper, contract, SymbolSlot, "WMANTRA")
 
 	evmKeeper.ForEachStorage(ctx, contract, func(key, value common.Hash) bool {
 		if _, ok := excluded[key]; ok {
@@ -101,4 +109,18 @@ func stringSlots(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Ad
 	}
 
 	return slots, nil
+}
+
+func setStringField(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Address, slot int, value string) {
+	if len(value) > 32 {
+		panic("string length exceeds 32 bytes")
+	}
+	lengthSlot := common.BigToHash(big.NewInt(int64(slot)))
+	length := common.BigToHash(big.NewInt(int64(len(value))))
+	evmKeeper.SetState(ctx, contract, lengthSlot, length.Bytes())
+
+	dataSlot := crypto.Keccak256Hash(lengthSlot.Bytes())
+	var data common.Hash
+	copy(data[:], []byte(value))
+	evmKeeper.SetState(ctx, contract, dataSlot, data.Bytes())
 }
