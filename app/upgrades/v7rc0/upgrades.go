@@ -29,6 +29,11 @@ func CreateUpgradeHandler(
 		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
 
+		// Undelegate all funds from the blocked delegator account before migrating balances
+		if err := migrateBlockedAccount(ctx, keepers.StakingKeeper, keepers.BankKeeper, keepers.DistrKeeper); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Migrating x/auth state...")
 		if err = migrateAuth(ctx, keepers.AccountKeeper); err != nil {
 			return vm, err
