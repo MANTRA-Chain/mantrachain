@@ -2,12 +2,10 @@ package v7rc0
 
 import (
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 const (
@@ -34,65 +32,22 @@ func migrateBlockedAccount(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, 
 		}
 	}
 
-	// Unbond all delegations immediately.
-	if err := unbondAllDelegationsImmediately(ctx, stakingKeeper, bankKeeper, delAddr); err != nil {
-		return errorsmod.Wrap(err, "failed to unbond all delegations from blocked account")
-	}
-
-	return nil
-}
-
-// This is conceptual code for a migration. Do not use as-is without careful testing.
-func performImmediateUnbond(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, bankKeeper bankkeeper.Keeper, delAddr sdk.AccAddress, valAddr sdk.ValAddress, sharesToUnbond math.LegacyDec) error {
-	// 1. Call the staking keeper's Unbond method. This correctly handles the delegation
-	//    and validator state, but moves tokens to the NotBondedPool.
-	unbondedTokens, err := stakingKeeper.Unbond(ctx, delAddr, valAddr, sharesToUnbond)
-	if err != nil {
-		return err
-	}
-
-	validator, _ := stakingKeeper.GetValidator(ctx, valAddr)
-
-	// 2. Manually move the tokens from BondedPool to NotBondedPool if the validator was bonded.
-	//    The Unbond method above only returns the amount; the pool transfer happens in Undelegate.
-	if validator.IsBonded() {
-		if err := bankKeeper.SendCoinsFromModuleToModule(
-			ctx, types.BondedPoolName, types.NotBondedPoolName, sdk.NewCoins(sdk.NewCoin(UOM, unbondedTokens)),
-		); err != nil {
-			return err
-		}
-	}
-
-	// 3. Now, immediately move the tokens from the NotBondedPool to the user's account.
-	//    This bypasses the waiting period.
-	coins := sdk.NewCoins(sdk.NewCoin(UOM, unbondedTokens))
-	if err := bankKeeper.UndelegateCoinsFromModuleToAccount(ctx, types.NotBondedPoolName, delAddr, coins); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// unbondAllDelegationsImmediately iterates through all of a delegator's delegations and performs an immediate unbond for each.
-func unbondAllDelegationsImmediately(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, bankKeeper bankkeeper.Keeper, delAddr sdk.AccAddress) error {
 	delegations, err := stakingKeeper.GetAllDelegatorDelegations(ctx, delAddr)
 	if err != nil {
-		return err
-	}
-
-	if len(delegations) == 0 {
-		return nil // No delegations to unbond.
+		return errorsmod.Wrap(err, "failed to get all delegations from blocked account")
 	}
 
 	for _, delegation := range delegations {
-		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+		valAddress, err := sdk.ValAddressFromBech32(delegation.GetValidatorAddr())
 		if err != nil {
-			return errorsmod.Wrap(err, "failed to parse validator address")
+			return errorsmod.Wrap(err, "failed to parse validator address from delegation")
 		}
+		_, amount, err := stakingKeeper.Undelegate(ctx, delAddr, valAddress, delegation.GetShares())
+		if err != nil {
+			return errorsmod.Wrapf(err, "failed to undelegate from validator %s for blocked account", delegation.GetValidatorAddr())
+		}
+		ctx.Logger().Info("Undelegated from", "validator", delegation.GetValidatorAddr(), "shares", delegation.GetShares(), "amount", amount.String())
 
-		if err := performImmediateUnbond(ctx, stakingKeeper, bankKeeper, delAddr, valAddr, delegation.Shares); err != nil {
-			return errorsmod.Wrapf(err, "failed to immediately unbond from validator %s", delegation.ValidatorAddress)
-		}
 	}
 
 	return nil
