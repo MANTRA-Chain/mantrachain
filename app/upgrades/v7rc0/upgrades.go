@@ -30,7 +30,7 @@ func CreateUpgradeHandler(
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
 
 		// Undelegate all funds from the blocked delegator account before migrating balances
-		if err := migrateBlockedAccount(ctx, keepers.StakingKeeper, keepers.BankKeeper, keepers.DistrKeeper); err != nil {
+		if err := migrateBlockedAccount(ctx, keepers.StakingKeeper, keepers.DistrKeeper); err != nil {
 			return vm, err
 		}
 

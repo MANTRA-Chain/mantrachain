@@ -3,7 +3,6 @@ package v7rc0
 import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	distributionkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 )
@@ -12,7 +11,7 @@ const (
 	blocked_account = "mantra14t56rzvxzw0yp9plcf9dy6rr53chyvxt4cqtt5"
 )
 
-func migrateBlockedAccount(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, bankKeeper bankkeeper.Keeper, distrKeeper distributionkeeper.Keeper) error {
+func migrateBlockedAccount(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, distrKeeper distributionkeeper.Keeper) error {
 	delAddr, err := sdk.AccAddressFromBech32(blocked_account)
 	if err != nil {
 		return err
@@ -47,7 +46,6 @@ func migrateBlockedAccount(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, 
 			return errorsmod.Wrapf(err, "failed to undelegate from validator %s for blocked account", delegation.GetValidatorAddr())
 		}
 		ctx.Logger().Info("Undelegated from", "validator", delegation.GetValidatorAddr(), "shares", delegation.GetShares(), "amount", amount.String())
-
 	}
 
 	return nil
