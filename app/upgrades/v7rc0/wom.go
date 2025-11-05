@@ -16,6 +16,9 @@ const (
 	SymbolSlot = 1
 )
 
+// protect a few more slots from being modified
+var ProtectSlots = []int64{2, 3, 4, 5}
+
 var WOMContractAddress = map[string][]common.Address{
 	"mantra-1":            {common.HexToAddress("0xE3047710EF6cB36Bcf1E58145529778eA7Cb5598")},
 	"mantra-dukong-1":     {common.HexToAddress("0x10d26F0491fA11c5853ED7C1f9817b098317DC46")},
@@ -49,6 +52,11 @@ func migrateWOM(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Add
 		for _, s := range slots {
 			excluded[s] = struct{}{}
 		}
+	}
+
+	for _, slot := range ProtectSlots {
+		s := common.BigToHash(big.NewInt(slot))
+		excluded[s] = struct{}{}
 	}
 
 	setStringField(ctx, evmKeeper, contract, NameSlot, "WMANTRA Token")
