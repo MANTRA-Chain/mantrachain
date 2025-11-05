@@ -109,6 +109,13 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		ctx.Logger().Info("Migrating token factory state...")
+		tokenFactoryParams := keepers.TokenFactoryKeeper.GetParams(ctx)
+		tokenFactoryParams.DenomCreationFee = convertCoinsToNewDenom(tokenFactoryParams.DenomCreationFee)
+		if err := keepers.TokenFactoryKeeper.SetParams(ctx, tokenFactoryParams); err != nil {
+			return vm, err
+		}
+
 		// --- Post-Migration ---
 		ctx.Logger().Info("Finished v7.0.0-rc0 state migrations.")
 		ctx.Logger().Info("Assert Invariants...")
