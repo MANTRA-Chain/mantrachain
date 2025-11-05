@@ -68,5 +68,17 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper) error {
 		return err
 	}
 
+	// migrate delegator starting infos
+	distrKeeper.IterateDelegatorStartingInfos(ctx, func(valAddr sdk.ValAddress, delAddr sdk.AccAddress, info distrtypes.DelegatorStartingInfo) (stop bool) {
+		info.Stake = info.Stake.MulInt(ScalingFactor)
+		if err = distrKeeper.SetDelegatorStartingInfo(ctx, valAddr, delAddr, info); err != nil {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
