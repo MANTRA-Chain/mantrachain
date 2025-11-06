@@ -99,7 +99,7 @@ var (
 						},
 						{
 							"denom":    "mantra",
-							"exponent": 6,
+							"exponent": 18,
 						},
 					},
 				},
@@ -108,7 +108,7 @@ var (
 	}
 
 	denom        = "amantra"
-	coinDecimals = int64(6)
+	coinDecimals = int64(18)
 	spec         = &interchaintest.ChainSpec{
 		ChainName:     "slinky",
 		Name:          "slinky",
