@@ -101,11 +101,18 @@ func stringSlots(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Ad
 
 	// get length value
 	lengthValue := evmKeeper.GetState(ctx, contract, lengthSlot)
+
+	if lengthValue[31]%2 == 0 {
+		// short string
+		return slots, nil
+	}
+
 	lengthBig := new(big.Int).SetBytes(lengthValue.Bytes())
+	lengthBig = new(big.Int).Rsh(lengthBig, 1) // length = length / 2
 	if !lengthBig.IsUint64() {
 		return nil, errors.New("string length exceeds uint64")
 	}
-	length := lengthBig.Uint64()
+	length := lengthBig.Int64()
 	if length == 0 {
 		return slots, nil
 	}
@@ -119,8 +126,8 @@ func stringSlots(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Ad
 
 	// compute data slots
 	dataStart := new(big.Int).SetBytes(crypto.Keccak256(lengthSlot.Bytes()))
-	for i := uint64(0); i < numDataSlots; i++ {
-		dataSlot := common.BigToHash(new(big.Int).Add(dataStart, big.NewInt(int64(i))))
+	for i := int64(0); i < numDataSlots; i++ {
+		dataSlot := common.BigToHash(new(big.Int).Add(dataStart, big.NewInt(i)))
 		slots = append(slots, dataSlot)
 	}
 
@@ -128,15 +135,14 @@ func stringSlots(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Ad
 }
 
 func setStringField(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Address, slot int, value string) {
-	if len(value) > 32 {
-		panic("string length exceeds 32 bytes")
+	if len(value) >= 32 {
+		panic("string length exceeds 31 bytes")
 	}
 	lengthSlot := common.BigToHash(big.NewInt(int64(slot)))
-	length := common.BigToHash(big.NewInt(int64(len(value))))
-	evmKeeper.SetState(ctx, contract, lengthSlot, length.Bytes())
 
-	dataSlot := crypto.Keccak256Hash(lengthSlot.Bytes())
 	var data common.Hash
 	copy(data[:], []byte(value))
-	evmKeeper.SetState(ctx, contract, dataSlot, data.Bytes())
+	data[31] = byte(len(value) * 2) // length * 2 for short string
+
+	evmKeeper.SetState(ctx, contract, lengthSlot, data.Bytes())
 }
