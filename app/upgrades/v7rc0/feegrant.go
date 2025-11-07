@@ -9,30 +9,35 @@ import (
 )
 
 func migrateFeeGrant(ctx sdk.Context, feeGrantKeeper feegrantkeeper.Keeper) {
+	var grants []feegrant.Grant
 	if err := feeGrantKeeper.IterateAllFeeAllowances(ctx, func(grant feegrant.Grant) bool {
+		grants = append(grants, grant)
+		return false
+	}); err != nil {
+		ctx.Logger().Error("failed to iterate fee allowances", "error", err)
+		return
+	}
+
+	for _, grant := range grants {
 		allowance, err := grant.GetGrant()
 		if err != nil {
 			ctx.Logger().Error("failed to get grant", "grant", grant, "error", err)
-			return false // continue
+			continue
 		}
 
 		var newAllowance feegrant.FeeAllowanceI
 		newAllowance, err = migrateFeeAllowance(allowance)
 		if err != nil {
 			ctx.Logger().Error("failed to migrate fee allowance", "grant", grant, "error", err)
-			return false // continue
+			continue
 		}
 
 		granterAddr := sdk.MustAccAddressFromBech32(grant.Granter)
 		granteeAddr := sdk.MustAccAddressFromBech32(grant.Grantee)
 
-		if err := feeGrantKeeper.GrantAllowance(ctx, granterAddr, granteeAddr, newAllowance); err != nil {
-			ctx.Logger().Error("failed to grant allowance", "grant", grant, "error", err)
+		if err := feeGrantKeeper.UpdateAllowance(ctx, granterAddr, granteeAddr, newAllowance); err != nil {
+			ctx.Logger().Error("failed to update allowance", "granter", grant.Granter, "grantee", grant.Grantee, "error", err)
 		}
-
-		return false
-	}); err != nil {
-		ctx.Logger().Error("failed to iterate fee allowances", "error", err)
 	}
 }
 
