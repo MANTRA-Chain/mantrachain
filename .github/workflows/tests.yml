@@ -126,6 +126,8 @@ jobs:
             *.md
             **/*.md
       - uses: actions/setup-go@v5
+        with:
+          go-version: 1.25
         if: steps.changed-files.outputs.only_changed == 'false'
       - name: install
         run: make install
