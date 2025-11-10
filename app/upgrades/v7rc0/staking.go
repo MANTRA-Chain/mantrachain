@@ -2,13 +2,15 @@ package v7rc0
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-func migrateStaking(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper) error {
+func migrateStaking(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, storeKey *storetypes.KVStoreKey) error {
 	stakingParams, err := stakingKeeper.GetParams(ctx)
 	if err != nil {
 		return err
@@ -19,17 +21,22 @@ func migrateStaking(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper) error {
 		return err
 	}
 
+	// remove power index
+	powerIndex := prefix.NewStore(ctx.KVStore(storeKey), stakingtypes.ValidatorsByPowerIndexKey)
+	it := powerIndex.Iterator(nil, nil)
+	for ; it.Valid(); it.Next() {
+		powerIndex.Delete(it.Key())
+	}
+	if err := it.Close(); err != nil {
+		return err
+	}
+
 	// migrate validators
 	err = stakingKeeper.IterateValidators(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		val, ok := validator.(stakingtypes.Validator)
 		if !ok {
 			// this should not happen
 			err = errorsmod.Wrapf(sdkerrors.ErrInvalidType, "expected validator, got %T", validator)
-			return true
-		}
-
-		err = stakingKeeper.DeleteValidatorByPowerIndex(ctx, val)
-		if err != nil {
 			return true
 		}
 
