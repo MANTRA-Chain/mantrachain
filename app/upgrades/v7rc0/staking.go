@@ -28,8 +28,18 @@ func migrateStaking(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper) error {
 			return true
 		}
 
+		err = stakingKeeper.DeleteValidatorByPowerIndex(ctx, val)
+		if err != nil {
+			return true
+		}
+
 		val.Tokens = val.Tokens.Mul(ScalingFactor)
 		val.DelegatorShares = val.DelegatorShares.MulInt(ScalingFactor)
+
+		err = stakingKeeper.SetValidatorByPowerIndex(ctx, val)
+		if err != nil {
+			return true
+		}
 
 		if err = stakingKeeper.SetValidator(ctx, val); err != nil {
 			return true
