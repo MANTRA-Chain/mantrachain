@@ -26,8 +26,8 @@ func migrateFeeGrant(ctx sdk.Context, feeGrantKeeper feegrantkeeper.Keeper) {
 		granterAddr := sdk.MustAccAddressFromBech32(grant.Granter)
 		granteeAddr := sdk.MustAccAddressFromBech32(grant.Grantee)
 
-		if err := feeGrantKeeper.GrantAllowance(ctx, granterAddr, granteeAddr, newAllowance); err != nil {
-			ctx.Logger().Error("failed to grant allowance", "grant", grant, "error", err)
+		if err := feeGrantKeeper.UpdateAllowance(ctx, granterAddr, granteeAddr, newAllowance); err != nil {
+			ctx.Logger().Error("failed to update allowance", "granter", grant.Granter, "grantee", grant.Grantee, "error", err)
 		}
 
 		return false
