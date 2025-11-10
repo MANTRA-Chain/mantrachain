@@ -8,6 +8,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 func CreateUpgradeHandler(
@@ -45,7 +46,7 @@ func CreateUpgradeHandler(
 		}
 
 		ctx.Logger().Info("Migrating x/staking state...")
-		if err = migrateStaking(ctx, keepers.StakingKeeper); err != nil {
+		if err = migrateStaking(ctx, keepers.StakingKeeper, storekeys[stakingtypes.ModuleName]); err != nil {
 			return vm, err
 		}
 
