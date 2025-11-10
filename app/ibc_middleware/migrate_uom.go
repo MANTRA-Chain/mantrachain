@@ -1,6 +1,7 @@
 package ibc_middleware
 
 import (
+	"cosmossdk.io/core/address"
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -29,6 +30,7 @@ type MigrateUomIBCModule struct {
 	// Since this is the last middleware in the stack, `app` is the core `transfer` IBC module.
 	app        porttypes.IBCModule
 	bankkeeper bankkeeper.Keeper
+	addrCodec  address.Codec
 }
 
 // UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface
@@ -43,10 +45,11 @@ func (im MigrateUomIBCModule) UnmarshalPacketData(ctx sdk.Context, portID string
 	return data, transfertypes.V1, nil
 }
 
-func NewMigrateUomIBCModule(app porttypes.IBCModule, bankkeeper bankkeeper.Keeper) MigrateUomIBCModule {
+func NewMigrateUomIBCModule(app porttypes.IBCModule, bankkeeper bankkeeper.Keeper, addrCodec address.Codec) MigrateUomIBCModule {
 	return MigrateUomIBCModule{
 		app,
 		bankkeeper,
+		addrCodec,
 	}
 }
 
@@ -156,11 +159,12 @@ func (im MigrateUomIBCModule) OnRecvPacket(
 		return ack
 	}
 
-	// Get the recipient's address.
-	recipient, err := sdk.AccAddressFromBech32(data.Receiver)
+	// Get the recipient's address (accept hex or local bech32)
+	recipientBz, err := im.addrCodec.StringToBytes(data.Receiver)
 	if err != nil {
-		return channeltypes.NewErrorAcknowledgement(errorsmod.Wrap(err, "cannot parse recipient address"))
+		return channeltypes.NewErrorAcknowledgement(errorsmod.Wrap(err, "invalid recipient"))
 	}
+	recipient := sdk.AccAddress(recipientBz)
 
 	// 1. Burn the received 'uom' voucher from the recipient's account.
 	if err := im.bankkeeper.SendCoinsFromAccountToModule(ctx, recipient, transfertypes.ModuleName, sdk.NewCoins(uomCoin)); err != nil {

@@ -751,7 +751,7 @@ func New(
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper)
+	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper, app.AccountKeeper.AddressCodec())
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
 	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
