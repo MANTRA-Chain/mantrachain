@@ -62,8 +62,8 @@ func migrateWOM(ctx sdk.Context, evmKeeper evmkeeper.Keeper, contract common.Add
 		excluded[s] = struct{}{}
 	}
 
-	setStringField(ctx, evmKeeper, contract, NameSlot, "Wrapped MANTRA")
-	setStringField(ctx, evmKeeper, contract, SymbolSlot, "wMANTRA")
+	setStringField(ctx, evmKeeper, contract, NameSlot, "WMANTRA Token")
+	setStringField(ctx, evmKeeper, contract, SymbolSlot, "WMANTRA")
 
 	evmKeeper.ForEachStorage(ctx, contract, func(key, value common.Hash) bool {
 		if _, ok := excluded[key]; ok {
