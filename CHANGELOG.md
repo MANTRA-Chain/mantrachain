@@ -2,14 +2,15 @@
 
 ### FEATURES
 
-- Init changelog with git-cliff
-- Add pr links
-
 ### BUG-FIXES
 
 - Update version extraction regex for SDK version detection ([\#487](https://github.com/MANTRA-Chain/mantrachain/issues/487))
 
 ### DEPENDENCIES
+
+### DOCUMENTATION
+
+- Add CHANGELOG.md ([\#516](https://github.com/MANTRA-Chain/mantrachain/issues/516))
 
 ### CI
 
