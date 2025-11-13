@@ -18,7 +18,7 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra
 
 	// release/v0.5.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251030091700-5c68a0a92be9
+	github.com/cosmos/evm => github.com/mmsqe/evm v0.0.0-20251113085938-6703b87a2cbd
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
