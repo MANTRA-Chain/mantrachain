@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,24 +42,26 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/cosmos/cosmos-sdk/types/mempool"
-	"github.com/cosmos/evm/evmd"
+	sdkmempool "github.com/cosmos/cosmos-sdk/types/mempool"
+	evmaddress "github.com/cosmos/evm/encoding/address"
+	evmmempool "github.com/cosmos/evm/mempool"
+	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
-	"github.com/MANTRA-Chain/mantrachain/v6/app/ante"
-	queries "github.com/MANTRA-Chain/mantrachain/v6/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v6/app/upgrades"
-	v6rc0 "github.com/MANTRA-Chain/mantrachain/v6/app/upgrades/v6rc0"
-	_ "github.com/MANTRA-Chain/mantrachain/v6/client/docs/statik"
-	"github.com/MANTRA-Chain/mantrachain/v6/client/docs/swagger"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v6/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v6/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
+	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
+	v7rc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
+	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik"
+	"github.com/MANTRA-Chain/mantrachain/v7/client/docs/swagger"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v7/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -80,7 +83,6 @@ import (
 	sigtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authcodec "github.com/cosmos/cosmos-sdk/x/auth/codec"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
@@ -129,9 +131,8 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
-	chainante "github.com/cosmos/evm/evmd/ante"
+	chainante "github.com/cosmos/evm/ante"
 	srvflags "github.com/cosmos/evm/server/flags"
-	cosmosevmtypes "github.com/cosmos/evm/types"
 	cosmosevmutils "github.com/cosmos/evm/utils"
 	"github.com/cosmos/evm/x/erc20"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
@@ -181,10 +182,17 @@ import (
 	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
+var EVMCoinInfo = evmtypes.EvmCoinInfo{
+	Denom:         "uom",
+	ExtendedDenom: "aom",
+	DisplayDenom:  "om",
+	Decimals:      evmtypes.SixDecimals.Uint32(),
+}
+
 func init() {
 	// Replace evmos defaults
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
-	sdk.DefaultPowerReduction = cosmosevmtypes.MicroPowerReduction
+	sdk.DefaultPowerReduction = cosmosevmutils.MicroPowerReduction
 	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
 
 	// DefaultNodeHome default home directories for mantrachaind
@@ -237,7 +245,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v6rc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7rc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -251,6 +259,7 @@ type App struct {
 	appCodec          codec.Codec
 	txConfig          client.TxConfig
 	interfaceRegistry types.InterfaceRegistry
+	clientCtx         client.Context
 
 	pendingTxListeners []chainante.PendingTxListener
 
@@ -300,6 +309,7 @@ type App struct {
 	EVMKeeper         *evmkeeper.Keeper
 	Erc20Keeper       erc20keeper.Keeper
 	PreciseBankKeeper precisebankkeeper.Keeper
+	EVMMempool        *evmmempool.ExperimentalEVMMempool
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -328,12 +338,10 @@ func New(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
-	evmChainID uint64,
-	evmAppOptions EVMOptionsFn,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	overrideWasmVariables()
-
+	evmChainID := cast.ToUint64(appOpts.Get(srvflags.EVMChainID))
 	encodingConfig := evmosencoding.MakeConfig(evmChainID)
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
@@ -341,39 +349,11 @@ func New(
 	// register legacy feemarket types for legacy proposals
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
 
-	var prepareProposalHandler sdk.PrepareProposalHandler
-	var processProposalHandler sdk.ProcessProposalHandler
-	baseAppOptions = append(baseAppOptions, func(app *baseapp.BaseApp) {
-		var mpool mempool.Mempool
-		if maxTxs := cast.ToInt(appOpts.Get(server.FlagMempoolMaxTxs)); maxTxs >= 0 {
-			// Setup Mempool and Proposal Handlers
-			mpool = mempool.NewPriorityMempool(mempool.PriorityNonceMempoolConfig[int64]{
-				TxPriority:      mempool.NewDefaultTxPriority(),
-				SignerExtractor: evmd.NewEthSignerExtractionAdapter(mempool.NewDefaultSignerExtractionAdapter()),
-				MaxTx:           maxTxs,
-			})
-		} else {
-			mpool = mempool.NoOpMempool{}
-		}
-		app.SetMempool(mpool)
-		handler := baseapp.NewDefaultProposalHandler(mpool, app)
-
-		prepareProposalHandler = handler.PrepareProposalHandler()
-		processProposalHandler = handler.ProcessProposalHandler()
-		app.SetPrepareProposal(prepareProposalHandler)
-		app.SetProcessProposal(processProposalHandler)
-	})
-
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(encodingConfig.TxConfig.TxEncoder())
-
-	// initialize the Cosmos EVM application configuration
-	if err := evmAppOptions(evmChainID); err != nil {
-		panic(err)
-	}
 
 	keys := storetypes.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
@@ -434,7 +414,7 @@ func New(
 		runtime.NewKVStoreService(keys[authtypes.StoreKey]),
 		authtypes.ProtoBaseAccount,
 		maccPerms,
-		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
+		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
 		sdk.GetConfig().GetBech32AccountAddrPrefix(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -453,8 +433,8 @@ func New(
 		app.AccountKeeper,
 		&app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	)
 
 	app.MintKeeper = mintkeeper.NewKeeper(
@@ -715,8 +695,9 @@ func New(
 		app.FeeMarketKeeper,
 		&app.ConsensusParamsKeeper,
 		&app.Erc20Keeper,
+		evmChainID,
 		tracer,
-	)
+	).WithDefaultEvmCoinInfo(EVMCoinInfo)
 
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(
@@ -734,7 +715,6 @@ func New(
 	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
-		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
@@ -743,6 +723,7 @@ func New(
 		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	app.TransferKeeper.SetAddressCodec(evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()))
 
 	/*
 		Create Transfer Stack
@@ -794,22 +775,18 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	// TODO: Configure EVM precompiles when needed
-	// corePrecompiles := maps.Clone(corevm.PrecompiledContractsPrague)
-	corePrecompiles := evmd.NewAvailableStaticPrecompiles(
-		app.StakingKeeper,
-		app.DistrKeeper,
-		app.PreciseBankKeeper,
-		app.Erc20Keeper,
-		app.TransferKeeper,
-		app.IBCKeeper.ChannelKeeper,
-		app.EVMKeeper,
-		app.GovKeeper,
-		app.SlashingKeeper,
-		app.AppCodec(),
-	)
 	app.EVMKeeper.WithStaticPrecompiles(
-		corePrecompiles,
+		precompiletypes.DefaultStaticPrecompiles(
+			app.StakingKeeper,
+			app.DistrKeeper,
+			app.PreciseBankKeeper,
+			&app.Erc20Keeper,
+			&app.TransferKeeper,
+			app.IBCKeeper.ChannelKeeper,
+			app.GovKeeper,
+			app.SlashingKeeper,
+			appCodec,
+		),
 	)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
@@ -923,7 +900,7 @@ func New(
 		sanction.NewAppModule(appCodec, app.SanctionKeeper),
 
 		// Cosmos EVM modules
-		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.AccountKeeper.AddressCodec()),
+		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.BankKeeper, app.AccountKeeper.AddressCodec()),
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
 		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
@@ -951,6 +928,7 @@ func New(
 	app.ModuleManager.SetOrderPreBlockers(
 		upgradetypes.ModuleName,
 		authtypes.ModuleName,
+		evmtypes.ModuleName,
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -1142,6 +1120,9 @@ func New(
 	app.setAnteHandler(txConfig, wasmConfig, keys[wasmtypes.StoreKey], maxGasWanted)
 	// app.setPostHandler()
 
+	// configure mempool
+	prepareProposalHandler, processProposalHandler := app.configureEVMMempool(appOpts, logger)
+
 	// oracle initialization
 	client, metrics, err := app.initializeOracle(appOpts)
 	if err != nil {
@@ -1291,6 +1272,29 @@ func (app *App) TxConfig() client.TxConfig {
 	return app.txConfig
 }
 
+func (app *App) SetClientCtx(clientCtx client.Context) {
+	app.clientCtx = clientCtx
+}
+
+func (app *App) GetMempool() sdkmempool.ExtMempool {
+	return app.EVMMempool
+}
+
+func (app *App) Close() error {
+	var err error
+	if m, ok := app.GetMempool().(*evmmempool.ExperimentalEVMMempool); ok && m != nil {
+		err = m.Close()
+	}
+	err = errors.Join(err, app.BaseApp.Close())
+	msg := "Application gracefully shutdown"
+	if err == nil {
+		app.Logger().Info(msg)
+	} else {
+		app.Logger().Error(msg, "error", err)
+	}
+	return err
+}
+
 // AutoCliOpts returns the autocli options for the app.
 func (app *App) AutoCliOpts() autocli.AppOptions {
 	modules := make(map[string]appmodule.AppModule, 0)
@@ -1306,9 +1310,9 @@ func (app *App) AutoCliOpts() autocli.AppOptions {
 	return autocli.AppOptions{
 		Modules:               modules,
 		ModuleOptions:         runtimeservices.ExtractAutoCLIOptions(app.ModuleManager.Modules),
-		AddressCodec:          authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
-		ValidatorAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-		ConsensusAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		AddressCodec:          evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
+		ValidatorAddressCodec: evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
+		ConsensusAddressCodec: evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
 	}
 }
 

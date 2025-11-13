@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"cosmossdk.io/collections"
-	"github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
 

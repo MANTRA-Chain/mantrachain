@@ -8,7 +8,7 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/keeper"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -58,7 +58,13 @@ func (options HandlerOptions) Validate() error {
 }
 
 // newCosmosAnteHandler constructor
-func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
+func newCosmosAnteHandler(ctx sdk.Context, options HandlerOptions) sdk.AnteHandler {
+	feemarketParams := options.EvmOptions.FeeMarketKeeper.GetParams(ctx)
+	var txFeeChecker ante.TxFeeChecker
+	if options.EvmOptions.DynamicFeeChecker {
+		txFeeChecker = evmante.NewDynamicFeeChecker(&feemarketParams)
+	}
+
 	anteDecorators := []sdk.AnteDecorator{
 		cosmosante.NewRejectMessagesDecorator(), // reject MsgEthereumTxs
 		cosmosante.NewAuthzLimiterDecorator( // disable the Msg types that cannot be included on an authz.MsgExec msgs field
@@ -75,14 +81,9 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		ante.NewValidateBasicDecorator(),
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.EvmOptions.AccountKeeper),
-		cosmosante.NewMinGasPriceDecorator(options.EvmOptions.FeeMarketKeeper, options.EvmOptions.EvmKeeper),
+		cosmosante.NewMinGasPriceDecorator(&feemarketParams),
 		ante.NewConsumeGasForTxSizeDecorator(options.EvmOptions.AccountKeeper),
-		ante.NewDeductFeeDecorator(
-			options.EvmOptions.AccountKeeper,
-			options.EvmOptions.BankKeeper,
-			options.EvmOptions.FeegrantKeeper,
-			options.EvmOptions.TxFeeChecker,
-		),
+		ante.NewDeductFeeDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.BankKeeper, options.EvmOptions.FeegrantKeeper, txFeeChecker),
 		// SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewSetPubKeyDecorator(options.EvmOptions.AccountKeeper),
 		ante.NewValidateSigCountDecorator(options.EvmOptions.AccountKeeper),
@@ -90,7 +91,7 @@ func newCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		NewMultiChainIDDecorator(ante.NewSigVerificationDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SignModeHandler)),
 		ante.NewIncrementSequenceDecorator(options.EvmOptions.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
-		evmante.NewGasWantedDecorator(options.EvmOptions.EvmKeeper, options.EvmOptions.FeeMarketKeeper),
+		evmante.NewGasWantedDecorator(options.EvmOptions.EvmKeeper, options.EvmOptions.FeeMarketKeeper, &feemarketParams),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...)

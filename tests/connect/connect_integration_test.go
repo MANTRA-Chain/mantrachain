@@ -75,6 +75,36 @@ var (
 			Key:   "app_state.feemarket.params.min_gas_price",
 			Value: "0",
 		},
+		{
+			Key:   "app_state.evm.params.evm_denom",
+			Value: "uom",
+		},
+		{
+			Key:   "app_state.evm.params.extended_denom_options.extended_denom",
+			Value: "aom",
+		},
+		{
+			Key: "app_state.bank.denom_metadata",
+			Value: []map[string]interface{}{
+				{
+					"base":        "uom",
+					"display":     "om",
+					"name":        "om",
+					"symbol":      "OM",
+					"description": "The native staking token of the Mantra network",
+					"denom_units": []map[string]interface{}{
+						{
+							"denom":    "uom",
+							"exponent": 0,
+						},
+						{
+							"denom":    "om",
+							"exponent": 6,
+						},
+					},
+				},
+			},
+		},
 	}
 
 	denom        = "uom"

@@ -9,14 +9,15 @@ import (
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/v6/app"
-	"github.com/MANTRA-Chain/mantrachain/v6/app/params"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v6/x/sanction/types"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v6/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v7/app"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/params"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -99,10 +100,8 @@ func (c *chain) createAndInitValidators(count int) error {
 		dbm.NewMemDB(),
 		nil,
 		true,
-		app.EmptyAppOptions{},
+		simtestutil.EmptyAppOptions{},
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {
@@ -144,10 +143,8 @@ func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []stri
 		dbm.NewMemDB(),
 		nil,
 		true,
-		app.EmptyAppOptions{},
+		simtestutil.EmptyAppOptions{},
 		emptyWasmOpts,
-		app.MANTRAChainID,
-		app.NoOpEvmAppOptions,
 	)
 	defer func() {
 		if err := tempApplication.Close(); err != nil {

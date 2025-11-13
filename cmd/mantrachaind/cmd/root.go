@@ -5,8 +5,8 @@ import (
 
 	"cosmossdk.io/log"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v6/app"
-	"github.com/MANTRA-Chain/mantrachain/v6/app/params"
+	"github.com/MANTRA-Chain/mantrachain/v7/app"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/params"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientcfg "github.com/cosmos/cosmos-sdk/client/config"
@@ -36,8 +36,6 @@ func NewRootCmd() *cobra.Command {
 		false,
 		simtestutil.NewAppOptionsWithFlagHome(temp),
 		[]wasmkeeper.Option{},
-		app.MANTRAChainID,
-		app.EvmAppOptions,
 	)
 
 	encodingConfig := params.EncodingConfig{
@@ -118,10 +116,6 @@ func NewRootCmd() *cobra.Command {
 	autoCliOpts.ClientCtx = initClientCtx
 
 	if err := autoCliOpts.EnhanceRootCommand(rootCmd); err != nil {
-		panic(err)
-	}
-
-	if err := app.EvmAppOptions(app.MANTRAChainID); err != nil {
 		panic(err)
 	}
 
