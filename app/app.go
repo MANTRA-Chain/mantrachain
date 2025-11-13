@@ -184,10 +184,10 @@ import (
 )
 
 var EVMCoinInfo = evmtypes.EvmCoinInfo{
-	Denom:         "uom",
-	ExtendedDenom: "aom",
-	DisplayDenom:  "om",
-	Decimals:      evmtypes.SixDecimals.Uint32(),
+	Denom:         "amantra",
+	ExtendedDenom: "amantra",
+	DisplayDenom:  "mantra",
+	Decimals:      evmtypes.EighteenDecimals.Uint32(),
 }
 
 func init() {
