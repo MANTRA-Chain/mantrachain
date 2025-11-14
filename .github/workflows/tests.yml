@@ -137,6 +137,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-24.11
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            sandbox = false
         if: steps.changed-files.outputs.only_changed == 'false'
       - uses: DeterminateSystems/magic-nix-cache-action@main
         if: steps.changed-files.outputs.only_changed == 'false'
