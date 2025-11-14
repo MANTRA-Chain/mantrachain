@@ -138,14 +138,8 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
         if: steps.changed-files.outputs.only_changed == 'false'
-      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+      - uses: DeterminateSystems/magic-nix-cache-action@main
         if: steps.changed-files.outputs.only_changed == 'false'
-        with:
-          name: mantrachain-e2e
-          extraPullNames: dapp
-          # github don't pass secrets for pull request from fork repos,
-          # in that case the push is disabled naturally.
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Checkout mantrachain-e2e
         if: steps.changed-files.outputs.only_changed == 'false'
         uses: actions/checkout@v4
@@ -169,6 +163,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: debug-files
+          name: debug-files-${{ matrix.tests }}
           path: mantrachain-e2e/debug_files.tar.gz
           if-no-files-found: ignore
