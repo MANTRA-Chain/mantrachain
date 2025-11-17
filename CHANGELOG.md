@@ -14,6 +14,8 @@
 
 ### CI
 
+- Updated Nix to version 25.05 and optimized e2e test execution workflow. ([\#525](https://github.com/MANTRA-Chain/mantrachain/issues/525))
+
 ### OTHER
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
