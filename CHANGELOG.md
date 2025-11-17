@@ -228,6 +228,7 @@
 - Use new connect fork that is based off v2.3.0 ([\#270](https://github.com/MANTRA-Chain/mantrachain/issues/270))
 
 ## v2.0.2
+
 *February 21, 2025*
 
 ### DEPENDENCIES
