@@ -7,7 +7,8 @@
 # See https://keats.github.io/tera/docs/#introduction
 body = """
 {% if version %}\
-    ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+    ## [{{ version }}] \n
+    *{{ timestamp | date(format="%B %d, %Y") }}*
 {% else %}\
     ## [unreleased]
 {% endif %}\
@@ -18,7 +19,7 @@ body = """
             {% if commit.breaking %}[**breaking**] {% endif %}\
             {{ commit.message | upper_first }}\
     {% endfor %}
-{% endfor %}
+{% endfor %}\n
 """
 # Remove leading and trailing whitespaces from the changelog's body.
 trim = true

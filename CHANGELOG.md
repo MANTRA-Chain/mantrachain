@@ -18,7 +18,9 @@
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
 
-## [6.1.1] - 2025-10-30
+## v6.1.1
+
+*October 30, 2025*
 
 ### BUG-FIXES
 
@@ -28,14 +30,18 @@
 
 - *(release)* Add gpg signing on the binaries checksum ([\#457](https://github.com/MANTRA-Chain/mantrachain/issues/457)) ([\#507](https://github.com/MANTRA-Chain/mantrachain/issues/507))
 
-## [6.1.0] - 2025-10-27
+## v6.1.0
+
+*October 27, 2025*
 
 ### BUG-FIXES
 
 - Evm fix not merged ([\#497](https://github.com/MANTRA-Chain/mantrachain/issues/497)) ([\#499](https://github.com/MANTRA-Chain/mantrachain/issues/499))
 - V6.1.0 upgrade handler not added ([\#500](https://github.com/MANTRA-Chain/mantrachain/issues/500))
 
-## [6.0.1] - 2025-10-30
+## v6.0.1
+
+*October 30, 2025*
 
 ### BUG-FIXES
 
@@ -46,7 +52,9 @@
 
 - *(release)* Add gpg signing on the binaries checksum ([\#457](https://github.com/MANTRA-Chain/mantrachain/issues/457)) ([\#506](https://github.com/MANTRA-Chain/mantrachain/issues/506))
 
-## [6.0.0] - 2025-10-22
+## v6.0.0
+
+*October 22, 2025*
 
 ### FEATURES
 
@@ -86,7 +94,9 @@
 
 - Add template for v6 upgrade ([\#461](https://github.com/MANTRA-Chain/mantrachain/issues/461))
 
-## [5.0.2] - 2025-10-15
+## v5.0.2
+
+*October 15, 2025*
 
 ### BUG-FIXES
 
@@ -104,7 +114,9 @@
 - *(golangci-lint)* Migrate to v2 config and apply lint to repo ([\#358](https://github.com/MANTRA-Chain/mantrachain/issues/358))
 - Allow Unprotected Transactions ([\#372](https://github.com/MANTRA-Chain/mantrachain/issues/372))
 
-## [5.0.0] - 2025-09-13
+## v5.0.0
+
+*September 13, 2025*
 
 ### FEATURES
 
@@ -113,7 +125,9 @@
 - Block mint burn for disabled tokenfactory coins ([\#359](https://github.com/MANTRA-Chain/mantrachain/issues/359))
 - V5.0.0 evm enhancements + bug fixes ([\#364](https://github.com/MANTRA-Chain/mantrachain/issues/364))
 
-## [4.0.2] - 2025-09-08
+## v4.0.2
+
+*September 8, 2025*
 
 ### FEATURES
 
@@ -129,7 +143,9 @@
 
 - Bump cosmos-sdk fork from v0.50.13-v3-mantra-1 to v0.50.14-v4-mantra-1 ([\#368](https://github.com/MANTRA-Chain/mantrachain/issues/368))
 
-## [4.0.1] - 2025-04-03
+## v4.0.1
+
+*April 3, 2025*
 
 ### FEATURES
 
@@ -143,7 +159,9 @@
 - Update heighliner tag to v1.7.5 ([\#325](https://github.com/MANTRA-Chain/mantrachain/issues/325))
 - Update workflow configurations for CodeQL and connect-test ([\#327](https://github.com/MANTRA-Chain/mantrachain/issues/327))
 
-## [4.0.0] - 2025-03-25
+## v4.0.0
+
+*March 25, 2025*
 
 ### FEATURES
 
@@ -165,25 +183,33 @@
 - Bump cosmos-sdk fork from v0.50.12-v3-mantra-1 to v0.50.13-v3-mantra-1 ([\#287](https://github.com/MANTRA-Chain/mantrachain/issues/287))
 - Update connect tag ([\#292](https://github.com/MANTRA-Chain/mantrachain/issues/292))
 
-## [3.0.3] - 2025-03-21
+## v3.0.3
+
+*March 21, 2025*
 
 ### CI
 
 - Bump cosmos-sdk fork from v0.50.12-v3-mantra-1 to v0.50.13-v3-mantra-1 ([\#286](https://github.com/MANTRA-Chain/mantrachain/issues/286))
 
-## [3.0.2] - 2025-03-18
+## v3.0.2
+
+*March 18, 2025*
 
 ### CI
 
 - Bump cosmos-sdk fork from v0.50.12-v2-mantra-1 to v0.50.12-v3-mantra-1 ([\#281](https://github.com/MANTRA-Chain/mantrachain/issues/281))
 
-## [3.0.1] - 2025-03-14
+## v3.0.1
+
+*March 14, 2025*
 
 ### DEPENDENCIES
 
 - *(deps)* Bump [github.com/cosmos/ibc-go/v8](https://www.google.com/search?q=https://github.com/cosmos/ibc-go/v8) from v8.6.1 to v8.7.0 ([\#279](https://github.com/MANTRA-Chain/mantrachain/issues/279))
 
-## [3.0.0] - 2025-03-04
+## v3.0.0
+
+*March 4, 2025*
 
 ### FEATURES
 
@@ -201,18 +227,20 @@
 - Upgrade cometbft to v0.38.17 + wasmvm to v2.2.2 ([\#265](https://github.com/MANTRA-Chain/mantrachain/issues/265))
 - Use new connect fork that is based off v2.3.0 ([\#270](https://github.com/MANTRA-Chain/mantrachain/issues/270))
 
-## [2.0.2] - 2025-02-21
+## v2.0.2
+*February 21, 2025*
 
 ### DEPENDENCIES
 
 - *(deps)* Bump cosmos-sdk MANTRA fork to v0.50.12 ([\#268](https://github.com/MANTRA-Chain/mantrachain/issues/268))
 
-## [2.0.0] - 2025-02-13
+## v2.0.0
+
+*February 13, 2025*
 
 ### FEATURES
 
 - Add e2e tests ([\#252](https://github.com/MANTRA-Chain/mantrachain/issues/252))
-- Upgrade to v2
 
 ### DEPENDENCIES
 
@@ -264,13 +292,17 @@
 - Use new cosmos-sdk fork that is based off v0.50.10 ([\#238](https://github.com/MANTRA-Chain/mantrachain/issues/238))
 - Bump cosmos-sdk MANTRA fork to v0.50.11 ([\#250](https://github.com/MANTRA-Chain/mantrachain/issues/250))
 
-## [1.0.3] - 2024-12-11
+## v1.0.3
+
+*December 11, 2024*
 
 ### CI
 
 - Upgrade cosmossdk.io/math to v1.4.0 ([\#239](https://github.com/MANTRA-Chain/mantrachain/issues/239))
 
-## [1.0.2] - 2024-11-08
+## v1.0.2
+
+*November 8, 2024*
 
 ### FEATURES
 
@@ -297,6 +329,8 @@
 - Remove unnecessary ci jobs ([\#205](https://github.com/MANTRA-Chain/mantrachain/issues/205))
 - Remove legacy ADRs ([\#207](https://github.com/MANTRA-Chain/mantrachain/issues/207))
 
-## [1.0.0] - 2024-10-23
+## v1.0.0
+
+*October 23, 2024*
 
 Initial Release!
