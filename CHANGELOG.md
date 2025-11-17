@@ -8,6 +8,8 @@
 
 ### DEPENDENCIES
 
+- *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
+
 ### DOCUMENTATION
 
 - Add CHANGELOG.md ([\#516](https://github.com/MANTRA-Chain/mantrachain/issues/516))
@@ -19,6 +21,14 @@
 ### OTHER
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
+
+## v6.1.2
+
+*November 14, 2025*
+
+### BUG-FIXES
+
+- Avoid crash on nil evmCoinInfo with grpc only mode ([#520](https://github.com/MANTRA-Chain/mantrachain/issues/520))
 
 ## v6.1.1
 
