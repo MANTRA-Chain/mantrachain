@@ -21,6 +21,7 @@
 ### OTHER
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
+- Remove depinject boilerplate and proto gen ([\#527](https://github.com/MANTRA-Chain/mantrachain/issues/527))
 
 ## v6.1.2
 
