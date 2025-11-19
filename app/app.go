@@ -244,6 +244,9 @@ var maccPerms = map[string][]string{
 	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
+
+	// v7 token migration
+	v7rc2.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
 var Upgrades = []upgrades.Upgrade{v7rc2.Upgrade}
