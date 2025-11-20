@@ -5,6 +5,7 @@
 ### BUG-FIXES
 
 - Update version extraction regex for SDK version detection ([\#487](https://github.com/MANTRA-Chain/mantrachain/issues/487))
+- Allow ledger flag work with coin type 60 ([\#467](https://github.com/MANTRA-Chain/mantrachain/issues/467))
 
 ### DEPENDENCIES
 
