@@ -21,6 +21,11 @@ func CreateUpgradeHandler(
 		ctx := sdk.UnwrapSDKContext(c)
 		ctx.Logger().Info("Starting module migrations...")
 
+		vm, err := mm.RunMigrations(ctx, configurator, vm)
+		if err != nil {
+			return vm, err
+		}
+
 		// migrate mint parameter
 		params, err := keepers.MintKeeper.Params.Get(ctx)
 		if err != nil {
