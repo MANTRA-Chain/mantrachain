@@ -702,8 +702,6 @@ github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c/go.mod h1:X0
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3 h1:qWZ+EINMBkB0DqOE90M18SCxjgDeGFg6G4u2zXff26c=
 github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
-github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-1 h1:agdIz9TR61iD6TCYmjcJxCyYU6147tUdtLgRoY5eMjc=
-github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-1/go.mod h1:gLeessz57kqvzDrTOEXwXqsVNnEVNY0UBiJZEYv7Fw4=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -1890,6 +1888,8 @@ github.com/xeipuuv/gojsonschema v1.2.0/go.mod h1:anYRn/JVcOK2ZgGU+IjEV4nwlhoK5sQ
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 h1:gEOO8jv9F4OT7lGCjxCBTO/36wtF6j2nSip77qHd4x4=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1/go.mod h1:Ohn+xnUBiLI6FVj/9LpzZWtj1/D6lUovWYBkxHVV3aM=
+github.com/yihuang/cosmos-sdk v0.43.0-beta1.0.20251121063135-f5a090c691b5 h1:ZZOXoW3xyeIw8UmXDsaOLwNoOTh+FrTWnUnt54rs3fY=
+github.com/yihuang/cosmos-sdk v0.43.0-beta1.0.20251121063135-f5a090c691b5/go.mod h1:gLeessz57kqvzDrTOEXwXqsVNnEVNY0UBiJZEYv7Fw4=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

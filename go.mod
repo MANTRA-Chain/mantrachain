@@ -15,7 +15,7 @@ replace (
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/888bd85b553b0b48781544943402003998538d17
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-v7-mantra-1
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/yihuang/cosmos-sdk v0.43.0-beta1.0.20251121063135-f5a090c691b5
 
 	// release/v0.5.x
 	github.com/cosmos/evm => github.com/cosmos/evm v0.0.0-20251113193029-588c8df30ce1
