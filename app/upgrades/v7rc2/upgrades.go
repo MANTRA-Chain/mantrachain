@@ -3,6 +3,7 @@ package v7rc2
 import (
 	"context"
 
+	sdkmath "cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
@@ -66,6 +67,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 		mintParams.MintDenom = AMANTRA
+		mintParams.MaxSupply = sdkmath.NewIntWithDecimal(10_000_000_000, 18)
 		if err := keepers.MintKeeper.Params.Set(ctx, mintParams); err != nil {
 			return vm, err
 		}
