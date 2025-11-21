@@ -29,12 +29,12 @@ func CreateUpgradeHandler(
 		// migrate mint parameter
 		params, err := keepers.MintKeeper.Params.Get(ctx)
 		if err != nil {
-			return nil, err
+			return vm, err
 		}
 		// set MaxSupply to 10B
 		params.MaxSupply = sdkmath.NewIntWithDecimal(10_000_000_000, 18)
 		if err := keepers.MintKeeper.Params.Set(ctx, params); err != nil {
-			return nil, err
+			return vm, err
 		}
 
 		ctx.Logger().Info("Upgrade complete", "name", UpgradeName)
