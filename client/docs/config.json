@@ -27,6 +27,9 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/cosmos/evm/precisebank/v1/query.swagger.json"
+    },
+    {
       "url": "./tmp-swagger-gen/cosmos/evm/erc20/v1/query.swagger.json",
       "operationIds": {
         "rename": {

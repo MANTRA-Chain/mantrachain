@@ -2261,6 +2261,120 @@ paths:
                           format: byte
       tags:
         - Query
+  "/cosmos/evm/precisebank/v1/fractional_balance/{address}":
+    get:
+      summary: >-
+        FractionalBalance returns only the fractional balance of an address.
+        This
+
+        does not include any integer balance.
+      operationId: FractionalBalance
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  fractional_balance:
+                    description: fractional_balance is the fractional balance of the address.
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                description: |-
+                  QueryFractionalBalanceResponse defines the response type for
+                  Query/FractionalBalance method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: address
+          description: address is the account address to query  fractional balance for.
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Query
+  /cosmos/evm/precisebank/v1/remainder:
+    get:
+      summary: |-
+        Remainder returns the amount backed by the reserve, but not yet owned by
+        any account, i.e. not in circulation.
+      operationId: Remainder
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  remainder:
+                    description: >-
+                      remainder is the amount backed by the reserve, but not yet
+                      owned by any
+
+                      account, i.e. not in circulation.
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                description: QueryRemainderResponse defines the response type for
+                  Query/Remainder method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      tags:
+        - Query
   /cosmos/evm/erc20/v1/params:
     get:
       summary: Params retrieves the erc20 module params
@@ -45731,6 +45845,49 @@ components:
           title: Params defines the EVM module parameters
       description: QueryParamsResponse defines the response type for querying x/vm
         parameters.
+    cosmos.base.v1beta1.Coin:
+      type: object
+      properties:
+        denom:
+          type: string
+        amount:
+          type: string
+      description: |-
+        Coin defines a token with a denomination and an amount.
+
+        NOTE: The amount field is an Int which implements the custom method
+        signatures required by gogoproto.
+    cosmos.evm.precisebank.v1.QueryFractionalBalanceResponse:
+      type: object
+      properties:
+        fractional_balance:
+          description: fractional_balance is the fractional balance of the address.
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+      description: |-
+        QueryFractionalBalanceResponse defines the response type for
+        Query/FractionalBalance method.
+    cosmos.evm.precisebank.v1.QueryRemainderResponse:
+      type: object
+      properties:
+        remainder:
+          description: >-
+            remainder is the amount backed by the reserve, but not yet owned by
+            any
+
+            account, i.e. not in circulation.
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+      description: QueryRemainderResponse defines the response type for
+        Query/Remainder method.
     cosmos.base.query.v1beta1.PageRequest:
       type: object
       properties:
@@ -48566,18 +48723,6 @@ components:
           description: params holds all the parameters of this module.
           type: object
       description: QueryParamsResponse is response type for the Query/Params RPC method.
-    cosmos.base.v1beta1.Coin:
-      type: object
-      properties:
-        denom:
-          type: string
-        amount:
-          type: string
-      description: |-
-        Coin defines a token with a denomination and an amount.
-
-        NOTE: The amount field is an Int which implements the custom method
-        signatures required by gogoproto.
     osmosis.tokenfactory.Params:
       type: object
       properties:
