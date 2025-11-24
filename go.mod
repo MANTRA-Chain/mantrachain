@@ -79,7 +79,6 @@ require (
 	github.com/holiman/uint256 v1.3.2
 	github.com/ory/dockertest/v3 v3.11.0
 	github.com/prometheus/client_golang v1.23.0
-	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.9.2
