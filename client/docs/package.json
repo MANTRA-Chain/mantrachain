@@ -6,11 +6,14 @@
   "scripts": {
     "combine": "swagger-combine ./config.json -o static/swagger/swagger.yaml -f yaml --continueOnConflictingPaths --includeDefinitions",
     "convert": "swagger2openapi static/swagger/swagger.yaml --outfile static/openapi/openapi.yaml --yaml",
-    "build": "redoc-cli bundle static/openapi/openapi.yaml --output ./static/openapi/index.html"
+    "build": "redocly build-docs static/openapi/openapi.yaml -o static/openapi/index.html"
   },
   "dependencies": {
-    "redoc-cli": "^0.9.12",
+    "@redocly/cli": "^2.11.1",
+    "call-me-maybe": "^1.0.2",
+    "fast-safe-stringify": "^2.1.1",
     "swagger-combine": "^1.4.0",
-    "swagger2openapi": "^7.0.3"
+    "swagger2openapi": "^7.0.3",
+    "yaml": "^2.8.1"
   }
 }
