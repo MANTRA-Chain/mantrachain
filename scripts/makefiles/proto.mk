@@ -47,47 +47,60 @@ SWAGGER_DIR=./swagger-proto
 THIRD_PARTY_DIR=$(SWAGGER_DIR)/third_party
 
 proto-download-deps:
-	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/cosmos_tmp" && \
-	git clone --depth 1 --branch release/v0.50.x https://github.com/cosmos/cosmos-sdk.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/cosmos_tmp"
+	@echo "Downloading dependencies..."
+	@go mod download
+	@rm -rf "$(THIRD_PARTY_DIR)"
+	@mkdir -p "$(THIRD_PARTY_DIR)"
 
-	mkdir -p "$(THIRD_PARTY_DIR)/evm_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/evm_tmp" && \
-	git clone --depth 1 --branch v0.2.0 https://github.com/cosmos/evm.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/cosmos/* ../cosmos
-	rm -rf "$(THIRD_PARTY_DIR)/evm_tmp"
+	@echo "Copying cosmos-sdk proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/cosmos-sdk); \
+	if [ -d "$$DIR/proto" ]; then \
+		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
 
-	mkdir -p "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/wasm_tmp" && \
-	git clone --depth 1 --branch v0.55.0-ibc2.0 https://github.com/CosmWasm/wasmd.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/wasm_tmp"
+	@echo "Copying evm proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/evm); \
+	if [ -d "$$DIR/proto/cosmos" ]; then \
+		mkdir -p "$(THIRD_PARTY_DIR)/cosmos"; \
+		cp -r "$$DIR/proto/cosmos"/* "$(THIRD_PARTY_DIR)/cosmos"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
 
-	mkdir -p "$(THIRD_PARTY_DIR)/ibc_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/ibc_tmp" && \
-	git clone --depth 1 --branch release/v10.2.x https://github.com/cosmos/ibc-go.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/ibc_tmp"
+	@echo "Copying wasmd proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/CosmWasm/wasmd); \
+	if [ -d "$$DIR/proto" ]; then \
+		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
 
-	mkdir -p "$(THIRD_PARTY_DIR)/connect_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/connect_tmp" && \
-	git clone --depth 1 https://github.com/skip-mev/connect.git . && \
-	rm -f ./proto/buf.* && \
-	mv ./proto/* ..
-	rm -rf "$(THIRD_PARTY_DIR)/connect_tmp"
+	@echo "Copying ibc-go proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-go/v10); \
+	if [ -d "$$DIR/proto" ]; then \
+		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
 
-	mkdir -p "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
-	cd "$(THIRD_PARTY_DIR)/ibc_apps_tmp" && \
-	git clone --depth 1 https://github.com/cosmos/ibc-apps.git . && \
-	mkdir -p "../ratelimit" && \
-	mv ./modules/rate-limiting/proto/ratelimit ..
-	rm -rf "$(THIRD_PARTY_DIR)/ibc_apps_tmp"
+	@echo "Copying connect proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/skip-mev/connect/v2); \
+	if [ -d "$$DIR/proto" ]; then \
+		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
+
+	@echo "Copying ibc-apps rate-limiting proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-apps/modules/rate-limiting/v10); \
+	if [ -d "$$DIR/proto/ratelimit" ]; then \
+		mkdir -p "$(THIRD_PARTY_DIR)/ratelimit"; \
+		cp -r "$$DIR/proto/ratelimit"/* "$(THIRD_PARTY_DIR)/ratelimit"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
+
+	@# Remove buf.yaml and buf.lock from third_party to avoid module conflicts.
+	@# We do not want to use buf.yaml from either cosmos-sdk or connect because
+	@# third_party is a merged directory of multiple modules.
+	@find "$(THIRD_PARTY_DIR)" -name "buf.yaml" -delete
+	@find "$(THIRD_PARTY_DIR)" -name "buf.lock" -delete
 
 	mkdir -p "$(THIRD_PARTY_DIR)/cosmos_proto" && \
 	curl -SSL https://raw.githubusercontent.com/cosmos/cosmos-proto/main/proto/cosmos_proto/cosmos.proto > "$(THIRD_PARTY_DIR)/cosmos_proto/cosmos.proto"
