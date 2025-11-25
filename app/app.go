@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -53,8 +54,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc2"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc2supply"
-	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik"
-	"github.com/MANTRA-Chain/mantrachain/v7/client/docs/swagger"
+	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
@@ -1416,10 +1416,22 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 // RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
-	staticServer := http.FileServer(swagger.FS)
+	staticServer := http.FileServer(http.FS(docs.SwaggerUI))
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
-	rtr.PathPrefix("/swagger/").Handler(staticServer)
-	rtr.PathPrefix("/openapi/").Handler(staticServer)
+
+	swaggerFS, err := fs.Sub(docs.SwaggerUI, "static/swagger")
+	if err != nil {
+		panic(err)
+	}
+	swaggerServer := http.FileServer(http.FS(swaggerFS))
+	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", swaggerServer))
+
+	openapiFS, err := fs.Sub(docs.SwaggerUI, "static/openapi")
+	if err != nil {
+		panic(err)
+	}
+	openapiServer := http.FileServer(http.FS(openapiFS))
+	rtr.PathPrefix("/openapi/").Handler(http.StripPrefix("/openapi/", openapiServer))
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
