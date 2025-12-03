@@ -65,11 +65,7 @@ func migrateBank(ctx sdk.Context, bankKeeper bankkeeper.Keeper, tokenFactoryKeep
 			return true
 		}
 		err = bankKeeper.SendCoinsFromModuleToAccount(ctx, UpgradeName, addr, sdk.NewCoins(amantraCoin))
-		if err != nil {
-			return true
-		}
-
-		return false
+		return err != nil
 	})
 	if err != nil {
 		return err
