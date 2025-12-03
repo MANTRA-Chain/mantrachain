@@ -52,8 +52,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v7/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc2"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc2supply"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc3"
 	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
@@ -245,12 +244,9 @@ var maccPerms = map[string][]string{
 	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
-
-	// v7 token migration
-	v7rc2.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v7rc2.Upgrade, v7rc2supply.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7rc3.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -1499,6 +1495,7 @@ func (app *App) setupUpgradeHandlers() {
 					CrisisKeeper:       *app.CrisisKeeper,
 					FeeGrantKeeper:     app.FeeGrantKeeper,
 					AuthzKeeper:        app.AuthzKeeper,
+					OracleKeeper:       app.OracleKeeper,
 				},
 				app.keys,
 			),

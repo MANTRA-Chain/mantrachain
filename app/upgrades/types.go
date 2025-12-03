@@ -23,6 +23,8 @@ import (
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
+
+	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 )
 
 // Upgrade defines a struct containing necessary fields that a SoftwareUpgradeProposal
@@ -78,4 +80,5 @@ type UpgradeKeepers struct {
 	CrisisKeeper      crisiskeeper.Keeper //nolint:staticcheck
 	FeeGrantKeeper    feegrantkeeper.Keeper
 	AuthzKeeper       authzkeeper.Keeper
+	OracleKeeper      *oraclekeeper.Keeper
 }
