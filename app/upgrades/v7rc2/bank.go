@@ -45,26 +45,30 @@ func migrateBank(ctx sdk.Context, bankKeeper bankkeeper.Keeper, tokenFactoryKeep
 	escrowSupply := sdk.NewCoin(UOM, math.ZeroInt())
 	var err error
 	bankKeeper.IterateAllBalances(ctx, func(addr sdk.AccAddress, coin sdk.Coin) (stop bool) {
+		if coin.Denom != UOM {
+			return false
+		}
+
 		// skip IBC escrow accounts
 		if tokenFactoryKeeper.IsEscrowAddress(ctx, addr) {
 			escrowSupply = escrowSupply.Add(coin)
 			return false
 		}
-		if coin.Denom == UOM {
-			amantraCoin := convertCoinToNewDenom(coin)
-			err = bankKeeper.SendCoinsFromAccountToModule(ctx, addr, UpgradeName, sdk.NewCoins(coin))
-			if err != nil {
-				return true
-			}
-			err = bankKeeper.MintCoins(ctx, UpgradeName, sdk.NewCoins(amantraCoin))
-			if err != nil {
-				return true
-			}
-			err = bankKeeper.SendCoinsFromModuleToAccount(ctx, UpgradeName, addr, sdk.NewCoins(amantraCoin))
-			if err != nil {
-				return true
-			}
+
+		amantraCoin := convertCoinToNewDenom(coin)
+		err = bankKeeper.SendCoinsFromAccountToModule(ctx, addr, UpgradeName, sdk.NewCoins(coin))
+		if err != nil {
+			return true
 		}
+		err = bankKeeper.MintCoins(ctx, UpgradeName, sdk.NewCoins(amantraCoin))
+		if err != nil {
+			return true
+		}
+		err = bankKeeper.SendCoinsFromModuleToAccount(ctx, UpgradeName, addr, sdk.NewCoins(amantraCoin))
+		if err != nil {
+			return true
+		}
+
 		return false
 	})
 	if err != nil {
