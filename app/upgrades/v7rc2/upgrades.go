@@ -31,33 +31,35 @@ func CreateUpgradeHandler(
 		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
 
+		migrationCtx := ctx.WithEventManager(sdk.NewEventManager())
+
 		ctx.Logger().Info("Migrating x/auth state...")
-		if err = migrateAuth(ctx, keepers.AccountKeeper); err != nil {
+		if err = migrateAuth(migrationCtx, keepers.AccountKeeper); err != nil {
 			return vm, err
 		}
 
 		ctx.Logger().Info("Migrating x/precisebank state...")
-		if err = migratePreciseBank(ctx, keepers.PreciseBankKeeper, keepers.BankKeeper, keepers.AccountKeeper); err != nil {
+		if err = migratePreciseBank(migrationCtx, keepers.PreciseBankKeeper, keepers.BankKeeper, keepers.AccountKeeper); err != nil {
 			return vm, err
 		}
 
 		ctx.Logger().Info("Migrating x/bank state...")
-		if err = migrateBank(ctx, keepers.BankKeeper, *keepers.TokenFactoryKeeper, keepers.AccountKeeper); err != nil {
+		if err = migrateBank(migrationCtx, keepers.BankKeeper, *keepers.TokenFactoryKeeper, keepers.AccountKeeper); err != nil {
 			return vm, err
 		}
 
 		ctx.Logger().Info("Migrating x/staking state...")
-		if err = migrateStaking(ctx, keepers.StakingKeeper, storekeys[stakingtypes.ModuleName]); err != nil {
+		if err = migrateStaking(migrationCtx, keepers.StakingKeeper, storekeys[stakingtypes.ModuleName]); err != nil {
 			return vm, err
 		}
 
 		ctx.Logger().Info("Migrating x/gov state...")
-		if err = migrateGov(ctx, keepers.GovKeeper); err != nil {
+		if err = migrateGov(migrationCtx, keepers.GovKeeper); err != nil {
 			return vm, err
 		}
 
 		ctx.Logger().Info("Migrating x/distribution state...")
-		if err = migrateDistr(ctx, keepers.DistrKeeper); err != nil {
+		if err = migrateDistr(migrationCtx, keepers.DistrKeeper); err != nil {
 			return vm, err
 		}
 
@@ -102,10 +104,10 @@ func CreateUpgradeHandler(
 		}
 
 		ctx.Logger().Info("Migrating x/feegrant state...")
-		migrateFeeGrant(ctx, keepers.FeeGrantKeeper)
+		migrateFeeGrant(migrationCtx, keepers.FeeGrantKeeper)
 
 		ctx.Logger().Info("Migrating x/authz state...")
-		migrateAuthz(ctx, keepers.AuthzKeeper)
+		migrateAuthz(migrationCtx, keepers.AuthzKeeper)
 
 		ctx.Logger().Info("Migrating wom contract state...")
 		if err := migrateWOMs(ctx, keepers.EVMKeeper); err != nil {
