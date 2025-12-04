@@ -109,10 +109,6 @@ func exportBlockEvents(cfg *cmtconfig.Config, heights []int64, outputFile string
 			fmt.Printf("Failed to load block at height %d: %v\n", height, err)
 			continue
 		}
-		if export == nil {
-			fmt.Printf("No finalize block response found at height %d\n", height)
-			continue
-		}
 
 		exports = append(exports, *export)
 		fmt.Printf("Exported %d block events and %d tx event groups from height %d\n",
@@ -124,7 +120,7 @@ func exportBlockEvents(cfg *cmtconfig.Config, heights []int64, outputFile string
 		return fmt.Errorf("failed to marshal export data: %w", err)
 	}
 
-	if err := os.WriteFile(outputFile, data, 0644); err != nil {
+	if err := os.WriteFile(outputFile, data, 0o644); err != nil {
 		return fmt.Errorf("failed to write export file: %w", err)
 	}
 
@@ -176,10 +172,6 @@ func cleanupBlockEvents(cfg *cmtconfig.Config, heights []int64) error {
 			fmt.Printf("Failed to load block at height %d: %v\n", height, err)
 			continue
 		}
-		if export == nil {
-			fmt.Printf("No finalize block response found at height %d\n", height)
-			continue
-		}
 
 		cleared := BlockEventsExport{
 			Height:      height,
@@ -226,7 +218,7 @@ func loadBlockEventsExport(stateStore sm.Store, height int64) (*BlockEventsExpor
 		return nil, err
 	}
 	if resp == nil {
-		return nil, nil
+		return nil, fmt.Errorf("no finalize block response found at height %d", height)
 	}
 
 	export := &BlockEventsExport{
