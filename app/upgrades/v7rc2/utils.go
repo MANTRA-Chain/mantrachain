@@ -34,10 +34,30 @@ func convertCoinsToNewDenom(coins sdk.Coins) sdk.Coins {
 }
 
 func convertDecCoinsToNewDenom(coins sdk.DecCoins) sdk.DecCoins {
+	if len(coins) == 0 {
+		return sdk.DecCoins{}
+	}
+
 	newCoins := sdk.DecCoins{}
 	for _, coin := range coins {
 		if coin.Denom == UOM {
 			newCoins = newCoins.Add(convertDecCoinToNewDenom(coin))
+		} else {
+			newCoins = newCoins.Add(coin)
+		}
+	}
+	return newCoins
+}
+
+func convertDecCoinsToNewDenomWithoutScaling(coins sdk.DecCoins) sdk.DecCoins {
+	if len(coins) == 0 {
+		return sdk.DecCoins{}
+	}
+
+	newCoins := sdk.DecCoins{}
+	for _, coin := range coins {
+		if coin.Denom == UOM {
+			newCoins = newCoins.Add(sdk.NewDecCoinFromDec(AMANTRA, coin.Amount))
 		} else {
 			newCoins = newCoins.Add(coin)
 		}
