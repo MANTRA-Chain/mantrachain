@@ -22,7 +22,7 @@ var (
 		"mantra1...": 15,
 		"mantra2...": 20,
 	}
-	lastCumulativeRewardRationBeforeUpgrade = map[string]math.LegacyDec{
+	lastCumulativeRewardRatioBeforeUpgrade = map[string]math.LegacyDec{
 		"mantra1...": math.LegacyMustNewDecFromStr("1.2"), // 1.0
 		"mantra2...": math.LegacyMustNewDecFromStr("0.5"), // 0.5
 	}
@@ -31,7 +31,7 @@ var (
 
 func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, stakingKeeper stakingkeeper.Keeper) (err error) {
 	var reductionAmountPostUpgradePeriod map[string]sdk.DecCoins
-	for valAddr, lastCumulativeReward := range lastCumulativeRewardRationBeforeUpgrade {
+	for valAddr, lastCumulativeReward := range lastCumulativeRewardRatioBeforeUpgrade {
 		newAmount := lastCumulativeReward.Mul(ScalingFactor.Sub(math.LegacyOneDec()))
 		reductionAmountPostUpgradePeriod[valAddr] = sdk.NewDecCoins(
 			sdk.NewDecCoinFromDec(AMANTRA, newAmount),
