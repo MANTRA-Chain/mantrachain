@@ -8,6 +8,7 @@ import (
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 )
 
 const (
@@ -25,14 +26,10 @@ var (
 		"mantra1...": math.LegacyMustNewDecFromStr("1.2"), // 1.0
 		"mantra2...": math.LegacyMustNewDecFromStr("0.5"), // 0.5
 	}
-	OutstandingRewardBeforeUpgrade = map[string]sdk.DecCoins{
-		"mantra1...": sdk.NewDecCoins(sdk.NewDecCoinFromDec(AMANTRA, math.LegacyMustNewDecFromStr("4000"))),
-		"mantra2...": sdk.NewDecCoins(sdk.NewDecCoinFromDec(AMANTRA, math.LegacyMustNewDecFromStr("2000"))),
-	}
 	ScalingFactor = math.LegacyNewDec(4_000_000_000_000)
 )
 
-func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper) (err error) {
+func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, stakingKeeper stakingkeeper.Keeper) (err error) {
 	var reductionAmountPostUpgradePeriod map[string]sdk.DecCoins
 	for valAddr, lastCumulativeReward := range lastCumulativeRewardRationBeforeUpgrade {
 		newAmount := lastCumulativeReward.Mul(ScalingFactor.Sub(math.LegacyOneDec()))
@@ -62,15 +59,55 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 		return err
 	}
 
-	// reset outstanding rewards to right after upgrade
+	// recalculate all outstanding rewards
+	var endingPeriods map[string]uint64
+	var newOutstandingRewards map[string]sdk.DecCoins
+	distrKeeper.IterateDelegatorStartingInfos(ctx, func(valAddr sdk.ValAddress, delAddr sdk.AccAddress, info distrtypes.DelegatorStartingInfo) (stop bool) {
+		val, err := stakingKeeper.Validator(ctx, valAddr)
+		if err != nil {
+			return true
+		}
+		// end current period and calculate rewards
+		endingPeriod := uint64(0)
+		if endingPeriods[valAddr.String()] == 0 {
+			endingPeriod, err := distrKeeper.IncrementValidatorPeriod(ctx, val)
+			if err != nil {
+				return true
+			}
+			endingPeriods[valAddr.String()] = endingPeriod
+		} else {
+			endingPeriod = endingPeriods[valAddr.String()]
+		}
+
+		del, err := stakingKeeper.Delegation(ctx, delAddr, valAddr)
+		if err != nil {
+			return true
+		}
+
+		rewards, err := distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+		if err != nil {
+			return true
+		}
+		if newOutstandingRewards[valAddr.String()] == nil {
+			newOutstandingRewards[valAddr.String()] = rewards
+		} else {
+			newOutstandingRewards[valAddr.String()] = newOutstandingRewards[valAddr.String()].Add(rewards...)
+		}
+		return false
+	})
+	if err != nil {
+		return err
+	}
+
+	// reset outstanding rewards to new outstanding rewards
 	totalOutstandingRewards := math.LegacyZeroDec()
 	distrKeeper.IterateValidatorOutstandingRewards(ctx, func(valAddr sdk.ValAddress, rewards distrtypes.ValidatorOutstandingRewards) (stop bool) {
-		newOutstandingRewards := OutstandingRewardBeforeUpgrade[valAddr.String()].MulDec(ScalingFactor)
-		rewards.Rewards = newOutstandingRewards
+		newOutstandingReward := newOutstandingRewards[valAddr.String()]
+		rewards.Rewards = newOutstandingReward
 		if err = distrKeeper.SetValidatorOutstandingRewards(ctx, valAddr, rewards); err != nil {
 			return true
 		}
-		totalOutstandingRewards = totalOutstandingRewards.Add(newOutstandingRewards.AmountOf(AMANTRA))
+		totalOutstandingRewards = totalOutstandingRewards.Add(newOutstandingReward.AmountOf(AMANTRA))
 		return false
 	})
 	if err != nil {
