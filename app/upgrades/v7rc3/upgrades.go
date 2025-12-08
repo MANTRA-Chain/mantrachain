@@ -40,7 +40,7 @@ func CreateUpgradeHandler(
 		// Unblock all module accounts for the duration of the migration.
 		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
-		if err = migrateDistr(ctx, keepers.DistrKeeper, keepers.AccountKeeper, keepers.BankKeeper); err != nil {
+		if err = migrateDistr(ctx, keepers.DistrKeeper, keepers.AccountKeeper, keepers.BankKeeper, keepers.StakingKeeper); err != nil {
 			return vm, err
 		}
 
