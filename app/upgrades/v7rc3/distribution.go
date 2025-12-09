@@ -51,6 +51,9 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 	lastCumulativeRewardRatioBeforeUpgrade := make(map[string]math.LegacyDec)
 	for valAddr, periodData := range dataBeforeUpgrade {
 		lastPeriodBeforeUpgrade[valAddr] = periodData.Period
+		if periodData.CumulativeRewardRatio == "" {
+			continue
+		}
 		dec, err := math.LegacyNewDecFromStr(periodData.CumulativeRewardRatio)
 		if err != nil {
 			return err
