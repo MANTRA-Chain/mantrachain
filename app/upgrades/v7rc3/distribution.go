@@ -21,7 +21,7 @@ const (
 var ScalingFactor = math.LegacyNewDec(4_000_000_000_000)
 
 type Period struct {
-	Period                uint64 `json:"period"`
+	Period                uint64 `json:"period,string"`
 	CumulativeRewardRatio string `json:"cumulative_reward_ratio,omitempty"`
 }
 
