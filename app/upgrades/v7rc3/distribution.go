@@ -18,9 +18,7 @@ const (
 	AMANTRA = "amantra"
 )
 
-var (
-	ScalingFactor = math.LegacyNewDec(4_000_000_000_000)
-)
+var ScalingFactor = math.LegacyNewDec(4_000_000_000_000)
 
 type Period struct {
 	Period                uint64 `json:"period"`
@@ -94,7 +92,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 	ctx.Logger().Info("Step 2: Re-calculating all outstanding rewards from delegator state...")
 	// Use a more efficient iteration pattern: iterate validators, then their delegations.
 	newOutstandingRewards := make(map[string]sdk.DecCoins)
-	stakingKeeper.IterateValidators(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
+	err = stakingKeeper.IterateValidators(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		valAddrStr := validator.GetOperator()
 		valAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(valAddrStr)
 		if err != nil {
