@@ -38,6 +38,10 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 		if err := json.Unmarshal(CanaryBeforeUpgrade, &dataBeforeUpgrade); err != nil {
 			return err
 		}
+	case "mantra-dryrun-1":
+		if err := json.Unmarshal(DryrunBeforeUpgrade, &dataBeforeUpgrade); err != nil {
+			return err
+		}
 	default:
 		ctx.Logger().Info("No distribution migration data for this chain ID; skipping migration.")
 		return nil
@@ -138,7 +142,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 	}
 
 	ctx.Logger().Info("Step 3: Resetting outstanding rewards and calculating total top-up amount...")
-	totalOutstandingRewards := math.LegacyZeroDec()
+	totalDistrBalanceNeeded := math.LegacyZeroDec()
 	distrKeeper.IterateValidatorOutstandingRewards(ctx, func(valAddr sdk.ValAddress, rewards distrtypes.ValidatorOutstandingRewards) (stop bool) {
 		// It's possible a validator has no delegations, so we check existence in the map.
 		if newReward, ok := newOutstandingRewards[valAddr.String()]; ok {
@@ -146,7 +150,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 			if err = distrKeeper.SetValidatorOutstandingRewards(ctx, valAddr, rewards); err != nil {
 				return true
 			}
-			totalOutstandingRewards = totalOutstandingRewards.Add(newReward.AmountOf(AMANTRA))
+			totalDistrBalanceNeeded = totalDistrBalanceNeeded.Add(newReward.AmountOf(AMANTRA))
 		}
 		return false
 	})
@@ -154,9 +158,15 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 		return err
 	}
 
+	// add commissions
+	distrKeeper.IterateValidatorAccumulatedCommissions(ctx, func(val sdk.ValAddress, commission distrtypes.ValidatorAccumulatedCommission) (stop bool) {
+		totalDistrBalanceNeeded = totalDistrBalanceNeeded.Add(commission.Commission.AmountOf(AMANTRA))
+		return false
+	})
+
 	ctx.Logger().Info("Step 4: Topping up x/distribution module account if needed...")
 	currDistrBalance := bankKeeper.GetBalance(ctx, accountKeeper.GetModuleAddress(distrtypes.ModuleName), AMANTRA)
-	requiredBalance := totalOutstandingRewards.TruncateInt()
+	requiredBalance := totalDistrBalanceNeeded.TruncateInt()
 
 	if currDistrBalance.Amount.LT(requiredBalance) {
 		topUpAmount := requiredBalance.Sub(currDistrBalance.Amount)
@@ -175,7 +185,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 		ctx.Logger().Info("Distribution module account balance is sufficient.", "balance", currDistrBalance.Amount, "required", requiredBalance)
 	}
 
-	ctx.Logger().Info("Distribution migration complete.", "final_outstanding_rewards", totalOutstandingRewards.String())
+	ctx.Logger().Info("Distribution migration complete.", "total_balance_needed", totalDistrBalanceNeeded.String())
 
 	return nil
 }

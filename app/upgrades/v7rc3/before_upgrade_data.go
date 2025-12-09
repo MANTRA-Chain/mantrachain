@@ -1,5 +1,18 @@
 package v7rc3
 
+var DryrunBeforeUpgrade = []byte(`
+  {
+    "mantravaloper143a99rce5u0p5l2tzy62hqjdl2dx6pmgxq4w78": {
+      "cumulative_reward_ratio": "0.096894012597024924",
+      "period": "999"
+    },
+    "mantravaloper16y6dq8ednxq2l7rtyws8n4rkfvkz4e6zu8t0uc": {
+      "cumulative_reward_ratio": "0.096894012597051663",
+      "period": "999"
+    }
+  }
+`)
+
 var CanaryBeforeUpgrade = []byte(`
   {
     "mantravaloper1q8mgs55hfgkm7d5rret439997x87s2ek2r83q2": {
