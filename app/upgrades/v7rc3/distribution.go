@@ -1,9 +1,12 @@
 package v7rc3
 
 import (
-	"encoding/json"
+	"context"
 
 	"cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
+
+	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -15,7 +18,8 @@ import (
 )
 
 const (
-	AMANTRA = "amantra"
+	AMANTRA       = "amantra"
+	V7RC2_UPGRADE = "v7.0.0-rc2"
 )
 
 var ScalingFactor = math.LegacyNewDec(4_000_000_000_000)
@@ -25,72 +29,222 @@ type Period struct {
 	CumulativeRewardRatio string `json:"cumulative_reward_ratio,omitempty"`
 }
 
-func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, stakingKeeper stakingkeeper.Keeper) (err error) {
+func delegationTotalRewards(ctx context.Context, delegatorAddress string, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, stakingKeeper stakingkeeper.Keeper) (total sdk.DecCoins, err error) {
+	delAdr, err := accountKeeper.AddressCodec().StringToBytes(delegatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	total = sdk.DecCoins{}
+	err = stakingKeeper.IterateDelegations(
+		ctx, delAdr,
+		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
+			valAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(del.GetValidatorAddr())
+			if err != nil {
+				panic(err)
+			}
+
+			val, err := stakingKeeper.Validator(ctx, valAddr)
+			if err != nil {
+				panic(err)
+			}
+
+			endingPeriod, err := distrKeeper.IncrementValidatorPeriod(ctx, val)
+			if err != nil {
+				panic(err)
+			}
+
+			delReward, err := distrKeeper.CalculateDelegationRewards(ctx, val, del, endingPeriod)
+			if err != nil {
+				panic(err)
+			}
+			total = total.Add(delReward...)
+			return false
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return total, nil
+}
+
+func migrateDistr(ctx sdk.Context, cms storetypes.CommitMultiStore, distrKeeper distrkeeper.Keeper, accountKeeper authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, stakingKeeper stakingkeeper.Keeper, upgradeKeeper *upgradekeeper.Keeper) (err error) {
 	ctx.Logger().Info("Starting v7rc3 distribution migration...")
 
-	var dataBeforeUpgrade map[string]Period
-	switch ctx.ChainID() {
-	case "mantra-dukong-1":
-		if err := json.Unmarshal(DukongBeforeUpgrade, &dataBeforeUpgrade); err != nil {
-			return err
-		}
-	case "mantra-canary-net-1":
-		if err := json.Unmarshal(CanaryBeforeUpgrade, &dataBeforeUpgrade); err != nil {
-			return err
-		}
-	default:
-		ctx.Logger().Info("No distribution migration data for this chain ID; skipping migration.")
-		return nil
+	v7rc2Height, err := upgradeKeeper.GetDoneHeight(ctx, V7RC2_UPGRADE)
+	if err != nil {
+		ctx.Logger().Warn("Could not query v7rc2 upgrade height", "error", err)
+	} else if v7rc2Height > 0 {
+		ctx.Logger().Info("Found v7rc2 upgrade height", "height", v7rc2Height)
+	} else {
+		ctx.Logger().Warn("v7rc2 upgrade not found in done upgrades")
 	}
 
-	lastPeriodBeforeUpgrade := make(map[string]uint64)
-	lastCumulativeRewardRatioBeforeUpgrade := make(map[string]math.LegacyDec)
-	for valAddr, periodData := range dataBeforeUpgrade {
-		lastPeriodBeforeUpgrade[valAddr] = periodData.Period
-		dec, err := math.LegacyNewDecFromStr(periodData.CumulativeRewardRatio)
+	corruptedValidators := make(map[string]uint64)
+
+	if v7rc2Height > 1 {
+		ctx.Logger().Info("Checking for corrupted validators by comparing rewards across v7rc2 upgrade boundary")
+
+		heightBeforeUpgrade := v7rc2Height - 1
+
+		cmsBeforeVersion, err := cms.CacheMultiStoreWithVersion(heightBeforeUpgrade)
 		if err != nil {
-			return err
-		}
-		lastCumulativeRewardRatioBeforeUpgrade[valAddr] = dec
-	}
-
-	// Initialize maps to prevent nil map panics.
-	reductionAmountPostUpgradePeriod := make(map[string]sdk.DecCoins)
-	for valAddr, lastCumulativeReward := range lastCumulativeRewardRatioBeforeUpgrade {
-		newAmount := lastCumulativeReward.Mul(ScalingFactor.Sub(math.LegacyOneDec()))
-		reductionAmountPostUpgradePeriod[valAddr] = sdk.NewDecCoins(
-			sdk.NewDecCoinFromDec(AMANTRA, newAmount),
-		)
-	}
-
-	ctx.Logger().Info("Step 1: Scaling down historical rewards...")
-	// scale down historical rewards before upgrade by scaling factor
-	// scale down historical rewards after upgrade by subtracting the last pre-upgrade period scale amount
-	distrKeeper.IterateValidatorHistoricalRewards(ctx, func(valAddr sdk.ValAddress, period uint64, rewards distrtypes.ValidatorHistoricalRewards) (stop bool) {
-		lastPeriod, ok := lastPeriodBeforeUpgrade[valAddr.String()]
-		if !ok {
-			return false
-		}
-		if period <= lastPeriod {
-			rewards.CumulativeRewardRatio = rewards.CumulativeRewardRatio.QuoDec(ScalingFactor)
+			distrKeeper.IterateValidatorHistoricalRewards(ctx, func(valAddr sdk.ValAddress, period uint64, rewards distrtypes.ValidatorHistoricalRewards) (stop bool) {
+				valAddrStr := valAddr.String()
+				if len(rewards.CumulativeRewardRatio) == 0 {
+					return false
+				}
+				ratio, err := math.LegacyNewDecFromStr(rewards.CumulativeRewardRatio[0].Amount.String())
+				if err != nil {
+					return false
+				}
+				if ratio.GT(math.LegacyOneDec()) {
+					if _, exists := corruptedValidators[valAddrStr]; !exists {
+						if period > 0 {
+							corruptedValidators[valAddrStr] = period - 1
+						} else {
+							corruptedValidators[valAddrStr] = 0
+						}
+					}
+				}
+				return false
+			})
 		} else {
-			// no cumulative reward pre upgrade so we leave it as is, nothing to subtract
-			if _, ok := reductionAmountPostUpgradePeriod[valAddr.String()]; !ok {
+			cmsAtVersion, err := cms.CacheMultiStoreWithVersion(v7rc2Height)
+			if err != nil {
+				ctx.Logger().Error("Failed to load multistore at upgrade height", "height", v7rc2Height, "error", err)
+			} else {
+				ctxBefore := ctx.WithMultiStore(cmsBeforeVersion).WithBlockHeight(heightBeforeUpgrade)
+				ctxAtUpgrade := ctx.WithMultiStore(cmsAtVersion).WithBlockHeight(v7rc2Height)
+
+				delegatorSet := make(map[string]bool)
+				stakingKeeper.IterateValidators(ctx, func(_ int64, val stakingtypes.ValidatorI) (stop bool) {
+					valAddrStr := val.GetOperator()
+					valAddr, err := stakingKeeper.ValidatorAddressCodec().StringToBytes(valAddrStr)
+					if err != nil {
+						return false
+					}
+
+					delegations, err := stakingKeeper.GetValidatorDelegations(ctx, valAddr)
+					if err != nil {
+						return false
+					}
+
+					for _, del := range delegations {
+						delegatorSet[del.GetDelegatorAddr()] = true
+					}
+					return false
+				})
+
+				ctx.Logger().Info("Checking rewards for delegators", "count", len(delegatorSet))
+
+				for delAddr := range delegatorSet {
+					rewardsBefore, err := delegationTotalRewards(ctxBefore, delAddr, distrKeeper, accountKeeper, stakingKeeper)
+					if err != nil {
+						ctx.Logger().Debug("Failed to calculate rewards before upgrade", "delegator", delAddr, "error", err)
+						continue
+					}
+
+					rewardsAt, err := delegationTotalRewards(ctxAtUpgrade, delAddr, distrKeeper, accountKeeper, stakingKeeper)
+					if err != nil {
+						ctx.Logger().Debug("Failed to calculate rewards at upgrade", "delegator", delAddr, "error", err)
+						continue
+					}
+
+					rewardsBeforeAmt := math.LegacyZeroDec()
+					for _, coin := range rewardsBefore {
+						if coin.Denom == "uom" {
+							rewardsBeforeAmt = rewardsBeforeAmt.Add(coin.Amount)
+						}
+					}
+					rewardsAtAmt := rewardsAt.AmountOf(AMANTRA)
+
+					if rewardsBeforeAmt.IsPositive() {
+						scaledRewardsBefore := rewardsBeforeAmt.Mul(ScalingFactor)
+						diff := rewardsAtAmt.Quo(scaledRewardsBefore)
+
+						ctx.Logger().Debug("Rewards comparison across v7rc2 upgrade",
+							"delegator", delAddr,
+							"rewards_before", rewardsBefore.String(),
+							"rewards_at", rewardsAt.String(),
+							"diff", diff.String())
+
+						threshold := math.LegacyNewDec(2)
+						if diff.GT(threshold) {
+							ctx.Logger().Info("Detected corruption via delegator rewards",
+								"delegator", delAddr,
+								"rewards_before", rewardsBefore.String(),
+								"rewards_at", rewardsAt.String(),
+								"diff", diff.String())
+
+							delAddrBytes, _ := accountKeeper.AddressCodec().StringToBytes(delAddr)
+							stakingKeeper.IterateDelegations(ctx, delAddrBytes, func(_ int64, del stakingtypes.DelegationI) (stop bool) {
+								valAddrStr := del.GetValidatorAddr()
+								if _, exists := corruptedValidators[valAddrStr]; !exists {
+									valAddr, _ := stakingKeeper.ValidatorAddressCodec().StringToBytes(valAddrStr)
+									currentRewardsBefore, err := distrKeeper.GetValidatorCurrentRewards(ctxBefore, valAddr)
+									if err == nil {
+										corruptedValidators[valAddrStr] = currentRewardsBefore.Period
+										ctx.Logger().Info("Marked validator as corrupted", "validator", valAddrStr, "lastGoodPeriod", currentRewardsBefore.Period)
+									}
+								}
+								return false
+							})
+							break
+						}
+					}
+				}
+			}
+		}
+	} else {
+		ctx.Logger().Warn("v7rc2 upgrade height not found, skipping corruption detection")
+	}
+	ctx.Logger().Info("Scaling down corrupted historical rewards...", "count", len(corruptedValidators))
+
+	reductionAmountPostUpgradePeriod := make(map[string]sdk.DecCoins)
+
+	for valAddrStr, lastGoodPeriod := range corruptedValidators {
+		valAddr, _ := sdk.ValAddressFromBech32(valAddrStr)
+
+		var lastGoodRatio math.LegacyDec
+		var foundLastGood bool
+
+		if lastGoodPeriod > 0 {
+			histRewards, err := distrKeeper.GetValidatorHistoricalRewards(ctx, valAddr, lastGoodPeriod)
+			if err == nil && len(histRewards.CumulativeRewardRatio) > 0 {
+				lastGoodRatio, err = math.LegacyNewDecFromStr(histRewards.CumulativeRewardRatio[0].Amount.String())
+				if err == nil {
+					foundLastGood = true
+				}
+			}
+		}
+
+		if !foundLastGood {
+			lastGoodRatio = math.LegacyZeroDec()
+		}
+
+		scaledDiff := lastGoodRatio.Mul(ScalingFactor.Sub(math.LegacyOneDec()))
+		reductionAmountPostUpgradePeriod[valAddrStr] = sdk.NewDecCoins(sdk.NewDecCoinFromDec(AMANTRA, scaledDiff))
+
+		distrKeeper.IterateValidatorHistoricalRewards(ctx, func(iterValAddr sdk.ValAddress, period uint64, rewards distrtypes.ValidatorHistoricalRewards) (stop bool) {
+			if !iterValAddr.Equals(valAddr) {
 				return false
 			}
-			rewards.CumulativeRewardRatio = rewards.CumulativeRewardRatio.Sub(reductionAmountPostUpgradePeriod[valAddr.String()])
-		}
-		if err = distrKeeper.SetValidatorHistoricalRewards(ctx, valAddr, period, rewards); err != nil {
-			return true
-		}
-		return false
-	})
-	if err != nil {
-		return err
+
+			if period <= lastGoodPeriod {
+				for i := range rewards.CumulativeRewardRatio {
+					rewards.CumulativeRewardRatio[i].Amount = rewards.CumulativeRewardRatio[i].Amount.Quo(ScalingFactor)
+				}
+			} else {
+				rewards.CumulativeRewardRatio = rewards.CumulativeRewardRatio.Sub(reductionAmountPostUpgradePeriod[valAddrStr])
+			}
+
+			err = distrKeeper.SetValidatorHistoricalRewards(ctx, valAddr, period, rewards)
+			return err != nil
+		})
 	}
 
-	ctx.Logger().Info("Step 2: Re-calculating all outstanding rewards from delegator state...")
-	// Use a more efficient iteration pattern: iterate validators, then their delegations.
+	ctx.Logger().Info("Re-calculating all outstanding rewards from delegator state...")
 	newOutstandingRewards := make(map[string]sdk.DecCoins)
 	err = stakingKeeper.IterateValidators(ctx, func(index int64, validator stakingtypes.ValidatorI) (stop bool) {
 		valAddrStr := validator.GetOperator()
@@ -125,22 +279,20 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 			rewards, err := distrKeeper.CalculateDelegationRewards(ctx, val, delegation, endingPeriod)
 			if err != nil {
 				ctx.Logger().Error("failed to calculate delegation rewards", "validator", valAddrStr, "delegator", delAddr, "error", err)
-				// Continue to the next delegator, but log the error.
 				continue
 			}
 			newOutstandingRewards[valAddrStr] = newOutstandingRewards[valAddrStr].Add(rewards...)
 		}
 
-		return false // Continue to the next validator.
+		return false
 	})
 	if err != nil {
 		return err
 	}
 
-	ctx.Logger().Info("Step 3: Resetting outstanding rewards and calculating total top-up amount...")
+	ctx.Logger().Info("Resetting outstanding rewards and calculating total top-up amount...")
 	totalOutstandingRewards := math.LegacyZeroDec()
 	distrKeeper.IterateValidatorOutstandingRewards(ctx, func(valAddr sdk.ValAddress, rewards distrtypes.ValidatorOutstandingRewards) (stop bool) {
-		// It's possible a validator has no delegations, so we check existence in the map.
 		if newReward, ok := newOutstandingRewards[valAddr.String()]; ok {
 			rewards.Rewards = newReward
 			if err = distrKeeper.SetValidatorOutstandingRewards(ctx, valAddr, rewards); err != nil {
@@ -154,7 +306,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 		return err
 	}
 
-	ctx.Logger().Info("Step 4: Topping up x/distribution module account if needed...")
+	ctx.Logger().Info("Topping up x/distribution module account if needed...")
 	currDistrBalance := bankKeeper.GetBalance(ctx, accountKeeper.GetModuleAddress(distrtypes.ModuleName), AMANTRA)
 	requiredBalance := totalOutstandingRewards.TruncateInt()
 

@@ -1496,8 +1496,10 @@ func (app *App) setupUpgradeHandlers() {
 					FeeGrantKeeper:     app.FeeGrantKeeper,
 					AuthzKeeper:        app.AuthzKeeper,
 					OracleKeeper:       app.OracleKeeper,
+					UpgradeKeeper:      app.UpgradeKeeper,
 				},
 				app.keys,
+				app.CommitMultiStore(),
 			),
 		)
 	}

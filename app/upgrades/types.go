@@ -4,6 +4,7 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	feegrantkeeper "cosmossdk.io/x/feegrant/keeper"
+	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
@@ -36,7 +37,7 @@ type Upgrade struct {
 	UpgradeName string
 
 	// CreateUpgradeHandler defines the function that creates an upgrade handler
-	CreateUpgradeHandler func(*module.Manager, module.Configurator, *UpgradeKeepers, map[string]*storetypes.KVStoreKey) upgradetypes.UpgradeHandler
+	CreateUpgradeHandler func(*module.Manager, module.Configurator, *UpgradeKeepers, map[string]*storetypes.KVStoreKey, storetypes.CommitMultiStore) upgradetypes.UpgradeHandler
 
 	// Store upgrades, should be used for any new modules introduced, new modules deleted, or store names renamed.
 	StoreUpgrades storetypes.StoreUpgrades
@@ -81,4 +82,5 @@ type UpgradeKeepers struct {
 	FeeGrantKeeper    feegrantkeeper.Keeper
 	AuthzKeeper       authzkeeper.Keeper
 	OracleKeeper      *oraclekeeper.Keeper
+	UpgradeKeeper     *upgradekeeper.Keeper
 }

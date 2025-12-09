@@ -15,6 +15,7 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	keepers *upgrades.UpgradeKeepers,
 	storekeys map[string]*storetypes.KVStoreKey,
+	cms storetypes.CommitMultiStore,
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
@@ -40,7 +41,7 @@ func CreateUpgradeHandler(
 		// Unblock all module accounts for the duration of the migration.
 		// This is temporary and only applies to the bank keeper instance used within this upgrade handler.
 		keepers.BankKeeper = keepers.BankKeeper.WithBlockedAddrs(nil)
-		if err = migrateDistr(ctx, keepers.DistrKeeper, keepers.AccountKeeper, keepers.BankKeeper, keepers.StakingKeeper); err != nil {
+		if err = migrateDistr(ctx, cms, keepers.DistrKeeper, keepers.AccountKeeper, keepers.BankKeeper, keepers.StakingKeeper, keepers.UpgradeKeeper); err != nil {
 			return vm, err
 		}
 
