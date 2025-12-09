@@ -186,6 +186,6 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper, accountKeeper
 	}
 
 	ctx.Logger().Info("Distribution migration complete.", "total_balance_needed", totalDistrBalanceNeeded.String())
-
-	return nil
+	panic("checking logs")
+	return err
 }
