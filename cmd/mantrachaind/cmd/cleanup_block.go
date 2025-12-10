@@ -15,9 +15,9 @@ import (
 )
 
 type BlockEventsExport struct {
-	Height      int64          `json:"height"`
-	BlockEvents []abci.Event   `json:"block_events"`
-	TxEvents    [][]abci.Event `json:"tx_events"`
+	Height      int64               `json:"height"`
+	BlockEvents []abci.Event        `json:"block_events"`
+	TxEvents    []abci.ExecTxResult `json:"tx_events"`
 }
 
 // ExportBlockEventsCmd creates a command to export block events to a file
@@ -183,10 +183,7 @@ func cleanupBlockEvents(cfg *cmtconfig.Config, heights []int64) error {
 		cleared := BlockEventsExport{
 			Height:      height,
 			BlockEvents: filteredBlockEvents,
-			TxEvents:    make([][]abci.Event, len(export.TxEvents)),
-		}
-		for i := range cleared.TxEvents {
-			cleared.TxEvents[i] = []abci.Event{}
+			TxEvents:    []abci.ExecTxResult{},
 		}
 
 		if err := applyBlockEventsExport(stateStore, cleared); err != nil {
@@ -232,12 +229,12 @@ func loadBlockEventsExport(stateStore sm.Store, height int64) (*BlockEventsExpor
 	export := &BlockEventsExport{
 		Height:      height,
 		BlockEvents: resp.Events,
-		TxEvents:    make([][]abci.Event, len(resp.TxResults)),
+		TxEvents:    make([]abci.ExecTxResult, len(resp.TxResults)),
 	}
 
 	for i := range resp.TxResults {
 		if resp.TxResults[i] != nil {
-			export.TxEvents[i] = resp.TxResults[i].Events
+			export.TxEvents[i] = *resp.TxResults[i]
 		}
 	}
 
@@ -254,10 +251,10 @@ func applyBlockEventsExport(stateStore sm.Store, export BlockEventsExport) error
 	}
 
 	resp.Events = export.BlockEvents
-	for i := range resp.TxResults {
-		if resp.TxResults[i] != nil && i < len(export.TxEvents) {
-			resp.TxResults[i].Events = export.TxEvents[i]
-		}
+	resp.TxResults = make([]*abci.ExecTxResult, len(export.TxEvents))
+	for i := range export.TxEvents {
+		txResult := export.TxEvents[i]
+		resp.TxResults[i] = &txResult
 	}
 
 	return stateStore.SaveFinalizeBlockResponse(export.Height, resp)
