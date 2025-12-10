@@ -173,9 +173,16 @@ func cleanupBlockEvents(cfg *cmtconfig.Config, heights []int64) error {
 			continue
 		}
 
+		filteredBlockEvents := []abci.Event{}
+		for _, event := range export.BlockEvents {
+			if event.Type == "oracle_prices" {
+				filteredBlockEvents = append(filteredBlockEvents, event)
+			}
+		}
+
 		cleared := BlockEventsExport{
 			Height:      height,
-			BlockEvents: []abci.Event{},
+			BlockEvents: filteredBlockEvents,
 			TxEvents:    make([][]abci.Event, len(export.TxEvents)),
 		}
 		for i := range cleared.TxEvents {
@@ -186,8 +193,9 @@ func cleanupBlockEvents(cfg *cmtconfig.Config, heights []int64) error {
 			return fmt.Errorf("failed to save modified finalize block response at height %d: %w", height, err)
 		}
 
-		fmt.Printf("Cleaned up %d block events and %d tx event groups at height %d\n",
-			len(export.BlockEvents), len(export.TxEvents), height)
+		removedCount := len(export.BlockEvents) - len(filteredBlockEvents)
+		fmt.Printf("Cleaned up %d block events (kept %d oracle_prices events) and %d tx event groups at height %d\n",
+			removedCount, len(filteredBlockEvents), len(export.TxEvents), height)
 	}
 	return nil
 }
