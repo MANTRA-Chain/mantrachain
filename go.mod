@@ -43,7 +43,6 @@ require (
 	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v1.2.1
 	cosmossdk.io/core v0.11.3
-	cosmossdk.io/depinject v1.2.1
 	cosmossdk.io/errors v1.0.2
 	cosmossdk.io/log v1.6.1
 	cosmossdk.io/math v1.5.3
@@ -58,7 +57,7 @@ require (
 	github.com/CosmWasm/wasmd v0.61.1
 	github.com/CosmWasm/wasmvm/v3 v3.0.0
 	github.com/bufbuild/buf v1.46.0
-	github.com/cometbft/cometbft v0.38.19
+	github.com/cometbft/cometbft v0.38.20
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
 	github.com/cosmos/cosmos-sdk v0.53.4
@@ -110,6 +109,7 @@ require (
 	cloud.google.com/go/storage v1.50.0 // indirect
 	connectrpc.com/connect v1.17.0 // indirect
 	connectrpc.com/otelconnect v0.7.1 // indirect
+	cosmossdk.io/depinject v1.2.1 // indirect
 	cosmossdk.io/schema v1.1.0 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
