@@ -46,6 +46,7 @@ require (
 	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v1.2.1
 	cosmossdk.io/core v0.11.3
+	cosmossdk.io/depinject v1.2.1
 	cosmossdk.io/errors v1.0.2
 	cosmossdk.io/log v1.6.1
 	cosmossdk.io/math v1.5.3
@@ -112,7 +113,6 @@ require (
 	cloud.google.com/go/storage v1.50.0 // indirect
 	connectrpc.com/connect v1.17.0 // indirect
 	connectrpc.com/otelconnect v0.7.1 // indirect
-	cosmossdk.io/depinject v1.2.1 // indirect
 	cosmossdk.io/schema v1.1.0 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
