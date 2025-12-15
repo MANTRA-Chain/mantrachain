@@ -24,6 +24,14 @@
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
 - Remove depinject boilerplate and proto gen ([\#527](https://github.com/MANTRA-Chain/mantrachain/issues/527))
 
+## v6.1.3
+
+*December 15, 2025*
+
+### DEPENDENCIES
+
+- *(deps)* bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 (backport #550) ([#551](https://github.com/MANTRA-Chain/mantrachain/issues/551))
+
 ## v6.1.2
 
 *November 14, 2025*
