@@ -9,6 +9,7 @@
 ### DEPENDENCIES
 
 - *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
+- *(deps)* bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
 
 ### DOCUMENTATION
 
