@@ -53,6 +53,7 @@ import (
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
 	v7 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7"
+	v71rc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v71rc0"
 	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
@@ -249,7 +250,7 @@ var maccPerms = map[string][]string{
 	v7.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v7.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7.Upgrade, v71rc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
