@@ -1,4 +1,4 @@
-package v7rc2
+package v7
 
 import (
 	errorsmod "cosmossdk.io/errors"

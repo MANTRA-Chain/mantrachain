@@ -1,4 +1,4 @@
-package v7rc2
+package v7
 
 import (
 	"context"
@@ -121,12 +121,24 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		ctx.Logger().Info("Removing OM from oracle...")
+		if keepers.OracleKeeper != nil {
+			pairs := keepers.OracleKeeper.GetAllCurrencyPairs(ctx)
+			for _, pair := range pairs {
+				if pair.Base == "OM" || pair.Quote == "OM" {
+					if err := keepers.OracleKeeper.RemoveCurrencyPair(ctx, pair); err != nil {
+						ctx.Logger().Error("Failed to remove OM currency pair", "pair", pair.String(), "err", err)
+					}
+				}
+			}
+		}
+
 		// --- Post-Migration ---
-		ctx.Logger().Info("Finished v7.0.0-rc2 state migrations.")
+		ctx.Logger().Info("Finished v7.0.0-rc4 state migrations.")
 		ctx.Logger().Info("Assert Invariants...")
 		keepers.CrisisKeeper.AssertInvariants(ctx)
 
-		ctx.Logger().Info("Upgrade v7.0.0-rc2 complete")
+		ctx.Logger().Info("Upgrade v7.0.0-rc4 complete")
 		return vm, nil
 	}
 }

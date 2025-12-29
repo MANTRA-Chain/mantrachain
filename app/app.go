@@ -52,7 +52,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v7/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc4"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7"
 	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
@@ -246,10 +246,10 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 
 	// upgrade module
-	v7rc4.UpgradeName: {authtypes.Minter, authtypes.Burner},
+	v7.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v7rc4.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)

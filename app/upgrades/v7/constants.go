@@ -1,4 +1,4 @@
-package v7rc0
+package v7
 
 import (
 	"cosmossdk.io/store/types"
@@ -7,7 +7,7 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	UpgradeName = "v7.0.0-rc0"
+	UpgradeName = "v7.0.0-rc4"
 )
 
 var Upgrade = upgrades.Upgrade{

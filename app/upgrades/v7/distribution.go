@@ -1,4 +1,4 @@
-package v7rc0
+package v7
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,7 +34,7 @@ func migrateDistr(ctx sdk.Context, distrKeeper distrkeeper.Keeper) error {
 
 	// migrate validator historical rewards
 	distrKeeper.IterateValidatorHistoricalRewards(ctx, func(valAddr sdk.ValAddress, period uint64, rewards distrtypes.ValidatorHistoricalRewards) (stop bool) {
-		rewards.CumulativeRewardRatio = convertDecCoinsToNewDenom(rewards.CumulativeRewardRatio)
+		rewards.CumulativeRewardRatio = convertDecCoinsToNewDenomWithoutScaling(rewards.CumulativeRewardRatio)
 		if err = distrKeeper.SetValidatorHistoricalRewards(ctx, valAddr, period, rewards); err != nil {
 			return true
 		}
