@@ -139,6 +139,7 @@ jobs:
             zip \
             unzip \
             make \
+            gcc \
             && sudo rm -rf /var/lib/apt/lists/*
         if: steps.changed-files.outputs.only_changed == 'false'
       - name: install
