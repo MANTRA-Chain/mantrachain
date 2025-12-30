@@ -69,6 +69,9 @@ func initRootCmd(
 		pruning.Cmd(sdkAppCreator, app.DefaultNodeHome),
 		confixcmd.ConfigCommand(),
 		snapshot.Cmd(sdkAppCreator),
+		ExportBlockEventsCmd(),
+		ImportBlockEventsCmd(),
+		CleanupBlockEventsCmd(),
 	)
 
 	// add server commands

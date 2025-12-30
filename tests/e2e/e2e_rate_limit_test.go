@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	proposalAddRateLimitUomFilename    = "proposal_add_rate_limit_uom.json"
-	proposalUpdateRateLimitUomFilename = "proposal_update_rate_limit_uom.json"
-	proposalResetRateLimitUomFilename  = "proposal_reset_rate_limit_uom.json"
-	proposalRemoveRateLimitUomFilename = "proposal_remove_rate_limit_uom.json"
+	proposalAddRateLimitAmantraFilename    = "proposal_add_rate_limit_amantra.json"
+	proposalUpdateRateLimitAmantraFilename = "proposal_update_rate_limit_amantra.json"
+	proposalResetRateLimitAmantraFilename  = "proposal_reset_rate_limit_amantra.json"
+	proposalRemoveRateLimitAmantraFilename = "proposal_remove_rate_limit_amantra.json"
 )
 
-func (s *IntegrationTestSuite) writeAddRateLimitUomProposal(c *chain) {
+func (s *IntegrationTestSuite) writeAddRateLimitAmantraProposal(c *chain) {
 	template := `
 	{
 		"messages": [
@@ -31,24 +31,24 @@ func (s *IntegrationTestSuite) writeAddRateLimitUomProposal(c *chain) {
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
-		"title": "Add Rate Limit on (channel-0, uom)",
+		"deposit": "100000000000000amantra",
+		"title": "Add Rate Limit on (channel-0, amantra)",
 		"summary": "e2e-test adding an IBC rate limit"
 	   }`
 	propMsgBody := fmt.Sprintf(template,
 		govAuthority,
-		uomDenom,                   // denom: uom
+		amantraDenom,               // denom: amantra
 		transferChannel,            // channel_id: channel-0
 		sdkmath.NewInt(1).String(), // max_percent_send: 1%
 		sdkmath.NewInt(1).String(), // max_percent_recv: 1%
 		24,                         // duration_hours: 24
 	)
 
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalAddRateLimitUomFilename), []byte(propMsgBody))
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalAddRateLimitAmantraFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeUpdateRateLimitUomProposal(c *chain) {
+func (s *IntegrationTestSuite) writeUpdateRateLimitAmantraProposal(c *chain) {
 	template := `
 	{
 		"messages": [
@@ -63,24 +63,24 @@ func (s *IntegrationTestSuite) writeUpdateRateLimitUomProposal(c *chain) {
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
-		"title": "Update Rate Limit on (channel-0, uom)",
+		"deposit": "100000000000000amantra",
+		"title": "Update Rate Limit on (channel-0, amantra)",
 		"summary": "e2e-test updating an IBC rate limit"
 	   }`
 	propMsgBody := fmt.Sprintf(template,
 		govAuthority,
-		uomDenom,                   // denom: uom
+		amantraDenom,               // denom: amantra
 		transferChannel,            // channel_id: channel-0
 		sdkmath.NewInt(2).String(), // max_percent_send: 2%
 		sdkmath.NewInt(1).String(), // max_percent_recv: 1%
 		6,                          // duration_hours: 6
 	)
 
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalUpdateRateLimitUomFilename), []byte(propMsgBody))
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalUpdateRateLimitAmantraFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeResetRateLimitUomProposal(c *chain) {
+func (s *IntegrationTestSuite) writeResetRateLimitAmantraProposal(c *chain) {
 	template := `
 	{
 		"messages": [
@@ -92,21 +92,21 @@ func (s *IntegrationTestSuite) writeResetRateLimitUomProposal(c *chain) {
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
-		"title": "Reset Rate Limit on (channel-0, uom)",
+		"deposit": "100000000000000amantra",
+		"title": "Reset Rate Limit on (channel-0, amantra)",
 		"summary": "e2e-test resetting an IBC rate limit"
 	   }`
 	propMsgBody := fmt.Sprintf(template,
 		govAuthority,
-		uomDenom,        // denom: uom
+		amantraDenom,    // denom: amantra
 		transferChannel, // channel_id: channel-0
 	)
 
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalResetRateLimitUomFilename), []byte(propMsgBody))
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalResetRateLimitAmantraFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
-func (s *IntegrationTestSuite) writeRemoveRateLimitUomProposal(c *chain) {
+func (s *IntegrationTestSuite) writeRemoveRateLimitAmantraProposal(c *chain) {
 	template := `
 	{
 		"messages": [
@@ -118,17 +118,17 @@ func (s *IntegrationTestSuite) writeRemoveRateLimitUomProposal(c *chain) {
 		 }
 		],
 		"metadata": "ipfs://CID",
-		"deposit": "100uom",
-		"title": "Remove Rate Limit (channel-0, uom)",
+		"deposit": "100000000000000amantra",
+		"title": "Remove Rate Limit (channel-0, amantra)",
 		"summary": "e2e-test removing an IBC rate limit"
 	   }`
 	propMsgBody := fmt.Sprintf(template,
 		govAuthority,
-		uomDenom,        // denom: uom
+		amantraDenom,    // denom: amantra
 		transferChannel, // channel_id: channel-0
 	)
 
-	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalRemoveRateLimitUomFilename), []byte(propMsgBody))
+	err := writeFile(filepath.Join(c.validators[0].configDir(), "config", proposalRemoveRateLimitAmantraFilename), []byte(propMsgBody))
 	s.Require().NoError(err)
 }
 
@@ -138,30 +138,30 @@ func (s *IntegrationTestSuite) testAddRateLimits() {
 	validatorA := s.chainA.validators[0]
 	validatorAAddr, _ := validatorA.keyInfo.GetAddress()
 
-	s.writeAddRateLimitUomProposal(s.chainA)
+	s.writeAddRateLimitAmantraProposal(s.chainA)
 	proposalCounter++
-	submitGovFlags := []string{configFile(proposalAddRateLimitUomFilename)}
+	submitGovFlags := []string{configFile(proposalAddRateLimitAmantraFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
-	s.T().Logf("Submitting, deposit and vote Gov Proposal: Add IBC rate limit for (channel-0, uom)")
+	s.T().Logf("Submitting, deposit and vote Gov Proposal: Add IBC rate limit for (channel-0, amantra)")
 	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "ratelimittypes.MsgAddRateLimit", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
-			s.T().Logf("After AddRateLimit proposal (channel-0, uom)")
+			s.T().Logf("After AddRateLimit proposal (channel-0, amantra)")
 
 			rateLimits, err := queryAllRateLimits(chainEndpoint)
 			s.Require().NoError(err)
 			s.Require().Len(rateLimits, 1)
 			s.Require().Equal(transferChannel, rateLimits[0].Path.ChannelOrClientId)
-			s.Require().Equal(uomDenom, rateLimits[0].Path.Denom)
+			s.Require().Equal(amantraDenom, rateLimits[0].Path.Denom)
 			s.Require().Equal(uint64(24), rateLimits[0].Quota.DurationHours)
 			s.Require().Equal(sdkmath.NewInt(1), rateLimits[0].Quota.MaxPercentRecv)
 			s.Require().Equal(sdkmath.NewInt(1), rateLimits[0].Quota.MaxPercentSend)
 
-			res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
+			res, err := queryRateLimit(chainEndpoint, transferChannel, amantraDenom)
 			s.Require().NoError(err)
 			s.Require().NotNil(res.RateLimit)
 			s.Require().Equal(*rateLimits[0].Path, *res.RateLimit.Path)
@@ -186,21 +186,21 @@ func (s *IntegrationTestSuite) testUpdateRateLimit() {
 	validatorA := s.chainA.validators[0]
 	validatorAAddr, _ := validatorA.keyInfo.GetAddress()
 
-	s.writeUpdateRateLimitUomProposal(s.chainA)
+	s.writeUpdateRateLimitAmantraProposal(s.chainA)
 	proposalCounter++
-	submitGovFlags := []string{configFile(proposalUpdateRateLimitUomFilename)}
+	submitGovFlags := []string{configFile(proposalUpdateRateLimitAmantraFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
-	s.T().Logf("Submitting, deposit and vote Gov Proposal: Update IBC rate limit for (channel-0, uom)")
+	s.T().Logf("Submitting, deposit and vote Gov Proposal: Update IBC rate limit for (channel-0, amantra)")
 	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "ratelimittypes.MsgUpdateRateLimit", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
 			s.T().Logf("After UpdateRateLimit proposal")
 
-			res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
+			res, err := queryRateLimit(chainEndpoint, transferChannel, amantraDenom)
 			s.Require().NoError(err)
 			s.Require().NotNil(res.RateLimit)
 			s.Require().Equal(sdkmath.NewInt(2), res.RateLimit.Quota.MaxPercentSend)
@@ -219,21 +219,21 @@ func (s *IntegrationTestSuite) testResetRateLimit() {
 	validatorA := s.chainA.validators[0]
 	validatorAAddr, _ := validatorA.keyInfo.GetAddress()
 
-	s.writeResetRateLimitUomProposal(s.chainA)
+	s.writeResetRateLimitAmantraProposal(s.chainA)
 	proposalCounter++
-	submitGovFlags := []string{configFile(proposalResetRateLimitUomFilename)}
+	submitGovFlags := []string{configFile(proposalResetRateLimitAmantraFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
-	s.T().Logf("Submitting, deposit and vote Gov Proposal: Reset IBC rate limit for (channel-0, uom)")
+	s.T().Logf("Submitting, deposit and vote Gov Proposal: Reset IBC rate limit for (channel-0, amantra)")
 	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "ratelimittypes.MsgResetRateLimit", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
 			s.T().Logf("After ResetRateLimit proposal")
 
-			res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
+			res, err := queryRateLimit(chainEndpoint, transferChannel, amantraDenom)
 			s.Require().NoError(err)
 			s.Require().NotNil(res.RateLimit)
 			s.Require().Equal(sdkmath.NewInt(0), res.RateLimit.Flow.Inflow)
@@ -252,14 +252,14 @@ func (s *IntegrationTestSuite) testRemoveRateLimit() {
 	validatorA := s.chainA.validators[0]
 	validatorAAddr, _ := validatorA.keyInfo.GetAddress()
 
-	s.writeRemoveRateLimitUomProposal(s.chainA)
+	s.writeRemoveRateLimitAmantraProposal(s.chainA)
 	proposalCounter++
-	submitGovFlags := []string{configFile(proposalRemoveRateLimitUomFilename)}
+	submitGovFlags := []string{configFile(proposalRemoveRateLimitAmantraFilename)}
 	depositGovFlags := []string{strconv.Itoa(proposalCounter), depositAmount.String()}
 	voteGovFlags := []string{strconv.Itoa(proposalCounter), "yes"}
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
-	s.T().Logf("Submitting, deposit and vote Gov Proposal: Remove IBC rate limit for (channel-0, uom)")
+	s.T().Logf("Submitting, deposit and vote Gov Proposal: Remove IBC rate limit for (channel-0, amantra)")
 	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "ratelimittypes.MsgRemoveRateLimit", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
@@ -270,7 +270,7 @@ func (s *IntegrationTestSuite) testRemoveRateLimit() {
 			s.Require().NoError(err)
 			s.Require().Empty(rateLimits)
 
-			res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
+			res, err := queryRateLimit(chainEndpoint, transferChannel, amantraDenom)
 			s.Require().NoError(err)
 			s.Require().Nil(res.RateLimit)
 
@@ -290,17 +290,17 @@ func (s *IntegrationTestSuite) testIBCTransfer(expToFail bool) {
 	address, _ = s.chainB.validators[0].keyInfo.GetAddress()
 	recipient := address.String()
 
-	totalAmount, err := querySupplyOf(chainEndpoint, uomDenom)
+	totalAmount, err := querySupplyOf(chainEndpoint, amantraDenom)
 	s.Require().NoError(err)
 
 	threshold := totalAmount.Amount.Mul(sdkmath.NewInt(1)).Quo(sdkmath.NewInt(100))
 	tokenAmt := threshold.Add(sdkmath.NewInt(10)).String()
-	s.sendIBC(s.chainA, 0, sender, recipient, tokenAmt+uomDenom, standardFees.String(), "", expToFail)
+	s.sendIBC(s.chainA, 0, sender, recipient, tokenAmt+amantraDenom, standardFees.String(), "", expToFail)
 
 	if !expToFail {
 		s.T().Logf("After successful IBC transfer")
 
-		res, err := queryRateLimit(chainEndpoint, transferChannel, uomDenom)
+		res, err := queryRateLimit(chainEndpoint, transferChannel, amantraDenom)
 		s.Require().NoError(err)
 		s.Require().NotNil(res.RateLimit)
 		s.Require().Equal(sdkmath.NewInt(0), res.RateLimit.Flow.Inflow)

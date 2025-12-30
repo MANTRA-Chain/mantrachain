@@ -1,6 +1,12 @@
 ## [unreleased]
 
+## v7.0.0
+
+*December 29, 2025*
+
 ### FEATURES
+
+- feat: token migration OM to MANTRA upgrade ([\#557](https://github.com/MANTRA-Chain/mantrachain/issues/557))
 
 ### BUG-FIXES
 

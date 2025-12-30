@@ -23,7 +23,7 @@ func (s *IntegrationTestSuite) testStaking() {
 
 	delegatorAddress, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 
-	fees := sdk.NewCoin(uomDenom, math.NewInt(1))
+	fees := sdk.NewCoin(amantraDenom, math.NewInt(1000000000000))
 
 	existingDelegation := math.LegacyZeroDec()
 	res, err := queryDelegation(chainEndpoint, validatorAddressA, delegatorAddress.String())
@@ -32,9 +32,9 @@ func (s *IntegrationTestSuite) testStaking() {
 	}
 
 	delegationAmount := math.NewInt(500000000)
-	delegation := sdk.NewCoin(uomDenom, delegationAmount) // 500 om
+	delegation := sdk.NewCoin(amantraDenom, delegationAmount) // 500 om
 
-	// Alice delegate uom to Validator A
+	// Alice delegate amantra to Validator A
 	s.execDelegate(s.chainA, 0, delegation.String(), validatorAddressA, delegatorAddress.String(), mantraHomePath, fees.String())
 
 	// Validate delegation successful
@@ -51,9 +51,9 @@ func (s *IntegrationTestSuite) testStaking() {
 	)
 
 	redelegationAmount := delegationAmount.Quo(math.NewInt(2))
-	redelegation := sdk.NewCoin(uomDenom, redelegationAmount) // 250 om
+	redelegation := sdk.NewCoin(amantraDenom, redelegationAmount) // 250 om
 
-	// Alice re-delegate half of her uom delegation from Validator A to Validator B
+	// Alice re-delegate half of her amantra delegation from Validator A to Validator B
 	s.execRedelegate(s.chainA, 0, redelegation.String(), validatorAddressA, validatorAddressB, delegatorAddress.String(), mantraHomePath, fees.String())
 
 	// Validate re-delegation successful
@@ -82,7 +82,7 @@ func (s *IntegrationTestSuite) testStaking() {
 			s.Require().NoError(err)
 
 			currDelegationAmount = amt.TruncateInt()
-			currDelegation = sdk.NewCoin(uomDenom, currDelegationAmount)
+			currDelegation = sdk.NewCoin(amantraDenom, currDelegationAmount)
 
 			return currDelegation.IsValid()
 		},
@@ -90,7 +90,7 @@ func (s *IntegrationTestSuite) testStaking() {
 		5*time.Second,
 	)
 
-	// Alice unbonds all her uom delegation from Validator A
+	// Alice unbonds all her amantra delegation from Validator A
 	s.execUnbondDelegation(s.chainA, 0, currDelegation.String(), validatorAddressA, delegatorAddress.String(), mantraHomePath, fees.String())
 
 	var ubdDelegationEntry types.UnbondingDelegationEntry

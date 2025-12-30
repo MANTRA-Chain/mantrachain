@@ -567,7 +567,7 @@ func (s *IntegrationTestSuite) getLatestBlockHeight(c *chain, valIdx int) int {
 // func (s *IntegrationTestSuite) verifyBalanceChange(endpoint string, expectedAmount sdk.Coin, recipientAddress string) {
 // 	s.Require().Eventually(
 // 		func() bool {
-// 			afterOmBalance, err := getSpecificBalance(endpoint, recipientAddress, uomDenom)
+// 			afterOmBalance, err := getSpecificBalance(endpoint, recipientAddress, amantraDenom)
 // 			s.Require().NoError(err)
 
 // 			return afterOmBalance.IsEqual(expectedAmount)
@@ -626,7 +626,7 @@ func (s *IntegrationTestSuite) execWithdrawReward(
 		"withdraw-rewards",
 		validatorAddress,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, delegatorAddress),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300000000000000amantra"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, c.id),
@@ -662,7 +662,7 @@ func (s *IntegrationTestSuite) execWasmStoreCode(
 		fmt.Sprintf("--from=%s", sender),
 		fmt.Sprintf("--instantiate-anyof-addresses=%s", sender),
 		fmt.Sprintf("--chain-id=%s", c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300000000000000amantra"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--broadcast-mode=%s", "sync"),
@@ -704,7 +704,7 @@ func (s *IntegrationTestSuite) execWasmInstantiate(
 		fmt.Sprintf("--label=%s", label),
 		fmt.Sprintf("--from=%s", sender),
 		fmt.Sprintf("--chain-id=%s", c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300000000000000amantra"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--broadcast-mode=%s", "sync"),
@@ -757,7 +757,7 @@ func (s *IntegrationTestSuite) execWasmExecute(
 		executeMessage,
 		fmt.Sprintf("--from=%s", sender),
 		fmt.Sprintf("--chain-id=%s", c.id),
-		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300uom"),
+		fmt.Sprintf("--%s=%s", flags.FlagGasPrices, "300000000000000amantra"),
 		fmt.Sprintf("--%s=%s", flags.FlagGas, "auto"),
 		fmt.Sprintf("--%s=%s", flags.FlagGasAdjustment, "1.5"),
 		fmt.Sprintf("--broadcast-mode=%s", "sync"),

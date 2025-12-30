@@ -107,10 +107,10 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 	sender := senderAddress.String()
 	recipientAddress, _ := s.chainA.validators[1].keyInfo.GetAddress()
 	recipient := recipientAddress.String()
-	sendAmount := sdk.NewCoin(uomDenom, math.NewInt(10000000)) // 10uom
+	sendAmount := sdk.NewCoin(amantraDenom, math.NewInt(10000000000000)) // 10000000000000amantra
 	s.writeGovCommunitySpendProposal(s.chainA, sendAmount, recipient)
 
-	beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+	beforeRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, amantraDenom)
 	s.Require().NoError(err)
 
 	// Gov tests may be run in arbitrary order, each test must increment proposalCounter to have the correct proposal id to submit and query
@@ -122,7 +122,7 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 
 	s.Require().Eventually(
 		func() bool {
-			afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, uomDenom)
+			afterRecipientBalance, err := getSpecificBalance(chainAAPIEndpoint, recipient, amantraDenom)
 			s.Require().NoError(err)
 
 			return afterRecipientBalance.Sub(sendAmount).IsEqual(beforeRecipientBalance)
@@ -135,7 +135,7 @@ func (s *IntegrationTestSuite) GovCommunityPoolSpend() {
 // NOTE: in SDK >= v0.47 the submit-proposal does not have a --deposit flag
 // Instead, the depoist is added to the "deposit" field of the proposal JSON (usually stored as a file)
 // you can use `gaiad tx gov draft-proposal` to create a proposal file that you can use
-// min initial deposit of 100uom is required in e2e tests, otherwise the proposal would be dropped
+// min initial deposit of 100000000000000amantra is required in e2e tests, otherwise the proposal would be dropped
 func (s *IntegrationTestSuite) submitGovProposal(chainAAPIEndpoint, sender string, proposalID int, proposalType string, submitFlags []string, depositFlags []string, voteFlags []string, voteCommand string) {
 	s.T().Logf("Submitting Gov Proposal: %s", proposalType)
 	sflags := submitFlags

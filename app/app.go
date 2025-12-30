@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -48,11 +49,11 @@ import (
 	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
 	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
+	"github.com/MANTRA-Chain/mantrachain/v7/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
-	v7rc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7rc0"
-	_ "github.com/MANTRA-Chain/mantrachain/v7/client/docs/statik"
-	"github.com/MANTRA-Chain/mantrachain/v7/client/docs/swagger"
+	v7 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7"
+	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
@@ -183,16 +184,16 @@ import (
 )
 
 var EVMCoinInfo = evmtypes.EvmCoinInfo{
-	Denom:         "uom",
-	ExtendedDenom: "aom",
-	DisplayDenom:  "om",
-	Decimals:      evmtypes.SixDecimals.Uint32(),
+	Denom:         "amantra",
+	ExtendedDenom: "amantra",
+	DisplayDenom:  "mantra",
+	Decimals:      evmtypes.EighteenDecimals.Uint32(),
 }
 
 func init() {
 	// Replace evmos defaults
 	// manually update the power reduction by replacing micro (u) -> atto (a) evmos
-	sdk.DefaultPowerReduction = cosmosevmutils.MicroPowerReduction
+	sdk.DefaultPowerReduction = cosmosevmutils.AttoPowerReduction
 	stakingtypes.DefaultMinCommissionRate = math.LegacyZeroDec()
 
 	// DefaultNodeHome default home directories for mantrachaind
@@ -243,9 +244,12 @@ var maccPerms = map[string][]string{
 	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
+
+	// upgrade module
+	v7.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v7rc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v7.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -690,7 +694,7 @@ func New(
 		keys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.PreciseBankKeeper,
+		app.BankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
 		&app.ConsensusParamsKeeper,
@@ -705,7 +709,7 @@ func New(
 		appCodec,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.PreciseBankKeeper,
+		app.BankKeeper,
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
@@ -739,13 +743,15 @@ func New(
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> transfer.OnRecvPacket
+			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket
+			-> erc20.OnRecvPacket -> transfer.OnRecvPacket -> ibc_middleware.NewMigrateUomIBCModule
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper, app.AccountKeeper.AddressCodec())
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
 	app.CallbackKeeper = ibccallbackskeeper.NewKeeper(
@@ -779,7 +785,7 @@ func New(
 		precompiletypes.DefaultStaticPrecompiles(
 			app.StakingKeeper,
 			app.DistrKeeper,
-			app.PreciseBankKeeper,
+			app.BankKeeper,
 			&app.Erc20Keeper,
 			&app.TransferKeeper,
 			app.IBCKeeper.ChannelKeeper,
@@ -1409,10 +1415,22 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 // RegisterSwaggerAPI registers swagger route with API Server.
 func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
-	staticServer := http.FileServer(swagger.FS)
+	staticServer := http.FileServer(http.FS(docs.SwaggerUI))
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", staticServer))
-	rtr.PathPrefix("/swagger/").Handler(staticServer)
-	rtr.PathPrefix("/openapi/").Handler(staticServer)
+
+	swaggerFS, err := fs.Sub(docs.SwaggerUI, "static/swagger")
+	if err != nil {
+		panic(err)
+	}
+	swaggerServer := http.FileServer(http.FS(swaggerFS))
+	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", swaggerServer))
+
+	openapiFS, err := fs.Sub(docs.SwaggerUI, "static/openapi")
+	if err != nil {
+		panic(err)
+	}
+	openapiServer := http.FileServer(http.FS(openapiFS))
+	rtr.PathPrefix("/openapi/").Handler(http.StripPrefix("/openapi/", openapiServer))
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -1472,6 +1490,15 @@ func (app *App) setupUpgradeHandlers() {
 					EVMKeeper:          *app.EVMKeeper,
 					Erc20Keeper:        app.Erc20Keeper,
 					CircuitKeeper:      app.CircuitKeeper,
+					PreciseBankKeeper:  app.PreciseBankKeeper,
+					StakingKeeper:      app.StakingKeeper,
+					GovKeeper:          app.GovKeeper,
+					DistrKeeper:        app.DistrKeeper,
+					MintKeeper:         app.MintKeeper,
+					CrisisKeeper:       *app.CrisisKeeper,
+					FeeGrantKeeper:     app.FeeGrantKeeper,
+					AuthzKeeper:        app.AuthzKeeper,
+					OracleKeeper:       app.OracleKeeper,
 				},
 				app.keys,
 			),

@@ -38,4 +38,4 @@ The contracts included here are simplified for testing purposes and are utilized
 
 *   **`percentage_cap.wasm`**: This contract ensures that no more than 50% of the total supply of a given denom can be transferred in a single bank transfer.
 *   **`transfer_cap.wasm`**: This contract enforces a maximum transfer limit, ensuring that no more than 1,000,000 units of a denom can be transferred in a single bank transfer.
-*   **`tax_stake_denom.wasm`**: This contract implements a tax mechanism. It requires users to deposit the staking denom (`uom`) into the contract. Whenever the associated TokenFactory denom is transferred, regardless of the amount, `1000000uom` will first be transferred to the contract's admin from the sender of the associated Tokenfactory denom.
+*   **`tax_stake_denom.wasm`**: This contract implements a tax mechanism. It requires users to deposit the staking denom (`amantra`) into the contract. Whenever the associated TokenFactory denom is transferred, regardless of the amount, `1000000000000000000amantra` will first be transferred to the contract's admin from the sender of the associated Tokenfactory denom.
