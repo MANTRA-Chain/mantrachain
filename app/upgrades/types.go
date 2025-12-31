@@ -12,6 +12,7 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
@@ -23,7 +24,7 @@ import (
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
-
+	icsproviderkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 )
 
@@ -81,4 +82,7 @@ type UpgradeKeepers struct {
 	FeeGrantKeeper    feegrantkeeper.Keeper
 	AuthzKeeper       authzkeeper.Keeper
 	OracleKeeper      *oraclekeeper.Keeper
+	// provider
+	ProviderKeeper        icsproviderkeeper.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
 }

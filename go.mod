@@ -15,6 +15,8 @@ replace (
 	// release/v0.5.x
 	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251215062445-692fa8a44e8b
 
+	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
+
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
 
@@ -69,6 +71,7 @@ require (
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
 	github.com/cosmos/ibc-go/v10 v10.4.0
+	github.com/cosmos/interchain-security/v7 v7.0.1
 	github.com/ethereum/go-ethereum v1.15.11
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.4
@@ -171,7 +174,6 @@ require (
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.2.4 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
-	github.com/cosmos/interchain-security/v7 v7.0.1 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.16.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
