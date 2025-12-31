@@ -38,7 +38,7 @@ func CreateUpgradeHandler(
 
 		// init genesis for provider module
 		providerGenesis := providertypes.DefaultGenesisState()
-		providerGenesis.Params.ConsumerRewardDenomRegistrationFee = sdk.NewCoin("uom", math.NewInt(1000000))
+		providerGenesis.Params.ConsumerRewardDenomRegistrationFee = sdk.NewCoin("amantra", math.NewInt(4_000_000_000_000_000_000))
 		providerGenesis.Params.BlocksPerEpoch = 10
 		providerGenesis.Params.NumberOfEpochsToStartReceivingRewards = 2
 		keepers.ProviderKeeper.InitGenesis(ctx, providerGenesis)
