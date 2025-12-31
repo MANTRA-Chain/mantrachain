@@ -1,8 +1,7 @@
-package v8providerrc0
+package v8c0
 
 import (
 	"context"
-	"strings"
 
 	errorsmod "cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -14,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	erc20types "github.com/cosmos/evm/x/erc20/types"
 	providerkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 )
@@ -71,26 +69,7 @@ func CreateUpgradeHandler(
 			return vm, errorsmod.Wrapf(err, "initializing LastProviderConsensusValSet during migration")
 		}
 
-		// update contract owner for all existing tokenfactory token_pairs
-		pairs := keepers.Erc20Keeper.GetTokenPairs(ctx)
-		for _, pair := range pairs {
-			if strings.HasPrefix(pair.Denom, "factory/") {
-				pair.ContractOwner = erc20types.OWNER_MODULE
-				keepers.Erc20Keeper.SetTokenPair(ctx, pair)
-			}
-		}
-
-		disableList := []string{
-			"wasm/cosmos.evm.erc20.v1.MsgRegisterERC20",
-			"wasm/cosmos.authz.v1beta1.MsgExec",
-		}
-		for _, msg := range disableList {
-			if err := keepers.CircuitKeeper.DisableList.Set(ctx, msg); err != nil {
-				return vm, err
-			}
-		}
-
-		ctx.Logger().Info("Upgrade v6.0.0-rc0 complete")
+		ctx.Logger().Info("Upgrade v8.0.0-rc0 complete")
 		return vm, nil
 	}
 }

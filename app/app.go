@@ -52,7 +52,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	v8providerrc0 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8providerrc0"
+	v8rc0 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -252,7 +252,7 @@ var maccPerms = map[string][]string{
 	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v8providerrc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8rc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)

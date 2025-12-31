@@ -1,5 +1,14 @@
 ## [unreleased]
 
+
+## v8.0.0
+
+*December 31, 2025*
+
+### FEATURES
+
+- feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
+
 ## v7.0.0
 
 *December 29, 2025*
