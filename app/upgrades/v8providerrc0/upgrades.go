@@ -1,4 +1,4 @@
-package v7providerrc0
+package v8providerrc0
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"

@@ -13,7 +13,7 @@ import (
 
 	"cosmossdk.io/math"
 	"cosmossdk.io/math/unsafe"
-	"github.com/MANTRA-Chain/mantrachain/v7/app"
+	"github.com/MANTRA-Chain/mantrachain/v8/app"
 	cmtconfig "github.com/cometbft/cometbft/config"
 	cmttime "github.com/cometbft/cometbft/types/time"
 	"github.com/cosmos/cosmos-sdk/client"

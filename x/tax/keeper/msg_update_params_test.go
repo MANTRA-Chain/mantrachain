@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	appparams "github.com/MANTRA-Chain/mantrachain/v7/app/params"
-	keepertest "github.com/MANTRA-Chain/mantrachain/v7/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tax/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
+	appparams "github.com/MANTRA-Chain/mantrachain/v8/app/params"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v8/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/types"
 	"github.com/stretchr/testify/require"
 )
 

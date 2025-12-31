@@ -3,10 +3,10 @@ package sanction_test
 import (
 	"testing"
 
-	keepertest "github.com/MANTRA-Chain/mantrachain/v7/testutil/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/testutil/nullify"
-	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	keepertest "github.com/MANTRA-Chain/mantrachain/v8/testutil/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/testutil/nullify"
+	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	"github.com/stretchr/testify/require"
 )
 

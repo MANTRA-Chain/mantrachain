@@ -4,7 +4,7 @@ package mantrachain.sanction.v1;
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types";
+option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 
 // Params defines the parameters for the module.
 message Params {

@@ -48,22 +48,21 @@ import (
 	evmmempool "github.com/cosmos/evm/mempool"
 	precompiletypes "github.com/cosmos/evm/precompiles/types"
 
-	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/ibc_middleware"
-	queries "github.com/MANTRA-Chain/mantrachain/v7/app/queries"
-	"github.com/MANTRA-Chain/mantrachain/v7/app/upgrades"
-	v7 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7"
-	v7providerrc0 "github.com/MANTRA-Chain/mantrachain/v7/app/upgrades/v7providerrc0"
-	"github.com/MANTRA-Chain/mantrachain/v7/client/docs"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
-	sanction "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/module"
-	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
-	taxkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tax/keeper"
-	tax "github.com/MANTRA-Chain/mantrachain/v7/x/tax/module"
-	taxtypes "github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/ante"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
+	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
+	v8providerrc0 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8providerrc0"
+	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
+	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
+	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
+	taxkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/tax/keeper"
+	tax "github.com/MANTRA-Chain/mantrachain/v8/x/tax/module"
+	taxtypes "github.com/MANTRA-Chain/mantrachain/v8/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -251,12 +250,9 @@ var maccPerms = map[string][]string{
 	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
-
-	// upgrade module
-	v7.UpgradeName: {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v7.Upgrade, v7providerrc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8providerrc0.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
