@@ -1,9 +1,6 @@
 ## [unreleased]
 
 
-## v8.0.0
-
-*December 31, 2025*
 
 ### FEATURES
 
