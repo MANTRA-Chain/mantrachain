@@ -1,7 +1,5 @@
 ## [unreleased]
 
-
-
 ### FEATURES
 
 - feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))

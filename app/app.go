@@ -52,7 +52,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	v8rc0 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"

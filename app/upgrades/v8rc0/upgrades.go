@@ -1,4 +1,4 @@
-package v8c0
+package v8rc0
 
 import (
 	"context"
