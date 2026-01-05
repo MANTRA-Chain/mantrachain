@@ -30,7 +30,7 @@ jobs:
         platform:
           - name: Linux x86_64
             ids: mantrachaind-linux-amd64
-            runner: ubuntu-latest-x64-xlarge
+            runner: ubuntu-latest
             cross: false
           - name: Linux aarch64
             ids: mantrachaind-linux-arm64
@@ -39,7 +39,7 @@ jobs:
             cross: false
           - name: MacOS x86_64 and aarch64
             ids: mantrachaind-darwin-amd64,mantrachaind-darwin-arm64
-            runner: ubuntu-latest-x64-xlarge
+            runner: ubuntu-latest
             cross: true
 
     steps:
