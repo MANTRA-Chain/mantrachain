@@ -28,7 +28,7 @@ jobs:
 
   test-sdk:
     name: SDK Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v5
         with:
@@ -92,7 +92,7 @@ jobs:
 
   test-e2e:
     name: E2E Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v5
         with:
@@ -105,7 +105,7 @@ jobs:
 
   test-e2e-nix:
     name: E2E Nix Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     strategy:
       matrix:
