@@ -3,9 +3,9 @@ package sanction
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Chain/mantrachain/v7/testutil/sample"
-	sanctionsimulation "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/simulation"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/testutil/sample"
+	sanctionsimulation "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/simulation"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"

@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tax/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

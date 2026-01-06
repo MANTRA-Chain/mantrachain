@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/appmodule"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/client/cli"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/client/cli"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

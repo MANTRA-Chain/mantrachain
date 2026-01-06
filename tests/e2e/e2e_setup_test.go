@@ -16,7 +16,7 @@ import (
 
 	"cosmossdk.io/math"
 	evidencetypes "cosmossdk.io/x/evidence/types"
-	appparams "github.com/MANTRA-Chain/mantrachain/v7/app/params"
+	appparams "github.com/MANTRA-Chain/mantrachain/v8/app/params"
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	tmjson "github.com/cometbft/cometbft/libs/json"

@@ -5,13 +5,14 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	feegrantkeeper "cosmossdk.io/x/feegrant/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
-	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
+	tokenfactorykeeper "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
@@ -23,7 +24,7 @@ import (
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
-
+	icsproviderkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
 	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 )
 
@@ -81,4 +82,7 @@ type UpgradeKeepers struct {
 	FeeGrantKeeper    feegrantkeeper.Keeper
 	AuthzKeeper       authzkeeper.Keeper
 	OracleKeeper      *oraclekeeper.Keeper
+	// provider
+	ProviderKeeper        icsproviderkeeper.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
 }

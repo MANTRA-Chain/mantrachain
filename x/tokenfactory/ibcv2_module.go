@@ -1,7 +1,7 @@
 package tokenfactory
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	channeltypesv2 "github.com/cosmos/ibc-go/v10/modules/core/04-channel/v2/types"
