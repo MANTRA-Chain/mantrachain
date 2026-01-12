@@ -20,6 +20,27 @@ type BlockEventsExport struct {
 	TxEvents    [][]abci.Event `json:"tx_events"`
 }
 
+// TxResultExport contains all fields from ExecTxResult for debugging
+type TxResultExport struct {
+	Code      uint32       `json:"code"`
+	Data      []byte       `json:"data,omitempty"`
+	Log       string       `json:"log,omitempty"`
+	Info      string       `json:"info,omitempty"`
+	GasWanted int64        `json:"gas_wanted"`
+	GasUsed   int64        `json:"gas_used"`
+	Events    []abci.Event `json:"events,omitempty"`
+	Codespace string       `json:"codespace,omitempty"`
+}
+
+// BlockResultsExport contains the full FinalizeBlockResponse for debugging
+type BlockResultsExport struct {
+	Height           int64                  `json:"height"`
+	TxResults        []TxResultExport       `json:"tx_results"`
+	ValidatorUpdates []abci.ValidatorUpdate `json:"validator_updates,omitempty"`
+	Events           []abci.Event           `json:"events,omitempty"`
+	AppHash          []byte                 `json:"app_hash,omitempty"`
+}
+
 // ExportBlockEventsCmd creates a command to export block events to a file
 func ExportBlockEventsCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -91,6 +112,36 @@ func CleanupBlockEventsCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().String(flags.FlagHome, "", "The application home directory")
+	return cmd
+}
+
+// ExportBlockResultsCmd creates a command to export full block results (including tx gas, code, data) for debugging
+func ExportBlockResultsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "export-block-results [height] [height2] ...",
+		Short: "Export full block results (tx_results with gas, code, data) for debugging LastResultsHash mismatches",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			serverCtx := server.GetServerContextFromCmd(cmd)
+			cfg := serverCtx.Config
+			outputFile, _ := cmd.Flags().GetString("output")
+			if outputFile == "" {
+				return fmt.Errorf("output file is required")
+			}
+
+			var heights []int64
+			for _, arg := range args {
+				var height int64
+				if _, err := fmt.Sscan(arg, &height); err != nil {
+					return fmt.Errorf("invalid height '%s': %w", arg, err)
+				}
+				heights = append(heights, height)
+			}
+			return exportBlockResults(cfg, heights, outputFile)
+		},
+	}
+	cmd.Flags().String(flags.FlagHome, "", "The application home directory")
+	cmd.Flags().String("output", "block-results-export.json", "Output file for exported block results")
 	return cmd
 }
 
@@ -189,6 +240,67 @@ func cleanupBlockEvents(cfg *cmtconfig.Config, heights []int64) error {
 		fmt.Printf("Cleaned up %d block events and %d tx event groups at height %d\n",
 			len(export.BlockEvents), len(export.TxEvents), height)
 	}
+	return nil
+}
+
+func exportBlockResults(cfg *cmtconfig.Config, heights []int64, outputFile string) error {
+	stateStore, closeFunc, err := openStateStore(cfg)
+	if err != nil {
+		return err
+	}
+	defer closeFunc()
+
+	var exports []BlockResultsExport
+
+	for _, height := range heights {
+		resp, err := stateStore.LoadFinalizeBlockResponse(height)
+		if err != nil {
+			fmt.Printf("Failed to load block at height %d: %v\n", height, err)
+			continue
+		}
+		if resp == nil {
+			fmt.Printf("No finalize block response found at height %d\n", height)
+			continue
+		}
+
+		export := BlockResultsExport{
+			Height:           height,
+			TxResults:        make([]TxResultExport, len(resp.TxResults)),
+			ValidatorUpdates: resp.ValidatorUpdates,
+			Events:           resp.Events,
+			AppHash:          resp.AppHash,
+		}
+
+		for i, txResult := range resp.TxResults {
+			if txResult != nil {
+				export.TxResults[i] = TxResultExport{
+					Code:      txResult.Code,
+					Data:      txResult.Data,
+					Log:       txResult.Log,
+					Info:      txResult.Info,
+					GasWanted: txResult.GasWanted,
+					GasUsed:   txResult.GasUsed,
+					Events:    txResult.Events,
+					Codespace: txResult.Codespace,
+				}
+			}
+		}
+
+		exports = append(exports, export)
+		fmt.Printf("Exported block results from height %d: %d tx_results, %d events\n",
+			height, len(export.TxResults), len(export.Events))
+	}
+
+	data, err := json.MarshalIndent(exports, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to marshal export data: %w", err)
+	}
+
+	if err := os.WriteFile(outputFile, data, 0o644); err != nil {
+		return fmt.Errorf("failed to write export file: %w", err)
+	}
+
+	fmt.Printf("Successfully exported block results from %d heights to %s\n", len(exports), outputFile)
 	return nil
 }
 
