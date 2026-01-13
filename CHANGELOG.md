@@ -1,16 +1,5 @@
 ## [unreleased]
 
-<<<<<<< HEAD
-=======
-### FEATURES
-
-- feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
-
-### DEPENDENCIES
-
-- *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
-
->>>>>>> 6038e23 (Problem: evm v0.5.x is not synced (#560))
 ## v7.0.0
 
 *December 29, 2025*
@@ -27,6 +16,7 @@
 
 - *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
 - *(deps)* bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
+- *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
 
 ### DOCUMENTATION
 
