@@ -54,7 +54,7 @@ ifeq ($(LEDGER_ENABLED),true)
       $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
     else
       ifeq ($(LEDGER_ZEMU),true)
-        build_tags += ledger_zemu pebbledb
+        build_tags += ledger ledger_zemu pebbledb
       else
         build_tags += ledger pebbledb
       endif
@@ -69,7 +69,7 @@ ifeq ($(LEDGER_ENABLED),true)
         $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
       else
         ifeq ($(LEDGER_ZEMU),true)
-          build_tags += ledger_zemu pebbledb
+          build_tags += ledger ledger_zemu pebbledb
         else
           build_tags += ledger pebbledb
         endif
