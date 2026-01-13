@@ -46,13 +46,18 @@ GO_MODULE := $(shell cat go.mod | grep "module " | cut -d ' ' -f 2)
 ###############################################################################
 
 build_tags = netgo
+LEDGER_ZEMU ?= false
 ifeq ($(LEDGER_ENABLED),true)
   ifeq ($(OS),Windows_NT)
     GCCEXE = $(shell where gcc.exe 2> NUL)
     ifeq ($(GCCEXE),)
       $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
     else
-      build_tags += ledger ledger_zemu pebbledb
+      ifeq ($(LEDGER_ZEMU),true)
+        build_tags += ledger_zemu pebbledb
+      else
+        build_tags += ledger pebbledb
+      endif
     endif
   else
     UNAME_S = $(shell uname -s)
@@ -63,7 +68,11 @@ ifeq ($(LEDGER_ENABLED),true)
       ifeq ($(GCC),)
         $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
       else
-        build_tags += ledger ledger_zemu pebbledb
+        ifeq ($(LEDGER_ZEMU),true)
+          build_tags += ledger_zemu pebbledb
+        else
+          build_tags += ledger pebbledb
+        endif
       endif
     endif
   endif
