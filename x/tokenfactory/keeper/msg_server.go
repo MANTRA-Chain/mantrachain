@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 
 	"cosmossdk.io/errors"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tokenfactory/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ethcommon "github.com/ethereum/go-ethereum/common"

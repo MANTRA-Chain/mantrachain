@@ -1,4 +1,4 @@
-module github.com/MANTRA-Chain/mantrachain/v7
+module github.com/MANTRA-Chain/mantrachain/v8
 
 go 1.23.8
 
@@ -12,13 +12,10 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/5a0fcfa3fe1c02e7e015b1c7b736f23f1c320425
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20251120014446-4cdc2e92ac35
-
 	// release/v0.5.x
-	github.com/cosmos/evm => github.com/cosmos/evm v0.0.0-20251114133039-e2f6e47c70b7
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260113045948-a4fcfbd50a18
+
+	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
@@ -38,12 +35,19 @@ replace (
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
 
+replace (
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20251121090924-851207a04dcd
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/851207a04dcde770f217ead2bebb279d919604ef
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-v7-mantra-2
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-2
+)
+
 require (
 	cosmossdk.io/api v0.9.2
 	cosmossdk.io/client/v2 v2.0.0-beta.7
 	cosmossdk.io/collections v1.3.1
 	cosmossdk.io/core v0.11.3
-	cosmossdk.io/depinject v1.2.1
 	cosmossdk.io/errors v1.0.2
 	cosmossdk.io/log v1.6.1
 	cosmossdk.io/math v1.5.3
@@ -58,15 +62,16 @@ require (
 	github.com/CosmWasm/wasmd v0.61.1
 	github.com/CosmWasm/wasmvm/v3 v3.0.0
 	github.com/bufbuild/buf v1.46.0
-	github.com/cometbft/cometbft v0.38.19
+	github.com/cometbft/cometbft v0.38.20
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.53.5-0.20251030204916-768cb210885c
+	github.com/cosmos/cosmos-sdk v0.53.5-0.20251204200310-4379cc49ae65
 	github.com/cosmos/evm v0.5.0
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
 	github.com/cosmos/ibc-go/v10 v10.4.0
+	github.com/cosmos/interchain-security/v7 v7.0.1
 	github.com/ethereum/go-ethereum v1.15.11
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.4
@@ -75,7 +80,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/ory/dockertest/v3 v3.11.0
 	github.com/prometheus/client_golang v1.23.0
-	github.com/rakyll/statik v0.1.7
 	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.10.0
@@ -110,6 +114,7 @@ require (
 	cloud.google.com/go/storage v1.50.0 // indirect
 	connectrpc.com/connect v1.17.0 // indirect
 	connectrpc.com/otelconnect v0.7.1 // indirect
+	cosmossdk.io/depinject v1.2.1 // indirect
 	cosmossdk.io/schema v1.1.0 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -168,7 +173,6 @@ require (
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.2.4 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
-	github.com/cosmos/interchain-security/v7 v7.0.1 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.16.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect

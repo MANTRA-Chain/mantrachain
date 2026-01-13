@@ -4,7 +4,7 @@ import (
 	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/v7/app"
+	"github.com/MANTRA-Chain/mantrachain/v8/app"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	cosmosevmserverconfig "github.com/cosmos/evm/server/config"
@@ -72,7 +72,7 @@ func initAppConfig() (string, interface{}) {
 	//   own app.toml to override, or use this default value.
 	//
 	// In this example application, we set the min gas prices to 0.
-	srvCfg.MinGasPrices = "0uom"
+	srvCfg.MinGasPrices = "0amantra"
 
 	customAppTemplate := serverconfig.DefaultConfigTemplate +
 		cosmosevmserverconfig.DefaultEVMConfigTemplate +

@@ -2,14 +2,28 @@
 
 ### FEATURES
 
+- feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
+
+### DEPENDENCIES
+
+- *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
+
+## v7.0.0
+
+*December 29, 2025*
+
+### FEATURES
+
+- feat: token migration OM to MANTRA upgrade ([\#557](https://github.com/MANTRA-Chain/mantrachain/issues/557))
+
 ### BUG-FIXES
 
 - Update version extraction regex for SDK version detection ([\#487](https://github.com/MANTRA-Chain/mantrachain/issues/487))
-- Allow ledger flag work with coin type 60 ([\#467](https://github.com/MANTRA-Chain/mantrachain/issues/467))
 
 ### DEPENDENCIES
 
 - *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
+- *(deps)* bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
 
 ### DOCUMENTATION
 
@@ -22,6 +36,7 @@
 ### OTHER
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
+- Remove depinject boilerplate and proto gen ([\#527](https://github.com/MANTRA-Chain/mantrachain/issues/527))
 
 ## v6.1.2
 

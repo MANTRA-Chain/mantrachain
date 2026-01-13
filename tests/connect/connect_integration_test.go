@@ -77,29 +77,29 @@ var (
 		},
 		{
 			Key:   "app_state.evm.params.evm_denom",
-			Value: "uom",
+			Value: "amantra",
 		},
 		{
 			Key:   "app_state.evm.params.extended_denom_options.extended_denom",
-			Value: "aom",
+			Value: "amantra",
 		},
 		{
 			Key: "app_state.bank.denom_metadata",
 			Value: []map[string]interface{}{
 				{
-					"base":        "uom",
-					"display":     "om",
-					"name":        "om",
-					"symbol":      "OM",
+					"base":        "amantra",
+					"display":     "mantra",
+					"name":        "mantra",
+					"symbol":      "MANTRA",
 					"description": "The native staking token of the Mantra network",
 					"denom_units": []map[string]interface{}{
 						{
-							"denom":    "uom",
+							"denom":    "amantra",
 							"exponent": 0,
 						},
 						{
-							"denom":    "om",
-							"exponent": 6,
+							"denom":    "mantra",
+							"exponent": 18,
 						},
 					},
 				},
@@ -107,8 +107,8 @@ var (
 		},
 	}
 
-	denom        = "uom"
-	coinDecimals = int64(6)
+	denom        = "amantra"
+	coinDecimals = int64(18)
 	spec         = &interchaintest.ChainSpec{
 		ChainName:     "slinky",
 		Name:          "slinky",

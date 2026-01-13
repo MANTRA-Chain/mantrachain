@@ -28,7 +28,7 @@ jobs:
 
   test-sdk:
     name: SDK Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v5
         with:
@@ -92,7 +92,7 @@ jobs:
 
   test-e2e:
     name: E2E Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v5
         with:
@@ -105,7 +105,7 @@ jobs:
 
   test-e2e-nix:
     name: E2E Nix Tests
-    runs-on: ubuntu-latest-x64-xlarge
+    runs-on: ubuntu-latest
     timeout-minutes: 240
     strategy:
       matrix:
@@ -114,35 +114,33 @@ jobs:
       TESTS_TO_RUN: ${{ matrix.tests }}
     steps:
       - name: Create more disk space
-        run: sudo rm -rf /usr/share/dotnet /opt/ghc "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY" || true
+        run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - id: changed-files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
         with:
           files: |
             docs
             *.md
             **/*.md
       - uses: actions/setup-go@v5
-        if: steps.changed-files.outputs.only_changed == 'false'
         with:
           go-version: 1.25
+        if: steps.changed-files.outputs.only_changed == 'false'
       - name: install
-        if: steps.changed-files.outputs.only_changed == 'false'
         run: make install
-      - name: Install Nix
         if: steps.changed-files.outputs.only_changed == 'false'
-        uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
         with:
           nix_path: nixpkgs=channel:nixos-25.05
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             sandbox = false
-      - name: Enable Cachix
         if: steps.changed-files.outputs.only_changed == 'false'
-        uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f
+      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+        if: steps.changed-files.outputs.only_changed == 'false'
         with:
           name: mantrachain-e2e
           extraPullNames: dapp
@@ -158,21 +156,20 @@ jobs:
           fetch-depth: 1
           path: mantrachain-e2e
           ref: develop
-      - name: Warm Nix builds
-        if: steps.changed-files.outputs.only_changed == 'false'
-        working-directory: mantrachain-e2e
-        run: nix build .#mantrachaind .#evmd .#hermes || true
+
       - name: Run integration tests
         if: steps.changed-files.outputs.only_changed == 'false'
         working-directory: mantrachain-e2e
-        run: make test-e2e-nix-skip-mantrachaind-build
-      - name: Tar debug files
+        run: |
+          make test-e2e-nix-skip-mantrachaind-build
+      - name: 'Tar debug files'
         if: failure()
         working-directory: mantrachain-e2e
-        run: tar cfz debug_files.tar.gz -C "${TMPDIR-/tmp}/pytest-of-runner" .
+        run: |
+          tar cfz debug_files.tar.gz -C "${TMPDIR-/tmp}/pytest-of-runner" .
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: debug-files-${{ matrix.tests }}
+          name: debug-files
           path: mantrachain-e2e/debug_files.tar.gz
           if-no-files-found: ignore

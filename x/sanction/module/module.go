@@ -5,23 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"cosmossdk.io/core/address"
 	"cosmossdk.io/core/appmodule"
-	"cosmossdk.io/core/store"
-	"cosmossdk.io/depinject"
-	"cosmossdk.io/depinject/appconfig"
-	"cosmossdk.io/log"
-	modulev1 "github.com/MANTRA-Chain/mantrachain/v7/api/mantrachain/sanction/module/v1"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/client/cli"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/client/cli"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 )
@@ -169,51 +161,3 @@ func (am AppModule) IsOnePerModuleType() {}
 
 // IsAppModule implements the appmodule.AppModule interface.
 func (am AppModule) IsAppModule() {}
-
-// ----------------------------------------------------------------------------
-// App Wiring Setup
-// ----------------------------------------------------------------------------
-
-func init() {
-	appconfig.Register(
-		&modulev1.Module{},
-		appconfig.Provide(ProvideModule),
-	)
-}
-
-type ModuleInputs struct {
-	depinject.In
-
-	AddressCodec address.Codec
-	StoreService store.KVStoreService
-	Cdc          codec.Codec
-	Config       *modulev1.Module
-	Logger       log.Logger
-}
-
-type ModuleOutputs struct {
-	depinject.Out
-
-	SanctionKeeper keeper.Keeper
-	Module         appmodule.AppModule
-}
-
-func ProvideModule(in ModuleInputs) ModuleOutputs {
-	// default to governance authority if not provided
-	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
-	if in.Config.Authority != "" {
-		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
-	}
-	k := keeper.NewKeeper(
-		in.Cdc,
-		in.StoreService,
-		in.Logger,
-		authority.String(),
-	)
-	m := NewAppModule(
-		in.Cdc,
-		k,
-	)
-
-	return ModuleOutputs{SanctionKeeper: k, Module: m}
-}

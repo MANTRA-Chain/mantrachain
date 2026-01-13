@@ -1,4 +1,4 @@
-module github.com/MANTRA-Chain/mantrachain/v7/tests/connect
+module github.com/MANTRA-Chain/mantrachain/v8/tests/connect
 
 go 1.23.8
 
@@ -18,12 +18,11 @@ replace (
 	github.com/ChainSafe/go-schnorrkel => github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d
 	github.com/ChainSafe/go-schnorrkel/1 => github.com/ChainSafe/go-schnorrkel v1.0.0
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/5a0fcfa3fe1c02e7e015b1c7b736f23f1c320425
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.3, current branch: mantra/v0.53.3
-	// Direct tag link: https://github.com/MANTRA-Chain/evm/tree/mantra/v0.4.x_main
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251017085427-6d38644a9b70
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/fcbc2e72a1beb76b35a673d8344ffea13c8d9b9a
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-mantra-1
+	// release/v0.5.x
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20251030091700-5c68a0a92be9
 
 	// branch: release/1.16
 	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1

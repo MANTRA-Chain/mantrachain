@@ -6,8 +6,8 @@ import (
 
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/MANTRA-Chain/mantrachain/v7/app"
-	"github.com/MANTRA-Chain/mantrachain/v7/cmd/mantrachaind/cmd"
+	"github.com/MANTRA-Chain/mantrachain/v8/app"
+	"github.com/MANTRA-Chain/mantrachain/v8/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	evmcfg "github.com/cosmos/evm/config"
@@ -24,9 +24,9 @@ func main() {
 }
 
 const (
-	HumanCoinUnit = "om"
-	BaseCoinUnit  = "uom"
-	OmExponent    = 6
+	HumanCoinUnit  = "mantra"
+	BaseCoinUnit   = "amantra"
+	MantraExponent = 18
 
 	DefaultBondDenom = BaseCoinUnit
 )

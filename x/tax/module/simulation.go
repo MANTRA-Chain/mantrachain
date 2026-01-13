@@ -3,9 +3,9 @@ package tax
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Chain/mantrachain/v7/testutil/sample"
-	taxsimulation "github.com/MANTRA-Chain/mantrachain/v7/x/tax/simulation"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/tax/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/testutil/sample"
+	taxsimulation "github.com/MANTRA-Chain/mantrachain/v8/x/tax/simulation"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"

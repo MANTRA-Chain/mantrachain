@@ -3,8 +3,8 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/keeper"
-	"github.com/MANTRA-Chain/mantrachain/v7/x/sanction/types"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
+	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"

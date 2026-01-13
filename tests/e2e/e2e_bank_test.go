@@ -21,26 +21,26 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		bob, _ := c.genesisAccounts[2].keyInfo.GetAddress()
 		charlie, _ := c.genesisAccounts[3].keyInfo.GetAddress()
 
-		var beforeAliceUomBalance,
-			beforeBobUomBalance,
-			beforeCharlieUomBalance,
-			afterAliceUomBalance,
-			afterBobUomBalance,
-			afterCharlieUomBalance sdk.Coin
+		var beforeAliceAmantraBalance,
+			beforeBobAmantraBalance,
+			beforeCharlieAmantraBalance,
+			afterAliceAmantraBalance,
+			afterBobAmantraBalance,
+			afterCharlieAmantraBalance sdk.Coin
 
 		// get balances of sender and recipient accounts
 		s.Require().Eventually(
 			func() bool {
-				beforeAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				beforeAliceAmantraBalance, err = getSpecificBalance(chainEndpoint, alice.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				beforeBobUomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uomDenom)
+				beforeBobAmantraBalance, err = getSpecificBalance(chainEndpoint, bob.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				beforeCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				beforeCharlieAmantraBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				return beforeAliceUomBalance.IsValid() && beforeBobUomBalance.IsValid() && beforeCharlieUomBalance.IsValid()
+				return beforeAliceAmantraBalance.IsValid() && beforeBobAmantraBalance.IsValid() && beforeCharlieAmantraBalance.IsValid()
 			},
 			10*time.Second,
 			5*time.Second,
@@ -52,16 +52,14 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		// check that the transfer was successful
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				afterAliceAmantraBalance, err = getSpecificBalance(chainEndpoint, alice.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				afterBobUomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uomDenom)
+				afterBobAmantraBalance, err = getSpecificBalance(chainEndpoint, bob.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				expectedAlice := beforeAliceUomBalance.Sub(tokenAmount).Sub(standardFees)
-				expectedBob := beforeBobUomBalance.Add(tokenAmount)
-				decremented := expectedAlice.Equal(afterAliceUomBalance)
-				incremented := expectedBob.Equal(afterBobUomBalance)
+				decremented := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceAmantraBalance)
+				incremented := beforeBobAmantraBalance.Add(tokenAmount).IsEqual(afterBobAmantraBalance)
 
 				return decremented && incremented
 			},
@@ -70,28 +68,25 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 		)
 
 		// save the updated account balances of alice and bob
-		beforeAliceUomBalance, beforeBobUomBalance = afterAliceUomBalance, afterBobUomBalance
+		beforeAliceAmantraBalance, beforeBobAmantraBalance = afterAliceAmantraBalance, afterBobAmantraBalance
 
 		// alice sends tokens to bob and charlie, at once
 		s.execBankMultiSend(s.chainA, valIdx, alice.String(), []string{bob.String(), charlie.String()}, tokenAmount.String(), standardFees.String(), false)
 
 		s.Require().Eventually(
 			func() bool {
-				afterAliceUomBalance, err = getSpecificBalance(chainEndpoint, alice.String(), uomDenom)
+				afterAliceAmantraBalance, err = getSpecificBalance(chainEndpoint, alice.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				afterBobUomBalance, err = getSpecificBalance(chainEndpoint, bob.String(), uomDenom)
+				afterBobAmantraBalance, err = getSpecificBalance(chainEndpoint, bob.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				afterCharlieUomBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), uomDenom)
+				afterCharlieAmantraBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				expectedAlice := beforeAliceUomBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees)
-				expectedBob := beforeBobUomBalance.Add(tokenAmount)
-				expectedCharlie := beforeCharlieUomBalance.Add(tokenAmount)
-				decremented := expectedAlice.Equal(afterAliceUomBalance)
-				incremented := expectedBob.Equal(afterBobUomBalance) &&
-					expectedCharlie.Equal(afterCharlieUomBalance)
+				decremented := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceAmantraBalance)
+				incremented := beforeBobAmantraBalance.Add(tokenAmount).IsEqual(afterBobAmantraBalance) &&
+					beforeCharlieAmantraBalance.Add(tokenAmount).IsEqual(afterCharlieAmantraBalance)
 
 				return decremented && incremented
 			},

@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	HumanCoinUnit = "om"
-	BaseCoinUnit  = "uom"
-	OmExponent    = 6
+	HumanCoinUnit  = "mantra"
+	BaseCoinUnit   = "amantra"
+	MantraExponent = 18
 
 	DefaultBondDenom = BaseCoinUnit
 )

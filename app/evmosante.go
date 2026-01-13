@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/MANTRA-Chain/mantrachain/v7/app/ante"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/ante"
 	"github.com/cosmos/cosmos-sdk/client"
 	evmante "github.com/cosmos/evm/ante"
 	antetypes "github.com/cosmos/evm/ante/types"
