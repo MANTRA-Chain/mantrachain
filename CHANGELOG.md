@@ -1,5 +1,16 @@
 ## [unreleased]
 
+<<<<<<< HEAD
+=======
+### FEATURES
+
+- feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
+
+### DEPENDENCIES
+
+- *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
+
+>>>>>>> 6038e23 (Problem: evm v0.5.x is not synced (#560))
 ## v7.0.0
 
 *December 29, 2025*
