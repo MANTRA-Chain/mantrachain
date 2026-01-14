@@ -704,8 +704,6 @@ github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-2 h1:RuuXm8vz5euMn/YhterK8p
 github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-2/go.mod h1:OVUb3AA6Y+Gdq8S10koYMEB7MGLz9TCr8hzd/dliAtI=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20251121090924-851207a04dcd h1:xzKykWvIqh9eRRKs9SfPfYeXWWca3JOxRPO2X7yXsfg=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20251121090924-851207a04dcd/go.mod h1:VIH3FLXQ2KWCkzkqXSThA9npvg0LgSBxBRzVSRoJWeg=
-github.com/MANTRA-Chain/evm v0.0.0-20260113045948-a4fcfbd50a18 h1:guSnwA7d9RjOBCHuAptgTYn7Awe5Yk4ezmRHN2V3Cvs=
-github.com/MANTRA-Chain/evm v0.0.0-20260113045948-a4fcfbd50a18/go.mod h1:0qGP5W8P49/cpeJFCBZvQ/wl4s7SUn+pP6plD802PZs=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
 github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
@@ -1545,6 +1543,8 @@ github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyua
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/pointerstructure v1.2.0 h1:O+i9nHnXS3l/9Wu7r4NrEdwA2VFTicjUEN1uBnDo34A=
 github.com/mitchellh/pointerstructure v1.2.0/go.mod h1:BRAsLI5zgXmw97Lf6s25bs8ohIXc3tViBH44KcwB2g4=
+github.com/mmsqe/evm v0.0.0-20260114024715-66b02541e661 h1:RGjEVcz91ZT+p2qOIQIsu8VWYrYLRq0hDeTNmyxV7FU=
+github.com/mmsqe/evm v0.0.0-20260114024715-66b02541e661/go.mod h1:0qGP5W8P49/cpeJFCBZvQ/wl4s7SUn+pP6plD802PZs=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/moby/locker v1.0.1 h1:fOXqR41zeveg4fFODix+1Ch4mj/gT0NE1XJbp/epuBg=
