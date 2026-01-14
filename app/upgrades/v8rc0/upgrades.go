@@ -11,10 +11,15 @@ import (
 	cmtproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	erc20v2 "github.com/cosmos/evm/x/erc20/migrations/v2"
+	erc20types "github.com/cosmos/evm/x/erc20/types"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
 	providerkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func CreateUpgradeHandler(
@@ -67,6 +72,31 @@ func CreateUpgradeHandler(
 		err = InitializeLastProviderConsensusValidatorSet(ctx, keepers.ProviderKeeper, keepers.StakingKeeper, int(maxProviderValidators))
 		if err != nil {
 			return vm, errorsmod.Wrapf(err, "initializing LastProviderConsensusValSet during migration")
+		}
+
+		ctx.Logger().Info("Deploying preinstall contracts...")
+		err = keepers.EVMKeeper.AddPreinstalls(ctx, evmtypes.DefaultPreinstalls)
+		if err != nil {
+			ctx.Logger().Info("Preinstalls may already exist", "error", err.Error())
+		}
+
+		ctx.Logger().Info("Enabling bank precompile...")
+		bankPrecompileAddr := common.HexToAddress(evmtypes.BankPrecompileAddress)
+		err = keepers.EVMKeeper.EnableStaticPrecompiles(ctx, bankPrecompileAddr)
+		if err != nil {
+			ctx.Logger().Info("Bank precompile may already be enabled", "error", err.Error())
+		}
+
+		ctx.Logger().Info("Migrating dynamic precompiles to canonical ERC20 contracts...")
+		erc20ModuleAddr := authtypes.NewModuleAddress(erc20types.ModuleName)
+		deployer := common.BytesToAddress(erc20ModuleAddr.Bytes())
+		if err = erc20v2.MigrateDynamicPrecompilesToERC20(
+			ctx,
+			&keepers.EVMKeeper,
+			keepers.Erc20Keeper,
+			deployer,
+		); err != nil {
+			return vm, errorsmod.Wrapf(err, "migrating dynamic precompiles to ERC20")
 		}
 
 		ctx.Logger().Info("Upgrade v8.0.0-rc0 complete")

@@ -1,8 +1,6 @@
 module github.com/MANTRA-Chain/mantrachain/v8
 
-go 1.23.8
-
-toolchain go1.23.9
+go 1.24.0
 
 replace (
 	// use cosmos fork of keyring
@@ -13,7 +11,7 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
 	// release/v0.5.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260113045948-a4fcfbd50a18
+	github.com/cosmos/evm => github.com/mmsqe/evm v0.0.0-20260114094647-255d96920b74
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
@@ -72,7 +70,7 @@ require (
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
 	github.com/cosmos/ibc-go/v10 v10.4.0
 	github.com/cosmos/interchain-security/v7 v7.0.1
-	github.com/ethereum/go-ethereum v1.15.11
+	github.com/ethereum/go-ethereum v1.16.4
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
@@ -87,10 +85,10 @@ require (
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/text v0.28.0
-	golang.org/x/tools v0.36.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20250707201910-8d1bb00bc6a7
-	google.golang.org/grpc v1.75.0
+	golang.org/x/text v0.31.0
+	golang.org/x/tools v0.39.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20250908214217-97024824d090
+	google.golang.org/grpc v1.76.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 	google.golang.org/protobuf v1.36.10
 )
@@ -106,9 +104,9 @@ require (
 	buf.build/go/spdx v0.2.0 // indirect
 	cel.dev/expr v0.24.0 // indirect
 	cloud.google.com/go v0.120.0 // indirect
-	cloud.google.com/go/auth v0.16.4 // indirect
+	cloud.google.com/go/auth v0.17.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
-	cloud.google.com/go/compute/metadata v0.8.0 // indirect
+	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/iam v1.5.2 // indirect
 	cloud.google.com/go/monitoring v1.24.2 // indirect
 	cloud.google.com/go/storage v1.50.0 // indirect
@@ -210,7 +208,7 @@ require (
 	github.com/getsentry/sentry-go v0.35.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-chi/chi/v5 v5.2.2 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.1 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.2 // indirect
 	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
@@ -237,7 +235,7 @@ require (
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.7 // indirect
 	github.com/googleapis/gax-go/v2 v2.15.0 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
@@ -355,6 +353,7 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
+	github.com/yihuang/go-abi v0.1.1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zeebo/errs v1.4.0 // indirect
 	github.com/zondax/golem v0.27.0 // indirect
@@ -383,19 +382,20 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/arch v0.17.0 // indirect
-	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
-	golang.org/x/mod v0.27.0 // indirect
-	golang.org/x/net v0.43.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/term v0.34.0 // indirect
-	golang.org/x/time v0.12.0 // indirect
-	google.golang.org/api v0.247.0 // indirect
-	google.golang.org/genproto v0.0.0-20250603155806-513f23925822 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250818200422-3122310a409c // indirect
+	golang.org/x/arch v0.21.0 // indirect
+	golang.org/x/crypto v0.44.0 // indirect
+	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
+	golang.org/x/mod v0.30.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/oauth2 v0.34.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/telemetry v0.0.0-20251111182119-bc8e575c7b54 // indirect
+	golang.org/x/term v0.38.0 // indirect
+	golang.org/x/time v0.14.0 // indirect
+	google.golang.org/api v0.256.0 // indirect
+	google.golang.org/genproto v0.0.0-20250922171735-9219d122eba9 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
