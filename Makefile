@@ -134,7 +134,7 @@ $(BUILDDIR)/:
 ###                           Tests                            		        ###
 ###############################################################################
 
-PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e' | grep -v '/simulation')
+PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests' | grep -v '/simulation')
 PACKAGES_E2E=$(shell cd tests/e2e && go list ./... | grep '/e2e')
 TEST_PACKAGES=./...
 TEST_TARGETS := test-unit test-e2e test-cover test-connect
