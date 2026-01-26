@@ -7,10 +7,11 @@
 ### DEPENDENCIES
 
 - *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
+- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 
 ## v7.0.0
 
-*December 29, 2025*
+*January 26, 2026*
 
 ### FEATURES
 
@@ -24,7 +25,7 @@
 
 - *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
-- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
+- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 (backport [#568](https://github.com/MANTRA-Chain/mantrachain/issues/568)) ([#570](https://github.com/MANTRA-Chain/mantrachain/issues/570))
 
 ### DOCUMENTATION
 
