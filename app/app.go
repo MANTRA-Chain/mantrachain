@@ -50,6 +50,7 @@ import (
 
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ante"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
@@ -819,19 +820,28 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.EVMKeeper.WithStaticPrecompiles(
-		precompiletypes.DefaultStaticPrecompiles(
-			app.StakingKeeper,
-			app.DistrKeeper,
-			app.BankKeeper,
-			&app.Erc20Keeper,
-			&app.TransferKeeper,
-			app.IBCKeeper.ChannelKeeper,
-			app.GovKeeper,
-			app.SlashingKeeper,
-			appCodec,
-		),
+	corePrecompiles := precompiletypes.DefaultStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		&app.Erc20Keeper,
+		&app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		appCodec,
 	)
+
+	corePrecompiles[ethcommon.HexToAddress(distrclaim.DistributionClaimPrecompileAddress)] = distrclaim.NewPrecompile(
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		distrkeeper.NewMsgServerImpl(app.DistrKeeper),
+		&app.Erc20Keeper,
+		app.AccountKeeper.AddressCodec(),
+	)
+
+	app.EVMKeeper.WithStaticPrecompiles(corePrecompiles)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
