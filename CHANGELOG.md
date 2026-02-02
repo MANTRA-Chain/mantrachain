@@ -11,7 +11,7 @@
 
 ### BUG-FIXES
 
-- Return original error if no evm chain-id found ([#559]())
+- Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
 
 ## v7.0.0
 
