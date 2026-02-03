@@ -1,6 +1,7 @@
 package distrclaim
 
 import (
+	"encoding/binary"
 	"fmt"
 	"math/big"
 	"strings"
@@ -20,6 +21,9 @@ import (
 const (
 	maxGasMantraUSDGetter = uint64(200_000)
 	maxGasWithdrawCall    = uint64(300_000)
+
+	errorStringSelector = uint32(0x08c379a0) // Error(string)
+	panicSelector       = uint32(0x4e487b71) // Panic(uint256)
 )
 
 var minWithdrawAmountWad = big.NewInt(1_000_000_000_000) // wmantraUSD SCALAR (1e12)
@@ -181,7 +185,53 @@ func tryUnwrapWrapper(evm *vm.EVM, caller common.Address, contract *vm.Contract,
 	}
 
 	// Best-effort unwrap; if withdraw fails we keep the original behavior.
-	_, _ = evmWithdrawUint256(evm, caller, wrapperAddr, amountWad, contract)
+	res, err := evmWithdrawUint256(evm, caller, wrapperAddr, amountWad, contract)
+	if err != nil {
+		reason := decodeRevertReason(res)
+		if reason != "" {
+			fmt.Println("mm-withdraw-revert", reason)
+		}
+	}
+}
+
+func decodeRevertReason(ret []byte) string {
+	if len(ret) < 4 {
+		return ""
+	}
+	selector := binary.BigEndian.Uint32(ret[:4])
+	switch selector {
+	case errorStringSelector:
+		// ABI encoding: selector | offset(32) | ...dynamic...
+		// dynamic section: strlen(32) | bytes
+		if len(ret) < 4+32 {
+			return ""
+		}
+		offset := int(new(big.Int).SetBytes(ret[4 : 4+32]).Int64())
+		if offset < 32 {
+			return ""
+		}
+		if len(ret) < 4+offset+32 {
+			return ""
+		}
+		strlen := int(new(big.Int).SetBytes(ret[4+offset : 4+offset+32]).Int64())
+		if strlen <= 0 {
+			return ""
+		}
+		start := 4 + offset + 32
+		end := start + strlen
+		if start < 0 || end > len(ret) {
+			return ""
+		}
+		return string(ret[start:end])
+	case panicSelector:
+		if len(ret) < 4+32 {
+			return ""
+		}
+		code := new(big.Int).SetBytes(ret[4 : 4+32])
+		return fmt.Sprintf("panic(0x%x)", code)
+	default:
+		return ""
+	}
 }
 
 func evmGetUnderlyingMantraUSD(evm *vm.EVM, caller common.Address, wrapper common.Address, contract *vm.Contract) (common.Address, error) {
@@ -230,7 +280,7 @@ func evmWithdrawUint256(evm *vm.EVM, caller common.Address, wrapper common.Addre
 	}
 	ret, left, err := evm.Call(caller, wrapper, data, gas, uint256.NewInt(0))
 	if err != nil {
-		return nil, fmt.Errorf("wrapper withdraw call failed: %w", err)
+		return ret, fmt.Errorf("wrapper withdraw call failed: %w", err)
 	}
 	used := gas - left
 	if used > 0 {
