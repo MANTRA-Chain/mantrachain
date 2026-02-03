@@ -33,6 +33,10 @@ var _ vm.PrecompiledContract = &Precompile{}
 // Precompile implements `claimRewardsAndConvertCoin`.
 // It sets the caller's withdraw address, claims up to `maxRetrieve` rewards, then
 // converts the specified `denom` into ERC20 via x/erc20 and returns the amount.
+//
+// If `denom` is a wrapper ERC20 (e.g. wmantraUSD) exposing `mantraUSD()` and
+// `withdraw(uint256)`, the precompile may also unwrap to the underlying token in the
+// same EVM tx (best-effort, only when the amount is withdrawable).
 type Precompile struct {
 	cmn.Precompile
 	stakingKeeper         cmn.StakingKeeper
@@ -76,11 +80,11 @@ func (p Precompile) RequiredGas(input []byte) uint64 {
 
 func (p Precompile) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) ([]byte, error) {
 	return p.RunNativeAction(evm, contract, func(ctx sdk.Context) ([]byte, error) {
-		return p.Execute(ctx, evm.StateDB, contract, readonly)
+		return p.Execute(ctx, evm, contract, readonly)
 	})
 }
 
-func (p Precompile) Execute(ctx sdk.Context, stateDB vm.StateDB, contract *vm.Contract, readOnly bool) ([]byte, error) {
+func (p Precompile) Execute(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readOnly bool) ([]byte, error) {
 	methodID, input, err := splitMethodID(contract.Input)
 	if err != nil {
 		return nil, err
@@ -92,7 +96,7 @@ func (p Precompile) Execute(ctx sdk.Context, stateDB vm.StateDB, contract *vm.Co
 
 	switch methodID {
 	case ClaimRewardsAndConvertCoinID:
-		return p.runClaimRewardsAndConvertCoin(ctx, input, stateDB, contract)
+		return p.runClaimRewardsAndConvertCoin(ctx, input, evm, contract)
 	default:
 		return nil, fmt.Errorf("unknown method id: %d", methodID)
 	}
