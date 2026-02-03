@@ -841,6 +841,7 @@ func New(
 
 	corePrecompiles[ethcommon.HexToAddress(distrclaim.DistributionClaimPrecompileAddress)] = distrclaim.NewPrecompile(
 		app.BankKeeper,
+		app.EVMKeeper,
 		app.StakingKeeper,
 		app.DistrKeeper,
 		distrkeeper.NewMsgServerImpl(app.DistrKeeper),

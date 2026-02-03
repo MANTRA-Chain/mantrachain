@@ -135,7 +135,7 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 			return nil, err
 		}
 		converted = amtBig
-		tryUnwrapWrapper(evm, msgSender, contract, denom, amtBig)
+		p.tryUnwrapWrapper(ctx, evm, msgSender, contract, denom, amtBig)
 	}
 
 	return &ClaimRewardsAndConvertCoinReturn{Amount: converted}, nil
@@ -159,7 +159,7 @@ func parseERC20DenomAddress(denom string) (common.Address, error) {
 	return addr, nil
 }
 
-func tryUnwrapWrapper(evm *vm.EVM, caller common.Address, contract *vm.Contract, denom string, amountWad *big.Int) {
+func (p *Precompile) tryUnwrapWrapper(ctx sdk.Context, evm *vm.EVM, caller common.Address, contract *vm.Contract, denom string, amountWad *big.Int) {
 	if evm == nil || amountWad == nil {
 		return
 	}
@@ -180,8 +180,8 @@ func tryUnwrapWrapper(evm *vm.EVM, caller common.Address, contract *vm.Contract,
 		return
 	}
 
-	// Best-effort unwrap; if withdraw fails we keep the original behavior.
-	_, _ = evmWithdrawUint256(evm, caller, wrapperAddr, amountWad, contract)
+	// Best-effort unwrap via x/vm keeper (sees ConvertCoin state updates).
+	_, _ = p.evmWithdrawUint256(ctx, caller, wrapperAddr, amountWad)
 }
 
 func evmGetUnderlyingMantraUSD(evm *vm.EVM, caller common.Address, wrapper common.Address, contract *vm.Contract) (common.Address, error) {
@@ -211,7 +211,7 @@ func evmGetUnderlyingMantraUSD(evm *vm.EVM, caller common.Address, wrapper commo
 	return underlying, nil
 }
 
-func evmWithdrawUint256(evm *vm.EVM, caller common.Address, wrapper common.Address, amount *big.Int, contract *vm.Contract) ([]byte, error) {
+func (p *Precompile) evmWithdrawUint256(ctx sdk.Context, caller common.Address, wrapper common.Address, amount *big.Int) ([]byte, error) {
 	if amount == nil || amount.Sign() <= 0 {
 		return nil, fmt.Errorf("invalid withdraw amount")
 	}
@@ -224,19 +224,9 @@ func evmWithdrawUint256(evm *vm.EVM, caller common.Address, wrapper common.Addre
 	amt32 := u.Bytes32()
 	copy(data[4:], amt32[:])
 
-	gas := contract.Gas
-	if gas > maxGasWithdrawCall {
-		gas = maxGasWithdrawCall
+	res, err := p.evmKeeper.CallEVMWithData(ctx, caller, &wrapper, data, true, nil)
+	if res == nil {
+		return nil, err
 	}
-	ret, left, err := evm.Call(caller, wrapper, data, gas, uint256.NewInt(0))
-	if err != nil {
-		return nil, fmt.Errorf("wrapper withdraw call failed: %w", err)
-	}
-	used := gas - left
-	if used > 0 {
-		if !contract.UseGas(used, nil, tracing.GasChangeCallPrecompiledContract) {
-			return nil, vm.ErrOutOfGas
-		}
-	}
-	return ret, nil
+	return res.Ret, err
 }

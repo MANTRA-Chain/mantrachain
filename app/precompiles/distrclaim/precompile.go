@@ -39,6 +39,8 @@ var _ vm.PrecompiledContract = &Precompile{}
 // same EVM tx (best-effort, only when the amount is withdrawable).
 type Precompile struct {
 	cmn.Precompile
+	bankKeeper            cmn.BankKeeper
+	evmKeeper             EVMKeeper
 	stakingKeeper         cmn.StakingKeeper
 	distributionKeeper    cmn.DistributionKeeper
 	distributionMsgServer distrtypes.MsgServer
@@ -48,6 +50,7 @@ type Precompile struct {
 
 func NewPrecompile(
 	bankKeeper cmn.BankKeeper,
+	evmKeeper EVMKeeper,
 	stakingKeeper cmn.StakingKeeper,
 	distributionKeeper cmn.DistributionKeeper,
 	distributionMsgServer distrtypes.MsgServer,
@@ -61,6 +64,8 @@ func NewPrecompile(
 			ContractAddress:       common.HexToAddress(DistributionClaimPrecompileAddress),
 			BalanceHandlerFactory: cmn.NewBalanceHandlerFactory(bankKeeper),
 		},
+		bankKeeper:            bankKeeper,
+		evmKeeper:             evmKeeper,
 		stakingKeeper:         stakingKeeper,
 		distributionKeeper:    distributionKeeper,
 		distributionMsgServer: distributionMsgServer,
