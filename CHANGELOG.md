@@ -10,7 +10,7 @@
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 
 ### IMPROVEMENTS
-- Avoid set prepare/process handler multiple times ([#565]()).
+- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586)).
 
 ## v7.0.0
 
