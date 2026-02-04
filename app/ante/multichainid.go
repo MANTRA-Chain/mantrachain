@@ -47,7 +47,7 @@ func (mcd MultiChainIDDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	if lastHyphen == -1 {
 		// The chain ID is not in the expected <string>-<number> format.
 		// Return the original unauthorized error.
-		return ctx, err
+		return ctx, err1
 	}
 
 	name := chainID[:lastHyphen]
