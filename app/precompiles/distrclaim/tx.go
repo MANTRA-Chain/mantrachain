@@ -1,6 +1,7 @@
 package distrclaim
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 	"strings"
@@ -16,6 +17,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
+
+type delegatorWithdrawAddrGetter interface {
+	GetDelegatorWithdrawAddr(ctx context.Context, delAddr sdk.AccAddress) (sdk.AccAddress, error)
+}
 
 const (
 	maxGasUnderlyingGetter = uint64(200_000)
@@ -88,14 +93,31 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		return nil, err
 	}
 
-	// Ensure rewards are paid to the delegator account itself, so the subsequent
-	// conversion burns from the same account.
-	_, err = p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
-		DelegatorAddress: delegatorBech32,
-		WithdrawAddress:  delegatorBech32,
-	})
+	withdrawAddrGetter, ok := p.distributionKeeper.(delegatorWithdrawAddrGetter)
+	if !ok {
+		return nil, fmt.Errorf("distribution keeper does not support GetDelegatorWithdrawAddr")
+	}
+
+	prevWithdrawAddr, err := withdrawAddrGetter.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(delegatorAddr.Bytes()))
 	if err != nil {
 		return nil, err
+	}
+	prevWithdrawBech32, err := p.addrCdc.BytesToString(prevWithdrawAddr)
+	if err != nil {
+		return nil, err
+	}
+	changedWithdrawAddr := prevWithdrawBech32 != delegatorBech32
+
+	// Ensure rewards are paid to the delegator account itself, so the subsequent
+	// conversion burns from the same account.
+	if changedWithdrawAddr {
+		_, err = p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
+			DelegatorAddress: delegatorBech32,
+			WithdrawAddress:  delegatorBech32,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	res, err := p.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr.Bytes(), maxRetrieve)
@@ -135,6 +157,16 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		}
 		converted = amtBig
 		p.tryUnwrapWrapper(ctx, evm, msgSender, contract, denom, amtBig)
+	}
+
+	if changedWithdrawAddr {
+		_, err := p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
+			DelegatorAddress: delegatorBech32,
+			WithdrawAddress:  prevWithdrawBech32,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &ClaimRewardsAndConvertCoinReturn{Amount: converted}, nil
