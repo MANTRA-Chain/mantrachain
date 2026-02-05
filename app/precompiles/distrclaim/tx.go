@@ -70,7 +70,7 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 	denom string,
 	evm *vm.EVM,
 	contract *vm.Contract,
-) (*ClaimRewardsAndConvertCoinReturn, error) {
+) (out *ClaimRewardsAndConvertCoinReturn, err error) {
 	maxVals, err := p.stakingKeeper.MaxValidators(ctx)
 	if err != nil {
 		return nil, err
@@ -107,6 +107,27 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		return nil, err
 	}
 	changedWithdrawAddr := prevWithdrawBech32 != delegatorBech32
+	didSetWithdrawAddr := false
+	defer func() {
+		if !didSetWithdrawAddr {
+			return
+		}
+		_, restoreErr := p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
+			DelegatorAddress: delegatorBech32,
+			WithdrawAddress:  prevWithdrawBech32,
+		})
+		if restoreErr == nil {
+			return
+		}
+		// If restore fails, fail the tx.
+		if err == nil {
+			err = restoreErr
+			out = nil
+			return
+		}
+		err = fmt.Errorf("%w; also failed to restore withdraw address: %v", err, restoreErr)
+		out = nil
+	}()
 
 	// Ensure rewards are paid to the delegator account itself, so the subsequent
 	// conversion burns from the same account.
@@ -118,6 +139,7 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		if err != nil {
 			return nil, err
 		}
+		didSetWithdrawAddr = true
 	}
 
 	res, err := p.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr.Bytes(), maxRetrieve)
@@ -157,16 +179,6 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		}
 		converted = amtBig
 		p.tryUnwrapWrapper(ctx, evm, msgSender, contract, denom, amtBig)
-	}
-
-	if changedWithdrawAddr {
-		_, err := p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
-			DelegatorAddress: delegatorBech32,
-			WithdrawAddress:  prevWithdrawBech32,
-		})
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return &ClaimRewardsAndConvertCoinReturn{Amount: converted}, nil
