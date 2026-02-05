@@ -58,6 +58,9 @@ func (p *Precompile) runClaimRewardsAndConvertCoin(
 	if err != nil {
 		return nil, err
 	}
+	if emitErr := p.emitClaimRewardsAndConvertCoinEvent(ctx, evm, delegatorAddr, denom, out.Amount); emitErr != nil {
+		return nil, emitErr
+	}
 
 	return out.Encode()
 }
