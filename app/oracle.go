@@ -61,7 +61,7 @@ func (app *App) initializeABCIExtensions(
 	oracleMetrics servicemetrics.Metrics,
 	prepareProposalHandler sdk.PrepareProposalHandler,
 	processProposalHandler sdk.ProcessProposalHandler,
-) {
+) (sdk.PrepareProposalHandler, sdk.ProcessProposalHandler) {
 	// Create the proposal handler that will be used to fill proposals with
 	// transactions and oracle data.
 	proposalHandler := proposals.NewProposalHandler(
@@ -80,8 +80,6 @@ func (app *App) initializeABCIExtensions(
 		currencypair.NewDeltaCurrencyPairStrategy(app.OracleKeeper),
 		oracleMetrics,
 	)
-	app.SetPrepareProposal(proposalHandler.PrepareProposalHandler())
-	app.SetProcessProposal(proposalHandler.ProcessProposalHandler())
 
 	// Create the aggregation function that will be used to aggregate oracle data
 	// from each validator.
@@ -138,4 +136,6 @@ func (app *App) initializeABCIExtensions(
 	)
 	app.SetExtendVoteHandler(voteExtensionsHandler.ExtendVoteHandler())
 	app.SetVerifyVoteExtensionHandler(voteExtensionsHandler.VerifyVoteExtensionHandler())
+
+	return proposalHandler.PrepareProposalHandler(), proposalHandler.ProcessProposalHandler()
 }
