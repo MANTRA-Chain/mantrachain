@@ -1137,7 +1137,12 @@ func New(
 
 	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
 
-	app.initializeABCIExtensions(client, metrics, prepareProposalHandler, processProposalHandler)
+	prepareProposalHandler, processProposalHandler = app.initializeABCIExtensions(
+		client, metrics, prepareProposalHandler, processProposalHandler,
+	)
+
+	app.SetPrepareProposal(prepareProposalHandler)
+	app.SetProcessProposal(processProposalHandler)
 
 	// Register any on-chain upgrades.
 	app.setupUpgradeStoreLoaders()
