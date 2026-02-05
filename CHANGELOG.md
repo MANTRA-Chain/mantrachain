@@ -9,8 +9,15 @@
 - *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 
+
 ### IMPROVEMENTS
+
 - Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586)).
+
+### BUG-FIXES
+
+- Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
+
 
 ## v7.0.0
 
