@@ -780,21 +780,14 @@ func New(
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket
-			-> erc20.OnRecvPacket -> transfer.OnRecvPacket -> ibc_middleware.NewAutoConvertERC20CoinIBCModule -> ibc_middleware.NewMigrateUomIBCModule
+			channel.RecvPacket -> icsprovider.OnRecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket
+			-> callbacks.OnRecvPacket -> erc20.OnRecvPacket -> ibc_middleware.NewMigrateUomIBCModule -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	transferStack = ibc_middleware.NewAutoConvertERC20CoinIBCModule(
-		transferStack,
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.Erc20Keeper,
-		app.AccountKeeper.AddressCodec(),
-	)
 	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper, app.AccountKeeper.AddressCodec())
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
