@@ -34,9 +34,10 @@ var _ vm.PrecompiledContract = &Precompile{}
 // It sets the caller's withdraw address, claims up to `maxRetrieve` rewards, then
 // converts the specified `denom` into ERC20 via x/erc20 and returns the amount.
 //
-// If `denom` is a wrapper ERC20 (e.g. wmantraUSD) exposing `mantraUSD()` and
-// `withdraw(uint256)`, the precompile may also unwrap to the underlying token in the
-// same EVM tx (best-effort, only when the amount is withdrawable).
+// If `denom` is a wrapper ERC20 exposing the standard ERC20Wrapper interface
+// (`underlying()` and `withdrawTo(address,uint256)`), the precompile may also unwrap
+// to the underlying token in the same EVM tx (best-effort, only when the amount is
+// withdrawable).
 type Precompile struct {
 	cmn.Precompile
 	bankKeeper            cmn.BankKeeper

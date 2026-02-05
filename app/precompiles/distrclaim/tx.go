@@ -18,15 +18,14 @@ import (
 )
 
 const (
-	maxGasMantraUSDGetter = uint64(200_000)
-	maxGasWithdrawCall    = uint64(300_000)
+	maxGasUnderlyingGetter = uint64(200_000)
 )
 
 var minWithdrawAmountWad = big.NewInt(1_000_000_000_000) // wmantraUSD SCALAR (1e12)
 
 var (
-	selectorMantraUSDGetter = [4]byte{0x16, 0x60, 0x09, 0x12} // mantraUSD()
-	selectorWithdrawUint256 = [4]byte{0x2e, 0x1a, 0x7d, 0x4d} // withdraw(uint256)
+	selectorUnderlyingGetter         = [4]byte{0x6f, 0x30, 0x7d, 0xc3} // underlying()
+	selectorWithdrawToAddressUint256 = [4]byte{0x20, 0x5c, 0x28, 0x78} // withdrawTo(address,uint256)
 )
 
 func (p *Precompile) runClaimRewardsAndConvertCoin(
@@ -175,25 +174,25 @@ func (p *Precompile) tryUnwrapWrapper(ctx sdk.Context, evm *vm.EVM, caller commo
 		return
 	}
 
-	// Only attempt for wrappers that look like wmantraUSD (mantraUSD() + withdraw(uint256)).
-	if _, err := evmGetUnderlyingMantraUSD(evm, caller, wrapperAddr, contract); err != nil {
+	// Only attempt for wrappers that look like ERC20Wrapper (underlying() + withdrawTo(address,uint256)).
+	if _, err := evmGetUnderlyingERC20Wrapper(evm, caller, wrapperAddr, contract); err != nil {
 		return
 	}
 
 	// Best-effort unwrap via x/vm keeper (sees ConvertCoin state updates).
-	_, _ = p.evmWithdrawUint256(ctx, caller, wrapperAddr, amountWad)
+	_, _ = p.evmWithdrawToAddressUint256(ctx, caller, wrapperAddr, caller, amountWad)
 }
 
-func evmGetUnderlyingMantraUSD(evm *vm.EVM, caller common.Address, wrapper common.Address, contract *vm.Contract) (common.Address, error) {
+func evmGetUnderlyingERC20Wrapper(evm *vm.EVM, caller common.Address, wrapper common.Address, contract *vm.Contract) (common.Address, error) {
 	gas := contract.Gas
-	if gas > maxGasMantraUSDGetter {
-		gas = maxGasMantraUSDGetter
+	if gas > maxGasUnderlyingGetter {
+		gas = maxGasUnderlyingGetter
 	}
 	data := make([]byte, 4)
-	copy(data[:4], selectorMantraUSDGetter[:])
+	copy(data[:4], selectorUnderlyingGetter[:])
 	ret, left, err := evm.StaticCall(caller, wrapper, data, gas)
 	if err != nil {
-		return common.Address{}, fmt.Errorf("wrapper mantraUSD() call failed: %w", err)
+		return common.Address{}, fmt.Errorf("wrapper underlying() call failed: %w", err)
 	}
 	used := gas - left
 	if used > 0 {
@@ -202,16 +201,16 @@ func evmGetUnderlyingMantraUSD(evm *vm.EVM, caller common.Address, wrapper commo
 		}
 	}
 	if len(ret) < 32 {
-		return common.Address{}, fmt.Errorf("wrapper mantraUSD() returned short data")
+		return common.Address{}, fmt.Errorf("wrapper underlying() returned short data")
 	}
 	underlying := common.BytesToAddress(ret[12:32])
 	if underlying == (common.Address{}) {
-		return common.Address{}, fmt.Errorf("wrapper mantraUSD() returned zero address")
+		return common.Address{}, fmt.Errorf("wrapper underlying() returned zero address")
 	}
 	return underlying, nil
 }
 
-func (p *Precompile) evmWithdrawUint256(ctx sdk.Context, caller common.Address, wrapper common.Address, amount *big.Int) ([]byte, error) {
+func (p *Precompile) evmWithdrawToAddressUint256(ctx sdk.Context, caller common.Address, wrapper common.Address, to common.Address, amount *big.Int) ([]byte, error) {
 	if amount == nil || amount.Sign() <= 0 {
 		return nil, fmt.Errorf("invalid withdraw amount")
 	}
@@ -219,10 +218,11 @@ func (p *Precompile) evmWithdrawUint256(ctx sdk.Context, caller common.Address, 
 	if overflow {
 		return nil, fmt.Errorf("withdraw amount overflows uint256")
 	}
-	data := make([]byte, 4+32)
-	copy(data[:4], selectorWithdrawUint256[:])
+	data := make([]byte, 4+32+32)
+	copy(data[:4], selectorWithdrawToAddressUint256[:])
+	copy(data[4:4+32], common.LeftPadBytes(to.Bytes(), 32))
 	amt32 := u.Bytes32()
-	copy(data[4:], amt32[:])
+	copy(data[4+32:], amt32[:])
 
 	res, err := p.evmKeeper.CallEVMWithData(ctx, caller, &wrapper, data, true, nil)
 	if res == nil {
