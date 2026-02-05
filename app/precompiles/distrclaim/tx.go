@@ -15,7 +15,6 @@ import (
 	erc20types "github.com/cosmos/evm/x/erc20/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
 
 type delegatorWithdrawAddrGetter interface {
@@ -70,7 +69,7 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 	denom string,
 	evm *vm.EVM,
 	contract *vm.Contract,
-) (out *ClaimRewardsAndConvertCoinReturn, err error) {
+) (*ClaimRewardsAndConvertCoinReturn, error) {
 	maxVals, err := p.stakingKeeper.MaxValidators(ctx)
 	if err != nil {
 		return nil, err
@@ -98,48 +97,20 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		return nil, fmt.Errorf("distribution keeper does not support GetDelegatorWithdrawAddr")
 	}
 
-	prevWithdrawAddr, err := withdrawAddrGetter.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(delegatorAddr.Bytes()))
+	withdrawAddrSdk, err := withdrawAddrGetter.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(delegatorAddr.Bytes()))
 	if err != nil {
 		return nil, err
 	}
-	prevWithdrawBech32, err := p.addrCdc.BytesToString(prevWithdrawAddr)
+	withdrawAddrBech32, err := p.addrCdc.BytesToString(withdrawAddrSdk)
 	if err != nil {
 		return nil, err
 	}
-	changedWithdrawAddr := prevWithdrawBech32 != delegatorBech32
-	didSetWithdrawAddr := false
-	defer func() {
-		if !didSetWithdrawAddr {
-			return
-		}
-		_, restoreErr := p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
-			DelegatorAddress: delegatorBech32,
-			WithdrawAddress:  prevWithdrawBech32,
-		})
-		if restoreErr == nil {
-			return
-		}
-		// If restore fails, fail the tx.
-		if err == nil {
-			err = restoreErr
-			out = nil
-			return
-		}
-		err = fmt.Errorf("%w; also failed to restore withdraw address: %v", err, restoreErr)
-		out = nil
-	}()
-
-	// Ensure rewards are paid to the delegator account itself, so the subsequent
-	// conversion burns from the same account.
-	if changedWithdrawAddr {
-		_, err = p.distributionMsgServer.SetWithdrawAddress(ctx, &distrtypes.MsgSetWithdrawAddress{
-			DelegatorAddress: delegatorBech32,
-			WithdrawAddress:  delegatorBech32,
-		})
-		if err != nil {
-			return nil, err
-		}
-		didSetWithdrawAddr = true
+	if withdrawAddrBech32 != delegatorBech32 {
+		return nil, fmt.Errorf(
+			"withdraw address %s must equal delegator %s",
+			withdrawAddrBech32,
+			delegatorBech32,
+		)
 	}
 
 	res, err := p.stakingKeeper.GetDelegatorValidators(ctx, delegatorAddr.Bytes(), maxRetrieve)
