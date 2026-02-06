@@ -73,7 +73,10 @@ func ERC20WrapperUnderlyingViaEVMCaller(ctx sdk.Context, caller EVMCaller, from 
 	data := ERC20WrapperUnderlyingCallData()
 	res, err := caller.CallEVMWithData(ctx, from, &wrapper, data, false, GasCapERC20WrapperUnderlying)
 	if res == nil {
-		return common.Address{}, err
+		if err != nil {
+			return common.Address{}, WrapERC20WrapperUnderlyingError(err)
+		}
+		return common.Address{}, WrapERC20WrapperUnderlyingError(fmt.Errorf("nil response from EVM call"))
 	}
 	if err != nil {
 		return common.Address{}, WrapERC20WrapperUnderlyingError(err)
@@ -92,9 +95,15 @@ func ERC20WrapperWithdrawToViaEVMCaller(ctx sdk.Context, caller EVMCaller, from 
 	}
 	res, err := caller.CallEVMWithData(ctx, from, &wrapper, data, true, GasCapERC20WrapperWithdrawTo)
 	if res == nil {
-		return nil, err
+		if err != nil {
+			return nil, WrapERC20WrapperWithdrawToError(err)
+		}
+		return nil, WrapERC20WrapperWithdrawToError(fmt.Errorf("nil response from EVM call"))
 	}
-	return res.Ret, err
+	if err != nil {
+		return res.Ret, WrapERC20WrapperWithdrawToError(err)
+	}
+	return res.Ret, nil
 }
 
 type ERC20WrapperMethodError struct {
@@ -120,4 +129,8 @@ func WrapERC20WrapperMethodError(method string, err error) error {
 
 func WrapERC20WrapperUnderlyingError(err error) error {
 	return WrapERC20WrapperMethodError("underlying()", err)
+}
+
+func WrapERC20WrapperWithdrawToError(err error) error {
+	return WrapERC20WrapperMethodError("withdrawTo(address,uint256)", err)
 }
