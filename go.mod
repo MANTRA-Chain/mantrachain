@@ -1,6 +1,6 @@
 module github.com/MANTRA-Chain/mantrachain/v8
 
-go 1.24.0
+go 1.24.1
 
 replace (
 	// use cosmos fork of keyring
