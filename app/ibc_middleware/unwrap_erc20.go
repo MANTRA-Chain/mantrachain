@@ -2,17 +2,14 @@ package ibc_middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/holiman/uint256"
 
 	"github.com/MANTRA-Chain/mantrachain/v8/app/evmutil"
 
 	evmibc "github.com/cosmos/evm/ibc"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
-	evmtypes "github.com/cosmos/evm/x/vm/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
@@ -21,36 +18,21 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ porttypes.IBCModule = UnwrapERC20IBCModule{}
-var _ porttypes.PacketDataUnmarshaler = UnwrapERC20IBCModule{}
-
-type evmCaller interface {
-	CallEVMWithData(
-		ctx sdk.Context,
-		from common.Address,
-		contract *common.Address,
-		data []byte,
-		commit bool,
-		gasCap *big.Int,
-	) (*evmtypes.MsgEthereumTxResponse, error)
-}
+var (
+	_ porttypes.IBCModule             = UnwrapERC20IBCModule{}
+	_ porttypes.PacketDataUnmarshaler = UnwrapERC20IBCModule{}
+)
 
 // UnwrapERC20IBCModule optionally unwraps ERC20 wrappers on IBC recv when memo is `{"mantra":{"unwrap":true}}`.
 type UnwrapERC20IBCModule struct {
 	app         porttypes.IBCModule
 	erc20Keeper *erc20keeper.Keeper
-	evmCaller   evmCaller
+	evmCaller   evmutil.EVMCaller
 }
 
-func NewUnwrapERC20IBCModule(app porttypes.IBCModule, erc20Keeper *erc20keeper.Keeper, evmCaller evmCaller) UnwrapERC20IBCModule {
-	if app == nil {
-		panic("underlying application cannot be nil")
-	}
-	if erc20Keeper == nil {
-		panic("erc20 keeper cannot be nil")
-	}
-	if evmCaller == nil {
-		panic("evm caller cannot be nil")
+func NewUnwrapERC20IBCModule(app porttypes.IBCModule, erc20Keeper *erc20keeper.Keeper, evmCaller evmutil.EVMCaller) UnwrapERC20IBCModule {
+	if app == nil || erc20Keeper == nil || evmCaller == nil {
+		panic("unwrap erc20 ibc middleware: nil dependency")
 	}
 	return UnwrapERC20IBCModule{
 		app:         app,
@@ -216,52 +198,9 @@ func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Addres
 		return
 	}
 
-	if _, err := im.evmGetUnderlying(ctx, receiver, wrapper); err != nil {
+	if _, err := evmutil.ERC20WrapperUnderlyingViaEVMCaller(ctx, im.evmCaller, receiver, wrapper); err != nil {
 		return
 	}
 
-	_, _ = im.evmWithdrawTo(ctx, receiver, wrapper, receiver, amountWad)
-}
-
-func (im UnwrapERC20IBCModule) evmGetUnderlying(ctx sdk.Context, caller common.Address, wrapper common.Address) (common.Address, error) {
-	data := make([]byte, 4)
-	copy(data, evmutil.SelectorUnderlyingGetter[:])
-
-	res, err := im.evmCaller.CallEVMWithData(ctx, caller, &wrapper, data, false, nil)
-	if res == nil {
-		return common.Address{}, err
-	}
-	if err != nil {
-		return common.Address{}, err
-	}
-	if len(res.Ret) < 32 {
-		return common.Address{}, fmt.Errorf("underlying() returned short data")
-	}
-	underlying := common.BytesToAddress(res.Ret[12:32])
-	if underlying == (common.Address{}) {
-		return common.Address{}, fmt.Errorf("underlying() returned zero address")
-	}
-	return underlying, nil
-}
-
-func (im UnwrapERC20IBCModule) evmWithdrawTo(ctx sdk.Context, caller common.Address, wrapper common.Address, to common.Address, amount *big.Int) ([]byte, error) {
-	if amount == nil || amount.Sign() <= 0 {
-		return nil, fmt.Errorf("invalid withdraw amount")
-	}
-	amtU256, overflow := uint256.FromBig(amount)
-	if overflow {
-		return nil, fmt.Errorf("withdraw amount overflows uint256")
-	}
-
-	data := make([]byte, 4+32+32)
-	copy(data[:4], evmutil.SelectorWithdrawToAddressUint256[:])
-	copy(data[4:4+32], common.LeftPadBytes(to.Bytes(), 32))
-	amt32 := amtU256.Bytes32()
-	copy(data[4+32:], amt32[:])
-
-	res, err := im.evmCaller.CallEVMWithData(ctx, caller, &wrapper, data, true, nil)
-	if res == nil {
-		return nil, err
-	}
-	return res.Ret, err
+	_, _ = evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, im.evmCaller, receiver, wrapper, receiver, amountWad)
 }

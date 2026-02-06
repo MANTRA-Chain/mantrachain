@@ -842,7 +842,6 @@ func New(
 		app.EVMKeeper,
 		app.StakingKeeper,
 		app.DistrKeeper,
-		distrkeeper.NewMsgServerImpl(app.DistrKeeper),
 		&app.Erc20Keeper,
 		app.AccountKeeper.AddressCodec(),
 	)
@@ -1400,7 +1399,11 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 
 	// Add EVM genesis configuration
 	evmGenState := evmtypes.DefaultGenesisState()
-	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
+	evmGenState.Params.ActiveStaticPrecompiles = append([]string{}, evmtypes.AvailableStaticPrecompiles...)
+	evmGenState.Params.ActiveStaticPrecompiles = append(
+		evmGenState.Params.ActiveStaticPrecompiles,
+		distrclaim.DistributionClaimPrecompileAddress,
+	)
 	genesis[evmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
 	// Add ERC20 genesis configuration

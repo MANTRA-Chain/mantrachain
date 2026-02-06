@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/MANTRA-Chain/mantrachain/v8/app/evmutil"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 
@@ -15,7 +16,6 @@ import (
 	erc20types "github.com/cosmos/evm/x/erc20/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
 
 const (
@@ -40,21 +40,19 @@ var _ vm.PrecompiledContract = &Precompile{}
 // withdrawable).
 type Precompile struct {
 	cmn.Precompile
-	bankKeeper            cmn.BankKeeper
-	evmKeeper             EVMKeeper
-	stakingKeeper         cmn.StakingKeeper
-	distributionKeeper    DistributionKeeper
-	distributionMsgServer distrtypes.MsgServer
-	erc20MsgServer        erc20types.MsgServer
-	addrCdc               address.Codec
+	bankKeeper         cmn.BankKeeper
+	evmKeeper          evmutil.EVMCaller
+	stakingKeeper      cmn.StakingKeeper
+	distributionKeeper DistributionKeeper
+	erc20MsgServer     erc20types.MsgServer
+	addrCdc            address.Codec
 }
 
 func NewPrecompile(
 	bankKeeper cmn.BankKeeper,
-	evmKeeper EVMKeeper,
+	evmKeeper evmutil.EVMCaller,
 	stakingKeeper cmn.StakingKeeper,
 	distributionKeeper DistributionKeeper,
-	distributionMsgServer distrtypes.MsgServer,
 	erc20MsgServer erc20types.MsgServer,
 	addrCdc address.Codec,
 ) *Precompile {
@@ -65,13 +63,12 @@ func NewPrecompile(
 			ContractAddress:       common.HexToAddress(DistributionClaimPrecompileAddress),
 			BalanceHandlerFactory: cmn.NewBalanceHandlerFactory(bankKeeper),
 		},
-		bankKeeper:            bankKeeper,
-		evmKeeper:             evmKeeper,
-		stakingKeeper:         stakingKeeper,
-		distributionKeeper:    distributionKeeper,
-		distributionMsgServer: distributionMsgServer,
-		erc20MsgServer:        erc20MsgServer,
-		addrCdc:               addrCdc,
+		bankKeeper:         bankKeeper,
+		evmKeeper:          evmKeeper,
+		stakingKeeper:      stakingKeeper,
+		distributionKeeper: distributionKeeper,
+		erc20MsgServer:     erc20MsgServer,
+		addrCdc:            addrCdc,
 	}
 }
 
