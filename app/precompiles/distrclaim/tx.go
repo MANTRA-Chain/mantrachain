@@ -1,7 +1,6 @@
 package distrclaim
 
 import (
-	"context"
 	"fmt"
 	"math/big"
 	"strings"
@@ -16,10 +15,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-type delegatorWithdrawAddrGetter interface {
-	GetDelegatorWithdrawAddr(ctx context.Context, delAddr sdk.AccAddress) (sdk.AccAddress, error)
-}
 
 const (
 	maxGasUnderlyingGetter = uint64(200_000)
@@ -95,12 +90,7 @@ func (p *Precompile) claimRewardsAndConvertCoin(
 		return nil, err
 	}
 
-	withdrawAddrGetter, ok := p.distributionKeeper.(delegatorWithdrawAddrGetter)
-	if !ok {
-		return nil, fmt.Errorf("distribution keeper does not support GetDelegatorWithdrawAddr")
-	}
-
-	withdrawAddrSdk, err := withdrawAddrGetter.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(delegatorAddr.Bytes()))
+	withdrawAddrSdk, err := p.distributionKeeper.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(delegatorAddr.Bytes()))
 	if err != nil {
 		return nil, err
 	}

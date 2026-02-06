@@ -769,11 +769,13 @@ func New(
 	/*
 		Create Transfer Stack
 
-		transfer stack contains (from bottom to top):
-			- IBC ratelimit
-			- TokenFactory Middleware
-			- IBC Callbacks Middleware (with EVM ContractKeeper)
-			- ERC-20 Middleware
+		transfer stack contains (from top to bottom):
+			- ICS Provider middleware
+			- IBC RateLimit middleware
+			- TokenFactory middleware
+			- IBC Callbacks middleware (with EVM ContractKeeper)
+			- ERC-20 middleware
+			- MigrateUom middleware
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:

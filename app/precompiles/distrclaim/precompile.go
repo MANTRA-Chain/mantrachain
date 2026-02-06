@@ -43,7 +43,7 @@ type Precompile struct {
 	bankKeeper            cmn.BankKeeper
 	evmKeeper             EVMKeeper
 	stakingKeeper         cmn.StakingKeeper
-	distributionKeeper    cmn.DistributionKeeper
+	distributionKeeper    DistributionKeeper
 	distributionMsgServer distrtypes.MsgServer
 	erc20MsgServer        erc20types.MsgServer
 	addrCdc               address.Codec
@@ -53,7 +53,7 @@ func NewPrecompile(
 	bankKeeper cmn.BankKeeper,
 	evmKeeper EVMKeeper,
 	stakingKeeper cmn.StakingKeeper,
-	distributionKeeper cmn.DistributionKeeper,
+	distributionKeeper DistributionKeeper,
 	distributionMsgServer distrtypes.MsgServer,
 	erc20MsgServer erc20types.MsgServer,
 	addrCdc address.Codec,
