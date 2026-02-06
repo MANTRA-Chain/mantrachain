@@ -10,6 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/holiman/uint256"
 
+	"github.com/MANTRA-Chain/mantrachain/v8/app/evmutil"
+
 	cmn "github.com/cosmos/evm/precompiles/common"
 	erc20types "github.com/cosmos/evm/x/erc20/types"
 
@@ -18,13 +20,6 @@ import (
 
 const (
 	maxGasUnderlyingGetter = uint64(200_000)
-)
-
-var minWithdrawAmountWad = big.NewInt(1_000_000_000_000) // wmantraUSD SCALAR (1e12)
-
-var (
-	selectorUnderlyingGetter         = [4]byte{0x6f, 0x30, 0x7d, 0xc3} // underlying()
-	selectorWithdrawToAddressUint256 = [4]byte{0x20, 0x5c, 0x28, 0x78} // withdrawTo(address,uint256)
 )
 
 func (p *Precompile) runClaimRewardsAndConvertCoin(
@@ -173,7 +168,7 @@ func (p *Precompile) tryUnwrapWrapper(ctx sdk.Context, evm *vm.EVM, caller commo
 	if !strings.HasPrefix(denom, "erc20:") {
 		return
 	}
-	if amountWad.Cmp(minWithdrawAmountWad) < 0 {
+	if amountWad.Cmp(evmutil.MinWithdrawAmountWad) < 0 {
 		return
 	}
 
@@ -197,7 +192,7 @@ func evmGetUnderlyingERC20Wrapper(evm *vm.EVM, caller common.Address, wrapper co
 		gas = maxGasUnderlyingGetter
 	}
 	data := make([]byte, 4)
-	copy(data[:4], selectorUnderlyingGetter[:])
+	copy(data[:4], evmutil.SelectorUnderlyingGetter[:])
 	ret, left, err := evm.StaticCall(caller, wrapper, data, gas)
 	if err != nil {
 		return common.Address{}, fmt.Errorf("wrapper underlying() call failed: %w", err)
@@ -227,7 +222,7 @@ func (p *Precompile) evmWithdrawToAddressUint256(ctx sdk.Context, caller common.
 		return nil, fmt.Errorf("withdraw amount overflows uint256")
 	}
 	data := make([]byte, 4+32+32)
-	copy(data[:4], selectorWithdrawToAddressUint256[:])
+	copy(data[:4], evmutil.SelectorWithdrawToAddressUint256[:])
 	copy(data[4:4+32], common.LeftPadBytes(to.Bytes(), 32))
 	amt32 := u.Bytes32()
 	copy(data[4+32:], amt32[:])
