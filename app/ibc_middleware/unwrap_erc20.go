@@ -1,6 +1,7 @@
 package ibc_middleware
 
 import (
+	"encoding/json"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -13,14 +14,8 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
-	ccvtypes "github.com/cosmos/interchain-security/v7/x/ccv/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-const (
-	maxIBCMemoBytes  = 32 * 1024
-	icsRewardsString = "ICS rewards"
 )
 
 var (
@@ -28,9 +23,7 @@ var (
 	_ porttypes.PacketDataUnmarshaler = UnwrapERC20IBCModule{}
 )
 
-// UnwrapERC20IBCModule optionally unwraps ERC20 wrappers on IBC recv.
-// Policy: best-effort unwrap by default for transfers to EVM hex receivers,
-// but skip unwrapping for CCV/ICS rewards transfers (provider-wrapped memo).
+// UnwrapERC20IBCModule optionally unwraps ERC20 wrappers on IBC recv when memo is `{"mantra":{"unwrap":true}}`.
 type UnwrapERC20IBCModule struct {
 	app         porttypes.IBCModule
 	erc20Keeper *erc20keeper.Keeper
@@ -63,8 +56,7 @@ func (im UnwrapERC20IBCModule) OnRecvPacket(
 	if err := transfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
 		return ack
 	}
-	// skip unwrap CCV/ICS rewards packets
-	if isICSRewardsTransferMemo(data.Memo) {
+	if !shouldUnwrapFromIBCMemo(data.Memo) {
 		return ack
 	}
 
@@ -173,25 +165,29 @@ func (im UnwrapERC20IBCModule) OnChanCloseConfirm(ctx sdk.Context, portID, chann
 }
 
 func receiverToHexAddress(receiver string) (common.Address, bool) {
-	if !common.IsHexAddress(receiver) {
+	if common.IsHexAddress(receiver) {
+		return common.HexToAddress(receiver), true
+	}
+	addr, err := sdk.AccAddressFromBech32(receiver)
+	if err != nil {
 		return common.Address{}, false
 	}
-	return common.HexToAddress(receiver), true
+	return common.BytesToAddress(addr.Bytes()), true
 }
 
-// isICSRewardsTransferMemo returns true only for CCV/ICS rewards transfers.
-func isICSRewardsTransferMemo(memo string) bool {
+func shouldUnwrapFromIBCMemo(memo string) bool {
 	if memo == "" {
 		return false
 	}
-	if len(memo) > maxIBCMemoBytes {
+	var parsed struct {
+		Mantra struct {
+			Unwrap bool `json:"unwrap"`
+		} `json:"mantra"`
+	}
+	if err := json.Unmarshal([]byte(memo), &parsed); err != nil {
 		return false
 	}
-	rm, err := ccvtypes.GetRewardMemoFromTransferMemo(memo)
-	if err != nil {
-		return false
-	}
-	return rm.Memo == icsRewardsString
+	return parsed.Mantra.Unwrap
 }
 
 func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Address, wrapper common.Address, amountWad *big.Int) {
