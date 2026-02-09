@@ -134,11 +134,11 @@ func CreateUpgradeHandler(
 		}
 
 		// --- Post-Migration ---
-		ctx.Logger().Info("Finished v7.0.0-rc4 state migrations.")
+		ctx.Logger().Info("Finished v7.0.0 state migrations.")
 		ctx.Logger().Info("Assert Invariants...")
 		keepers.CrisisKeeper.AssertInvariants(ctx)
 
-		ctx.Logger().Info("Upgrade v7.0.0-rc4 complete")
+		ctx.Logger().Info("Upgrade v7.0.0 complete")
 		return vm, nil
 	}
 }
