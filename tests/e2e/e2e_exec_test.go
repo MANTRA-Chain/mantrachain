@@ -291,7 +291,6 @@ func (s *IntegrationTestSuite) execBankSend(
 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
 }
 
-//nolint:unparam
 func (s *IntegrationTestSuite) execAuthzGrant(
 	c *chain,
 	valIdx int,
