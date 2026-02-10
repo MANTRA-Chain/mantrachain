@@ -84,7 +84,7 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 	s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), standardFees.String(), true)
 	grants, err = queryGranterGrants(chainEndpoint, alice.String())
 	s.Require().NoError(err)
-	s.Require().Len(grants, 0)
+	s.Require().Empty(grants)
 	s.T().Logf("Failed to send token from Alice to Bob as Alice is blacklisted")
 }
 
