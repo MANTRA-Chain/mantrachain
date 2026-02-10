@@ -50,6 +50,7 @@ import (
 
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ante"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
@@ -768,19 +769,23 @@ func New(
 	/*
 		Create Transfer Stack
 
-		transfer stack contains (from bottom to top):
-			- IBC ratelimit
-			- TokenFactory Middleware
-			- IBC Callbacks Middleware (with EVM ContractKeeper)
-			- ERC-20 Middleware
+		transfer stack contains (from top to bottom):
+			- UnwrapERC20 middleware (recv-only)
+			- ICS Provider middleware
+			- IBC RateLimit middleware
+			- TokenFactory middleware
+			- IBC Callbacks middleware (with EVM ContractKeeper)
+			- ERC-20 middleware
+			- MigrateUom middleware
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
 
 		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket
-			-> erc20.OnRecvPacket -> transfer.OnRecvPacket -> ibc_middleware.NewMigrateUomIBCModule
+			channel.RecvPacket -> unwraperc20.OnRecvPacket -> icsprovider.OnRecvPacket -> ratelimit.OnRecvPacket
+			-> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket
+			-> migrateuom.OnRecvPacket -> transfer.OnRecvPacket
 	*/
 
 	// create IBC module from top to bottom of stack
@@ -800,6 +805,7 @@ func New(
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
+	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
@@ -819,19 +825,28 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.EVMKeeper.WithStaticPrecompiles(
-		precompiletypes.DefaultStaticPrecompiles(
-			app.StakingKeeper,
-			app.DistrKeeper,
-			app.BankKeeper,
-			&app.Erc20Keeper,
-			&app.TransferKeeper,
-			app.IBCKeeper.ChannelKeeper,
-			app.GovKeeper,
-			app.SlashingKeeper,
-			appCodec,
-		),
+	corePrecompiles := precompiletypes.DefaultStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		&app.Erc20Keeper,
+		&app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		appCodec,
 	)
+
+	corePrecompiles[ethcommon.HexToAddress(distrclaim.DistributionClaimPrecompileAddress)] = distrclaim.NewPrecompile(
+		app.BankKeeper,
+		app.EVMKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		&app.Erc20Keeper,
+		app.AccountKeeper.AddressCodec(),
+	)
+
+	app.EVMKeeper.WithStaticPrecompiles(corePrecompiles)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
@@ -1384,7 +1399,11 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 
 	// Add EVM genesis configuration
 	evmGenState := evmtypes.DefaultGenesisState()
-	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
+	evmGenState.Params.ActiveStaticPrecompiles = append([]string{}, evmtypes.AvailableStaticPrecompiles...)
+	evmGenState.Params.ActiveStaticPrecompiles = append(
+		evmGenState.Params.ActiveStaticPrecompiles,
+		distrclaim.DistributionClaimPrecompileAddress,
+	)
 	genesis[evmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
 	// Add ERC20 genesis configuration
