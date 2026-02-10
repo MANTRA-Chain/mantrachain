@@ -50,7 +50,11 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 	bob, _ := s.chainA.genesisAccounts[2].keyInfo.GetAddress()
 	// able to send tokens from alice to bob before blacklist
 	s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), standardFees.String(), false)
-
+	s.execAuthzGrant(s.chainA, valIdx, alice.String(), bob.String(), "/cosmos.bank.v1beta1.MsgSend", standardFees.String(), false)
+	s.execAuthzGrant(s.chainA, valIdx, alice.String(), bob.String(), "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward", standardFees.String(), false)
+	grants, err := queryGranterGrants(chainEndpoint, alice.String())
+	s.Require().NoError(err)
+	s.Require().Len(grants, 2)
 	s.writeAddBlacklistAccountsProposal(s.chainA, alice.String())
 	proposalCounter++
 	submitGovFlags := []string{configFile(proposalAddBlacklistAccountsFilename)}
@@ -78,6 +82,9 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 
 	// alice sends tokens to bob
 	s.execBankSend(s.chainA, valIdx, alice.String(), bob.String(), tokenAmount.String(), standardFees.String(), true)
+	grants, err = queryGranterGrants(chainEndpoint, alice.String())
+	s.Require().NoError(err)
+	s.Require().Len(grants, 0)
 	s.T().Logf("Failed to send token from Alice to Bob as Alice is blacklisted")
 }
 

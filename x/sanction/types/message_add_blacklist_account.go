@@ -21,6 +21,9 @@ func (m MsgAddBlacklistAccounts) Validate() error {
 	if len(m.BlacklistAccounts) == 0 || m.BlacklistAccounts == nil {
 		return errors.New("blacklistAccounts cannot be empty")
 	}
+	if len(m.BlacklistAccounts) > 100 {
+		return errors.New("blacklistAccounts cannot contain more than 100 accounts")
+	}
 	for _, account := range m.BlacklistAccounts {
 		_, err := sdk.AccAddressFromBech32(account)
 		if err != nil {

@@ -5,7 +5,9 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 )
 
 func (k msgServer) AddBlacklistAccounts(ctx context.Context, msg *types.MsgAddBlacklistAccounts) (*types.MsgAddBlacklistAccountsResponse, error) {
@@ -25,6 +27,32 @@ func (k msgServer) AddBlacklistAccounts(ctx context.Context, msg *types.MsgAddBl
 		}
 		if hasAccount {
 			return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "account %s has already been blacklisted", account)
+		}
+
+		// revoke all authz grants for the blacklisted account
+		grants, err := k.authzKeeper.GranterGrants(ctx, &authz.QueryGranterGrantsRequest{Granter: account})
+		if err != nil {
+			return nil, err
+		}
+		granter, err := sdk.AccAddressFromBech32(account)
+		if err != nil {
+			return nil, err
+		}
+		for _, grant := range grants.Grants {
+			grantee, err := sdk.AccAddressFromBech32(grant.Grantee)
+			if err != nil {
+				return nil, err
+			}
+
+			var authorization authz.Authorization
+			err = k.cdc.UnpackAny(grant.Authorization, &authorization)
+			if err != nil {
+				return nil, err
+			}
+
+			if err := k.authzKeeper.DeleteGrant(ctx, grantee, granter, authorization.MsgTypeURL()); err != nil {
+				return nil, err
+			}
 		}
 
 		if err := k.BlacklistAccounts.Set(ctx, account); err != nil {
