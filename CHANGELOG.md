@@ -12,6 +12,7 @@
 ### BUG-FIXES
 
 - Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
+- Reject malformed tx bytes in ProcessProposal when EVM mempool is enabled ([#593](https://github.com/MANTRA-Chain/mantrachain/pull/593))
 
 
 ## v7.0.0
