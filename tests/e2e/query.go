@@ -16,6 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -509,6 +510,20 @@ func queryBlacklist(endpoint string) ([]string, error) {
 	}
 
 	return resp.BlacklistedAccounts, nil
+}
+
+func queryGranterGrants(endpoint, granter string) ([]*authz.GrantAuthorization, error) {
+	body, err := httpGet(fmt.Sprintf("%s/cosmos/authz/v1beta1/grants/granter/%s", endpoint, granter))
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
+	}
+
+	var resp authz.QueryGranterGrantsResponse
+	if err := cdc.UnmarshalJSON(body, &resp); err != nil {
+		return nil, err
+	}
+
+	return resp.Grants, nil
 }
 
 func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error) {

@@ -21,6 +21,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
@@ -46,6 +47,7 @@ func init() {
 	encodingConfig = params.MakeEncodingConfig()
 	banktypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	authz.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	authvesting.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	stakingtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	evidencetypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)

@@ -15,6 +15,7 @@ type (
 		cdc          codec.BinaryCodec
 		storeService store.KVStoreService
 		logger       log.Logger
+		authzKeeper  types.AuthzKeeper
 
 		// the address capable of executing a MsgUpdateParams message.
 		// Typically, this should be the x/gov module account.
@@ -33,6 +34,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
+	authzKeeper types.AuthzKeeper,
 ) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
@@ -41,6 +43,7 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
+		authzKeeper:  authzKeeper,
 
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		BlacklistAccounts: collections.NewKeySet(sb, types.PrefixBlackListAccounts, "blacklist_accounts", collections.StringKey),
