@@ -38,6 +38,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/interchain_security/ccv/provider/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "ProviderParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/connect/marketmap/v2/query.swagger.json",
       "operationIds": {
         "rename": {
