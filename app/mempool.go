@@ -44,5 +44,5 @@ func (app *App) configureEVMMempool(
 	abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
 	abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))
 
-	return abciProposalHandler.PrepareProposalHandler(), baseapp.NoOpProcessProposal()
+	return abciProposalHandler.PrepareProposalHandler(), abciProposalHandler.ProcessProposalHandler()
 }
