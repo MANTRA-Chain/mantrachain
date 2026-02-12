@@ -571,6 +571,7 @@ func New(
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AuthzKeeper,
+		newSanctionFeegrantKeeperAdapter(app.FeeGrantKeeper),
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.SetHooks(
