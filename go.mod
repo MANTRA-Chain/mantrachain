@@ -10,8 +10,8 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
-	// release/v0.5.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260113045948-a4fcfbd50a18
+	// mantra/v0.5.x
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260129071132-0461b3832aae
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 

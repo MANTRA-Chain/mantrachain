@@ -8,6 +8,11 @@
 ### DEPENDENCIES
 
 - *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
+<<<<<<< HEAD
+=======
+- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
+- *(deps)* Update evm fork to mantra/v0.5.x ([#580](https://github.com/MANTRA-Chain/mantrachain/issues/580))
+>>>>>>> 679b433 (Problem: mantra/v0.5.x is not used (#580))
 
 
 ### IMPROVEMENTS
