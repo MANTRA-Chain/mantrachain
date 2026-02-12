@@ -59,6 +59,13 @@ proto-download-deps:
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
 	fi
 
+	@echo "Copying interchain-security proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/interchain-security/v7); \
+	if [ -d "$$DIR/proto/interchain_security" ]; then \
+		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	fi
+
 	@echo "Copying evm proto..."
 	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/evm); \
 	if [ -d "$$DIR/proto/cosmos" ]; then \
