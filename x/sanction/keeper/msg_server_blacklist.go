@@ -2,11 +2,14 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/x/feegrant"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 )
 
@@ -30,28 +33,76 @@ func (k msgServer) AddBlacklistAccounts(ctx context.Context, msg *types.MsgAddBl
 		}
 
 		// revoke all authz grants for the blacklisted account
-		grants, err := k.authzKeeper.GranterGrants(ctx, &authz.QueryGranterGrantsRequest{Granter: account})
-		if err != nil {
-			return nil, err
-		}
 		granter, err := sdk.AccAddressFromBech32(account)
 		if err != nil {
 			return nil, err
 		}
-		for _, grant := range grants.Grants {
-			grantee, err := sdk.AccAddressFromBech32(grant.Grantee)
+		var nextKey []byte
+		for {
+			resp, err := k.authzKeeper.GranterGrants(ctx, &authz.QueryGranterGrantsRequest{
+				Granter: account,
+				Pagination: &query.PageRequest{
+					Key:   nextKey,
+					Limit: 1000,
+				},
+			})
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to query authz grants for %s: %w", account, err)
+			}
+			for _, grant := range resp.Grants {
+				grantee, err := sdk.AccAddressFromBech32(grant.Grantee)
+				if err != nil {
+					return nil, err
+				}
+
+				var authorization authz.Authorization
+				err = k.cdc.UnpackAny(grant.Authorization, &authorization)
+				if err != nil {
+					return nil, err
+				}
+
+				if err := k.authzKeeper.DeleteGrant(ctx, grantee, granter, authorization.MsgTypeURL()); err != nil {
+					return nil, err
+				}
 			}
 
-			var authorization authz.Authorization
-			err = k.cdc.UnpackAny(grant.Authorization, &authorization)
-			if err != nil {
-				return nil, err
+			if resp.Pagination == nil || len(resp.Pagination.NextKey) == 0 {
+				break
 			}
+			nextKey = resp.Pagination.NextKey
+		}
 
-			if err := k.authzKeeper.DeleteGrant(ctx, grantee, granter, authorization.MsgTypeURL()); err != nil {
-				return nil, err
+		// revoke all feegrant allowances where the blacklisted account is the granter
+		if k.feegrantKeeper != nil {
+			nextKey = nil
+			for {
+				resp, err := k.feegrantKeeper.AllowancesByGranter(ctx, &feegrant.QueryAllowancesByGranterRequest{
+					Granter: account,
+					Pagination: &query.PageRequest{
+						Key:   nextKey,
+						Limit: 1000,
+					},
+				})
+				if err != nil {
+					return nil, fmt.Errorf("failed to query feegrant allowances for %s: %w", account, err)
+				}
+
+				for _, allowance := range resp.Allowances {
+					if allowance == nil {
+						continue
+					}
+					if _, err := k.feegrantKeeper.RevokeAllowance(ctx, &feegrant.MsgRevokeAllowance{
+						Granter: account,
+						Grantee: allowance.Grantee,
+					}); err != nil {
+						return nil, fmt.Errorf("failed to revoke feegrant allowance granter=%s grantee=%s: %w", account, allowance.Grantee, err)
+					}
+				}
+
+				if resp.Pagination == nil || len(resp.Pagination.NextKey) == 0 {
+					break
+				}
+				nextKey = resp.Pagination.NextKey
 			}
 		}
 
