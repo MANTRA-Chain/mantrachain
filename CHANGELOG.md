@@ -10,6 +10,17 @@
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 - *(deps)* Update evm fork to mantra/v0.5.x ([#580](https://github.com/MANTRA-Chain/mantrachain/issues/580))
 
+
+### IMPROVEMENTS
+
+- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586)).
+
+### BUG-FIXES
+
+- Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
+- Reject malformed tx bytes in ProcessProposal when EVM mempool is enabled ([#593](https://github.com/MANTRA-Chain/mantrachain/pull/593))
+
+
 ## v7.0.0
 
 *January 26, 2026*
