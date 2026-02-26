@@ -1175,17 +1175,25 @@ func New(
 	// configure mempool
 	prepareProposalHandler, processProposalHandler := app.configureEVMMempool(appOpts, logger)
 
-	// oracle initialization
-	client, metrics, err := app.initializeOracle(appOpts)
+	oracleEnabled, err := app.isOracleEnabled(appOpts)
 	if err != nil {
-		panic(fmt.Errorf("failed to initialize oracle client and metrics: %w", err))
+		panic(fmt.Errorf("failed to read oracle config: %w", err))
 	}
 
-	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+	if oracleEnabled {
+		client, metrics, err := app.initializeOracle(appOpts)
+		if err != nil {
+			panic(fmt.Errorf("failed to initialize oracle client and metrics: %w", err))
+		}
 
-	prepareProposalHandler, processProposalHandler = app.initializeABCIExtensions(
-		client, metrics, prepareProposalHandler, processProposalHandler,
-	)
+		app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
+
+		prepareProposalHandler, processProposalHandler = app.initializeABCIExtensions(
+			client, metrics, prepareProposalHandler, processProposalHandler,
+		)
+	} else {
+		app.Logger().Info("oracle is disabled, skipping oracle ABCI extension wiring")
+	}
 
 	app.SetPrepareProposal(prepareProposalHandler)
 	app.SetProcessProposal(processProposalHandler)
