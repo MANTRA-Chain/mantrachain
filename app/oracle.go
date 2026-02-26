@@ -26,6 +26,11 @@ func (app *App) initializeOracle(appOpts types.AppOptions) (oracleclient.OracleC
 		return nil, nil, err
 	}
 
+	if !cfg.Enabled {
+		app.Logger().Info("oracle is disabled, skipping oracle client startup")
+		return nil, nil, nil
+	}
+
 	// If app level instrumentation is enabled, then wrap the oracle service with a metrics client
 	// to get metrics on the oracle service (for ABCI++). This will allow the instrumentation to track
 	// latency in VerifyVoteExtension requests and more.
@@ -54,6 +59,15 @@ func (app *App) initializeOracle(appOpts types.AppOptions) (oracleclient.OracleC
 	}()
 
 	return oracleClient, oracleMetrics, nil
+}
+
+func (app *App) isOracleEnabled(appOpts types.AppOptions) (bool, error) {
+	cfg, err := oracleconfig.ReadConfigFromAppOpts(appOpts)
+	if err != nil {
+		return false, err
+	}
+
+	return cfg.Enabled, nil
 }
 
 func (app *App) initializeABCIExtensions(
