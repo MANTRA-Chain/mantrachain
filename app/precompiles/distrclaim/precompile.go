@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/MANTRA-Chain/mantrachain/v8/app/evmutil"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/vm"
 
@@ -16,6 +15,7 @@ import (
 	erc20types "github.com/cosmos/evm/x/erc20/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/evm/x/ibc/callbacks/types"
 )
 
 const (
@@ -41,7 +41,7 @@ var _ vm.PrecompiledContract = &Precompile{}
 type Precompile struct {
 	cmn.Precompile
 	bankKeeper         cmn.BankKeeper
-	evmKeeper          evmutil.EVMCaller
+	evmKeeper          types.EVMKeeper
 	stakingKeeper      cmn.StakingKeeper
 	distributionKeeper DistributionKeeper
 	erc20MsgServer     erc20types.MsgServer
@@ -50,7 +50,7 @@ type Precompile struct {
 
 func NewPrecompile(
 	bankKeeper cmn.BankKeeper,
-	evmKeeper evmutil.EVMCaller,
+	evmKeeper types.EVMKeeper,
 	stakingKeeper cmn.StakingKeeper,
 	distributionKeeper DistributionKeeper,
 	erc20MsgServer erc20types.MsgServer,
