@@ -20,7 +20,6 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
-	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	channelkeeper "github.com/cosmos/ibc-go/v10/modules/core/04-channel/keeper"
@@ -61,7 +60,6 @@ type Fork struct {
 type UpgradeKeepers struct {
 	// keepers
 	ChannelKeeper      *channelkeeper.Keeper
-	TransferKeeper     transferkeeper.Keeper
 	TokenFactoryKeeper *tokenfactorykeeper.Keeper
 	// v3
 	SanctionKeeper sanctionkeeper.Keeper

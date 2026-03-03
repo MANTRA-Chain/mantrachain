@@ -9,7 +9,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	evmtypes "github.com/cosmos/evm/x/vm/types"
+	"github.com/cosmos/evm/x/ibc/callbacks/types"
+	"github.com/cosmos/evm/x/vm/statedb"
 )
 
 // Helpers for interacting with ERC20 wrappers (underlying/withdrawTo).
@@ -58,20 +59,11 @@ func DecodeABIAddress32(ret []byte) (common.Address, error) {
 	return addr, nil
 }
 
-type EVMCaller interface {
-	CallEVMWithData(
-		ctx sdk.Context,
-		from common.Address,
-		contract *common.Address,
-		data []byte,
-		commit bool,
-		gasCap *big.Int,
-	) (*evmtypes.MsgEthereumTxResponse, error)
-}
-
-func ERC20WrapperUnderlyingViaEVMCaller(ctx sdk.Context, caller EVMCaller, from common.Address, wrapper common.Address) (common.Address, error) {
+func ERC20WrapperUnderlyingViaEVMCaller(ctx sdk.Context, caller types.EVMKeeper, from common.Address, wrapper common.Address) (common.Address, error) {
 	data := ERC20WrapperUnderlyingCallData()
-	res, err := caller.CallEVMWithData(ctx, from, &wrapper, data, false, GasCapERC20WrapperUnderlying)
+	fmt.Println("mm-from", from)
+	stateDB := statedb.New(ctx, caller, statedb.NewEmptyTxConfig())
+	res, err := caller.CallEVMWithData(ctx, stateDB, from, &wrapper, data, false, false, GasCapERC20WrapperUnderlying)
 	if res == nil {
 		if err != nil {
 			return common.Address{}, WrapERC20WrapperUnderlyingError(err)
@@ -88,12 +80,13 @@ func ERC20WrapperUnderlyingViaEVMCaller(ctx sdk.Context, caller EVMCaller, from 
 	return underlying, nil
 }
 
-func ERC20WrapperWithdrawToViaEVMCaller(ctx sdk.Context, caller EVMCaller, from common.Address, wrapper common.Address, to common.Address, amountWad *big.Int) ([]byte, error) {
+func ERC20WrapperWithdrawToViaEVMCaller(ctx sdk.Context, caller types.EVMKeeper, from common.Address, wrapper common.Address, to common.Address, amountWad *big.Int) ([]byte, error) {
 	data, err := ERC20WrapperWithdrawToCallData(to, amountWad)
 	if err != nil {
 		return nil, err
 	}
-	res, err := caller.CallEVMWithData(ctx, from, &wrapper, data, true, GasCapERC20WrapperWithdrawTo)
+	stateDB := statedb.New(ctx, caller, statedb.NewEmptyTxConfig())
+	res, err := caller.CallEVMWithData(ctx, stateDB, from, &wrapper, data, true, false, GasCapERC20WrapperWithdrawTo)
 	if res == nil {
 		if err != nil {
 			return nil, WrapERC20WrapperWithdrawToError(err)
