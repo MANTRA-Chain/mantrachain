@@ -61,7 +61,6 @@ func DecodeABIAddress32(ret []byte) (common.Address, error) {
 
 func ERC20WrapperUnderlyingViaEVMCaller(ctx sdk.Context, caller types.EVMKeeper, from common.Address, wrapper common.Address) (common.Address, error) {
 	data := ERC20WrapperUnderlyingCallData()
-	fmt.Println("mm-from", from)
 	stateDB := statedb.New(ctx, caller, statedb.NewEmptyTxConfig())
 	res, err := caller.CallEVMWithData(ctx, stateDB, from, &wrapper, data, false, false, GasCapERC20WrapperUnderlying)
 	if res == nil {

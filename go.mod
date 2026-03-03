@@ -34,11 +34,11 @@ replace (
 )
 
 replace (
-	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20251121090924-851207a04dcd
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260303075057-930f0840367b
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/851207a04dcde770f217ead2bebb279d919604ef
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-v7-mantra-2
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-2.0.20260303014042-678a8c03e2e1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260303075057-930f0840367b
 )
 
 require (
