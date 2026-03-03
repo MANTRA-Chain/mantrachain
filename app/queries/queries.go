@@ -164,7 +164,7 @@ func GrpcQuerier(queryRouter baseapp.GRPCQueryRouter, cdc codec.Codec) func(ctx 
 			return nil, fmt.Errorf("failed to unmarshal response for query path '%s': %w", request.Path, err)
 		}
 
-		return protoResponseType, nil
+		return proto.Clone(protoResponseType), nil
 	}
 }
 
