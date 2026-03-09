@@ -1611,12 +1611,14 @@ func BlockedAddresses() map[string]bool {
 	delete(blockedAddrs, authtypes.NewModuleAddress(
 		providertypes.ConsumerRewardsPool).String())
 
-	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesPrague {
-		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
+	for _, precompile := range evmtypes.AvailableStaticPrecompiles {
+		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 
-	for _, precompile := range blockedPrecompilesHex {
+	blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(distrclaim.DistributionClaimPrecompileAddress)] = true
+
+	for _, addr := range corevm.PrecompiledAddressesPrague {
+		precompile := addr.Hex()
 		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 
