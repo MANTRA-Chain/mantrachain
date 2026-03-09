@@ -12,10 +12,11 @@ import (
 
 type (
 	Keeper struct {
-		cdc          codec.BinaryCodec
-		storeService store.KVStoreService
-		logger       log.Logger
-		authzKeeper  types.AuthzKeeper
+		cdc            codec.BinaryCodec
+		storeService   store.KVStoreService
+		logger         log.Logger
+		authzKeeper    types.AuthzKeeper
+		feegrantKeeper types.FeegrantKeeper
 
 		// the address capable of executing a MsgUpdateParams message.
 		// Typically, this should be the x/gov module account.
@@ -35,15 +36,17 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 	authzKeeper types.AuthzKeeper,
+	feegrantKeeper types.FeegrantKeeper,
 ) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
-		cdc:          cdc,
-		storeService: storeService,
-		authority:    authority,
-		logger:       logger,
-		authzKeeper:  authzKeeper,
+		cdc:            cdc,
+		storeService:   storeService,
+		authority:      authority,
+		logger:         logger,
+		authzKeeper:    authzKeeper,
+		feegrantKeeper: feegrantKeeper,
 
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		BlacklistAccounts: collections.NewKeySet(sb, types.PrefixBlackListAccounts, "blacklist_accounts", collections.StringKey),
