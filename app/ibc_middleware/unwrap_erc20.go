@@ -10,6 +10,7 @@ import (
 
 	evmibc "github.com/cosmos/evm/ibc"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
+	"github.com/cosmos/evm/x/ibc/callbacks/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
@@ -27,10 +28,10 @@ var (
 type UnwrapERC20IBCModule struct {
 	app         porttypes.IBCModule
 	erc20Keeper *erc20keeper.Keeper
-	evmCaller   evmutil.EVMCaller
+	evmCaller   types.EVMKeeper
 }
 
-func NewUnwrapERC20IBCModule(app porttypes.IBCModule, erc20Keeper *erc20keeper.Keeper, evmCaller evmutil.EVMCaller) UnwrapERC20IBCModule {
+func NewUnwrapERC20IBCModule(app porttypes.IBCModule, erc20Keeper *erc20keeper.Keeper, evmCaller types.EVMKeeper) UnwrapERC20IBCModule {
 	if app == nil || erc20Keeper == nil || evmCaller == nil {
 		panic("unwrap erc20 ibc middleware: nil dependency")
 	}
