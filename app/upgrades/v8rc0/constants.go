@@ -3,6 +3,7 @@ package v8rc0
 import (
 	"cosmossdk.io/store/types"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
+	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 )
 
@@ -16,6 +17,6 @@ var Upgrade = upgrades.Upgrade{
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: types.StoreUpgrades{
 		Added:   []string{providertypes.ModuleName},
-		Deleted: []string{},
+		Deleted: []string{precisebanktypes.ModuleName},
 	},
 }

@@ -144,9 +144,6 @@ import (
 	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
 	"github.com/cosmos/evm/x/ibc/transfer"
 	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
-	"github.com/cosmos/evm/x/precisebank"
-	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
-	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 	"github.com/cosmos/evm/x/vm"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
@@ -245,10 +242,9 @@ var maccPerms = map[string][]string{
 	sanctiontypes.ModuleName:          nil,
 
 	// Cosmos EVM modules
-	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName:   nil,
-	erc20types.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName: nil,
+	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
 }
@@ -316,11 +312,10 @@ type App struct {
 	SanctionKeeper     sanctionkeeper.Keeper
 
 	// Cosmos EVM keepers
-	FeeMarketKeeper   feemarketkeeper.Keeper
-	EVMKeeper         *evmkeeper.Keeper
-	Erc20Keeper       erc20keeper.Keeper
-	PreciseBankKeeper precisebankkeeper.Keeper
-	EVMMempool        *evmmempool.ExperimentalEVMMempool
+	FeeMarketKeeper feemarketkeeper.Keeper
+	EVMKeeper       *evmkeeper.Keeper
+	Erc20Keeper     erc20keeper.Keeper
+	EVMMempool      *evmmempool.ExperimentalEVMMempool
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -383,7 +378,7 @@ func New(
 		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey, precisebanktypes.StoreKey,
+		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -714,16 +709,6 @@ func New(
 		tkeys[feemarkettypes.TransientKey],
 	)
 
-	// Set up PreciseBank keeper
-	//
-	// NOTE: PreciseBank is not needed if SDK use 18 decimals for gas coin. Use BankKeeper instead.
-	app.PreciseBankKeeper = precisebankkeeper.NewKeeper(
-		appCodec,
-		keys[precisebanktypes.StoreKey],
-		app.BankKeeper,
-		app.AccountKeeper,
-	)
-
 	// Set up EVM keeper
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
@@ -966,7 +951,6 @@ func New(
 		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.BankKeeper, app.AccountKeeper.AddressCodec()),
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
-		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -1025,7 +1009,6 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1053,7 +1036,6 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1091,7 +1073,6 @@ func New(
 		evmtypes.ModuleName,
 		feemarkettypes.ModuleName,
 		erc20types.ModuleName,
-		precisebanktypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1551,26 +1532,9 @@ func (app *App) setupUpgradeHandlers() {
 				app.ModuleManager,
 				app.configurator,
 				&upgrades.UpgradeKeepers{
-					ChannelKeeper:         app.IBCKeeper.ChannelKeeper,
-					TransferKeeper:        app.TransferKeeper,
-					TokenFactoryKeeper:    &app.TokenFactoryKeeper,
-					SanctionKeeper:        app.SanctionKeeper,
-					FeeMarketKeeper:       app.FeeMarketKeeper,
-					AccountKeeper:         app.AccountKeeper,
-					BankKeeper:            app.BankKeeper,
-					EVMKeeper:             *app.EVMKeeper,
-					Erc20Keeper:           app.Erc20Keeper,
-					CircuitKeeper:         app.CircuitKeeper,
-					ProviderKeeper:        app.ProviderKeeper,
 					StakingKeeper:         app.StakingKeeper,
+					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
-					GovKeeper:             app.GovKeeper,
-					DistrKeeper:           app.DistrKeeper,
-					MintKeeper:            app.MintKeeper,
-					CrisisKeeper:          *app.CrisisKeeper,
-					FeeGrantKeeper:        app.FeeGrantKeeper,
-					AuthzKeeper:           app.AuthzKeeper,
-					OracleKeeper:          app.OracleKeeper,
 				},
 				app.keys,
 			),
