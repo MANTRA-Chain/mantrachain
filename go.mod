@@ -11,7 +11,7 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
 	// mantra/v0.6.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260303013630-37e2026a3be5
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-1
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
@@ -34,11 +34,10 @@ replace (
 )
 
 replace (
-	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260303075057-930f0840367b
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/851207a04dcde770f217ead2bebb279d919604ef
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-v7-mantra-2
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260303075057-930f0840367b
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260318083824-1b9479efc713
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/1b9479efc713f716e553f2803823004200666fee
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713
 )
 
 require (
@@ -144,8 +143,8 @@ require (
 	github.com/bufbuild/protoplugin v0.0.0-20240911180120-7bb73e41a54a // indirect
 	github.com/bufbuild/protovalidate-go v0.7.3-0.20241015162221-1446f1e1d576 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect
-	github.com/bytedance/sonic v1.14.2 // indirect
-	github.com/bytedance/sonic/loader v0.4.0 // indirect
+	github.com/bytedance/sonic v1.15.0 // indirect
+	github.com/bytedance/sonic/loader v0.5.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
