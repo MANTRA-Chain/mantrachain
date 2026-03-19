@@ -58,8 +58,10 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterBobAmantraBalance, err = getSpecificBalance(chainEndpoint, bob.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceAmantraBalance)
-				incremented := beforeBobAmantraBalance.Add(tokenAmount).IsEqual(afterBobAmantraBalance)
+				expectedAliceBalance := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(standardFees)
+				expectedBobBalance := beforeBobAmantraBalance.Add(tokenAmount)
+				decremented := expectedAliceBalance.Equal(afterAliceAmantraBalance)
+				incremented := expectedBobBalance.Equal(afterBobAmantraBalance)
 
 				return decremented && incremented
 			},
@@ -84,9 +86,12 @@ func (s *IntegrationTestSuite) testBankTokenTransfer() {
 				afterCharlieAmantraBalance, err = getSpecificBalance(chainEndpoint, charlie.String(), amantraDenom)
 				s.Require().NoError(err)
 
-				decremented := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees).IsEqual(afterAliceAmantraBalance)
-				incremented := beforeBobAmantraBalance.Add(tokenAmount).IsEqual(afterBobAmantraBalance) &&
-					beforeCharlieAmantraBalance.Add(tokenAmount).IsEqual(afterCharlieAmantraBalance)
+				expectedAliceBalance := beforeAliceAmantraBalance.Sub(tokenAmount).Sub(tokenAmount).Sub(standardFees)
+				expectedBobBalance := beforeBobAmantraBalance.Add(tokenAmount)
+				expectedCharlieBalance := beforeCharlieAmantraBalance.Add(tokenAmount)
+				decremented := expectedAliceBalance.Equal(afterAliceAmantraBalance)
+				incremented := expectedBobBalance.Equal(afterBobAmantraBalance) &&
+					expectedCharlieBalance.Equal(afterCharlieAmantraBalance)
 
 				return decremented && incremented
 			},
