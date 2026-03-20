@@ -13,4 +13,5 @@ jobs:
         uses: golang/govulncheck-action@v1
         with:
           go-package: ./...
+          go-version-file: go.mod
           check-latest: true
