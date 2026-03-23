@@ -743,7 +743,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
 		nil,
-		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
+		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper: overridden after transfer stack is built via WithICS4Wrapper
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
 		app.AccountKeeper,
@@ -755,11 +755,11 @@ func New(
 	/*
 		Create Transfer Stack
 
-		transfer stack contains (from top to bottom):
+		transfer stack (outermost to innermost, i.e. call-entry order for RecvPacket):
 			- UnwrapERC20 middleware (recv-only)
 			- ICS Provider middleware
-			- IBC RateLimit middleware
-			- TokenFactory middleware
+			- IBC RateLimit middleware (guard: checks rate limit BEFORE calling next, blocks if exceeded)
+			- TokenFactory middleware (pass-through on RecvPacket)
 			- IBC Callbacks middleware (with EVM ContractKeeper)
 			- ERC-20 middleware
 			- MigrateUom middleware
@@ -767,11 +767,13 @@ func New(
 
 		SendPacket, since it is originating from the application to core IBC:
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
+			(ICS4Wrapper chain wired via WithICS4Wrapper after stack is built below)
 
-		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> unwraperc20.OnRecvPacket -> icsprovider.OnRecvPacket -> ratelimit.OnRecvPacket
-			-> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket
-			-> migrateuom.OnRecvPacket -> transfer.OnRecvPacket
+		RecvPacket, actual logic execution order (note: ratelimit runs its check BEFORE calling next,
+		all others call next before their own logic):
+			channel.RecvPacket -> ratelimit.OnRecvPacket (guard, aborts if exceeded) -> transfer.OnRecvPacket -> migrateuom.OnRecvPacket
+			-> erc20.OnRecvPacket -> callbacks.OnRecvPacket -> icsprovider.OnRecvPacket -> unwraperc20.OnRecvPacket
+			(tokenfactory is pass-through on RecvPacket)
 	*/
 
 	// create IBC module from top to bottom of stack
@@ -792,6 +794,9 @@ func New(
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
 	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
+
+	// Wire the ICS4Wrapper send path: transfer -> ratelimit -> channel
+	app.TransferKeeper.WithICS4Wrapper(app.RateLimitKeeper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
