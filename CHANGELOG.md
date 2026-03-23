@@ -10,6 +10,7 @@
 - *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 - *(deps)* Update evm fork to mantra/v0.5.x ([#580](https://github.com/MANTRA-Chain/mantrachain/issues/580))
+- *(deps)* Update evm fork to mantra/v0.6.x ([#603](https://github.com/MANTRA-Chain/mantrachain/issues/603))
 
 ### IMPROVEMENTS
 
@@ -19,6 +20,7 @@
 
 - Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
 - Reject malformed tx bytes in ProcessProposal when EVM mempool is enabled ([#593](https://github.com/MANTRA-Chain/mantrachain/pull/593))
+- Block bank transfers to DistributionClaim precompile to prevent unrecoverable fund locks ([#602](https://github.com/MANTRA-Chain/mantrachain/pull/602))
 
 
 ## v7.0.0

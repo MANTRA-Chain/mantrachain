@@ -142,8 +142,6 @@ import (
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
-	"github.com/cosmos/evm/x/ibc/transfer"
-	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
 	"github.com/cosmos/evm/x/precisebank"
 	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
 	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
@@ -164,6 +162,7 @@ import (
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
+	transferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
@@ -758,12 +757,12 @@ func New(
 	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
+		nil,
 		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.TransferKeeper.SetAddressCodec(evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()))
@@ -793,7 +792,7 @@ func New(
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
-	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper, app.AccountKeeper.AddressCodec())
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
@@ -944,7 +943,7 @@ func New(
 		// non sdk modules
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), nil),
 		ibc.NewAppModule(app.IBCKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		ibctransfer.NewAppModule(app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(tmLightClientModule),
 		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
@@ -1553,7 +1552,6 @@ func (app *App) setupUpgradeHandlers() {
 				app.configurator,
 				&upgrades.UpgradeKeepers{
 					ChannelKeeper:         app.IBCKeeper.ChannelKeeper,
-					TransferKeeper:        app.TransferKeeper,
 					TokenFactoryKeeper:    &app.TokenFactoryKeeper,
 					SanctionKeeper:        app.SanctionKeeper,
 					FeeMarketKeeper:       app.FeeMarketKeeper,
@@ -1612,12 +1610,14 @@ func BlockedAddresses() map[string]bool {
 	delete(blockedAddrs, authtypes.NewModuleAddress(
 		providertypes.ConsumerRewardsPool).String())
 
-	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesPrague {
-		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
+	for _, precompile := range evmtypes.AvailableStaticPrecompiles {
+		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 
-	for _, precompile := range blockedPrecompilesHex {
+	blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(distrclaim.DistributionClaimPrecompileAddress)] = true
+
+	for _, addr := range corevm.PrecompiledAddressesPrague {
+		precompile := addr.Hex()
 		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 
