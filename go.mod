@@ -10,8 +10,8 @@ replace (
 	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
-	// mantra/v0.5.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.0.0-20260129071132-0461b3832aae
+	// mantra/v0.6.x
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-1
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
@@ -34,11 +34,10 @@ replace (
 )
 
 replace (
-	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20251121090924-851207a04dcd
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.4, current branch: mantra/v0.53.4
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/851207a04dcde770f217ead2bebb279d919604ef
-	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.4-v7-mantra-2
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.4-v7-mantra-2
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260318083824-1b9479efc713
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/1b9479efc713f716e553f2803823004200666fee
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713
 )
 
 require (
@@ -63,12 +62,12 @@ require (
 	github.com/cometbft/cometbft v0.38.21
 	github.com/cosmos/cosmos-db v1.1.3
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.53.5-0.20251204200310-4379cc49ae65
-	github.com/cosmos/evm v0.5.0
+	github.com/cosmos/cosmos-sdk v0.53.6
+	github.com/cosmos/evm v0.6.0
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
-	github.com/cosmos/ibc-go/v10 v10.4.0
+	github.com/cosmos/ibc-go/v10 v10.3.1-0.20250909102629-ed3b125c7b6f
 	github.com/cosmos/interchain-security/v7 v7.0.1
 	github.com/ethereum/go-ethereum v1.16.4
 	github.com/gogo/protobuf v1.3.2
@@ -173,7 +172,7 @@ require (
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.2.4 // indirect
 	github.com/cosmos/ics23/go v0.11.0 // indirect
-	github.com/cosmos/ledger-cosmos-go v0.16.0 // indirect
+	github.com/cosmos/ledger-cosmos-go v1.0.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/crate-crypto/go-eth-kzg v1.3.0 // indirect
 	github.com/crate-crypto/go-ipa v0.0.0-20240724233137-53bbb0ceb27a // indirect
