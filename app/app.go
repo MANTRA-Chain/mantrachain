@@ -142,9 +142,6 @@ import (
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
-	"github.com/cosmos/evm/x/precisebank"
-	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
-	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 	"github.com/cosmos/evm/x/vm"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
@@ -244,10 +241,9 @@ var maccPerms = map[string][]string{
 	sanctiontypes.ModuleName:          nil,
 
 	// Cosmos EVM modules
-	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName:   nil,
-	erc20types.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName: nil,
+	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 
 	oracletypes.ModuleName: nil,
 }
@@ -315,11 +311,10 @@ type App struct {
 	SanctionKeeper     sanctionkeeper.Keeper
 
 	// Cosmos EVM keepers
-	FeeMarketKeeper   feemarketkeeper.Keeper
-	EVMKeeper         *evmkeeper.Keeper
-	Erc20Keeper       erc20keeper.Keeper
-	PreciseBankKeeper precisebankkeeper.Keeper
-	EVMMempool        *evmmempool.ExperimentalEVMMempool
+	FeeMarketKeeper feemarketkeeper.Keeper
+	EVMKeeper       *evmkeeper.Keeper
+	Erc20Keeper     erc20keeper.Keeper
+	EVMMempool      *evmmempool.ExperimentalEVMMempool
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -382,7 +377,7 @@ func New(
 		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey, precisebanktypes.StoreKey,
+		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -714,16 +709,6 @@ func New(
 		tkeys[feemarkettypes.TransientKey],
 	)
 
-	// Set up PreciseBank keeper
-	//
-	// NOTE: PreciseBank is not needed if SDK use 18 decimals for gas coin. Use BankKeeper instead.
-	app.PreciseBankKeeper = precisebankkeeper.NewKeeper(
-		appCodec,
-		keys[precisebanktypes.StoreKey],
-		app.BankKeeper,
-		app.AccountKeeper,
-	)
-
 	// Set up EVM keeper
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
@@ -758,7 +743,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
 		nil,
-		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
+		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper: overridden after transfer stack is built via WithICS4Wrapper
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
 		app.AccountKeeper,
@@ -770,11 +755,11 @@ func New(
 	/*
 		Create Transfer Stack
 
-		transfer stack contains (from top to bottom):
+		transfer stack (outermost to innermost, i.e. call-entry order for RecvPacket):
 			- UnwrapERC20 middleware (recv-only)
 			- ICS Provider middleware
-			- IBC RateLimit middleware
-			- TokenFactory middleware
+			- IBC RateLimit middleware (guard: checks rate limit BEFORE calling next, blocks if exceeded)
+			- TokenFactory middleware (pass-through on RecvPacket)
 			- IBC Callbacks middleware (with EVM ContractKeeper)
 			- ERC-20 middleware
 			- MigrateUom middleware
@@ -782,11 +767,13 @@ func New(
 
 		SendPacket, since it is originating from the application to core IBC:
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
+			(ICS4Wrapper chain wired via WithICS4Wrapper after stack is built below)
 
-		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> unwraperc20.OnRecvPacket -> icsprovider.OnRecvPacket -> ratelimit.OnRecvPacket
-			-> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket -> erc20.OnRecvPacket
-			-> migrateuom.OnRecvPacket -> transfer.OnRecvPacket
+		RecvPacket, actual logic execution order (note: ratelimit runs its check BEFORE calling next,
+		all others call next before their own logic):
+			channel.RecvPacket -> ratelimit.OnRecvPacket (guard, aborts if exceeded) -> transfer.OnRecvPacket -> migrateuom.OnRecvPacket
+			-> erc20.OnRecvPacket -> callbacks.OnRecvPacket -> icsprovider.OnRecvPacket -> unwraperc20.OnRecvPacket
+			(tokenfactory is pass-through on RecvPacket)
 	*/
 
 	// create IBC module from top to bottom of stack
@@ -807,6 +794,9 @@ func New(
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
 	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
+
+	// Wire the ICS4Wrapper send path: transfer -> ratelimit -> channel
+	app.TransferKeeper.WithICS4Wrapper(app.RateLimitKeeper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
@@ -966,7 +956,6 @@ func New(
 		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.BankKeeper, app.AccountKeeper.AddressCodec()),
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
-		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -1025,7 +1014,6 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1053,7 +1041,6 @@ func New(
 		oracletypes.ModuleName,
 		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1091,7 +1078,6 @@ func New(
 		evmtypes.ModuleName,
 		feemarkettypes.ModuleName,
 		erc20types.ModuleName,
-		precisebanktypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1551,25 +1537,9 @@ func (app *App) setupUpgradeHandlers() {
 				app.ModuleManager,
 				app.configurator,
 				&upgrades.UpgradeKeepers{
-					ChannelKeeper:         app.IBCKeeper.ChannelKeeper,
-					TokenFactoryKeeper:    &app.TokenFactoryKeeper,
-					SanctionKeeper:        app.SanctionKeeper,
-					FeeMarketKeeper:       app.FeeMarketKeeper,
-					AccountKeeper:         app.AccountKeeper,
-					BankKeeper:            app.BankKeeper,
-					EVMKeeper:             *app.EVMKeeper,
-					Erc20Keeper:           app.Erc20Keeper,
-					CircuitKeeper:         app.CircuitKeeper,
-					ProviderKeeper:        app.ProviderKeeper,
 					StakingKeeper:         app.StakingKeeper,
+					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
-					GovKeeper:             app.GovKeeper,
-					DistrKeeper:           app.DistrKeeper,
-					MintKeeper:            app.MintKeeper,
-					CrisisKeeper:          *app.CrisisKeeper,
-					FeeGrantKeeper:        app.FeeGrantKeeper,
-					AuthzKeeper:           app.AuthzKeeper,
-					OracleKeeper:          app.OracleKeeper,
 				},
 				app.keys,
 			),
