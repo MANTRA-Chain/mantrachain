@@ -1,4 +1,4 @@
-package v8rc0
+package v8rc2
 
 import (
 	"context"
@@ -69,7 +69,7 @@ func CreateUpgradeHandler(
 			return vm, errorsmod.Wrapf(err, "initializing LastProviderConsensusValSet during migration")
 		}
 
-		ctx.Logger().Info("Upgrade v8.0.0-rc0 complete")
+		ctx.Logger().Info("Upgrade v8.0.0-rc2 complete")
 		return vm, nil
 	}
 }
