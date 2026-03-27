@@ -16,6 +16,7 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -198,6 +199,11 @@ func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Addres
 	if amountWad.Cmp(evmutil.MinWithdrawAmountWad) < 0 {
 		return
 	}
+
+	// use a zero gas config to avoid extra costs for the relayers
+	ctx = ctx.
+		WithKVGasConfig(storetypes.GasConfig{}).
+		WithTransientKVGasConfig(storetypes.GasConfig{})
 
 	if _, err := evmutil.ERC20WrapperUnderlyingViaEVMCaller(ctx, im.evmCaller, receiver, wrapper); err != nil {
 		return
