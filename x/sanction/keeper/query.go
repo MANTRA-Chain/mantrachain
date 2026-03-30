@@ -6,6 +6,8 @@ import (
 	"cosmossdk.io/collections"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = queryServer{}
@@ -24,6 +26,9 @@ func (q queryServer) Blacklist(
 	ctx context.Context,
 	req *types.QueryBlacklistRequest,
 ) (*types.QueryBlacklistResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 	blacklist := []string{}
 	_, pageRes, err := query.CollectionPaginate(
 		ctx,
