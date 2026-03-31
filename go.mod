@@ -11,7 +11,7 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
 	// mantra/v0.6.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-1
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-1.0.20260331053153-0e8e6da5a468
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
