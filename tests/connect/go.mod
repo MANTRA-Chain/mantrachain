@@ -27,9 +27,9 @@ replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/skip-mev/connect/tests/integration/v2 => github.com/MANTRA-Chain/connect/tests/integration/v2 v2.0.0-20250821085522-f868431bcff5
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
-	// Direct commit link: https://github.com/MANTRA-Chain/connect/commit/8ad89803888daa06cc93e546e120fe633aa53110
-	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.3
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.3
+	// Direct commit link: https://github.com/MANTRA-Chain/connect/tree/83ca991ae0e6b9a60b83919f2dede985a72a4e95
+	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.4
+	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4
 	github.com/strangelove-ventures/interchaintest/v8 => github.com/mmsqe/interchaintest/v8 v8.0.0-20250822090924-aa416c7347dc
 	github.com/vedhavyas/go-subkey => github.com/strangelove-ventures/go-subkey v1.0.7
 )
