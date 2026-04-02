@@ -3,6 +3,8 @@ package v8rc3
 import (
 	"cosmossdk.io/store/types"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
+	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
+	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 )
 
 const (
@@ -15,6 +17,6 @@ var Upgrade = upgrades.Upgrade{
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: types.StoreUpgrades{
 		Added:   []string{},
-		Deleted: []string{"oracle", "marketmap"},
+		Deleted: []string{oracletypes.ModuleName, marketmaptypes.ModuleName},
 	},
 }
