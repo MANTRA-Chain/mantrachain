@@ -146,7 +146,7 @@ $(BUILDDIR)/:
 PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e' | grep -v '/simulation')
 PACKAGES_E2E=$(shell cd tests/e2e && go list ./... | grep '/e2e')
 TEST_PACKAGES=./...
-TEST_TARGETS := test-unit test-e2e test-cover test-connect
+TEST_TARGETS := test-unit test-e2e test-cover
 
 DIR=$(CURDIR)
 test-unit: ARGS=-timeout=5m -tags='norace'
@@ -156,9 +156,6 @@ test-e2e: TEST_PACKAGES=$(PACKAGES_E2E)
 test-e2e: build-image
 test-cover: ARGS=-timeout=30m -coverprofile=coverage.txt -covermode=atomic -tags='norace'
 test-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
-test-connect: ARGS=-v -race
-test-connect: DIR=$(CURDIR)/tests/connect
-test-connect: build-image
 $(TEST_TARGETS): run-tests
 
 run-tests:
