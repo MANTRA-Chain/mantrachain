@@ -175,8 +175,6 @@ import (
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 
 	"github.com/gorilla/mux"
-	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
@@ -342,8 +340,6 @@ func New(
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	// register connect types for legacy proposals
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
-	marketmaptypes.RegisterInterfaces(interfaceRegistry)
-	oracletypes.RegisterInterfaces(interfaceRegistry)
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)

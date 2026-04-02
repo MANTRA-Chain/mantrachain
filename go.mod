@@ -24,11 +24,6 @@ replace (
 	// use regen protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
-	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/connect/tree/mantra/v2.3.0, current branch: mantra/v2.3.0
-	// Direct commit link: https://github.com/MANTRA-Chain/connect/tree/83ca991ae0e6b9a60b83919f2dede985a72a4e95
-	// Direct tag link: https://github.com/MANTRA-Chain/connect/tree/v2.3.0-mantra-1.4
-	github.com/skip-mev/connect/v2 => github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4
-
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
@@ -78,7 +73,6 @@ require (
 	github.com/holiman/uint256 v1.3.2
 	github.com/ory/dockertest/v3 v3.11.0
 	github.com/prometheus/client_golang v1.23.0
-	github.com/skip-mev/connect/v2 v2.0.0-00010101000000-000000000000
 	github.com/skip-mev/feemarket v1.1.1
 	github.com/spf13/cast v1.10.0
 	github.com/spf13/cobra v1.10.1

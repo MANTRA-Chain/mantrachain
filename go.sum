@@ -698,8 +698,6 @@ github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapp
 github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.50.0/go.mod h1:otE2jQekW/PqXk1Awf5lmfokJx4uwuqcj1ab5SpGeW0=
 github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c/go.mod h1:X0CRv0ky0k6m906ixxpzmDRLvX58TFUKS2eePweuyxk=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4 h1:ATp+qZDOpRFU8FiH+VKId3UZlmEwlyau0c2Z1eunIB4=
-github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713 h1:pRdHkb6ViEOgkPRYWYr/fSchhBJsPrEANdna0mS5xLU=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713/go.mod h1:5GLMySIqGT5NBxdkpjgRbD1n+gzcO9/TmtDo9b0J8xU=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260318083824-1b9479efc713 h1:U1PH9x+VKA+C/eMhyxJ4M5COxvFtVeY6dSB0uyCj8oQ=
@@ -1782,8 +1780,6 @@ github.com/sirupsen/logrus v1.6.0/go.mod h1:7uNnSEd1DgxDLC74fIahvMZmmYsHGZGEOFrf
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
-github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610 h1:4JlsiRVt/YZOvrKH525T7sZXgEWUEjqSDMwE6fXNbdo=
-github.com/skip-mev/chaintestutil v0.0.0-20240514161515-056d7ba45610/go.mod h1:kB8gFZX07CyJnw8q9iEZijI3qJTIe1K/Y++P5VGkrcg=
 github.com/skip-mev/feemarket v1.1.1 h1:L34K7N2J6o635kzNYRAvQ93+hAFtSiJ2t03jmaNx0zw=
 github.com/skip-mev/feemarket v1.1.1/go.mod h1:DUa6djUsTeMOrbrcIZqWSVxU9IZNCXp96ruaojyBNpc=
 github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
