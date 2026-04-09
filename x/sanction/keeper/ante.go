@@ -3,18 +3,22 @@ package keeper
 import (
 	errorsmod "cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	authz "github.com/cosmos/cosmos-sdk/x/authz"
 )
 
 type BlacklistCheckDecorator struct {
 	sanctionKeeper Keeper
+	cdc            codec.Codec
 }
 
-func NewBlacklistCheckDecorator(sk Keeper) BlacklistCheckDecorator {
+func NewBlacklistCheckDecorator(sk Keeper, cdc codec.Codec) BlacklistCheckDecorator {
 	return BlacklistCheckDecorator{
 		sanctionKeeper: sk,
+		cdc:            cdc,
 	}
 }
 
@@ -38,5 +42,49 @@ func (d BlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", signerAcc.String())
 		}
 	}
+
+	// Check fee granter
+	if feeTx, ok := tx.(sdk.FeeTx); ok {
+		if granter := feeTx.FeeGranter(); granter != nil {
+			granterAddr := sdk.AccAddress(granter)
+			has, err := d.sanctionKeeper.BlacklistAccounts.Has(ctx, granterAddr.String())
+			if err != nil {
+				return ctx, err
+			}
+			if has {
+				return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "fee granter %s is blacklisted", granterAddr)
+			}
+		}
+	}
+
+	// Check authz granters (inner message signers of MsgExec)
+	for _, msg := range tx.GetMsgs() {
+		execMsg, ok := msg.(*authz.MsgExec)
+		if !ok {
+			continue
+		}
+		innerMsgs, err := execMsg.GetMessages()
+		if err != nil {
+			return ctx, err
+		}
+		for _, innerMsg := range innerMsgs {
+			innerSigners, _, err := d.cdc.GetMsgV1Signers(innerMsg)
+			if err != nil {
+				return ctx, err
+			}
+			if len(innerSigners) == 0 {
+				continue
+			}
+			granterAddr := sdk.AccAddress(innerSigners[0])
+			has, err := d.sanctionKeeper.BlacklistAccounts.Has(ctx, granterAddr.String())
+			if err != nil {
+				return ctx, err
+			}
+			if has {
+				return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "authz granter %s is blacklisted", granterAddr)
+			}
+		}
+	}
+
 	return next(ctx, tx, simulate)
 }

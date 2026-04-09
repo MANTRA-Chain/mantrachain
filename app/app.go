@@ -1190,6 +1190,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 		TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 		CircuitKeeper:         &app.CircuitKeeper,
 		SanctionKeeper:        &app.SanctionKeeper,
+		Codec:                 app.appCodec,
 	}
 
 	if err := handlerOpts.Validate(); err != nil {
