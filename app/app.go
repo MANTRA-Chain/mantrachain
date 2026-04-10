@@ -554,8 +554,6 @@ func New(
 		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AuthzKeeper,
-		newSanctionFeegrantKeeperAdapter(app.FeeGrantKeeper),
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.SetHooks(
@@ -1192,6 +1190,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 		TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 		CircuitKeeper:         &app.CircuitKeeper,
 		SanctionKeeper:        &app.SanctionKeeper,
+		Codec:                 app.appCodec,
 	}
 
 	if err := handlerOpts.Validate(); err != nil {

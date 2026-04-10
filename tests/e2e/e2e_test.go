@@ -135,6 +135,8 @@ func (s *IntegrationTestSuite) TestSanction() {
 	}
 	s.testAddToBlacklist()
 	s.testRemoveFromBlacklist()
+	s.testAuthzGranterBlacklist()
+	s.testFeeGranterBlacklist()
 }
 
 func (s *IntegrationTestSuite) TestWasm() {
