@@ -19,7 +19,7 @@ replace (
 )
 
 replace (
-	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260318083824-1b9479efc713
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/1b9479efc713f716e553f2803823004200666fee
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713
@@ -28,8 +28,8 @@ replace (
 require (
 	cosmossdk.io/math v1.5.3
 	github.com/cometbft/cometbft v0.38.21
-	github.com/cosmos/cosmos-sdk v0.53.0
-	github.com/cosmos/ibc-go/v10 v10.3.0
+	github.com/cosmos/cosmos-sdk v0.53.4
+	github.com/cosmos/ibc-go/v10 v10.5.1
 	github.com/docker/docker v27.1.2+incompatible
 	github.com/google/go-github/v62 v62.0.0
 	github.com/kelseyhightower/envconfig v1.4.0
