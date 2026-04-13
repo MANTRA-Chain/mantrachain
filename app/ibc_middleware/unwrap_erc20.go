@@ -20,11 +20,11 @@ import (
 )
 
 const (
-	EventTypeUnwrapERC20          = "unwrap_erc20"
-	AttributeKeyReceiver          = "receiver"
-	AttributeKeyWrapper           = "wrapper"
-	AttributeKeyAmount            = "amount"
-	AttributeKeyUnwrapSuccess     = "success"
+	EventTypeUnwrapERC20      = "unwrap_erc20"
+	AttributeKeyReceiver      = "receiver"
+	AttributeKeyWrapper       = "wrapper"
+	AttributeKeyAmount        = "amount"
+	AttributeKeyUnwrapSuccess = "success"
 )
 
 var (
