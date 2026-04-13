@@ -19,6 +19,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const (
+	EventTypeUnwrapERC20       = "unwrap_erc20"
+	EventTypeUnwrapERC20Failed = "unwrap_erc20_failed"
+	AttributeKeyReceiver       = "receiver"
+	AttributeKeyWrapper        = "wrapper"
+	AttributeKeyAmount         = "amount"
+	AttributeKeyReason         = "reason"
+)
+
 var (
 	_ porttypes.IBCModule             = UnwrapERC20IBCModule{}
 	_ porttypes.PacketDataUnmarshaler = UnwrapERC20IBCModule{}
@@ -79,7 +88,7 @@ func (im UnwrapERC20IBCModule) OnRecvPacket(
 		return ack
 	}
 
-	im.tryUnwrap(ctx, receiverHex, pair.GetERC20Contract(), coin.Amount.BigInt())
+	im.tryUnwrap(ctx, receiverHex, pair.GetERC20Contract(), coin.Amount.BigInt(), coin.Denom)
 	return ack
 }
 
@@ -191,17 +200,44 @@ func shouldUnwrapFromIBCMemo(memo string) bool {
 	return parsed.Mantra.Unwrap
 }
 
-func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Address, wrapper common.Address, amountWad *big.Int) {
+func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Address, wrapper common.Address, amountWad *big.Int, denom string) {
+	emitFailed := func(reason string) {
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				EventTypeUnwrapERC20Failed,
+				sdk.NewAttribute(AttributeKeyReceiver, receiver.Hex()),
+				sdk.NewAttribute(AttributeKeyWrapper, wrapper.Hex()),
+				sdk.NewAttribute(AttributeKeyAmount, denom),
+				sdk.NewAttribute(AttributeKeyReason, reason),
+			),
+		)
+	}
+
 	if amountWad == nil || amountWad.Sign() <= 0 {
+		emitFailed("zero or nil amount")
 		return
 	}
 	if amountWad.Cmp(evmutil.MinWithdrawAmountWad) < 0 {
+		emitFailed("amount below minimum withdraw threshold")
 		return
 	}
 
 	if _, err := evmutil.ERC20WrapperUnderlyingViaEVMCaller(ctx, im.evmCaller, receiver, wrapper); err != nil {
+		emitFailed(err.Error())
 		return
 	}
 
-	_, _ = evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, im.evmCaller, receiver, wrapper, receiver, amountWad)
+	if _, err := evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, im.evmCaller, receiver, wrapper, receiver, amountWad); err != nil {
+		emitFailed(err.Error())
+		return
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			EventTypeUnwrapERC20,
+			sdk.NewAttribute(AttributeKeyReceiver, receiver.Hex()),
+			sdk.NewAttribute(AttributeKeyWrapper, wrapper.Hex()),
+			sdk.NewAttribute(AttributeKeyAmount, denom),
+		),
+	)
 }
