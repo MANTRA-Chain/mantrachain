@@ -13,14 +13,6 @@ func randomSanctionAddress() string {
 	return sdk.AccAddress(pk.Address()).String()
 }
 
-func randomSanctionAddresses(n int) []string {
-	addrs := make([]string, n)
-	for i := 0; i < n; i++ {
-		addrs[i] = randomSanctionAddress()
-	}
-	return addrs
-}
-
 type blacklistValidateTestcase struct {
 	name      string
 	authority string
@@ -79,14 +71,7 @@ func runBlacklistValidateTestcases(t *testing.T, testcases []blacklistValidateTe
 }
 
 func TestMsgAddBlacklistAccounts(t *testing.T) {
-	testcases := append(baseBlacklistValidateTestcases(), blacklistValidateTestcase{
-		name:      "more than 100 accounts rejected",
-		authority: randomSanctionAddress(),
-		accounts:  randomSanctionAddresses(101),
-		wantErr:   true,
-	})
-
-	runBlacklistValidateTestcases(t, testcases, func(authority string, accounts []string) error {
+	runBlacklistValidateTestcases(t, baseBlacklistValidateTestcases(), func(authority string, accounts []string) error {
 		return NewMsgAddBlacklistAccounts(authority, accounts).Validate()
 	})
 }

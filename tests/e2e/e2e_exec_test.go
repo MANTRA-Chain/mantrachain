@@ -16,7 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -196,7 +195,6 @@ func (s *IntegrationTestSuite) execUnjail(
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 
-//nolint:unused
 func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grantee, spendLimit string, opt ...flagOption) {
 	opt = append(opt, withKeyValue(flagFrom, granter))
 	opt = append(opt, withKeyValue(flagSpendLimit, spendLimit))
@@ -253,7 +251,6 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 // 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
 // }
 
-//nolint:unparam
 func (s *IntegrationTestSuite) execBankSend(
 	c *chain,
 	valIdx int,
@@ -282,43 +279,6 @@ func (s *IntegrationTestSuite) execBankSend(
 		from,
 		to,
 		amt,
-		"-y",
-	}
-	for flag, value := range opts {
-		mantraCommand = append(mantraCommand, fmt.Sprintf("--%s=%v", flag, value))
-	}
-
-	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.expectErrExecValidation(c, valIdx, expectErr))
-}
-
-func (s *IntegrationTestSuite) execAuthzGrant(
-	c *chain,
-	valIdx int,
-	from,
-	grantee,
-	msgType,
-	fees string,
-	expectErr bool,
-	opt ...flagOption,
-) {
-	// TODO remove the hardcode opt after refactor, all methods should accept custom flags
-	opt = append(opt, withKeyValue(flagFees, fees))
-	opt = append(opt, withKeyValue(flagFrom, from))
-	opts := applyOptions(c.id, opt)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-
-	s.T().Logf("granting authz from %s to %s on chain %s", from, grantee, c.id)
-
-	mantraCommand := []string{
-		mantrachaindBinary,
-		txCommand,
-		authz.ModuleName,
-		"grant",
-		grantee,
-		"generic",
-		fmt.Sprintf("--msg-type=%s", msgType),
 		"-y",
 	}
 	for flag, value := range opts {

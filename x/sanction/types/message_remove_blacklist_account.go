@@ -8,5 +8,5 @@ func NewMsgRemoveBlacklistAccounts(creator string, blacklistAccounts []string) *
 }
 
 func (m MsgRemoveBlacklistAccounts) Validate() error {
-	return validateBlacklistMessage(m.Authority, m.BlacklistAccounts, 0)
+	return validateBlacklistMessage(m.Authority, m.BlacklistAccounts)
 }
