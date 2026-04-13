@@ -10,8 +10,6 @@ import (
 	erc20types "github.com/cosmos/evm/x/erc20/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
-	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
 )
 
 // GenesisState of the blockchain is represented here as a map of raw json
@@ -28,20 +26,6 @@ var FeeDenom = "amantra"
 // NewDefaultGenesisState generates the default state for the application.
 func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
 	genesisState := module.BasicManager{}.DefaultGenesis(cdc)
-
-	oracleGenesis := oracletypes.DefaultGenesisState()
-	oracleGenesisStateBytes, err := json.Marshal(oracleGenesis)
-	if err != nil {
-		panic("cannot marshal connect genesis state for tests")
-	}
-	genesisState[oracletypes.ModuleName] = oracleGenesisStateBytes
-
-	marketmapGenesis := marketmaptypes.DefaultGenesisState()
-	marketmapGenesisStateBytes, err := json.Marshal(marketmapGenesis)
-	if err != nil {
-		panic("cannot marshal connect genesis state for tests")
-	}
-	genesisState[marketmaptypes.ModuleName] = marketmapGenesisStateBytes
 
 	distributionGenesis := distributiontypes.GenesisState{
 		Params: distributiontypes.Params{

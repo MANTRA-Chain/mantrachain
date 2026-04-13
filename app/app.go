@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc2"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc3"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -175,13 +175,8 @@ import (
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 
 	"github.com/gorilla/mux"
-	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
-	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracle "github.com/skip-mev/connect/v2/x/oracle"
-	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-
 	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
@@ -244,11 +239,9 @@ var maccPerms = map[string][]string{
 	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 	feemarkettypes.ModuleName: nil,
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
-
-	oracletypes.ModuleName: nil,
 }
 
-var Upgrades = []upgrades.Upgrade{v8rc2.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8rc3.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -288,10 +281,6 @@ type App struct {
 	NFTKeeper             nftkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
-
-	// Connect
-	OracleKeeper    *oraclekeeper.Keeper
-	MarketMapKeeper *marketmapkeeper.Keeper
 
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
@@ -351,8 +340,10 @@ func New(
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
-	// register legacy feemarket types for legacy proposals
+	// register connect types for legacy proposals
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
+	marketmaptypes.RegisterInterfaces(interfaceRegistry)
+	oracletypes.RegisterInterfaces(interfaceRegistry)
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -374,7 +365,6 @@ func New(
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
 		icacontrollertypes.StoreKey, icahosttypes.StoreKey, providertypes.StoreKey,
-		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
 		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
@@ -564,8 +554,6 @@ func New(
 		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AuthzKeeper,
-		newSanctionFeegrantKeeperAdapter(app.FeeGrantKeeper),
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.SetHooks(
@@ -630,20 +618,6 @@ func New(
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
 	)
-
-	app.MarketMapKeeper = marketmapkeeper.NewKeeper(
-		runtime.NewKVStoreService(keys[marketmaptypes.StoreKey]),
-		appCodec,
-		authtypes.NewModuleAddress(govtypes.ModuleName),
-	)
-	marketmapModule := marketmap.NewAppModule(appCodec, app.MarketMapKeeper)
-
-	oracleKeeper := oraclekeeper.NewKeeper(runtime.NewKVStoreService(keys[oracletypes.StoreKey]),
-		appCodec,
-		app.MarketMapKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName))
-	app.OracleKeeper = &oracleKeeper
-	oracleModule := oracle.NewAppModule(appCodec, *app.OracleKeeper)
 
 	// ICA Host keeper
 	app.ICAHostKeeper = icahostkeeper.NewKeeper(
@@ -937,9 +911,6 @@ func New(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(tmLightClientModule),
 		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
-		// connect
-		marketmapModule,
-		oracleModule,
 
 		// ics
 		providerModule,
@@ -1011,8 +982,6 @@ func New(
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
 		providertypes.ModuleName,
 	)
@@ -1038,8 +1007,6 @@ func New(
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
 		providertypes.ModuleName,
 	)
@@ -1090,10 +1057,6 @@ func New(
 		tokenfactorytypes.ModuleName,
 		taxtypes.ModuleName,
 		sanctiontypes.ModuleName,
-
-		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		providertypes.ModuleName,
 
 		// crisis needs to be last so that the genesis state is consistent when it checks invariants
@@ -1177,18 +1140,6 @@ func New(
 	// configure mempool
 	prepareProposalHandler, processProposalHandler := app.configureEVMMempool(appOpts, logger)
 
-	// oracle initialization
-	client, metrics, err := app.initializeOracle(appOpts)
-	if err != nil {
-		panic(fmt.Errorf("failed to initialize oracle client and metrics: %w", err))
-	}
-
-	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
-
-	prepareProposalHandler, processProposalHandler = app.initializeABCIExtensions(
-		client, metrics, prepareProposalHandler, processProposalHandler,
-	)
-
 	app.SetPrepareProposal(prepareProposalHandler)
 	app.SetProcessProposal(processProposalHandler)
 
@@ -1239,6 +1190,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 		TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 		CircuitKeeper:         &app.CircuitKeeper,
 		SanctionKeeper:        &app.SanctionKeeper,
+		Codec:                 app.appCodec,
 	}
 
 	if err := handlerOpts.Validate(); err != nil {
