@@ -50,7 +50,7 @@ func (m mockEVMKeeper) CallEVM(
 	method string,
 	args ...interface{},
 ) (*evmtypes.MsgEthereumTxResponse, error) {
-	return nil, nil
+	return nil, errors.New("unexpected CallEVM")
 }
 
 func (m mockEVMKeeper) GetAccountOrEmpty(ctx sdk.Context, addr common.Address) statedb.Account {
