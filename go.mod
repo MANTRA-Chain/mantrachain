@@ -34,10 +34,11 @@ replace (
 )
 
 replace (
-	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.7.3-0.20260318083824-1b9479efc713
+	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
-	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/1b9479efc713f716e553f2803823004200666fee
-	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.8-0.20260318083824-1b9479efc713
+	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/eca3f45af56019d6e184b795b8216c447040f84c
+	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.6-v8-mantra-1
+	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1
 )
 
 require (
@@ -67,7 +68,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 v10.1.0
-	github.com/cosmos/ibc-go/v10 v10.3.1-0.20250909102629-ed3b125c7b6f
+	github.com/cosmos/ibc-go/v10 v10.5.1
 	github.com/cosmos/interchain-security/v7 v7.0.1
 	github.com/ethereum/go-ethereum v1.16.4
 	github.com/gogo/protobuf v1.3.2
@@ -334,6 +335,7 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spiffe/go-spiffe/v2 v2.5.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
