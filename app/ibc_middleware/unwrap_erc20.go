@@ -3,6 +3,7 @@ package ibc_middleware
 import (
 	"encoding/json"
 	"math/big"
+	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
 
@@ -17,6 +18,17 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+const (
+	EventTypeUnwrapERC20          = "unwrap_erc20"
+	AttributeKeyUnwrapSuccess     = "success"
+	AttributeKeyUnwrapDenom       = "denom"
+	AttributeKeyUnwrapWrapper     = "wrapper"
+	AttributeKeyUnwrapReceiver    = "receiver"
+	AttributeKeyUnwrapAmount      = "amount"
+	AttributeKeyUnwrapFailureStep = "failure_step"
+	AttributeKeyUnwrapError       = "error"
 )
 
 var (
@@ -79,7 +91,7 @@ func (im UnwrapERC20IBCModule) OnRecvPacket(
 		return ack
 	}
 
-	im.tryUnwrap(ctx, receiverHex, pair.GetERC20Contract(), coin.Amount.BigInt())
+	im.tryUnwrap(ctx, coin.Denom, receiverHex, pair.GetERC20Contract(), coin.Amount.BigInt())
 	return ack
 }
 
@@ -191,17 +203,48 @@ func shouldUnwrapFromIBCMemo(memo string) bool {
 	return parsed.Mantra.Unwrap
 }
 
-func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, receiver common.Address, wrapper common.Address, amountWad *big.Int) {
+func (im UnwrapERC20IBCModule) tryUnwrap(ctx sdk.Context, denom string, receiver common.Address, wrapper common.Address, amountWad *big.Int) {
+	emitUnwrapOutcome := func(success bool, failureStep string, err error) {
+		amount := ""
+		if amountWad != nil {
+			amount = amountWad.String()
+		}
+
+		attrs := []sdk.Attribute{
+			sdk.NewAttribute(AttributeKeyUnwrapSuccess, strconv.FormatBool(success)),
+			sdk.NewAttribute(AttributeKeyUnwrapDenom, denom),
+			sdk.NewAttribute(AttributeKeyUnwrapWrapper, wrapper.Hex()),
+			sdk.NewAttribute(AttributeKeyUnwrapReceiver, receiver.Hex()),
+			sdk.NewAttribute(AttributeKeyUnwrapAmount, amount),
+		}
+		if failureStep != "" {
+			attrs = append(attrs, sdk.NewAttribute(AttributeKeyUnwrapFailureStep, failureStep))
+		}
+		if err != nil {
+			attrs = append(attrs, sdk.NewAttribute(AttributeKeyUnwrapError, err.Error()))
+		}
+
+		ctx.EventManager().EmitEvent(sdk.NewEvent(EventTypeUnwrapERC20, attrs...))
+	}
+
 	if amountWad == nil || amountWad.Sign() <= 0 {
+		emitUnwrapOutcome(false, "invalid_amount", nil)
 		return
 	}
 	if amountWad.Cmp(evmutil.MinWithdrawAmountWad) < 0 {
+		emitUnwrapOutcome(false, "amount_below_min", nil)
 		return
 	}
 
 	if _, err := evmutil.ERC20WrapperUnderlyingViaEVMCaller(ctx, im.evmCaller, receiver, wrapper); err != nil {
+		emitUnwrapOutcome(false, "underlying", err)
 		return
 	}
 
-	_, _ = evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, im.evmCaller, receiver, wrapper, receiver, amountWad)
+	if _, err := evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, im.evmCaller, receiver, wrapper, receiver, amountWad); err != nil {
+		emitUnwrapOutcome(false, "withdraw_to", err)
+		return
+	}
+
+	emitUnwrapOutcome(true, "", nil)
 }
