@@ -88,13 +88,6 @@ proto-download-deps:
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
 	fi
 
-	@echo "Copying connect proto..."
-	@DIR=$$(go list -m -f '{{.Dir}}' github.com/skip-mev/connect/v2); \
-	if [ -d "$$DIR/proto" ]; then \
-		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
-		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
-	fi
-
 	@echo "Copying ibc-apps rate-limiting proto..."
 	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-apps/modules/rate-limiting/v10); \
 	if [ -d "$$DIR/proto/ratelimit" ]; then \
