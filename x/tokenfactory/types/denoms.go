@@ -32,6 +32,10 @@ func GetTokenDenom(creator, subdenom string) (string, error) {
 		return "", ErrInvalidCreator
 	}
 	denom := strings.Join([]string{ModuleDenomPrefix, creator, subdenom}, "/")
+	if err := validateSubdenomPath(subdenom); err != nil {
+		return "", err
+	}
+
 	return denom, sdk.ValidateDenom(denom)
 }
 
@@ -63,6 +67,27 @@ func DeconstructDenom(denom string) (creator, subdenom string, err error) {
 	// when we did the split, we'd turn factory/accaddr/atomderivative/sikka into ["factory", "accaddr", "atomderivative", "sikka"]
 	// So we have to join [2:] with a "/" as the delimiter to get back the correct subdenom which should be "atomderivative/sikka"
 	subdenom = strings.Join(strParts[2:], "/")
+	if err := validateSubdenomPath(subdenom); err != nil {
+		return "", "", err
+	}
 
 	return creatorAddr.String(), subdenom, nil
+}
+
+func validateSubdenomPath(subdenom string) error {
+	if subdenom == "" {
+		return errorsmod.Wrap(ErrInvalidDenom, "subdenom must not be empty")
+	}
+
+	parts := strings.Split(subdenom, "/")
+	for _, part := range parts {
+		if part == "" {
+			return errorsmod.Wrap(ErrInvalidDenom, "subdenom must not contain empty path segments")
+		}
+		if part == "." || part == ".." {
+			return errorsmod.Wrap(ErrInvalidDenom, "subdenom must not contain dot path segments")
+		}
+	}
+
+	return nil
 }
