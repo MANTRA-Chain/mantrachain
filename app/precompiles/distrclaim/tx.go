@@ -158,27 +158,33 @@ func parseERC20DenomAddress(denom string) (common.Address, error) {
 
 func (p *Precompile) tryUnwrapWrapper(ctx sdk.Context, evm *vm.EVM, caller common.Address, contract *vm.Contract, denom string, amountWad *big.Int) {
 	if evm == nil || amountWad == nil {
+		ctx.Logger().Error("skipping ERC20 wrapper unwrap due to missing execution context", "evm_nil", evm == nil, "amount_nil", amountWad == nil)
 		return
 	}
 	if !strings.HasPrefix(denom, "erc20:") {
 		return
 	}
 	if amountWad.Cmp(evmutil.MinWithdrawAmountWad) < 0 {
+		ctx.Logger().Info("skipping ERC20 wrapper unwrap due to amount below minimum", "denom", denom, "amount", amountWad.String(), "min_amount", evmutil.MinWithdrawAmountWad.String())
 		return
 	}
 
 	wrapperAddr, err := parseERC20DenomAddress(denom)
 	if err != nil {
+		ctx.Logger().Error("failed to parse ERC20 wrapper address from denom", "denom", denom, "err", err)
 		return
 	}
 
 	// Only attempt for wrappers that look like ERC20Wrapper (underlying() + withdrawTo(address,uint256)).
 	if _, err := evmGetUnderlyingERC20Wrapper(evm, caller, wrapperAddr, contract); err != nil {
+		ctx.Logger().Error("failed ERC20 wrapper underlying() probe", "wrapper", wrapperAddr.Hex(), "err", err)
 		return
 	}
 
 	// Best-effort unwrap via x/vm keeper (sees ConvertCoin state updates).
-	_, _ = evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, p.evmKeeper, caller, wrapperAddr, caller, amountWad)
+	if _, err := evmutil.ERC20WrapperWithdrawToViaEVMCaller(ctx, p.evmKeeper, caller, wrapperAddr, caller, amountWad); err != nil {
+		ctx.Logger().Error("failed ERC20 wrapper withdrawTo(address,uint256)", "wrapper", wrapperAddr.Hex(), "receiver", caller.Hex(), "amount", amountWad.String(), "err", err)
+	}
 }
 
 func evmGetUnderlyingERC20Wrapper(evm *vm.EVM, caller common.Address, wrapper common.Address, contract *vm.Contract) (common.Address, error) {
