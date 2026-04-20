@@ -11,7 +11,7 @@ replace (
 	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
 
 	// mantra/v0.6.x
-	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-1
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v7-mantra-3
 
 	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
 
@@ -335,6 +335,7 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spiffe/go-spiffe/v2 v2.5.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/supranational/blst v0.3.14 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
