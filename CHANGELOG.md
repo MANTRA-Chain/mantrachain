@@ -3,7 +3,8 @@
 ### FEATURES
 
 - feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
-- feat: support DistributionClaim claim and convert precompile ([#585](https://github.com/MANTRA-Chain/mantrachain/pull/585)).
+- feat: support DistributionClaim claim and convert precompile ([#585](https://github.com/MANTRA-Chain/mantrachain/pull/585))
+- feat: finalize v8.0.0 upgrade release ([#634](https://github.com/MANTRA-Chain/mantrachain/pull/634))
 
 ### DEPENDENCIES
 
@@ -14,7 +15,7 @@
 
 ### IMPROVEMENTS
 
-- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586)).
+- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586))
 
 ### BUG-FIXES
 
