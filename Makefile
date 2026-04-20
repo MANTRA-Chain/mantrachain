@@ -132,7 +132,7 @@ build-arm:
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) $(MAKE) build
 build-image:
-	docker build -f Dockerfile -t mantra-chain/mantrachain .
+	DOCKER_BUILDKIT=1 docker build -f Dockerfile -t mantra-chain/mantrachain .
 
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) $(GO_MODULE)/cmd/mantrachaind
@@ -146,7 +146,7 @@ $(BUILDDIR)/:
 PACKAGES_UNIT=$(shell go list ./... | grep -v -e '/tests/e2e' | grep -v '/simulation')
 PACKAGES_E2E=$(shell cd tests/e2e && go list ./... | grep '/e2e')
 TEST_PACKAGES=./...
-TEST_TARGETS := test-unit test-e2e test-cover test-connect
+TEST_TARGETS := test-unit test-e2e test-cover
 
 DIR=$(CURDIR)
 test-unit: ARGS=-timeout=5m -tags='norace'
@@ -156,9 +156,6 @@ test-e2e: TEST_PACKAGES=$(PACKAGES_E2E)
 test-e2e: build-image
 test-cover: ARGS=-timeout=30m -coverprofile=coverage.txt -covermode=atomic -tags='norace'
 test-cover: TEST_PACKAGES=$(PACKAGES_UNIT)
-test-connect: ARGS=-v -race
-test-connect: DIR=$(CURDIR)/tests/connect
-test-connect: build-image
 $(TEST_TARGETS): run-tests
 
 run-tests:
@@ -174,10 +171,10 @@ endif
 ###                                Release                                  ###
 ###############################################################################
 ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
-GORELEASER_IMAGE := goreleaser/goreleaser:v2.8.2
+GORELEASER_IMAGE := goreleaser/goreleaser:v2.15.3
 else
 GORELEASER_CROSS := ghcr.io/goreleaser/goreleaser-cross
-GO_VERSION_FALLBACK := 1.24.1
+GO_VERSION_FALLBACK := 1.25.5
 GORELEASER_IMAGE := $(shell docker manifest inspect $(GORELEASER_CROSS):v$(GO_VERSION) > /dev/null 2>&1 && echo $(GORELEASER_CROSS):v$(GO_VERSION) || echo $(GORELEASER_CROSS):v$(GO_VERSION_FALLBACK))
 endif
 GORELEASER_PLATFORM ?= linux/amd64

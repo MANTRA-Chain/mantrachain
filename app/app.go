@@ -50,9 +50,11 @@ import (
 
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ante"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/ibc_middleware"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc0"
+	v8 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc3"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -141,11 +143,6 @@ import (
 	feemarketkeeper "github.com/cosmos/evm/x/feemarket/keeper"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	ibccallbackskeeper "github.com/cosmos/evm/x/ibc/callbacks/keeper"
-	"github.com/cosmos/evm/x/ibc/transfer"
-	transferkeeper "github.com/cosmos/evm/x/ibc/transfer/keeper"
-	"github.com/cosmos/evm/x/precisebank"
-	precisebankkeeper "github.com/cosmos/evm/x/precisebank/keeper"
-	precisebanktypes "github.com/cosmos/evm/x/precisebank/types"
 	"github.com/cosmos/evm/x/vm"
 	evmkeeper "github.com/cosmos/evm/x/vm/keeper"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
@@ -163,6 +160,7 @@ import (
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
+	transferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v10/modules/core"
 	ibcclienttypes "github.com/cosmos/ibc-go/v10/modules/core/02-client/types"
@@ -178,13 +176,8 @@ import (
 	providertypes "github.com/cosmos/interchain-security/v7/x/ccv/provider/types"
 
 	"github.com/gorilla/mux"
-	marketmap "github.com/skip-mev/connect/v2/x/marketmap"
-	marketmapkeeper "github.com/skip-mev/connect/v2/x/marketmap/keeper"
 	marketmaptypes "github.com/skip-mev/connect/v2/x/marketmap/types"
-	oracle "github.com/skip-mev/connect/v2/x/oracle"
-	oraclekeeper "github.com/skip-mev/connect/v2/x/oracle/keeper"
 	oracletypes "github.com/skip-mev/connect/v2/x/oracle/types"
-
 	legacyfeemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 )
 
@@ -244,15 +237,12 @@ var maccPerms = map[string][]string{
 	sanctiontypes.ModuleName:          nil,
 
 	// Cosmos EVM modules
-	evmtypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-	feemarkettypes.ModuleName:   nil,
-	erc20types.ModuleName:       {authtypes.Minter, authtypes.Burner},
-	precisebanktypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-
-	oracletypes.ModuleName: nil,
+	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName: nil,
+	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8rc0.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8rc3.Upgrade, v8.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -293,10 +283,6 @@ type App struct {
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
 
-	// Connect
-	OracleKeeper    *oraclekeeper.Keeper
-	MarketMapKeeper *marketmapkeeper.Keeper
-
 	// IBC
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	ICAHostKeeper       icahostkeeper.Keeper
@@ -315,11 +301,10 @@ type App struct {
 	SanctionKeeper     sanctionkeeper.Keeper
 
 	// Cosmos EVM keepers
-	FeeMarketKeeper   feemarketkeeper.Keeper
-	EVMKeeper         *evmkeeper.Keeper
-	Erc20Keeper       erc20keeper.Keeper
-	PreciseBankKeeper precisebankkeeper.Keeper
-	EVMMempool        *evmmempool.ExperimentalEVMMempool
+	FeeMarketKeeper feemarketkeeper.Keeper
+	EVMKeeper       *evmkeeper.Keeper
+	Erc20Keeper     erc20keeper.Keeper
+	EVMMempool      *evmmempool.ExperimentalEVMMempool
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -356,8 +341,10 @@ func New(
 	appCodec := encodingConfig.Codec
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
-	// register legacy feemarket types for legacy proposals
+	// register connect types for legacy proposals
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
+	marketmaptypes.RegisterInterfaces(interfaceRegistry)
+	oracletypes.RegisterInterfaces(interfaceRegistry)
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -379,10 +366,9 @@ func New(
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
 		icacontrollertypes.StoreKey, icahosttypes.StoreKey, providertypes.StoreKey,
-		oracletypes.StoreKey, marketmaptypes.StoreKey,
 
 		// Cosmos EVM store keys
-		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey, precisebanktypes.StoreKey,
+		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey, evmtypes.TransientKey, feemarkettypes.TransientKey)
@@ -634,20 +620,6 @@ func New(
 		authtypes.FeeCollectorName,
 	)
 
-	app.MarketMapKeeper = marketmapkeeper.NewKeeper(
-		runtime.NewKVStoreService(keys[marketmaptypes.StoreKey]),
-		appCodec,
-		authtypes.NewModuleAddress(govtypes.ModuleName),
-	)
-	marketmapModule := marketmap.NewAppModule(appCodec, app.MarketMapKeeper)
-
-	oracleKeeper := oraclekeeper.NewKeeper(runtime.NewKVStoreService(keys[oracletypes.StoreKey]),
-		appCodec,
-		app.MarketMapKeeper,
-		authtypes.NewModuleAddress(govtypes.ModuleName))
-	app.OracleKeeper = &oracleKeeper
-	oracleModule := oracle.NewAppModule(appCodec, *app.OracleKeeper)
-
 	// ICA Host keeper
 	app.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec,
@@ -712,16 +684,6 @@ func New(
 		tkeys[feemarkettypes.TransientKey],
 	)
 
-	// Set up PreciseBank keeper
-	//
-	// NOTE: PreciseBank is not needed if SDK use 18 decimals for gas coin. Use BankKeeper instead.
-	app.PreciseBankKeeper = precisebankkeeper.NewKeeper(
-		appCodec,
-		keys[precisebanktypes.StoreKey],
-		app.BankKeeper,
-		app.AccountKeeper,
-	)
-
 	// Set up EVM keeper
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
@@ -755,12 +717,12 @@ func New(
 	app.TransferKeeper = transferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
-		app.RateLimitKeeper, // ISC4 Wrapper: RateLimit IBC middleware
+		nil,
+		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper: overridden after transfer stack is built via WithICS4Wrapper
 		app.IBCKeeper.ChannelKeeper,
 		bApp.MsgServiceRouter(),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.Erc20Keeper, // Add ERC20 Keeper for ERC20 transfers
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.TransferKeeper.SetAddressCodec(evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32AccountAddrPrefix()))
@@ -768,25 +730,31 @@ func New(
 	/*
 		Create Transfer Stack
 
-		transfer stack contains (from bottom to top):
-			- IBC ratelimit
-			- TokenFactory Middleware
-			- IBC Callbacks Middleware (with EVM ContractKeeper)
-			- ERC-20 Middleware
+		transfer stack (outermost to innermost, i.e. call-entry order for RecvPacket):
+			- UnwrapERC20 middleware (recv-only)
+			- ICS Provider middleware
+			- IBC RateLimit middleware (guard: checks rate limit BEFORE calling next, blocks if exceeded)
+			- TokenFactory middleware (pass-through on RecvPacket)
+			- IBC Callbacks middleware (with EVM ContractKeeper)
+			- ERC-20 middleware
+			- MigrateUom middleware
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
 			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
+			(ICS4Wrapper chain wired via WithICS4Wrapper after stack is built below)
 
-		RecvPacket, message that originates from core IBC and goes down to app, the flow is the other way
-			channel.RecvPacket -> ratelimit.OnRecvPacket -> tokenfactory.OnRecvPacket -> callbacks.OnRecvPacket
-			-> erc20.OnRecvPacket -> transfer.OnRecvPacket -> ibc_middleware.NewMigrateUomIBCModule
+		RecvPacket, actual logic execution order (note: ratelimit runs its check BEFORE calling next,
+		all others call next before their own logic):
+			channel.RecvPacket -> ratelimit.OnRecvPacket (guard, aborts if exceeded) -> transfer.OnRecvPacket -> migrateuom.OnRecvPacket
+			-> erc20.OnRecvPacket -> callbacks.OnRecvPacket -> icsprovider.OnRecvPacket -> unwraperc20.OnRecvPacket
+			(tokenfactory is pass-through on RecvPacket)
 	*/
 
 	// create IBC module from top to bottom of stack
 	var transferStack porttypes.IBCModule
 
-	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = ibctransfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibc_middleware.NewMigrateUomIBCModule(transferStack, app.BankKeeper, app.AccountKeeper.AddressCodec())
 	maxCallbackGas := uint64(1_000_000)
 	transferStack = erc20.NewIBCMiddleware(app.Erc20Keeper, transferStack)
@@ -800,6 +768,10 @@ func New(
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
+	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
+
+	// Wire the ICS4Wrapper send path: transfer -> ratelimit -> channel
+	app.TransferKeeper.WithICS4Wrapper(app.RateLimitKeeper)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
@@ -819,19 +791,28 @@ func New(
 		AddRoute(wasmtypes.ModuleName, wasmStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.EVMKeeper.WithStaticPrecompiles(
-		precompiletypes.DefaultStaticPrecompiles(
-			app.StakingKeeper,
-			app.DistrKeeper,
-			app.BankKeeper,
-			&app.Erc20Keeper,
-			&app.TransferKeeper,
-			app.IBCKeeper.ChannelKeeper,
-			app.GovKeeper,
-			app.SlashingKeeper,
-			appCodec,
-		),
+	corePrecompiles := precompiletypes.DefaultStaticPrecompiles(
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.BankKeeper,
+		&app.Erc20Keeper,
+		&app.TransferKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		app.GovKeeper,
+		app.SlashingKeeper,
+		appCodec,
 	)
+
+	corePrecompiles[ethcommon.HexToAddress(distrclaim.DistributionClaimPrecompileAddress)] = distrclaim.NewPrecompile(
+		app.BankKeeper,
+		app.EVMKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		&app.Erc20Keeper,
+		app.AccountKeeper.AddressCodec(),
+	)
+
+	app.EVMKeeper.WithStaticPrecompiles(corePrecompiles)
 
 	storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
 	tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
@@ -927,13 +908,10 @@ func New(
 		// non sdk modules
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), nil),
 		ibc.NewAppModule(app.IBCKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
+		ibctransfer.NewAppModule(app.TransferKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(tmLightClientModule),
 		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
-		// connect
-		marketmapModule,
-		oracleModule,
 
 		// ics
 		providerModule,
@@ -950,7 +928,6 @@ func New(
 		vm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.BankKeeper, app.AccountKeeper.AddressCodec()),
 		feemarket.NewAppModule(app.FeeMarketKeeper),
 		erc20.NewAppModule(app.Erc20Keeper, app.AccountKeeper),
-		precisebank.NewAppModule(app.PreciseBankKeeper, app.BankKeeper, app.AccountKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -1006,10 +983,7 @@ func New(
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1034,10 +1008,7 @@ func New(
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		sanctiontypes.ModuleName,
-		precisebanktypes.ModuleName,
 		providertypes.ModuleName,
 	)
 
@@ -1075,7 +1046,6 @@ func New(
 		evmtypes.ModuleName,
 		feemarkettypes.ModuleName,
 		erc20types.ModuleName,
-		precisebanktypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1088,10 +1058,6 @@ func New(
 		tokenfactorytypes.ModuleName,
 		taxtypes.ModuleName,
 		sanctiontypes.ModuleName,
-
-		// market map genesis must be called AFTER all consuming modules (i.e. x/oracle, etc.)
-		oracletypes.ModuleName,
-		marketmaptypes.ModuleName,
 		providertypes.ModuleName,
 
 		// crisis needs to be last so that the genesis state is consistent when it checks invariants
@@ -1175,18 +1141,6 @@ func New(
 	// configure mempool
 	prepareProposalHandler, processProposalHandler := app.configureEVMMempool(appOpts, logger)
 
-	// oracle initialization
-	client, metrics, err := app.initializeOracle(appOpts)
-	if err != nil {
-		panic(fmt.Errorf("failed to initialize oracle client and metrics: %w", err))
-	}
-
-	app.MarketMapKeeper.SetHooks(app.OracleKeeper.Hooks())
-
-	prepareProposalHandler, processProposalHandler = app.initializeABCIExtensions(
-		client, metrics, prepareProposalHandler, processProposalHandler,
-	)
-
 	app.SetPrepareProposal(prepareProposalHandler)
 	app.SetProcessProposal(processProposalHandler)
 
@@ -1237,6 +1191,7 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.No
 		TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 		CircuitKeeper:         &app.CircuitKeeper,
 		SanctionKeeper:        &app.SanctionKeeper,
+		Codec:                 app.appCodec,
 	}
 
 	if err := handlerOpts.Validate(); err != nil {
@@ -1384,7 +1339,11 @@ func (app *App) DefaultGenesis() map[string]json.RawMessage {
 
 	// Add EVM genesis configuration
 	evmGenState := evmtypes.DefaultGenesisState()
-	evmGenState.Params.ActiveStaticPrecompiles = evmtypes.AvailableStaticPrecompiles
+	evmGenState.Params.ActiveStaticPrecompiles = append([]string{}, evmtypes.AvailableStaticPrecompiles...)
+	evmGenState.Params.ActiveStaticPrecompiles = append(
+		evmGenState.Params.ActiveStaticPrecompiles,
+		distrclaim.DistributionClaimPrecompileAddress,
+	)
 	genesis[evmtypes.ModuleName] = app.appCodec.MustMarshalJSON(evmGenState)
 
 	// Add ERC20 genesis configuration
@@ -1531,26 +1490,9 @@ func (app *App) setupUpgradeHandlers() {
 				app.ModuleManager,
 				app.configurator,
 				&upgrades.UpgradeKeepers{
-					ChannelKeeper:         app.IBCKeeper.ChannelKeeper,
-					TransferKeeper:        app.TransferKeeper,
-					TokenFactoryKeeper:    &app.TokenFactoryKeeper,
-					SanctionKeeper:        app.SanctionKeeper,
-					FeeMarketKeeper:       app.FeeMarketKeeper,
-					AccountKeeper:         app.AccountKeeper,
-					BankKeeper:            app.BankKeeper,
-					EVMKeeper:             *app.EVMKeeper,
-					Erc20Keeper:           app.Erc20Keeper,
-					CircuitKeeper:         app.CircuitKeeper,
-					ProviderKeeper:        app.ProviderKeeper,
 					StakingKeeper:         app.StakingKeeper,
+					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
-					GovKeeper:             app.GovKeeper,
-					DistrKeeper:           app.DistrKeeper,
-					MintKeeper:            app.MintKeeper,
-					CrisisKeeper:          *app.CrisisKeeper,
-					FeeGrantKeeper:        app.FeeGrantKeeper,
-					AuthzKeeper:           app.AuthzKeeper,
-					OracleKeeper:          app.OracleKeeper,
 				},
 				app.keys,
 			),
@@ -1591,12 +1533,14 @@ func BlockedAddresses() map[string]bool {
 	delete(blockedAddrs, authtypes.NewModuleAddress(
 		providertypes.ConsumerRewardsPool).String())
 
-	blockedPrecompilesHex := evmtypes.AvailableStaticPrecompiles
-	for _, addr := range corevm.PrecompiledAddressesPrague {
-		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
+	for _, precompile := range evmtypes.AvailableStaticPrecompiles {
+		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 
-	for _, precompile := range blockedPrecompilesHex {
+	blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(distrclaim.DistributionClaimPrecompileAddress)] = true
+
+	for _, addr := range corevm.PrecompiledAddressesPrague {
+		precompile := addr.Hex()
 		blockedAddrs[cosmosevmutils.Bech32StringFromHexAddress(precompile)] = true
 	}
 

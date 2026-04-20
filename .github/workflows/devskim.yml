@@ -27,6 +27,9 @@ jobs:
 
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@v1
+        with:
+          # Exclude generated documentation artifacts from code scanning noise.
+          ignore-globs: "**/.git/**,**/bin/**,**/client/docs/static/**"
 
       - name: Upload DevSkim scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3

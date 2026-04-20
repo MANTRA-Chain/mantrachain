@@ -27,9 +27,6 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/cosmos/evm/precisebank/v1/query.swagger.json"
-    },
-    {
       "url": "./tmp-swagger-gen/cosmos/evm/erc20/v1/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -38,15 +35,12 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/connect/marketmap/v2/query.swagger.json",
+      "url": "./tmp-swagger-gen/interchain_security/ccv/provider/v1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "MarketMapParams"
+          "Params": "ProviderParams"
         }
       }
-    },
-    {
-      "url": "./tmp-swagger-gen/connect/oracle/v2/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json",

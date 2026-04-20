@@ -6,6 +6,8 @@ import (
 
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -18,6 +20,9 @@ func (k Keeper) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types
 }
 
 func (k Keeper) DenomAuthorityMetadata(ctx context.Context, req *types.QueryDenomAuthorityMetadataRequest) (*types.QueryDenomAuthorityMetadataResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom := fmt.Sprintf("factory/%s/%s", req.GetCreator(), req.GetSubdenom())
@@ -30,12 +35,18 @@ func (k Keeper) DenomAuthorityMetadata(ctx context.Context, req *types.QueryDeno
 }
 
 func (k Keeper) DenomsFromCreator(ctx context.Context, req *types.QueryDenomsFromCreatorRequest) (*types.QueryDenomsFromCreatorResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	denoms := k.getDenomsFromCreator(sdkCtx, req.GetCreator())
 	return &types.QueryDenomsFromCreatorResponse{Denoms: denoms}, nil
 }
 
 func (k Keeper) BeforeSendHookAddress(ctx context.Context, req *types.QueryBeforeSendHookAddressRequest) (*types.QueryBeforeSendHookAddressResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	denom := fmt.Sprintf("factory/%s/%s", req.GetCreator(), req.GetSubdenom())

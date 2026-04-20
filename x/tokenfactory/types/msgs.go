@@ -178,7 +178,7 @@ func (m MsgForceTransfer) Validate() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() {
+	if !m.Amount.IsValid() || m.Amount.Amount.IsZero() {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 

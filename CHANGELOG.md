@@ -3,27 +3,30 @@
 ### FEATURES
 
 - feat: add ccv-provider module in v8 upgrade ([\#558](https://github.com/MANTRA-Chain/mantrachain/issues/558))
+- feat: support DistributionClaim claim and convert precompile ([#585](https://github.com/MANTRA-Chain/mantrachain/pull/585))
+- feat: finalize v8.0.0 upgrade release ([#634](https://github.com/MANTRA-Chain/mantrachain/pull/634))
 
 ### DEPENDENCIES
 
 - *(deps)* Sync bug fixes to evm v0.5.1 ([#560](https://github.com/MANTRA-Chain/mantrachain/issues/560))
 - *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 ([#568](https://github.com/MANTRA-Chain/mantrachain/issues/568))
 - *(deps)* Update evm fork to mantra/v0.5.x ([#580](https://github.com/MANTRA-Chain/mantrachain/issues/580))
-
+- *(deps)* Update evm fork to mantra/v0.6.x ([#603](https://github.com/MANTRA-Chain/mantrachain/issues/603))
 
 ### IMPROVEMENTS
 
-- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586)).
+- Avoid set prepare/process handler multiple times ([#586](https://github.com/MANTRA-Chain/mantrachain/pull/586))
 
 ### BUG-FIXES
 
 - Return original error if no evm chain-id found ([#582](https://github.com/MANTRA-Chain/mantrachain/pull/582))
 - Reject malformed tx bytes in ProcessProposal when EVM mempool is enabled ([#593](https://github.com/MANTRA-Chain/mantrachain/pull/593))
+- Block bank transfers to DistributionClaim precompile to prevent unrecoverable fund locks ([#602](https://github.com/MANTRA-Chain/mantrachain/pull/602))
 
 
 ## v7.0.0
 
-*January 26, 2026*
+*December 29, 2025*
 
 ### FEATURES
 
@@ -36,8 +39,7 @@
 ### DEPENDENCIES
 
 - *(deps)* Bump github.com/consensys/gnark-crypto from 0.18.0 to 0.18.1 ([#519](https://github.com/MANTRA-Chain/mantrachain/issues/519))
-- *(deps)* Bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
-- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 (backport [#568](https://github.com/MANTRA-Chain/mantrachain/issues/568)) ([#570](https://github.com/MANTRA-Chain/mantrachain/issues/570))
+- *(deps)* bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 ([#550](https://github.com/MANTRA-Chain/mantrachain/issues/550))
 
 ### DOCUMENTATION
 
@@ -51,22 +53,6 @@
 
 - Add template for v7 upgrade ([\#486](https://github.com/MANTRA-Chain/mantrachain/issues/486))
 - Remove depinject boilerplate and proto gen ([\#527](https://github.com/MANTRA-Chain/mantrachain/issues/527))
-
-## v6.1.4
-
-*January 26, 2026*
-
-### DEPENDENCIES
-
-- *(deps)* Bump github.com/cometbft/cometbft from 0.38.20 to 0.38.21 (backport [#568](https://github.com/MANTRA-Chain/mantrachain/issues/568)) ([#569](https://github.com/MANTRA-Chain/mantrachain/issues/569))
-
-## v6.1.3
-
-*December 16, 2025*
-
-### DEPENDENCIES
-
-- *(deps)* Bump github.com/cometbft/cometbft from 0.38.19 to 0.38.20 (backport [#550](https://github.com/MANTRA-Chain/mantrachain/issues/550)) ([#551](https://github.com/MANTRA-Chain/mantrachain/issues/551))
 
 ## v6.1.2
 

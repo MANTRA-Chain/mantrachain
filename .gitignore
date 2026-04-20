@@ -14,6 +14,7 @@ client/docs/node_modules
 build
 exclusive.lock
 coverage.txt
+mise.toml
 # Yarn Berry/PnP
 client/docs/.pnp.cjs
 client/docs/.pnp.loader.mjs

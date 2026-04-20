@@ -195,7 +195,6 @@ func (s *IntegrationTestSuite) execUnjail(
 	s.T().Logf("successfully unjail with options %v", opt)
 }
 
-//nolint:unused
 func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grantee, spendLimit string, opt ...flagOption) {
 	opt = append(opt, withKeyValue(flagFrom, granter))
 	opt = append(opt, withKeyValue(flagSpendLimit, spendLimit))
@@ -252,7 +251,6 @@ func (s *IntegrationTestSuite) execFeeGrant(c *chain, valIdx int, granter, grant
 // 	s.executeTxCommand(ctx, c, mantraCommand, valIdx, s.defaultExecValidation(c, valIdx))
 // }
 
-//nolint:unparam
 func (s *IntegrationTestSuite) execBankSend(
 	c *chain,
 	valIdx int,
