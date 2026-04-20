@@ -114,3 +114,5 @@ pull_request_rules:
       backport:
         branches:
           - release/v8.0.x
+merge_protections_settings:
+  reporting_method: check-runs
