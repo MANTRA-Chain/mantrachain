@@ -1,4 +1,6 @@
-## [unreleased]
+## v8.0.0
+
+*April 20, 2026*
 
 ### FEATURES
 
