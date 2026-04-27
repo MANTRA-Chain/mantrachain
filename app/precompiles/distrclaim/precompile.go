@@ -38,6 +38,11 @@ var _ vm.PrecompiledContract = &Precompile{}
 // (`underlying()` and `withdrawTo(address,uint256)`), the precompile may also unwrap
 // to the underlying token in the same EVM tx (best-effort, only when the amount is
 // withdrawable).
+//
+// Precondition: the delegator's withdraw address must equal the delegator
+// itself. ConvertCoin spends from the delegator, so a custom withdraw address
+// (set via x/distribution MsgSetWithdrawAddress) would route rewards elsewhere
+// and break the conversion. Reset it before calling this precompile.
 type Precompile struct {
 	cmn.Precompile
 	bankKeeper         cmn.BankKeeper
