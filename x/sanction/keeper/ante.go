@@ -57,7 +57,9 @@ func (d BlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 		}
 	}
 
-	// Check authz granters (inner message signers of MsgExec)
+	// Check authz granters (inner message signers of MsgExec).
+	// Nested MsgExec is also rejected outright — it cannot be safely inspected
+	// with a flat check and could be used to hide a blacklisted granter.
 	for _, msg := range tx.GetMsgs() {
 		execMsg, ok := msg.(*authz.MsgExec)
 		if !ok {
@@ -68,6 +70,9 @@ func (d BlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 			return ctx, err
 		}
 		for _, innerMsg := range innerMsgs {
+			if _, ok := innerMsg.(*authz.MsgExec); ok {
+				return ctx, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "nested MsgExec is not allowed")
+			}
 			innerSigners, _, err := d.cdc.GetMsgV1Signers(innerMsg)
 			if err != nil {
 				return ctx, err
