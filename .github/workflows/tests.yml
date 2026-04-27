@@ -7,6 +7,7 @@ on:
     branches: 
       - main
       - 'release/*'
+  merge_group:
 name: Tests
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
