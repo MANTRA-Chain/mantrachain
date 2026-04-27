@@ -105,9 +105,9 @@ type ERC20WrapperMethodError struct {
 
 func (e ERC20WrapperMethodError) Error() string {
 	if e.Method == "" {
-		return fmt.Sprintf("erc20 wrapper call failed: %v", e.Err)
+		return fmt.Sprintf("erc20 wrapper call failed: %s", e.Err)
 	}
-	return fmt.Sprintf("erc20 wrapper %s failed: %v", e.Method, e.Err)
+	return fmt.Sprintf("erc20 wrapper %s failed: %s", e.Method, e.Err)
 }
 
 func (e ERC20WrapperMethodError) Unwrap() error { return e.Err }
