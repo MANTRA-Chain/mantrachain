@@ -57,12 +57,6 @@ func CreateUpgradeHandler(
 		}
 		InitializeMaxProviderConsensusParam(ctx, keepers.ProviderKeeper, int64(maxProviderValidators))
 
-		ctx.Logger().Info("Setting MaxValidators parameter...")
-		err = SetMaxValidators(ctx, keepers.StakingKeeper, maxProviderValidators)
-		if err != nil {
-			return vm, errorsmod.Wrapf(err, "setting MaxValidators during migration")
-		}
-
 		ctx.Logger().Info("Initializing LastProviderConsensusValidatorSet...")
 		err = InitializeLastProviderConsensusValidatorSet(ctx, keepers.ProviderKeeper, keepers.StakingKeeper, int(maxProviderValidators))
 		if err != nil {
@@ -96,18 +90,6 @@ func InitializeMaxProviderConsensusParam(ctx sdk.Context, providerKeeper provide
 	params := providerKeeper.GetParams(ctx)
 	params.MaxProviderConsensusValidators = maxValidators
 	providerKeeper.SetParams(ctx, params)
-}
-
-// SetMaxValidators sets the MaxValidators parameter in the staking module to the same as MaxProviderConsensusParam
-func SetMaxValidators(ctx sdk.Context, stakingKeeper stakingkeeper.Keeper, maxProviderValidators uint32) error {
-	params, err := stakingKeeper.GetParams(ctx)
-	if err != nil {
-		return err
-	}
-
-	params.MaxValidators = maxProviderValidators
-
-	return stakingKeeper.SetParams(ctx, params)
 }
 
 // InitializeLastProviderConsensusValidatorSet initializes the last provider consensus validator set
