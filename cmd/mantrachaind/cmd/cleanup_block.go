@@ -145,17 +145,19 @@ func importBlockEvents(cfg *cmtconfig.Config, inputFile string) error {
 	}
 	defer closeFunc()
 
+	imported := 0
 	for _, export := range exports {
 		if err := applyBlockEventsExport(stateStore, export); err != nil {
 			fmt.Printf("Failed to restore events at height %d: %v\n", export.Height, err)
 			continue
 		}
 
+		imported++
 		fmt.Printf("Restored %d block events and %d tx event groups at height %d\n",
 			len(export.BlockEvents), len(export.TxEvents), export.Height)
 	}
 
-	fmt.Printf("Successfully imported (restored) events for %d heights\n", len(exports))
+	fmt.Printf("Successfully imported (restored) events for %d of %d heights\n", imported, len(exports))
 	return nil
 }
 
