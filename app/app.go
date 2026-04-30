@@ -53,8 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	v8 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8rc3"
+	v8_1 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_1"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -242,7 +241,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8rc3.Upgrade, v8.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_1.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -267,8 +266,8 @@ type App struct {
 
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
-	BankKeeper            bankkeeper.BaseKeeper
-	StakingKeeper         stakingkeeper.Keeper
+	BankKeeper            *bankkeeper.BaseKeeper
+	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
@@ -415,7 +414,7 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
+	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[banktypes.StoreKey]),
 		app.AccountKeeper,
@@ -423,12 +422,13 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		logger,
 	)
+	app.BankKeeper = &bankKeeper
 
-	app.StakingKeeper = *stakingkeeper.NewKeeper(
+	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[stakingtypes.StoreKey]),
 		app.AccountKeeper,
-		&app.BankKeeper,
+		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
 		evmaddress.NewEvmCodec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
@@ -438,7 +438,7 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[distrtypes.StoreKey]),
 		app.AccountKeeper,
-		&app.BankKeeper,
+		app.BankKeeper,
 		app.StakingKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -457,23 +457,13 @@ func New(
 		appCodec,
 		runtime.NewKVStoreService(keys[crisistypes.StoreKey]),
 		invCheckPeriod,
-		&app.BankKeeper,
+		app.BankKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper.AddressCodec(),
 	)
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, runtime.NewKVStoreService(keys[feegrant.StoreKey]), app.AccountKeeper)
-
-	// register the staking hooks
-	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	app.StakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(
-			app.DistrKeeper.Hooks(),
-			app.SlashingKeeper.Hooks(),
-			app.ProviderKeeper.Hooks(),
-		),
-	)
 
 	app.CircuitKeeper = circuitkeeper.NewKeeper(
 		appCodec,
@@ -533,6 +523,15 @@ func New(
 		authtypes.FeeCollectorName,
 	)
 
+	// register staking hooks after ProviderKeeper is initialized
+	app.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			app.DistrKeeper.Hooks(),
+			app.SlashingKeeper.Hooks(),
+			app.ProviderKeeper.Hooks(),
+		),
+	)
+
 	sortedKnownModules := make([]string, 0, len(maccPerms))
 	for moduleName := range maccPerms {
 		sortedKnownModules = append(sortedKnownModules, moduleName)
@@ -544,7 +543,7 @@ func New(
 		runtime.NewKVStoreService(keys[tokenfactorytypes.StoreKey]),
 		sortedKnownModules,
 		app.AccountKeeper,
-		&app.BankKeeper,
+		app.BankKeeper,
 		&app.WasmKeeper,
 		&app.Erc20Keeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -588,7 +587,7 @@ func New(
 		runtime.NewKVStoreService(keys[minttypes.StoreKey]),
 		&app.ProviderKeeper,
 		app.AccountKeeper,
-		&app.BankKeeper,
+		app.BankKeeper,
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -687,12 +686,16 @@ func New(
 	// Set up EVM keeper
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
+	// Pass BankKeeper by value to EVM/ERC20: the SDK bank msg_server's type
+	// assertion (k.Keeper.(BaseKeeper)) only matches the value form, so the
+	// ERC20 precompile's MsgSend path requires BaseKeeper, not *BaseKeeper.
+	// Safe because TokenFactory hooks were already attached above (line 559).
 	app.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey],
 		keys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		*app.BankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
 		&app.ConsensusParamsKeeper,
@@ -707,7 +710,7 @@ func New(
 		appCodec,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		*app.BankKeeper,
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
@@ -792,7 +795,7 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	corePrecompiles := precompiletypes.DefaultStaticPrecompiles(
-		app.StakingKeeper,
+		*app.StakingKeeper,
 		app.DistrKeeper,
 		app.BankKeeper,
 		&app.Erc20Keeper,
@@ -891,13 +894,13 @@ func New(
 		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, nil),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, nil),
+		bank.NewAppModule(appCodec, *app.BankKeeper, app.AccountKeeper, nil),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, nil),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil, app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil),
-		no_valupdates_staking.NewAppModule(appCodec, &app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
+		no_valupdates_staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper), //nolint:staticcheck
@@ -1490,7 +1493,8 @@ func (app *App) setupUpgradeHandlers() {
 				app.ModuleManager,
 				app.configurator,
 				&upgrades.UpgradeKeepers{
-					StakingKeeper:         app.StakingKeeper,
+					StakingKeeper:         *app.StakingKeeper,
+					DistrKeeper:           app.DistrKeeper,
 					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
 				},

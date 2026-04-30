@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	icsproviderkeeper "github.com/cosmos/interchain-security/v7/x/ccv/provider/keeper"
 )
@@ -43,6 +44,7 @@ type Fork struct {
 type UpgradeKeepers struct {
 	// keepers
 	StakingKeeper stakingkeeper.Keeper
+	DistrKeeper   distrkeeper.Keeper
 	// provider
 	ProviderKeeper        icsproviderkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
