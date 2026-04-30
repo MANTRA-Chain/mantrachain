@@ -686,12 +686,16 @@ func New(
 	// Set up EVM keeper
 	tracer := cast.ToString(appOpts.Get(srvflags.EVMTracer))
 
+	// Pass BankKeeper by value to EVM/ERC20: the SDK bank msg_server's type
+	// assertion (k.Keeper.(BaseKeeper)) only matches the value form, so the
+	// ERC20 precompile's MsgSend path requires BaseKeeper, not *BaseKeeper.
+	// Safe because TokenFactory hooks were already attached above (line 559).
 	app.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec, keys[evmtypes.StoreKey], tkeys[evmtypes.TransientKey],
 		keys,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		*app.BankKeeper,
 		app.StakingKeeper,
 		app.FeeMarketKeeper,
 		&app.ConsensusParamsKeeper,
@@ -706,7 +710,7 @@ func New(
 		appCodec,
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		*app.BankKeeper,
 		app.EVMKeeper,
 		app.StakingKeeper,
 		&app.TransferKeeper,
