@@ -268,7 +268,7 @@ type App struct {
 	// keepers
 	AccountKeeper         authkeeper.AccountKeeper
 	BankKeeper            bankkeeper.BaseKeeper
-	StakingKeeper         stakingkeeper.Keeper
+	StakingKeeper         *stakingkeeper.Keeper
 	SlashingKeeper        slashingkeeper.Keeper
 	MintKeeper            mintkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
@@ -424,7 +424,7 @@ func New(
 		logger,
 	)
 
-	app.StakingKeeper = *stakingkeeper.NewKeeper(
+	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[stakingtypes.StoreKey]),
 		app.AccountKeeper,
@@ -448,7 +448,7 @@ func New(
 		appCodec,
 		legacyAmino,
 		runtime.NewKVStoreService(keys[slashingtypes.StoreKey]),
-		&app.StakingKeeper,
+		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
@@ -668,7 +668,7 @@ func New(
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[evidencetypes.StoreKey]),
-		&app.StakingKeeper,
+		app.StakingKeeper,
 		app.SlashingKeeper,
 		app.AccountKeeper.AddressCodec(),
 		runtime.ProvideCometInfoService(),
@@ -792,7 +792,7 @@ func New(
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	corePrecompiles := precompiletypes.DefaultStaticPrecompiles(
-		app.StakingKeeper,
+		*app.StakingKeeper,
 		app.DistrKeeper,
 		app.BankKeeper,
 		&app.Erc20Keeper,
@@ -897,7 +897,7 @@ func New(
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, nil),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil, app.interfaceRegistry),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, nil),
-		no_valupdates_staking.NewAppModule(appCodec, &app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
+		no_valupdates_staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, nil),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper), //nolint:staticcheck
@@ -1490,7 +1490,7 @@ func (app *App) setupUpgradeHandlers() {
 				app.ModuleManager,
 				app.configurator,
 				&upgrades.UpgradeKeepers{
-					StakingKeeper:         app.StakingKeeper,
+					StakingKeeper:         *app.StakingKeeper,
 					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
 				},

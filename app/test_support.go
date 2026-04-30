@@ -22,7 +22,7 @@ func (app *App) GetBankKeeper() bankkeeper.Keeper {
 }
 
 func (app *App) GetStakingKeeper() *stakingkeeper.Keeper {
-	return &app.StakingKeeper
+	return app.StakingKeeper
 }
 
 func (app *App) GetAccountKeeper() authkeeper.AccountKeeper {
