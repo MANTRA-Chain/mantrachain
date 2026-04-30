@@ -6,6 +6,7 @@
 ### BUG-FIXES
 
 - Fix stale staking keeper for slashing/evidence and upgrade v8.1.0 to clamp `DelegatorStartingInfo.Stake` left over from v8.0.0 hook-skip window, and align bank keeper to a pointer so TokenFactory `BeforeSend` hooks reach Provider's `SendCoinsFromModuleToModule` ([#654](https://github.com/MANTRA-Chain/mantrachain/pull/654))
+- Skip recorded `ValidatorSlashEvent`s when clamping `DelegatorStartingInfo.Stake` to avoid double-attenuating rewards ([#655](https://github.com/MANTRA-Chain/mantrachain/pull/655))
 
 ## v8.0.0
 
