@@ -49,7 +49,7 @@ func fixSilentlySkippedSlashes(
 		}
 		if validator == nil {
 			logger.Warn(
-				"v8.1.0: validator missing for delegator starting info; skipping",
+				"v8.1.1: validator missing for delegator starting info; skipping",
 				"validator", val.String(),
 				"delegator", del.String(),
 			)
@@ -62,7 +62,7 @@ func fixSilentlySkippedSlashes(
 		}
 		if delegation == nil {
 			logger.Warn(
-				"v8.1.0: delegation missing for delegator starting info; skipping",
+				"v8.1.1: delegation missing for delegator starting info; skipping",
 				"validator", val.String(),
 				"delegator", del.String(),
 			)
@@ -106,7 +106,7 @@ func fixSilentlySkippedSlashes(
 
 	for _, f := range fixes {
 		logger.Info(
-			"v8.1.0: clamping silent-skip residue on delegator starting info",
+			"v8.1.1: clamping silent-skip residue on delegator starting info",
 			"validator", f.val.String(),
 			"delegator", f.del.String(),
 			"old_stake", f.info.Stake.String(),
@@ -118,6 +118,6 @@ func fixSilentlySkippedSlashes(
 		}
 	}
 
-	logger.Info("v8.1.0: fixed silently-skipped slashes", "entries_updated", len(fixes))
+	logger.Info("v8.1.1: fixed silently-skipped slashes", "entries_updated", len(fixes))
 	return nil
 }
