@@ -130,7 +130,8 @@ func TestFixSilentlySkippedSlashes_NoEntries(t *testing.T) {
 
 func setSlashEvent(t *testing.T, k distrkeeper.Keeper, ctx sdk.Context, val stakingtypes.Validator, fraction string) {
 	t.Helper()
-	valAddr, _ := sdk.ValAddressFromBech32(val.GetOperator())
+	valAddr, err := sdk.ValAddressFromBech32(val.GetOperator())
+	require.NoError(t, err)
 	require.NoError(t, k.SetValidatorSlashEvent(ctx, valAddr,
 		uint64(ctx.BlockHeight()), 1,
 		disttypes.NewValidatorSlashEvent(1, math.LegacyMustNewDecFromStr(fraction))))
