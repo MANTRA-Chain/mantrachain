@@ -94,12 +94,8 @@ func fixSilentlySkippedSlashes(
 
 		var newStake math.LegacyDec
 		if hasEvents {
-			if expectedStake.IsZero() {
-				newStake = currentStake
-			} else {
-				ratio := currentStake.QuoTruncate(expectedStake)
-				newStake = info.Stake.MulTruncate(ratio)
-			}
+			ratio := currentStake.QuoTruncate(expectedStake)
+			newStake = info.Stake.MulTruncate(ratio)
 		} else {
 			// silent-only residue — exact assignment, no rounding drift.
 			newStake = currentStake
