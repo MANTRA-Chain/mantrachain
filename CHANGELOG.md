@@ -6,6 +6,7 @@
 ### BUG-FIXES
 
 - Skip recorded `ValidatorSlashEvent`s when clamping `DelegatorStartingInfo.Stake` to avoid double-attenuating rewards ([#655](https://github.com/MANTRA-Chain/mantrachain/pull/655))
+- Use `QuoTruncate` for the silent-residual ratio to prevent rounding overshoot panics at withdraw on large delegations ([#656](https://github.com/MANTRA-Chain/mantrachain/pull/656))
 
 ## v8.1.0
 
