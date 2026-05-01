@@ -70,6 +70,11 @@ func fixSilentlySkippedSlashes(
 		}
 		currentStake := validator.TokensFromShares(delegation.GetShares())
 
+		// no inflation residue at all → clamp impossible, skip slash-event iteration for entries on healthy state
+		if !info.Stake.GT(currentStake) {
+			return false
+		}
+
 		expectedStake := info.Stake
 		hasEvents := false
 		distrKeeper.IterateValidatorSlashEventsBetween(ctx, val, info.Height, endingHeight,
