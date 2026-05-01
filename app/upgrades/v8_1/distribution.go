@@ -79,6 +79,9 @@ func fixSilentlySkippedSlashes(
 		hasEvents := false
 		distrKeeper.IterateValidatorSlashEventsBetween(ctx, val, info.Height, endingHeight,
 			func(_ uint64, ev distrtypes.ValidatorSlashEvent) bool {
+				if ev.ValidatorPeriod <= info.PreviousPeriod {
+					return false
+				}
 				hasEvents = true
 				expectedStake = expectedStake.MulTruncate(
 					math.LegacyOneDec().Sub(ev.Fraction))
@@ -91,7 +94,7 @@ func fixSilentlySkippedSlashes(
 
 		var newStake math.LegacyDec
 		if hasEvents {
-			ratio := currentStake.Quo(expectedStake)
+			ratio := currentStake.QuoTruncate(expectedStake)
 			newStake = info.Stake.MulTruncate(ratio)
 		} else {
 			// silent-only residue — exact assignment, no rounding drift.
