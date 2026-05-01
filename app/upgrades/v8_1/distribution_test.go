@@ -169,7 +169,7 @@ func TestFixSilentlySkippedSlashes_PartialSilentSkipResidue(t *testing.T) {
 	require.NoError(t, fixSilentlySkippedSlashes(ctx, sk, k))
 
 	expected := preStake.MulTruncate(math.LegacyMustNewDecFromStr("0.95"))
-	want := preStake.MulTruncate(cur.Quo(expected))
+	want := preStake.MulTruncate(cur.QuoTruncate(expected))
 	require.True(t, getStartingStake(t, k, ctx, val, delAddr).Equal(want))
 }
 
