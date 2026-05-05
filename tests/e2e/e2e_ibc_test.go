@@ -34,9 +34,9 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, sender, recipient, token, fees,
 		mantrachaindBinary,
 		txCommand,
 		"ibc-transfer",
-		"transfer",
-		"transfer",
-		"channel-0",
+		transferPort,
+		transferPort,
+		transferChannel,
 		recipient,
 		token,
 		fmt.Sprintf("--from=%s", sender),
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) hermesClearPacket(chainID, portID, channelID stri
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		fmt.Sprintf("--config=%s", hermesConfigWithGasPrices),
 		"clear",
 		"packets",
@@ -102,7 +102,7 @@ func (s *IntegrationTestSuite) createConnection() {
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"create",
 		"connection",
 		"--a-chain",
@@ -124,13 +124,13 @@ func (s *IntegrationTestSuite) createChannel() {
 	defer cancel()
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"create",
 		"channel",
 		"--a-chain", s.chainA.id,
 		"--a-connection", "connection-0",
-		"--a-port", "transfer",
-		"--b-port", "transfer",
+		"--a-port", transferPort,
+		"--b-port", transferPort,
 		"--channel-version", "ics20-1",
 		"--order", "unordered",
 	}
@@ -159,7 +159,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-try",
 		"--dst-chain", dstChain,
@@ -175,7 +175,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd = []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-ack",
 		"--dst-chain", srcChain,
@@ -192,7 +192,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd = []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-confirm",
 		"--dst-chain", dstChain,

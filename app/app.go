@@ -181,8 +181,8 @@ import (
 )
 
 var EVMCoinInfo = evmtypes.EvmCoinInfo{
-	Denom:         "amantra",
-	ExtendedDenom: "amantra",
+	Denom:         FeeDenom,
+	ExtendedDenom: FeeDenom,
 	DisplayDenom:  "mantra",
 	Decimals:      evmtypes.EighteenDecimals.Uint32(),
 }
