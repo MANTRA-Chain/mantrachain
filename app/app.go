@@ -744,7 +744,7 @@ func New(
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
-			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
+			transfer.SendTransfer -> callbacks.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
 			(ICS4Wrapper chain wired via WithICS4Wrapper after stack is built below)
 
 		RecvPacket, actual logic execution order (note: ratelimit runs its check BEFORE calling next,
@@ -766,15 +766,16 @@ func New(
 		app.EVMKeeper,
 		app.Erc20Keeper,
 	)
-	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
+	callbacksMiddleware := ibccallbacks.NewIBCMiddleware(transferStack, app.RateLimitKeeper, app.CallbackKeeper, maxCallbackGas)
+	transferStack = &callbacksMiddleware
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
 	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
 
-	// Wire the ICS4Wrapper send path: transfer -> ratelimit -> channel
-	app.TransferKeeper.WithICS4Wrapper(app.RateLimitKeeper)
+	// Wire the ICS4Wrapper send path: transfer -> callbacks -> ratelimit -> channel
+	app.TransferKeeper.WithICS4Wrapper(&callbacksMiddleware)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)

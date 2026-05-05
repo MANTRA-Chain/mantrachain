@@ -211,6 +211,63 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 		dstChain, dstConnection, dstPort, dstChannel)
 }
 
+// testIBCCallbackMemo verifies that the callbacks middleware rejects malformed
+// src_callback memos at send time (not silently at ack/timeout time).
+// A memo that contains the "src_callback" key but has an invalid address field
+// must cause the MsgTransfer tx itself to fail so tokens are never escrowed.
+func (s *IntegrationTestSuite) testIBCCallbackMemo() {
+	address, _ := s.chainA.validators[0].keyInfo.GetAddress()
+	sender := address.String()
+
+	address, _ = s.chainB.validators[0].keyInfo.GetAddress()
+	recipient := address.String()
+
+	token := "1000000" + amantraDenom
+
+	s.Run("rejects_src_callback_with_empty_address", func() {
+		memo := `{"src_callback":{"address":""}}`
+		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	s.Run("rejects_src_callback_with_whitespace_address", func() {
+		memo := `{"src_callback":{"address":"   "}}`
+		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	s.Run("rejects_src_callback_with_missing_address_field", func() {
+		memo := `{"src_callback":{}}`
+		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	// A transfer with no src_callback key in the memo must still go through normally.
+	s.Run("accepts_transfer_with_non_callback_memo", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+
+		var beforeBalance sdk.Coin
+		s.Require().Eventually(func() bool {
+			var err error
+			beforeBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
+			return err == nil && beforeBalance.IsValid()
+		}, time.Minute, 5*time.Second)
+
+		memo := `{"some_other_key":"value"}`
+		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, false)
+
+		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+		s.Require().True(pass)
+
+		// Sender balance must decrease by the transferred amount (plus fees) confirming
+		// tokens were escrowed and the packet was accepted.
+		s.Require().Eventually(func() bool {
+			afterBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
+			if err != nil {
+				return false
+			}
+			return afterBalance.Amount.LT(beforeBalance.Amount)
+		}, time.Minute, 5*time.Second)
+	})
+}
+
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 	s.Run("send_amantra_to_chainB", func() {
 		// require the recipient account receives the IBC tokens (IBC packets ACKd)
