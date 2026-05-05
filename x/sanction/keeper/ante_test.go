@@ -147,6 +147,23 @@ func TestBlacklistCheckDecorator_AnteHandle(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "multiple MsgExec rejected",
+			tx: mockTx{
+				signers: [][]byte{clean},
+				msgs: []sdk.Msg{
+					func() sdk.Msg {
+						exec := authz.NewMsgExec(clean, []sdk.Msg{msgSendFrom(clean)})
+						return &exec
+					}(),
+					func() sdk.Msg {
+						exec := authz.NewMsgExec(clean, []sdk.Msg{msgSendFrom(clean)})
+						return &exec
+					}(),
+				},
+			},
+			wantErr: true,
+		},
+		{
 			// Even all-clean accounts cannot use nested MsgExec.
 			name: "nested MsgExec rejected (all-clean accounts)",
 			tx: mockTx{
