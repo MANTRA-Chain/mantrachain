@@ -5,6 +5,7 @@ on:
       - main
       - master
   pull_request:
+  merge_group:
 
 permissions:
   contents: read

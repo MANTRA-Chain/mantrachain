@@ -6,6 +6,7 @@ on:
   push:
     branches:
       [main,release/**]
+  merge_group:
 
 jobs:
   Gosec:
