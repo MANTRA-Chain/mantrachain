@@ -25,10 +25,11 @@ type PacketMetadata struct {
 	Forward *ForwardMetadata `json:"forward"`
 }
 
-func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, fees, note string, expErr bool) {
+func (s *IntegrationTestSuite) sendIBC(c *chain, sender, recipient, token, fees, note string, expErr bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	const valIdx = 0
 	ibcCmd := []string{
 		mantrachaindBinary,
 		txCommand,
@@ -58,14 +59,14 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 	}
 }
 
-func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, portID, channelID string) (success bool) {
+func (s *IntegrationTestSuite) hermesClearPacket(chainID, portID, channelID string) (success bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	hermesCmd := []string{
 		hermesBinary,
 		"--json",
-		fmt.Sprintf("--config=%s", configPath),
+		fmt.Sprintf("--config=%s", hermesConfigWithGasPrices),
 		"clear",
 		"packets",
 		fmt.Sprintf("--chain=%s", chainID),
@@ -226,17 +227,17 @@ func (s *IntegrationTestSuite) testIBCCallbackMemo() {
 
 	s.Run("rejects_src_callback_with_empty_address", func() {
 		memo := `{"src_callback":{"address":""}}`
-		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
 	})
 
 	s.Run("rejects_src_callback_with_whitespace_address", func() {
 		memo := `{"src_callback":{"address":"   "}}`
-		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
 	})
 
 	s.Run("rejects_src_callback_with_missing_address_field", func() {
 		memo := `{"src_callback":{}}`
-		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, true)
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
 	})
 
 	// A transfer with no src_callback key in the memo must still go through normally.
@@ -251,9 +252,9 @@ func (s *IntegrationTestSuite) testIBCCallbackMemo() {
 		}, time.Minute, 5*time.Second)
 
 		memo := `{"some_other_key":"value"}`
-		s.sendIBC(s.chainA, 0, sender, recipient, token, standardFees.String(), memo, false)
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, false)
 
-		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 		s.Require().True(pass)
 
 		// Sender balance must decrease by the transferred amount (plus fees) confirming
@@ -303,9 +304,9 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		}
 
 		tokenAmt := 3300000000
-		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), "", false)
+		s.sendIBC(s.chainA, sender, recipient, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), "", false)
 
-		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 		s.Require().True(pass)
 
 		s.Require().Eventually(
@@ -398,7 +399,7 @@ Steps:
 
 // 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), string(memo), false)
 
-// 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 // 		s.Require().True(pass)
 
 // 		s.Require().Eventually(
@@ -490,7 +491,7 @@ Middleware will send the tokens back to the original account after failing.
 // 		// since the forward receiving account is invalid, it should be refunded to the original sender (minus the original fee)
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 				pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 // 				s.Require().True(pass)
 
 // 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
