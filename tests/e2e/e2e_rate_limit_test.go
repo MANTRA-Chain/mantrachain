@@ -295,7 +295,7 @@ func (s *IntegrationTestSuite) testIBCTransfer(expToFail bool) {
 
 	threshold := totalAmount.Amount.Mul(sdkmath.NewInt(1)).Quo(sdkmath.NewInt(100))
 	tokenAmt := threshold.Add(sdkmath.NewInt(10)).String()
-	s.sendIBC(s.chainA, 0, sender, recipient, tokenAmt+amantraDenom, standardFees.String(), "", expToFail)
+	s.sendIBC(s.chainA, sender, recipient, tokenAmt+amantraDenom, standardFees.String(), "", expToFail)
 
 	if !expToFail {
 		s.T().Logf("After successful IBC transfer")

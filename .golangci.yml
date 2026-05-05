@@ -18,7 +18,7 @@ linters:
     - goconst
     - gocritic
     - goheader
-    - gomodguard
+    - gomodguard_v2
     - goprintffuncname
     - govet
     - importas
@@ -43,6 +43,8 @@ linters:
     - whitespace
     - zerologlint
   settings:
+    goconst:
+      ignore-tests: true
     revive:
       rules:
         - name: function-result-limit
