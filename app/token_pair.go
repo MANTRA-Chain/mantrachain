@@ -12,7 +12,7 @@ const WTokenContractMainnet = "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517"
 var ExampleTokenPairs = []erc20types.TokenPair{
 	{
 		Erc20Address:  WTokenContractMainnet,
-		Denom:         "amantra",
+		Denom:         FeeDenom,
 		Enabled:       true,
 		ContractOwner: erc20types.OWNER_MODULE,
 	},

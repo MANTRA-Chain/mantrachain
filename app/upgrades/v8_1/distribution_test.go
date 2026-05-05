@@ -128,6 +128,80 @@ func TestFixSilentlySkippedSlashes_NoEntries(t *testing.T) {
 	require.NoError(t, fixSilentlySkippedSlashes(ctx, sk, k))
 }
 
+func setSlashEvent(t *testing.T, k distrkeeper.Keeper, ctx sdk.Context, val stakingtypes.Validator, fraction string) {
+	t.Helper()
+	valAddr, err := sdk.ValAddressFromBech32(val.GetOperator())
+	require.NoError(t, err)
+	require.NoError(t, k.SetValidatorSlashEvent(ctx, valAddr,
+		uint64(ctx.BlockHeight()), 1,
+		disttypes.NewValidatorSlashEvent(1, math.LegacyMustNewDecFromStr(fraction))))
+}
+
+// Recorded slash fully explains info.Stake > currentStake → clamp is a no-op.
+func TestFixSilentlySkippedSlashes_RecordedSlashLeftAlone(t *testing.T) {
+	k, sk, ctx := setup(t)
+
+	val, delAddr, del := makeDelegation(t, 0, math.NewInt(1000))
+	preStake := val.TokensFromShares(del.Shares)
+	val.Tokens = math.NewInt(950) // 5% recorded slash
+
+	setStartingStake(t, k, ctx, val, delAddr, preStake)
+	setSlashEvent(t, k, ctx, val, "0.05")
+	expectLookup(sk, val, delAddr, del)
+
+	require.NoError(t, fixSilentlySkippedSlashes(ctx, sk, k))
+	require.True(t, getStartingStake(t, k, ctx, val, delAddr).Equal(preStake))
+}
+
+// Recorded 5% + silent 1%: clamp by silent residual only.
+func TestFixSilentlySkippedSlashes_PartialSilentSkipResidue(t *testing.T) {
+	k, sk, ctx := setup(t)
+
+	val, delAddr, del := makeDelegation(t, 0, math.NewInt(1000))
+	preStake := val.TokensFromShares(del.Shares)
+	val.Tokens = math.NewInt(940) // 5% recorded + ~1% silent
+	cur := val.TokensFromShares(del.Shares)
+
+	setStartingStake(t, k, ctx, val, delAddr, preStake)
+	setSlashEvent(t, k, ctx, val, "0.05")
+	expectLookup(sk, val, delAddr, del)
+
+	require.NoError(t, fixSilentlySkippedSlashes(ctx, sk, k))
+
+	expected := preStake.MulTruncate(math.LegacyMustNewDecFromStr("0.95"))
+	want := preStake.MulTruncate(cur.QuoTruncate(expected))
+	require.True(t, getStartingStake(t, k, ctx, val, delAddr).Equal(want))
+}
+
+// Events at period <= info.PreviousPeriod must be skipped, matching withdraw.
+func TestFixSilentlySkippedSlashes_PeriodGuardSkipsEarlierEvents(t *testing.T) {
+	k, sk, ctx := setup(t)
+
+	val, delAddr, del := makeDelegation(t, 0, math.NewInt(1000))
+	preStake := val.TokensFromShares(del.Shares)
+	val.Tokens = math.NewInt(940)
+	cur := val.TokensFromShares(del.Shares)
+
+	// PreviousPeriod=5; event at period 3 is skipped, period 7 is applied.
+	valAddr, err := sdk.ValAddressFromBech32(val.GetOperator())
+	require.NoError(t, err)
+	require.NoError(t, k.SetDelegatorStartingInfo(ctx, valAddr, delAddr,
+		disttypes.NewDelegatorStartingInfo(5, preStake, uint64(ctx.BlockHeight()))))
+	require.NoError(t, k.SetValidatorSlashEvent(ctx, valAddr,
+		uint64(ctx.BlockHeight()), 3,
+		disttypes.NewValidatorSlashEvent(3, math.LegacyMustNewDecFromStr("0.05"))))
+	require.NoError(t, k.SetValidatorSlashEvent(ctx, valAddr,
+		uint64(ctx.BlockHeight()), 7,
+		disttypes.NewValidatorSlashEvent(7, math.LegacyMustNewDecFromStr("0.05"))))
+
+	expectLookup(sk, val, delAddr, del)
+	require.NoError(t, fixSilentlySkippedSlashes(ctx, sk, k))
+
+	expected := preStake.MulTruncate(math.LegacyMustNewDecFromStr("0.95"))
+	want := preStake.MulTruncate(cur.QuoTruncate(expected))
+	require.True(t, getStartingStake(t, k, ctx, val, delAddr).Equal(want))
+}
+
 // staking read errors must propagate, not be swallowed.
 func TestFixSilentlySkippedSlashes_PropagatesValidatorErr(t *testing.T) {
 	k, sk, ctx := setup(t)
