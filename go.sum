@@ -262,10 +262,23 @@ github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3
 github.com/DataDog/zstd v1.5.5 h1:oWf5W7GtOLgp6bciQYDmhHHjdhYkALu6S/5Ni9ZgSvQ=
 github.com/DataDog/zstd v1.5.5/go.mod h1:g4AWEaM3yOg3HYfnJ3YIawPnVdXJh9QME85blwSAmyw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
+<<<<<<< HEAD
 github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1 h1:Qb9qFue1IhJgG0AHPvPHNSpjrpCtmUZPeDT975ZP/dc=
 github.com/MANTRA-Chain/connect/v2 v2.3.0-v4-mantra-1/go.mod h1:35hM7xSgI0h3GMUTgspzKY8Ff2yCXNGNwmAdjqo3z8s=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.14-v4-mantra-1 h1:DYejIbjteDlE8F7/DDOy0kxJ3lvu1PAvUax24MyYRkU=
 github.com/MANTRA-Chain/cosmos-sdk v0.50.14-v4-mantra-1/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
+=======
+github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4 h1:ATp+qZDOpRFU8FiH+VKId3UZlmEwlyau0c2Z1eunIB4=
+github.com/MANTRA-Chain/connect/v2 v2.3.0-mantra-1.4/go.mod h1:tujhWIP46K4z5l5Swqxyurakq1+sq14RtHfkVHrZSPU=
+github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1 h1:BR6XgwRjgdOhPzVdqh1E4k+QQITIJP2QBkzyxkHwLUg=
+github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1/go.mod h1:5GLMySIqGT5NBxdkpjgRbD1n+gzcO9/TmtDo9b0J8xU=
+github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560 h1:jIGUazddAlq06l1XBIPqHGUidADxZcL8/LxLGoEFnZU=
+github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560/go.mod h1:VIH3FLXQ2KWCkzkqXSThA9npvg0LgSBxBRzVSRoJWeg=
+github.com/MANTRA-Chain/evm v0.6.0-v8-mantra-1 h1:IXs/lRWCDKychp6YX8G8dkfzSRO8xQYXG8n80Odsv1w=
+github.com/MANTRA-Chain/evm v0.6.0-v8-mantra-1/go.mod h1:9GeaJM3zaqz3T7HJeQ1aHge/5npxsxlVu1GekDqMals=
+github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d h1:/GNezpHU/5vbaSG1cHR+13dUngQcF4hXZRIJSapBbxA=
+github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d/go.mod h1:IPNcIpwClf0iJamkYG3FCdgX1vAUzgoGv85fgmbNSB0=
+>>>>>>> c9a84ac (Problem: evm v0.6.x is outdated (#659))
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.7 h1:MP6R1spmjxTE4EU4J3YsrTxn8CjvN9qwjTKJXldFaRg=

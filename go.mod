@@ -8,8 +8,25 @@ replace (
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.50.14-v4-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.50.14-v4-mantra-1
 
+<<<<<<< HEAD
 	// fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
+=======
+	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/wasmd/tree/mantra/v0.61.1, current branch: mantra/v0.61.1
+	// Direct commit link: https://github.com/MANTRA-Chain/wasmd/commit/5d3a4a2c160d41262ce861fba27365cf35af6bc6
+	github.com/CosmWasm/wasmd => github.com/MANTRA-Chain/wasmd v0.0.0-20250724044732-5d3a4a2c160d
+
+	// mantra/v0.6.x
+	github.com/cosmos/evm => github.com/MANTRA-Chain/evm v0.6.0-v8-mantra-1
+
+	github.com/cosmos/interchain-security/v7 => github.com/cosmos/interchain-security/v7 v7.0.0-20250408210344-06e0dc6bf6d6
+
+	// branch: release/1.16
+	github.com/ethereum/go-ethereum => github.com/cosmos/go-ethereum v1.16.2-cosmos-1
+
+	// Security Advisory https://github.com/advisories/GHSA-h395-qcrw-5vmq
+	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
+>>>>>>> c9a84ac (Problem: evm v0.6.x is outdated (#659))
 
 	// use regen protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
