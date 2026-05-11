@@ -24,7 +24,6 @@ func NewParams(
 	return Params{
 		McaTax:     mcaTax,
 		McaAddress: mcaAddress,
-		MaxMcaTax:  MaxMcaTax,
 	}
 }
 
@@ -44,9 +43,6 @@ func (p Params) Validate() error {
 	if err := ValidateMcaAddress(p.McaAddress); err != nil {
 		return err
 	}
-	if p.McaTax.GT(MaxMcaTax) {
-		return fmt.Errorf("mca tax cannot exceed maximum of %s", MaxMcaTax)
-	}
 	return nil
 }
 
@@ -64,10 +60,6 @@ func ValidateMcaTax(i interface{}) error {
 
 	if mcaTax.IsNegative() {
 		return fmt.Errorf("mca tax cannot be negative")
-	}
-
-	if mcaTax.GT(math.LegacyOneDec()) {
-		return fmt.Errorf("mca tax cannot exceed 100%%")
 	}
 
 	if mcaTax.GT(MaxMcaTax) {
