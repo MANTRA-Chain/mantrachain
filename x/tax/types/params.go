@@ -12,7 +12,7 @@ import (
 var (
 	DefaultMcaTax     = "0.6"
 	DefaultMcaAddress = "mantra15m77x4pe6w9vtpuqm22qxu0ds7vn4ehzwx8pls"
-	MaxMcaTax         = math.LegacyMustNewDecFromStr("0.4") // 40 %
+	MaxMcaTax         = math.LegacyMustNewDecFromStr("0.6") // 60 %
 )
 
 // NewParams creates a new Params instance.
