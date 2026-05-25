@@ -1,4 +1,19 @@
 ## [unreleased]
+## v8.2.0
+
+*May 25, 2026*
+
+### FEATURES
+
+- feat: add callback to ibc send wiring ([#658](https://github.com/MANTRA-Chain/mantrachain/pull/658))
+- feat: enforce single MsgExec per transaction ([#661](https://github.com/MANTRA-Chain/mantrachain/pull/661))
+
+### BUG-FIXES
+
+- evm v0.6.x is outdated ([#659](https://github.com/MANTRA-Chain/mantrachain/pull/659))
+- fix: move max_tax from Params to QueryParamsResponse ([#663](https://github.com/MANTRA-Chain/mantrachain/pull/663))◊
+- evm v0.6.x is outdated ([#668](https://github.com/MANTRA-Chain/mantrachain/pull/668))
+
 ## v8.1.1
 
 *May 1, 2026*
