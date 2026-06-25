@@ -58,8 +58,18 @@ func (d BlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate
 	}
 
 	// Check authz granters (inner message signers of MsgExec).
+	// Only a single MsgExec per tx is allowed; multiple could obscure blacklisted granters.
 	// Nested MsgExec is also rejected outright — it cannot be safely inspected
 	// with a flat check and could be used to hide a blacklisted granter.
+	var execCount int
+	for _, msg := range tx.GetMsgs() {
+		if _, ok := msg.(*authz.MsgExec); ok {
+			execCount++
+			if execCount > 1 {
+				return ctx, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "only a single MsgExec is allowed per transaction")
+			}
+		}
+	}
 	for _, msg := range tx.GetMsgs() {
 		execMsg, ok := msg.(*authz.MsgExec)
 		if !ok {

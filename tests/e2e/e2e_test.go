@@ -72,6 +72,7 @@ func (s *IntegrationTestSuite) TestIBC() {
 	}
 
 	s.testIBCTokenTransfer()
+	s.testIBCCallbackMemo()
 	// TODO: uncomment in future if we add PFM
 	// s.testMultihopIBCTokenTransfer()
 	// s.testFailedMultihopIBCTokenTransfer()

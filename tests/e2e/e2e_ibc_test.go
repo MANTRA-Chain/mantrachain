@@ -25,17 +25,18 @@ type PacketMetadata struct {
 	Forward *ForwardMetadata `json:"forward"`
 }
 
-func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, token, fees, note string, expErr bool) {
+func (s *IntegrationTestSuite) sendIBC(c *chain, sender, recipient, token, fees, note string, expErr bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	const valIdx = 0
 	ibcCmd := []string{
 		mantrachaindBinary,
 		txCommand,
 		"ibc-transfer",
-		"transfer",
-		"transfer",
-		"channel-0",
+		transferPort,
+		transferPort,
+		transferChannel,
 		recipient,
 		token,
 		fmt.Sprintf("--from=%s", sender),
@@ -58,14 +59,14 @@ func (s *IntegrationTestSuite) sendIBC(c *chain, valIdx int, sender, recipient, 
 	}
 }
 
-func (s *IntegrationTestSuite) hermesClearPacket(configPath, chainID, portID, channelID string) (success bool) {
+func (s *IntegrationTestSuite) hermesClearPacket(chainID, portID, channelID string) (success bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
-		fmt.Sprintf("--config=%s", configPath),
+		hermesJSONFlag,
+		fmt.Sprintf("--config=%s", hermesConfigWithGasPrices),
 		"clear",
 		"packets",
 		fmt.Sprintf("--chain=%s", chainID),
@@ -101,7 +102,7 @@ func (s *IntegrationTestSuite) createConnection() {
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"create",
 		"connection",
 		"--a-chain",
@@ -123,13 +124,13 @@ func (s *IntegrationTestSuite) createChannel() {
 	defer cancel()
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"create",
 		"channel",
 		"--a-chain", s.chainA.id,
 		"--a-connection", "connection-0",
-		"--a-port", "transfer",
-		"--b-port", "transfer",
+		"--a-port", transferPort,
+		"--b-port", transferPort,
 		"--channel-version", "ics20-1",
 		"--order", "unordered",
 	}
@@ -158,7 +159,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd := []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-try",
 		"--dst-chain", dstChain,
@@ -174,7 +175,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd = []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-ack",
 		"--dst-chain", srcChain,
@@ -191,7 +192,7 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 
 	hermesCmd = []string{
 		hermesBinary,
-		"--json",
+		hermesJSONFlag,
 		"tx",
 		"chan-open-confirm",
 		"--dst-chain", dstChain,
@@ -209,6 +210,63 @@ func (s *IntegrationTestSuite) completeChannelHandshakeFromTry(
 	s.T().Logf("IBC channel handshake completed between: (%s, %s, %s, %s) and (%s, %s, %s, %s)",
 		srcChain, srcConnection, srcPort, srcChannel,
 		dstChain, dstConnection, dstPort, dstChannel)
+}
+
+// testIBCCallbackMemo verifies that the callbacks middleware rejects malformed
+// src_callback memos at send time (not silently at ack/timeout time).
+// A memo that contains the "src_callback" key but has an invalid address field
+// must cause the MsgTransfer tx itself to fail so tokens are never escrowed.
+func (s *IntegrationTestSuite) testIBCCallbackMemo() {
+	address, _ := s.chainA.validators[0].keyInfo.GetAddress()
+	sender := address.String()
+
+	address, _ = s.chainB.validators[0].keyInfo.GetAddress()
+	recipient := address.String()
+
+	token := "1000000" + amantraDenom
+
+	s.Run("rejects_src_callback_with_empty_address", func() {
+		memo := `{"src_callback":{"address":""}}`
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	s.Run("rejects_src_callback_with_whitespace_address", func() {
+		memo := `{"src_callback":{"address":"   "}}`
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	s.Run("rejects_src_callback_with_missing_address_field", func() {
+		memo := `{"src_callback":{}}`
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, true)
+	})
+
+	// A transfer with no src_callback key in the memo must still go through normally.
+	s.Run("accepts_transfer_with_non_callback_memo", func() {
+		chainAAPIEndpoint := fmt.Sprintf("http://%s", s.valResources[s.chainA.id][0].GetHostPort("1317/tcp"))
+
+		var beforeBalance sdk.Coin
+		s.Require().Eventually(func() bool {
+			var err error
+			beforeBalance, err = getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
+			return err == nil && beforeBalance.IsValid()
+		}, time.Minute, 5*time.Second)
+
+		memo := `{"some_other_key":"value"}`
+		s.sendIBC(s.chainA, sender, recipient, token, standardFees.String(), memo, false)
+
+		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
+		s.Require().True(pass)
+
+		// Sender balance must decrease by the transferred amount (plus fees) confirming
+		// tokens were escrowed and the packet was accepted.
+		s.Require().Eventually(func() bool {
+			afterBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)
+			if err != nil {
+				return false
+			}
+			return afterBalance.Amount.LT(beforeBalance.Amount)
+		}, time.Minute, 5*time.Second)
+	})
 }
 
 func (s *IntegrationTestSuite) testIBCTokenTransfer() {
@@ -246,9 +304,9 @@ func (s *IntegrationTestSuite) testIBCTokenTransfer() {
 		}
 
 		tokenAmt := 3300000000
-		s.sendIBC(s.chainA, 0, sender, recipient, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), "", false)
+		s.sendIBC(s.chainA, sender, recipient, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), "", false)
 
-		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 		s.Require().True(pass)
 
 		s.Require().Eventually(
@@ -341,7 +399,7 @@ Steps:
 
 // 		s.sendIBC(s.chainA, 0, sender, middlehop, strconv.Itoa(tokenAmt)+amantraDenom, standardFees.String(), string(memo), false)
 
-// 		pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 		pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 // 		s.Require().True(pass)
 
 // 		s.Require().Eventually(
@@ -433,7 +491,7 @@ Middleware will send the tokens back to the original account after failing.
 // 		// since the forward receiving account is invalid, it should be refunded to the original sender (minus the original fee)
 // 		s.Require().Eventually(
 // 			func() bool {
-// 				pass := s.hermesClearPacket(hermesConfigWithGasPrices, s.chainA.id, transferPort, transferChannel)
+// 				pass := s.hermesClearPacket(s.chainA.id, transferPort, transferChannel)
 // 				s.Require().True(pass)
 
 // 				afterSenderUOmBalance, err := getSpecificBalance(chainAAPIEndpoint, sender, amantraDenom)

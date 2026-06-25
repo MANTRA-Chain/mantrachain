@@ -18,5 +18,5 @@ func TestParamsQuery(t *testing.T) {
 
 	response, err := qs.Params(ctx, &types.QueryParamsRequest{})
 	require.NoError(t, err)
-	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
+	require.Equal(t, &types.QueryParamsResponse{Params: params, MaxMcaTax: types.MaxMcaTax}, response)
 }

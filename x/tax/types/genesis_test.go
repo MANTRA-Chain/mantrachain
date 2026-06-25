@@ -56,9 +56,9 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: false,
 		},
 		{
-			desc: "mca tax of 0.5 is invalid",
+			desc: "mca tax of 0.7 is invalid",
 			genState: &types.GenesisState{
-				Params: types.NewParams("0.5", types.DefaultMcaAddress),
+				Params: types.NewParams("0.7", types.DefaultMcaAddress),
 			},
 			valid: false,
 		},
@@ -68,13 +68,6 @@ func TestGenesisState_Validate(t *testing.T) {
 				Params: types.NewParams("0", types.DefaultMcaAddress),
 			},
 			valid: true,
-		},
-		{
-			desc: "mca tax of 1 is invalid",
-			genState: &types.GenesisState{
-				Params: types.NewParams("1", types.DefaultMcaAddress),
-			},
-			valid: false,
 		},
 		{
 			desc: "mca address with wrong prefix is invalid",

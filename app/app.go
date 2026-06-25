@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	v8_1 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_1"
+	v8_2 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_2"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -181,8 +181,8 @@ import (
 )
 
 var EVMCoinInfo = evmtypes.EvmCoinInfo{
-	Denom:         "amantra",
-	ExtendedDenom: "amantra",
+	Denom:         FeeDenom,
+	ExtendedDenom: FeeDenom,
 	DisplayDenom:  "mantra",
 	Decimals:      evmtypes.EighteenDecimals.Uint32(),
 }
@@ -241,7 +241,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_1.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_2.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -744,7 +744,7 @@ func New(
 			- IBC Transfer
 
 		SendPacket, since it is originating from the application to core IBC:
-			transfer.SendTransfer -> ratelimit.SendPacket -> channel.SendPacket
+			transfer.SendTransfer -> callbacks.SendPacket -> ratelimit.SendPacket -> channel.SendPacket
 			(ICS4Wrapper chain wired via WithICS4Wrapper after stack is built below)
 
 		RecvPacket, actual logic execution order (note: ratelimit runs its check BEFORE calling next,
@@ -766,15 +766,16 @@ func New(
 		app.EVMKeeper,
 		app.Erc20Keeper,
 	)
-	transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCKeeper.ChannelKeeper, app.CallbackKeeper, maxCallbackGas)
+	callbacksMiddleware := ibccallbacks.NewIBCMiddleware(transferStack, app.RateLimitKeeper, app.CallbackKeeper, maxCallbackGas)
+	transferStack = &callbacksMiddleware
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(transferStack, app.TokenFactoryKeeper)
 	transferStack = ratelimit.NewIBCMiddleware(app.RateLimitKeeper, transferStack)
 	transferStack = icsprovider.NewIBCMiddleware(transferStack, app.ProviderKeeper)
 	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
 
-	// Wire the ICS4Wrapper send path: transfer -> ratelimit -> channel
-	app.TransferKeeper.WithICS4Wrapper(app.RateLimitKeeper)
+	// Wire the ICS4Wrapper send path: transfer -> callbacks -> ratelimit -> channel
+	app.TransferKeeper.WithICS4Wrapper(&callbacksMiddleware)
 
 	// Create ICAHost Stack
 	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
