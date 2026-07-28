@@ -1,4 +1,12 @@
 ## [unreleased]
+## v8.3.0
+
+*Jul 28, 2026*
+
+### DEPENDENCIES
+
+- *(deps)* bump mantra evm from v0.6.0-v8-mantra-3 to v0.6.0-v8-mantra-4 ([#677](https://github.com/MANTRA-Chain/mantrachain/pull/677))
+
 ## v8.2.0
 
 *May 25, 2026*

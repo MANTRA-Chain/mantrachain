@@ -1,4 +1,4 @@
-package v8_2
+package v8_3
 
 import (
 	"cosmossdk.io/store/types"
@@ -7,7 +7,7 @@ import (
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	UpgradeName = "v8.2.0"
+	UpgradeName = "v8.3.0"
 )
 
 var Upgrade = upgrades.Upgrade{
