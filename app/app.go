@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	v8_3 "github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_3"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_4"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -241,7 +241,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_3.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_4.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -1226,6 +1226,18 @@ func (app *App) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
 func (app *App) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+	// name is the emergency, self-scheduled upgrade fixing the delegate
+	// precompile balance-drain exploit. No governance proposal; all
+	// validators must agree on this binary and height before restarting.
+	const name = "v8.4.0"
+	if ctx.BlockHeight() == 17449399 {
+		if _, err := app.UpgradeKeeper.GetUpgradePlan(ctx); err != nil { // no plan scheduled yet
+			_ = app.UpgradeKeeper.ScheduleUpgrade(ctx, upgradetypes.Plan{
+				Name:   name,
+				Height: ctx.BlockHeight(),
+			})
+		}
+	}
 	return app.ModuleManager.PreBlock(ctx)
 }
 
@@ -1498,6 +1510,7 @@ func (app *App) setupUpgradeHandlers() {
 					DistrKeeper:           app.DistrKeeper,
 					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
+					SanctionKeeper:        app.SanctionKeeper,
 				},
 				app.keys,
 			),

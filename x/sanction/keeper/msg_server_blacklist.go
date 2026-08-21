@@ -18,18 +18,8 @@ func (k msgServer) AddBlacklistAccounts(ctx context.Context, msg *types.MsgAddBl
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid authority; expected %s, got %s", authority, msg.Authority)
 	}
 
-	for _, account := range msg.BlacklistAccounts {
-		hasAccount, err := k.BlacklistAccounts.Has(ctx, account)
-		if err != nil {
-			return nil, err
-		}
-		if hasAccount {
-			return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "account %s has already been blacklisted", account)
-		}
-
-		if err := k.BlacklistAccounts.Set(ctx, account); err != nil {
-			return nil, err
-		}
+	if err := k.AddToBlacklist(ctx, msg.BlacklistAccounts); err != nil {
+		return nil, err
 	}
 
 	return &types.MsgAddBlacklistAccountsResponse{}, nil
@@ -45,18 +35,8 @@ func (k msgServer) RemoveBlacklistAccounts(ctx context.Context, msg *types.MsgRe
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "invalid authority; expected %s, got %s", authority, msg.Authority)
 	}
 
-	for _, account := range msg.BlacklistAccounts {
-		hasAccount, err := k.BlacklistAccounts.Has(ctx, account)
-		if err != nil {
-			return nil, err
-		}
-		if !hasAccount {
-			return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "blacklist account %s is not blacklisted", account)
-		}
-
-		if err := k.BlacklistAccounts.Remove(ctx, account); err != nil {
-			return nil, err
-		}
+	if err := k.RemoveFromBlacklist(ctx, msg.BlacklistAccounts); err != nil {
+		return nil, err
 	}
 
 	return &types.MsgRemoveBlacklistAccountsResponse{}, nil

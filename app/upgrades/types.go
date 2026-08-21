@@ -3,6 +3,7 @@ package upgrades
 import (
 	storetypes "cosmossdk.io/store/types"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
@@ -48,4 +49,6 @@ type UpgradeKeepers struct {
 	// provider
 	ProviderKeeper        icsproviderkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
+
+	SanctionKeeper sanctionkeeper.Keeper
 }

@@ -1,4 +1,4 @@
-package v8_3
+package v8_4
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
-		ctx.Logger().Info("Starting v8.3.0 upgrade...")
+		ctx.Logger().Info("Starting v8.4.0 upgrade...")
 
 		ctx.Logger().Info("Running module migrations...")
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
@@ -26,7 +26,12 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v8.3.0 complete")
+		AccountsToBlacklist := []string{"mantra13n9sk3p8x7tpq9adgxvzv9q0qev953mld0hwva"}
+		if err := keepers.SanctionKeeper.AddToBlacklist(ctx, AccountsToBlacklist); err != nil {
+			return vm, err
+		}
+
+		ctx.Logger().Info("Upgrade v8.4.0 complete")
 		return vm, nil
 	}
 }
