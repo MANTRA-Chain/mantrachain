@@ -1230,7 +1230,7 @@ func (app *App) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.
 	// precompile balance-drain exploit. No governance proposal; all
 	// validators must agree on this binary and height before restarting.
 	const name = "v8.4.0"
-	if ctx.BlockHeight() == 17449399 {
+	if ctx.ChainID() == "mantra-1" && ctx.BlockHeight() == 17449399 {
 		if _, err := app.UpgradeKeeper.GetUpgradePlan(ctx); err != nil { // no plan scheduled yet
 			_ = app.UpgradeKeeper.ScheduleUpgrade(ctx, upgradetypes.Plan{
 				Name:   name,
