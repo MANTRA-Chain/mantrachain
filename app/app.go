@@ -1231,9 +1231,6 @@ func (app *App) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
-	if err := applyEmergencySanction(ctx, app.SanctionKeeper); err != nil {
-		return sdk.BeginBlock{}, err
-	}
 	return app.ModuleManager.BeginBlock(ctx)
 }
 
