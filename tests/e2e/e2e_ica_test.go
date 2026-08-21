@@ -76,7 +76,7 @@ func (s *IntegrationTestSuite) testICARegisterAccountAndSendTx() {
 		for _, c := range icaAccountBalances {
 			if strings.Contains(c.Denom, "ibc/") {
 				ibcStakeDenom = c.Denom
-				s.Require().Equal((int64(tokenAmount)), c.Amount.Int64())
+				s.Require().Equal(int64(tokenAmount), c.Amount.Int64())
 				break
 			}
 		}
