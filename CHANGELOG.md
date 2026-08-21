@@ -9,6 +9,7 @@
 ### DEPENDENCIES
 
 - *(deps)* bump mantra evm from v0.6.0-v8-mantra-4 to v0.6.0-v8-mantra-6 ([#679](https://github.com/MANTRA-Chain/mantrachain/pull/679))
+- *(deps)* bump mantra evm from v0.6.0-v8-mantra-6 to v0.6.2-v8-mantra-1 ([#682](https://github.com/MANTRA-Chain/mantrachain/pull/682))
 
 ## v8.3.0
 
