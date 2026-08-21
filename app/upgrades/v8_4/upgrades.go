@@ -31,6 +31,16 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
+		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreateVestingAccount"); err != nil {
+			return vm, err
+		}
+		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreatePermanentLockedAccount"); err != nil {
+			return vm, err
+		}
+		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount"); err != nil {
+			return vm, err
+		}
+
 		ctx.Logger().Info("Upgrade v8.4.0 complete")
 		return vm, nil
 	}

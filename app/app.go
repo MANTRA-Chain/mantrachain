@@ -1522,6 +1522,7 @@ func (app *App) setupUpgradeHandlers() {
 					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
 					SanctionKeeper:        app.SanctionKeeper,
+					CircuitKeeper:         app.CircuitKeeper,
 				},
 				app.keys,
 			),
