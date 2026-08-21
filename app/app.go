@@ -1226,11 +1226,22 @@ func (app *App) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
 func (app *App) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	// name is the emergency, self-scheduled upgrade fixing the delegate
+	// v8.4.0 is the emergency, self-scheduled upgrade fixing the delegate
 	// precompile balance-drain exploit. No governance proposal; all
 	// validators must agree on this binary and height before restarting.
 	const name = "v8.4.0"
-	if ctx.ChainID() == "mantra-1" && ctx.BlockHeight() == 17449399 {
+
+	// upgradeHeight is chain-specific: the real halt height on mainnet,
+	// or a low height on dukong so the fix can be rehearsed on testnet first.
+	var upgradeHeight int64
+	switch ctx.ChainID() {
+	case "mantra-1":
+		upgradeHeight = 17449399
+	case "mantra-dukong-1":
+		upgradeHeight = 16107452
+	}
+
+	if upgradeHeight != 0 && ctx.BlockHeight() == upgradeHeight {
 		if _, err := app.UpgradeKeeper.GetUpgradePlan(ctx); err != nil { // no plan scheduled yet
 			_ = app.UpgradeKeeper.ScheduleUpgrade(ctx, upgradetypes.Plan{
 				Name:   name,
