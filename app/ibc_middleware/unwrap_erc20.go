@@ -121,8 +121,9 @@ func (im UnwrapERC20IBCModule) OnTimeoutPacket(
 }
 
 // UnmarshalPacketData implements the PacketDataUnmarshaler interface. The
-// wrapped app (the ICS provider middleware) does not implement it, so packets
-// are parsed as ICS-20 v1 transfer data, the only format on this stack.
+// wrapped ICS provider middleware does not implement it, so packets are parsed
+// as ICS-20 v1 data and returned as the transfer module's internal
+// representation, matching what the rest of the stack returns.
 func (im UnwrapERC20IBCModule) UnmarshalPacketData(
 	ctx sdk.Context,
 	portID string,
@@ -132,8 +133,8 @@ func (im UnwrapERC20IBCModule) UnmarshalPacketData(
 	if unmarshaler, ok := im.app.(porttypes.PacketDataUnmarshaler); ok {
 		return unmarshaler.UnmarshalPacketData(ctx, portID, channelID, bz)
 	}
-	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(bz, &data); err != nil {
+	data, err := transfertypes.UnmarshalPacketData(bz, transfertypes.V1, "")
+	if err != nil {
 		return nil, "", err
 	}
 	return data, transfertypes.V1, nil

@@ -645,9 +645,8 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create RateLimit keeper. The ibc-go rate-limiting keeper no longer takes a
-	// params subspace or an ICS4 wrapper in its constructor, ICS4 wrapper is
-	// wired later when the transfer stack is assembled (see SetICS4Wrapper).
+	// Create RateLimit keeper. Its ICS4 wrapper defaults to the channel keeper
+	// passed here, which is where rate-limited sends should continue.
 	app.RateLimitKeeper = ratelimitkeeper.NewKeeper(
 		appCodec,
 		app.AccountKeeper.AddressCodec(),
@@ -789,16 +788,17 @@ func New(
 	callbacksMiddleware.SetUnderlyingApplication(transferStack)
 	// register escrow address for tokenfactory when channel opens
 	transferStack = tokenfactory.NewIBCModule(callbacksMiddleware, app.TokenFactoryKeeper)
-	// ibc-go rate-limiting middleware: send-side checks live in the middleware's
-	// SendPacket, so it must be the ICS4 wrapper on the send path (pointing its own
-	// wrapper at the channel keeper). On recv it guards the wrapped stack.
+	// The rate-limiting middleware must be the ICS4 wrapper on the send path;
+	// its keeper already continues to the channel keeper.
 	rateLimitMiddleware := ratelimit.NewIBCMiddleware(app.RateLimitKeeper)
 	rateLimitMiddleware.SetUnderlyingApplication(transferStack)
-	app.RateLimitKeeper.SetICS4Wrapper(app.IBCKeeper.ChannelKeeper)
 	callbacksMiddleware.SetICS4Wrapper(rateLimitMiddleware) // send: callbacks -> ratelimit -> channel
 	transferStack = rateLimitMiddleware
 	icsProviderMiddleware := icsprovider.NewIBCMiddleware(&app.ProviderKeeper)
 	icsProviderMiddleware.SetUnderlyingApplication(transferStack)
+	// Nothing sends through the provider middleware today; wire its wrapper so
+	// GetAppVersion works and any future send stays rate-limited.
+	icsProviderMiddleware.SetICS4Wrapper(rateLimitMiddleware)
 	transferStack = icsProviderMiddleware
 	transferStack = ibc_middleware.NewUnwrapERC20IBCModule(transferStack, &app.Erc20Keeper, app.EVMKeeper)
 
