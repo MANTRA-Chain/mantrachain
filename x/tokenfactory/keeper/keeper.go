@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"cosmossdk.io/core/store"
-	"cosmossdk.io/log"
-	"cosmossdk.io/store/prefix"
+	"cosmossdk.io/log/v2"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/store/v2/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

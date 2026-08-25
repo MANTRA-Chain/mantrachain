@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 
-	circuitkeeper "cosmossdk.io/x/circuit/keeper"
+	circuitkeeper "github.com/cosmos/cosmos-sdk/contrib/x/circuit/keeper"
 )
 
 // AllCapabilities returns all capabilities available with the current wasmvm

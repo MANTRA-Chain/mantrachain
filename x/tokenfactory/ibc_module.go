@@ -3,24 +3,40 @@ package tokenfactory
 import (
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v11/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v11/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 )
 
-var _ porttypes.IBCModule = IBCModule{}
+var (
+	_ porttypes.IBCModule             = IBCModule{}
+	_ porttypes.PacketDataUnmarshaler = IBCModule{}
+)
 
 type IBCModule struct {
-	app                porttypes.IBCModule
+	app                porttypes.PacketUnmarshalerModule
 	tokenfactoryKeeper keeper.Keeper
 }
 
-func NewIBCModule(app porttypes.IBCModule, tokenfactoryKeeper keeper.Keeper) IBCModule {
+func NewIBCModule(app porttypes.PacketUnmarshalerModule, tokenfactoryKeeper keeper.Keeper) IBCModule {
 	return IBCModule{
 		app,
 		tokenfactoryKeeper,
 	}
+}
+
+// SetICS4Wrapper implements the porttypes.IBCModule interface. This middleware
+// does not send packets itself, so it forwards to the underlying application.
+func (im IBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
+	im.app.SetICS4Wrapper(wrapper)
+}
+
+// UnmarshalPacketData implements porttypes.PacketDataUnmarshaler, forwarding to
+// the underlying app so wrapping middlewares (e.g. ibc-go rate-limiting) can
+// parse packet data.
+func (im IBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
+	return im.app.UnmarshalPacketData(ctx, portID, channelID, bz)
 }
 
 // OnChanOpenInit implements the IBCModule interface

@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/strangelove-ventures/interchaintest/v8"
-	"github.com/strangelove-ventures/interchaintest/v8/chain/cosmos"
-	"github.com/strangelove-ventures/interchaintest/v8/ibc"
-	"github.com/strangelove-ventures/interchaintest/v8/testutil"
+	"github.com/cosmos/interchaintest/v11"
+	"github.com/cosmos/interchaintest/v11/chain/cosmos"
+	"github.com/cosmos/interchaintest/v11/ibc"
+	"github.com/cosmos/interchaintest/v11/testutil"
 
 	sdkmath "cosmossdk.io/math"
 
@@ -122,7 +122,7 @@ func DefaultSuiteConfig(env Environment) SuiteConfig {
 				},
 				Images: []ibc.DockerImage{{
 					Repository: repository,
-					UidGid:     "1025:1025", // this is the user in heighliner docker images
+					UIDGID:     "1025:1025", // this is the user in heighliner docker images
 				}},
 				Type:                 "cosmos",
 				Name:                 "mantra",

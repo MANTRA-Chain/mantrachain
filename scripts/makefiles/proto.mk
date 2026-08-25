@@ -57,6 +57,20 @@ proto-download-deps:
 	if [ -d "$$DIR/proto" ]; then \
 		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: cosmos-sdk proto not found at '$$DIR/proto'" >&2; exit 1; \
+	fi
+
+	@# circuit, crisis and nft live in the sdk's contrib/ tree, whose proto files
+	@# are laid out without the cosmos/ package prefix, so copy them under cosmos.
+	@echo "Copying cosmos-sdk contrib proto..."
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/cosmos-sdk); \
+	if [ -d "$$DIR/contrib/proto" ]; then \
+		mkdir -p "$(THIRD_PARTY_DIR)/cosmos"; \
+		cp -r "$$DIR/contrib/proto"/* "$(THIRD_PARTY_DIR)/cosmos"; \
+		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: cosmos-sdk contrib proto not found at '$$DIR/contrib/proto'" >&2; exit 1; \
 	fi
 
 	@echo "Copying interchain-security proto..."
@@ -64,6 +78,8 @@ proto-download-deps:
 	if [ -d "$$DIR/proto/interchain_security" ]; then \
 		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: interchain-security proto not found at '$$DIR/proto/interchain_security'" >&2; exit 1; \
 	fi
 
 	@echo "Copying evm proto..."
@@ -72,6 +88,8 @@ proto-download-deps:
 		mkdir -p "$(THIRD_PARTY_DIR)/cosmos"; \
 		cp -r "$$DIR/proto/cosmos"/* "$(THIRD_PARTY_DIR)/cosmos"; \
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: evm proto not found at '$$DIR/proto/cosmos'" >&2; exit 1; \
 	fi
 
 	@echo "Copying wasmd proto..."
@@ -79,21 +97,19 @@ proto-download-deps:
 	if [ -d "$$DIR/proto" ]; then \
 		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: wasmd proto not found at '$$DIR/proto'" >&2; exit 1; \
 	fi
 
+	@# ibc-go ships the rate-limiting protos under ibc/applications/rate_limiting
+	@# since v11, so no separate ibc-apps copy step is needed.
 	@echo "Copying ibc-go proto..."
-	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-go/v10); \
+	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-go/v11); \
 	if [ -d "$$DIR/proto" ]; then \
 		cp -r "$$DIR/proto"/* "$(THIRD_PARTY_DIR)"; \
 		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
-	fi
-
-	@echo "Copying ibc-apps rate-limiting proto..."
-	@DIR=$$(go list -m -f '{{.Dir}}' github.com/cosmos/ibc-apps/modules/rate-limiting/v10); \
-	if [ -d "$$DIR/proto/ratelimit" ]; then \
-		mkdir -p "$(THIRD_PARTY_DIR)/ratelimit"; \
-		cp -r "$$DIR/proto/ratelimit"/* "$(THIRD_PARTY_DIR)/ratelimit"; \
-		chmod -R 755 "$(THIRD_PARTY_DIR)"; \
+	else \
+		echo "ERROR: ibc-go proto not found at '$$DIR/proto'" >&2; exit 1; \
 	fi
 
 	@# Remove buf.yaml and buf.lock from third_party to avoid module conflicts.
@@ -122,7 +138,7 @@ docs:
 	@make proto-download-deps
 	./scripts/generate-docs.sh
 
-	@if [ -n "$(git status --porcelain)" ]; then \
+	@if [ -n "$$(git status --porcelain)" ]; then \
         echo "\033[91mSwagger docs are out of sync!!!\033[0m";\
         exit 1;\
     else \

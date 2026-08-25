@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	evidencetypes "cosmossdk.io/x/evidence/types"
 	appparams "github.com/MANTRA-Chain/mantrachain/v8/app/params"
 	tmconfig "github.com/cometbft/cometbft/config"
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -31,6 +30,7 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -540,6 +540,10 @@ func (s *IntegrationTestSuite) initValidatorConfigs(c *chain) {
 		valConfig.RPC.ListenAddress = "tcp://0.0.0.0:26657"
 		valConfig.StateSync.Enable = false
 		valConfig.LogLevel = "info"
+		// The app enables the EVM ("app") mempool by default, which requires
+		// config.toml mempool.type = "app"; otherwise the node aborts on startup
+		// with "EVM mempool enabled, but comet-bft has invalid config.toml:mempool.type".
+		valConfig.Mempool.Type = tmconfig.MempoolTypeApp
 
 		var peers []string
 

@@ -21,8 +21,8 @@ func (s *IntegrationTestSuite) writeAddRateLimitAmantraProposal(c *chain) {
 	{
 		"messages": [
 		 {
-		  "@type": "/ratelimit.v1.MsgAddRateLimit",
-		  "authority": "%s",
+		  "@type": "/ibc.applications.rate_limiting.v1.MsgAddRateLimit",
+		  "signer": "%s",
 		  "denom": "%s",
 		  "channel_or_client_id": "%s",
 		  "max_percent_send": "%s",
@@ -53,8 +53,8 @@ func (s *IntegrationTestSuite) writeUpdateRateLimitAmantraProposal(c *chain) {
 	{
 		"messages": [
 		 {
-		  "@type": "/ratelimit.v1.MsgUpdateRateLimit",
-		  "authority": "%s",
+		  "@type": "/ibc.applications.rate_limiting.v1.MsgUpdateRateLimit",
+		  "signer": "%s",
 		  "denom": "%s",
 		  "channel_or_client_id": "%s",
 		  "max_percent_send": "%s",
@@ -85,8 +85,8 @@ func (s *IntegrationTestSuite) writeResetRateLimitAmantraProposal(c *chain) {
 	{
 		"messages": [
 		 {
-		  "@type": "/ratelimit.v1.MsgResetRateLimit",
-		  "authority": "%s",
+		  "@type": "/ibc.applications.rate_limiting.v1.MsgResetRateLimit",
+		  "signer": "%s",
 		  "denom": "%s",
 		  "channel_or_client_id": "%s"
 		 }
@@ -111,8 +111,8 @@ func (s *IntegrationTestSuite) writeRemoveRateLimitAmantraProposal(c *chain) {
 	{
 		"messages": [
 		 {
-		  "@type": "/ratelimit.v1.MsgRemoveRateLimit",
-		  "authority": "%s",
+		  "@type": "/ibc.applications.rate_limiting.v1.MsgRemoveRateLimit",
+		  "signer": "%s",
 		  "denom": "%s",
 		  "channel_or_client_id": "%s"
 		 }

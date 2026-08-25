@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"cosmossdk.io/math"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	"github.com/strangelove-ventures/interchaintest/v8/ibc"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	"github.com/cosmos/interchaintest/v11/ibc"
 )
 
 func SendSimpleIBCTx(ctx context.Context, chainA *Chain, chainB *Chain, relayer *Relayer) error {

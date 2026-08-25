@@ -1,15 +1,15 @@
 package app
 
 import (
-	"cosmossdk.io/log"
+	"cosmossdk.io/log/v2"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkmempool "github.com/cosmos/cosmos-sdk/types/mempool"
 
-	evmconfig "github.com/cosmos/evm/config"
 	evmmempool "github.com/cosmos/evm/mempool"
+	evmconfig "github.com/cosmos/evm/server"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
 )
 
@@ -27,19 +27,29 @@ func (app *App) configureEVMMempool(
 		return handler.PrepareProposalHandler(), handler.ProcessProposalHandler()
 	}
 
-	mempoolConfig := &evmmempool.EVMMempoolConfig{
-		AnteHandler:      app.AnteHandler(),
-		LegacyPoolConfig: evmconfig.GetLegacyPoolConfig(appOpts, logger),
-		BlockGasLimit:    evmconfig.GetBlockGasLimit(appOpts, logger),
-		MinTip:           evmconfig.GetMinTip(appOpts, logger),
-	}
+	mpConfig := evmconfig.ResolveMempoolConfig(app.AnteHandler(), appOpts, logger)
+	txEncoder := evmmempool.NewTxEncoder(app.txConfig)
+	evmRechecker := evmmempool.NewTxRechecker(mpConfig.AnteHandler, txEncoder)
+	cosmosRechecker := evmmempool.NewTxRechecker(mpConfig.AnteHandler, txEncoder)
 
-	evmMempool := evmmempool.NewExperimentalEVMMempool(app.CreateQueryContext, logger, app.EVMKeeper, app.FeeMarketKeeper, app.txConfig, app.clientCtx, mempoolConfig, cosmosPoolMaxTx)
+	evmMempool := evmmempool.NewMempool(
+		app.CreateQueryContext,
+		logger,
+		app.EVMKeeper,
+		app.FeeMarketKeeper,
+		app.txConfig,
+		evmRechecker,
+		cosmosRechecker,
+		mpConfig,
+		cosmosPoolMaxTx,
+	)
 	app.EVMMempool = evmMempool
 	app.SetMempool(evmMempool)
 
-	checkTxHandler := evmmempool.NewCheckTxHandler(evmMempool)
-	app.SetCheckTxHandler(checkTxHandler)
+	checkTxTimeout := evmconfig.GetMempoolCheckTxTimeout(appOpts, logger)
+	app.SetCheckTxHandler(evmMempool.NewCheckTxHandler(app.TxDecode, checkTxTimeout))
+	app.SetInsertTxHandler(evmMempool.NewInsertTxHandler(app.TxDecode))
+	app.SetReapTxsHandler(evmMempool.NewReapTxsHandler())
 
 	abciProposalHandler := baseapp.NewDefaultProposalHandler(evmMempool, app)
 	abciProposalHandler.SetSignerExtractionAdapter(evmmempool.NewEthSignerExtractionAdapter(sdkmempool.NewDefaultSignerExtractionAdapter()))

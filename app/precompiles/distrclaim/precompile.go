@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/vm"
 
 	"cosmossdk.io/core/address"
-	storetypes "cosmossdk.io/store/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/v2/types"
 
 	cmn "github.com/cosmos/evm/precompiles/common"
 	erc20types "github.com/cosmos/evm/x/erc20/types"
@@ -90,6 +90,11 @@ func (p Precompile) Run(evm *vm.EVM, contract *vm.Contract, readonly bool) ([]by
 	return p.RunNativeAction(evm, contract, func(ctx sdk.Context) ([]byte, error) {
 		return p.Execute(ctx, evm, contract, readonly)
 	})
+}
+
+// Name implements the vm.PrecompiledContract interface (added in go-ethereum v1.17).
+func (Precompile) Name() string {
+	return "distrclaim"
 }
 
 func (p Precompile) Execute(ctx sdk.Context, evm *vm.EVM, contract *vm.Contract, readOnly bool) ([]byte, error) {

@@ -6,10 +6,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v11/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v11/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 )
 
 const (
@@ -28,24 +28,23 @@ var (
 
 type MigrateUomIBCModule struct {
 	// Since this is the last middleware in the stack, `app` is the core `transfer` IBC module.
-	app        porttypes.IBCModule
+	app        porttypes.PacketUnmarshalerModule
 	bankkeeper bankkeeper.Keeper
 	addrCodec  address.Codec
 }
 
-// UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface
-func (im MigrateUomIBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
-	if unmarshaler, ok := im.app.(porttypes.PacketDataUnmarshaler); ok {
-		return unmarshaler.UnmarshalPacketData(ctx, portID, channelID, bz)
-	}
-	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(bz, &data); err != nil {
-		return nil, "", err
-	}
-	return data, transfertypes.V1, nil
+// SetICS4Wrapper implements the porttypes.IBCModule interface. This middleware
+// does not send packets itself, so it forwards to the underlying application.
+func (im MigrateUomIBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
+	im.app.SetICS4Wrapper(wrapper)
 }
 
-func NewMigrateUomIBCModule(app porttypes.IBCModule, bankkeeper bankkeeper.Keeper, addrCodec address.Codec) MigrateUomIBCModule {
+// UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface
+func (im MigrateUomIBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
+	return im.app.UnmarshalPacketData(ctx, portID, channelID, bz)
+}
+
+func NewMigrateUomIBCModule(app porttypes.PacketUnmarshalerModule, bankkeeper bankkeeper.Keeper, addrCodec address.Codec) MigrateUomIBCModule {
 	return MigrateUomIBCModule{
 		app,
 		bankkeeper,

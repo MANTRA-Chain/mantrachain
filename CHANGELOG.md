@@ -1,5 +1,11 @@
 ## [unreleased]
 
+### FEATURES
+
+- feat: add v8.5.0 upgrade handler for the cosmos-sdk v0.54.x, ibc-go v11, cometbft v0.39 and evm v0.7 dependency bump
+
+## v8.4.0
+
 *Aug 21, 2026*
 
 ### FEATURES

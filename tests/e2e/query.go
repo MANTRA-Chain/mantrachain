@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
-	evidencetypes "cosmossdk.io/x/evidence/types"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
@@ -18,12 +17,13 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v11/modules/apps/27-interchain-accounts/controller/types"
+	ratelimittypes "github.com/cosmos/ibc-go/v11/modules/apps/rate-limiting/types"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
 )
 
 func queryTx(endpoint, txHash string) error {
@@ -388,7 +388,7 @@ func queryAllEvidence(endpoint string) (evidencetypes.QueryAllEvidenceResponse, 
 func queryAllRateLimits(endpoint string) ([]ratelimittypes.RateLimit, error) {
 	var res ratelimittypes.QueryAllRateLimitsResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits", endpoint))
+	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/rate-limiting/v1/ratelimits", endpoint))
 	if err != nil {
 		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -403,7 +403,7 @@ func queryAllRateLimits(endpoint string) ([]ratelimittypes.RateLimit, error) {
 func queryRateLimit(endpoint, channelID, denom string) (ratelimittypes.QueryRateLimitResponse, error) {
 	var res ratelimittypes.QueryRateLimitResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimit/%s/by_denom?denom=%s", endpoint, channelID, denom))
+	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/rate-limiting/v1/ratelimit/ratelimit/%s/by_denom?denom=%s", endpoint, channelID, denom))
 	if err != nil {
 		return ratelimittypes.QueryRateLimitResponse{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
@@ -415,9 +415,9 @@ func queryRateLimit(endpoint, channelID, denom string) (ratelimittypes.QueryRate
 }
 
 func queryRateLimitsByChainID(endpoint, channelID string) ([]ratelimittypes.RateLimit, error) {
-	var res ratelimittypes.QueryRateLimitsByChainIdResponse
+	var res ratelimittypes.QueryRateLimitsByChainIDResponse
 
-	body, err := httpGet(fmt.Sprintf("%s/Stride-Labs/ibc-rate-limiting/ratelimit/ratelimits/%s", endpoint, channelID))
+	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/rate-limiting/v1/ratelimit/ratelimits/%s", endpoint, channelID))
 	if err != nil {
 		return []ratelimittypes.RateLimit{}, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
