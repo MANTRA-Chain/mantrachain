@@ -1340,6 +1340,11 @@ func (app *App) SetClientCtx(clientCtx client.Context) {
 }
 
 func (app *App) GetMempool() sdkmempool.ExtMempool {
+	// EVMMempool is nil when the EVM mempool is disabled; return an untyped
+	// nil so callers' nil checks work.
+	if app.EVMMempool == nil {
+		return nil
+	}
 	return app.EVMMempool
 }
 
