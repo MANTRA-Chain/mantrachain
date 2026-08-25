@@ -9,14 +9,17 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 )
 
-var _ porttypes.IBCModule = IBCModule{}
+var (
+	_ porttypes.IBCModule             = IBCModule{}
+	_ porttypes.PacketDataUnmarshaler = IBCModule{}
+)
 
 type IBCModule struct {
-	app                porttypes.IBCModule
+	app                porttypes.PacketUnmarshalerModule
 	tokenfactoryKeeper keeper.Keeper
 }
 
-func NewIBCModule(app porttypes.IBCModule, tokenfactoryKeeper keeper.Keeper) IBCModule {
+func NewIBCModule(app porttypes.PacketUnmarshalerModule, tokenfactoryKeeper keeper.Keeper) IBCModule {
 	return IBCModule{
 		app,
 		tokenfactoryKeeper,
@@ -27,6 +30,13 @@ func NewIBCModule(app porttypes.IBCModule, tokenfactoryKeeper keeper.Keeper) IBC
 // does not send packets itself, so it forwards to the underlying application.
 func (im IBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
 	im.app.SetICS4Wrapper(wrapper)
+}
+
+// UnmarshalPacketData implements porttypes.PacketDataUnmarshaler, forwarding to
+// the underlying app so wrapping middlewares (e.g. ibc-go rate-limiting) can
+// parse packet data.
+func (im IBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
+	return im.app.UnmarshalPacketData(ctx, portID, channelID, bz)
 }
 
 // OnChanOpenInit implements the IBCModule interface

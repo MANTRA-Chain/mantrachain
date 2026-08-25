@@ -28,7 +28,7 @@ var (
 
 type MigrateUomIBCModule struct {
 	// Since this is the last middleware in the stack, `app` is the core `transfer` IBC module.
-	app        porttypes.IBCModule
+	app        porttypes.PacketUnmarshalerModule
 	bankkeeper bankkeeper.Keeper
 	addrCodec  address.Codec
 }
@@ -41,17 +41,10 @@ func (im MigrateUomIBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
 
 // UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface
 func (im MigrateUomIBCModule) UnmarshalPacketData(ctx sdk.Context, portID string, channelID string, bz []byte) (interface{}, string, error) {
-	if unmarshaler, ok := im.app.(porttypes.PacketDataUnmarshaler); ok {
-		return unmarshaler.UnmarshalPacketData(ctx, portID, channelID, bz)
-	}
-	var data transfertypes.FungibleTokenPacketData
-	if err := transfertypes.ModuleCdc.UnmarshalJSON(bz, &data); err != nil {
-		return nil, "", err
-	}
-	return data, transfertypes.V1, nil
+	return im.app.UnmarshalPacketData(ctx, portID, channelID, bz)
 }
 
-func NewMigrateUomIBCModule(app porttypes.IBCModule, bankkeeper bankkeeper.Keeper, addrCodec address.Codec) MigrateUomIBCModule {
+func NewMigrateUomIBCModule(app porttypes.PacketUnmarshalerModule, bankkeeper bankkeeper.Keeper, addrCodec address.Codec) MigrateUomIBCModule {
 	return MigrateUomIBCModule{
 		app,
 		bankkeeper,

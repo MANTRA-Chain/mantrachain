@@ -18,14 +18,13 @@ replace (
 	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260709020341-03d9af767ed1
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.54.3, current branch: mantra/v0.54.3
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.0.0-20260709020341-03d9af767ed1
-	github.com/cosmos/ibc-apps/modules/rate-limiting/v10 => github.com/mmsqe/ibc-apps/modules/rate-limiting/v10 v10.0.0-20260710033240-346f1503373a
 )
 
 require (
 	cosmossdk.io/math v1.5.3
 	github.com/cometbft/cometbft v0.39.3
 	github.com/cosmos/cosmos-sdk v0.54.3
-	github.com/cosmos/ibc-go/v11 v11.1.0
+	github.com/cosmos/ibc-go/v11 v11.1.1-0.20260714124118-bf74b47a41ea
 	github.com/cosmos/interchaintest/v11 v11.0.0-20260325172338-08abe11c26f0
 	github.com/google/go-github/v62 v62.0.0
 	github.com/kelseyhightower/envconfig v1.4.0
