@@ -1545,6 +1545,7 @@ func (app *App) setupUpgradeHandlers() {
 				&upgrades.UpgradeKeepers{
 					StakingKeeper:         *app.StakingKeeper,
 					DistrKeeper:           app.DistrKeeper,
+					BankKeeper:            app.BankKeeper,
 					ProviderKeeper:        app.ProviderKeeper,
 					ConsensusParamsKeeper: app.ConsensusParamsKeeper,
 					SanctionKeeper:        app.SanctionKeeper,

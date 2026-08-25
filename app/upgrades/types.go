@@ -6,6 +6,7 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -47,6 +48,7 @@ type UpgradeKeepers struct {
 	// keepers
 	StakingKeeper stakingkeeper.Keeper
 	DistrKeeper   distrkeeper.Keeper
+	BankKeeper    bankkeeper.Keeper
 	// provider
 	ProviderKeeper        icsproviderkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
