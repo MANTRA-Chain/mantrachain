@@ -1025,8 +1025,8 @@ func New(
 
 	app.ModuleManager.SetOrderEndBlockers(
 		// bank must run first: CreditVirtualAccounts flushes virtual/EVM-fee balances
-		// to real accounts, and later end-blockers (crisis invariants, tax fee burn,
-		// distribution) must observe the credited balances.
+		// to real accounts, and later end-blockers (crisis invariants, the x/tax
+		// fee-collector burn) must observe the credited balances.
 		banktypes.ModuleName,
 		crisistypes.ModuleName,
 		govtypes.ModuleName,

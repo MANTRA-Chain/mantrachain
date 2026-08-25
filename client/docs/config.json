@@ -51,12 +51,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/ratelimit/v1/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "RateLimitParams"
-        }
-      }
+      "url": "./tmp-swagger-gen/ibc/applications/rate_limiting/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/mantrachain/tax/v1/query.swagger.json",
