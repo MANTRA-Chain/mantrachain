@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/MANTRA-Chain/mantrachain/v8/tests/interchain/chainsuite"
-	"github.com/strangelove-ventures/interchaintest/v8"
+	"github.com/cosmos/interchaintest/v11"
 	"github.com/stretchr/testify/suite"
 )
 

@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"cosmossdk.io/log"
+	"cosmossdk.io/log/v2"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v8/app"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/params"
@@ -32,7 +32,6 @@ func NewRootCmd() *cobra.Command {
 	tempApp := app.New(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
-		nil,
 		false,
 		simtestutil.NewAppOptionsWithFlagHome(temp),
 		[]wasmkeeper.Option{},

@@ -4,10 +4,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/core/address"
-	"cosmossdk.io/log"
-	"cosmossdk.io/store"
-	"cosmossdk.io/store/metrics"
-	storetypes "cosmossdk.io/store/types"
+	"cosmossdk.io/log/v2"
 	_ "github.com/MANTRA-Chain/mantrachain/v8/app"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tax/types"
@@ -17,6 +14,8 @@ import (
 	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	"github.com/cosmos/cosmos-sdk/store/v2"
+	storetypes "github.com/cosmos/cosmos-sdk/store/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
@@ -27,7 +26,7 @@ func TaxKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
-	stateStore := store.NewCommitMultiStore(db, log.NewNopLogger(), metrics.NewNoOpMetrics())
+	stateStore := store.NewCommitMultiStore(db, log.NewNopLogger())
 	stateStore.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, db)
 	require.NoError(tb, stateStore.LoadLatestVersion())
 

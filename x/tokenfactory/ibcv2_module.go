@@ -3,9 +3,9 @@ package tokenfactory
 import (
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypesv2 "github.com/cosmos/ibc-go/v10/modules/core/04-channel/v2/types"
-	"github.com/cosmos/ibc-go/v10/modules/core/api"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypesv2 "github.com/cosmos/ibc-go/v11/modules/core/04-channel/v2/types"
+	"github.com/cosmos/ibc-go/v11/modules/core/api"
 )
 
 var _ api.IBCModule = (*IBCV2Module)(nil)

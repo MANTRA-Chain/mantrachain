@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"cosmossdk.io/math"
-	evidencetypes "cosmossdk.io/x/evidence/types"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
@@ -18,12 +17,13 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	govtypesv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v11/modules/apps/27-interchain-accounts/controller/types"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
 )
 
 func queryTx(endpoint, txHash string) error {

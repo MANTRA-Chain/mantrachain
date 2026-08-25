@@ -3,10 +3,10 @@ package tokenfactory
 import (
 	"github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v11/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v11/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 )
 
 var _ porttypes.IBCModule = IBCModule{}
@@ -21,6 +21,12 @@ func NewIBCModule(app porttypes.IBCModule, tokenfactoryKeeper keeper.Keeper) IBC
 		app,
 		tokenfactoryKeeper,
 	}
+}
+
+// SetICS4Wrapper implements the porttypes.IBCModule interface. This middleware
+// does not send packets itself, so it forwards to the underlying application.
+func (im IBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
+	im.app.SetICS4Wrapper(wrapper)
 }
 
 // OnChanOpenInit implements the IBCModule interface

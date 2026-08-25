@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"errors"
-	"io"
 	"os"
 
-	"cosmossdk.io/log"
+	"cosmossdk.io/log/v2"
 	confixcmd "cosmossdk.io/tools/confix/cmd"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
@@ -18,13 +17,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/pruning"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/client/snapshot"
+	"github.com/cosmos/cosmos-sdk/contrib/x/crisis"
 	"github.com/cosmos/cosmos-sdk/server"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	ethermintclient "github.com/cosmos/evm/client"
@@ -44,8 +43,8 @@ func initRootCmd(
 ) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
-	sdkAppCreator := func(l log.Logger, d dbm.DB, w io.Writer, ao servertypes.AppOptions) servertypes.Application {
-		return newApp(l, d, w, ao)
+	sdkAppCreator := func(l log.Logger, d dbm.DB, ao servertypes.AppOptions) servertypes.Application {
+		return newApp(l, d, ao)
 	}
 
 	rootCmd.AddCommand(
@@ -168,7 +167,6 @@ func txCommand() *cobra.Command {
 func newApp(
 	logger log.Logger,
 	db dbm.DB,
-	traceStore io.Writer,
 	appOpts servertypes.AppOptions,
 ) cosmosevmserver.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
@@ -184,7 +182,7 @@ func newApp(
 	viperAppOpts.Set(cosmosevmserverflags.EVMChainID, app.MANTRAChainID)
 
 	return app.New(
-		logger, db, traceStore, true,
+		logger, db, true,
 		appOpts,
 		wasmOpts,
 		baseappOptions...,
@@ -195,7 +193,6 @@ func newApp(
 func appExport(
 	logger log.Logger,
 	db dbm.DB,
-	traceStore io.Writer,
 	height int64,
 	forZeroHeight bool,
 	jailAllowedAddrs []string,
@@ -223,7 +220,6 @@ func appExport(
 	wasmApp = app.New(
 		logger,
 		db,
-		traceStore,
 		height == -1,
 		appOpts,
 		emptyWasmOpts,

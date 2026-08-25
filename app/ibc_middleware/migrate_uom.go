@@ -6,10 +6,10 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v11/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v11/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 )
 
 const (
@@ -31,6 +31,12 @@ type MigrateUomIBCModule struct {
 	app        porttypes.IBCModule
 	bankkeeper bankkeeper.Keeper
 	addrCodec  address.Codec
+}
+
+// SetICS4Wrapper implements the porttypes.IBCModule interface. This middleware
+// does not send packets itself, so it forwards to the underlying application.
+func (im MigrateUomIBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
+	im.app.SetICS4Wrapper(wrapper)
 }
 
 // UnmarshalPacketData implements the porttypes.PacketDataUnmarshaler interface

@@ -4,20 +4,20 @@ import (
 	"errors"
 
 	corestoretypes "cosmossdk.io/core/store"
-	circuitante "cosmossdk.io/x/circuit/ante"
-	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
+	circuitante "github.com/cosmos/cosmos-sdk/contrib/x/circuit/ante"
+	circuitkeeper "github.com/cosmos/cosmos-sdk/contrib/x/circuit/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	cosmosante "github.com/cosmos/evm/ante/cosmos"
 	evmante "github.com/cosmos/evm/ante/evm"
 	evmtypes "github.com/cosmos/evm/x/vm/types"
-	ibcante "github.com/cosmos/ibc-go/v10/modules/core/ante"
-	"github.com/cosmos/ibc-go/v10/modules/core/keeper"
+	ibcante "github.com/cosmos/ibc-go/v11/modules/core/ante"
+	"github.com/cosmos/ibc-go/v11/modules/core/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by r	equiring the IBC
@@ -96,7 +96,6 @@ func newCosmosAnteHandler(ctx sdk.Context, options HandlerOptions) sdk.AnteHandl
 		NewMultiChainIDDecorator(ante.NewSigVerificationDecorator(options.EvmOptions.AccountKeeper, options.EvmOptions.SignModeHandler)),
 		ante.NewIncrementSequenceDecorator(options.EvmOptions.AccountKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
-		evmante.NewGasWantedDecorator(options.EvmOptions.EvmKeeper, options.EvmOptions.FeeMarketKeeper, &feemarketParams),
 	}
 
 	return sdk.ChainAnteDecorators(anteDecorators...)

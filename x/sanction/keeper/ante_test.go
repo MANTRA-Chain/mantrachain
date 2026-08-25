@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	protov2 "google.golang.org/protobuf/proto"
 
-	txsigning "cosmossdk.io/x/tx/signing"
+	txsigning "github.com/cosmos/cosmos-sdk/x/tx/signing"
 
 	keepertest "github.com/MANTRA-Chain/mantrachain/v8/testutil/keeper"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"

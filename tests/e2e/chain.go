@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"cosmossdk.io/log"
-	evidencetypes "cosmossdk.io/x/evidence/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
+	"cosmossdk.io/log/v2"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/MANTRA-Chain/mantrachain/v8/app"
@@ -15,6 +13,7 @@ import (
 	tokenfactorytypes "github.com/MANTRA-Chain/mantrachain/v8/x/tokenfactory/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -23,10 +22,12 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramsproptypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	feemarkettypes "github.com/cosmos/evm/x/feemarket/types"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
 )
@@ -95,12 +96,13 @@ func (c *chain) configDir() string {
 
 func (c *chain) createAndInitValidators(count int) error {
 	var emptyWasmOpts []wasmkeeper.Option
+	// Unique wasm dir per chain: wasmvm exclusive-locks <home>/wasm and app.Close()
+	// doesn't release it, so a shared home collides across chains.
 	tempApplication := app.New(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
-		nil,
 		true,
-		simtestutil.EmptyAppOptions{},
+		simtestutil.AppOptionsMap{flags.FlagHome: c.dataDir},
 		emptyWasmOpts,
 	)
 	defer func() {
@@ -138,12 +140,13 @@ func (c *chain) createAndInitValidators(count int) error {
 
 func (c *chain) createAndInitValidatorsWithMnemonics(count int, mnemonics []string) error { //nolint:unused // this is called during e2e tests
 	var emptyWasmOpts []wasmkeeper.Option
+	// Unique wasm dir per chain: wasmvm exclusive-locks <home>/wasm and app.Close()
+	// doesn't release it, so a shared home collides across chains.
 	tempApplication := app.New(
 		log.NewNopLogger(),
 		dbm.NewMemDB(),
-		nil,
 		true,
-		simtestutil.EmptyAppOptions{},
+		simtestutil.AppOptionsMap{flags.FlagHome: c.dataDir},
 		emptyWasmOpts,
 	)
 	defer func() {

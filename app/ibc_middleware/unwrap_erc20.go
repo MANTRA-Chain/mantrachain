@@ -12,10 +12,10 @@ import (
 	evmibc "github.com/cosmos/evm/ibc"
 	erc20keeper "github.com/cosmos/evm/x/erc20/keeper"
 	"github.com/cosmos/evm/x/ibc/callbacks/types"
-	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
-	channeltypes "github.com/cosmos/ibc-go/v10/modules/core/04-channel/types"
-	porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
+	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
+	channeltypes "github.com/cosmos/ibc-go/v11/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v11/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v11/modules/core/exported"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -41,6 +41,12 @@ type UnwrapERC20IBCModule struct {
 	app         porttypes.IBCModule
 	erc20Keeper *erc20keeper.Keeper
 	evmCaller   types.EVMKeeper
+}
+
+// SetICS4Wrapper implements the porttypes.IBCModule interface. This middleware
+// does not send packets itself, so it forwards to the underlying application.
+func (im UnwrapERC20IBCModule) SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
+	im.app.SetICS4Wrapper(wrapper)
 }
 
 func NewUnwrapERC20IBCModule(app porttypes.IBCModule, erc20Keeper *erc20keeper.Keeper, evmCaller types.EVMKeeper) UnwrapERC20IBCModule {

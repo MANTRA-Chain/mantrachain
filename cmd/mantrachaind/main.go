@@ -10,7 +10,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/cmd/mantrachaind/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	evmcfg "github.com/cosmos/evm/config"
+	evmhd "github.com/cosmos/evm/crypto/hd"
 )
 
 func main() {
@@ -55,7 +55,11 @@ func setupConfig() {
 	// set the address prefixes
 	config := sdk.GetConfig()
 	SetAddressPrefixes(config)
-	evmcfg.SetBip44CoinType(config)
+	// SetBip44CoinType (moved into the evm example-app module in v0.7.x) inlined here
+	// to avoid depending on github.com/cosmos/evm/evmd.
+	config.SetCoinType(evmhd.Bip44CoinType)
+	config.SetPurpose(sdk.Purpose)
+	config.SetFullFundraiserPath(evmhd.BIP44HDPath) //nolint: staticcheck
 	config.Seal()
 }
 

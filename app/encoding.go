@@ -3,7 +3,7 @@ package app
 import (
 	"testing"
 
-	"cosmossdk.io/log"
+	"cosmossdk.io/log/v2"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/params"
 	dbm "github.com/cosmos/cosmos-db"
@@ -14,7 +14,7 @@ func MakeTestApp(tb testing.TB) *App {
 	tb.Helper()
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
 	// note, this is not necessary when using app wiring, as depinject can be directly used (see root_v2.go)
-	return New(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(tb.TempDir()), []wasmkeeper.Option{})
+	return New(log.NewNopLogger(), dbm.NewMemDB(), true, simtestutil.NewAppOptionsWithFlagHome(tb.TempDir()), []wasmkeeper.Option{})
 }
 
 // MakeEncodingConfig creates a new EncodingConfig with all modules registered. For testing only
