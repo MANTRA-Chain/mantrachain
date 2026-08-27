@@ -35,10 +35,13 @@ replace (
 
 replace (
 	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560
+	github.com/cockroachdb/pebble => github.com/mmsqe/pebble v0.0.0-20260827100248-306abd46e25b
+	github.com/cosmos/cosmos-db => github.com/mmsqe/cosmos-db v0.0.0-20260827095907-d73bef427652
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/eca3f45af56019d6e184b795b8216c447040f84c
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.6-v8-mantra-1
 	github.com/cosmos/cosmos-sdk => github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1
+	github.com/cosmos/iavl => github.com/mmsqe/iavl v0.19.2-0.20260827105016-d22a7c5f51a6
 )
 
 require (
