@@ -35,8 +35,8 @@ replace (
 
 replace (
 	cosmossdk.io/api => github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560
-	github.com/cockroachdb/pebble => github.com/mmsqe/pebble v0.0.0-20260827100248-306abd46e25b
-	github.com/cosmos/cosmos-db => github.com/mmsqe/cosmos-db v0.0.0-20260827095907-d73bef427652
+	github.com/cometbft/cometbft-db => github.com/mmsqe/cometbft-db v0.0.0-20260828021637-93d287efe253
+	github.com/cosmos/cosmos-db => github.com/mmsqe/cosmos-db v0.0.0-20260827100213-94c1330e223f
 	// Direct cosmos-sdk branch link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/mantra/v0.53.6, current branch: mantra/v0.53.6
 	// Direct commit link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/eca3f45af56019d6e184b795b8216c447040f84c
 	// Direct tag link: https://github.com/MANTRA-Chain/cosmos-sdk/tree/v0.53.6-v8-mantra-1
@@ -132,6 +132,8 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Microsoft/hcsshim v0.12.7 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
+	github.com/RaduBerinde/axisds v0.1.0 // indirect
+	github.com/RaduBerinde/btreemap v0.0.0-20250419174037-3d62b7205d54 // indirect
 	github.com/VictoriaMetrics/fastcache v1.12.2 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/aws/aws-sdk-go v1.55.5 // indirect
@@ -155,11 +157,12 @@ require (
 	github.com/cloudwego/base64x v0.1.6 // indirect
 	github.com/cncf/xds/go v0.0.0-20251210132809-ee656c7534f5 // indirect
 	github.com/cockroachdb/apd/v2 v2.0.2 // indirect
+	github.com/cockroachdb/crlib v0.0.0-20241112164430-1264a2edc35b // indirect
 	github.com/cockroachdb/errors v1.12.0 // indirect
-	github.com/cockroachdb/fifo v0.0.0-20240616162244-4768e80dfb9a // indirect
 	github.com/cockroachdb/logtags v0.0.0-20241215232642-bb51bb14a506 // indirect
-	github.com/cockroachdb/pebble v1.1.5 // indirect
+	github.com/cockroachdb/pebble/v2 v2.1.7 // indirect
 	github.com/cockroachdb/redact v1.1.6 // indirect
+	github.com/cockroachdb/swiss v0.0.0-20260820225851-333444432258 // indirect
 	github.com/cockroachdb/tokenbucket v0.0.0-20230807174530-cc333fc44b06 // indirect
 	github.com/cometbft/cometbft-db v0.15.0 // indirect
 	github.com/consensys/gnark-crypto v0.18.1 // indirect
@@ -187,8 +190,8 @@ require (
 	github.com/deckarep/golang-set/v2 v2.6.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.0 // indirect
 	github.com/desertbit/timer v1.0.1 // indirect
-	github.com/dgraph-io/badger/v4 v4.3.0 // indirect
-	github.com/dgraph-io/ristretto v0.2.0 // indirect
+	github.com/dgraph-io/badger/v4 v4.5.1 // indirect
+	github.com/dgraph-io/ristretto/v2 v2.1.0 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/docker/cli v27.3.1+incompatible // indirect
@@ -231,7 +234,7 @@ require (
 	github.com/golang/snappy v0.0.5-0.20231225225746-43d5d4cd4e0e // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/cel-go v0.21.0 // indirect
-	github.com/google/flatbuffers v24.3.25+incompatible // indirect
+	github.com/google/flatbuffers v25.1.24+incompatible // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-containerregistry v0.20.2 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
@@ -281,6 +284,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mdp/qrterminal/v3 v3.2.1 // indirect
 	github.com/minio/highwayhash v1.0.4 // indirect
+	github.com/minio/minlz v1.0.1-0.20250507153514-87eb42fe8882 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
@@ -362,7 +366,7 @@ require (
 	github.com/zondax/golem v0.27.0 // indirect
 	github.com/zondax/hid v0.9.2 // indirect
 	github.com/zondax/ledger-go v1.0.1 // indirect
-	go.etcd.io/bbolt v1.4.0-alpha.1 // indirect
+	go.etcd.io/bbolt v1.4.0 // indirect
 	go.lsp.dev/jsonrpc2 v0.10.0 // indirect
 	go.lsp.dev/pkg v0.0.0-20210717090340-384b27a52fb2 // indirect
 	go.lsp.dev/protocol v0.12.0 // indirect
