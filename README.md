@@ -14,6 +14,7 @@ Mantrachain is a global real-world assets platform built on blockchain technolog
 - [Architecture](#architecture)
 - [Modules](#modules)
 - [Security](#security)
+- [Resources](#resources)
 
 ## Overview
 
@@ -112,6 +113,10 @@ Please refer to our [Security Policy](SECURITY.md) for more details on reporting
 
 
 
+
+## Resources
+
+- [RPC Latency Benchmark](https://openchainbench.com/benchmarks/mantrachain-rpc) — independent latency and availability measurements for MANTRA Chain public RPC endpoints
 
 ---
 
