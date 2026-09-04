@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_4"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_5_pre_1"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -241,7 +241,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_4.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_5_pre_1.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -1226,29 +1226,6 @@ func (app *App) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
 func (app *App) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
-	// v8.4.0 is the emergency, self-scheduled upgrade fixing the delegate
-	// precompile balance-drain exploit. No governance proposal; all
-	// validators must agree on this binary and height before restarting.
-	const name = "v8.4.0"
-
-	// upgradeHeight is chain-specific: the real halt height on mainnet,
-	// or a low height on dukong so the fix can be rehearsed on testnet first.
-	var upgradeHeight int64
-	switch ctx.ChainID() {
-	case "mantra-1":
-		upgradeHeight = 17449399
-	case "mantra-dukong-1":
-		upgradeHeight = 16107460
-	}
-
-	if upgradeHeight != 0 && ctx.BlockHeight() == upgradeHeight {
-		if _, err := app.UpgradeKeeper.GetUpgradePlan(ctx); err != nil { // no plan scheduled yet
-			_ = app.UpgradeKeeper.ScheduleUpgrade(ctx, upgradetypes.Plan{
-				Name:   name,
-				Height: ctx.BlockHeight(),
-			})
-		}
-	}
 	return app.ModuleManager.PreBlock(ctx)
 }
 
