@@ -1,10 +1,20 @@
 ## [unreleased]
 
+## v8.5.0
+
+*Aug 26, 2026*
+
+### FEATURES
+
+- feat: replace the v8.4 upgrade handler with v8.5.0-pre.1, bump mantra evm from v0.6.2-v8-mantra-1 to v0.6.3-v8-mantra-1.
+
+## v8.4.0
+
 *Aug 21, 2026*
 
 ### FEATURES
 
-- feat: add v8.4.0 emergency upgrade handler that blacklists the confirmed exploiter account  ([#680](https://github.com/MANTRA-Chain/mantrachain/pull/680))
+- feat: add v8.4.0 emergency upgrade handler that blacklists the confirmed exploiter account ([#680](https://github.com/MANTRA-Chain/mantrachain/pull/680)), change emergency upgrade height for dukong ([#681](https://github.com/MANTRA-Chain/mantrachain/pull/681), [#683](https://github.com/MANTRA-Chain/mantrachain/pull/683)), add vesting module to circuitbreaker ([#684](https://github.com/MANTRA-Chain/mantrachain/pull/684))
 
 ### DEPENDENCIES
 

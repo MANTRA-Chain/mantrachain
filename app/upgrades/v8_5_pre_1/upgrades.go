@@ -1,4 +1,4 @@
-package v8_4
+package v8_5_pre_1
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
-		ctx.Logger().Info("Starting v8.4.0 upgrade...")
+		ctx.Logger().Info("Starting v8.5.0-pre.1 upgrade...")
 
 		ctx.Logger().Info("Running module migrations...")
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
@@ -26,22 +26,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		AccountsToBlacklist := []string{"mantra13n9sk3p8x7tpq9adgxvzv9q0qev953mld0hwva"}
-		if err := keepers.SanctionKeeper.AddToBlacklist(ctx, AccountsToBlacklist); err != nil {
-			return vm, err
-		}
-
-		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreateVestingAccount"); err != nil {
-			return vm, err
-		}
-		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreatePermanentLockedAccount"); err != nil {
-			return vm, err
-		}
-		if err := keepers.CircuitKeeper.DisableList.Set(ctx, "/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount"); err != nil {
-			return vm, err
-		}
-
-		ctx.Logger().Info("Upgrade v8.4.0 complete")
+		ctx.Logger().Info("Upgrade v8.5.0-pre.1 complete")
 		return vm, nil
 	}
 }
