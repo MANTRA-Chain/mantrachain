@@ -107,7 +107,7 @@ jobs:
           for bin in dist/*darwin*/mantrachaind; do
             found=1
             echo "::group::sign+notarize $bin"
-            rcodesign sign \
+            sudo rcodesign sign \
               --p12-file "$WORK/dev-id.p12" \
               --p12-password-file "$WORK/p12-pw.txt" \
               --code-signature-flags runtime \
