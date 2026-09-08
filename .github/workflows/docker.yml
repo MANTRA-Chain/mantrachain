@@ -31,6 +31,17 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
 
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: false
+
       - uses: docker/setup-qemu-action@v3
 
       - name: Log in to the Container registry
@@ -46,13 +57,14 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
-      - uses: strangelove-ventures/heighliner-build-action@main
+      - uses: amygdala-labs/heighliner-build-action@v1.0.3
         with:
           chain: mantrachain
           chains-spec-file: chains.yaml
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
-          # heighliner-owner: ${{ github.repository_owner }}
-          heighliner-tag: v1.7.4
+          # Switch to the original heighliner owner and tag for the build after https://github.com/amygdala-labs/heighliner/pull/345 is merged
+          heighliner-owner: ${{ github.repository_owner }}
+          heighliner-tag: v1.7.6-mantra.1
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
           git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}
