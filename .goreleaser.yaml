@@ -93,6 +93,7 @@ builds:
     flags:
       - -mod=readonly
       - -trimpath
+      - -buildmode=pie
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
       - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
@@ -102,7 +103,7 @@ builds:
       - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm'
+      - -extldflags '-Wl,-z,muldefs -static-pie -lm'
     tags:
       - netgo
       - ledger
@@ -126,6 +127,7 @@ builds:
     flags:
       - -mod=readonly
       - -trimpath
+      - -buildmode=pie
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=mantrachain
       - -X github.com/cosmos/cosmos-sdk/version.AppName=mantrachaind
@@ -135,7 +137,7 @@ builds:
       - -X github.com/cometbft/cometbft/version.TMCoreSemVer={{ .Env.CMT_VERSION }}
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm'
+      - -extldflags '-Wl,-z,muldefs -static-pie -lm'
     tags:
       - netgo
       - ledger

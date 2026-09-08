@@ -1,5 +1,9 @@
 ## [unreleased]
 
+### FEATURES
+
+- feat: replace the v8.5.0-pre.1 upgrade handler with v8.6.0-pre.1, bump wasmd from v0.61.1 to v0.61.14 with upstream, bump wasmvm from v3.0.0 to v3.0.7 for the cosmwasm 3.0.6 overflow fix.
+
 ## v8.5.0
 
 *Aug 26, 2026*

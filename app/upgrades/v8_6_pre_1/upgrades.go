@@ -1,4 +1,4 @@
-package v8_5_pre_1
+package v8_6_pre_1
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
-		ctx.Logger().Info("Starting v8.5.0-pre.1 upgrade...")
+		ctx.Logger().Info("Starting v8.6.0-pre.1 upgrade...")
 
 		ctx.Logger().Info("Running module migrations...")
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
@@ -26,7 +26,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v8.5.0-pre.1 complete")
+		ctx.Logger().Info("Upgrade v8.6.0-pre.1 complete")
 		return vm, nil
 	}
 }
