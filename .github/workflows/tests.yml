@@ -122,7 +122,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             sandbox = false
         if: steps.changed-files.outputs.only_changed == 'false'
-      - uses: cachix/cachix-action@6a9a34cdd93d0ae4b4b59fd678660efb08109f2f # v12
+      - uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         if: steps.changed-files.outputs.only_changed == 'false'
         with:
           name: mantrachain-e2e
