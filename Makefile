@@ -108,11 +108,13 @@ endif
 ifeq (,$(findstring nostrip,$(MANTRACHAIN_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
+# Inherited flags go first: the last -extldflags wins, and heighliner's builder
+# exports -extldflags "-static", which would drop PIE.
+ldflags += $(LDFLAGS)
 ifeq ($(LINK_STATICALLY),true)
 	# -static rules out PIE; a static PIE needs -static-pie, hence musl.
 	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static-pie -lm"
 endif
-ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
 # PIE gives ASLR something to randomise; keep it on every build.
