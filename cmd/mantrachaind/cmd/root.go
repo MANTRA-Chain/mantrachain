@@ -18,7 +18,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/evm/crypto/hd"
+	evmkeyring "github.com/cosmos/evm/crypto/keyring"
+	"github.com/cosmos/evm/ethereum/eip712"
+	cosmosevmserverflags "github.com/cosmos/evm/server/flags"
 	"github.com/spf13/cobra"
 )
 
@@ -55,8 +57,7 @@ func NewRootCmd() *cobra.Command {
 		WithBroadcastMode(flags.BroadcastSync).
 		WithHomeDir(app.DefaultNodeHome).
 		WithViper("MANTRA").
-		WithKeyringOptions(hd.EthSecp256k1Option()).
-		WithLedgerHasProtobuf(true)
+		WithKeyringOptions(evmkeyring.Option())
 
 	rootCmd := &cobra.Command{
 		Use:           version.AppName,
@@ -105,7 +106,28 @@ func NewRootCmd() *cobra.Command {
 			customAppTemplate, customAppConfig := initAppConfig()
 			customCMTConfig := initCometBFTConfig()
 
-			return sdkserver.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customCMTConfig)
+			if err := sdkserver.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customCMTConfig); err != nil {
+				return err
+			}
+
+			// The Ledger Ethereum app signs EIP-712 for the EVM chain id the node
+			// verifies with, resolved as in app/config.go. --chain-id is also
+			// bound from the environment by the handler above.
+			chainID := initClientCtx.ChainID
+			if cmd.Flags().Changed(flags.FlagChainID) {
+				chainID, _ = cmd.Flags().GetString(flags.FlagChainID)
+			}
+			evmChainID, ok := app.EVMChainIDMap[chainID]
+			if v := sdkserver.GetServerContextFromCmd(cmd).Viper; !ok && v.IsSet(cosmosevmserverflags.EVMChainID) {
+				evmChainID, ok = v.GetUint64(cosmosevmserverflags.EVMChainID), true
+			}
+			if !ok {
+				if evmChainID, err = app.ParseChainID(chainID); err != nil {
+					evmChainID = app.MANTRAChainID
+				}
+			}
+			eip712.SetEncodingConfig(initClientCtx.LegacyAmino, initClientCtx.InterfaceRegistry, evmChainID)
+			return nil
 		},
 	}
 
