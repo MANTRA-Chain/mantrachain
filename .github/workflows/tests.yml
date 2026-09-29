@@ -17,7 +17,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -30,7 +30,7 @@ jobs:
     name: SDK Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -47,7 +47,7 @@ jobs:
           fi
           echo "SDK_VERSION=${SDK_VERSION}" | tee -a $GITHUB_ENV
       - name: Checkout MANTRA-Chain/cosmos-sdk
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: MANTRA-Chain/cosmos-sdk
           path: cosmos-sdk
@@ -77,7 +77,7 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -98,7 +98,7 @@ jobs:
     steps:
       - name: Create more disk space
         run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: changed-files
@@ -132,7 +132,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Checkout mantrachain-e2e
         if: steps.changed-files.outputs.only_changed == 'false'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: MANTRA-Chain/mantrachain-e2e
           submodules: recursive
