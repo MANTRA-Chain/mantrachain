@@ -64,7 +64,7 @@ jobs:
           clone-key: ${{ secrets.GIT_CLONE_KEY }}
           # Switch to the original heighliner owner and tag for the build after https://github.com/amygdala-labs/heighliner/pull/345 is merged
           heighliner-owner: ${{ github.repository_owner }}
-          heighliner-tag: v1.7.6-mantra.1
+          heighliner-tag: v1.7.6-mantra.2
           github-organization: ${{ github.repository_owner }}
           github-repo: ${{ github.event.repository.name }}
           git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}

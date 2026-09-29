@@ -1,5 +1,21 @@
 ## [unreleased]
 
+## v8.7.0-pre.1
+
+*Sep 18, 2026*
+
+### FEATURES
+
+- feat: replace the v8.6.0-pre.1 upgrade handler with v8.7.0-pre.1, migrate ContractInfo records, bump wasmd to v0.61.15 and wasmvm to v3.0.8.
+
+## v8.6.0-pre.1
+
+*Sep 9, 2026*
+
+### FEATURES
+
+- feat: replace the v8.5.0-pre.1 upgrade handler with v8.6.0-pre.1, bump wasmd to v0.61.14 and wasmvm to v3.0.7 for the cosmwasm 3.0.6 overflow fix.
+
 ## v8.5.0
 
 *Aug 26, 2026*

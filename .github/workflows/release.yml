@@ -158,6 +158,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
 
       # Download all artifacts
       - uses: actions/download-artifact@v4

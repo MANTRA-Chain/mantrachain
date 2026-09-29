@@ -108,17 +108,31 @@ endif
 ifeq (,$(findstring nostrip,$(MANTRACHAIN_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
-ifeq ($(LINK_STATICALLY),true)
-	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static -lm"
-endif
+# Inherited flags go first: the last -extldflags wins, and heighliner's builder
+# exports -extldflags "-static", which would drop PIE.
 ldflags += $(LDFLAGS)
+ifeq ($(LINK_STATICALLY),true)
+	# -static rules out PIE; a static PIE needs -static-pie, hence musl.
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static-pie -lm"
+endif
 ldflags := $(strip $(ldflags))
 
-BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
+# PIE gives ASLR something to randomise; keep it on every build.
+BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)' -buildmode=pie
 # check for nostrip option
 ifeq (,$(findstring nostrip,$(MANTRACHAIN_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
+
+# Losing -buildmode=pie is silent, so refuse to hand over a non-PIE binary.
+# ELF e_type is the little-endian uint16 at offset 16; ET_DYN is 3. od keeps
+# this free of binutils, which heighliner's builder and validator hosts may lack.
+define check_pie
+	@if [ "$$(uname -s)" = Linux ]; then \
+		t=$$(od -An -tu2 -j16 -N2 $(1) | tr -d ' '); \
+		[ "$$t" = 3 ] || { echo "ERROR: $(1) is not position-independent (e_type=$$t)" >&2; exit 1; }; \
+	fi
+endef
 
 ###############################################################################
 ###                                  Build                                  ###
@@ -134,8 +148,11 @@ build-linux:
 build-image:
 	DOCKER_BUILDKIT=1 docker build -f Dockerfile -t mantra-chain/mantrachain .
 
+build: BIN=$(BUILDDIR)/mantrachaind
+install: BIN=$(or $(shell go env GOBIN),$(shell go env GOPATH)/bin)/mantrachaind
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) $(GO_MODULE)/cmd/mantrachaind
+	$(call check_pie,$(BIN))
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 

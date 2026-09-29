@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_5_pre_1"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_7_pre_1"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -241,7 +241,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_5_pre_1.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_7_pre_1.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
