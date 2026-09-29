@@ -190,9 +190,8 @@ endif
 ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
 GORELEASER_IMAGE := goreleaser/goreleaser:v2.15.3
 else
-GORELEASER_CROSS := ghcr.io/goreleaser/goreleaser-cross
-GO_VERSION_FALLBACK := 1.25.5
-GORELEASER_IMAGE := $(shell docker manifest inspect $(GORELEASER_CROSS):v$(GO_VERSION) > /dev/null 2>&1 && echo $(GORELEASER_CROSS):v$(GO_VERSION) || echo $(GORELEASER_CROSS):v$(GO_VERSION_FALLBACK))
+# its MacOSX26 SDK has the libunwind symbols the darwin wasmvm links against
+GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v1.25.9
 endif
 GORELEASER_PLATFORM ?= linux/amd64
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v3 | sed 's/.* //')
