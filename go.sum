@@ -706,8 +706,8 @@ github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1 h1:BR6XgwRjgdOhPzVdqh1E4k
 github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1/go.mod h1:5GLMySIqGT5NBxdkpjgRbD1n+gzcO9/TmtDo9b0J8xU=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560 h1:jIGUazddAlq06l1XBIPqHGUidADxZcL8/LxLGoEFnZU=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560/go.mod h1:VIH3FLXQ2KWCkzkqXSThA9npvg0LgSBxBRzVSRoJWeg=
-github.com/MANTRA-Chain/evm v0.6.3-v8-mantra-1 h1:ik2IAeicjWQ88bjOnZldrF8qLEv9dB3LPgvFPOHQpPE=
-github.com/MANTRA-Chain/evm v0.6.3-v8-mantra-1/go.mod h1:9GeaJM3zaqz3T7HJeQ1aHge/5npxsxlVu1GekDqMals=
+github.com/MANTRA-Chain/evm v0.6.4-v8-mantra-1 h1:e7Eo9yLqfh96YUxy8JxCyFOFLWLHOaDaSWYR9cJJeeU=
+github.com/MANTRA-Chain/evm v0.6.4-v8-mantra-1/go.mod h1:9GeaJM3zaqz3T7HJeQ1aHge/5npxsxlVu1GekDqMals=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.7 h1:MP6R1spmjxTE4EU4J3YsrTxn8CjvN9qwjTKJXldFaRg=

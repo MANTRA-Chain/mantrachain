@@ -1,5 +1,9 @@
 ## [unreleased]
 
+### BUG-FIXES
+
+- fix: bump mantra evm from v0.6.3-v8-mantra-1 to v0.6.4-v8-mantra-1 for security fixes.
+
 ## v8.7.0-pre.1
 
 *Sep 18, 2026*
