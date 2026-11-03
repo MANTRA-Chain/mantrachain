@@ -41,6 +41,7 @@ func initRootCmd(
 	rootCmd *cobra.Command,
 	txConfig client.TxConfig,
 	basicManager module.BasicManager,
+	application *app.App,
 ) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
@@ -72,6 +73,7 @@ func initRootCmd(
 		ExportBlockEventsCmd(),
 		ImportBlockEventsCmd(),
 		CleanupBlockEventsCmd(),
+		UpgradeHandlersCmd(application),
 	)
 
 	// add server commands

@@ -1,6 +1,8 @@
 package upgrades
 
 import (
+	"sort"
+
 	storetypes "cosmossdk.io/store/types"
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
@@ -26,6 +28,20 @@ type Upgrade struct {
 
 	// Store upgrades, should be used for any new modules introduced, new modules deleted, or store names renamed.
 	StoreUpgrades storetypes.StoreUpgrades
+}
+
+// HandlerNames returns the sorted names of the upgrade handlers created by the given upgrades.
+// These are the names registered with the upgrade keeper, so they can be compared with the name
+// of a pending upgrade plan.
+func HandlerNames(upgrades []Upgrade) []string {
+	names := make([]string, 0, len(upgrades))
+	for _, upgrade := range upgrades {
+		names = append(names, upgrade.UpgradeName)
+	}
+
+	sort.Strings(names)
+
+	return names
 }
 
 // Fork defines a struct containing the requisite fields for a non-software upgrade proposal

@@ -109,7 +109,7 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 
-	initRootCmd(rootCmd, encodingConfig.TxConfig, tempApp.BasicModuleManager)
+	initRootCmd(rootCmd, encodingConfig.TxConfig, tempApp.BasicModuleManager, tempApp)
 
 	autoCliOpts := tempApp.AutoCliOpts()
 	initClientCtx, _ = clientcfg.ReadFromClientConfig(initClientCtx)

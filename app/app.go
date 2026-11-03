@@ -1507,6 +1507,27 @@ func (app *App) setupUpgradeHandlers() {
 	}
 }
 
+// UpgradeHandlerNames returns the sorted names of the upgrade handlers registered with the upgrade
+// keeper. Operators can compare them with the name of a pending upgrade plan to make sure the binary
+// they are about to run contains the matching handler.
+func (app *App) UpgradeHandlerNames() []string {
+	names := make([]string, 0, len(Upgrades))
+	for _, name := range upgrades.HandlerNames(Upgrades) {
+		// the keeper holds the handlers that are actually registered, so only report those
+		if app.UpgradeKeeper.HasHandler(name) {
+			names = append(names, name)
+		}
+	}
+
+	return names
+}
+
+// HasUpgradeHandler returns true if the upgrade keeper has a handler registered for the given name.
+// An upgrade plan can only be applied when the plan name matches a registered handler.
+func (app *App) HasUpgradeHandler(name string) bool {
+	return app.UpgradeKeeper.HasHandler(name)
+}
+
 // GetMaccPerms returns a copy of the module account permissions
 //
 // NOTE: This is solely to be used for testing purposes.
