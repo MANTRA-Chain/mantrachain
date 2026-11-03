@@ -18,6 +18,8 @@ jobs:
           output-file: govulncheck.json
       - name: Fail on reachable vulnerabilities
         # no fix without forking cosmos-sdk (x/crypto/openpgp) or go-ethereum (pion/dtls/v2)
+        # explicit bash adds pipefail, so a jq error isn't masked by sort
+        shell: bash
         run: |
           jq -r 'select(.finding.trace[0].function) | .finding.osv' govulncheck.json | sort -u > found
           ! grep -vxE 'GO-2026-5932|GO-2026-4479' found

@@ -193,6 +193,7 @@ else
 # its MacOSX26 SDK has the libunwind symbols the darwin wasmvm links against
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v1.26.10
 endif
+# the images set GOTOOLCHAIN=local; auto lets go fetch the go.mod version when the image's is older
 GORELEASER_PLATFORM ?= linux/amd64
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v3 | sed 's/.* //')
 REPO_OWNER ?= MANTRA-Chain
@@ -207,6 +208,7 @@ ifeq ($(strip $(MISSING_TOKEN)),)
 release:
 	docker run \
 		--rm \
+		-e GOTOOLCHAIN=auto \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-e GPG_PASSWORD=$(GPG_PASSWORD) \
@@ -231,6 +233,7 @@ endif
 goreleaser-build-local:
 	docker run \
 		--rm \
+		-e GOTOOLCHAIN=auto \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-e CMT_VERSION=$(CMT_VERSION) \
 		-e REPO_OWNER=$(REPO_OWNER) \
