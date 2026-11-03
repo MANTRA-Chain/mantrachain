@@ -14,3 +14,10 @@ jobs:
         with:
           go-package: ./...
           check-latest: true
+          output-format: json
+          output-file: govulncheck.json
+      - name: Fail on reachable vulnerabilities
+        # no fix without forking cosmos-sdk (x/crypto/openpgp) or go-ethereum (pion/dtls/v2)
+        run: |
+          jq -r 'select(.finding.trace[0].function) | .finding.osv' govulncheck.json | sort -u > found
+          ! grep -vxE 'GO-2026-5932|GO-2026-4479' found
