@@ -72,6 +72,7 @@ func initRootCmd(
 		ExportBlockEventsCmd(),
 		ImportBlockEventsCmd(),
 		CleanupBlockEventsCmd(),
+		upgradeHandlersCommand(),
 	)
 
 	// add server commands
