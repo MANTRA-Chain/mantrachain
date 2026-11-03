@@ -1,5 +1,9 @@
 ## [unreleased]
 
+### BUG-FIXES
+
+- fix: bump go to 1.26 and vulnerable dependencies to patched versions.
+
 ## v8.7.0-pre.1
 
 *Sep 18, 2026*

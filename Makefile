@@ -191,7 +191,7 @@ ifeq ($(strip $(GORELEASER_CROSS_DISABLE)),true)
 GORELEASER_IMAGE := goreleaser/goreleaser:v2.15.3
 else
 # its MacOSX26 SDK has the libunwind symbols the darwin wasmvm links against
-GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v1.25.9
+GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v1.26.10
 endif
 GORELEASER_PLATFORM ?= linux/amd64
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v3 | sed 's/.* //')
