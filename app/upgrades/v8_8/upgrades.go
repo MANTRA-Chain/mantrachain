@@ -1,4 +1,4 @@
-package v8_8_pre_1
+package v8_8
 
 import (
 	"context"
@@ -19,7 +19,7 @@ func CreateUpgradeHandler(
 ) upgradetypes.UpgradeHandler {
 	return func(c context.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx := sdk.UnwrapSDKContext(c)
-		ctx.Logger().Info("Starting v8.8.0-pre.1 upgrade...")
+		ctx.Logger().Info("Starting v8.8.0 upgrade...")
 
 		// Before module migrations, which may decode ContractInfo.
 		ctx.Logger().Info("Migrating ContractInfo encoding...")
@@ -35,7 +35,7 @@ func CreateUpgradeHandler(
 			return vm, err
 		}
 
-		ctx.Logger().Info("Upgrade v8.8.0-pre.1 complete")
+		ctx.Logger().Info("Upgrade v8.8.0 complete")
 		return vm, nil
 	}
 }
