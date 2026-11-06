@@ -69,7 +69,16 @@ jobs:
               rm -rf "$dir"
             fi
           done
-          
+
+          # The SDK modules pin bytedance/sonic < v1.15, which does not build
+          # with the Go version from mantrachain's go.mod. Use the version
+          # mantrachain resolves, which is what ships in the binary.
+          SONIC_VERSION=$(go -C "$GITHUB_WORKSPACE" list -m -f '{{.Version}}' github.com/bytedance/sonic)
+          for mod in $(grep -rl --include=go.mod 'github.com/bytedance/sonic ' .); do
+            echo "Setting sonic ${SONIC_VERSION} in ${mod}"
+            (cd "$(dirname "$mod")" && go get "github.com/bytedance/sonic@${SONIC_VERSION}")
+          done
+
           make test-all
         working-directory: cosmos-sdk
 

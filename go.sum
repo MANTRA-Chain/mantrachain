@@ -111,8 +111,8 @@ github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1 h1:BR6XgwRjgdOhPzVdqh1E4k
 github.com/MANTRA-Chain/cosmos-sdk v0.53.6-v8-mantra-1/go.mod h1:5GLMySIqGT5NBxdkpjgRbD1n+gzcO9/TmtDo9b0J8xU=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560 h1:jIGUazddAlq06l1XBIPqHGUidADxZcL8/LxLGoEFnZU=
 github.com/MANTRA-Chain/cosmos-sdk/api v0.0.0-20260402055312-eca3f45af560/go.mod h1:VIH3FLXQ2KWCkzkqXSThA9npvg0LgSBxBRzVSRoJWeg=
-github.com/MANTRA-Chain/evm v0.6.3-v8-mantra-1 h1:ik2IAeicjWQ88bjOnZldrF8qLEv9dB3LPgvFPOHQpPE=
-github.com/MANTRA-Chain/evm v0.6.3-v8-mantra-1/go.mod h1:9GeaJM3zaqz3T7HJeQ1aHge/5npxsxlVu1GekDqMals=
+github.com/MANTRA-Chain/evm v0.6.4-v8-mantra-1 h1:e7Eo9yLqfh96YUxy8JxCyFOFLWLHOaDaSWYR9cJJeeU=
+github.com/MANTRA-Chain/evm v0.6.4-v8-mantra-1/go.mod h1:9GeaJM3zaqz3T7HJeQ1aHge/5npxsxlVu1GekDqMals=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/Microsoft/hcsshim v0.12.7 h1:MP6R1spmjxTE4EU4J3YsrTxn8CjvN9qwjTKJXldFaRg=
@@ -772,8 +772,8 @@ github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+o
 github.com/kkdai/bstream v0.0.0-20161212061736-f391b8402d23/go.mod h1:J+Gs4SYgM6CZQHDETBtE9HaSEkGmuNXF86RwHhHUvq4=
 github.com/klauspost/compress v1.10.3/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
 github.com/klauspost/compress v1.11.7/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
-github.com/klauspost/compress v1.18.7 h1:aUyZsS4kH3QTKurYhAOwAHxllVPnOthb3vPfnF1Ehjw=
-github.com/klauspost/compress v1.18.7/go.mod h1:cwPg85FWrGar70rWktvGQj8/hthj3wpl0PGDogxkrSQ=
+github.com/klauspost/compress v1.20.2 h1:v5tiZvm1KGLyg5d5oXdXe3lsSPrbEUiKoXGia//I7Qo=
+github.com/klauspost/compress v1.20.2/go.mod h1:LUdAzn7YLVvxLpc7y3V1m40wESHTgc1422pwwBSKYuI=
 github.com/klauspost/cpuid/v2 v2.0.4/go.mod h1:FInQzS24/EEf25PyTYn52gqo7WaD8xa0213Md/qVLRg=
 github.com/klauspost/cpuid/v2 v2.0.9/go.mod h1:FInQzS24/EEf25PyTYn52gqo7WaD8xa0213Md/qVLRg=
 github.com/klauspost/cpuid/v2 v2.2.4/go.mod h1:RVVoqg1df56z8g3pUjL/3lE5UfnlrJX8tyFgg4nqhuY=

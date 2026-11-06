@@ -2,6 +2,7 @@
 
 ### BUG-FIXES
 
+- fix: bump mantra evm from v0.6.3-v8-mantra-1 to v0.6.4-v8-mantra-1 for security fixes.
 - fix: bump go to 1.26 and vulnerable dependencies to patched versions.
 
 ## v8.7.0-pre.1
