@@ -58,7 +58,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
       - name: Log in to the Container registry
@@ -158,7 +158,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
 
