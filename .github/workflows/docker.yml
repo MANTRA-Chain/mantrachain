@@ -70,3 +70,6 @@ jobs:
           git-ref: ${{ github.event.inputs.release_tag || github.ref_name }}
           registry: ghcr.io/${{ env.OWNER_LC }}
           skip: ${{ github.event_name == 'pull_request' }}
+          # heighliner v1.7.6-mantra.2 pairs the go.mod version with alpine 3.21 by default;
+          # golang:1.26.0-alpine3.21 is not published, 1.26.0-alpine3.22 is (amd64 + arm64).
+          additional-args: --alpine-version 3.22
