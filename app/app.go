@@ -54,6 +54,7 @@ import (
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_8"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_9"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -241,7 +242,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_8.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_8.Upgrade, v8_9.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -549,11 +550,17 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
+	sanctionProtectedAddrs := make([]string, 0, len(maccPerms))
+	for name := range maccPerms {
+		sanctionProtectedAddrs = append(sanctionProtectedAddrs, authtypes.NewModuleAddress(name).String())
+	}
 	app.SanctionKeeper = sanctionkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		sanctionProtectedAddrs,
 	)
 
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.SetHooks(

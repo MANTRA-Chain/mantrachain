@@ -2,8 +2,12 @@ syntax = "proto3";
 
 package mantrachain.sanction.v1;
 
+import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "mantrachain/sanction/v1/params.proto";
+import "mantrachain/sanction/v1/sanctioner.proto";
 
 option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 
@@ -19,9 +23,30 @@ service Msg {
   // account from the blacklist.
   rpc RemoveBlacklistAccounts(MsgRemoveBlacklistAccounts)
       returns (MsgRemoveBlacklistAccountsResponse);
+
+  // UpdateParams defines a (governance) operation for updating the module
+  // parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  // UpdateSanctioners defines a (governance) operation that replaces the whole
+  // sanctioner list.
+  rpc UpdateSanctioners(MsgUpdateSanctioners)
+      returns (MsgUpdateSanctionersResponse);
+
+  // SanctionAddresses lets any sanctioner add addresses to the sanction list.
+  rpc SanctionAddresses(MsgSanctionAddresses)
+      returns (MsgSanctionAddressesResponse);
+  // UnsanctionAddresses lets a full sanctioner remove addresses that a
+  // sanctioner added.
+  rpc UnsanctionAddresses(MsgUnsanctionAddresses)
+      returns (MsgUnsanctionAddressesResponse);
+  // RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
+  // the sanctioner list.
+  rpc RevokeSanctioner(MsgRevokeSanctioner)
+      returns (MsgRevokeSanctionerResponse);
 }
 
-// MsgAddBlacklistAccounts is the message type for adding an account to the blacklist.
+// MsgAddBlacklistAccounts is the message type for adding an account to the
+// blacklist.
 message MsgAddBlacklistAccounts {
   option (cosmos.msg.v1.signer) = "authority";
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -29,10 +54,12 @@ message MsgAddBlacklistAccounts {
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgAddBlacklistAccountsResponse defines the response type for adding an account to the blacklist.
+// MsgAddBlacklistAccountsResponse defines the response type for adding an
+// account to the blacklist.
 message MsgAddBlacklistAccountsResponse {}
 
-// MsgRemoveBlacklistAccounts is the message type for removing an account from the blacklist.
+// MsgRemoveBlacklistAccounts is the message type for removing an account from
+// the blacklist.
 message MsgRemoveBlacklistAccounts {
   option (cosmos.msg.v1.signer) = "authority";
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -40,5 +67,86 @@ message MsgRemoveBlacklistAccounts {
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgRemoveBlacklistAccountsResponse defines the response type for removing an account from the blacklist.
+// MsgRemoveBlacklistAccountsResponse defines the response type for removing an
+// account from the blacklist.
 message MsgRemoveBlacklistAccountsResponse {}
+
+// MsgUpdateParams updates the module parameters. Authority must be the gov
+// module account.
+message MsgUpdateParams {
+  option (amino.name) = "mantrachain/x/sanction/MsgUpdateParams";
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// MsgUpdateParamsResponse defines the response type for MsgUpdateParams.
+message MsgUpdateParamsResponse {}
+
+// MsgUpdateSanctioners replaces the whole sanctioner list. Authority must be
+// the gov module account. An empty list turns the fast path off.
+message MsgUpdateSanctioners {
+  option (amino.name) = "mantrachain/x/sanction/MsgUpdateSanctioners";
+  option (cosmos.msg.v1.signer) = "authority";
+
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  repeated Sanctioner sanctioners = 2 [ (gogoproto.nullable) = false ];
+}
+
+// MsgUpdateSanctionersResponse defines the response type for
+// MsgUpdateSanctioners.
+message MsgUpdateSanctionersResponse {}
+
+// MsgSanctionAddresses adds addresses to the sanction list. Signer must be a
+// sanctioner with any role.
+message MsgSanctionAddresses {
+  option (amino.name) = "mantrachain/x/sanction/MsgSanctionAddresses";
+  option (cosmos.msg.v1.signer) = "signer";
+
+  string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // addresses is capped by params.max_addresses_per_msg.
+  repeated string addresses = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // reason is stored with each entry and emitted in the event. Add-only
+  // sanctioners should include the detection rule and triggering tx hash.
+  string reason = 3;
+}
+
+// MsgSanctionAddressesResponse defines the response type for
+// MsgSanctionAddresses.
+message MsgSanctionAddressesResponse {}
+
+// MsgUnsanctionAddresses removes addresses from the sanction list. Signer must
+// be a sanctioner with the full role.
+message MsgUnsanctionAddresses {
+  option (amino.name) = "mantrachain/x/sanction/MsgUnsanctionAddresses";
+  option (cosmos.msg.v1.signer) = "signer";
+
+  string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // addresses is capped by params.max_addresses_per_msg.
+  repeated string addresses = 2
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string reason = 3;
+}
+
+// MsgUnsanctionAddressesResponse defines the response type for
+// MsgUnsanctionAddresses.
+message MsgUnsanctionAddressesResponse {}
+
+// MsgRevokeSanctioner removes an add-only sanctioner from the sanctioner list.
+// Signer must be a sanctioner with the full role. Only governance can add a
+// sanctioner back.
+message MsgRevokeSanctioner {
+  option (amino.name) = "mantrachain/x/sanction/MsgRevokeSanctioner";
+  option (cosmos.msg.v1.signer) = "signer";
+
+  string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string address = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string reason = 3;
+}
+
+// MsgRevokeSanctionerResponse defines the response type for
+// MsgRevokeSanctioner.
+message MsgRevokeSanctionerResponse {}

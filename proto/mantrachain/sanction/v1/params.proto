@@ -10,4 +10,12 @@ option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 message Params {
   option (amino.name) = "mantrachain/x/sanction/Params";
   option (gogoproto.equal) = true;
+
+  // max_addresses_per_msg caps how many addresses one MsgSanctionAddresses or
+  // MsgUnsanctionAddresses can carry. Governance messages are not capped.
+  uint32 max_addresses_per_msg = 1;
+
+  // max_reason_length caps the byte length of the reason on sanctioner
+  // messages, which keeps gas per message predictable.
+  uint32 max_reason_length = 2;
 }

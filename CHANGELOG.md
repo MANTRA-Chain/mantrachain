@@ -1,5 +1,9 @@
 ## [unreleased]
 
+### FEATURES
+
+- feat: add sanctioners to x/sanction. Governance appoints full and add-only sanctioners who can change the sanction list in one transaction, with protections, per-entry records, events, queries and CLI. Adds params `max_addresses_per_msg` and `max_reason_length`, the x/sanction 1 to 2 migration, and the v8.9.0 upgrade handler.
+
 ### BUG-FIXES
 
 - fix: bump mantra evm from v0.6.3-v8-mantra-1 to v0.6.4-v8-mantra-1 for security fixes.

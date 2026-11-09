@@ -9,10 +9,12 @@ import (
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddBlacklistAccounts{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgRemoveBlacklistAccounts{},
+		&MsgUpdateParams{},
+		&MsgUpdateSanctioners{},
+		&MsgSanctionAddresses{},
+		&MsgUnsanctionAddresses{},
+		&MsgRevokeSanctioner{},
 	)
-	// this line is used by starport scaffolding # 3
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

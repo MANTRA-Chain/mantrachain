@@ -24,6 +24,9 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		NewAddBlacklistAccountCmd(),
 		NewRemoveBlacklistAccountCmd(),
+		NewSanctionAddressesCmd(),
+		NewUnsanctionAddressesCmd(),
+		NewRevokeSanctionerCmd(),
 	)
 
 	return cmd

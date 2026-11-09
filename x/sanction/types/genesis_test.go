@@ -10,6 +10,13 @@ import (
 
 func TestGenesisState_Validate(t *testing.T) {
 	appparams.SetAddressPrefixes()
+	const (
+		addr1 = "mantra1hz88lcv4xmfzsrsvmtynhc2medke0m20zq0tex"
+		addr2 = "mantra1nmefvq9aa7t5p85vp8weuuwrmrppjgm6r9ccpa"
+	)
+	full := types.Sanctioner{Address: addr1, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}
+	record := &types.SanctionRecord{Actor: addr1, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_FULL, Reason: "r", Height: 1}
+
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
@@ -23,20 +30,67 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-				// this line is used by starport scaffolding # types/genesis/validField
-				BlacklistAccounts: []string{"mantra1hz88lcv4xmfzsrsvmtynhc2medke0m20zq0tex", "mantra1nmefvq9aa7t5p85vp8weuuwrmrppjgm6r9ccpa"},
+				Params:            types.DefaultParams(),
+				BlacklistAccounts: []string{addr1, addr2},
 			},
 			valid: true,
 		},
 		{
 			desc: "invalid genesis state with non-bech32 account",
 			genState: &types.GenesisState{
-				// this line is used by starport scaffolding # types/genesis/validField
+				Params:            types.DefaultParams(),
 				BlacklistAccounts: []string{"not-a-valid-bech32"},
 			},
 			valid: false,
 		},
-		// this line is used by starport scaffolding # types/genesis/testcase
+		{
+			desc:     "zero params rejected",
+			genState: &types.GenesisState{},
+			valid:    false,
+		},
+		{
+			desc: "sanctioners and records are valid",
+			genState: &types.GenesisState{
+				Params:            types.DefaultParams(),
+				BlacklistAccounts: []string{addr2},
+				Sanctioners:       []types.Sanctioner{full},
+				SanctionRecords:   []types.SanctionedAddress{{Address: addr2, Record: record}},
+			},
+			valid: true,
+		},
+		{
+			desc: "duplicate sanctioner rejected",
+			genState: &types.GenesisState{
+				Params:      types.DefaultParams(),
+				Sanctioners: []types.Sanctioner{full, full},
+			},
+			valid: false,
+		},
+		{
+			desc: "unspecified sanctioner role rejected",
+			genState: &types.GenesisState{
+				Params:      types.DefaultParams(),
+				Sanctioners: []types.Sanctioner{{Address: addr1}},
+			},
+			valid: false,
+		},
+		{
+			desc: "record for an address not blacklisted rejected",
+			genState: &types.GenesisState{
+				Params:          types.DefaultParams(),
+				SanctionRecords: []types.SanctionedAddress{{Address: addr2, Record: record}},
+			},
+			valid: false,
+		},
+		{
+			desc: "empty record rejected",
+			genState: &types.GenesisState{
+				Params:            types.DefaultParams(),
+				BlacklistAccounts: []string{addr2},
+				SanctionRecords:   []types.SanctionedAddress{{Address: addr2}},
+			},
+			valid: false,
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {

@@ -16,6 +16,8 @@ const (
 var (
 	ParamsKey               = collections.NewPrefix("p_sanction")
 	PrefixBlackListAccounts = []byte{0x01}
+	PrefixSanctioners       = []byte{0x02}
+	PrefixSanctionRecords   = []byte{0x03}
 )
 
 func KeyPrefix(p string) []byte {

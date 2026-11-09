@@ -4,6 +4,7 @@ package mantrachain.sanction.v1;
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 import "mantrachain/sanction/v1/params.proto";
+import "mantrachain/sanction/v1/sanctioner.proto";
 
 option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 
@@ -15,4 +16,13 @@ message GenesisState {
 
   repeated string blacklist_accounts = 2
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+
+  // sanctioners is the initial sanctioner list. Empty keeps the module
+  // governance-only.
+  repeated Sanctioner sanctioners = 3 [ (gogoproto.nullable) = false ];
+
+  // sanction_records holds the record for each blacklisted account that has
+  // one. Every address here must also be in blacklist_accounts.
+  repeated SanctionedAddress sanction_records = 4
+      [ (gogoproto.nullable) = false ];
 }

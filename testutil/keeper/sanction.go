@@ -24,6 +24,13 @@ import (
 
 func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 	tb.Helper()
+	return SanctionKeeperWithAccounts(tb, nil, nil)
+}
+
+// SanctionKeeperWithAccounts builds a sanction keeper with the given account
+// keeper and protected module addresses.
+func SanctionKeeperWithAccounts(tb testing.TB, ak types.AccountKeeper, moduleAddrs []string) (keeper.Keeper, sdk.Context, address.Codec) {
+	tb.Helper()
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -41,9 +48,11 @@ func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
 		authority.String(),
+		ak,
+		moduleAddrs,
 	)
 
-	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(stateStore, cmtproto.Header{Height: 1}, false, log.NewNopLogger())
 
 	// Initialize params
 	if err := k.Params.Set(ctx, types.DefaultParams()); err != nil {

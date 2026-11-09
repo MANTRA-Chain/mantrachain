@@ -7399,6 +7399,233 @@ paths:
             type: string
       tags:
         - Query
+  /cosmwasm/wasm/v1/build_address:
+    get:
+      summary: BuildAddress builds a contract address
+      operationId: BuildAddress
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    title: Address is the contract address
+                description: >-
+                  QueryBuildAddressResponse is the response type for the
+                  Query/BuildAddress RPC
+
+                  method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                          description: >-
+                            A URL/resource name that uniquely identifies the
+                            type of the serialized
+
+                            protocol buffer message. This string must contain at least
+
+                            one "/" character. The last segment of the URL's path must represent
+
+                            the fully qualified name of the type (as in
+
+                            `path/google.protobuf.Duration`). The name should be in a canonical form
+
+                            (e.g., leading "." is not accepted).
+
+
+                            In practice, teams usually precompile into the binary all types that they
+
+                            expect it to use in the context of Any. However, for URLs which use the
+
+                            scheme `http`, `https`, or no scheme, one can optionally set up a type
+
+                            server that maps type URLs to message definitions as follows:
+
+
+                            * If no scheme is provided, `https` is assumed.
+
+                            * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                              value in binary format, or produce an error.
+                            * Applications are allowed to cache lookup results based on the
+                              URL, or have them precompiled into a binary to avoid any
+                              lookup. Therefore, binary compatibility needs to be preserved
+                              on changes to types. (Use versioned type names to manage
+                              breaking changes.)
+
+                            Note: this functionality is not currently available in the official
+
+                            protobuf release, and it is not used for type URLs beginning with
+
+                            type.googleapis.com. As of May 2023, there are no widely used type server
+
+                            implementations and no plans to implement one.
+
+
+                            Schemes other than `http`, `https` (or the empty scheme) might be
+
+                            used with implementation specific semantics.
+                        value:
+                          type: string
+                          format: byte
+                          description: Must be a valid serialized protocol buffer of the above specified
+                            type.
+                      description: >-
+                        `Any` contains an arbitrary serialized protocol buffer
+                        message along with a
+
+                        URL that describes the type of the serialized message.
+
+
+                        Protobuf library provides support to pack/unpack Any values in the form
+
+                        of utility functions or additional generated methods of the Any type.
+
+
+                        Example 1: Pack and unpack a message in C++.
+
+                            Foo foo = ...;
+                            Any any;
+                            any.PackFrom(foo);
+                            ...
+                            if (any.UnpackTo(&foo)) {
+                              ...
+                            }
+
+                        Example 2: Pack and unpack a message in Java.
+
+                            Foo foo = ...;
+                            Any any = Any.pack(foo);
+                            ...
+                            if (any.is(Foo.class)) {
+                              foo = any.unpack(Foo.class);
+                            }
+                            // or ...
+                            if (any.isSameTypeAs(Foo.getDefaultInstance())) {
+                              foo = any.unpack(Foo.getDefaultInstance());
+                            }
+
+                         Example 3: Pack and unpack a message in Python.
+
+                            foo = Foo(...)
+                            any = Any()
+                            any.Pack(foo)
+                            ...
+                            if any.Is(Foo.DESCRIPTOR):
+                              any.Unpack(foo)
+                              ...
+
+                         Example 4: Pack and unpack a message in Go
+
+                             foo := &pb.Foo{...}
+                             any, err := anypb.New(foo)
+                             if err != nil {
+                               ...
+                             }
+                             ...
+                             foo := &pb.Foo{}
+                             if err := any.UnmarshalTo(foo); err != nil {
+                               ...
+                             }
+
+                        The pack methods provided by protobuf library will by default use
+
+                        'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+                        methods only use the fully qualified type name after the last '/'
+
+                        in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+                        name "y.z".
+
+
+                        JSON
+
+                        ====
+
+                        The JSON representation of an `Any` value uses the regular
+
+                        representation of the deserialized, embedded message, with an
+
+                        additional field `@type` which contains the type URL. Example:
+
+                            package google.profile;
+                            message Person {
+                              string first_name = 1;
+                              string last_name = 2;
+                            }
+
+                            {
+                              "@type": "type.googleapis.com/google.profile.Person",
+                              "firstName": <string>,
+                              "lastName": <string>
+                            }
+
+                        If the embedded message type is well-known and has a custom JSON
+
+                        representation, that representation will be embedded adding a field
+
+                        `value` which holds the custom JSON in addition to the `@type`
+
+                        field. Example (for message [google.protobuf.Duration][]):
+
+                            {
+                              "@type": "type.googleapis.com/google.protobuf.Duration",
+                              "value": "1.212s"
+                            }
+      parameters:
+        - name: code_hash
+          description: CodeHash is the hash of the code.
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: creator_address
+          description: CreatorAddress is the address of the contract instantiator.
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: salt
+          description: Salt is a hex encoded salt.
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: init_args
+          description: >-
+            InitArgs are optional json encoded init args to be used in contract
+            address
+
+            building if provided.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+      tags:
+        - Query
   /cosmwasm/wasm/v1/code:
     get:
       summary: Codes gets the metadata for all stored wasm codes
@@ -8951,233 +9178,6 @@ paths:
             type: boolean
       tags:
         - Query
-  /cosmwasm/wasm/v1/contract/build_address:
-    get:
-      summary: BuildAddress builds a contract address
-      operationId: BuildAddress
-      responses:
-        "200":
-          description: A successful response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  address:
-                    type: string
-                    title: Address is the contract address
-                description: >-
-                  QueryBuildAddressResponse is the response type for the
-                  Query/BuildAddress RPC
-
-                  method.
-        default:
-          description: An unexpected error response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  code:
-                    type: integer
-                    format: int32
-                  message:
-                    type: string
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type_url:
-                          type: string
-                          description: >-
-                            A URL/resource name that uniquely identifies the
-                            type of the serialized
-
-                            protocol buffer message. This string must contain at least
-
-                            one "/" character. The last segment of the URL's path must represent
-
-                            the fully qualified name of the type (as in
-
-                            `path/google.protobuf.Duration`). The name should be in a canonical form
-
-                            (e.g., leading "." is not accepted).
-
-
-                            In practice, teams usually precompile into the binary all types that they
-
-                            expect it to use in the context of Any. However, for URLs which use the
-
-                            scheme `http`, `https`, or no scheme, one can optionally set up a type
-
-                            server that maps type URLs to message definitions as follows:
-
-
-                            * If no scheme is provided, `https` is assumed.
-
-                            * An HTTP GET on the URL must yield a [google.protobuf.Type][]
-                              value in binary format, or produce an error.
-                            * Applications are allowed to cache lookup results based on the
-                              URL, or have them precompiled into a binary to avoid any
-                              lookup. Therefore, binary compatibility needs to be preserved
-                              on changes to types. (Use versioned type names to manage
-                              breaking changes.)
-
-                            Note: this functionality is not currently available in the official
-
-                            protobuf release, and it is not used for type URLs beginning with
-
-                            type.googleapis.com. As of May 2023, there are no widely used type server
-
-                            implementations and no plans to implement one.
-
-
-                            Schemes other than `http`, `https` (or the empty scheme) might be
-
-                            used with implementation specific semantics.
-                        value:
-                          type: string
-                          format: byte
-                          description: Must be a valid serialized protocol buffer of the above specified
-                            type.
-                      description: >-
-                        `Any` contains an arbitrary serialized protocol buffer
-                        message along with a
-
-                        URL that describes the type of the serialized message.
-
-
-                        Protobuf library provides support to pack/unpack Any values in the form
-
-                        of utility functions or additional generated methods of the Any type.
-
-
-                        Example 1: Pack and unpack a message in C++.
-
-                            Foo foo = ...;
-                            Any any;
-                            any.PackFrom(foo);
-                            ...
-                            if (any.UnpackTo(&foo)) {
-                              ...
-                            }
-
-                        Example 2: Pack and unpack a message in Java.
-
-                            Foo foo = ...;
-                            Any any = Any.pack(foo);
-                            ...
-                            if (any.is(Foo.class)) {
-                              foo = any.unpack(Foo.class);
-                            }
-                            // or ...
-                            if (any.isSameTypeAs(Foo.getDefaultInstance())) {
-                              foo = any.unpack(Foo.getDefaultInstance());
-                            }
-
-                         Example 3: Pack and unpack a message in Python.
-
-                            foo = Foo(...)
-                            any = Any()
-                            any.Pack(foo)
-                            ...
-                            if any.Is(Foo.DESCRIPTOR):
-                              any.Unpack(foo)
-                              ...
-
-                         Example 4: Pack and unpack a message in Go
-
-                             foo := &pb.Foo{...}
-                             any, err := anypb.New(foo)
-                             if err != nil {
-                               ...
-                             }
-                             ...
-                             foo := &pb.Foo{}
-                             if err := any.UnmarshalTo(foo); err != nil {
-                               ...
-                             }
-
-                        The pack methods provided by protobuf library will by default use
-
-                        'type.googleapis.com/full.type.name' as the type URL and the unpack
-
-                        methods only use the fully qualified type name after the last '/'
-
-                        in the type URL, for example "foo.bar.com/x/y.z" will yield type
-
-                        name "y.z".
-
-
-                        JSON
-
-                        ====
-
-                        The JSON representation of an `Any` value uses the regular
-
-                        representation of the deserialized, embedded message, with an
-
-                        additional field `@type` which contains the type URL. Example:
-
-                            package google.profile;
-                            message Person {
-                              string first_name = 1;
-                              string last_name = 2;
-                            }
-
-                            {
-                              "@type": "type.googleapis.com/google.profile.Person",
-                              "firstName": <string>,
-                              "lastName": <string>
-                            }
-
-                        If the embedded message type is well-known and has a custom JSON
-
-                        representation, that representation will be embedded adding a field
-
-                        `value` which holds the custom JSON in addition to the `@type`
-
-                        field. Example (for message [google.protobuf.Duration][]):
-
-                            {
-                              "@type": "type.googleapis.com/google.protobuf.Duration",
-                              "value": "1.212s"
-                            }
-      parameters:
-        - name: code_hash
-          description: CodeHash is the hash of the code.
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: creator_address
-          description: CreatorAddress is the address of the contract instantiator.
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: salt
-          description: Salt is a hex encoded salt.
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: init_args
-          description: >-
-            InitArgs are optional json encoded init args to be used in contract
-            address
-
-            building if provided.
-          in: query
-          required: false
-          schema:
-            type: string
-            format: byte
-      tags:
-        - Query
   "/cosmwasm/wasm/v1/contract/{address}":
     get:
       summary: ContractInfo gets the contract meta data
@@ -9226,8 +9226,6 @@ paths:
 
                               or gas consumed)
                       ibc_port_id:
-                        type: string
-                      ibc2_port_id:
                         type: string
                       extension:
                         type: object
@@ -9388,6 +9386,8 @@ paths:
                                 "@type": "type.googleapis.com/google.protobuf.Duration",
                                 "value": "1.212s"
                               }
+                      ibc2_port_id:
+                        type: string
                     title: ContractInfo stores a WASM contract instance
                 title: >-
                   QueryContractInfoResponse is the response type for the
@@ -11816,6 +11816,82 @@ paths:
             type: boolean
       tags:
         - Query
+  "/MANTRA-Chain/mantrachain/sanction/v1/is_sanctioned/{address}":
+    get:
+      summary: IsSanctioned queries whether one address is sanctioned.
+      operationId: IsSanctioned
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  sanctioned:
+                    type: boolean
+                  record:
+                    description: record is set when the address is sanctioned and has a record.
+                    type: object
+                    properties:
+                      actor:
+                        type: string
+                        description: actor is the sanctioner or governance authority that added the
+                          entry.
+                      actor_role:
+                        description: >-
+                          actor_role is the actor's role at the time, or
+                          UNSPECIFIED for
+
+                          governance.
+                        type: string
+                        enum:
+                          - SANCTIONER_ROLE_UNSPECIFIED
+                          - SANCTIONER_ROLE_FULL
+                          - SANCTIONER_ROLE_ADD_ONLY
+                        default: SANCTIONER_ROLE_UNSPECIFIED
+                      reason:
+                        type: string
+                      height:
+                        type: string
+                        format: int64
+                description: >-
+                  QueryIsSanctionedResponse is response type for the
+                  Query/IsSanctioned RPC
+
+                  method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      tags:
+        - Query
   /MANTRA-Chain/mantrachain/sanction/v1/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -11831,6 +11907,23 @@ paths:
                   params:
                     description: params holds all the parameters of this module.
                     type: object
+                    properties:
+                      max_addresses_per_msg:
+                        type: integer
+                        format: int64
+                        description: >-
+                          max_addresses_per_msg caps how many addresses one
+                          MsgSanctionAddresses or
+
+                          MsgUnsanctionAddresses can carry. Governance messages are not capped.
+                      max_reason_length:
+                        type: integer
+                        format: int64
+                        description: >-
+                          max_reason_length caps the byte length of the reason
+                          on sanctioner
+
+                          messages, which keeps gas per message predictable.
                 description: QueryParamsResponse is response type for the Query/Params RPC
                   method.
         default:
@@ -11857,6 +11950,324 @@ paths:
                         value:
                           type: string
                           format: byte
+      tags:
+        - Query
+  /MANTRA-Chain/mantrachain/sanction/v1/sanctioned_addresses:
+    get:
+      summary: |-
+        SanctionedAddresses queries the sanctioned addresses with who added each
+        and when.
+      operationId: SanctionedAddresses
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  sanctioned_addresses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        record:
+                          description: record is empty for entries added before sanctioners existed.
+                          type: object
+                          properties:
+                            actor:
+                              type: string
+                              description: actor is the sanctioner or governance authority that added the
+                                entry.
+                            actor_role:
+                              description: >-
+                                actor_role is the actor's role at the time, or
+                                UNSPECIFIED for
+
+                                governance.
+                              type: string
+                              enum:
+                                - SANCTIONER_ROLE_UNSPECIFIED
+                                - SANCTIONER_ROLE_FULL
+                                - SANCTIONER_ROLE_ADD_ONLY
+                              default: SANCTIONER_ROLE_UNSPECIFIED
+                            reason:
+                              type: string
+                            height:
+                              type: string
+                              format: int64
+                      description: SanctionedAddress pairs a sanctioned address with its record, if
+                        any.
+                  pagination:
+                    type: object
+                    properties:
+                      next_key:
+                        type: string
+                        format: byte
+                        description: >-
+                          next_key is the key to be passed to PageRequest.key to
+
+                          query the next page most efficiently. It will be empty if
+
+                          there are no more results.
+                      total:
+                        type: string
+                        format: uint64
+                        title: >-
+                          total is total number of results available if
+                          PageRequest.count_total
+
+                          was set, its value is undefined otherwise
+                    description: >-
+                      PageResponse is to be embedded in gRPC response messages
+                      where the
+
+                      corresponding request message has used PageRequest.
+
+                       message SomeResponse {
+                               repeated Bar results = 1;
+                               PageResponse page = 2;
+                       }
+                description: |-
+                  QuerySanctionedAddressesResponse is response type for the
+                  Query/SanctionedAddresses RPC method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key should
+
+            be set.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in UIs.
+
+            count_total is only respected when offset is used. It is ignored when key
+
+            is set.
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: pagination.reverse
+          description: reverse is set to true if results are to be returned in the
+            descending order.
+          in: query
+          required: false
+          schema:
+            type: boolean
+      tags:
+        - Query
+  /MANTRA-Chain/mantrachain/sanction/v1/sanctioners:
+    get:
+      summary: Sanctioners queries the sanctioner list with roles.
+      operationId: Sanctioners
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  sanctioners:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        role:
+                          type: string
+                          enum:
+                            - SANCTIONER_ROLE_UNSPECIFIED
+                            - SANCTIONER_ROLE_FULL
+                            - SANCTIONER_ROLE_ADD_ONLY
+                          default: SANCTIONER_ROLE_UNSPECIFIED
+                          description: >-
+                            SanctionerRole defines what a sanctioner is allowed
+                            to do.
+
+                             - SANCTIONER_ROLE_UNSPECIFIED: SANCTIONER_ROLE_UNSPECIFIED is invalid for a sanctioner. In events it
+                            marks an action taken by governance.
+                             - SANCTIONER_ROLE_FULL: SANCTIONER_ROLE_FULL can add and remove sanctioned addresses, and can
+                            revoke an add-only sanctioner.
+                             - SANCTIONER_ROLE_ADD_ONLY: SANCTIONER_ROLE_ADD_ONLY can only add sanctioned addresses.
+                      description: >-
+                        Sanctioner is an address appointed by governance to
+                        change the sanction
+
+                        list without a governance proposal.
+                  pagination:
+                    type: object
+                    properties:
+                      next_key:
+                        type: string
+                        format: byte
+                        description: >-
+                          next_key is the key to be passed to PageRequest.key to
+
+                          query the next page most efficiently. It will be empty if
+
+                          there are no more results.
+                      total:
+                        type: string
+                        format: uint64
+                        title: >-
+                          total is total number of results available if
+                          PageRequest.count_total
+
+                          was set, its value is undefined otherwise
+                    description: >-
+                      PageResponse is to be embedded in gRPC response messages
+                      where the
+
+                      corresponding request message has used PageRequest.
+
+                       message SomeResponse {
+                               repeated Bar results = 1;
+                               PageResponse page = 2;
+                       }
+                description: >-
+                  QuerySanctionersResponse is response type for the
+                  Query/Sanctioners RPC
+
+                  method.
+        default:
+          description: An unexpected error response.
+          content:
+            "*/*":
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  code:
+                    type: integer
+                    format: int32
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type_url:
+                          type: string
+                        value:
+                          type: string
+                          format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key should
+
+            be set.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in UIs.
+
+            count_total is only respected when offset is used. It is ignored when key
+
+            is set.
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: pagination.reverse
+          description: reverse is set to true if results are to be returned in the
+            descending order.
+          in: query
+          required: false
+          schema:
+            type: boolean
       tags:
         - Query
   "/osmosis/tokenfactory/v1beta1/denoms/factory/{creator}/{subdenom}/authority_metadata":
@@ -54622,8 +55033,6 @@ components:
                 or gas consumed)
         ibc_port_id:
           type: string
-        ibc2_port_id:
-          type: string
         extension:
           type: object
           properties:
@@ -54783,6 +55192,8 @@ components:
                   "@type": "type.googleapis.com/google.protobuf.Duration",
                   "value": "1.212s"
                 }
+        ibc2_port_id:
+          type: string
       title: ContractInfo stores a WASM contract instance
     cosmwasm.wasm.v1.Model:
       type: object
@@ -55136,8 +55547,6 @@ components:
                     or gas consumed)
             ibc_port_id:
               type: string
-            ibc2_port_id:
-              type: string
             extension:
               type: object
               properties:
@@ -55297,6 +55706,8 @@ components:
                       "@type": "type.googleapis.com/google.protobuf.Duration",
                       "value": "1.212s"
                     }
+            ibc2_port_id:
+              type: string
           title: ContractInfo stores a WASM contract instance
       title: >-
         QueryContractInfoResponse is the response type for the
@@ -55934,6 +56345,21 @@ components:
       description: QueryParamsResponse is response type for the Query/Params RPC method.
     mantrachain.sanction.v1.Params:
       type: object
+      properties:
+        max_addresses_per_msg:
+          type: integer
+          format: int64
+          description: >-
+            max_addresses_per_msg caps how many addresses one
+            MsgSanctionAddresses or
+
+            MsgUnsanctionAddresses can carry. Governance messages are not capped.
+        max_reason_length:
+          type: integer
+          format: int64
+          description: |-
+            max_reason_length caps the byte length of the reason on sanctioner
+            messages, which keeps gas per message predictable.
       description: Params defines the parameters for the module.
     mantrachain.sanction.v1.QueryBlacklistResponse:
       type: object
@@ -55964,13 +56390,280 @@ components:
                 was set, its value is undefined otherwise
       description: QueryBlacklistResponse is response type for the Query/Blacklist RPC
         method.
+    mantrachain.sanction.v1.QueryIsSanctionedResponse:
+      type: object
+      properties:
+        sanctioned:
+          type: boolean
+        record:
+          description: record is set when the address is sanctioned and has a record.
+          type: object
+          properties:
+            actor:
+              type: string
+              description: actor is the sanctioner or governance authority that added the
+                entry.
+            actor_role:
+              description: |-
+                actor_role is the actor's role at the time, or UNSPECIFIED for
+                governance.
+              type: string
+              enum:
+                - SANCTIONER_ROLE_UNSPECIFIED
+                - SANCTIONER_ROLE_FULL
+                - SANCTIONER_ROLE_ADD_ONLY
+              default: SANCTIONER_ROLE_UNSPECIFIED
+            reason:
+              type: string
+            height:
+              type: string
+              format: int64
+      description: >-
+        QueryIsSanctionedResponse is response type for the Query/IsSanctioned
+        RPC
+
+        method.
     mantrachain.sanction.v1.QueryParamsResponse:
       type: object
       properties:
         params:
           description: params holds all the parameters of this module.
           type: object
+          properties:
+            max_addresses_per_msg:
+              type: integer
+              format: int64
+              description: >-
+                max_addresses_per_msg caps how many addresses one
+                MsgSanctionAddresses or
+
+                MsgUnsanctionAddresses can carry. Governance messages are not capped.
+            max_reason_length:
+              type: integer
+              format: int64
+              description: >-
+                max_reason_length caps the byte length of the reason on
+                sanctioner
+
+                messages, which keeps gas per message predictable.
       description: QueryParamsResponse is response type for the Query/Params RPC method.
+    mantrachain.sanction.v1.QuerySanctionedAddressesResponse:
+      type: object
+      properties:
+        sanctioned_addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: string
+              record:
+                description: record is empty for entries added before sanctioners existed.
+                type: object
+                properties:
+                  actor:
+                    type: string
+                    description: actor is the sanctioner or governance authority that added the
+                      entry.
+                  actor_role:
+                    description: >-
+                      actor_role is the actor's role at the time, or UNSPECIFIED
+                      for
+
+                      governance.
+                    type: string
+                    enum:
+                      - SANCTIONER_ROLE_UNSPECIFIED
+                      - SANCTIONER_ROLE_FULL
+                      - SANCTIONER_ROLE_ADD_ONLY
+                    default: SANCTIONER_ROLE_UNSPECIFIED
+                  reason:
+                    type: string
+                  height:
+                    type: string
+                    format: int64
+            description: SanctionedAddress pairs a sanctioned address with its record, if
+              any.
+        pagination:
+          type: object
+          properties:
+            next_key:
+              type: string
+              format: byte
+              description: |-
+                next_key is the key to be passed to PageRequest.key to
+                query the next page most efficiently. It will be empty if
+                there are no more results.
+            total:
+              type: string
+              format: uint64
+              title: >-
+                total is total number of results available if
+                PageRequest.count_total
+
+                was set, its value is undefined otherwise
+          description: |-
+            PageResponse is to be embedded in gRPC response messages where the
+            corresponding request message has used PageRequest.
+
+             message SomeResponse {
+                     repeated Bar results = 1;
+                     PageResponse page = 2;
+             }
+      description: |-
+        QuerySanctionedAddressesResponse is response type for the
+        Query/SanctionedAddresses RPC method.
+    mantrachain.sanction.v1.QuerySanctionersResponse:
+      type: object
+      properties:
+        sanctioners:
+          type: array
+          items:
+            type: object
+            properties:
+              address:
+                type: string
+              role:
+                type: string
+                enum:
+                  - SANCTIONER_ROLE_UNSPECIFIED
+                  - SANCTIONER_ROLE_FULL
+                  - SANCTIONER_ROLE_ADD_ONLY
+                default: SANCTIONER_ROLE_UNSPECIFIED
+                description: >-
+                  SanctionerRole defines what a sanctioner is allowed to do.
+
+                   - SANCTIONER_ROLE_UNSPECIFIED: SANCTIONER_ROLE_UNSPECIFIED is invalid for a sanctioner. In events it
+                  marks an action taken by governance.
+                   - SANCTIONER_ROLE_FULL: SANCTIONER_ROLE_FULL can add and remove sanctioned addresses, and can
+                  revoke an add-only sanctioner.
+                   - SANCTIONER_ROLE_ADD_ONLY: SANCTIONER_ROLE_ADD_ONLY can only add sanctioned addresses.
+            description: >-
+              Sanctioner is an address appointed by governance to change the
+              sanction
+
+              list without a governance proposal.
+        pagination:
+          type: object
+          properties:
+            next_key:
+              type: string
+              format: byte
+              description: |-
+                next_key is the key to be passed to PageRequest.key to
+                query the next page most efficiently. It will be empty if
+                there are no more results.
+            total:
+              type: string
+              format: uint64
+              title: >-
+                total is total number of results available if
+                PageRequest.count_total
+
+                was set, its value is undefined otherwise
+          description: |-
+            PageResponse is to be embedded in gRPC response messages where the
+            corresponding request message has used PageRequest.
+
+             message SomeResponse {
+                     repeated Bar results = 1;
+                     PageResponse page = 2;
+             }
+      description: |-
+        QuerySanctionersResponse is response type for the Query/Sanctioners RPC
+        method.
+    mantrachain.sanction.v1.SanctionRecord:
+      type: object
+      properties:
+        actor:
+          type: string
+          description: actor is the sanctioner or governance authority that added the entry.
+        actor_role:
+          description: |-
+            actor_role is the actor's role at the time, or UNSPECIFIED for
+            governance.
+          type: string
+          enum:
+            - SANCTIONER_ROLE_UNSPECIFIED
+            - SANCTIONER_ROLE_FULL
+            - SANCTIONER_ROLE_ADD_ONLY
+          default: SANCTIONER_ROLE_UNSPECIFIED
+        reason:
+          type: string
+        height:
+          type: string
+          format: int64
+      description: |-
+        SanctionRecord records who sanctioned an address, why, and when. Entries
+        that predate sanctioners have no record and are treated as governance
+        entries.
+    mantrachain.sanction.v1.SanctionedAddress:
+      type: object
+      properties:
+        address:
+          type: string
+        record:
+          description: record is empty for entries added before sanctioners existed.
+          type: object
+          properties:
+            actor:
+              type: string
+              description: actor is the sanctioner or governance authority that added the
+                entry.
+            actor_role:
+              description: |-
+                actor_role is the actor's role at the time, or UNSPECIFIED for
+                governance.
+              type: string
+              enum:
+                - SANCTIONER_ROLE_UNSPECIFIED
+                - SANCTIONER_ROLE_FULL
+                - SANCTIONER_ROLE_ADD_ONLY
+              default: SANCTIONER_ROLE_UNSPECIFIED
+            reason:
+              type: string
+            height:
+              type: string
+              format: int64
+      description: SanctionedAddress pairs a sanctioned address with its record, if any.
+    mantrachain.sanction.v1.Sanctioner:
+      type: object
+      properties:
+        address:
+          type: string
+        role:
+          type: string
+          enum:
+            - SANCTIONER_ROLE_UNSPECIFIED
+            - SANCTIONER_ROLE_FULL
+            - SANCTIONER_ROLE_ADD_ONLY
+          default: SANCTIONER_ROLE_UNSPECIFIED
+          description: >-
+            SanctionerRole defines what a sanctioner is allowed to do.
+
+             - SANCTIONER_ROLE_UNSPECIFIED: SANCTIONER_ROLE_UNSPECIFIED is invalid for a sanctioner. In events it
+            marks an action taken by governance.
+             - SANCTIONER_ROLE_FULL: SANCTIONER_ROLE_FULL can add and remove sanctioned addresses, and can
+            revoke an add-only sanctioner.
+             - SANCTIONER_ROLE_ADD_ONLY: SANCTIONER_ROLE_ADD_ONLY can only add sanctioned addresses.
+      description: |-
+        Sanctioner is an address appointed by governance to change the sanction
+        list without a governance proposal.
+    mantrachain.sanction.v1.SanctionerRole:
+      type: string
+      enum:
+        - SANCTIONER_ROLE_UNSPECIFIED
+        - SANCTIONER_ROLE_FULL
+        - SANCTIONER_ROLE_ADD_ONLY
+      default: SANCTIONER_ROLE_UNSPECIFIED
+      description: >-
+        SanctionerRole defines what a sanctioner is allowed to do.
+
+         - SANCTIONER_ROLE_UNSPECIFIED: SANCTIONER_ROLE_UNSPECIFIED is invalid for a sanctioner. In events it
+        marks an action taken by governance.
+         - SANCTIONER_ROLE_FULL: SANCTIONER_ROLE_FULL can add and remove sanctioned addresses, and can
+        revoke an add-only sanctioner.
+         - SANCTIONER_ROLE_ADD_ONLY: SANCTIONER_ROLE_ADD_ONLY can only add sanctioned addresses.
     osmosis.tokenfactory.Params:
       type: object
       properties:

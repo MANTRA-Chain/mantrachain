@@ -8,11 +8,18 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) error {
-	// this line is used by starport scaffolding # genesis/module/init
 	for _, blacklist_account := range genState.BlacklistAccounts {
 		if err := k.BlacklistAccounts.Set(ctx, blacklist_account); err != nil {
 			return err
 		}
+	}
+	for _, entry := range genState.SanctionRecords {
+		if err := k.SanctionRecords.Set(ctx, entry.Address, *entry.Record); err != nil {
+			return err
+		}
+	}
+	if err := k.SetSanctioners(ctx, genState.Sanctioners); err != nil {
+		return err
 	}
 	return k.Params.Set(ctx, genState.Params)
 }
@@ -27,22 +34,43 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (*types.GenesisState, error
 		return nil, err
 	}
 
-	blacklistAccounts := make([]string, 0)
+	genesis.BlacklistAccounts, err = iterKeys(ctx, k)
+	if err != nil {
+		return nil, err
+	}
+
+	genesis.Sanctioners, err = k.GetSanctioners(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	recIter, err := k.SanctionRecords.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	kvs, err := recIter.KeyValues()
+	if err != nil {
+		return nil, err
+	}
+	for _, kv := range kvs {
+		record := kv.Value
+		genesis.SanctionRecords = append(genesis.SanctionRecords, types.SanctionedAddress{Address: kv.Key, Record: &record})
+	}
+
+	return genesis, nil
+}
+
+func iterKeys(ctx sdk.Context, k keeper.Keeper) ([]string, error) {
 	iter, err := k.BlacklistAccounts.Iterate(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	defer iter.Close()
-	for ; iter.Valid(); iter.Next() {
-		blacklistAccount, err := iter.Key()
-		if err != nil {
-			return nil, err
-		}
-		blacklistAccounts = append(blacklistAccounts, blacklistAccount)
+	keys, err := iter.Keys()
+	if err != nil {
+		return nil, err
 	}
-	genesis.BlacklistAccounts = blacklistAccounts
-
-	// this line is used by starport scaffolding # genesis/module/export
-
-	return genesis, nil
+	if keys == nil {
+		keys = []string{}
+	}
+	return keys, nil
 }
