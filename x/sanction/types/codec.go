@@ -7,6 +7,8 @@ import (
 )
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
+	// MsgAddBlacklistAccounts and MsgRemoveBlacklistAccounts have no handler.
+	// They stay registered so past proposals that contain them still decode.
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgAddBlacklistAccounts{},
 		&MsgRemoveBlacklistAccounts{},

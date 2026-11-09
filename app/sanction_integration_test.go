@@ -130,3 +130,19 @@ func TestSanctionGasAtCap(t *testing.T) {
 	// small fraction of a block.
 	require.Less(t, atCap, uint64(2_000_000))
 }
+
+// TestDeprecatedBlacklistMsgsDecodeOnly checks the old governance messages
+// still decode, so past proposals that contain them can be read, but can no
+// longer be executed.
+func TestDeprecatedBlacklistMsgsDecodeOnly(t *testing.T) {
+	app := SetupWithEmptyStore(t)
+	for _, msg := range []sdk.Msg{
+		&sanctiontypes.MsgAddBlacklistAccounts{},    //nolint:staticcheck // deprecated, decode only
+		&sanctiontypes.MsgRemoveBlacklistAccounts{}, //nolint:staticcheck // deprecated, decode only
+	} {
+		typeURL := sdk.MsgTypeURL(msg)
+		_, err := app.InterfaceRegistry().Resolve(typeURL)
+		require.NoError(t, err, typeURL)
+		require.Nil(t, app.MsgServiceRouter().Handler(msg), typeURL)
+	}
+}

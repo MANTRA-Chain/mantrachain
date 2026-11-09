@@ -39,16 +39,44 @@ func (k Keeper) GetSanctioners(ctx context.Context) ([]types.Sanctioner, error) 
 	return iter.Values()
 }
 
-// SanctionAddresses adds addresses to the sanction list on behalf of a
-// sanctioner with any role. Addresses already listed are skipped. It fails if
-// any address is protected.
+// actor is whoever signed a sanction message: the gov authority or a
+// sanctioner.
+type actor struct {
+	address string
+	role    types.SanctionerRole // UNSPECIFIED for governance
+	gov     bool
+}
+
+// resolveActor maps a signer to the gov authority or a sanctioner, failing
+// for anyone else.
+func (k Keeper) resolveActor(ctx context.Context, signer string) (actor, error) {
+	addr, err := types.NormalizeAddress(signer)
+	if err != nil {
+		return actor{}, errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid signer: %s", signer)
+	}
+	if addr == k.authority {
+		return actor{address: addr, role: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, gov: true}, nil
+	}
+	s, err := k.getSanctioner(ctx, addr)
+	if err != nil {
+		return actor{}, err
+	}
+	return actor{address: s.Address, role: s.Role}, nil
+}
+
+// SanctionAddresses adds addresses to the sanction list on behalf of the gov
+// authority or a sanctioner with any role. Addresses already listed are
+// skipped. For sanctioners it enforces the caps and fails if any address is
+// protected; governance is subject to neither.
 func (k Keeper) SanctionAddresses(ctx context.Context, signer string, addresses []string, reason string) error {
-	sanctioner, err := k.getSanctioner(ctx, signer)
+	a, err := k.resolveActor(ctx, signer)
 	if err != nil {
 		return err
 	}
-	if err := k.checkLimits(ctx, len(addresses), reason); err != nil {
-		return err
+	if !a.gov {
+		if err := k.checkLimits(ctx, len(addresses), reason); err != nil {
+			return err
+		}
 	}
 
 	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
@@ -57,8 +85,10 @@ func (k Keeper) SanctionAddresses(ctx context.Context, signer string, addresses 
 		if err != nil {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid address: %s", address)
 		}
-		if err := k.checkNotProtected(ctx, addr); err != nil {
-			return err
+		if !a.gov {
+			if err := k.checkNotProtected(ctx, addr); err != nil {
+				return err
+			}
 		}
 		has, err := k.BlacklistAccounts.Has(ctx, addr)
 		if err != nil {
@@ -69,8 +99,8 @@ func (k Keeper) SanctionAddresses(ctx context.Context, signer string, addresses 
 		}
 
 		record := types.SanctionRecord{
-			Actor:     sanctioner.Address,
-			ActorRole: sanctioner.Role,
+			Actor:     a.address,
+			ActorRole: a.role,
 			Reason:    reason,
 			Height:    height,
 		}
@@ -81,19 +111,23 @@ func (k Keeper) SanctionAddresses(ctx context.Context, signer string, addresses 
 	return nil
 }
 
-// UnsanctionAddresses removes addresses from the sanction list on behalf of a
-// full sanctioner. Addresses not listed are skipped. It fails if any address
-// was added by governance, including entries that predate sanctioners.
+// UnsanctionAddresses removes addresses from the sanction list on behalf of
+// the gov authority or a full sanctioner. Addresses not listed are skipped.
+// Governance can remove any entry. A full sanctioner is capped and fails if
+// any address was added by governance, including entries that predate
+// sanctioners.
 func (k Keeper) UnsanctionAddresses(ctx context.Context, signer string, addresses []string, reason string) error {
-	sanctioner, err := k.getSanctioner(ctx, signer)
+	a, err := k.resolveActor(ctx, signer)
 	if err != nil {
 		return err
 	}
-	if !sanctioner.Role.CanUnsanction() {
-		return errorsmod.Wrapf(types.ErrRoleNotPermitted, "%s has role %s and cannot remove addresses", sanctioner.Address, sanctioner.Role)
-	}
-	if err := k.checkLimits(ctx, len(addresses), reason); err != nil {
-		return err
+	if !a.gov {
+		if !a.role.CanUnsanction() {
+			return errorsmod.Wrapf(types.ErrRoleNotPermitted, "%s has role %s and cannot remove addresses", a.address, a.role)
+		}
+		if err := k.checkLimits(ctx, len(addresses), reason); err != nil {
+			return err
+		}
 	}
 
 	for _, address := range addresses {
@@ -109,20 +143,31 @@ func (k Keeper) UnsanctionAddresses(ctx context.Context, signer string, addresse
 			continue
 		}
 
-		record, err := k.SanctionRecords.Get(ctx, addr)
-		if errors.Is(err, collections.ErrNotFound) {
-			return errorsmod.Wrapf(types.ErrGovernanceEntry, "%s", addr)
-		}
-		if err != nil {
-			return err
-		}
-		if record.ActorRole == types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED {
-			return errorsmod.Wrapf(types.ErrGovernanceEntry, "%s", addr)
+		if !a.gov {
+			if err := k.checkNotGovernanceEntry(ctx, addr); err != nil {
+				return err
+			}
 		}
 
-		if err := k.removeEntry(ctx, addr, sanctioner.Address, sanctioner.Role, reason); err != nil {
+		if err := k.removeEntry(ctx, addr, a.address, a.role, reason); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+// checkNotGovernanceEntry fails if addr was added by governance or has no
+// record because it predates sanctioners.
+func (k Keeper) checkNotGovernanceEntry(ctx context.Context, addr string) error {
+	record, err := k.SanctionRecords.Get(ctx, addr)
+	if errors.Is(err, collections.ErrNotFound) {
+		return errorsmod.Wrapf(types.ErrGovernanceEntry, "%s", addr)
+	}
+	if err != nil {
+		return err
+	}
+	if record.ActorRole == types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED {
+		return errorsmod.Wrapf(types.ErrGovernanceEntry, "%s", addr)
 	}
 	return nil
 }

@@ -197,10 +197,9 @@ func TestSanctionProtections(t *testing.T) {
 				require.ErrorIs(t, err, types.ErrProtectedAddress)
 			}
 			// Governance can still sanction it.
-			_, err := f.srv.AddBlacklistAccounts(f.ctx, types.NewMsgAddBlacklistAccounts(f.gov, []string{target}))
-			require.NoError(t, err)
-			_, err = f.srv.RemoveBlacklistAccounts(f.ctx, types.NewMsgRemoveBlacklistAccounts(f.gov, []string{target}))
-			require.NoError(t, err)
+			require.NoError(t, f.sanction(f.gov, target))
+			require.True(t, f.listed(t, target))
+			require.NoError(t, f.unsanction(f.gov, target))
 		})
 	}
 	// The message is atomic at the tx level, and the keeper checks each
@@ -226,10 +225,15 @@ func TestLimits(t *testing.T) {
 	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, []string{addr("d")}, ""))
 	require.ErrorIs(t, err, sdkerrors.ErrInvalidRequest)
 
-	// Governance messages aren't capped.
+	// Governance isn't capped, on addresses or reason length, but still needs
+	// a reason.
 	many := []string{addr("g1"), addr("g2"), addr("g3")}
-	_, err = f.srv.AddBlacklistAccounts(f.ctx, types.NewMsgAddBlacklistAccounts(f.gov, many))
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many, strings.Repeat("x", 21)))
 	require.NoError(t, err)
+	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.gov, many, strings.Repeat("x", 21)))
+	require.NoError(t, err)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many, ""))
+	require.ErrorIs(t, err, sdkerrors.ErrInvalidRequest)
 }
 
 func TestUpdateParams(t *testing.T) {
@@ -250,8 +254,7 @@ func TestUnsanctionAddresses(t *testing.T) {
 	byBot, byFull, byGov, legacy, unlisted := addr("bybot"), addr("byfull"), addr("bygov"), addr("legacy"), addr("unlisted")
 	require.NoError(t, f.sanction(f.addOnly, byBot))
 	require.NoError(t, f.sanction(f.full2, byFull))
-	_, err := f.srv.AddBlacklistAccounts(f.ctx, types.NewMsgAddBlacklistAccounts(f.gov, []string{byGov}))
-	require.NoError(t, err)
+	require.NoError(t, f.sanction(f.gov, byGov))
 	require.NoError(t, f.k.BlacklistAccounts.Set(f.ctx, legacy)) // predates sanction records
 
 	t.Run("add-only sanctioner cannot remove", func(t *testing.T) {
@@ -289,8 +292,7 @@ func TestUnsanctionAddresses(t *testing.T) {
 
 	t.Run("governance can reverse anything", func(t *testing.T) {
 		require.NoError(t, f.sanction(f.addOnly, byBot))
-		_, err := f.srv.RemoveBlacklistAccounts(f.ctx, types.NewMsgRemoveBlacklistAccounts(f.gov, []string{byBot, byGov, legacy}))
-		require.NoError(t, err)
+		require.NoError(t, f.unsanction(f.gov, byBot, byGov, legacy))
 		for _, a := range []string{byBot, byGov, legacy} {
 			require.False(t, f.listed(t, a))
 		}
@@ -351,25 +353,46 @@ func TestStolenAddOnlyKey(t *testing.T) {
 	require.ErrorIs(t, f.sanction(f.addOnly, addr("another")), types.ErrNotSanctioner)
 }
 
-func TestGovernanceRecordsActor(t *testing.T) {
+func TestGovernanceUsesSameMessages(t *testing.T) {
 	f := setup(t)
 	a := addr("govadded")
 	f.ctx = f.freshCtx().WithBlockHeight(12)
-	_, err := f.srv.AddBlacklistAccounts(f.ctx, types.NewMsgAddBlacklistAccounts(f.gov, []string{a}))
-	require.NoError(t, err)
+	require.NoError(t, f.sanction(f.gov, a))
 
 	rec, err := f.k.SanctionRecords.Get(f.ctx, a)
 	require.NoError(t, err)
-	require.Equal(t, types.SanctionRecord{Actor: f.gov, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Height: 12}, rec)
+	require.Equal(t, types.SanctionRecord{
+		Actor: f.gov, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Reason: "rule 7, tx ABC", Height: 12,
+	}, rec)
 
 	evs := listChangedEvents(t, f.ctx)
 	require.Len(t, evs, 1)
 	require.Equal(t, f.gov, evs[0].Actor)
+	require.Equal(t, types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, evs[0].ActorRole)
 	require.True(t, evs[0].Sanctioned)
 
-	// Existing governance behaviour is unchanged: duplicates still fail.
-	_, err = f.srv.AddBlacklistAccounts(f.ctx, types.NewMsgAddBlacklistAccounts(f.gov, []string{a}))
-	require.ErrorIs(t, err, sdkerrors.ErrInvalidRequest)
+	// Duplicates are a no-op for governance too.
+	f.ctx = f.freshCtx()
+	require.NoError(t, f.sanction(f.gov, a))
+	require.Empty(t, listChangedEvents(t, f.ctx))
+
+	// Re-adding a sanctioner's entry keeps the sanctioner's record, so a full
+	// sanctioner can still remove it. To make it a governance entry, governance
+	// removes it and adds it again.
+	b := addr("botadded")
+	require.NoError(t, f.sanction(f.addOnly, b))
+	require.NoError(t, f.sanction(f.gov, b))
+	rec, err = f.k.SanctionRecords.Get(f.ctx, b)
+	require.NoError(t, err)
+	require.Equal(t, f.addOnly, rec.Actor)
+
+	// Governance removes, with an event naming it.
+	f.ctx = f.freshCtx()
+	require.NoError(t, f.unsanction(f.gov, a))
+	evs = listChangedEvents(t, f.ctx)
+	require.Len(t, evs, 1)
+	require.False(t, evs[0].Sanctioned)
+	require.Equal(t, f.gov, evs[0].Actor)
 }
 
 func TestQueries(t *testing.T) {

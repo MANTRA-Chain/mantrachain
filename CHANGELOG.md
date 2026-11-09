@@ -3,6 +3,7 @@
 ### FEATURES
 
 - feat: add sanctioners to x/sanction. Governance appoints full and add-only sanctioners who can change the sanction list in one transaction, with protections, per-entry records, events, queries and CLI. Adds params `max_addresses_per_msg` and `max_reason_length`, the x/sanction 1 to 2 migration, and the v8.9.0 upgrade handler.
+- feat!: governance now uses MsgSanctionAddresses and MsgUnsanctionAddresses, signed by the gov authority. MsgAddBlacklistAccounts and MsgRemoveBlacklistAccounts can no longer be executed and stay registered only so past proposals decode. Their CLI commands are removed, and adding a listed address or removing an unlisted one is now a no-op for governance too.
 
 ### BUG-FIXES
 

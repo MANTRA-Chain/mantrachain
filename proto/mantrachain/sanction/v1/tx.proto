@@ -15,15 +15,6 @@ option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // AddBlacklistAccount defines a (governance) operation for adding an account
-  // to the blacklist.
-  rpc AddBlacklistAccounts(MsgAddBlacklistAccounts)
-      returns (MsgAddBlacklistAccountsResponse);
-  // RemoveBlacklistAccount defines a (governance) operation for removing an
-  // account from the blacklist.
-  rpc RemoveBlacklistAccounts(MsgRemoveBlacklistAccounts)
-      returns (MsgRemoveBlacklistAccountsResponse);
-
   // UpdateParams defines a (governance) operation for updating the module
   // parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
@@ -32,11 +23,12 @@ service Msg {
   rpc UpdateSanctioners(MsgUpdateSanctioners)
       returns (MsgUpdateSanctionersResponse);
 
-  // SanctionAddresses lets any sanctioner add addresses to the sanction list.
+  // SanctionAddresses adds addresses to the sanction list. The signer is the
+  // gov authority or a sanctioner with any role.
   rpc SanctionAddresses(MsgSanctionAddresses)
       returns (MsgSanctionAddressesResponse);
-  // UnsanctionAddresses lets a full sanctioner remove addresses that a
-  // sanctioner added.
+  // UnsanctionAddresses removes addresses from the sanction list. The signer
+  // is the gov authority, or a full sanctioner for entries a sanctioner added.
   rpc UnsanctionAddresses(MsgUnsanctionAddresses)
       returns (MsgUnsanctionAddressesResponse);
   // RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
@@ -45,31 +37,27 @@ service Msg {
       returns (MsgRevokeSanctionerResponse);
 }
 
-// MsgAddBlacklistAccounts is the message type for adding an account to the
-// blacklist.
+// MsgAddBlacklistAccounts is deprecated and can no longer be executed. Use
+// MsgSanctionAddresses signed by the gov authority. The type is kept so past
+// proposals that contain it still decode.
 message MsgAddBlacklistAccounts {
+  option deprecated = true;
   option (cosmos.msg.v1.signer) = "authority";
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated string blacklist_accounts = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
-// MsgAddBlacklistAccountsResponse defines the response type for adding an
-// account to the blacklist.
-message MsgAddBlacklistAccountsResponse {}
-
-// MsgRemoveBlacklistAccounts is the message type for removing an account from
-// the blacklist.
+// MsgRemoveBlacklistAccounts is deprecated and can no longer be executed. Use
+// MsgUnsanctionAddresses signed by the gov authority. The type is kept so past
+// proposals that contain it still decode.
 message MsgRemoveBlacklistAccounts {
+  option deprecated = true;
   option (cosmos.msg.v1.signer) = "authority";
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   repeated string blacklist_accounts = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
-
-// MsgRemoveBlacklistAccountsResponse defines the response type for removing an
-// account from the blacklist.
-message MsgRemoveBlacklistAccountsResponse {}
 
 // MsgUpdateParams updates the module parameters. Authority must be the gov
 // module account.
@@ -99,14 +87,15 @@ message MsgUpdateSanctioners {
 // MsgUpdateSanctioners.
 message MsgUpdateSanctionersResponse {}
 
-// MsgSanctionAddresses adds addresses to the sanction list. Signer must be a
-// sanctioner with any role.
+// MsgSanctionAddresses adds addresses to the sanction list. Signer must be the
+// gov authority or a sanctioner with any role. Governance isn't subject to the
+// caps or the protected-address checks.
 message MsgSanctionAddresses {
   option (amino.name) = "mantrachain/x/sanction/MsgSanctionAddresses";
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // addresses is capped by params.max_addresses_per_msg.
+  // addresses is capped by params.max_addresses_per_msg for sanctioners.
   repeated string addresses = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   // reason is stored with each entry and emitted in the event. Add-only
@@ -119,13 +108,14 @@ message MsgSanctionAddresses {
 message MsgSanctionAddressesResponse {}
 
 // MsgUnsanctionAddresses removes addresses from the sanction list. Signer must
-// be a sanctioner with the full role.
+// be the gov authority, which can remove any entry, or a full sanctioner, which
+// can remove entries added by sanctioners.
 message MsgUnsanctionAddresses {
   option (amino.name) = "mantrachain/x/sanction/MsgUnsanctionAddresses";
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // addresses is capped by params.max_addresses_per_msg.
+  // addresses is capped by params.max_addresses_per_msg for sanctioners.
   repeated string addresses = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string reason = 3;

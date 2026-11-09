@@ -4,8 +4,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
+
+func randomSanctionAddress() string {
+	pk := secp256k1.GenPrivKey().PubKey()
+	return sdk.AccAddress(pk.Address()).String()
+}
 
 func TestMsgSanctionerValidate(t *testing.T) {
 	signer := randomSanctionAddress()

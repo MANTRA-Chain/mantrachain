@@ -6,7 +6,7 @@ This document specifies the `sanction` module of mantrachain.
 
 The `sanction` module keeps a list of sanctioned accounts and prevents them from doing any transactions on the chain.
 
-Governance can change the list through proposals. Governance can also appoint **sanctioners**, addresses that can change the list in one transaction, so an attack can be stopped without waiting for a proposal to pass.
+Governance and **sanctioners** change the list with the same two messages, `MsgSanctionAddresses` and `MsgUnsanctionAddresses`. Governance sends them through proposals. Sanctioners are addresses governance appoints to send them directly, so an attack can be stopped in one transaction without waiting for a proposal to pass.
 
 ## Contents
 
@@ -32,7 +32,7 @@ Governance owns the sanctioner list with `MsgUpdateSanctioners`, which replaces 
 
 | Actor | Add an address | Remove an address | Revoke an add-only sanctioner | Appointed by |
 | --- | --- | --- | --- | --- |
-| Governance | Yes | Yes, any entry | Yes, via `MsgUpdateSanctioners` | Token holders |
+| Governance (signer is the gov authority) | Yes | Yes, any entry | Yes, via `MsgUpdateSanctioners` | Token holders |
 | Full sanctioner | Yes | Yes, entries added by sanctioners | Yes | Governance |
 | Add-only sanctioner | Yes | No | No | Governance |
 
@@ -42,8 +42,8 @@ Protections on the sanctioner path:
 
 * A sanctioner can't sanction another sanctioner, the gov authority, or any module account. Module accounts are recognised both from `x/auth` and from the app's module list, so an address is protected before its module account exists.
 * A sanctioner can't remove an entry added by governance, including entries that predate sanctioners. Only governance can.
-* `max_addresses_per_msg` caps addresses per message and `max_reason_length` caps the reason. Governance messages aren't capped.
-* Every sanctioner message needs a non-empty reason.
+* `max_addresses_per_msg` caps addresses per message and `max_reason_length` caps the reason. Governance isn't capped and can sanction protected addresses.
+* Every message needs a non-empty reason, including governance's.
 * Adding an address that's already listed, or removing one that isn't, is a no-op for that address, so batches don't fail on duplicates. A protected address fails the whole message.
 
 An empty sanctioner list leaves the module governance-only, which is how it starts after the v8.9.0 upgrade.
@@ -63,14 +63,10 @@ An empty sanctioner list leaves the module governance-only, which is how it star
 
 | Param | Default | Meaning |
 | --- | --- | --- |
-| `max_addresses_per_msg` | 50 | Most addresses one `MsgSanctionAddresses` or `MsgUnsanctionAddresses` can carry |
-| `max_reason_length` | 256 | Most bytes in a sanctioner message's reason |
+| `max_addresses_per_msg` | 50 | Most addresses one `MsgSanctionAddresses` or `MsgUnsanctionAddresses` from a sanctioner can carry |
+| `max_reason_length` | 256 | Most bytes in the reason of a sanctioner's message |
 
 ## Messages
-
-### MsgAddBlacklistAccounts / MsgRemoveBlacklistAccounts
-
-Governance adds or removes accounts. Behaviour is unchanged: adding a listed account or removing an unlisted one fails. Governance can remove any entry, whoever added it.
 
 ### MsgUpdateParams
 
@@ -82,11 +78,15 @@ Governance replaces the sanctioner list. Fails on an invalid address, a duplicat
 
 ### MsgSanctionAddresses
 
-Any sanctioner adds addresses. Fails if the signer isn't a sanctioner, the caps are exceeded, the reason is empty, or any address is protected. Add-only sanctioners should put the detection rule and the triggering transaction hash in the reason.
+The gov authority or any sanctioner adds addresses. Addresses already listed are skipped. For a sanctioner it fails if the caps are exceeded or any address is protected. It fails for any other signer, or for an empty reason. Add-only sanctioners should put the detection rule and the triggering transaction hash in the reason.
 
 ### MsgUnsanctionAddresses
 
-A full sanctioner removes addresses added by any sanctioner. Fails for an add-only signer, or if any address was added by governance.
+The gov authority removes any entry. A full sanctioner removes entries added by sanctioners, and the message fails if any address was added by governance. Addresses not listed are skipped. Fails for an add-only signer.
+
+### MsgAddBlacklistAccounts / MsgRemoveBlacklistAccounts (deprecated)
+
+Removed in consensus version 2: there is no handler, so they can't be submitted. Use `MsgSanctionAddresses` and `MsgUnsanctionAddresses` signed by the gov authority. The types stay registered so past proposals that contain them still decode.
 
 ### MsgRevokeSanctioner
 
@@ -122,7 +122,20 @@ mantrachaind q sanction sanctioned-addresses
 mantrachaind q sanction is-sanctioned mantra1a...
 ```
 
-`MsgUpdateSanctioners` and `MsgUpdateParams` go through `mantrachaind tx gov submit-proposal`, for example:
+Governance sends any of the messages through `mantrachaind tx gov submit-proposal`, with the gov module address as `signer` or `authority`. For example, to sanction an address:
+
+```json
+{
+  "messages": [{
+    "@type": "/mantrachain.sanction.v1.MsgSanctionAddresses",
+    "signer": "<gov module address>",
+    "addresses": ["mantra1a..."],
+    "reason": "Proposal: block exploiter of 2026-08-20"
+  }]
+}
+```
+
+And to appoint sanctioners:
 
 ```json
 {

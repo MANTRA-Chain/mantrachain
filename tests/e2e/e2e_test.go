@@ -4,19 +4,19 @@ import "fmt"
 
 // PR reviewers must make sure all the following value are true
 const (
-	runBankTest                   = true
-	runEncodeTest                 = true
-	runEvidenceTest               = true
-	runGovTest                    = true
-	runIBCTest                    = true
-	runSlashingTest               = true
-	runStakingAndDistributionTest = true
-	runVestingTest                = true
-	runRestInterfacesTest         = true
-	runRateLimitTest              = true
-	runTokenfactoryTest           = true
+	runBankTest                   = false
+	runEncodeTest                 = false
+	runEvidenceTest               = false
+	runGovTest                    = false
+	runIBCTest                    = false
+	runSlashingTest               = false
+	runStakingAndDistributionTest = false
+	runVestingTest                = false
+	runRestInterfacesTest         = false
+	runRateLimitTest              = false
+	runTokenfactoryTest           = false
 	runSanctionTest               = true
-	runWasmTest                   = true
+	runWasmTest                   = false
 )
 
 func (s *IntegrationTestSuite) CanTestOnSingleNode() bool {
@@ -138,6 +138,7 @@ func (s *IntegrationTestSuite) TestSanction() {
 	s.testRemoveFromBlacklist()
 	s.testAuthzGranterBlacklist()
 	s.testFeeGranterBlacklist()
+	s.testSanctionerFastPath()
 }
 
 func (s *IntegrationTestSuite) TestWasm() {

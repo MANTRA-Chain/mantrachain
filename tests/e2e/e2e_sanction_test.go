@@ -23,11 +23,12 @@ func (s *IntegrationTestSuite) writeAddBlacklistAccountsProposal(c *chain, block
 	{
 		"messages": [
 		 {
-		  "@type": "/mantrachain.sanction.v1.MsgAddBlacklistAccounts",
-		  "authority": "%s",
-		  "blacklist_accounts": [
+		  "@type": "/mantrachain.sanction.v1.MsgSanctionAddresses",
+		  "signer": "%s",
+		  "addresses": [
 		  	"%s"
-		  ]
+		  ],
+		  "reason": "e2e-test governance sanction"
 		 }
 		],
 		"metadata": "ipfs://CID",
@@ -65,7 +66,7 @@ func (s *IntegrationTestSuite) testAddToBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting, deposit and vote Gov Proposal: Add %s to blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgAddBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgSanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
@@ -92,11 +93,12 @@ func (s *IntegrationTestSuite) writeRemoveBlacklistAccountsProposal(c *chain, bl
 	{
 		"messages": [
 		 {
-		  "@type": "/mantrachain.sanction.v1.MsgRemoveBlacklistAccounts",
-		  "authority": "%s",
-		  "blacklist_accounts": [
+		  "@type": "/mantrachain.sanction.v1.MsgUnsanctionAddresses",
+		  "signer": "%s",
+		  "addresses": [
 		  	"%s"
-		  ]
+		  ],
+		  "reason": "e2e-test governance unsanction"
 		 }
 		],
 		"metadata": "ipfs://CID",
@@ -135,7 +137,7 @@ func (s *IntegrationTestSuite) testRemoveFromBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting, deposit and vote Gov Proposal: Remove %s from blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "sanctiontypes.MsgRemoveBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAAddr.String(), proposalCounter, "sanctiontypes.MsgUnsanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
@@ -289,7 +291,7 @@ func (s *IntegrationTestSuite) testAuthzGranterBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting Gov Proposal: Add %s (authz granter) to blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgAddBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgSanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
@@ -316,7 +318,7 @@ func (s *IntegrationTestSuite) testAuthzGranterBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting Gov Proposal: Remove %s (authz granter) from blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgRemoveBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgUnsanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
@@ -365,7 +367,7 @@ func (s *IntegrationTestSuite) testFeeGranterBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting Gov Proposal: Add %s (fee granter) to blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgAddBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgSanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {
@@ -394,7 +396,7 @@ func (s *IntegrationTestSuite) testFeeGranterBlacklist() {
 
 	s.T().Logf("Proposal number: %d", proposalCounter)
 	s.T().Logf("Submitting Gov Proposal: Remove %s (fee granter) from blacklist", alice.String())
-	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgRemoveBlacklistAccounts", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
+	s.submitGovProposal(chainEndpoint, validatorAddr.String(), proposalCounter, "sanctiontypes.MsgUnsanctionAddresses", submitGovFlags, depositGovFlags, voteGovFlags, "vote")
 
 	s.Require().Eventually(
 		func() bool {

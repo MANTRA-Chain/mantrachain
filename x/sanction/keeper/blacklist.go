@@ -5,66 +5,9 @@ import (
 	"errors"
 
 	"cosmossdk.io/collections"
-	errorsmod "cosmossdk.io/errors"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
-
-// AddToBlacklist adds each of the given accounts to the blacklist on behalf
-// of governance, returning an error if any of them is already blacklisted.
-func (k Keeper) AddToBlacklist(ctx context.Context, accounts []string) error {
-	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
-	for _, account := range accounts {
-		addr, err := types.NormalizeAddress(account)
-		if err != nil {
-			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address: %s", account)
-		}
-		hasAccount, err := k.BlacklistAccounts.Has(ctx, addr)
-		if err != nil {
-			return err
-		}
-		if hasAccount {
-			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "account %s has already been blacklisted", addr)
-		}
-
-		record := types.SanctionRecord{
-			Actor:     k.authority,
-			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED,
-			Height:    height,
-		}
-		if err := k.addEntry(ctx, addr, record); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// RemoveFromBlacklist removes each of the given accounts from the blacklist
-// on behalf of governance, returning an error if any of them is not currently
-// blacklisted. Governance can remove any entry, whoever added it.
-func (k Keeper) RemoveFromBlacklist(ctx context.Context, accounts []string) error {
-	for _, account := range accounts {
-		addr, err := types.NormalizeAddress(account)
-		if err != nil {
-			return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid account address: %s", account)
-		}
-		hasAccount, err := k.BlacklistAccounts.Has(ctx, addr)
-		if err != nil {
-			return err
-		}
-		if !hasAccount {
-			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, "blacklist account %s is not blacklisted", addr)
-		}
-
-		if err := k.removeEntry(ctx, addr, k.authority, types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, ""); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
 
 // IsSanctioned reports whether addr is on the sanction list, with its record
 // if it has one.

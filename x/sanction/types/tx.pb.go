@@ -31,8 +31,11 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgAddBlacklistAccounts is the message type for adding an account to the
-// blacklist.
+// MsgAddBlacklistAccounts is deprecated and can no longer be executed. Use
+// MsgSanctionAddresses signed by the gov authority. The type is kept so past
+// proposals that contain it still decode.
+//
+// Deprecated: Do not use.
 type MsgAddBlacklistAccounts struct {
 	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
@@ -85,46 +88,11 @@ func (m *MsgAddBlacklistAccounts) GetBlacklistAccounts() []string {
 	return nil
 }
 
-// MsgAddBlacklistAccountsResponse defines the response type for adding an
-// account to the blacklist.
-type MsgAddBlacklistAccountsResponse struct {
-}
-
-func (m *MsgAddBlacklistAccountsResponse) Reset()         { *m = MsgAddBlacklistAccountsResponse{} }
-func (m *MsgAddBlacklistAccountsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgAddBlacklistAccountsResponse) ProtoMessage()    {}
-func (*MsgAddBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{1}
-}
-func (m *MsgAddBlacklistAccountsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgAddBlacklistAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgAddBlacklistAccountsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgAddBlacklistAccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAddBlacklistAccountsResponse.Merge(m, src)
-}
-func (m *MsgAddBlacklistAccountsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgAddBlacklistAccountsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAddBlacklistAccountsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgAddBlacklistAccountsResponse proto.InternalMessageInfo
-
-// MsgRemoveBlacklistAccounts is the message type for removing an account from
-// the blacklist.
+// MsgRemoveBlacklistAccounts is deprecated and can no longer be executed. Use
+// MsgUnsanctionAddresses signed by the gov authority. The type is kept so past
+// proposals that contain it still decode.
+//
+// Deprecated: Do not use.
 type MsgRemoveBlacklistAccounts struct {
 	Authority         string   `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	BlacklistAccounts []string `protobuf:"bytes,2,rep,name=blacklist_accounts,json=blacklistAccounts,proto3" json:"blacklist_accounts,omitempty"`
@@ -134,7 +102,7 @@ func (m *MsgRemoveBlacklistAccounts) Reset()         { *m = MsgRemoveBlacklistAc
 func (m *MsgRemoveBlacklistAccounts) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveBlacklistAccounts) ProtoMessage()    {}
 func (*MsgRemoveBlacklistAccounts) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{2}
+	return fileDescriptor_420bae018367226c, []int{1}
 }
 func (m *MsgRemoveBlacklistAccounts) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -177,44 +145,6 @@ func (m *MsgRemoveBlacklistAccounts) GetBlacklistAccounts() []string {
 	return nil
 }
 
-// MsgRemoveBlacklistAccountsResponse defines the response type for removing an
-// account from the blacklist.
-type MsgRemoveBlacklistAccountsResponse struct {
-}
-
-func (m *MsgRemoveBlacklistAccountsResponse) Reset()         { *m = MsgRemoveBlacklistAccountsResponse{} }
-func (m *MsgRemoveBlacklistAccountsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRemoveBlacklistAccountsResponse) ProtoMessage()    {}
-func (*MsgRemoveBlacklistAccountsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{3}
-}
-func (m *MsgRemoveBlacklistAccountsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRemoveBlacklistAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRemoveBlacklistAccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.Merge(m, src)
-}
-func (m *MsgRemoveBlacklistAccountsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRemoveBlacklistAccountsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRemoveBlacklistAccountsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRemoveBlacklistAccountsResponse proto.InternalMessageInfo
-
 // MsgUpdateParams updates the module parameters. Authority must be the gov
 // module account.
 type MsgUpdateParams struct {
@@ -226,7 +156,7 @@ func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
 func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParams) ProtoMessage()    {}
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{4}
+	return fileDescriptor_420bae018367226c, []int{2}
 }
 func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -277,7 +207,7 @@ func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{5}
+	return fileDescriptor_420bae018367226c, []int{3}
 }
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -317,7 +247,7 @@ func (m *MsgUpdateSanctioners) Reset()         { *m = MsgUpdateSanctioners{} }
 func (m *MsgUpdateSanctioners) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateSanctioners) ProtoMessage()    {}
 func (*MsgUpdateSanctioners) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{6}
+	return fileDescriptor_420bae018367226c, []int{4}
 }
 func (m *MsgUpdateSanctioners) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -369,7 +299,7 @@ func (m *MsgUpdateSanctionersResponse) Reset()         { *m = MsgUpdateSanctione
 func (m *MsgUpdateSanctionersResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateSanctionersResponse) ProtoMessage()    {}
 func (*MsgUpdateSanctionersResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{7}
+	return fileDescriptor_420bae018367226c, []int{5}
 }
 func (m *MsgUpdateSanctionersResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -398,11 +328,12 @@ func (m *MsgUpdateSanctionersResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateSanctionersResponse proto.InternalMessageInfo
 
-// MsgSanctionAddresses adds addresses to the sanction list. Signer must be a
-// sanctioner with any role.
+// MsgSanctionAddresses adds addresses to the sanction list. Signer must be the
+// gov authority or a sanctioner with any role. Governance isn't subject to the
+// caps or the protected-address checks.
 type MsgSanctionAddresses struct {
 	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	// addresses is capped by params.max_addresses_per_msg.
+	// addresses is capped by params.max_addresses_per_msg for sanctioners.
 	Addresses []string `protobuf:"bytes,2,rep,name=addresses,proto3" json:"addresses,omitempty"`
 	// reason is stored with each entry and emitted in the event. Add-only
 	// sanctioners should include the detection rule and triggering tx hash.
@@ -413,7 +344,7 @@ func (m *MsgSanctionAddresses) Reset()         { *m = MsgSanctionAddresses{} }
 func (m *MsgSanctionAddresses) String() string { return proto.CompactTextString(m) }
 func (*MsgSanctionAddresses) ProtoMessage()    {}
 func (*MsgSanctionAddresses) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{8}
+	return fileDescriptor_420bae018367226c, []int{6}
 }
 func (m *MsgSanctionAddresses) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -472,7 +403,7 @@ func (m *MsgSanctionAddressesResponse) Reset()         { *m = MsgSanctionAddress
 func (m *MsgSanctionAddressesResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSanctionAddressesResponse) ProtoMessage()    {}
 func (*MsgSanctionAddressesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{9}
+	return fileDescriptor_420bae018367226c, []int{7}
 }
 func (m *MsgSanctionAddressesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -502,10 +433,11 @@ func (m *MsgSanctionAddressesResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSanctionAddressesResponse proto.InternalMessageInfo
 
 // MsgUnsanctionAddresses removes addresses from the sanction list. Signer must
-// be a sanctioner with the full role.
+// be the gov authority, which can remove any entry, or a full sanctioner, which
+// can remove entries added by sanctioners.
 type MsgUnsanctionAddresses struct {
 	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	// addresses is capped by params.max_addresses_per_msg.
+	// addresses is capped by params.max_addresses_per_msg for sanctioners.
 	Addresses []string `protobuf:"bytes,2,rep,name=addresses,proto3" json:"addresses,omitempty"`
 	Reason    string   `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`
 }
@@ -514,7 +446,7 @@ func (m *MsgUnsanctionAddresses) Reset()         { *m = MsgUnsanctionAddresses{}
 func (m *MsgUnsanctionAddresses) String() string { return proto.CompactTextString(m) }
 func (*MsgUnsanctionAddresses) ProtoMessage()    {}
 func (*MsgUnsanctionAddresses) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{10}
+	return fileDescriptor_420bae018367226c, []int{8}
 }
 func (m *MsgUnsanctionAddresses) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -573,7 +505,7 @@ func (m *MsgUnsanctionAddressesResponse) Reset()         { *m = MsgUnsanctionAdd
 func (m *MsgUnsanctionAddressesResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnsanctionAddressesResponse) ProtoMessage()    {}
 func (*MsgUnsanctionAddressesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{11}
+	return fileDescriptor_420bae018367226c, []int{9}
 }
 func (m *MsgUnsanctionAddressesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -615,7 +547,7 @@ func (m *MsgRevokeSanctioner) Reset()         { *m = MsgRevokeSanctioner{} }
 func (m *MsgRevokeSanctioner) String() string { return proto.CompactTextString(m) }
 func (*MsgRevokeSanctioner) ProtoMessage()    {}
 func (*MsgRevokeSanctioner) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{12}
+	return fileDescriptor_420bae018367226c, []int{10}
 }
 func (m *MsgRevokeSanctioner) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -674,7 +606,7 @@ func (m *MsgRevokeSanctionerResponse) Reset()         { *m = MsgRevokeSanctioner
 func (m *MsgRevokeSanctionerResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRevokeSanctionerResponse) ProtoMessage()    {}
 func (*MsgRevokeSanctionerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_420bae018367226c, []int{13}
+	return fileDescriptor_420bae018367226c, []int{11}
 }
 func (m *MsgRevokeSanctionerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -705,9 +637,7 @@ var xxx_messageInfo_MsgRevokeSanctionerResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgAddBlacklistAccounts)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccounts")
-	proto.RegisterType((*MsgAddBlacklistAccountsResponse)(nil), "mantrachain.sanction.v1.MsgAddBlacklistAccountsResponse")
 	proto.RegisterType((*MsgRemoveBlacklistAccounts)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccounts")
-	proto.RegisterType((*MsgRemoveBlacklistAccountsResponse)(nil), "mantrachain.sanction.v1.MsgRemoveBlacklistAccountsResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "mantrachain.sanction.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "mantrachain.sanction.v1.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgUpdateSanctioners)(nil), "mantrachain.sanction.v1.MsgUpdateSanctioners")
@@ -723,54 +653,51 @@ func init() {
 func init() { proto.RegisterFile("mantrachain/sanction/v1/tx.proto", fileDescriptor_420bae018367226c) }
 
 var fileDescriptor_420bae018367226c = []byte{
-	// 749 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x96, 0xbf, 0x6e, 0xd3, 0x5e,
-	0x14, 0xc7, 0x73, 0xdb, 0xdf, 0x2f, 0xa8, 0xa7, 0x08, 0xa8, 0x1b, 0x35, 0xa9, 0x01, 0x37, 0x98,
-	0x0a, 0x45, 0x81, 0xc4, 0x6d, 0x0a, 0xb4, 0xa4, 0x02, 0x29, 0x61, 0x60, 0x40, 0x41, 0xe0, 0xc2,
-	0xc2, 0x52, 0x39, 0x8e, 0xe5, 0x9a, 0xd6, 0xbe, 0x91, 0xaf, 0x1b, 0xb5, 0x13, 0xa8, 0x23, 0x2c,
-	0x3c, 0x06, 0x42, 0x42, 0xea, 0xc0, 0x43, 0x74, 0xa3, 0x42, 0x42, 0x02, 0x21, 0x21, 0xd4, 0x0e,
-	0x7d, 0x07, 0x26, 0x64, 0xfb, 0xda, 0x71, 0xe3, 0x5c, 0x87, 0x64, 0x82, 0x25, 0xb2, 0xef, 0xf9,
-	0x9e, 0x3f, 0x1f, 0xfb, 0x9c, 0xe3, 0x40, 0xde, 0x54, 0x2c, 0xc7, 0x56, 0xd4, 0x0d, 0xc5, 0xb0,
-	0x24, 0xa2, 0x58, 0xaa, 0x63, 0x60, 0x4b, 0xea, 0x2c, 0x4a, 0xce, 0x4e, 0xb9, 0x6d, 0x63, 0x07,
-	0x73, 0xd9, 0x88, 0xa2, 0x1c, 0x28, 0xca, 0x9d, 0x45, 0x7e, 0x4a, 0x31, 0x0d, 0x0b, 0x4b, 0xde,
-	0xaf, 0xaf, 0xe5, 0xb3, 0x2a, 0x26, 0x26, 0x26, 0x92, 0x49, 0x74, 0x37, 0x86, 0x49, 0x74, 0x6a,
-	0x98, 0xf5, 0x0d, 0xeb, 0xde, 0x9d, 0xe4, 0xdf, 0x50, 0x53, 0x46, 0xc7, 0x3a, 0xf6, 0xcf, 0xdd,
-	0x2b, 0x7a, 0x3a, 0xcf, 0xaa, 0xab, 0xad, 0xd8, 0x8a, 0x19, 0xf8, 0x16, 0x58, 0xaa, 0xe0, 0x5a,
-	0xb3, 0x7d, 0xa5, 0xf8, 0x1e, 0x41, 0xb6, 0x41, 0xf4, 0x5a, 0xab, 0x55, 0xdf, 0x52, 0xd4, 0xcd,
-	0x2d, 0x83, 0x38, 0x35, 0x55, 0xc5, 0xdb, 0x96, 0x43, 0xb8, 0xdb, 0x30, 0xa1, 0x6c, 0x3b, 0x1b,
-	0xd8, 0x36, 0x9c, 0xdd, 0x1c, 0xca, 0xa3, 0xc2, 0x44, 0x3d, 0xf7, 0xf9, 0x63, 0x29, 0x43, 0xcb,
-	0xac, 0xb5, 0x5a, 0xb6, 0x46, 0xc8, 0x9a, 0x63, 0x1b, 0x96, 0x2e, 0x77, 0xa5, 0xdc, 0x03, 0xe0,
-	0x9a, 0x41, 0xb0, 0x75, 0x85, 0x46, 0xcb, 0x8d, 0xe5, 0xc7, 0x13, 0x03, 0x4c, 0x35, 0x7b, 0x0b,
-	0xa8, 0x9e, 0xdb, 0x3b, 0xd9, 0x2f, 0x76, 0x03, 0x8b, 0x57, 0x60, 0x8e, 0x51, 0xab, 0xac, 0x91,
-	0x36, 0xb6, 0x88, 0x26, 0x7e, 0x40, 0xc0, 0x37, 0x88, 0x2e, 0x6b, 0x26, 0xee, 0x68, 0xff, 0x00,
-	0xd2, 0x3c, 0x88, 0xec, 0x72, 0x43, 0xaa, 0x03, 0x04, 0xe7, 0x1b, 0x44, 0x7f, 0xd6, 0x6e, 0x29,
-	0x8e, 0xf6, 0xd8, 0x7b, 0xd3, 0x23, 0xa3, 0xd4, 0x21, 0xed, 0xf7, 0x4a, 0x6e, 0x2c, 0x8f, 0x0a,
-	0x93, 0x95, 0xb9, 0x32, 0xa3, 0x91, 0xcb, 0x7e, 0xa2, 0xfa, 0xc4, 0xc1, 0x8f, 0xb9, 0xd4, 0xbb,
-	0x93, 0xfd, 0x22, 0x92, 0xa9, 0x67, 0xf5, 0xce, 0x69, 0x8a, 0xd7, 0x27, 0xfb, 0xc5, 0x6b, 0xd1,
-	0x96, 0xdb, 0xe9, 0x36, 0x5d, 0x4f, 0xd9, 0xe2, 0xac, 0xd7, 0x6f, 0xd1, 0xa3, 0x90, 0xf2, 0x3b,
-	0x82, 0x4c, 0x68, 0x5b, 0x0b, 0x3b, 0x75, 0x74, 0xd4, 0x87, 0x30, 0xd9, 0x6d, 0x78, 0xff, 0x75,
-	0x4d, 0x56, 0xae, 0x32, 0x79, 0xbb, 0x29, 0xeb, 0xff, 0xb9, 0xcc, 0x72, 0xd4, 0xbb, 0x7a, 0x2f,
-	0xce, 0x7c, 0x7d, 0x10, 0x73, 0x04, 0x42, 0x14, 0xe0, 0x52, 0xbf, 0xf3, 0x90, 0xfe, 0x8b, 0x4f,
-	0x1f, 0x98, 0x28, 0x94, 0x46, 0xb8, 0x05, 0x48, 0x13, 0x43, 0xb7, 0x34, 0x7b, 0x20, 0x3a, 0xd5,
-	0x79, 0xcf, 0x2b, 0x70, 0x1f, 0xd8, 0xa4, 0x5d, 0x29, 0x37, 0x03, 0x69, 0x5b, 0x53, 0x08, 0xb6,
-	0x72, 0xe3, 0x6e, 0x26, 0x99, 0xde, 0x55, 0x57, 0x5d, 0x74, 0x1a, 0x7c, 0x00, 0x77, 0xac, 0x7c,
-	0xca, 0x1d, 0x3b, 0x0f, 0xb9, 0xbf, 0x21, 0x98, 0x71, 0x1f, 0x8c, 0x45, 0xfe, 0x42, 0xf2, 0xbb,
-	0x3d, 0xe4, 0xa5, 0x84, 0x37, 0x1e, 0x07, 0x10, 0xf3, 0x20, 0xf4, 0xb7, 0x84, 0xf4, 0x9f, 0x10,
-	0x4c, 0x7b, 0x0b, 0xa0, 0x83, 0x37, 0x23, 0x6d, 0x31, 0x02, 0x7a, 0x05, 0xce, 0x50, 0x1e, 0x6f,
-	0xb0, 0x93, 0x5c, 0x02, 0x21, 0x13, 0xbb, 0xda, 0x83, 0x5d, 0x64, 0x63, 0xf7, 0x56, 0x2e, 0x5e,
-	0x86, 0x8b, 0x7d, 0x8e, 0x03, 0xe0, 0xca, 0xaf, 0x34, 0x8c, 0x37, 0x88, 0xce, 0xed, 0x21, 0xc8,
-	0xf4, 0xfd, 0xea, 0x2c, 0x30, 0xe7, 0x93, 0xb1, 0xfb, 0xf9, 0x95, 0x61, 0x3d, 0x82, 0x62, 0xb8,
-	0x37, 0x08, 0xb2, 0xac, 0x4f, 0xc5, 0x52, 0x52, 0x54, 0x86, 0x13, 0xbf, 0x3a, 0x82, 0x53, 0x58,
-	0xcd, 0x0b, 0x38, 0x7b, 0x6a, 0xc3, 0x17, 0x92, 0x82, 0x45, 0x95, 0xfc, 0xc2, 0x9f, 0x2a, 0xc3,
-	0x5c, 0xbb, 0x30, 0x15, 0xdf, 0xb3, 0xa5, 0xc1, 0x61, 0x22, 0x72, 0xfe, 0xd6, 0x50, 0xf2, 0x68,
-	0xea, 0xf8, 0x92, 0x4b, 0x4c, 0x1d, 0x93, 0x27, 0xa7, 0x66, 0xee, 0x1a, 0xee, 0x25, 0x4c, 0xf7,
-	0xdb, 0x33, 0x52, 0x22, 0x48, 0xdc, 0x81, 0x5f, 0x1e, 0xd2, 0x21, 0x2c, 0xa0, 0x03, 0x17, 0x62,
-	0xa3, 0x7e, 0x23, 0xb9, 0x67, 0x4e, 0xab, 0xf9, 0x9b, 0xc3, 0xa8, 0x83, 0xbc, 0xfc, 0xff, 0xaf,
-	0xdc, 0xef, 0x77, 0xfd, 0xc9, 0xc1, 0x91, 0x80, 0x0e, 0x8f, 0x04, 0xf4, 0xf3, 0x48, 0x40, 0x6f,
-	0x8f, 0x85, 0xd4, 0xe1, 0xb1, 0x90, 0xfa, 0x7a, 0x2c, 0xa4, 0x9e, 0x2f, 0xeb, 0x86, 0xb3, 0xb1,
-	0xdd, 0x2c, 0xab, 0xd8, 0x94, 0x1a, 0xb5, 0x47, 0x4f, 0xe5, 0x5a, 0xe9, 0xbe, 0x37, 0xed, 0xd1,
-	0xc9, 0xef, 0xac, 0x44, 0x87, 0xdf, 0xd9, 0x6d, 0x6b, 0xa4, 0x99, 0xf6, 0xfe, 0x47, 0x2e, 0xfd,
-	0x0e, 0x00, 0x00, 0xff, 0xff, 0x5e, 0xb5, 0x85, 0x75, 0x31, 0x0b, 0x00, 0x00,
+	// 698 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x96, 0x3d, 0x6f, 0xd3, 0x40,
+	0x18, 0xc7, 0x73, 0x6d, 0x09, 0xea, 0x15, 0x89, 0xd6, 0xad, 0xda, 0xd4, 0x80, 0x1b, 0x19, 0x84,
+	0xa2, 0x40, 0xec, 0x36, 0xbc, 0x14, 0x82, 0x40, 0x8a, 0x19, 0x18, 0x50, 0x10, 0xb8, 0xb0, 0xb0,
+	0x54, 0x17, 0xc7, 0x72, 0x4d, 0x6b, 0x5f, 0xe4, 0xbb, 0x5a, 0xed, 0x04, 0x62, 0x64, 0xe2, 0x63,
+	0x30, 0x20, 0xd1, 0x81, 0x0f, 0xd1, 0x8d, 0x0a, 0x09, 0x09, 0x84, 0x84, 0x50, 0x3b, 0xe4, 0x6b,
+	0x20, 0xdb, 0x67, 0xc7, 0xb5, 0x63, 0x87, 0x64, 0x82, 0xa5, 0xb2, 0xef, 0xf9, 0x3f, 0x2f, 0x3f,
+	0xdf, 0xff, 0xae, 0x81, 0x65, 0x0b, 0xd9, 0xd4, 0x41, 0xda, 0x16, 0x32, 0x6d, 0x99, 0x20, 0x5b,
+	0xa3, 0x26, 0xb6, 0x65, 0x77, 0x4d, 0xa6, 0x7b, 0x52, 0xd7, 0xc1, 0x14, 0x73, 0x4b, 0x31, 0x85,
+	0x14, 0x2a, 0x24, 0x77, 0x8d, 0x9f, 0x43, 0x96, 0x69, 0x63, 0xd9, 0xff, 0x1b, 0x68, 0xf9, 0x25,
+	0x0d, 0x13, 0x0b, 0x13, 0xd9, 0x22, 0x86, 0x57, 0xc3, 0x22, 0x06, 0x0b, 0x2c, 0x07, 0x81, 0x4d,
+	0xff, 0x4d, 0x0e, 0x5e, 0x58, 0x68, 0xc1, 0xc0, 0x06, 0x0e, 0xd6, 0xbd, 0x27, 0xb6, 0x7a, 0x25,
+	0x6b, 0xae, 0x2e, 0x72, 0x90, 0x15, 0xe6, 0x56, 0xb2, 0x54, 0xe1, 0xb3, 0xee, 0x04, 0x4a, 0xf1,
+	0x23, 0x80, 0x4b, 0x2d, 0x62, 0x34, 0x3b, 0x1d, 0x65, 0x07, 0x69, 0xdb, 0x3b, 0x26, 0xa1, 0x4d,
+	0x4d, 0xc3, 0xbb, 0x36, 0x25, 0xdc, 0x6d, 0x38, 0x8d, 0x76, 0xe9, 0x16, 0x76, 0x4c, 0xba, 0x5f,
+	0x02, 0x65, 0x50, 0x99, 0x56, 0x4a, 0x5f, 0x3f, 0xd7, 0x16, 0xd8, 0x98, 0xcd, 0x4e, 0xc7, 0xd1,
+	0x09, 0xd9, 0xa0, 0x8e, 0x69, 0x1b, 0x6a, 0x5f, 0xca, 0x3d, 0x82, 0x5c, 0x3b, 0x2c, 0xb6, 0x89,
+	0x58, 0xb5, 0xd2, 0x44, 0x79, 0x32, 0xb7, 0xc0, 0x5c, 0x3b, 0x39, 0x40, 0x63, 0xf6, 0x6d, 0xef,
+	0xa0, 0x1a, 0x9f, 0x41, 0xfc, 0x04, 0x20, 0xdf, 0x22, 0x86, 0xaa, 0x5b, 0xd8, 0xd5, 0xff, 0x8b,
+	0x89, 0x0f, 0x01, 0x3c, 0xdf, 0x22, 0xc6, 0x8b, 0x6e, 0x07, 0x51, 0xfd, 0xa9, 0xbf, 0x49, 0x63,
+	0x8f, 0xa9, 0xc0, 0x62, 0xb0, 0xcd, 0xa5, 0x89, 0x32, 0xa8, 0xcc, 0xd4, 0x57, 0xa4, 0x0c, 0x0f,
+	0x4a, 0x41, 0x23, 0x65, 0xfa, 0xf0, 0xd7, 0x4a, 0xe1, 0x43, 0xef, 0xa0, 0x0a, 0x54, 0x96, 0xd9,
+	0xb8, 0x7b, 0x7a, 0xc2, 0x77, 0xbd, 0x83, 0xea, 0xd5, 0xb8, 0x5b, 0xf6, 0xfa, 0x7e, 0x49, 0x8c,
+	0x2d, 0x2e, 0xfb, 0x56, 0x89, 0x2f, 0xa9, 0x3a, 0xe9, 0x62, 0x9b, 0xe8, 0xe2, 0x4f, 0x00, 0x17,
+	0xa2, 0xd8, 0x46, 0x64, 0xb2, 0xf1, 0x51, 0x1f, 0xc3, 0x99, 0xbe, 0x57, 0x83, 0xad, 0x98, 0xa9,
+	0x5f, 0xce, 0xe4, 0xed, 0xb7, 0x54, 0xa6, 0x3c, 0x66, 0x35, 0x9e, 0xdd, 0x78, 0x90, 0x66, 0xbe,
+	0x36, 0x8c, 0x39, 0x06, 0x21, 0x0a, 0xf0, 0xe2, 0xa0, 0xf5, 0x88, 0xfe, 0x5b, 0x40, 0x1f, 0x86,
+	0x18, 0x94, 0x4e, 0xb8, 0x55, 0x58, 0x24, 0xa6, 0x61, 0xeb, 0xce, 0x50, 0x74, 0xa6, 0xf3, 0xbf,
+	0x57, 0x98, 0x3e, 0xd4, 0x80, 0x7d, 0x29, 0xb7, 0x08, 0x8b, 0x8e, 0x8e, 0x08, 0xb6, 0x4b, 0x93,
+	0x5e, 0x27, 0x95, 0xbd, 0x35, 0xee, 0x79, 0xe8, 0xac, 0xf8, 0x10, 0xee, 0xd4, 0xf8, 0x8c, 0x3b,
+	0xb5, 0x1e, 0x71, 0xff, 0x00, 0x70, 0xd1, 0xfb, 0x30, 0x36, 0xf9, 0x07, 0xc9, 0xef, 0x27, 0xc8,
+	0x6b, 0x39, 0x3b, 0x9e, 0x06, 0x10, 0xcb, 0x50, 0x18, 0x1c, 0x89, 0xe8, 0xbf, 0x00, 0x38, 0xef,
+	0xdf, 0x45, 0x2e, 0xde, 0x8e, 0xd9, 0x62, 0x0c, 0xf4, 0x3a, 0x3c, 0xcb, 0x78, 0xfc, 0x83, 0x9d,
+	0x97, 0x12, 0x0a, 0x33, 0xb1, 0x1b, 0x09, 0xec, 0x6a, 0x36, 0x76, 0x72, 0x72, 0xf1, 0x12, 0xbc,
+	0x30, 0x60, 0x39, 0x04, 0xae, 0xf7, 0xa6, 0xe0, 0x64, 0x8b, 0x18, 0xdc, 0x2b, 0x78, 0xee, 0xd4,
+	0x75, 0x56, 0xc9, 0x3c, 0x96, 0x89, 0xeb, 0x82, 0x5f, 0xfd, 0x5b, 0x65, 0xd8, 0x93, 0xdb, 0x87,
+	0x73, 0xe9, 0x4b, 0xa5, 0x36, 0xbc, 0x4c, 0x4c, 0xce, 0xdf, 0x1a, 0x49, 0x1e, 0x6f, 0x9d, 0x3e,
+	0xd1, 0xb9, 0xad, 0x53, 0xf2, 0xfc, 0xd6, 0x99, 0x07, 0x8b, 0x7b, 0x0d, 0xe7, 0x07, 0x1d, 0x2a,
+	0x39, 0x17, 0x24, 0x9d, 0xc0, 0xaf, 0x8f, 0x98, 0x10, 0x0d, 0xe0, 0xc2, 0xd9, 0x94, 0xaf, 0xaf,
+	0xe7, 0x15, 0x4b, 0xaa, 0xf9, 0x9b, 0xa3, 0xa8, 0xc3, 0xbe, 0xfc, 0x99, 0x37, 0xde, 0x3f, 0x2b,
+	0xe5, 0xd9, 0xe1, 0xb1, 0x00, 0x8e, 0x8e, 0x05, 0xf0, 0xfb, 0x58, 0x00, 0xef, 0x4f, 0x84, 0xc2,
+	0xd1, 0x89, 0x50, 0xf8, 0x7e, 0x22, 0x14, 0x5e, 0xae, 0x1b, 0x26, 0xdd, 0xda, 0x6d, 0x4b, 0x1a,
+	0xb6, 0xe4, 0x56, 0xf3, 0xc9, 0x73, 0xb5, 0x59, 0x7b, 0xe8, 0x5b, 0x3b, 0x6e, 0x73, 0xf7, 0x4e,
+	0xdc, 0xe9, 0x74, 0xbf, 0xab, 0x93, 0x76, 0xd1, 0xff, 0xbd, 0x73, 0xe3, 0x4f, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0xa1, 0xc1, 0xa4, 0x79, 0xd9, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -785,22 +712,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// AddBlacklistAccount defines a (governance) operation for adding an account
-	// to the blacklist.
-	AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error)
-	// RemoveBlacklistAccount defines a (governance) operation for removing an
-	// account from the blacklist.
-	RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error)
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// UpdateSanctioners defines a (governance) operation that replaces the whole
 	// sanctioner list.
 	UpdateSanctioners(ctx context.Context, in *MsgUpdateSanctioners, opts ...grpc.CallOption) (*MsgUpdateSanctionersResponse, error)
-	// SanctionAddresses lets any sanctioner add addresses to the sanction list.
+	// SanctionAddresses adds addresses to the sanction list. The signer is the
+	// gov authority or a sanctioner with any role.
 	SanctionAddresses(ctx context.Context, in *MsgSanctionAddresses, opts ...grpc.CallOption) (*MsgSanctionAddressesResponse, error)
-	// UnsanctionAddresses lets a full sanctioner remove addresses that a
-	// sanctioner added.
+	// UnsanctionAddresses removes addresses from the sanction list. The signer
+	// is the gov authority, or a full sanctioner for entries a sanctioner added.
 	UnsanctionAddresses(ctx context.Context, in *MsgUnsanctionAddresses, opts ...grpc.CallOption) (*MsgUnsanctionAddressesResponse, error)
 	// RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
 	// the sanctioner list.
@@ -813,24 +735,6 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
-}
-
-func (c *msgClient) AddBlacklistAccounts(ctx context.Context, in *MsgAddBlacklistAccounts, opts ...grpc.CallOption) (*MsgAddBlacklistAccountsResponse, error) {
-	out := new(MsgAddBlacklistAccountsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/AddBlacklistAccounts", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) RemoveBlacklistAccounts(ctx context.Context, in *MsgRemoveBlacklistAccounts, opts ...grpc.CallOption) (*MsgRemoveBlacklistAccountsResponse, error) {
-	out := new(MsgRemoveBlacklistAccountsResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccounts", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
@@ -880,22 +784,17 @@ func (c *msgClient) RevokeSanctioner(ctx context.Context, in *MsgRevokeSanctione
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// AddBlacklistAccount defines a (governance) operation for adding an account
-	// to the blacklist.
-	AddBlacklistAccounts(context.Context, *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error)
-	// RemoveBlacklistAccount defines a (governance) operation for removing an
-	// account from the blacklist.
-	RemoveBlacklistAccounts(context.Context, *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error)
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// UpdateSanctioners defines a (governance) operation that replaces the whole
 	// sanctioner list.
 	UpdateSanctioners(context.Context, *MsgUpdateSanctioners) (*MsgUpdateSanctionersResponse, error)
-	// SanctionAddresses lets any sanctioner add addresses to the sanction list.
+	// SanctionAddresses adds addresses to the sanction list. The signer is the
+	// gov authority or a sanctioner with any role.
 	SanctionAddresses(context.Context, *MsgSanctionAddresses) (*MsgSanctionAddressesResponse, error)
-	// UnsanctionAddresses lets a full sanctioner remove addresses that a
-	// sanctioner added.
+	// UnsanctionAddresses removes addresses from the sanction list. The signer
+	// is the gov authority, or a full sanctioner for entries a sanctioner added.
 	UnsanctionAddresses(context.Context, *MsgUnsanctionAddresses) (*MsgUnsanctionAddressesResponse, error)
 	// RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
 	// the sanctioner list.
@@ -906,12 +805,6 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) AddBlacklistAccounts(ctx context.Context, req *MsgAddBlacklistAccounts) (*MsgAddBlacklistAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddBlacklistAccounts not implemented")
-}
-func (*UnimplementedMsgServer) RemoveBlacklistAccounts(ctx context.Context, req *MsgRemoveBlacklistAccounts) (*MsgRemoveBlacklistAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistAccounts not implemented")
-}
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
@@ -930,42 +823,6 @@ func (*UnimplementedMsgServer) RevokeSanctioner(ctx context.Context, req *MsgRev
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
-}
-
-func _Msg_AddBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAddBlacklistAccounts)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AddBlacklistAccounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mantrachain.sanction.v1.Msg/AddBlacklistAccounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AddBlacklistAccounts(ctx, req.(*MsgAddBlacklistAccounts))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RemoveBlacklistAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveBlacklistAccounts)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mantrachain.sanction.v1.Msg/RemoveBlacklistAccounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveBlacklistAccounts(ctx, req.(*MsgRemoveBlacklistAccounts))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1064,14 +921,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddBlacklistAccounts",
-			Handler:    _Msg_AddBlacklistAccounts_Handler,
-		},
-		{
-			MethodName: "RemoveBlacklistAccounts",
-			Handler:    _Msg_RemoveBlacklistAccounts_Handler,
-		},
-		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
 		},
@@ -1135,29 +984,6 @@ func (m *MsgAddBlacklistAccounts) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAddBlacklistAccountsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgAddBlacklistAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgAddBlacklistAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
 func (m *MsgRemoveBlacklistAccounts) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1194,29 +1020,6 @@ func (m *MsgRemoveBlacklistAccounts) MarshalToSizedBuffer(dAtA []byte) (int, err
 		i--
 		dAtA[i] = 0xa
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRemoveBlacklistAccountsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRemoveBlacklistAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRemoveBlacklistAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -1585,15 +1388,6 @@ func (m *MsgAddBlacklistAccounts) Size() (n int) {
 	return n
 }
 
-func (m *MsgAddBlacklistAccountsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgRemoveBlacklistAccounts) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1610,15 +1404,6 @@ func (m *MsgRemoveBlacklistAccounts) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
-	return n
-}
-
-func (m *MsgRemoveBlacklistAccountsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
 	return n
 }
 
@@ -1888,56 +1673,6 @@ func (m *MsgAddBlacklistAccounts) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAddBlacklistAccountsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAddBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *MsgRemoveBlacklistAccounts) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2031,56 +1766,6 @@ func (m *MsgRemoveBlacklistAccounts) Unmarshal(dAtA []byte) error {
 			}
 			m.BlacklistAccounts = append(m.BlacklistAccounts, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRemoveBlacklistAccountsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRemoveBlacklistAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
