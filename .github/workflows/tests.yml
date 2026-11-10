@@ -31,9 +31,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # mantrachain's Go is only used to resolve the SDK version and install
+      # tparse. The SDK tests themselves run on the SDK's own Go (see below).
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+          cache: false
+      - name: Install tparse
+        run: |
+          go install github.com/mfridman/tparse@latest
       - name: Extract Tag or Commit
         run: |
           FULL_VERSION=$(go list -m github.com/cosmos/cosmos-sdk 2> /dev/null | sed 's:.* ::')
@@ -52,9 +58,16 @@ jobs:
           repository: MANTRA-Chain/cosmos-sdk
           path: cosmos-sdk
           ref: ${{ env.SDK_VERSION }}
-      - name: Install tparse
+      # Run the SDK tests the way the SDK's own CI does: on the Go major.minor
+      # declared in the SDK's go.mod (latest patch), not mantrachain's Go.
+      - name: Detect SDK Go version
         run: |
-          go install github.com/mfridman/tparse@latest
+          SDK_GO_VERSION=$(awk '/^go /{print $2; exit}' cosmos-sdk/go.mod | cut -d. -f1,2)
+          echo "SDK_GO_VERSION=${SDK_GO_VERSION}" | tee -a $GITHUB_ENV
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.SDK_GO_VERSION }}
+          cache-dependency-path: cosmos-sdk/go.sum
       - name: Run all tests
         run: |
           # Define directories to skip
@@ -70,15 +83,7 @@ jobs:
             fi
           done
 
-          # The SDK modules pin bytedance/sonic < v1.15, which does not build
-          # with the Go version from mantrachain's go.mod. Use the version
-          # mantrachain resolves, which is what ships in the binary.
-          SONIC_VERSION=$(go -C "$GITHUB_WORKSPACE" list -m -f '{{.Version}}' github.com/bytedance/sonic)
-          for mod in $(grep -rl --include=go.mod 'github.com/bytedance/sonic ' .); do
-            echo "Setting sonic ${SONIC_VERSION} in ${mod}"
-            (cd "$(dirname "$mod")" && go get "github.com/bytedance/sonic@${SONIC_VERSION}")
-          done
-
+          go version
           make test-all
         working-directory: cosmos-sdk
 
