@@ -20,6 +20,9 @@ type (
 		// evmKeeper clears EIP-7702 delegations from sanctioned accounts. It
 		// may be nil, in which case nothing is cleared.
 		evmKeeper types.EVMKeeper
+		// tokenFactoryKeeper identifies IBC escrow accounts, which only
+		// governance can sanction.
+		tokenFactoryKeeper types.TokenFactoryKeeper
 
 		// the address capable of executing a MsgUpdateParams message.
 		// Typically, this should be the x/gov module account.
@@ -42,16 +45,18 @@ func NewKeeper(
 	authority string,
 	accountKeeper types.AccountKeeper,
 	evmKeeper types.EVMKeeper,
+	tokenFactoryKeeper types.TokenFactoryKeeper,
 ) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
-		cdc:           cdc,
-		storeService:  storeService,
-		authority:     authority,
-		logger:        logger,
-		accountKeeper: accountKeeper,
-		evmKeeper:     evmKeeper,
+		cdc:                cdc,
+		storeService:       storeService,
+		authority:          authority,
+		logger:             logger,
+		accountKeeper:      accountKeeper,
+		evmKeeper:          evmKeeper,
+		tokenFactoryKeeper: tokenFactoryKeeper,
 
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		BlacklistAccounts: collections.NewKeySet(sb, types.PrefixBlackListAccounts, "blacklist_accounts", collections.StringKey),

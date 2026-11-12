@@ -189,6 +189,7 @@ func TestSanctionProtections(t *testing.T) {
 	cases := map[string]string{
 		"full sanctioner":     f.full,
 		"add-only sanctioner": f.addOnly,
+		"IBC escrow account":  keepertest.SanctionEscrowAccount.String(),
 	}
 	for name, target := range cases {
 		t.Run(name, func(t *testing.T) {

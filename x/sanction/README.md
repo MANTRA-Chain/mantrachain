@@ -54,9 +54,8 @@ Add-only is meant for automated monitoring, so a stolen key can't be used to unb
 
 Rules:
 
-* A sanctioner can't sanction another sanctioner.
+* A sanctioner can't sanction another sanctioner, or the escrow account of an open IBC transfer channel, which holds the coins of everyone who sent over that channel. Governance can sanction both. An address sanctioned before its channel opens stays sanctioned.
 * Nobody, governance included, can sanction a module account (the gov authority among them), because the send restriction would stop it sending.
-* Governance can sanction a sanctioner.
 * Appointing an address that isn't a sanctioner yet lifts any sanction on it, so one placed while the proposal votes can't lock the new sanctioner out.
 * `max_addresses_per_msg` caps addresses per message and `max_reason_length` caps the reason, for every signer including governance. A larger governance batch is split across several messages in one proposal, or governance raises the params first.
 * Every message needs a non-empty reason, including governance's.
@@ -172,8 +171,8 @@ Measured by `TestSanctionGasAtCap` in `app/sanction_integration_test.go`, with a
 
 | Addresses | Execution gas | Tx-size gas | Total | Share of mainnet's 75M block |
 | --- | --- | --- | --- | --- |
-| 1 | 12,121 | ~5,600 | ~18,000 | 0.02% |
-| 10 | 79,675 | ~9,900 | ~90,000 | 0.1% |
-| 50 | 379,915 | ~28,700 | ~409,000 | 0.5% |
+| 1 | 13,184 | ~5,600 | ~19,000 | 0.03% |
+| 10 | 90,305 | ~9,900 | ~100,000 | 0.1% |
+| 50 | 433,065 | ~28,700 | ~462,000 | 0.6% |
 
-About 7,600 gas per address, including the module account check and the check for an EIP-7702 delegation. Ante handler costs such as signature verification come on top.
+About 8,700 gas per address, including the checks for a module account, an IBC escrow account and an EIP-7702 delegation. Ante handler costs such as signature verification come on top.

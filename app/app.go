@@ -704,6 +704,7 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper,
 		app.EVMKeeper,
+		app.TokenFactoryKeeper,
 	)
 	// Stop coins leaving blacklisted addresses on every path, not only txs
 	// they sign. The restriction is shared by all copies of the bank keeper,

@@ -282,8 +282,8 @@ func (k Keeper) isModuleAccount(ctx context.Context, addr string) (bool, error) 
 	return isModule, nil
 }
 
-// checkNotProtected fails if addr may only be sanctioned by governance, which
-// is anyone on the sanctioner list.
+// checkNotProtected fails if addr may only be sanctioned by governance: a
+// sanctioner, or the escrow account of an open IBC transfer channel.
 func (k Keeper) checkNotProtected(ctx context.Context, addr string) error {
 	isSanctioner, err := k.Sanctioners.Has(ctx, addr)
 	if err != nil {
@@ -291,6 +291,13 @@ func (k Keeper) checkNotProtected(ctx context.Context, addr string) error {
 	}
 	if isSanctioner {
 		return errorsmod.Wrapf(types.ErrProtectedAddress, "%s is a sanctioner", addr)
+	}
+	acc, err := sdk.AccAddressFromBech32(addr)
+	if err != nil {
+		return err
+	}
+	if k.tokenFactoryKeeper.IsEscrowAddress(sdk.UnwrapSDKContext(ctx), acc) {
+		return errorsmod.Wrapf(types.ErrProtectedAddress, "%s is an IBC escrow account", addr)
 	}
 	return nil
 }

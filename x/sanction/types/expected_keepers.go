@@ -22,3 +22,9 @@ type EVMKeeper interface {
 	GetCode(ctx sdk.Context, codeHash common.Hash) []byte
 	DeleteCodeHash(ctx sdk.Context, addr common.Address)
 }
+
+// TokenFactoryKeeper defines the x/tokenfactory keeper method x/sanction uses
+// to recognise the escrow accounts of open IBC transfer channels.
+type TokenFactoryKeeper interface {
+	IsEscrowAddress(ctx sdk.Context, address sdk.AccAddress) bool
+}

@@ -42,6 +42,16 @@ func (mockAccountKeeper) GetModulePermissions() map[string]authtypes.Permissions
 	return perms
 }
 
+// SanctionEscrowAccount is the address the test tokenfactory keeper reports
+// as an IBC escrow account.
+var SanctionEscrowAccount = sdk.AccAddress([]byte("escrow______________"))
+
+type mockTokenFactoryKeeper struct{}
+
+func (mockTokenFactoryKeeper) IsEscrowAddress(_ sdk.Context, addr sdk.AccAddress) bool {
+	return addr.Equals(SanctionEscrowAccount)
+}
+
 func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 	tb.Helper()
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
@@ -63,6 +73,7 @@ func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 		authority.String(),
 		mockAccountKeeper{},
 		nil,
+		mockTokenFactoryKeeper{},
 	)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{Height: 1}, false, log.NewNopLogger())
