@@ -28,13 +28,6 @@ service Query {
     option (google.api.http).get =
         "/MANTRA-Chain/mantrachain/sanction/v1/sanctioners";
   }
-  // SanctionedAddresses queries the sanctioned addresses with who added each
-  // and when.
-  rpc SanctionedAddresses(QuerySanctionedAddressesRequest)
-      returns (QuerySanctionedAddressesResponse) {
-    option (google.api.http).get =
-        "/MANTRA-Chain/mantrachain/sanction/v1/sanctioned_addresses";
-  }
   // IsSanctioned queries whether one address is sanctioned.
   rpc IsSanctioned(QueryIsSanctionedRequest)
       returns (QueryIsSanctionedResponse) {
@@ -80,20 +73,6 @@ message QuerySanctionersResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// QuerySanctionedAddressesRequest is request type for the
-// Query/SanctionedAddresses RPC method.
-message QuerySanctionedAddressesRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QuerySanctionedAddressesResponse is response type for the
-// Query/SanctionedAddresses RPC method.
-message QuerySanctionedAddressesResponse {
-  repeated SanctionedAddress sanctioned_addresses = 1
-      [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
 // QueryIsSanctionedRequest is request type for the Query/IsSanctioned RPC
 // method.
 message QueryIsSanctionedRequest {
@@ -104,6 +83,4 @@ message QueryIsSanctionedRequest {
 // method.
 message QueryIsSanctionedResponse {
   bool sanctioned = 1;
-  // record is set when the address is sanctioned and has a record.
-  SanctionRecord record = 2;
 }

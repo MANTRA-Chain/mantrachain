@@ -11830,31 +11830,6 @@ paths:
                 properties:
                   sanctioned:
                     type: boolean
-                  record:
-                    description: record is set when the address is sanctioned and has a record.
-                    type: object
-                    properties:
-                      actor:
-                        type: string
-                        description: actor is the sanctioner or governance authority that added the
-                          entry.
-                      actor_role:
-                        description: >-
-                          actor_role is the actor's role at the time, or
-                          UNSPECIFIED for
-
-                          governance.
-                        type: string
-                        enum:
-                          - SANCTIONER_ROLE_UNSPECIFIED
-                          - SANCTIONER_ROLE_FULL
-                          - SANCTIONER_ROLE_ADD_ONLY
-                        default: SANCTIONER_ROLE_UNSPECIFIED
-                      reason:
-                        type: string
-                      height:
-                        type: string
-                        format: int64
                 description: >-
                   QueryIsSanctionedResponse is response type for the
                   Query/IsSanctioned RPC
@@ -11915,15 +11890,15 @@ paths:
                           max_addresses_per_msg caps how many addresses one
                           MsgSanctionAddresses or
 
-                          MsgUnsanctionAddresses can carry. Governance messages are not capped.
+                          MsgUnsanctionAddresses can carry, from any signer including governance.
                       max_reason_length:
                         type: integer
                         format: int64
                         description: >-
                           max_reason_length caps the byte length of the reason
-                          on sanctioner
+                          on those messages,
 
-                          messages, which keeps gas per message predictable.
+                          which keeps gas per message predictable.
                 description: QueryParamsResponse is response type for the Query/Params RPC
                   method.
         default:
@@ -11950,168 +11925,6 @@ paths:
                         value:
                           type: string
                           format: byte
-      tags:
-        - Query
-  /MANTRA-Chain/mantrachain/sanction/v1/sanctioned_addresses:
-    get:
-      summary: |-
-        SanctionedAddresses queries the sanctioned addresses with who added each
-        and when.
-      operationId: SanctionedAddresses
-      responses:
-        "200":
-          description: A successful response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  sanctioned_addresses:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address:
-                          type: string
-                        record:
-                          description: record is empty for entries added before sanctioners existed.
-                          type: object
-                          properties:
-                            actor:
-                              type: string
-                              description: actor is the sanctioner or governance authority that added the
-                                entry.
-                            actor_role:
-                              description: >-
-                                actor_role is the actor's role at the time, or
-                                UNSPECIFIED for
-
-                                governance.
-                              type: string
-                              enum:
-                                - SANCTIONER_ROLE_UNSPECIFIED
-                                - SANCTIONER_ROLE_FULL
-                                - SANCTIONER_ROLE_ADD_ONLY
-                              default: SANCTIONER_ROLE_UNSPECIFIED
-                            reason:
-                              type: string
-                            height:
-                              type: string
-                              format: int64
-                      description: SanctionedAddress pairs a sanctioned address with its record, if
-                        any.
-                  pagination:
-                    type: object
-                    properties:
-                      next_key:
-                        type: string
-                        format: byte
-                        description: >-
-                          next_key is the key to be passed to PageRequest.key to
-
-                          query the next page most efficiently. It will be empty if
-
-                          there are no more results.
-                      total:
-                        type: string
-                        format: uint64
-                        title: >-
-                          total is total number of results available if
-                          PageRequest.count_total
-
-                          was set, its value is undefined otherwise
-                    description: >-
-                      PageResponse is to be embedded in gRPC response messages
-                      where the
-
-                      corresponding request message has used PageRequest.
-
-                       message SomeResponse {
-                               repeated Bar results = 1;
-                               PageResponse page = 2;
-                       }
-                description: |-
-                  QuerySanctionedAddressesResponse is response type for the
-                  Query/SanctionedAddresses RPC method.
-        default:
-          description: An unexpected error response.
-          content:
-            "*/*":
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  code:
-                    type: integer
-                    format: int32
-                  message:
-                    type: string
-                  details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type_url:
-                          type: string
-                        value:
-                          type: string
-                          format: byte
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          schema:
-            type: string
-            format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key should
-
-            be set.
-          in: query
-          required: false
-          schema:
-            type: string
-            format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          schema:
-            type: string
-            format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in UIs.
-
-            count_total is only respected when offset is used. It is ignored when key
-
-            is set.
-          in: query
-          required: false
-          schema:
-            type: boolean
-        - name: pagination.reverse
-          description: reverse is set to true if results are to be returned in the
-            descending order.
-          in: query
-          required: false
-          schema:
-            type: boolean
       tags:
         - Query
   /MANTRA-Chain/mantrachain/sanction/v1/sanctioners:
@@ -56353,13 +56166,15 @@ components:
             max_addresses_per_msg caps how many addresses one
             MsgSanctionAddresses or
 
-            MsgUnsanctionAddresses can carry. Governance messages are not capped.
+            MsgUnsanctionAddresses can carry, from any signer including governance.
         max_reason_length:
           type: integer
           format: int64
-          description: |-
-            max_reason_length caps the byte length of the reason on sanctioner
-            messages, which keeps gas per message predictable.
+          description: >-
+            max_reason_length caps the byte length of the reason on those
+            messages,
+
+            which keeps gas per message predictable.
       description: Params defines the parameters for the module.
     mantrachain.sanction.v1.QueryBlacklistResponse:
       type: object
@@ -56395,29 +56210,6 @@ components:
       properties:
         sanctioned:
           type: boolean
-        record:
-          description: record is set when the address is sanctioned and has a record.
-          type: object
-          properties:
-            actor:
-              type: string
-              description: actor is the sanctioner or governance authority that added the
-                entry.
-            actor_role:
-              description: |-
-                actor_role is the actor's role at the time, or UNSPECIFIED for
-                governance.
-              type: string
-              enum:
-                - SANCTIONER_ROLE_UNSPECIFIED
-                - SANCTIONER_ROLE_FULL
-                - SANCTIONER_ROLE_ADD_ONLY
-              default: SANCTIONER_ROLE_UNSPECIFIED
-            reason:
-              type: string
-            height:
-              type: string
-              format: int64
       description: >-
         QueryIsSanctionedResponse is response type for the Query/IsSanctioned
         RPC
@@ -56437,82 +56229,16 @@ components:
                 max_addresses_per_msg caps how many addresses one
                 MsgSanctionAddresses or
 
-                MsgUnsanctionAddresses can carry. Governance messages are not capped.
+                MsgUnsanctionAddresses can carry, from any signer including governance.
             max_reason_length:
               type: integer
               format: int64
               description: >-
-                max_reason_length caps the byte length of the reason on
-                sanctioner
+                max_reason_length caps the byte length of the reason on those
+                messages,
 
-                messages, which keeps gas per message predictable.
+                which keeps gas per message predictable.
       description: QueryParamsResponse is response type for the Query/Params RPC method.
-    mantrachain.sanction.v1.QuerySanctionedAddressesResponse:
-      type: object
-      properties:
-        sanctioned_addresses:
-          type: array
-          items:
-            type: object
-            properties:
-              address:
-                type: string
-              record:
-                description: record is empty for entries added before sanctioners existed.
-                type: object
-                properties:
-                  actor:
-                    type: string
-                    description: actor is the sanctioner or governance authority that added the
-                      entry.
-                  actor_role:
-                    description: >-
-                      actor_role is the actor's role at the time, or UNSPECIFIED
-                      for
-
-                      governance.
-                    type: string
-                    enum:
-                      - SANCTIONER_ROLE_UNSPECIFIED
-                      - SANCTIONER_ROLE_FULL
-                      - SANCTIONER_ROLE_ADD_ONLY
-                    default: SANCTIONER_ROLE_UNSPECIFIED
-                  reason:
-                    type: string
-                  height:
-                    type: string
-                    format: int64
-            description: SanctionedAddress pairs a sanctioned address with its record, if
-              any.
-        pagination:
-          type: object
-          properties:
-            next_key:
-              type: string
-              format: byte
-              description: |-
-                next_key is the key to be passed to PageRequest.key to
-                query the next page most efficiently. It will be empty if
-                there are no more results.
-            total:
-              type: string
-              format: uint64
-              title: >-
-                total is total number of results available if
-                PageRequest.count_total
-
-                was set, its value is undefined otherwise
-          description: |-
-            PageResponse is to be embedded in gRPC response messages where the
-            corresponding request message has used PageRequest.
-
-             message SomeResponse {
-                     repeated Bar results = 1;
-                     PageResponse page = 2;
-             }
-      description: |-
-        QuerySanctionedAddressesResponse is response type for the
-        Query/SanctionedAddresses RPC method.
     mantrachain.sanction.v1.QuerySanctionersResponse:
       type: object
       properties:
@@ -56572,60 +56298,6 @@ components:
       description: |-
         QuerySanctionersResponse is response type for the Query/Sanctioners RPC
         method.
-    mantrachain.sanction.v1.SanctionRecord:
-      type: object
-      properties:
-        actor:
-          type: string
-          description: actor is the sanctioner or governance authority that added the entry.
-        actor_role:
-          description: |-
-            actor_role is the actor's role at the time, or UNSPECIFIED for
-            governance.
-          type: string
-          enum:
-            - SANCTIONER_ROLE_UNSPECIFIED
-            - SANCTIONER_ROLE_FULL
-            - SANCTIONER_ROLE_ADD_ONLY
-          default: SANCTIONER_ROLE_UNSPECIFIED
-        reason:
-          type: string
-        height:
-          type: string
-          format: int64
-      description: |-
-        SanctionRecord records who sanctioned an address, why, and when. Entries
-        that predate sanctioners have no record and are treated as governance
-        entries.
-    mantrachain.sanction.v1.SanctionedAddress:
-      type: object
-      properties:
-        address:
-          type: string
-        record:
-          description: record is empty for entries added before sanctioners existed.
-          type: object
-          properties:
-            actor:
-              type: string
-              description: actor is the sanctioner or governance authority that added the
-                entry.
-            actor_role:
-              description: |-
-                actor_role is the actor's role at the time, or UNSPECIFIED for
-                governance.
-              type: string
-              enum:
-                - SANCTIONER_ROLE_UNSPECIFIED
-                - SANCTIONER_ROLE_FULL
-                - SANCTIONER_ROLE_ADD_ONLY
-              default: SANCTIONER_ROLE_UNSPECIFIED
-            reason:
-              type: string
-            height:
-              type: string
-              format: int64
-      description: SanctionedAddress pairs a sanctioned address with its record, if any.
     mantrachain.sanction.v1.Sanctioner:
       type: object
       properties:

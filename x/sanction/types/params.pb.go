@@ -27,10 +27,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // Params defines the parameters for the module.
 type Params struct {
 	// max_addresses_per_msg caps how many addresses one MsgSanctionAddresses or
-	// MsgUnsanctionAddresses can carry. Governance messages are not capped.
+	// MsgUnsanctionAddresses can carry, from any signer including governance.
 	MaxAddressesPerMsg uint32 `protobuf:"varint,1,opt,name=max_addresses_per_msg,json=maxAddressesPerMsg,proto3" json:"max_addresses_per_msg,omitempty"`
-	// max_reason_length caps the byte length of the reason on sanctioner
-	// messages, which keeps gas per message predictable.
+	// max_reason_length caps the byte length of the reason on those messages,
+	// which keeps gas per message predictable.
 	MaxReasonLength uint32 `protobuf:"varint,2,opt,name=max_reason_length,json=maxReasonLength,proto3" json:"max_reason_length,omitempty"`
 }
 

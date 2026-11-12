@@ -16,9 +16,8 @@ func NewMigrator(k Keeper) Migrator {
 }
 
 // Migrate1to2 sets the new params to their defaults. Existing blacklist
-// entries are left untouched and have no sanction record, so only governance
-// can remove them. The sanctioner list starts empty, which keeps the module
-// governance-only until governance appoints sanctioners.
+// entries are left untouched. The sanctioner list starts empty, which keeps
+// the module governance-only until governance appoints sanctioners.
 func (m Migrator) Migrate1to2(ctx sdk.Context) error {
 	return m.keeper.Params.Set(ctx, types.DefaultParams())
 }

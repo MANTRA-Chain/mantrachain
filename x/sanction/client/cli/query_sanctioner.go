@@ -34,34 +34,6 @@ func GetSanctioners() *cobra.Command {
 	return cmd
 }
 
-// GetSanctionedAddresses returns the sanctioned addresses with who added each
-// and when.
-func GetSanctionedAddresses() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "sanctioned-addresses [flags]",
-		Short: "Get the sanctioned addresses with who added each, why and when",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, _ []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-			res, err := types.NewQueryClient(clientCtx).SanctionedAddresses(cmd.Context(), &types.QuerySanctionedAddressesRequest{Pagination: pageReq})
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "sanctioned-addresses")
-	return cmd
-}
-
 // GetIsSanctioned returns whether one address is sanctioned.
 func GetIsSanctioned() *cobra.Command {
 	cmd := &cobra.Command{

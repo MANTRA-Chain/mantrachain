@@ -15,7 +15,6 @@ func TestGenesisState_Validate(t *testing.T) {
 		addr2 = "mantra1nmefvq9aa7t5p85vp8weuuwrmrppjgm6r9ccpa"
 	)
 	full := types.Sanctioner{Address: addr1, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}
-	record := &types.SanctionRecord{Actor: addr1, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_FULL, Reason: "r", Height: 1}
 
 	tests := []struct {
 		desc     string
@@ -49,12 +48,11 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    false,
 		},
 		{
-			desc: "sanctioners and records are valid",
+			desc: "sanctioners are valid",
 			genState: &types.GenesisState{
 				Params:            types.DefaultParams(),
 				BlacklistAccounts: []string{addr2},
 				Sanctioners:       []types.Sanctioner{full},
-				SanctionRecords:   []types.SanctionedAddress{{Address: addr2, Record: record}},
 			},
 			valid: true,
 		},
@@ -71,23 +69,6 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				Params:      types.DefaultParams(),
 				Sanctioners: []types.Sanctioner{{Address: addr1}},
-			},
-			valid: false,
-		},
-		{
-			desc: "record for an address not blacklisted rejected",
-			genState: &types.GenesisState{
-				Params:          types.DefaultParams(),
-				SanctionRecords: []types.SanctionedAddress{{Address: addr2, Record: record}},
-			},
-			valid: false,
-		},
-		{
-			desc: "empty record rejected",
-			genState: &types.GenesisState{
-				Params:            types.DefaultParams(),
-				BlacklistAccounts: []string{addr2},
-				SanctionRecords:   []types.SanctionedAddress{{Address: addr2}},
 			},
 			valid: false,
 		},

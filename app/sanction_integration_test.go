@@ -77,15 +77,43 @@ func TestSanctionFastPathBlocksSigner(t *testing.T) {
 	require.NoError(t, err)
 }
 
-// TestSanctionFastPathProtectsRealModuleAccounts uses the real account keeper
-// and module list.
-func TestSanctionFastPathProtectsRealModuleAccounts(t *testing.T) {
+// TestSanctionedSanctionerBlockedByAnte checks a sanctioner that governance
+// has sanctioned keeps its role but can't get a transaction past the ante
+// handler until a full sanctioner lifts it.
+func TestSanctionedSanctionerBlockedByAnte(t *testing.T) {
+	app, ctx, full, addOnly := sanctionAppCtx(t)
+	gov := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	dec := sanctionkeeper.NewBlacklistCheckDecorator(app.SanctionKeeper, app.AppCodec())
+	next := func(ctx sdk.Context, _ sdk.Tx, _ bool) (sdk.Context, error) { return ctx, nil }
+	botTx := func() sdk.Tx {
+		b := app.TxConfig().NewTxBuilder()
+		require.NoError(t, b.SetMsgs(sanctiontypes.NewMsgSanctionAddresses(addOnly, []string{sanctionTestAddr(1)}, "r")))
+		return b.GetTx()
+	}
+
+	msg := sanctiontypes.NewMsgSanctionAddresses(gov, []string{addOnly}, "bot key compromised")
+	_, err := app.MsgServiceRouter().Handler(msg)(ctx, msg)
+	require.NoError(t, err)
+	_, err = dec.AnteHandle(ctx, botTx(), false, next)
+	require.ErrorIs(t, err, sanctiontypes.ErrAccountBlacklisted)
+
+	unmsg := sanctiontypes.NewMsgUnsanctionAddresses(full, []string{addOnly}, "key rotated")
+	_, err = app.MsgServiceRouter().Handler(unmsg)(ctx, unmsg)
+	require.NoError(t, err)
+	_, err = dec.AnteHandle(ctx, botTx(), false, next)
+	require.NoError(t, err)
+}
+
+// TestSanctionFastPathModuleAccounts checks a sanctioner can sanction module
+// accounts, the gov authority included. Module accounts never sign
+// transactions, so listing them has no effect on the chain.
+func TestSanctionFastPathModuleAccounts(t *testing.T) {
 	app, ctx, full, _ := sanctionAppCtx(t)
 	for _, name := range []string{govtypes.ModuleName, distrtypes.ModuleName, authtypes.FeeCollectorName, sanctiontypes.ModuleName} {
 		target := authtypes.NewModuleAddress(name).String()
-		msg := sanctiontypes.NewMsgSanctionAddresses(full, []string{target}, "should fail")
+		msg := sanctiontypes.NewMsgSanctionAddresses(full, []string{target}, "allowed")
 		_, err := app.MsgServiceRouter().Handler(msg)(ctx, msg)
-		require.ErrorIs(t, err, sanctiontypes.ErrProtectedAddress, name)
+		require.NoError(t, err, name)
 	}
 }
 

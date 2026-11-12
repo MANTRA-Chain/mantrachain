@@ -333,10 +333,11 @@ var xxx_messageInfo_MsgUpdateSanctionersResponse proto.InternalMessageInfo
 // caps or the protected-address checks.
 type MsgSanctionAddresses struct {
 	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	// addresses is capped by params.max_addresses_per_msg for sanctioners.
+	// addresses is capped by params.max_addresses_per_msg.
 	Addresses []string `protobuf:"bytes,2,rep,name=addresses,proto3" json:"addresses,omitempty"`
-	// reason is stored with each entry and emitted in the event. Add-only
-	// sanctioners should include the detection rule and triggering tx hash.
+	// reason is emitted in the event and capped by params.max_reason_length.
+	// Add-only sanctioners should include the detection rule and triggering tx
+	// hash.
 	Reason string `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`
 }
 
@@ -433,11 +434,10 @@ func (m *MsgSanctionAddressesResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSanctionAddressesResponse proto.InternalMessageInfo
 
 // MsgUnsanctionAddresses removes addresses from the sanction list. Signer must
-// be the gov authority, which can remove any entry, or a full sanctioner, which
-// can remove entries added by sanctioners.
+// be the gov authority or a full sanctioner. Either can remove any entry.
 type MsgUnsanctionAddresses struct {
 	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
-	// addresses is capped by params.max_addresses_per_msg for sanctioners.
+	// addresses is capped by params.max_addresses_per_msg.
 	Addresses []string `protobuf:"bytes,2,rep,name=addresses,proto3" json:"addresses,omitempty"`
 	Reason    string   `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`
 }
@@ -722,7 +722,7 @@ type MsgClient interface {
 	// gov authority or a sanctioner with any role.
 	SanctionAddresses(ctx context.Context, in *MsgSanctionAddresses, opts ...grpc.CallOption) (*MsgSanctionAddressesResponse, error)
 	// UnsanctionAddresses removes addresses from the sanction list. The signer
-	// is the gov authority, or a full sanctioner for entries a sanctioner added.
+	// is the gov authority or a full sanctioner.
 	UnsanctionAddresses(ctx context.Context, in *MsgUnsanctionAddresses, opts ...grpc.CallOption) (*MsgUnsanctionAddressesResponse, error)
 	// RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
 	// the sanctioner list.
@@ -794,7 +794,7 @@ type MsgServer interface {
 	// gov authority or a sanctioner with any role.
 	SanctionAddresses(context.Context, *MsgSanctionAddresses) (*MsgSanctionAddressesResponse, error)
 	// UnsanctionAddresses removes addresses from the sanction list. The signer
-	// is the gov authority, or a full sanctioner for entries a sanctioner added.
+	// is the gov authority or a full sanctioner.
 	UnsanctionAddresses(context.Context, *MsgUnsanctionAddresses) (*MsgUnsanctionAddressesResponse, error)
 	// RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
 	// the sanctioner list.

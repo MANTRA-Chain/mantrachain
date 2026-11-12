@@ -28,7 +28,7 @@ service Msg {
   rpc SanctionAddresses(MsgSanctionAddresses)
       returns (MsgSanctionAddressesResponse);
   // UnsanctionAddresses removes addresses from the sanction list. The signer
-  // is the gov authority, or a full sanctioner for entries a sanctioner added.
+  // is the gov authority or a full sanctioner.
   rpc UnsanctionAddresses(MsgUnsanctionAddresses)
       returns (MsgUnsanctionAddressesResponse);
   // RevokeSanctioner lets a full sanctioner remove an add-only sanctioner from
@@ -95,11 +95,12 @@ message MsgSanctionAddresses {
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // addresses is capped by params.max_addresses_per_msg for sanctioners.
+  // addresses is capped by params.max_addresses_per_msg.
   repeated string addresses = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // reason is stored with each entry and emitted in the event. Add-only
-  // sanctioners should include the detection rule and triggering tx hash.
+  // reason is emitted in the event and capped by params.max_reason_length.
+  // Add-only sanctioners should include the detection rule and triggering tx
+  // hash.
   string reason = 3;
 }
 
@@ -108,14 +109,13 @@ message MsgSanctionAddresses {
 message MsgSanctionAddressesResponse {}
 
 // MsgUnsanctionAddresses removes addresses from the sanction list. Signer must
-// be the gov authority, which can remove any entry, or a full sanctioner, which
-// can remove entries added by sanctioners.
+// be the gov authority or a full sanctioner. Either can remove any entry.
 message MsgUnsanctionAddresses {
   option (amino.name) = "mantrachain/x/sanction/MsgUnsanctionAddresses";
   option (cosmos.msg.v1.signer) = "signer";
 
   string signer = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // addresses is capped by params.max_addresses_per_msg for sanctioners.
+  // addresses is capped by params.max_addresses_per_msg.
   repeated string addresses = 2
       [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   string reason = 3;

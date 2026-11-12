@@ -20,9 +20,4 @@ message GenesisState {
   // sanctioners is the initial sanctioner list. Empty keeps the module
   // governance-only.
   repeated Sanctioner sanctioners = 3 [ (gogoproto.nullable) = false ];
-
-  // sanction_records holds the record for each blacklisted account that has
-  // one. Every address here must also be in blacklist_accounts.
-  repeated SanctionedAddress sanction_records = 4
-      [ (gogoproto.nullable) = false ];
 }

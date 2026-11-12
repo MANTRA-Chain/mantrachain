@@ -74,7 +74,7 @@ func NewRevokeSanctionerCmd() *cobra.Command {
 }
 
 func addReasonFlag(cmd *cobra.Command) {
-	cmd.Flags().String(flagReason, "", "Why this change is being made; emitted in the event and stored with the entry")
+	cmd.Flags().String(flagReason, "", "Why this change is being made; emitted in the event")
 	_ = cmd.MarkFlagRequired(flagReason)
 	flags.AddTxFlagsToCmd(cmd)
 }

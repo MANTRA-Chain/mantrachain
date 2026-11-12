@@ -12,10 +12,10 @@ message Params {
   option (gogoproto.equal) = true;
 
   // max_addresses_per_msg caps how many addresses one MsgSanctionAddresses or
-  // MsgUnsanctionAddresses can carry. Governance messages are not capped.
+  // MsgUnsanctionAddresses can carry, from any signer including governance.
   uint32 max_addresses_per_msg = 1;
 
-  // max_reason_length caps the byte length of the reason on sanctioner
-  // messages, which keeps gas per message predictable.
+  // max_reason_length caps the byte length of the reason on those messages,
+  // which keeps gas per message predictable.
   uint32 max_reason_length = 2;
 }

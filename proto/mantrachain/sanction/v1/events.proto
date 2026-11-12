@@ -7,11 +7,14 @@ import "mantrachain/sanction/v1/sanctioner.proto";
 
 option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 
-// EventSanctionListChanged is emitted once per address whenever the sanction
-// list changes, whoever made the change.
+// EventSanctionListChanged is emitted once per MsgSanctionAddresses or
+// MsgUnsanctionAddresses that changes the list, whoever sent it.
 message EventSanctionListChanged {
-  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // sanctioned is true when the address was added, false when removed.
+  // addresses are the addresses actually added or removed. Addresses that
+  // were already listed, or not listed, are left out.
+  repeated string addresses = 1
+      [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  // sanctioned is true when the addresses were added, false when removed.
   bool sanctioned = 2;
   // actor is the sanctioner or governance authority that made the change.
   string actor = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
@@ -19,7 +22,6 @@ message EventSanctionListChanged {
   // filter on SANCTIONER_ROLE_ADD_ONLY to review automated entries.
   SanctionerRole actor_role = 4;
   string reason = 5;
-  int64 height = 6;
 }
 
 // EventSanctionersUpdated is emitted when governance replaces the sanctioner

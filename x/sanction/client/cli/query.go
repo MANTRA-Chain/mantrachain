@@ -24,7 +24,6 @@ func GetQueryCmd() *cobra.Command {
 		GetParams(),
 		GetBlacklist(),
 		GetSanctioners(),
-		GetSanctionedAddresses(),
 		GetIsSanctioned(),
 	)
 

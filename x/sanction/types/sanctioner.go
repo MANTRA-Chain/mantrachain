@@ -22,12 +22,6 @@ func (r SanctionerRole) IsValid() bool {
 	return r == SanctionerRole_SANCTIONER_ROLE_FULL || r == SanctionerRole_SANCTIONER_ROLE_ADD_ONLY
 }
 
-// CanUnsanction reports whether the role may remove sanctioned addresses and
-// revoke add-only sanctioners.
-func (r SanctionerRole) CanUnsanction() bool {
-	return r == SanctionerRole_SANCTIONER_ROLE_FULL
-}
-
 // ValidateSanctioners checks a full sanctioner list: valid addresses, valid
 // roles and no duplicates.
 func ValidateSanctioners(sanctioners []Sanctioner) error {

@@ -23,23 +23,3 @@ message Sanctioner {
   string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
   SanctionerRole role = 2;
 }
-
-// SanctionRecord records who sanctioned an address, why, and when. Entries
-// that predate sanctioners have no record and are treated as governance
-// entries.
-message SanctionRecord {
-  // actor is the sanctioner or governance authority that added the entry.
-  string actor = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // actor_role is the actor's role at the time, or UNSPECIFIED for
-  // governance.
-  SanctionerRole actor_role = 2;
-  string reason = 3;
-  int64 height = 4;
-}
-
-// SanctionedAddress pairs a sanctioned address with its record, if any.
-message SanctionedAddress {
-  string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  // record is empty for entries added before sanctioners existed.
-  SanctionRecord record = 2;
-}

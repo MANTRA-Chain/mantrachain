@@ -1,6 +1,7 @@
 package sanction_test
 
 import (
+	"strings"
 	"testing"
 
 	keepertest "github.com/MANTRA-Chain/mantrachain/v8/testutil/keeper"
@@ -23,15 +24,6 @@ func TestGenesis(t *testing.T) {
 			{Address: full, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL},
 			{Address: addOnly, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
 		},
-		SanctionRecords: []types.SanctionedAddress{{
-			Address: flagged,
-			Record: &types.SanctionRecord{
-				Actor:     addOnly,
-				ActorRole: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY,
-				Reason:    "rule 7",
-				Height:    42,
-			},
-		}},
 	}
 	require.NoError(t, genesisState.Validate())
 
@@ -43,7 +35,21 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, genesisState.Params, got.Params)
 	require.ElementsMatch(t, genesisState.BlacklistAccounts, got.BlacklistAccounts)
 	require.ElementsMatch(t, genesisState.Sanctioners, got.Sanctioners)
-	require.Equal(t, genesisState.SanctionRecords, got.SanctionRecords)
+}
+
+// TestInitGenesisNormalizesSanctioners checks a mixed-case sanctioner address
+// in genesis is stored in canonical form, so it matches the tx signer.
+func TestInitGenesisNormalizesSanctioners(t *testing.T) {
+	full := sdk.AccAddress([]byte("full________________")).String()
+	gs := *types.DefaultGenesis()
+	gs.Sanctioners = []types.Sanctioner{{Address: strings.ToUpper(full), Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}}
+	require.NoError(t, gs.Validate())
+
+	k, ctx, _ := keepertest.SanctionKeeper(t)
+	require.NoError(t, sanction.InitGenesis(ctx, k, gs))
+	has, err := k.Sanctioners.Has(ctx, full)
+	require.NoError(t, err)
+	require.True(t, has)
 }
 
 func TestGenesisEmptyRoundTrip(t *testing.T) {
@@ -54,5 +60,4 @@ func TestGenesisEmptyRoundTrip(t *testing.T) {
 	require.Equal(t, types.DefaultParams(), got.Params)
 	require.Empty(t, got.BlacklistAccounts)
 	require.Empty(t, got.Sanctioners)
-	require.Empty(t, got.SanctionRecords)
 }

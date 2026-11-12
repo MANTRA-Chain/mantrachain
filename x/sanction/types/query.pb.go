@@ -316,106 +316,6 @@ func (m *QuerySanctionersResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
-// QuerySanctionedAddressesRequest is request type for the
-// Query/SanctionedAddresses RPC method.
-type QuerySanctionedAddressesRequest struct {
-	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QuerySanctionedAddressesRequest) Reset()         { *m = QuerySanctionedAddressesRequest{} }
-func (m *QuerySanctionedAddressesRequest) String() string { return proto.CompactTextString(m) }
-func (*QuerySanctionedAddressesRequest) ProtoMessage()    {}
-func (*QuerySanctionedAddressesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7b56d603f3dbdb6d, []int{6}
-}
-func (m *QuerySanctionedAddressesRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QuerySanctionedAddressesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QuerySanctionedAddressesRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QuerySanctionedAddressesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QuerySanctionedAddressesRequest.Merge(m, src)
-}
-func (m *QuerySanctionedAddressesRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QuerySanctionedAddressesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QuerySanctionedAddressesRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QuerySanctionedAddressesRequest proto.InternalMessageInfo
-
-func (m *QuerySanctionedAddressesRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
-// QuerySanctionedAddressesResponse is response type for the
-// Query/SanctionedAddresses RPC method.
-type QuerySanctionedAddressesResponse struct {
-	SanctionedAddresses []SanctionedAddress `protobuf:"bytes,1,rep,name=sanctioned_addresses,json=sanctionedAddresses,proto3" json:"sanctioned_addresses"`
-	Pagination          *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QuerySanctionedAddressesResponse) Reset()         { *m = QuerySanctionedAddressesResponse{} }
-func (m *QuerySanctionedAddressesResponse) String() string { return proto.CompactTextString(m) }
-func (*QuerySanctionedAddressesResponse) ProtoMessage()    {}
-func (*QuerySanctionedAddressesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7b56d603f3dbdb6d, []int{7}
-}
-func (m *QuerySanctionedAddressesResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QuerySanctionedAddressesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QuerySanctionedAddressesResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QuerySanctionedAddressesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QuerySanctionedAddressesResponse.Merge(m, src)
-}
-func (m *QuerySanctionedAddressesResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QuerySanctionedAddressesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QuerySanctionedAddressesResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QuerySanctionedAddressesResponse proto.InternalMessageInfo
-
-func (m *QuerySanctionedAddressesResponse) GetSanctionedAddresses() []SanctionedAddress {
-	if m != nil {
-		return m.SanctionedAddresses
-	}
-	return nil
-}
-
-func (m *QuerySanctionedAddressesResponse) GetPagination() *query.PageResponse {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
 // QueryIsSanctionedRequest is request type for the Query/IsSanctioned RPC
 // method.
 type QueryIsSanctionedRequest struct {
@@ -426,7 +326,7 @@ func (m *QueryIsSanctionedRequest) Reset()         { *m = QueryIsSanctionedReque
 func (m *QueryIsSanctionedRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryIsSanctionedRequest) ProtoMessage()    {}
 func (*QueryIsSanctionedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7b56d603f3dbdb6d, []int{8}
+	return fileDescriptor_7b56d603f3dbdb6d, []int{6}
 }
 func (m *QueryIsSanctionedRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -466,15 +366,13 @@ func (m *QueryIsSanctionedRequest) GetAddress() string {
 // method.
 type QueryIsSanctionedResponse struct {
 	Sanctioned bool `protobuf:"varint,1,opt,name=sanctioned,proto3" json:"sanctioned,omitempty"`
-	// record is set when the address is sanctioned and has a record.
-	Record *SanctionRecord `protobuf:"bytes,2,opt,name=record,proto3" json:"record,omitempty"`
 }
 
 func (m *QueryIsSanctionedResponse) Reset()         { *m = QueryIsSanctionedResponse{} }
 func (m *QueryIsSanctionedResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryIsSanctionedResponse) ProtoMessage()    {}
 func (*QueryIsSanctionedResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7b56d603f3dbdb6d, []int{9}
+	return fileDescriptor_7b56d603f3dbdb6d, []int{7}
 }
 func (m *QueryIsSanctionedResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -510,13 +408,6 @@ func (m *QueryIsSanctionedResponse) GetSanctioned() bool {
 	return false
 }
 
-func (m *QueryIsSanctionedResponse) GetRecord() *SanctionRecord {
-	if m != nil {
-		return m.Record
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "mantrachain.sanction.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "mantrachain.sanction.v1.QueryParamsResponse")
@@ -524,8 +415,6 @@ func init() {
 	proto.RegisterType((*QueryBlacklistResponse)(nil), "mantrachain.sanction.v1.QueryBlacklistResponse")
 	proto.RegisterType((*QuerySanctionersRequest)(nil), "mantrachain.sanction.v1.QuerySanctionersRequest")
 	proto.RegisterType((*QuerySanctionersResponse)(nil), "mantrachain.sanction.v1.QuerySanctionersResponse")
-	proto.RegisterType((*QuerySanctionedAddressesRequest)(nil), "mantrachain.sanction.v1.QuerySanctionedAddressesRequest")
-	proto.RegisterType((*QuerySanctionedAddressesResponse)(nil), "mantrachain.sanction.v1.QuerySanctionedAddressesResponse")
 	proto.RegisterType((*QueryIsSanctionedRequest)(nil), "mantrachain.sanction.v1.QueryIsSanctionedRequest")
 	proto.RegisterType((*QueryIsSanctionedResponse)(nil), "mantrachain.sanction.v1.QueryIsSanctionedResponse")
 }
@@ -535,54 +424,48 @@ func init() {
 }
 
 var fileDescriptor_7b56d603f3dbdb6d = []byte{
-	// 743 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x4f, 0x6b, 0x13, 0x41,
-	0x14, 0xcf, 0x54, 0x4d, 0xcd, 0xc4, 0x8b, 0x93, 0x68, 0xdb, 0x45, 0xb6, 0x25, 0x15, 0x2d, 0xb5,
-	0xdd, 0x71, 0x53, 0xa1, 0xad, 0x28, 0x25, 0x2b, 0x2a, 0x22, 0x96, 0x76, 0xeb, 0x45, 0x2f, 0x61,
-	0xb2, 0x19, 0xb6, 0x8b, 0xcd, 0x4e, 0xba, 0xb3, 0x09, 0x16, 0xf5, 0xe2, 0xd5, 0x8b, 0xa0, 0x17,
-	0x3f, 0x80, 0xe0, 0x45, 0xe8, 0xc1, 0xa3, 0x1f, 0xa0, 0x27, 0x29, 0x7a, 0xf1, 0x24, 0xd2, 0x0a,
-	0x7e, 0x0d, 0xc9, 0xec, 0x6c, 0x76, 0xd3, 0x74, 0x9b, 0x44, 0x72, 0x29, 0xdb, 0x99, 0xdf, 0x7b,
-	0xbf, 0x3f, 0x8f, 0x79, 0x04, 0x4e, 0xd7, 0x88, 0xeb, 0x7b, 0xc4, 0xda, 0x24, 0x8e, 0x8b, 0x39,
-	0x71, 0x2d, 0xdf, 0x61, 0x2e, 0x6e, 0xea, 0x78, 0xbb, 0x41, 0xbd, 0x1d, 0xad, 0xee, 0x31, 0x9f,
-	0xa1, 0xb1, 0x18, 0x48, 0x0b, 0x41, 0x5a, 0x53, 0x57, 0xce, 0x93, 0x9a, 0xe3, 0x32, 0x2c, 0xfe,
-	0x06, 0x58, 0x25, 0x6f, 0x33, 0x9b, 0x89, 0x4f, 0xdc, 0xfa, 0x92, 0xa7, 0x97, 0x6c, 0xc6, 0xec,
-	0x2d, 0x8a, 0x49, 0xdd, 0xc1, 0xc4, 0x75, 0x99, 0x4f, 0x5a, 0x2d, 0xb8, 0xbc, 0x9d, 0xb5, 0x18,
-	0xaf, 0x31, 0x8e, 0x2b, 0x84, 0xd3, 0x80, 0x18, 0x37, 0xf5, 0x0a, 0xf5, 0x89, 0x8e, 0xeb, 0xc4,
-	0x76, 0x5c, 0x01, 0x96, 0xd8, 0x89, 0x00, 0x5b, 0x0e, 0x28, 0x82, 0x7f, 0xe4, 0xd5, 0xe5, 0x24,
-	0x2f, 0x75, 0xe2, 0x91, 0x5a, 0x88, 0x9a, 0x49, 0x42, 0x85, 0xdf, 0xd4, 0x0b, 0x90, 0x85, 0x3c,
-	0x44, 0xeb, 0x2d, 0x31, 0x6b, 0xa2, 0xdc, 0xa4, 0xdb, 0x0d, 0xca, 0xfd, 0xc2, 0x13, 0x98, 0xeb,
-	0x38, 0xe5, 0x75, 0xe6, 0x72, 0x8a, 0x0c, 0x98, 0x0e, 0x68, 0xc6, 0xc1, 0x14, 0x98, 0xc9, 0x16,
-	0x27, 0xb5, 0x84, 0xd0, 0xb4, 0xa0, 0xd0, 0xc8, 0xec, 0xfd, 0x9a, 0x4c, 0x7d, 0xfa, 0xbb, 0x3b,
-	0x0b, 0x4c, 0x59, 0x59, 0x28, 0xc3, 0x0b, 0xa2, 0xb5, 0xb1, 0x45, 0xac, 0x67, 0x5b, 0x0e, 0xf7,
-	0x25, 0x27, 0xba, 0x07, 0x61, 0x14, 0x84, 0x24, 0xb8, 0xa2, 0x49, 0xf3, 0xad, 0xd4, 0xb4, 0x60,
-	0x5c, 0x32, 0x35, 0x6d, 0x8d, 0xd8, 0x54, 0xd6, 0x9a, 0xb1, 0xca, 0xc2, 0x7b, 0x00, 0x2f, 0x1e,
-	0x65, 0x90, 0xfa, 0x75, 0x98, 0xaf, 0x84, 0x87, 0xb4, 0x5a, 0x26, 0x96, 0xc5, 0x1a, 0xae, 0xdf,
-	0x72, 0x73, 0x6a, 0x26, 0x63, 0xe6, 0x62, 0x77, 0x25, 0x79, 0x85, 0xee, 0x77, 0xa8, 0x1a, 0x11,
-	0xaa, 0xae, 0xf6, 0x54, 0x15, 0xf0, 0x75, 0xc8, 0x22, 0x70, 0x4c, 0xa8, 0xda, 0x68, 0x4f, 0x80,
-	0x0f, 0xdb, 0xf9, 0x2e, 0x80, 0xe3, 0xdd, 0x1c, 0xd2, 0xfb, 0x43, 0x98, 0x8d, 0x86, 0x1f, 0x58,
-	0xce, 0x16, 0xa7, 0x13, 0x07, 0x18, 0xb5, 0x30, 0x4e, 0xb7, 0x86, 0x68, 0xc6, 0xab, 0x87, 0x97,
-	0x8a, 0x03, 0x27, 0x3b, 0x15, 0x57, 0x4b, 0xd5, 0xaa, 0x47, 0x39, 0xa7, 0x43, 0x4f, 0x67, 0x1f,
-	0xc0, 0xa9, 0x64, 0x2e, 0x99, 0x92, 0x05, 0xf3, 0x6d, 0x9f, 0xd5, 0x32, 0x09, 0xef, 0x65, 0x5c,
-	0xb3, 0xbd, 0xe3, 0x0a, 0x7b, 0xca, 0xd4, 0x72, 0xbc, 0x9b, 0x6c, 0x78, 0xe9, 0xad, 0xca, 0x79,
-	0x3f, 0xe0, 0x11, 0x7f, 0x18, 0x5b, 0x11, 0x8e, 0x4a, 0xf9, 0x22, 0xb3, 0x8c, 0x31, 0xfe, 0xfd,
-	0xcb, 0x7c, 0x5e, 0x92, 0x48, 0x2d, 0x1b, 0xbe, 0xe7, 0xb8, 0xb6, 0x19, 0x02, 0x0b, 0x2f, 0xe1,
-	0xc4, 0x31, 0xfd, 0x64, 0x34, 0x2a, 0x84, 0x91, 0x19, 0xd1, 0xf3, 0xac, 0x19, 0x3b, 0x41, 0x2b,
-	0x30, 0xed, 0x51, 0x8b, 0x79, 0xd5, 0xb6, 0xa3, 0x5e, 0x61, 0x99, 0x02, 0x6e, 0xca, 0xb2, 0xe2,
-	0x9b, 0x51, 0x78, 0x46, 0xd0, 0xa3, 0x0f, 0x00, 0xa6, 0x83, 0x0d, 0x82, 0xae, 0x25, 0x76, 0xe9,
-	0x5e, 0x5b, 0xca, 0x5c, 0x7f, 0xe0, 0xc0, 0x50, 0xe1, 0xc6, 0xeb, 0x1f, 0x7f, 0xde, 0x8d, 0x68,
-	0x68, 0x0e, 0x3f, 0x2a, 0xad, 0x3e, 0x36, 0x4b, 0xf3, 0x77, 0xc4, 0xba, 0x3c, 0x79, 0xc1, 0xa2,
-	0x8f, 0x00, 0x66, 0xda, 0x9b, 0x05, 0x69, 0x27, 0x33, 0x1e, 0x5d, 0x72, 0x0a, 0xee, 0x1b, 0x2f,
-	0x45, 0x2e, 0x0a, 0x91, 0x3a, 0xc2, 0xfd, 0x89, 0x6c, 0xaf, 0x30, 0xf4, 0x19, 0xc0, 0x6c, 0x6c,
-	0x0f, 0xa0, 0xeb, 0x27, 0x33, 0x77, 0xaf, 0x25, 0x45, 0x1f, 0xa0, 0x42, 0xaa, 0x5d, 0x16, 0x6a,
-	0x17, 0x90, 0xde, 0x9f, 0xda, 0xf8, 0x4a, 0xf9, 0x06, 0x60, 0xee, 0x98, 0x97, 0x89, 0x96, 0xfa,
-	0x54, 0xd1, 0xb5, 0x38, 0x94, 0xe5, 0xff, 0xa8, 0x94, 0x3e, 0x0c, 0xe1, 0xe3, 0x16, 0xba, 0x39,
-	0xa0, 0x8f, 0xd8, 0xca, 0x40, 0x5f, 0x01, 0x3c, 0x17, 0x7f, 0x48, 0xa8, 0x47, 0x9e, 0xc7, 0x3c,
-	0x62, 0xa5, 0x38, 0x48, 0x89, 0xd4, 0x7e, 0x57, 0x68, 0x5f, 0x41, 0xb7, 0xfb, 0xd3, 0xee, 0xf0,
-	0x72, 0x24, 0x1f, 0xbf, 0x90, 0xfa, 0x5f, 0x19, 0xeb, 0x7b, 0x07, 0x2a, 0xd8, 0x3f, 0x50, 0xc1,
-	0xef, 0x03, 0x15, 0xbc, 0x3d, 0x54, 0x53, 0xfb, 0x87, 0x6a, 0xea, 0xe7, 0xa1, 0x9a, 0x7a, 0xba,
-	0x68, 0x3b, 0xfe, 0x66, 0xa3, 0xa2, 0x59, 0xac, 0x96, 0x4c, 0xd1, 0x5c, 0xc2, 0xcf, 0x23, 0x1e,
-	0x7f, 0xa7, 0x4e, 0x79, 0x25, 0x2d, 0x7e, 0x72, 0x2c, 0xfc, 0x0b, 0x00, 0x00, 0xff, 0xff, 0xf2,
-	0x2a, 0x3d, 0x5c, 0x90, 0x09, 0x00, 0x00,
+	// 655 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0x41, 0x6b, 0x13, 0x41,
+	0x14, 0xce, 0x54, 0x5b, 0xcd, 0xc4, 0x8b, 0xd3, 0x68, 0xdb, 0x45, 0xb6, 0xb2, 0x15, 0x2d, 0xb5,
+	0xdd, 0x71, 0x53, 0xa1, 0x8a, 0x88, 0x64, 0x45, 0x45, 0xc4, 0xd2, 0x6e, 0xbd, 0xe8, 0x25, 0x4c,
+	0x36, 0xc3, 0x76, 0xb1, 0xd9, 0xd9, 0xee, 0x6c, 0x82, 0x45, 0xbc, 0xf8, 0x0b, 0x04, 0xbd, 0xf8,
+	0x03, 0x04, 0x2f, 0x42, 0x0f, 0x9e, 0xc4, 0x1f, 0xd0, 0x63, 0xd1, 0x8b, 0x27, 0x91, 0x56, 0xf0,
+	0x6f, 0xc8, 0xce, 0xcc, 0x26, 0x9b, 0xa6, 0x9b, 0xa6, 0xd0, 0x4b, 0x98, 0xcc, 0x7c, 0xef, 0x7d,
+	0xdf, 0x7b, 0xef, 0x7b, 0x2c, 0x9c, 0x69, 0x92, 0x20, 0x8e, 0x88, 0xbb, 0x4e, 0xfc, 0x00, 0x73,
+	0x12, 0xb8, 0xb1, 0xcf, 0x02, 0xdc, 0xb6, 0xf0, 0x66, 0x8b, 0x46, 0x5b, 0x66, 0x18, 0xb1, 0x98,
+	0xa1, 0x89, 0x0c, 0xc8, 0x4c, 0x41, 0x66, 0xdb, 0xd2, 0xce, 0x93, 0xa6, 0x1f, 0x30, 0x2c, 0x7e,
+	0x25, 0x56, 0x2b, 0x7b, 0xcc, 0x63, 0xe2, 0x88, 0x93, 0x93, 0xba, 0xbd, 0xe4, 0x31, 0xe6, 0x6d,
+	0x50, 0x4c, 0x42, 0x1f, 0x93, 0x20, 0x60, 0x31, 0x49, 0x52, 0x70, 0xf5, 0x3a, 0xe7, 0x32, 0xde,
+	0x64, 0x1c, 0xd7, 0x09, 0xa7, 0x92, 0x18, 0xb7, 0xad, 0x3a, 0x8d, 0x89, 0x85, 0x43, 0xe2, 0xf9,
+	0x81, 0x00, 0x2b, 0xec, 0x94, 0xc4, 0xd6, 0x24, 0x85, 0xfc, 0xa3, 0x9e, 0xae, 0xe4, 0xd5, 0x12,
+	0x92, 0x88, 0x34, 0x53, 0xd4, 0x6c, 0x1e, 0x2a, 0x3d, 0xd3, 0x48, 0x22, 0x8d, 0x32, 0x44, 0xab,
+	0x89, 0x98, 0x15, 0x11, 0xee, 0xd0, 0xcd, 0x16, 0xe5, 0xb1, 0xf1, 0x1c, 0x8e, 0xf7, 0xdc, 0xf2,
+	0x90, 0x05, 0x9c, 0x22, 0x1b, 0x8e, 0x49, 0x9a, 0x49, 0x70, 0x19, 0xcc, 0x96, 0x2a, 0xd3, 0x66,
+	0x4e, 0xd3, 0x4c, 0x19, 0x68, 0x17, 0x77, 0x7e, 0x4f, 0x17, 0x3e, 0xff, 0xdb, 0x9e, 0x03, 0x8e,
+	0x8a, 0x34, 0x6a, 0xf0, 0x82, 0x48, 0x6d, 0x6f, 0x10, 0xf7, 0xe5, 0x86, 0xcf, 0x63, 0xc5, 0x89,
+	0x1e, 0x42, 0xd8, 0x6d, 0x84, 0x22, 0xb8, 0x6a, 0xaa, 0xe2, 0x93, 0xae, 0x99, 0x72, 0x5c, 0xaa,
+	0x6b, 0xe6, 0x0a, 0xf1, 0xa8, 0x8a, 0x75, 0x32, 0x91, 0xc6, 0x07, 0x00, 0x2f, 0x1e, 0x64, 0x50,
+	0xfa, 0x2d, 0x58, 0xae, 0xa7, 0x97, 0xb4, 0x51, 0x23, 0xae, 0xcb, 0x5a, 0x41, 0x9c, 0x54, 0x73,
+	0x6a, 0xb6, 0xe8, 0x8c, 0x67, 0xde, 0xaa, 0xea, 0x09, 0x3d, 0xea, 0x51, 0x35, 0x22, 0x54, 0x5d,
+	0x3b, 0x52, 0x95, 0xe4, 0xeb, 0x91, 0x45, 0xe0, 0x84, 0x50, 0xb5, 0xd6, 0x99, 0x00, 0x3f, 0xe9,
+	0xca, 0xb7, 0x01, 0x9c, 0xec, 0xe7, 0x50, 0xb5, 0x3f, 0x81, 0xa5, 0xee, 0xf0, 0x65, 0xc9, 0xa5,
+	0xca, 0x4c, 0xee, 0x00, 0xbb, 0x29, 0xec, 0xd3, 0xc9, 0x10, 0x9d, 0x6c, 0xf4, 0xc9, 0x75, 0x65,
+	0x59, 0x29, 0x7e, 0xcc, 0x3b, 0x84, 0x8d, 0xb4, 0x2d, 0x15, 0x78, 0x86, 0x34, 0x1a, 0x11, 0xe5,
+	0xd2, 0x6e, 0x45, 0x7b, 0xf2, 0xc7, 0xd7, 0x85, 0xb2, 0x22, 0xa9, 0xca, 0x97, 0xb5, 0x38, 0xf2,
+	0x03, 0xcf, 0x49, 0x81, 0xc6, 0x1d, 0x38, 0x75, 0x48, 0x3e, 0xd5, 0x02, 0x1d, 0xc2, 0x4e, 0x11,
+	0x0d, 0x91, 0xf3, 0xac, 0x93, 0xb9, 0xa9, 0x7c, 0x1b, 0x85, 0xa3, 0x22, 0x1a, 0x7d, 0x04, 0x70,
+	0x4c, 0x5a, 0x18, 0x5d, 0xcf, 0x6d, 0x51, 0xff, 0xde, 0x68, 0xf3, 0xc3, 0x81, 0xa5, 0x1e, 0xe3,
+	0xe6, 0xdb, 0x9f, 0x7f, 0xdf, 0x8f, 0x98, 0x68, 0x1e, 0x3f, 0xad, 0x2e, 0x3f, 0x73, 0xaa, 0x0b,
+	0xf7, 0xc5, 0xbe, 0x0e, 0xde, 0x70, 0xf4, 0x09, 0xc0, 0x62, 0xc7, 0xda, 0xc8, 0x1c, 0xcc, 0x78,
+	0x70, 0xcb, 0x34, 0x3c, 0x34, 0x5e, 0x89, 0x5c, 0x12, 0x22, 0x2d, 0x84, 0x87, 0x13, 0xd9, 0xd9,
+	0x21, 0xf4, 0x05, 0xc0, 0x52, 0xc6, 0x88, 0xe8, 0xc6, 0x60, 0xe6, 0xfe, 0xbd, 0xd0, 0xac, 0x63,
+	0x44, 0x28, 0xb5, 0xb7, 0x85, 0xda, 0x45, 0x64, 0x0d, 0xa7, 0x36, 0xeb, 0xe9, 0xef, 0x00, 0x9e,
+	0xcb, 0xda, 0x06, 0x1d, 0x41, 0x7f, 0x88, 0x65, 0xb5, 0xca, 0x71, 0x42, 0x94, 0xe4, 0x07, 0x42,
+	0xf2, 0x3d, 0x74, 0x77, 0x38, 0xc9, 0x3e, 0xaf, 0x75, 0x2d, 0x8b, 0x5f, 0x2b, 0xe3, 0xbf, 0xb1,
+	0x57, 0x77, 0xf6, 0x74, 0xb0, 0xbb, 0xa7, 0x83, 0x3f, 0x7b, 0x3a, 0x78, 0xb7, 0xaf, 0x17, 0x76,
+	0xf7, 0xf5, 0xc2, 0xaf, 0x7d, 0xbd, 0xf0, 0x62, 0xc9, 0xf3, 0xe3, 0xf5, 0x56, 0xdd, 0x74, 0x59,
+	0x33, 0x9f, 0xa2, 0x7d, 0x0b, 0xbf, 0xea, 0xf2, 0xc4, 0x5b, 0x21, 0xe5, 0xf5, 0x31, 0xf1, 0x89,
+	0x58, 0xfc, 0x1f, 0x00, 0x00, 0xff, 0xff, 0xd6, 0x09, 0xaa, 0x68, 0x40, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -603,9 +486,6 @@ type QueryClient interface {
 	Blacklist(ctx context.Context, in *QueryBlacklistRequest, opts ...grpc.CallOption) (*QueryBlacklistResponse, error)
 	// Sanctioners queries the sanctioner list with roles.
 	Sanctioners(ctx context.Context, in *QuerySanctionersRequest, opts ...grpc.CallOption) (*QuerySanctionersResponse, error)
-	// SanctionedAddresses queries the sanctioned addresses with who added each
-	// and when.
-	SanctionedAddresses(ctx context.Context, in *QuerySanctionedAddressesRequest, opts ...grpc.CallOption) (*QuerySanctionedAddressesResponse, error)
 	// IsSanctioned queries whether one address is sanctioned.
 	IsSanctioned(ctx context.Context, in *QueryIsSanctionedRequest, opts ...grpc.CallOption) (*QueryIsSanctionedResponse, error)
 }
@@ -645,15 +525,6 @@ func (c *queryClient) Sanctioners(ctx context.Context, in *QuerySanctionersReque
 	return out, nil
 }
 
-func (c *queryClient) SanctionedAddresses(ctx context.Context, in *QuerySanctionedAddressesRequest, opts ...grpc.CallOption) (*QuerySanctionedAddressesResponse, error) {
-	out := new(QuerySanctionedAddressesResponse)
-	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Query/SanctionedAddresses", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) IsSanctioned(ctx context.Context, in *QueryIsSanctionedRequest, opts ...grpc.CallOption) (*QueryIsSanctionedResponse, error) {
 	out := new(QueryIsSanctionedResponse)
 	err := c.cc.Invoke(ctx, "/mantrachain.sanction.v1.Query/IsSanctioned", in, out, opts...)
@@ -671,9 +542,6 @@ type QueryServer interface {
 	Blacklist(context.Context, *QueryBlacklistRequest) (*QueryBlacklistResponse, error)
 	// Sanctioners queries the sanctioner list with roles.
 	Sanctioners(context.Context, *QuerySanctionersRequest) (*QuerySanctionersResponse, error)
-	// SanctionedAddresses queries the sanctioned addresses with who added each
-	// and when.
-	SanctionedAddresses(context.Context, *QuerySanctionedAddressesRequest) (*QuerySanctionedAddressesResponse, error)
 	// IsSanctioned queries whether one address is sanctioned.
 	IsSanctioned(context.Context, *QueryIsSanctionedRequest) (*QueryIsSanctionedResponse, error)
 }
@@ -690,9 +558,6 @@ func (*UnimplementedQueryServer) Blacklist(ctx context.Context, req *QueryBlackl
 }
 func (*UnimplementedQueryServer) Sanctioners(ctx context.Context, req *QuerySanctionersRequest) (*QuerySanctionersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sanctioners not implemented")
-}
-func (*UnimplementedQueryServer) SanctionedAddresses(ctx context.Context, req *QuerySanctionedAddressesRequest) (*QuerySanctionedAddressesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SanctionedAddresses not implemented")
 }
 func (*UnimplementedQueryServer) IsSanctioned(ctx context.Context, req *QueryIsSanctionedRequest) (*QueryIsSanctionedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsSanctioned not implemented")
@@ -756,24 +621,6 @@ func _Query_Sanctioners_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SanctionedAddresses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySanctionedAddressesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).SanctionedAddresses(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mantrachain.sanction.v1.Query/SanctionedAddresses",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SanctionedAddresses(ctx, req.(*QuerySanctionedAddressesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_IsSanctioned_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIsSanctionedRequest)
 	if err := dec(in); err != nil {
@@ -808,10 +655,6 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Sanctioners",
 			Handler:    _Query_Sanctioners_Handler,
-		},
-		{
-			MethodName: "SanctionedAddresses",
-			Handler:    _Query_SanctionedAddresses_Handler,
 		},
 		{
 			MethodName: "IsSanctioned",
@@ -1041,90 +884,6 @@ func (m *QuerySanctionersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *QuerySanctionedAddressesRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QuerySanctionedAddressesRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QuerySanctionedAddressesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QuerySanctionedAddressesResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QuerySanctionedAddressesResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QuerySanctionedAddressesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.SanctionedAddresses) > 0 {
-		for iNdEx := len(m.SanctionedAddresses) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.SanctionedAddresses[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *QueryIsSanctionedRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1175,18 +934,6 @@ func (m *QueryIsSanctionedResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if m.Record != nil {
-		{
-			size, err := m.Record.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
 	if m.Sanctioned {
 		i--
 		if m.Sanctioned {
@@ -1295,38 +1042,6 @@ func (m *QuerySanctionersResponse) Size() (n int) {
 	return n
 }
 
-func (m *QuerySanctionedAddressesRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QuerySanctionedAddressesResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.SanctionedAddresses) > 0 {
-		for _, e := range m.SanctionedAddresses {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
 func (m *QueryIsSanctionedRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1348,10 +1063,6 @@ func (m *QueryIsSanctionedResponse) Size() (n int) {
 	_ = l
 	if m.Sanctioned {
 		n += 2
-	}
-	if m.Record != nil {
-		l = m.Record.Size()
-		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -1905,212 +1616,6 @@ func (m *QuerySanctionersResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QuerySanctionedAddressesRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QuerySanctionedAddressesRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QuerySanctionedAddressesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QuerySanctionedAddressesResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QuerySanctionedAddressesResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QuerySanctionedAddressesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SanctionedAddresses", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SanctionedAddresses = append(m.SanctionedAddresses, SanctionedAddress{})
-			if err := m.SanctionedAddresses[len(m.SanctionedAddresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageResponse{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *QueryIsSanctionedRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2242,42 +1747,6 @@ func (m *QueryIsSanctionedResponse) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Sanctioned = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Record == nil {
-				m.Record = &SanctionRecord{}
-			}
-			if err := m.Record.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

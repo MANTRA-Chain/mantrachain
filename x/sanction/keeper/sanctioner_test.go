@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"context"
 	"strings"
 	"testing"
 
@@ -12,16 +11,8 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
-
-type mockAccountKeeper struct {
-	accs map[string]sdk.AccountI
-}
-
-func (m mockAccountKeeper) GetAccount(_ context.Context, addr sdk.AccAddress) sdk.AccountI {
-	return m.accs[addr.String()]
-}
 
 type fixture struct {
 	k   keeper.Keeper
@@ -29,12 +20,10 @@ type fixture struct {
 	srv types.MsgServer
 	qs  types.QueryServer
 
-	gov       string
-	full      string
-	full2     string
-	addOnly   string
-	moduleAcc string // a module account known to x/auth
-	reserved  string // a module address passed to the keeper, not in x/auth
+	gov     string
+	full    string
+	full2   string
+	addOnly string
 }
 
 func addr(seed string) string {
@@ -44,22 +33,16 @@ func addr(seed string) string {
 
 func setup(t *testing.T) *fixture {
 	t.Helper()
-	modAcc := authtypes.NewEmptyModuleAccount("somemodule")
-	reserved := authtypes.NewModuleAddress("notyetcreated").String()
-	ak := mockAccountKeeper{accs: map[string]sdk.AccountI{modAcc.GetAddress().String(): modAcc}}
-
-	k, ctx, _ := keepertest.SanctionKeeperWithAccounts(t, ak, []string{reserved})
+	k, ctx, _ := keepertest.SanctionKeeper(t)
 	f := &fixture{
-		k:         k,
-		ctx:       ctx,
-		srv:       keeper.NewMsgServerImpl(k),
-		qs:        keeper.NewQueryServerImpl(k),
-		gov:       k.GetAuthority(),
-		full:      addr("full"),
-		full2:     addr("full2"),
-		addOnly:   addr("addonly"),
-		moduleAcc: modAcc.GetAddress().String(),
-		reserved:  reserved,
+		k:       k,
+		ctx:     ctx,
+		srv:     keeper.NewMsgServerImpl(k),
+		qs:      keeper.NewQueryServerImpl(k),
+		gov:     k.GetAuthority(),
+		full:    addr("full"),
+		full2:   addr("full2"),
+		addOnly: addr("addonly"),
 	}
 	_, err := f.srv.UpdateSanctioners(ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
 		{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL},
@@ -140,22 +123,16 @@ func TestSanctionAddresses(t *testing.T) {
 		require.False(t, f.listed(t, a))
 	})
 
-	t.Run("add-only sanctioner adds, with record and event", func(t *testing.T) {
-		f.ctx = f.freshCtx().WithBlockHeight(77)
+	t.Run("add-only sanctioner adds, with event", func(t *testing.T) {
+		f.ctx = f.freshCtx()
 		require.NoError(t, f.sanction(f.addOnly, a))
 		require.True(t, f.listed(t, a))
-
-		rec, err := f.k.SanctionRecords.Get(f.ctx, a)
-		require.NoError(t, err)
-		require.Equal(t, types.SanctionRecord{
-			Actor: f.addOnly, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY, Reason: "rule 7, tx ABC", Height: 77,
-		}, rec)
 
 		evs := listChangedEvents(t, f.ctx)
 		require.Len(t, evs, 1)
 		require.Equal(t, &types.EventSanctionListChanged{
-			Address: a, Sanctioned: true, Actor: f.addOnly,
-			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY, Reason: "rule 7, tx ABC", Height: 77,
+			Addresses: []string{a}, Sanctioned: true, Actor: f.addOnly,
+			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY, Reason: "rule 7, tx ABC",
 		}, evs[0])
 	})
 
@@ -164,12 +141,7 @@ func TestSanctionAddresses(t *testing.T) {
 		require.NoError(t, f.sanction(f.full, a, b, b))
 		evs := listChangedEvents(t, f.ctx)
 		require.Len(t, evs, 1, "only b is new")
-		require.Equal(t, b, evs[0].Address)
-
-		// The original record is kept, not overwritten.
-		rec, err := f.k.SanctionRecords.Get(f.ctx, a)
-		require.NoError(t, err)
-		require.Equal(t, f.addOnly, rec.Actor)
+		require.Equal(t, []string{b}, evs[0].Addresses)
 	})
 
 	t.Run("mixed-case input is stored in canonical form", func(t *testing.T) {
@@ -184,11 +156,8 @@ func TestSanctionProtections(t *testing.T) {
 	gone := addr("innocent")
 
 	cases := map[string]string{
-		"full sanctioner":                f.full,
-		"add-only sanctioner":            f.addOnly,
-		"gov authority":                  f.gov,
-		"module account in x/auth":       f.moduleAcc,
-		"module address not yet created": f.reserved,
+		"full sanctioner":     f.full,
+		"add-only sanctioner": f.addOnly,
 	}
 	for name, target := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -225,15 +194,17 @@ func TestLimits(t *testing.T) {
 	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, []string{addr("d")}, ""))
 	require.ErrorIs(t, err, sdkerrors.ErrInvalidRequest)
 
-	// Governance isn't capped, on addresses or reason length, but still needs
-	// a reason.
+	// Governance is capped the same way and also needs a reason.
 	many := []string{addr("g1"), addr("g2"), addr("g3")}
-	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many, strings.Repeat("x", 21)))
-	require.NoError(t, err)
-	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.gov, many, strings.Repeat("x", 21)))
-	require.NoError(t, err)
-	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many, ""))
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many, "r"))
+	require.ErrorIs(t, err, types.ErrTooManyAddresses)
+	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.gov, many, "r"))
+	require.ErrorIs(t, err, types.ErrTooManyAddresses)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many[:2], strings.Repeat("x", 21)))
+	require.ErrorIs(t, err, types.ErrReasonTooLong)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.gov, many[:2], ""))
 	require.ErrorIs(t, err, sdkerrors.ErrInvalidRequest)
+	require.NoError(t, f.sanction(f.gov, many[:2]...))
 }
 
 func TestUpdateParams(t *testing.T) {
@@ -255,7 +226,7 @@ func TestUnsanctionAddresses(t *testing.T) {
 	require.NoError(t, f.sanction(f.addOnly, byBot))
 	require.NoError(t, f.sanction(f.full2, byFull))
 	require.NoError(t, f.sanction(f.gov, byGov))
-	require.NoError(t, f.k.BlacklistAccounts.Set(f.ctx, legacy)) // predates sanction records
+	require.NoError(t, f.k.BlacklistAccounts.Set(f.ctx, legacy)) // predates sanctioners
 
 	t.Run("add-only sanctioner cannot remove", func(t *testing.T) {
 		require.ErrorIs(t, f.unsanction(f.addOnly, byBot), types.ErrRoleNotPermitted)
@@ -266,34 +237,28 @@ func TestUnsanctionAddresses(t *testing.T) {
 		require.ErrorIs(t, f.unsanction(addr("rando"), byBot), types.ErrNotSanctioner)
 	})
 
-	t.Run("full sanctioner removes entries from a bot and another full sanctioner", func(t *testing.T) {
-		f.ctx = f.freshCtx().WithBlockHeight(90)
-		require.NoError(t, f.unsanction(f.full, byBot, byFull, unlisted))
-		require.False(t, f.listed(t, byBot))
-		require.False(t, f.listed(t, byFull))
-		has, err := f.k.SanctionRecords.Has(f.ctx, byBot)
-		require.NoError(t, err)
-		require.False(t, has, "record is dropped with the entry")
+	t.Run("full sanctioner removes any entry, whoever added it", func(t *testing.T) {
+		f.ctx = f.freshCtx()
+		require.NoError(t, f.unsanction(f.full, byBot, byFull, byGov, legacy, unlisted))
+		for _, a := range []string{byBot, byFull, byGov, legacy} {
+			require.False(t, f.listed(t, a))
+		}
 
 		evs := listChangedEvents(t, f.ctx)
-		require.Len(t, evs, 2, "unlisted address is a no-op")
+		require.Len(t, evs, 1, "one event per message")
 		require.Equal(t, &types.EventSanctionListChanged{
-			Address: byBot, Sanctioned: false, Actor: f.full,
-			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_FULL, Reason: "false positive", Height: 90,
-		}, evs[0])
+			Addresses: []string{byBot, byFull, byGov, legacy}, Sanctioned: false, Actor: f.full,
+			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_FULL, Reason: "false positive",
+		}, evs[0], "unlisted address is left out")
 	})
 
-	t.Run("governance and legacy entries are protected", func(t *testing.T) {
-		require.ErrorIs(t, f.unsanction(f.full, byGov), types.ErrGovernanceEntry)
-		require.ErrorIs(t, f.unsanction(f.full, legacy), types.ErrGovernanceEntry)
-		require.True(t, f.listed(t, byGov))
-		require.True(t, f.listed(t, legacy))
-	})
-
-	t.Run("governance can reverse anything", func(t *testing.T) {
+	t.Run("governance removes any entry, whoever added it", func(t *testing.T) {
 		require.NoError(t, f.sanction(f.addOnly, byBot))
-		require.NoError(t, f.unsanction(f.gov, byBot, byGov, legacy))
-		for _, a := range []string{byBot, byGov, legacy} {
+		require.NoError(t, f.sanction(f.full, byFull))
+		require.NoError(t, f.sanction(f.gov, byGov))
+		require.NoError(t, f.k.BlacklistAccounts.Set(f.ctx, legacy))
+		require.NoError(t, f.unsanction(f.gov, byBot, byFull, byGov, legacy))
+		for _, a := range []string{byBot, byFull, byGov, legacy} {
 			require.False(t, f.listed(t, a))
 		}
 	})
@@ -356,35 +321,21 @@ func TestStolenAddOnlyKey(t *testing.T) {
 func TestGovernanceUsesSameMessages(t *testing.T) {
 	f := setup(t)
 	a := addr("govadded")
-	f.ctx = f.freshCtx().WithBlockHeight(12)
+	f.ctx = f.freshCtx()
 	require.NoError(t, f.sanction(f.gov, a))
-
-	rec, err := f.k.SanctionRecords.Get(f.ctx, a)
-	require.NoError(t, err)
-	require.Equal(t, types.SanctionRecord{
-		Actor: f.gov, ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Reason: "rule 7, tx ABC", Height: 12,
-	}, rec)
+	require.True(t, f.listed(t, a))
 
 	evs := listChangedEvents(t, f.ctx)
 	require.Len(t, evs, 1)
-	require.Equal(t, f.gov, evs[0].Actor)
-	require.Equal(t, types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, evs[0].ActorRole)
-	require.True(t, evs[0].Sanctioned)
+	require.Equal(t, &types.EventSanctionListChanged{
+		Addresses: []string{a}, Sanctioned: true, Actor: f.gov,
+		ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Reason: "rule 7, tx ABC",
+	}, evs[0])
 
 	// Duplicates are a no-op for governance too.
 	f.ctx = f.freshCtx()
 	require.NoError(t, f.sanction(f.gov, a))
 	require.Empty(t, listChangedEvents(t, f.ctx))
-
-	// Re-adding a sanctioner's entry keeps the sanctioner's record, so a full
-	// sanctioner can still remove it. To make it a governance entry, governance
-	// removes it and adds it again.
-	b := addr("botadded")
-	require.NoError(t, f.sanction(f.addOnly, b))
-	require.NoError(t, f.sanction(f.gov, b))
-	rec, err = f.k.SanctionRecords.Get(f.ctx, b)
-	require.NoError(t, err)
-	require.Equal(t, f.addOnly, rec.Actor)
 
 	// Governance removes, with an event naming it.
 	f.ctx = f.freshCtx()
@@ -397,35 +348,21 @@ func TestGovernanceUsesSameMessages(t *testing.T) {
 
 func TestQueries(t *testing.T) {
 	f := setup(t)
-	byBot, legacy, clean := addr("bybot"), addr("legacy"), addr("clean")
-	f.ctx = f.ctx.WithBlockHeight(5)
+	byBot, clean := addr("bybot"), addr("clean")
 	require.NoError(t, f.sanction(f.addOnly, byBot))
-	require.NoError(t, f.k.BlacklistAccounts.Set(f.ctx, legacy))
 
 	sres, err := f.qs.Sanctioners(f.ctx, &types.QuerySanctionersRequest{})
 	require.NoError(t, err)
 	require.Len(t, sres.Sanctioners, 3)
 
-	ares, err := f.qs.SanctionedAddresses(f.ctx, &types.QuerySanctionedAddressesRequest{})
-	require.NoError(t, err)
-	require.Len(t, ares.SanctionedAddresses, 2)
-	got := map[string]*types.SanctionRecord{}
-	for _, e := range ares.SanctionedAddresses {
-		got[e.Address] = e.Record
-	}
-	require.Nil(t, got[legacy])
-	require.Equal(t, f.addOnly, got[byBot].Actor)
-	require.Equal(t, int64(5), got[byBot].Height)
-
 	ires, err := f.qs.IsSanctioned(f.ctx, &types.QueryIsSanctionedRequest{Address: byBot})
 	require.NoError(t, err)
 	require.True(t, ires.Sanctioned)
-	require.Equal(t, "rule 7, tx ABC", ires.Record.Reason)
 
-	ires, err = f.qs.IsSanctioned(f.ctx, &types.QueryIsSanctionedRequest{Address: legacy})
+	// Mixed case resolves to the stored canonical form.
+	ires, err = f.qs.IsSanctioned(f.ctx, &types.QueryIsSanctionedRequest{Address: strings.ToUpper(byBot)})
 	require.NoError(t, err)
 	require.True(t, ires.Sanctioned)
-	require.Nil(t, ires.Record)
 
 	ires, err = f.qs.IsSanctioned(f.ctx, &types.QueryIsSanctionedRequest{Address: clean})
 	require.NoError(t, err)
@@ -453,11 +390,296 @@ func TestMigrate1to2(t *testing.T) {
 		has, err := k.BlacklistAccounts.Has(ctx, a)
 		require.NoError(t, err)
 		require.True(t, has)
-		hasRec, err := k.SanctionRecords.Has(ctx, a)
-		require.NoError(t, err)
-		require.False(t, hasRec)
 	}
 	sanctioners, err := k.GetSanctioners(ctx)
 	require.NoError(t, err)
 	require.Empty(t, sanctioners)
+}
+
+func revokedEvents(t *testing.T, ctx sdk.Context) []*types.EventSanctionerRevoked {
+	t.Helper()
+	var out []*types.EventSanctionerRevoked
+	for _, e := range ctx.EventManager().ABCIEvents() {
+		msg, err := sdk.ParseTypedEvent(e)
+		require.NoError(t, err)
+		if ev, ok := msg.(*types.EventSanctionerRevoked); ok {
+			out = append(out, ev)
+		}
+	}
+	return out
+}
+
+func (f *fixture) revoke(signer, target, reason string) error {
+	_, err := f.srv.RevokeSanctioner(f.ctx, types.NewMsgRevokeSanctioner(signer, target, reason))
+	return err
+}
+
+func (f *fixture) setParams(t *testing.T, maxAddrs, maxReason uint32) {
+	t.Helper()
+	_, err := f.srv.UpdateParams(f.ctx, types.NewMsgUpdateParams(f.gov, types.NewParams(maxAddrs, maxReason)))
+	require.NoError(t, err)
+}
+
+// TestSanctionIsAllOrNothing checks a failing address anywhere in the batch
+// leaves the whole list untouched, even without the tx-level revert.
+func TestSanctionIsAllOrNothing(t *testing.T) {
+	f := setup(t)
+	innocent, later := addr("innocent"), addr("later")
+
+	f.ctx = f.freshCtx()
+	require.ErrorIs(t, f.sanction(f.full, innocent, f.addOnly, later), types.ErrProtectedAddress)
+	require.False(t, f.listed(t, innocent))
+	require.False(t, f.listed(t, later))
+	require.Empty(t, listChangedEvents(t, f.ctx))
+
+	// An invalid address reaching the keeper directly, bypassing Validate.
+	err := f.k.SanctionAddresses(f.ctx, []string{innocent, "not-an-address"}, f.full, "r")
+	require.ErrorIs(t, err, sdkerrors.ErrInvalidAddress)
+	require.False(t, f.listed(t, innocent))
+
+	require.NoError(t, f.sanction(f.full, innocent))
+	err = f.k.UnsanctionAddresses(f.ctx, []string{innocent, "not-an-address"}, f.full, "r")
+	require.ErrorIs(t, err, sdkerrors.ErrInvalidAddress)
+	require.True(t, f.listed(t, innocent), "nothing removed")
+}
+
+// TestLimitBoundaries checks each cap accepts exactly the limit and rejects
+// one more, for every message that has a reason.
+func TestLimitBoundaries(t *testing.T) {
+	f := setup(t)
+	f.setParams(t, 3, 10)
+	atCap := []string{addr("c1"), addr("c2"), addr("c3")}
+	overCap := append([]string{addr("c4")}, atCap...)
+	reasonAtCap, reasonOver := strings.Repeat("r", 10), strings.Repeat("r", 11)
+
+	_, err := f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, overCap, reasonAtCap))
+	require.ErrorIs(t, err, types.ErrTooManyAddresses)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, atCap, reasonOver))
+	require.ErrorIs(t, err, types.ErrReasonTooLong)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, atCap, reasonAtCap))
+	require.NoError(t, err)
+
+	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.full, overCap, reasonAtCap))
+	require.ErrorIs(t, err, types.ErrTooManyAddresses)
+	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.full, atCap, reasonOver))
+	require.ErrorIs(t, err, types.ErrReasonTooLong)
+	_, err = f.srv.UnsanctionAddresses(f.ctx, types.NewMsgUnsanctionAddresses(f.full, atCap, reasonAtCap))
+	require.NoError(t, err)
+
+	require.ErrorIs(t, f.revoke(f.full, f.addOnly, reasonOver), types.ErrReasonTooLong)
+	require.NoError(t, f.revoke(f.full, f.addOnly, reasonAtCap))
+
+	// Duplicates count toward the cap: it limits message size, not changes.
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, []string{atCap[0], atCap[0], atCap[0], atCap[0]}, "r"))
+	require.ErrorIs(t, err, types.ErrTooManyAddresses)
+
+	// A params change takes effect on the next message.
+	f.setParams(t, 4, 10)
+	_, err = f.srv.SanctionAddresses(f.ctx, types.NewMsgSanctionAddresses(f.full, overCap, reasonAtCap))
+	require.NoError(t, err)
+}
+
+func TestUnsanctionEvents(t *testing.T) {
+	f := setup(t)
+	a, b := addr("ev-a"), addr("ev-b")
+	require.NoError(t, f.sanction(f.full, a, b))
+
+	t.Run("only unlisted addresses emits nothing", func(t *testing.T) {
+		f.ctx = f.freshCtx()
+		require.NoError(t, f.unsanction(f.full, addr("never1"), addr("never2")))
+		require.Empty(t, listChangedEvents(t, f.ctx))
+	})
+
+	t.Run("mixed-case input is reported in canonical form", func(t *testing.T) {
+		f.ctx = f.freshCtx()
+		require.NoError(t, f.unsanction(f.full, strings.ToUpper(a)))
+		require.False(t, f.listed(t, a))
+		evs := listChangedEvents(t, f.ctx)
+		require.Len(t, evs, 1)
+		require.Equal(t, []string{a}, evs[0].Addresses)
+	})
+
+	t.Run("governance removal has no role", func(t *testing.T) {
+		f.ctx = f.freshCtx()
+		require.NoError(t, f.unsanction(f.gov, b))
+		require.Equal(t, []*types.EventSanctionListChanged{{
+			Addresses: []string{b}, Sanctioned: false, Actor: f.gov,
+			ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Reason: "false positive",
+		}}, listChangedEvents(t, f.ctx))
+	})
+
+	t.Run("in-batch duplicates are removed once", func(t *testing.T) {
+		require.NoError(t, f.sanction(f.full, a))
+		f.ctx = f.freshCtx()
+		require.NoError(t, f.unsanction(f.full, a, a))
+		evs := listChangedEvents(t, f.ctx)
+		require.Len(t, evs, 1)
+		require.Equal(t, []string{a}, evs[0].Addresses)
+	})
+}
+
+// TestRoleChanges checks permissions follow the current list, so a role
+// change by governance applies to the next message.
+func TestRoleChanges(t *testing.T) {
+	f := setup(t)
+	target := addr("rolechange")
+	require.NoError(t, f.sanction(f.full, target))
+
+	// Demote full to add-only: it can still add, but no longer remove or
+	// revoke.
+	_, err := f.srv.UpdateSanctioners(f.ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
+		{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
+		{Address: f.addOnly, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
+	}))
+	require.NoError(t, err)
+	require.NoError(t, f.sanction(f.full, addr("still-adds")))
+	require.ErrorIs(t, f.unsanction(f.full, target), types.ErrRoleNotPermitted)
+	require.ErrorIs(t, f.revoke(f.full, f.addOnly, "r"), types.ErrRoleNotPermitted)
+
+	// Promote add-only to full: it can now remove and revoke.
+	_, err = f.srv.UpdateSanctioners(f.ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
+		{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
+		{Address: f.addOnly, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL},
+	}))
+	require.NoError(t, err)
+	require.NoError(t, f.unsanction(f.addOnly, target))
+	require.NoError(t, f.revoke(f.addOnly, f.full, "r"))
+}
+
+func TestRevokeSanctionerEdges(t *testing.T) {
+	f := setup(t)
+	flagged := addr("flaggedbybot")
+	require.NoError(t, f.sanction(f.addOnly, flagged))
+
+	require.ErrorIs(t, f.revoke(f.gov, f.addOnly, "r"), types.ErrNotSanctioner, "governance uses MsgUpdateSanctioners instead")
+	require.ErrorIs(t, f.revoke(f.full, f.full, "r"), types.ErrRoleNotPermitted, "a full sanctioner can't revoke itself")
+
+	// Mixed-case target resolves to the stored entry.
+	f.ctx = f.freshCtx()
+	require.NoError(t, f.revoke(f.full, strings.ToUpper(f.addOnly), "key rotated"))
+	require.Equal(t, []*types.EventSanctionerRevoked{{
+		Address: f.addOnly, RevokedBy: f.full, Reason: "key rotated", Height: f.ctx.BlockHeight(),
+	}}, revokedEvents(t, f.ctx))
+
+	require.ErrorIs(t, f.revoke(f.full, f.addOnly, "r"), types.ErrNotSanctioner, "already revoked")
+	require.True(t, f.listed(t, flagged), "revoking leaves the sanctioner's entries in place")
+
+	// The revoked address is no longer protected, so it can be sanctioned.
+	require.NoError(t, f.sanction(f.full, f.addOnly))
+
+	// Governance can appoint it again.
+	_, err := f.srv.UpdateSanctioners(f.ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
+		{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL},
+		{Address: f.addOnly, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
+	}))
+	require.NoError(t, err)
+	require.NoError(t, f.sanction(f.addOnly, addr("back")))
+}
+
+func TestUpdateSanctionersMsg(t *testing.T) {
+	f := setup(t)
+	before, err := f.k.GetSanctioners(f.ctx)
+	require.NoError(t, err)
+
+	for name, list := range map[string][]types.Sanctioner{
+		"duplicate":        {{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}, {Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY}},
+		"unspecified role": {{Address: f.full}},
+		"invalid address":  {{Address: "nope", Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}},
+	} {
+		t.Run(name, func(t *testing.T) {
+			_, err := f.srv.UpdateSanctioners(f.ctx, types.NewMsgUpdateSanctioners(f.gov, list))
+			require.Error(t, err)
+			after, err := f.k.GetSanctioners(f.ctx)
+			require.NoError(t, err)
+			require.Equal(t, before, after, "list unchanged")
+		})
+	}
+
+	t.Run("stores canonical addresses and emits the new list", func(t *testing.T) {
+		f.ctx = f.freshCtx()
+		_, err := f.srv.UpdateSanctioners(f.ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
+			{Address: strings.ToUpper(f.full), Role: types.SanctionerRole_SANCTIONER_ROLE_FULL},
+		}))
+		require.NoError(t, err)
+		want := []types.Sanctioner{{Address: f.full, Role: types.SanctionerRole_SANCTIONER_ROLE_FULL}}
+		got, err := f.k.GetSanctioners(f.ctx)
+		require.NoError(t, err)
+		require.Equal(t, want, got)
+		require.NoError(t, f.sanction(f.full, addr("canon")), "signer matches the stored form")
+
+		var ev *types.EventSanctionersUpdated
+		for _, e := range f.ctx.EventManager().ABCIEvents() {
+			msg, err := sdk.ParseTypedEvent(e)
+			require.NoError(t, err)
+			if u, ok := msg.(*types.EventSanctionersUpdated); ok {
+				ev = u
+			}
+		}
+		require.NotNil(t, ev)
+		require.Equal(t, want, ev.Sanctioners)
+	})
+}
+
+// TestKeeperDirectCalls covers another module calling the keeper with its
+// own address as actor. The keeper still applies the limits and protections.
+func TestKeeperDirectCalls(t *testing.T) {
+	f := setup(t)
+	module := addr("othermodule")
+	target := addr("frommodule")
+
+	f.ctx = f.freshCtx()
+	require.NoError(t, f.k.SanctionAddresses(f.ctx, []string{target}, module, "hook"))
+	require.True(t, f.listed(t, target))
+	require.Equal(t, []*types.EventSanctionListChanged{{
+		Addresses: []string{target}, Sanctioned: true, Actor: module,
+		ActorRole: types.SanctionerRole_SANCTIONER_ROLE_UNSPECIFIED, Reason: "hook",
+	}}, listChangedEvents(t, f.ctx))
+
+	require.ErrorIs(t, f.k.SanctionAddresses(f.ctx, []string{f.full}, module, "hook"), types.ErrProtectedAddress)
+	require.ErrorIs(t, f.k.SanctionAddresses(f.ctx, []string{target}, module, strings.Repeat("x", int(types.DefaultMaxReasonLength)+1)), types.ErrReasonTooLong)
+	require.NoError(t, f.k.UnsanctionAddresses(f.ctx, []string{target}, module, "hook"))
+	require.False(t, f.listed(t, target))
+
+	// The authority skips the protections, as a gov proposal does.
+	require.NoError(t, f.k.SanctionAddresses(f.ctx, []string{f.full}, f.gov, "gov"))
+	require.True(t, f.listed(t, f.full))
+}
+
+// TestSanctionedSanctionerKeepsRole checks sanctioning a sanctioner doesn't
+// change the sanctioner list. Its transactions are stopped by the ante
+// handler instead (see app/sanction_integration_test.go).
+func TestSanctionedSanctionerKeepsRole(t *testing.T) {
+	f := setup(t)
+	require.NoError(t, f.sanction(f.gov, f.addOnly))
+	has, err := f.k.Sanctioners.Has(f.ctx, f.addOnly)
+	require.NoError(t, err)
+	require.True(t, has)
+
+	// A full sanctioner can lift it; the address is protected only from being
+	// sanctioned.
+	require.NoError(t, f.unsanction(f.full, f.addOnly))
+	require.False(t, f.listed(t, f.addOnly))
+}
+
+func TestQueryPaginationAndErrors(t *testing.T) {
+	f := setup(t)
+	listed := []string{addr("p1"), addr("p2"), addr("p3")}
+	require.NoError(t, f.sanction(f.full, listed...))
+
+	sres, err := f.qs.Sanctioners(f.ctx, &types.QuerySanctionersRequest{Pagination: &query.PageRequest{Limit: 2, CountTotal: true}})
+	require.NoError(t, err)
+	require.Len(t, sres.Sanctioners, 2)
+	require.EqualValues(t, 3, sres.Pagination.Total)
+	require.NotEmpty(t, sres.Pagination.NextKey)
+
+	bres, err := f.qs.Blacklist(f.ctx, &types.QueryBlacklistRequest{})
+	require.NoError(t, err)
+	require.ElementsMatch(t, listed, bres.BlacklistedAccounts)
+
+	_, err = f.qs.Sanctioners(f.ctx, nil)
+	require.Error(t, err)
+	_, err = f.qs.IsSanctioned(f.ctx, nil)
+	require.Error(t, err)
+	_, err = f.qs.IsSanctioned(f.ctx, &types.QueryIsSanctionedRequest{})
+	require.Error(t, err)
 }

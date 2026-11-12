@@ -13,11 +13,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			return err
 		}
 	}
-	for _, entry := range genState.SanctionRecords {
-		if err := k.SanctionRecords.Set(ctx, entry.Address, *entry.Record); err != nil {
-			return err
-		}
-	}
 	if err := k.SetSanctioners(ctx, genState.Sanctioners); err != nil {
 		return err
 	}
@@ -42,19 +37,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (*types.GenesisState, error
 	genesis.Sanctioners, err = k.GetSanctioners(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	recIter, err := k.SanctionRecords.Iterate(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	kvs, err := recIter.KeyValues()
-	if err != nil {
-		return nil, err
-	}
-	for _, kv := range kvs {
-		record := kv.Value
-		genesis.SanctionRecords = append(genesis.SanctionRecords, types.SanctionedAddress{Address: kv.Key, Record: &record})
 	}
 
 	return genesis, nil
