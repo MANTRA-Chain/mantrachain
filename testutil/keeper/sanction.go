@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"testing"
 
 	"cosmossdk.io/core/address"
@@ -18,9 +19,28 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 )
+
+// SanctionModuleAccounts are the module names the test account keeper
+// reports as module accounts.
+var SanctionModuleAccounts = []string{govtypes.ModuleName, distrtypes.ModuleName, authtypes.FeeCollectorName, types.ModuleName}
+
+// mockAccountKeeper reports SanctionModuleAccounts as module accounts and
+// knows no other accounts.
+type mockAccountKeeper struct{}
+
+func (mockAccountKeeper) GetAccount(context.Context, sdk.AccAddress) sdk.AccountI { return nil }
+
+func (mockAccountKeeper) GetModulePermissions() map[string]authtypes.PermissionsForAddress {
+	perms := make(map[string]authtypes.PermissionsForAddress, len(SanctionModuleAccounts))
+	for _, name := range SanctionModuleAccounts {
+		perms[name] = authtypes.NewPermissionsForAddress(name, nil)
+	}
+	return perms
+}
 
 func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 	tb.Helper()
@@ -41,6 +61,7 @@ func SanctionKeeper(tb testing.TB) (keeper.Keeper, sdk.Context, address.Codec) {
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
 		authority.String(),
+		mockAccountKeeper{},
 		nil,
 	)
 

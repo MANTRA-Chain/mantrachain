@@ -88,8 +88,9 @@ message MsgUpdateSanctioners {
 message MsgUpdateSanctionersResponse {}
 
 // MsgSanctionAddresses adds addresses to the sanction list. Signer must be the
-// gov authority or a sanctioner with any role. Governance isn't subject to the
-// caps or the protected-address checks.
+// gov authority or a sanctioner with any role. The caps apply to every signer.
+// Nobody can sanction a module account, and only governance can sanction a
+// sanctioner.
 message MsgSanctionAddresses {
   option (amino.name) = "mantrachain/x/sanction/MsgSanctionAddresses";
   option (cosmos.msg.v1.signer) = "signer";

@@ -15,6 +15,8 @@ type (
 		cdc          codec.BinaryCodec
 		storeService store.KVStoreService
 		logger       log.Logger
+		// accountKeeper identifies module accounts, which can't be sanctioned.
+		accountKeeper types.AccountKeeper
 		// evmKeeper clears EIP-7702 delegations from sanctioned accounts. It
 		// may be nil, in which case nothing is cleared.
 		evmKeeper types.EVMKeeper
@@ -38,16 +40,18 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
+	accountKeeper types.AccountKeeper,
 	evmKeeper types.EVMKeeper,
 ) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
 	k := Keeper{
-		cdc:          cdc,
-		storeService: storeService,
-		authority:    authority,
-		logger:       logger,
-		evmKeeper:    evmKeeper,
+		cdc:           cdc,
+		storeService:  storeService,
+		authority:     authority,
+		logger:        logger,
+		accountKeeper: accountKeeper,
+		evmKeeper:     evmKeeper,
 
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		BlacklistAccounts: collections.NewKeySet(sb, types.PrefixBlackListAccounts, "blacklist_accounts", collections.StringKey),

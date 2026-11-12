@@ -329,8 +329,9 @@ func (m *MsgUpdateSanctionersResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateSanctionersResponse proto.InternalMessageInfo
 
 // MsgSanctionAddresses adds addresses to the sanction list. Signer must be the
-// gov authority or a sanctioner with any role. Governance isn't subject to the
-// caps or the protected-address checks.
+// gov authority or a sanctioner with any role. The caps apply to every signer.
+// Nobody can sanction a module account, and only governance can sanction a
+// sanctioner.
 type MsgSanctionAddresses struct {
 	Signer string `protobuf:"bytes,1,opt,name=signer,proto3" json:"signer,omitempty"`
 	// addresses is capped by params.max_addresses_per_msg.

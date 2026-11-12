@@ -1,9 +1,19 @@
 package types
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/ethereum/go-ethereum/common"
 )
+
+// AccountKeeper defines the x/auth keeper methods x/sanction uses to tell
+// module accounts apart, so they're never sanctioned.
+type AccountKeeper interface {
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	GetModulePermissions() map[string]authtypes.PermissionsForAddress
+}
 
 // EVMKeeper defines the x/vm keeper methods x/sanction uses to clear an
 // EIP-7702 delegation from a sanctioned account.

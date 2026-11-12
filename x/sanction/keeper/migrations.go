@@ -16,9 +16,11 @@ func NewMigrator(k Keeper) Migrator {
 }
 
 // Migrate1to2 sets the new params to their defaults and clears any EIP-7702
-// delegation from accounts already on the blacklist. The entries themselves
-// are left untouched. The sanctioner list starts empty, which keeps the
-// module governance-only until governance appoints sanctioners.
+// delegation from accounts already on the blacklist. It removes any module
+// account from the blacklist, since the new send restriction would stop it
+// sending. Other entries are left untouched. The sanctioner list starts
+// empty, which keeps the module governance-only until governance appoints
+// sanctioners.
 func (m Migrator) Migrate1to2(ctx sdk.Context) error {
 	if err := m.keeper.Params.Set(ctx, types.DefaultParams()); err != nil {
 		return err
@@ -32,6 +34,16 @@ func (m Migrator) Migrate1to2(ctx sdk.Context) error {
 		return err
 	}
 	for _, addr := range addrs {
+		isModule, err := m.keeper.isModuleAccount(ctx, addr)
+		if err != nil {
+			return err
+		}
+		if isModule {
+			if err := m.keeper.BlacklistAccounts.Remove(ctx, addr); err != nil {
+				return err
+			}
+			continue
+		}
 		if err := m.keeper.clearCodeDelegation(ctx, addr); err != nil {
 			return err
 		}

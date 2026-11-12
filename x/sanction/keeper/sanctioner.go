@@ -47,8 +47,8 @@ func (k Keeper) GetSanctioners(ctx context.Context) ([]types.Sanctioner, error) 
 // so another module can call them directly.
 
 // SanctionAddresses adds addresses to the sanction list on behalf of actor,
-// skipping any already listed. Only governance can sanction a protected
-// address.
+// skipping any already listed. Nobody can sanction a module account, and
+// only governance can sanction a sanctioner.
 func (k Keeper) SanctionAddresses(ctx context.Context, addresses []string, actor, reason string) error {
 	if err := k.checkLimits(ctx, len(addresses), reason); err != nil {
 		return err
@@ -57,11 +57,15 @@ func (k Keeper) SanctionAddresses(ctx context.Context, addresses []string, actor
 	if err != nil {
 		return err
 	}
-	if actor != k.authority {
-		for _, addr := range addrs {
-			if err := k.checkNotProtected(ctx, addr); err != nil {
-				return err
-			}
+	for _, addr := range addrs {
+		if err := k.checkNotModuleAccount(ctx, addr); err != nil {
+			return err
+		}
+		if actor == k.authority {
+			continue
+		}
+		if err := k.checkNotProtected(ctx, addr); err != nil {
+			return err
 		}
 	}
 	role, err := k.actorRole(ctx, actor)
@@ -210,6 +214,36 @@ func (k Keeper) checkLimits(ctx context.Context, numAddresses int, reason string
 		return errorsmod.Wrapf(types.ErrReasonTooLong, "%d bytes, max %d", len(reason), params.MaxReasonLength)
 	}
 	return nil
+}
+
+// checkNotModuleAccount fails if addr is a module account. The bank send
+// restriction would stop it sending, which could halt the chain (for
+// example, the fee collector paying out to distribution in BeginBlock).
+func (k Keeper) checkNotModuleAccount(ctx context.Context, addr string) error {
+	isModule, err := k.isModuleAccount(ctx, addr)
+	if err != nil {
+		return err
+	}
+	if isModule {
+		return errorsmod.Wrapf(types.ErrProtectedAddress, "%s is a module account", addr)
+	}
+	return nil
+}
+
+// isModuleAccount reports whether addr belongs to a module, whether or not
+// its account exists yet.
+func (k Keeper) isModuleAccount(ctx context.Context, addr string) (bool, error) {
+	acc, err := sdk.AccAddressFromBech32(addr)
+	if err != nil {
+		return false, err
+	}
+	for _, perms := range k.accountKeeper.GetModulePermissions() {
+		if perms.GetAddress().Equals(acc) {
+			return true, nil
+		}
+	}
+	_, isModule := k.accountKeeper.GetAccount(ctx, acc).(sdk.ModuleAccountI)
+	return isModule, nil
 }
 
 // checkNotProtected fails if addr may only be sanctioned by governance, which

@@ -15,6 +15,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -104,16 +105,25 @@ func TestSanctionedSanctionerBlockedByAnte(t *testing.T) {
 	require.NoError(t, err)
 }
 
-// TestSanctionFastPathModuleAccounts checks a sanctioner can sanction module
-// accounts, the gov authority included. Module accounts never sign
-// transactions, so listing them has no effect on the chain.
+// TestSanctionFastPathModuleAccounts checks nobody, governance included, can
+// sanction a module account. The bank send restriction would stop it
+// sending, so listing the fee collector, for example, would halt the chain
+// when distribution pulls fees in BeginBlock.
 func TestSanctionFastPathModuleAccounts(t *testing.T) {
-	app, ctx, full, _ := sanctionAppCtx(t)
-	for _, name := range []string{govtypes.ModuleName, distrtypes.ModuleName, authtypes.FeeCollectorName, sanctiontypes.ModuleName} {
+	app, ctx, full, addOnly := sanctionAppCtx(t)
+	gov := authtypes.NewModuleAddress(govtypes.ModuleName).String()
+	// sanction and mint have no account in state here, so they're caught by
+	// the module permissions list rather than the account type.
+	for _, name := range []string{govtypes.ModuleName, distrtypes.ModuleName, authtypes.FeeCollectorName, sanctiontypes.ModuleName, minttypes.ModuleName} {
 		target := authtypes.NewModuleAddress(name).String()
-		msg := sanctiontypes.NewMsgSanctionAddresses(full, []string{target}, "allowed")
-		_, err := app.MsgServiceRouter().Handler(msg)(ctx, msg)
-		require.NoError(t, err, name)
+		for _, signer := range []string{gov, full, addOnly} {
+			msg := sanctiontypes.NewMsgSanctionAddresses(signer, []string{target}, "not allowed")
+			_, err := app.MsgServiceRouter().Handler(msg)(ctx, msg)
+			require.ErrorIs(t, err, sanctiontypes.ErrProtectedAddress, "%s by %s", name, signer)
+		}
+		listed, err := app.SanctionKeeper.IsSanctioned(ctx, target)
+		require.NoError(t, err)
+		require.False(t, listed, name)
 	}
 }
 

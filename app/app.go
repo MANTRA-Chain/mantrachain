@@ -702,8 +702,13 @@ func New(
 		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
 		app.EVMKeeper,
 	)
+	// Stop coins leaving blacklisted addresses on every path, not only txs
+	// they sign. The restriction is shared by all copies of the bank keeper,
+	// including those already handed to other keepers.
+	app.BankKeeper.AppendSendRestriction(app.SanctionKeeper.SendRestrictionFn)
 
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(

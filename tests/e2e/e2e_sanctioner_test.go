@@ -13,6 +13,7 @@ import (
 	sanctiontypes "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/gogoproto/proto"
 )
 
@@ -261,6 +262,8 @@ func (s *IntegrationTestSuite) testSanctionerFastPath() {
 	s.execSanctionTx(s.chainA, valIdx, "revoke-sanctioner", bot.String(), "should fail", bot.String(), sanctiontypes.ErrRoleNotPermitted)
 	s.execSanctionTx(s.chainA, valIdx, "sanction-addresses", manager.String(), "should fail", bot.String(), sanctiontypes.ErrProtectedAddress)
 	s.execSanctionTx(s.chainA, valIdx, "sanction-addresses", stranger+","+bot.String(), "should fail", manager.String(), sanctiontypes.ErrProtectedAddress)
+	feeCollector := authtypes.NewModuleAddress(authtypes.FeeCollectorName).String()
+	s.execSanctionTx(s.chainA, valIdx, "sanction-addresses", stranger+","+feeCollector, "should fail", manager.String(), sanctiontypes.ErrProtectedAddress)
 	s.execSanctionTx(s.chainA, valIdx, "sanction-addresses", stranger, "should fail", alice.String(), sanctiontypes.ErrNotSanctioner)
 	s.execSanctionTx(s.chainA, valIdx, "unsanction-addresses", bob.String(), "should fail", alice.String(), sanctiontypes.ErrNotSanctioner)
 	s.execSanctionTx(s.chainA, valIdx, "revoke-sanctioner", bot.String(), "should fail", alice.String(), sanctiontypes.ErrNotSanctioner)
@@ -269,7 +272,7 @@ func (s *IntegrationTestSuite) testSanctionerFastPath() {
 	s.execSanctionTx(s.chainA, valIdx, "sanction-addresses", strings.Join(tooMany, ","), "should fail", manager.String(), sanctiontypes.ErrTooManyAddresses)
 	s.execSanctionTx(s.chainA, valIdx, "revoke-sanctioner", manager.String(), "should fail", manager.String(), sanctiontypes.ErrRoleNotPermitted)
 	s.execSanctionTx(s.chainA, valIdx, "revoke-sanctioner", alice.String(), "should fail", manager.String(), sanctiontypes.ErrNotSanctioner)
-	s.waitSanctioned(chainEndpoint, false, stranger, tooMany[0])
+	s.waitSanctioned(chainEndpoint, false, stranger, tooMany[0], feeCollector)
 	s.waitSanctioned(chainEndpoint, true, bob.String(), carol)
 
 	// 4. The manager reverses both in one tx.

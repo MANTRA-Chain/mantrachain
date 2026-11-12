@@ -12,6 +12,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 )
 
 type fixture struct {
@@ -174,6 +176,23 @@ func TestSanctionProtections(t *testing.T) {
 	// The message is atomic at the tx level, and the keeper checks each
 	// protected address before writing it. Here the innocent address came
 	// first in the batch, so the caller's tx would be reverted in full.
+}
+
+// TestSanctionModuleAccountRejected checks nobody, governance included, can
+// sanction a module account, since the send restriction would stop it
+// sending. The whole batch fails and nothing is written.
+func TestSanctionModuleAccountRejected(t *testing.T) {
+	f := setup(t)
+	for _, name := range keepertest.SanctionModuleAccounts {
+		module := authtypes.NewModuleAddress(name).String()
+		for _, signer := range []string{f.gov, f.full, f.addOnly} {
+			err := f.sanction(signer, addr("innocent"), module)
+			require.ErrorIs(t, err, types.ErrProtectedAddress, "%s by %s", name, signer)
+			require.ErrorContains(t, err, "module account")
+			require.False(t, f.listed(t, module))
+			require.False(t, f.listed(t, addr("innocent")))
+		}
+	}
 }
 
 func TestLimits(t *testing.T) {
@@ -380,6 +399,9 @@ func TestMigrate1to2(t *testing.T) {
 	for _, a := range old {
 		require.NoError(t, k.BlacklistAccounts.Set(ctx, a))
 	}
+	// A module account listed under version 1 is dropped.
+	module := authtypes.NewModuleAddress(distrtypes.ModuleName).String()
+	require.NoError(t, k.BlacklistAccounts.Set(ctx, module))
 
 	require.NoError(t, keeper.NewMigrator(k).Migrate1to2(ctx))
 
@@ -391,6 +413,9 @@ func TestMigrate1to2(t *testing.T) {
 		require.NoError(t, err)
 		require.True(t, has)
 	}
+	has, err := k.BlacklistAccounts.Has(ctx, module)
+	require.NoError(t, err)
+	require.False(t, has, "module account removed")
 	sanctioners, err := k.GetSanctioners(ctx)
 	require.NoError(t, err)
 	require.Empty(t, sanctioners)
