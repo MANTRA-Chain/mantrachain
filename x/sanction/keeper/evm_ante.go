@@ -34,10 +34,11 @@ func (ebcd EVMBlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, si
 		}
 
 		for _, auth := range ethMsg.AsTransaction().SetCodeAuthorizations() {
+			// Recover the authority as the EVM's validateAuthorization does.
+			// It skips an authorization whose authority can't be recovered,
+			// so that one can't install code for anyone.
 			authority, err := auth.Authority()
 			if err != nil {
-				// The EVM skips an authorization whose signer can't be
-				// recovered, so it can't install code for anyone.
 				continue
 			}
 			if err := ebcd.checkAddress(ctx, authority, "authorization signer"); err != nil {
@@ -50,11 +51,11 @@ func (ebcd EVMBlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, si
 }
 
 func (ebcd EVMBlacklistCheckDecorator) checkAddress(ctx sdk.Context, addr ethcommon.Address, what string) error {
-	has, err := ebcd.sanctionKeeper.BlacklistAccounts.Has(ctx, sdk.AccAddress(addr.Bytes()).String())
+	sanctioned, err := ebcd.sanctionKeeper.IsSanctioned(ctx, sdk.AccAddress(addr.Bytes()).String())
 	if err != nil {
 		return err
 	}
-	if has {
+	if sanctioned {
 		return errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s %s is blacklisted", what, addr)
 	}
 	return nil

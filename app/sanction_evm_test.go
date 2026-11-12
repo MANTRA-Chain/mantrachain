@@ -175,3 +175,19 @@ func TestMigrate1to2ClearsEIP7702Delegation(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, sanctiontypes.DefaultParams(), params)
 }
+
+// TestSanctionKeepsDelegationOf32ByteSuffix checks sanctioning a 32-byte
+// address leaves alone the EVM account named by its last 20 bytes.
+func TestSanctionKeepsDelegationOf32ByteSuffix(t *testing.T) {
+	app, ctx, _, addOnly := sanctionAppCtx(t)
+	key, err := crypto.GenerateKey()
+	require.NoError(t, err)
+	bystander := crypto.PubkeyToAddress(key.PublicKey)
+	setDelegation(app, ctx, bystander)
+
+	wide := append(make([]byte, 12), bystander.Bytes()...)
+	msg := sanctiontypes.NewMsgSanctionAddresses(addOnly, []string{sdk.AccAddress(wide).String()}, "rule drain-v1")
+	_, err = app.MsgServiceRouter().Handler(msg)(ctx, msg)
+	require.NoError(t, err)
+	require.True(t, hasDelegation(app, ctx, bystander))
+}

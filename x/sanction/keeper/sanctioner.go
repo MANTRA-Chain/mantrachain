@@ -156,11 +156,11 @@ func (k Keeper) RevokeSanctioner(ctx context.Context, target, revokedBy, reason 
 	})
 }
 
-var emptyCodeHash = common.BytesToHash(evmtypes.EmptyCodeHash)
-
 // clearCodeDelegation removes an EIP-7702 delegation from addr, so code the
 // account authorized before it was sanctioned can no longer run as it. The
 // ante handler stops it authorizing new code. Contract code is left alone.
+// The EVM clears a delegation the same way, by deleting the code hash, when
+// it applies an authorization to the zero address.
 func (k Keeper) clearCodeDelegation(ctx context.Context, addr string) error {
 	if k.evmKeeper == nil {
 		return nil
@@ -169,10 +169,15 @@ func (k Keeper) clearCodeDelegation(ctx context.Context, addr string) error {
 	if err != nil {
 		return err
 	}
+	if len(acc) != common.AddressLength {
+		// Contract and interchain accounts have 32-byte addresses and no EVM
+		// code; read as one, the last 20 bytes would name another account.
+		return nil
+	}
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	ethAddr := common.BytesToAddress(acc)
 	codeHash := k.evmKeeper.GetCodeHash(sdkCtx, ethAddr)
-	if codeHash == emptyCodeHash {
+	if evmtypes.IsEmptyCodeHash(codeHash.Bytes()) {
 		return nil
 	}
 	if _, ok := ethtypes.ParseDelegation(k.evmKeeper.GetCode(sdkCtx, codeHash)); ok {
