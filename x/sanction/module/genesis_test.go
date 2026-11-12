@@ -8,6 +8,7 @@ import (
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -60,4 +61,13 @@ func TestGenesisEmptyRoundTrip(t *testing.T) {
 	require.Equal(t, types.DefaultParams(), got.Params)
 	require.Empty(t, got.BlacklistAccounts)
 	require.Empty(t, got.Sanctioners)
+}
+
+func TestInitGenesisRefusesModuleAccounts(t *testing.T) {
+	gs := *types.DefaultGenesis()
+	gs.BlacklistAccounts = []string{authtypes.NewModuleAddress(authtypes.FeeCollectorName).String()}
+	require.NoError(t, gs.Validate())
+
+	k, ctx, _ := keepertest.SanctionKeeper(t)
+	require.ErrorIs(t, sanction.InitGenesis(ctx, k, gs), types.ErrProtectedAddress)
 }

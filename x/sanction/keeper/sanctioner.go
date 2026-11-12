@@ -58,7 +58,7 @@ func (k Keeper) SanctionAddresses(ctx context.Context, addresses []string, actor
 		return err
 	}
 	for _, addr := range addrs {
-		if err := k.checkNotModuleAccount(ctx, addr); err != nil {
+		if err := k.CheckNotModuleAccount(ctx, addr); err != nil {
 			return err
 		}
 		if actor == k.authority {
@@ -252,10 +252,10 @@ func (k Keeper) checkLimits(ctx context.Context, numAddresses int, reason string
 	return nil
 }
 
-// checkNotModuleAccount fails if addr is a module account. The bank send
+// CheckNotModuleAccount fails if addr is a module account. The bank send
 // restriction would stop it sending, which could halt the chain (for
 // example, the fee collector paying out to distribution in BeginBlock).
-func (k Keeper) checkNotModuleAccount(ctx context.Context, addr string) error {
+func (k Keeper) CheckNotModuleAccount(ctx context.Context, addr string) error {
 	isModule, err := k.isModuleAccount(ctx, addr)
 	if err != nil {
 		return err

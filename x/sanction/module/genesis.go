@@ -8,8 +8,11 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) error {
-	for _, blacklist_account := range genState.BlacklistAccounts {
-		if err := k.BlacklistAccounts.Set(ctx, blacklist_account); err != nil {
+	for _, addr := range genState.BlacklistAccounts {
+		if err := k.CheckNotModuleAccount(ctx, addr); err != nil {
+			return err
+		}
+		if err := k.BlacklistAccounts.Set(ctx, addr); err != nil {
 			return err
 		}
 	}

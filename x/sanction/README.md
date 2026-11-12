@@ -34,7 +34,7 @@ A change to the list applies to every transaction checked after the change commi
 The ante handler only stops a sanctioned account signing transactions. Its coins can still be moved by paths that skip the ante handler, such as an ICA host transaction, authz executed by a contract, or `transferFrom` on the ERC20 precompile using an allowance granted earlier. A bank send restriction closes these: any bank send out of a sanctioned address fails with `ErrAccountBlacklisted`, whatever started it. This includes EVM value transfers, which lower the account's bank balance when the state commits.
 
 * A sanctioned account can still receive coins.
-* Module accounts can't be sanctioned by anyone, governance included. Blocking one could stop fee distribution or halt the chain.
+* Module accounts can't be sanctioned by anyone, governance included, or listed in genesis. Blocking one could stop fee distribution or halt the chain.
 * The lookup is not charged gas, so transfer gas costs are unchanged.
 * It covers bank coins only. Tokens kept in contract storage (EVM-only ERC20s, cw20) aren't bank coins, so they're only stopped if the token contract blocks them.
 * Staking moves coins with delegate and undelegate calls, not sends, so they aren't blocked. Delegated coins stay owned by the account.
