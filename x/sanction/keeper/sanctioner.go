@@ -9,6 +9,9 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	evmtypes "github.com/cosmos/evm/x/vm/types"
+	"github.com/ethereum/go-ethereum/common"
+	ethtypes "github.com/ethereum/go-ethereum/core/types"
 )
 
 // SetSanctioners replaces the whole sanctioner list. The list must already be
@@ -78,6 +81,9 @@ func (k Keeper) SanctionAddresses(ctx context.Context, addresses []string, actor
 		if err := k.BlacklistAccounts.Set(ctx, addr); err != nil {
 			return err
 		}
+		if err := k.clearCodeDelegation(ctx, addr); err != nil {
+			return err
+		}
 		added = append(added, addr)
 	}
 	return k.emitListChanged(ctx, added, true, actor, role, reason)
@@ -144,6 +150,31 @@ func (k Keeper) RevokeSanctioner(ctx context.Context, target, revokedBy, reason 
 		Reason:    reason,
 		Height:    sdkCtx.BlockHeight(),
 	})
+}
+
+var emptyCodeHash = common.BytesToHash(evmtypes.EmptyCodeHash)
+
+// clearCodeDelegation removes an EIP-7702 delegation from addr, so code the
+// account authorized before it was sanctioned can no longer run as it. The
+// ante handler stops it authorizing new code. Contract code is left alone.
+func (k Keeper) clearCodeDelegation(ctx context.Context, addr string) error {
+	if k.evmKeeper == nil {
+		return nil
+	}
+	acc, err := sdk.AccAddressFromBech32(addr)
+	if err != nil {
+		return err
+	}
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	ethAddr := common.BytesToAddress(acc)
+	codeHash := k.evmKeeper.GetCodeHash(sdkCtx, ethAddr)
+	if codeHash == emptyCodeHash {
+		return nil
+	}
+	if _, ok := ethtypes.ParseDelegation(k.evmKeeper.GetCode(sdkCtx, codeHash)); ok {
+		k.evmKeeper.DeleteCodeHash(sdkCtx, ethAddr)
+	}
+	return nil
 }
 
 // actorRole returns actor's sanctioner role for events, or UNSPECIFIED for

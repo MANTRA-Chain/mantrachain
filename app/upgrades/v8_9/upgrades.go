@@ -12,7 +12,8 @@ import (
 
 // CreateUpgradeHandler runs module migrations. x/sanction moves from
 // consensus version 1 to 2: params get their defaults, existing blacklist
-// entries are untouched, and the sanctioner list starts empty.
+// entries are kept but lose any EIP-7702 delegation, and the sanctioner list
+// starts empty.
 func CreateUpgradeHandler(
 	mm *module.Manager,
 	configurator module.Configurator,

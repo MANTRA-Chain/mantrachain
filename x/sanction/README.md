@@ -23,7 +23,9 @@ Governance and **sanctioners** change the list with the same two messages, `MsgS
 ## AnteHandler
 
 The custom `AnteHandler` checks if the signer of a transaction, its fee granter or any authz granter is sanctioned.
-If so, the transaction is rejected. EVM transactions are checked by sender.
+If so, the transaction is rejected. EVM transactions are checked by sender, and a type-4 (EIP-7702) transaction is also rejected if any of its authorizations is signed by a sanctioned account. Otherwise a relayer could submit a sanctioned account's authorization and run code as that account.
+
+When an address is sanctioned, any EIP-7702 delegation on it is cleared, so code it authorized earlier can no longer run as it. Contract code is left alone.
 A change to the list applies to every transaction checked after the change commits.
 
 ## Sanctioners
@@ -58,7 +60,7 @@ State doesn't record who added an entry or why. That lives only in `EventSanctio
 
 ### Migration from version 1
 
-`Migrate1to2` sets params to their defaults and leaves existing blacklist entries untouched. The sanctioner list starts empty.
+`Migrate1to2` sets params to their defaults and clears any EIP-7702 delegation from accounts already on the blacklist. The entries themselves are left untouched. The sanctioner list starts empty.
 
 ## Params
 
@@ -156,8 +158,8 @@ Measured by `TestSanctionGasAtCap` in `app/sanction_integration_test.go`, with a
 
 | Addresses | Execution gas | Tx-size gas | Total | Share of mainnet's 75M block |
 | --- | --- | --- | --- | --- |
-| 1 | 9,995 | ~5,600 | ~16,000 | 0.02% |
-| 10 | 58,415 | ~9,900 | ~68,000 | 0.1% |
-| 50 | 273,615 | ~28,700 | ~302,000 | 0.4% |
+| 1 | 11,058 | ~5,600 | ~17,000 | 0.02% |
+| 10 | 69,045 | ~9,900 | ~79,000 | 0.1% |
+| 50 | 326,765 | ~28,700 | ~355,000 | 0.5% |
 
-About 5,500 gas per address. Ante handler costs such as signature verification come on top.
+About 6,500 gas per address, including the check for an EIP-7702 delegation. Ante handler costs such as signature verification come on top.

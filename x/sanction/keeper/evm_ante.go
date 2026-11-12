@@ -8,8 +8,10 @@ import (
 	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
-// EVMBlacklistCheckDecorator is a decorator that checks if EVM transaction senders
-// are blacklisted. If a sender is found in the blacklist, it returns an error.
+// EVMBlacklistCheckDecorator rejects an EVM transaction whose sender is
+// blacklisted, or that carries an EIP-7702 authorization signed by a
+// blacklisted account. Without the second check, a relayer could submit a
+// sanctioned account's authorization and run code as that account.
 type EVMBlacklistCheckDecorator struct {
 	sanctionKeeper Keeper
 }
@@ -27,12 +29,33 @@ func (ebcd EVMBlacklistCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, si
 			return ctx, err
 		}
 
-		if has, err := ebcd.sanctionKeeper.BlacklistAccounts.Has(ctx, ethMsg.GetFrom().String()); err != nil {
+		if err := ebcd.checkAddress(ctx, ethcommon.BytesToAddress(ethMsg.GetFrom()), "sender"); err != nil {
 			return ctx, err
-		} else if has {
-			return ctx, errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s is blacklisted", ethcommon.BytesToAddress(ethMsg.GetFrom()))
+		}
+
+		for _, auth := range ethMsg.AsTransaction().SetCodeAuthorizations() {
+			authority, err := auth.Authority()
+			if err != nil {
+				// The EVM skips an authorization whose signer can't be
+				// recovered, so it can't install code for anyone.
+				continue
+			}
+			if err := ebcd.checkAddress(ctx, authority, "authorization signer"); err != nil {
+				return ctx, err
+			}
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func (ebcd EVMBlacklistCheckDecorator) checkAddress(ctx sdk.Context, addr ethcommon.Address, what string) error {
+	has, err := ebcd.sanctionKeeper.BlacklistAccounts.Has(ctx, sdk.AccAddress(addr.Bytes()).String())
+	if err != nil {
+		return err
+	}
+	if has {
+		return errorsmod.Wrapf(types.ErrAccountBlacklisted, "%s %s is blacklisted", what, addr)
+	}
+	return nil
 }

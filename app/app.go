@@ -549,13 +549,6 @@ func New(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	app.SanctionKeeper = sanctionkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
 	app.BankKeeper.BaseSendKeeper = app.BankKeeper.SetHooks(
 		banktypes.NewMultiBankHooks(
 			app.TokenFactoryKeeper.Hooks(),
@@ -703,6 +696,14 @@ func New(
 		evmChainID,
 		tracer,
 	).WithDefaultEvmCoinInfo(EVMCoinInfo)
+
+	app.SanctionKeeper = sanctionkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[sanctiontypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.EVMKeeper,
+	)
 
 	// ERC20 Keeper
 	app.Erc20Keeper = erc20keeper.NewKeeper(

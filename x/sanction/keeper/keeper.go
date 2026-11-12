@@ -15,6 +15,9 @@ type (
 		cdc          codec.BinaryCodec
 		storeService store.KVStoreService
 		logger       log.Logger
+		// evmKeeper clears EIP-7702 delegations from sanctioned accounts. It
+		// may be nil, in which case nothing is cleared.
+		evmKeeper types.EVMKeeper
 
 		// the address capable of executing a MsgUpdateParams message.
 		// Typically, this should be the x/gov module account.
@@ -35,6 +38,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	authority string,
+	evmKeeper types.EVMKeeper,
 ) Keeper {
 	sb := collections.NewSchemaBuilder(storeService)
 
@@ -43,6 +47,7 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
+		evmKeeper:    evmKeeper,
 
 		Params:            collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		BlacklistAccounts: collections.NewKeySet(sb, types.PrefixBlackListAccounts, "blacklist_accounts", collections.StringKey),
