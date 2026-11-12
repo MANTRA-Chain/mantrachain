@@ -103,6 +103,12 @@ func (k Keeper) UnsanctionAddresses(ctx context.Context, addresses []string, act
 	if err != nil {
 		return err
 	}
+	return k.unsanction(ctx, addrs, actor, reason)
+}
+
+// unsanction removes the canonical addresses that are listed and emits one
+// event for them. It applies no limits.
+func (k Keeper) unsanction(ctx context.Context, addrs []string, actor, reason string) error {
 	role, err := k.actorRole(ctx, actor)
 	if err != nil {
 		return err
@@ -123,6 +129,31 @@ func (k Keeper) UnsanctionAddresses(ctx context.Context, addresses []string, act
 		removed = append(removed, addr)
 	}
 	return k.emitListChanged(ctx, removed, false, actor, role, reason)
+}
+
+// AppointSanctioners replaces the sanctioner list and unsanctions every
+// address that joins it: one sanctioned while its appointment was voting
+// couldn't sign anything. A sanctioner already on the list keeps any sanction
+// governance gave it.
+func (k Keeper) AppointSanctioners(ctx context.Context, sanctioners []types.Sanctioner) error {
+	var appointed []string
+	for _, s := range sanctioners {
+		addr, err := types.NormalizeAddress(s.Address)
+		if err != nil {
+			return err
+		}
+		has, err := k.Sanctioners.Has(ctx, addr)
+		if err != nil {
+			return err
+		}
+		if !has {
+			appointed = append(appointed, addr)
+		}
+	}
+	if err := k.SetSanctioners(ctx, sanctioners); err != nil {
+		return err
+	}
+	return k.unsanction(ctx, appointed, k.authority, types.ReasonAppointed)
 }
 
 // RevokeSanctioner removes target from the sanctioner list on behalf of

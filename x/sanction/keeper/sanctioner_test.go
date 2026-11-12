@@ -153,6 +153,35 @@ func TestSanctionAddresses(t *testing.T) {
 	})
 }
 
+// TestAppointmentUnsanctionsNewSanctioner checks an appointment lifts the
+// sanctions on new sanctioners only.
+func TestAppointmentUnsanctionsNewSanctioner(t *testing.T) {
+	f := setup(t)
+	full := types.SanctionerRole_SANCTIONER_ROLE_FULL
+	candidate, candidate2 := addr("candidate"), addr("candidate2")
+	require.NoError(t, f.sanction(f.addOnly, candidate, candidate2))
+	// Governance sanctioned a sanctioner already on the list; that stays.
+	require.NoError(t, f.sanction(f.gov, f.full2))
+	// The caps on sanctioner messages don't apply to an appointment.
+	f.setParams(t, 1, 1)
+
+	ctx := f.freshCtx()
+	_, err := f.srv.UpdateSanctioners(ctx, types.NewMsgUpdateSanctioners(f.gov, []types.Sanctioner{
+		{Address: f.full, Role: full},
+		{Address: f.full2, Role: full},
+		{Address: f.addOnly, Role: types.SanctionerRole_SANCTIONER_ROLE_ADD_ONLY},
+		{Address: strings.ToUpper(candidate), Role: full},
+		{Address: candidate2, Role: full},
+	}))
+	require.NoError(t, err)
+	require.False(t, f.listed(t, candidate))
+	require.False(t, f.listed(t, candidate2))
+	require.True(t, f.listed(t, f.full2))
+	require.Equal(t, []*types.EventSanctionListChanged{{
+		Addresses: []string{candidate, candidate2}, Sanctioned: false, Actor: f.gov, Reason: types.ReasonAppointed,
+	}}, listChangedEvents(t, ctx))
+}
+
 func TestSanctionProtections(t *testing.T) {
 	f := setup(t)
 	gone := addr("innocent")

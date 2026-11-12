@@ -29,7 +29,7 @@ func (k msgServer) UpdateSanctioners(ctx context.Context, msg *types.MsgUpdateSa
 	if err := k.checkAuthority(msg.Authority); err != nil {
 		return nil, err
 	}
-	if err := k.SetSanctioners(ctx, msg.Sanctioners); err != nil {
+	if err := k.AppointSanctioners(ctx, msg.Sanctioners); err != nil {
 		return nil, err
 	}
 	sanctioners, err := k.GetSanctioners(ctx)

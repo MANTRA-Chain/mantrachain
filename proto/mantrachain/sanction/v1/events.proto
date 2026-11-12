@@ -8,7 +8,8 @@ import "mantrachain/sanction/v1/sanctioner.proto";
 option go_package = "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/types";
 
 // EventSanctionListChanged is emitted once per MsgSanctionAddresses or
-// MsgUnsanctionAddresses that changes the list, whoever sent it.
+// MsgUnsanctionAddresses that changes the list, whoever sent it, and when
+// MsgUpdateSanctioners unsanctions an address it appoints.
 message EventSanctionListChanged {
   // addresses are the addresses actually added or removed. Addresses that
   // were already listed, or not listed, are left out.

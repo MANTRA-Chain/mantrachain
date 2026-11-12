@@ -6,6 +6,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// ReasonAppointed is the event reason when an appointment lifts a sanction.
+const ReasonAppointed = "appointed as sanctioner"
+
 // NormalizeAddress parses a bech32 account address and returns its canonical
 // string, so that mixed-case input can't create an entry the ante handler
 // never matches.

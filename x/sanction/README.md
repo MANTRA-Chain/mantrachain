@@ -57,6 +57,7 @@ Rules:
 * A sanctioner can't sanction another sanctioner.
 * Nobody, governance included, can sanction a module account (the gov authority among them), because the send restriction would stop it sending.
 * Governance can sanction a sanctioner.
+* Appointing an address that isn't a sanctioner yet lifts any sanction on it, so one placed while the proposal votes can't lock the new sanctioner out.
 * `max_addresses_per_msg` caps addresses per message and `max_reason_length` caps the reason, for every signer including governance. A larger governance batch is split across several messages in one proposal, or governance raises the params first.
 * Every message needs a non-empty reason, including governance's.
 * Adding an address that's already listed, or removing one that isn't, is a no-op for that address, so batches don't fail on duplicates. A protected address fails the whole message.
@@ -110,7 +111,7 @@ A full sanctioner removes an add-only sanctioner from the list. Only governance 
 
 ## Events
 
-* `EventSanctionListChanged`: once per `MsgSanctionAddresses` or `MsgUnsanctionAddresses` that changes the list, from either path, with the addresses actually added or removed, `sanctioned`, actor, actor role (`UNSPECIFIED` for governance) and reason. Not emitted if every address was a no-op. Alerting can watch for `actor_role = SANCTIONER_ROLE_ADD_ONLY` so a human reviews every automated entry.
+* `EventSanctionListChanged`: once per `MsgSanctionAddresses` or `MsgUnsanctionAddresses` that changes the list, from either path, and when an appointment unsanctions an address, with the addresses actually added or removed, `sanctioned`, actor, actor role (`UNSPECIFIED` for governance) and reason. Not emitted if every address was a no-op. Alerting can watch for `actor_role = SANCTIONER_ROLE_ADD_ONLY` so a human reviews every automated entry.
 * `EventSanctionersUpdated`: when governance replaces the list, with the new list.
 * `EventSanctionerRevoked`: when a full sanctioner revokes an add-only sanctioner.
 

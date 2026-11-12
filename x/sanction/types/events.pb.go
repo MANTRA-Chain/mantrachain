@@ -25,7 +25,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // EventSanctionListChanged is emitted once per MsgSanctionAddresses or
-// MsgUnsanctionAddresses that changes the list, whoever sent it.
+// MsgUnsanctionAddresses that changes the list, whoever sent it, and when
+// MsgUpdateSanctioners unsanctions an address it appoints.
 type EventSanctionListChanged struct {
 	// addresses are the addresses actually added or removed. Addresses that
 	// were already listed, or not listed, are left out.
