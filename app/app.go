@@ -53,7 +53,7 @@ import (
 	"github.com/MANTRA-Chain/mantrachain/v8/app/precompiles/distrclaim"
 	queries "github.com/MANTRA-Chain/mantrachain/v8/app/queries"
 	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades"
-	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_8"
+	"github.com/MANTRA-Chain/mantrachain/v8/app/upgrades/v8_9"
 	"github.com/MANTRA-Chain/mantrachain/v8/client/docs"
 	sanctionkeeper "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/keeper"
 	sanction "github.com/MANTRA-Chain/mantrachain/v8/x/sanction/module"
@@ -149,12 +149,7 @@ import (
 	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v10"
 	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/keeper"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
-	ica "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts"
-	icacontroller "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller"
-	icacontrollerkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
-	icahost "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host"
-	icahostkeeper "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
@@ -220,7 +215,6 @@ var (
 var maccPerms = map[string][]string{
 	authtypes.FeeCollectorName:     {authtypes.Burner},
 	distrtypes.ModuleName:          nil,
-	icatypes.ModuleName:            nil,
 	minttypes.ModuleName:           {authtypes.Minter},
 	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -241,7 +235,7 @@ var maccPerms = map[string][]string{
 	erc20types.ModuleName:     {authtypes.Minter, authtypes.Burner},
 }
 
-var Upgrades = []upgrades.Upgrade{v8_8.Upgrade}
+var Upgrades = []upgrades.Upgrade{v8_9.Upgrade}
 
 var (
 	_ runtime.AppI            = (*App)(nil)
@@ -283,13 +277,11 @@ type App struct {
 	CircuitKeeper         circuitkeeper.Keeper
 
 	// IBC
-	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	ICAHostKeeper       icahostkeeper.Keeper
-	ICAControllerKeeper icacontrollerkeeper.Keeper
-	TransferKeeper      transferkeeper.Keeper
-	WasmKeeper          wasmkeeper.Keeper
-	RateLimitKeeper     ratelimitkeeper.Keeper
-	CallbackKeeper      ibccallbackskeeper.ContractKeeper
+	IBCKeeper       *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	TransferKeeper  transferkeeper.Keeper
+	WasmKeeper      wasmkeeper.Keeper
+	RateLimitKeeper ratelimitkeeper.Keeper
+	CallbackKeeper  ibccallbackskeeper.ContractKeeper
 
 	// ICS
 	ProviderKeeper icsproviderkeeper.Keeper
@@ -344,6 +336,11 @@ func New(
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
 	marketmaptypes.RegisterInterfaces(interfaceRegistry)
 	oracletypes.RegisterInterfaces(interfaceRegistry)
+	// register the removed interchain accounts types, so an interchain account
+	// or a proposal with the module's messages in state still decodes
+	icatypes.RegisterInterfaces(interfaceRegistry)
+	icahosttypes.RegisterInterfaces(interfaceRegistry)
+	icacontrollertypes.RegisterInterfaces(interfaceRegistry)
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
@@ -364,7 +361,7 @@ func New(
 		wasmtypes.StoreKey,
 		ratelimittypes.StoreKey,
 		tokenfactorytypes.StoreKey, taxtypes.StoreKey, sanctiontypes.StoreKey,
-		icacontrollertypes.StoreKey, icahosttypes.StoreKey, providertypes.StoreKey,
+		providertypes.StoreKey,
 
 		// Cosmos EVM store keys
 		evmtypes.StoreKey, feemarkettypes.StoreKey, erc20types.StoreKey,
@@ -619,19 +616,6 @@ func New(
 		authtypes.FeeCollectorName,
 	)
 
-	// ICA Host keeper
-	app.ICAHostKeeper = icahostkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[icahosttypes.StoreKey]),
-		app.GetSubspace(icahosttypes.SubModuleName),
-		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper
-		app.IBCKeeper.ChannelKeeper,
-		app.AccountKeeper,
-		bApp.MsgServiceRouter(),
-		bApp.GRPCQueryRouter(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
 	// Create RateLimit keeper
 	clientKeeper := app.IBCKeeper.ClientKeeper
 	app.RateLimitKeeper = *ratelimitkeeper.NewKeeper(
@@ -643,17 +627,6 @@ func New(
 		app.IBCKeeper.ChannelKeeper,
 		clientKeeper,
 		app.IBCKeeper.ChannelKeeper,
-	)
-
-	// ICA Controller keeper
-	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
-		appCodec,
-		runtime.NewKVStoreService(app.keys[icacontrollertypes.StoreKey]),
-		app.GetSubspace(icacontrollertypes.SubModuleName),
-		app.IBCKeeper.ChannelKeeper, // ICS4Wrapper
-		app.IBCKeeper.ChannelKeeper,
-		bApp.MsgServiceRouter(),
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.NFTKeeper = nftkeeper.NewKeeper(
@@ -777,19 +750,11 @@ func New(
 	// Wire the ICS4Wrapper send path: transfer -> callbacks -> ratelimit -> channel
 	app.TransferKeeper.WithICS4Wrapper(&callbacksMiddleware)
 
-	// Create ICAHost Stack
-	var icaHostStack porttypes.IBCModule = icahost.NewIBCModule(app.ICAHostKeeper)
-
-	// Create Interchain Accounts Controller Stack
-	var icaControllerStack porttypes.IBCModule = icacontroller.NewIBCMiddleware(app.ICAControllerKeeper)
-
 	// Create fee enabled wasm ibc Stack
 	wasmStack := wasm.NewIBCHandler(&app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.TransferKeeper, app.IBCKeeper.ChannelKeeper)
 
 	// Create static IBC router, add app routes, then set and seal it
 	ibcRouter := porttypes.NewRouter().
-		AddRoute(icahosttypes.SubModuleName, icaHostStack).
-		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(providertypes.ModuleName, providerModule).
 		AddRoute(wasmtypes.ModuleName, wasmStack)
@@ -913,7 +878,6 @@ func New(
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), nil),
 		ibc.NewAppModule(app.IBCKeeper),
 		ibctransfer.NewAppModule(app.TransferKeeper),
-		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(tmLightClientModule),
 		ratelimit.NewAppModule(appCodec, app.RateLimitKeeper),
 
@@ -983,7 +947,6 @@ func New(
 		govtypes.ModuleName,
 		crisistypes.ModuleName,
 		// additional non simd modules
-		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
@@ -1008,7 +971,6 @@ func New(
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		ibcexported.ModuleName,
-		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
@@ -1054,7 +1016,6 @@ func New(
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
 		genutiltypes.ModuleName,
-		icatypes.ModuleName,
 		ratelimittypes.ModuleName,
 		// wasm after ibc transfer
 
@@ -1559,8 +1520,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey) //nolint:staticcheck
 	keyTable := ibcclienttypes.ParamKeyTable()
 	paramsKeeper.Subspace(ratelimittypes.ModuleName).WithKeyTable(ratelimittypes.ParamKeyTable())
-	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
-	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
 	paramsKeeper.Subspace(providertypes.ModuleName).WithKeyTable(providertypes.ParamKeyTable())

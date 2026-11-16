@@ -1,9 +1,22 @@
 ## [unreleased]
 
+### STATE BREAKING
+
+- feat: remove interchain accounts module ([#713](https://github.com/MANTRA-Chain/mantrachain/pull/713)).
+
+## v8.8.0
+
+*Nov 6, 2026*
+
+### FEATURES
+
+- feat: replace the v8.7.0-pre.1 upgrade handler with v8.8.0 ([#706](https://github.com/MANTRA-Chain/mantrachain/pull/706)).
+- feat: add a CLI command to list registered upgrade handlers ([#709](https://github.com/MANTRA-Chain/mantrachain/pull/709)).
+
 ### BUG-FIXES
 
-- fix: bump mantra evm from v0.6.3-v8-mantra-1 to v0.6.4-v8-mantra-1 for security fixes.
-- fix: bump go to 1.26 and vulnerable dependencies to patched versions.
+- fix: bump mantra evm from v0.6.3-v8-mantra-1 to v0.6.4-v8-mantra-1 for security fixes ([#706](https://github.com/MANTRA-Chain/mantrachain/pull/706)).
+- fix: bump go to 1.26 and vulnerable dependencies to patched versions ([#707](https://github.com/MANTRA-Chain/mantrachain/pull/707)).
 
 ## v8.7.0-pre.1
 

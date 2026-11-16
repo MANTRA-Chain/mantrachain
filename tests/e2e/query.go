@@ -22,7 +22,6 @@ import (
 	govtypesv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
 	transfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 )
 
@@ -509,20 +508,6 @@ func queryBlacklist(endpoint string) ([]string, error) {
 	}
 
 	return resp.BlacklistedAccounts, nil
-}
-
-func queryICAAccountAddress(endpoint, owner, connectionID string) (string, error) {
-	body, err := httpGet(fmt.Sprintf("%s/ibc/apps/interchain_accounts/controller/v1/owners/%s/connections/%s", endpoint, owner, connectionID))
-	if err != nil {
-		return "", fmt.Errorf("failed to execute HTTP request: %w", err)
-	}
-
-	var icaAccountResp icacontrollertypes.QueryInterchainAccountResponse
-	if err := cdc.UnmarshalJSON(body, &icaAccountResp); err != nil {
-		return "", err
-	}
-
-	return icaAccountResp.Address, nil
 }
 
 func queryWasmParams(endpoint string) (wasmTypes.Params, error) {
