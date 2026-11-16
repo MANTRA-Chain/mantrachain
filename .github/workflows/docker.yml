@@ -31,14 +31,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
 
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
+      - uses: ./.github/actions/free-disk-space
         with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
           docker-images: false
           swap-storage: false
 
