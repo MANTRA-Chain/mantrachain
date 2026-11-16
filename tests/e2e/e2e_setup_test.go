@@ -228,7 +228,7 @@ func (s *IntegrationTestSuite) initNodes(c *chain) {
 	s.Require().NoError(c.createAndInitValidators(2))
 	/* Adding 4 accounts to val0 local directory
 	c.genesisAccounts[0]: Relayer Account
-	c.genesisAccounts[1]: Unused (was the ICA owner)
+	c.genesisAccounts[1]: Alice
 	c.genesisAccounts[2]: Test Account 1
 	c.genesisAccounts[3]: Test Account 2
 	*/

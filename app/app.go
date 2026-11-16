@@ -149,6 +149,9 @@ import (
 	ratelimit "github.com/cosmos/ibc-apps/modules/rate-limiting/v10"
 	ratelimitkeeper "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/keeper"
 	ratelimittypes "github.com/cosmos/ibc-apps/modules/rate-limiting/v10/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/controller/types"
+	icahosttypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/host/types"
+	icatypes "github.com/cosmos/ibc-go/v10/modules/apps/27-interchain-accounts/types"
 	ibccallbacks "github.com/cosmos/ibc-go/v10/modules/apps/callbacks"
 	ibctransfer "github.com/cosmos/ibc-go/v10/modules/apps/transfer"
 	transferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
@@ -333,6 +336,11 @@ func New(
 	legacyfeemarkettypes.RegisterInterfaces(interfaceRegistry)
 	marketmaptypes.RegisterInterfaces(interfaceRegistry)
 	oracletypes.RegisterInterfaces(interfaceRegistry)
+	// register the removed interchain accounts types, so an interchain account
+	// or a proposal with the module's messages in state still decodes
+	icatypes.RegisterInterfaces(interfaceRegistry)
+	icahosttypes.RegisterInterfaces(interfaceRegistry)
+	icacontrollertypes.RegisterInterfaces(interfaceRegistry)
 
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
