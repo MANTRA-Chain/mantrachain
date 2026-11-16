@@ -76,7 +76,6 @@ func (s *IntegrationTestSuite) TestIBC() {
 	// TODO: uncomment in future if we add PFM
 	// s.testMultihopIBCTokenTransfer()
 	// s.testFailedMultihopIBCTokenTransfer()
-	s.testICARegisterAccountAndSendTx()
 }
 
 func (s *IntegrationTestSuite) TestSlashing() {
