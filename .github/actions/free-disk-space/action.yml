@@ -1,0 +1,44 @@
+name: Free disk space
+description: >-
+  Removes preinstalled SDKs and packages from an Ubuntu runner. A local copy of
+  jlumbroso/free-disk-space, which workflows here can no longer use: the repo
+  moved to lumbroso-commons, the old name doesn't resolve, and the new one
+  isn't on the org's Actions allow-list.
+inputs:
+  docker-images:
+    description: Prune all docker images
+    default: "true"
+  swap-storage:
+    description: Turn off and delete the swap file
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        DOCKER_IMAGES: ${{ inputs.docker-images }}
+        SWAP_STORAGE: ${{ inputs.swap-storage }}
+      run: |
+        df -h /
+        sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+        # One call per group: apt-get removes nothing if it can't find one of its arguments.
+        remove() { sudo apt-get remove -y --fix-missing "$@" || echo "::warning::apt-get remove $* failed"; }
+        remove '^aspnetcore-.*'
+        remove '^dotnet-.*'
+        remove '^llvm-.*'
+        remove 'php.*'
+        remove '^mongodb-.*'
+        remove '^mysql-.*'
+        remove azure-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri
+        remove google-cloud-sdk
+        remove google-cloud-cli
+        sudo apt-get autoremove -y || true
+        sudo apt-get clean || true
+        if [[ $DOCKER_IMAGES == true ]]; then
+          sudo docker image prune --all --force || true
+        fi
+        if [[ $SWAP_STORAGE == true ]]; then
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile
+        fi
+        df -h /

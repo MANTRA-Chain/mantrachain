@@ -43,21 +43,12 @@ jobs:
             cross: true
 
     steps:
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
       - name: Checkout Git repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
+      - uses: ./.github/actions/free-disk-space
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
@@ -143,21 +134,12 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.inputs.release_tag || github.ref }}
+      - uses: ./.github/actions/free-disk-space
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
