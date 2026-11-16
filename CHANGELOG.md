@@ -2,7 +2,7 @@
 
 ### STATE BREAKING
 
-- feat: remove interchain accounts module
+- feat: remove interchain accounts module ([#713](https://github.com/MANTRA-Chain/mantrachain/pull/713)).
 
 ## v8.8.0
 
